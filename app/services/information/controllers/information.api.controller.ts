@@ -43,6 +43,11 @@ import {
     type InformationAddressUpdateDto,
 } from "../dtos/information.address.update.dto";
 import { InformationEntity } from "../entities/information.entity";
+import { VigilioServicesGuard } from "../guards/vigilioservices.guard";
+import {
+    informationStoreDto,
+    type InformationStoreDto,
+} from "../dtos/information.store.dto";
 
 @Injectable()
 @Controller("/information")
@@ -50,6 +55,22 @@ export class InformationApiController {
     constructor(
         private readonly informationApiService: InformationApiService
     ) {}
+
+    @VigilioServicesGuard()
+    @Pipe(objectAsync({ slug: string() }))
+    @Get("/:slug/full")
+    async showVigilio(@Params("slug") slug: string) {
+        const result = await this.informationApiService.showVigilio(slug);
+        return result;
+    }
+
+    @VigilioServicesGuard()
+    @Validator(informationStoreDto)
+    @Post("/")
+    async store(@Body() body: InformationStoreDto) {
+        const result = await this.informationApiService.store(body);
+        return result;
+    }
 
     @PermissionAdmin()
     @Get("/private")
@@ -173,6 +194,7 @@ export class InformationApiController {
         return result;
     }
 
+    @PermissionAdmin()
     @Pipe(
         objectAsync({
             slug: string(),
@@ -343,6 +365,18 @@ export class InformationApiController {
             information,
             body
         );
+        return result;
+    }
+
+    @VigilioServicesGuard()
+    @Pipe(
+        objectAsync({
+            id: string(),
+        })
+    )
+    @Delete("/:id")
+    async destroy(@Params("id") id: string) {
+        const result = await this.informationApiService.destroy(id);
         return result;
     }
 }

@@ -12,13 +12,15 @@ export type UploadsEntities =
     | "users"
     | "products"
     | "information"
-    | "orders";
+    | "orders"
+    | "categories";
 
 export const uploadsEntities: UploadsEntities[] = [
     "products",
     "users",
     "information",
     "orders",
+    "categories",
 ];
 
 /**** properties about entities *****/
@@ -142,9 +144,9 @@ export function printFileWithDimension(
             : `${enviroments.VITE_URL}/${file.file}`
     );
 }
-export function removeFile(files: FilesSchema[]) {
+export function removeFile(slug: string, files: FilesSchema[]) {
     for (const file of files) {
-        const image = `${pathUploads()}/${file.file}`;
+        const image = `${pathUploads()}/${slug}/${file.file}`;
         if (fs.existsSync(image)) {
             fs.unlinkSync(image);
         }

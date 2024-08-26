@@ -26,6 +26,7 @@ import type { AddressSchemaEntity } from "./address.schema";
 export type Empresa = "normal" | "restaurant" | "servicio";
 
 const payments = object({
+    catalogo: object({ price: number(), enabled: boolean() }),
     ia: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
         price: number("Este campo es obligatorio"),
@@ -34,6 +35,11 @@ const payments = object({
     }),
     sunat: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
+        price: number("Este campo es obligatorio"),
+        enabled: boolean("Este campo es obligatorio"),
+    }),
+    clients: object({
+        quantity: number(),
         price: number("Este campo es obligatorio"),
         enabled: boolean("Este campo es obligatorio"),
     }),
@@ -80,13 +86,18 @@ export const credentials = object({
     open_ai: string(),
 });
 export type Credentials = Input<typeof credentials>;
+export const typeIA = [
+    "Asistentes de Atención al Cliente",
+    "Asistentes de Ventas y Marketing",
+    "Asistentes de Entretenimiento",
+];
 export const inteligenceArtificial = object({
-    prompt: string(),
     nameIa: string(),
     timer: object({
         start: number(),
         finish: number(),
     }),
+    type: string(),
     memory: number([
         minValue(3),
         maxValue(21),
@@ -96,6 +107,9 @@ export const inteligenceArtificial = object({
     hour_update: number([minValue(6, "Minimo 6")]),
     usage: object({ input_tokens: number(), output_tokens: number() }),
     enabledBotInteligence: boolean(), // usará toda la base de datos. sino filtará los productos que el cliente busca , pero no es muy precioso por que el cliente puede escribir mal
+    instructions: array(string([minLength(3)])),
+    didactrices: array(string([minLength(3)])),
+    otros: array(string()),
 });
 export const transferenciaSchema = object({
     bcp: nullable(
@@ -139,10 +153,41 @@ export const groupWhatsapp = objectAsync({
 export type CompanySchema = Input<typeof companySchema>;
 export type ContactsSchema = Input<typeof contactsSchema>;
 export type GroupWhatsapp = Input<typeof groupWhatsapp>;
+export const credentialsWeb = nullable(
+    object({
+        shopify: nullable(
+            object({
+                dominioweb: string(),
+                apiKey: string(),
+                password: string(),
+            })
+        ),
+        woocommerce: nullable(
+            object({
+                consumerKey: string(),
+                consumerSecret: string(),
+            })
+        ),
+        prestashop: nullable(
+            object({
+                api_key: string(),
+            })
+        ),
+    })
+);
+export type CredentialsWeb = Input<typeof credentialsWeb>;
 export const informationSchema = objectAsync({
     id: number(),
-    name_empresa: string(),
+    name_empresa: string([minLength(2), maxLength(100)]),
+    web: nullable(
+        string([
+            startsWith("https://", "Web no válida. https://"),
+            maxLength(50),
+        ])
+    ),
+    credentials_web: credentialsWeb,
     email: string(),
+    bg_color: string([minLength(2), maxLength(8)]),
     telephoneFirst: string([minLength(1), minLength(9), maxLength(30)]), //obligatorio
     telephoneReclamos: nullable(string([minLength(9), maxLength(30)])),
     telephoneThird: nullable(string([minLength(9), maxLength(30)])),
@@ -203,6 +248,7 @@ export const informationSchema = objectAsync({
     isOpen: boolean(), // La tienda esta cerrada
     enabledBot: boolean(), //obligatorio
     enabledSendSunat: boolean(), // cuando el cliente pague por las pasarelas se emitira a sunat
+    enable_sell_country: boolean(),
     dateRelease: coerce(date(), (value) => new Date(value as string)), // dia que se creo la web
     inteligenceArtificial, // ia
     enabledSendMessage: boolean(), // si esta activado el cliente  tendrá animaciones
@@ -212,8 +258,8 @@ export const informationSchema = objectAsync({
     groupWhatsapp: arrayAsync(groupWhatsapp), // array de grupos de whatsapp
     whatsappconfig, // configuracion whatsapp
     schedule: arrayAsync(scheduleSchema), // horario de trabajo
-    address_id: number(), // address
     enabledAnimation: boolean(),
+    host: nullable(string("https://")),
     transferencias: nullable(transferenciaSchema), // array de numero de transferencia si el cliente quiero poner como metodo de pago
     map_marker: object(
         // mapa de la empresa del cliente ?
@@ -225,10 +271,11 @@ export const informationSchema = objectAsync({
     // auth
     payments,
     slug: string(),
-    token: nullable(string()),
     credentials,
     enabled: boolean(), // habilitar web
-    type_empresa: string(),
+    enabled_catalogo: boolean(),
+    type_empresa_id: number(),
+    type_empresa_other: nullable(string()),
 });
 
 export type InformationSchema = Input<typeof informationSchema> & {

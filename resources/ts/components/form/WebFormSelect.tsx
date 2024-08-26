@@ -1,14 +1,15 @@
 import { useContext } from "preact/hooks";
 import { FormControlContext } from "./Form";
-import { type JSX } from "preact";
-import {
-	type FieldErrors,
-	type FieldValues,
-	type Path,
-	type RegisterOptions,
-	type UseFormReturn,
+import type { JSX } from "preact";
+import type {
+	FieldErrors,
+	FieldValues,
+	Path,
+	RegisterOptions,
+	UseFormReturn,
 } from "react-hook-form";
-import { type HTMLAttributes } from "preact/compat";
+import type { HTMLAttributes } from "preact/compat";
+import enviroments from "~/config";
 
 interface FormControlLabelProps<T extends object>
 	extends Omit<HTMLAttributes<HTMLSelectElement>, "type" | "name"> {
@@ -63,7 +64,9 @@ function WebFormSelect<T extends object>({
 				<div
 					class={`${
 						Object.keys(err).length ? "border border-red-600" : ""
-					} w-full h-[2.5rem] flex items-center text-xs rounded-lg  overflow-hidden dark:text-secondary-light text-secondary-dark dark:bg-admin-terciary bg-paper-light my-1 shadow-sm border border-gray-200 dark:border-gray-600`}
+					} w-full h-[2.5rem] flex dark:text-white  items-center gap-2 text-xs ${
+						enviroments.TYPE_BORDER === "circle" ? "rounded-md" : "rounded-sm"
+					}  overflow-hidden text-secondary-dark   my-1 shadow-sm border`}
 				>
 					{ico ? (
 						<div class="bg-primary  shadow min-w-[2.8rem]  h-full flex justify-center items-center text-white">
@@ -74,7 +77,7 @@ function WebFormSelect<T extends object>({
 						id={name as string}
 						class={`${
 							(errors as T)[name] ? "border-red-600" : ""
-						}  bg-transparent  my-1 text-sm w-full outline-none shadow-sm`}
+						}  bg-transparent  my-1 text-sm w-full outline-none`}
 						{...rest}
 						{...register(name as unknown as Path<T>, options)}
 					>
@@ -103,7 +106,7 @@ function WebFormSelect<T extends object>({
 				{question ? (
 					<div class="relative group ">
 						<i class="fa-solid fa-circle-question text-xs dark:text-white" />
-						<div class="text-xs min-w-[100px] hidden group-hover:block -top-[35px] right-1 p-1 shadow text-center absolute rounded-md dark:bg-admin-background-dark bg-background-light dark:text-white">
+						<div class="text-xs min-w-[100px] hidden group-hover:block -top-[35px] right-1 p-1 shadow text-center absolute rounded-md dark:bg-paper-dark bg-background-light dark:text-white z-10 font-semibold">
 							{question}
 						</div>
 					</div>
@@ -114,6 +117,9 @@ function WebFormSelect<T extends object>({
 			) : null}
 		</div>
 	);
+}
+export function formSelectNumber(value: string) {
+	return Number(value) > 0 ? Number(value) : null;
 }
 
 export default WebFormSelect;

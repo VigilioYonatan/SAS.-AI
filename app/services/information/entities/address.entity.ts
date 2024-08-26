@@ -17,7 +17,7 @@ export class Address extends Model implements Omit<AddressSchema, "id"> {
     @ForeignKey(() => Districts)
     @Column({
         allowNull: false,
-        type: DataType.STRING(255),
+        type: DataType.STRING,
     })
     district_id: string;
 

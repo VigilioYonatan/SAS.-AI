@@ -55,7 +55,8 @@ export class BrandsApiService {
         brand.brand_code = await generateCodeEntity(
             Brands,
             "brand_code" as keyof Brands,
-            "BRAND"
+            "BRAND",
+            information
         );
         await brand.save();
         return {

@@ -5,11 +5,13 @@ import {
     Res,
     Injectable,
     Information,
+    Req,
 } from "@vigilio/express-core";
 import type { Response } from "express";
 import { WebService } from "../services/web.service";
 import { webEnabledMiddleware } from "../middlewares/webEnabled.middleware";
 import { InformationEntity } from "@/information/entities/information.entity";
+import { PermissionAuth } from "@/auth/guards/permission-auth.guard";
 
 @Injectable()
 @Controller("/")
@@ -21,10 +23,18 @@ export class WebController {
     }
 
     @Get("/")
-    async home(@Res() res: Response) {
-        const result = await this.webService.home();
-
+    async home(
+        @Res() res: Response,
+        @Req("information") information: InformationEntity
+    ) {
+        const result = await this.webService.home(information);
         return res.render("web/home", result);
+    }
+    @PermissionAuth()
+    @Get("/admin")
+    async admin(@Res() res: Response) {
+        const result = await this.webService.admin();
+        return res.render("web/admin", result);
     }
 
     @Get("/404")

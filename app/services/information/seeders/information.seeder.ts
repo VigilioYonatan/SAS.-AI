@@ -1,6 +1,4 @@
-import enviroments from "~/config/enviroments.config";
 import type { InformationSchema } from "../schemas/information.schema";
-import { prompt } from "@/bot/libs/prompt";
 
 export async function informationSeeder(): Promise<
     Omit<InformationSchema, "id">
@@ -10,13 +8,16 @@ export async function informationSeeder(): Promise<
 
     return {
         name_empresa: "vigilio services",
-        email: "vigilioservicesperu@gmail.com",
-        telephoneFirst: "968650700",
+        host: null,
+        bg_color: "#000",
+        enable_sell_country: false,
+        type_empresa_other: null,
+        web: null,
+        email: "yonatanvigilio@vigilio-services.com",
+        telephoneFirst: "959884398",
         about: "this is a a about page",
         enabled: true,
         isOpen: true,
-        token: enviroments.VITE_VIGILIO_TOKEN,
-        // company: null,
         company: {
             nombreComercial: "VigilioServices",
             ruc: "20706020638",
@@ -28,9 +29,7 @@ export async function informationSeeder(): Promise<
             client_secret: "client-secret",
             certificado_password: null,
         },
-        type_empresa: "normal",
-        slug: "vigilioservices",
-        address_id: 1,
+        slug: "vigilioservices1",
         certificado: null,
         enabledBot: true,
         facebook: null,
@@ -45,7 +44,20 @@ export async function informationSeeder(): Promise<
             paypal: { PAYPAL_CLIENT_ID: "", PAYPAL_SECRET_KEY: "" },
         },
         inteligenceArtificial: {
-            prompt: prompt(),
+            didactrices: [
+                "Habla siempre en español latino y trata de escribir poco",
+                "Trata de escribir poco.",
+                "No sugerirás ni promocionarás productos de otros proveedores.",
+                "El 'uso de emojis' es permitido para darle más carácter a la comunicación, ideal para WhatsApp",
+                "Recuerda, tu objetivo es ser persuasivo y amigable, pero siempre profesional.",
+                "responde bonito en formato whatsapp chat",
+            ],
+            instructions: [
+                "Si te pido el estado de pedido o orden  digitar el codigo ORD-.",
+                "Si te pido el estado de pedido o orden  digitar el codigo ORD-.",
+            ],
+            otros: [],
+            type: "Asistentes de Ventas y Marketing",
             datos: [],
             timer: { start: 8, finish: 20 },
             hour_update: 24,
@@ -123,9 +135,14 @@ export async function informationSeeder(): Promise<
         icon: null,
         map_marker: { lat: -12.053221, lng: -77.044861 },
         enable_map_marker: false,
+        enabled_catalogo: false,
         payments: {
             ia: { date: new Date(), enabled: true, price: 10, tokens: 1000000 },
             sunat: { date: new Date(), enabled: true, price: 25 },
+            clients: { price: 10, enabled: true, quantity: 10 },
+            catalogo: { price: 0, enabled: true },
         },
+        type_empresa_id: 1,
+        credentials_web: null,
     };
 }

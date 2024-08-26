@@ -5,6 +5,11 @@ import { pathUploads } from "@/uploads/libs/helpers";
 import enviroments from "~/config/enviroments.config";
 import fs from "node:fs";
 import dayjs from "~/libs/dayjs";
+import type { InformationEntity } from "../entities/information.entity";
+import { productEntity } from "@/products/libs";
+import { Clients } from "@/users/entities/clients.entity";
+import { Users } from "@/users/entities/users.entity";
+import XLSX from "xlsx";
 
 const execAsync = util.promisify(exec);
 @Injectable()
@@ -46,6 +51,52 @@ export class BackupApiService {
             throw new BadRequestException(
                 "error pm2 - comunicarse con empresa."
             );
+        }
+    }
+
+    async downloadProducts(information: InformationEntity) {
+        try {
+            const Product = productEntity(information.type_empresa_id);
+            const products = await Product.findAll({
+                where: {
+                    information_id: information.id,
+                },
+            });
+
+            const clients = await Clients.findAll({
+                where: { information_id: information.id },
+            });
+
+            const users = await Users.findAll({
+                where: { information_id: information.id },
+                attributes: { exclude: ["password"] },
+            });
+
+            const workbook = XLSX.utils.book_new();
+
+            const productsSheet = XLSX.utils.json_to_sheet(
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                products.map((p: any) => p.toJSON())
+            );
+            const clientsSheet = XLSX.utils.json_to_sheet(
+                clients.map((c) => c.toJSON())
+            );
+            const usersSheet = XLSX.utils.json_to_sheet(
+                users.map((u) => u.toJSON())
+            );
+            XLSX.utils.book_append_sheet(workbook, productsSheet, "Productos");
+            XLSX.utils.book_append_sheet(workbook, clientsSheet, "Clientes");
+            XLSX.utils.book_append_sheet(workbook, usersSheet, "Usuarios");
+
+            // Escribir los datos del libro a un buffer
+            const excelBuffer = XLSX.write(workbook, {
+                bookType: "xlsx",
+                type: "buffer",
+            });
+
+            return excelBuffer;
+        } catch (error) {
+            throw new BadRequestException("ERROR MESSAGE");
         }
     }
 }

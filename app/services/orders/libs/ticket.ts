@@ -13,7 +13,6 @@ import { MONEYDOLARES, MONEYSOLES } from "~/libs/helpers";
 import type { Districts } from "@/ubigeo/entities/districts.entity";
 import type { Provinces } from "@/ubigeo/entities/provinces.entity";
 import type { Departments } from "@/ubigeo/entities/departments.entity";
-import enviroments from "~/config/enviroments.config";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
 
 export async function ticketHTML(
@@ -35,7 +34,7 @@ export async function ticketHTML(
         : null;
     const ig = departamento
         ? order.igv
-            ? subtotal(departamento.priceShipping, enviroments.VITE_IGV, true)
+            ? subtotal(departamento.priceShipping, information.igv, true)
             : departamento.priceShipping
         : 0;
     const money = order.moneyChange === 1 ? MONEYSOLES : MONEYDOLARES;

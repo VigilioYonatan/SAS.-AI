@@ -18,6 +18,7 @@ import type { InvoicesSchema } from "./invoices.schema";
 import { filesSchema } from "@/uploads/schemas/uploads.schema";
 import { ordersTransferenciaImage } from "../libs";
 import type { UsersSchemaFromServer } from "@/users/schemas/users.schema";
+import type { ClientSchema } from "@/users/schemas/client.schema";
 
 export const ordersSchema = objectAsync({
     id: number(),
@@ -52,7 +53,8 @@ export const ordersSchema = objectAsync({
         object({ lng: number(), lat: number() }, "Coordenadas no válida.")
     ),
     information_id: number(),
-    user_id: number(),
+    user_id: nullable(number()),
+    client_id: nullable(number()),
 });
 
 export type OrdersSchema = Input<typeof ordersSchema> & {
@@ -61,9 +63,10 @@ export type OrdersSchema = Input<typeof ordersSchema> & {
 };
 export type OrdersSchemaFromServer = OrdersSchema & {
     details_orders: DetailOrdersFromServer[];
+    client: ClientSchema | null;
     invoice: InvoicesSchema;
     user: Pick<
         UsersSchemaFromServer,
         "id" | "username" | "name" | "lastname" | "photo" | "email" | "role_id"
-    >;
+    > | null;
 };

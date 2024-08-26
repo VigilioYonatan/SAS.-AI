@@ -9,7 +9,7 @@ import { ProductsRestaurant } from "../entities/products_restaurant.entity";
 import {
     productsRestaurantSchema,
     type ProductsRestaurantSchema,
-} from "../schemas/products_restaurant.entity";
+} from "../schemas/products_restaurant.schema";
 
 export const productsRestaurantStoreDto = omitAsync(
     productsRestaurantSchema,

@@ -1,5 +1,5 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { type Resolver } from "react-hook-form";
+import type { Resolver } from "react-hook-form";
 import { getOutput, getPipeIssues } from "@vigilio/valibot";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -43,7 +43,7 @@ function validFileValibot(props: {
     required: boolean;
     min: number;
     max?: number;
-    types?: string[];
+    types?: string[] | null;
     maxSize?: number;
     minSize?: number;
 }) {
@@ -84,39 +84,40 @@ function validFileValibot(props: {
                 );
             }
         }
+        if (types) {
+            for (const file of files) {
+                if (!types.includes(file.type)) {
+                    return getPipeIssues(
+                        "custom",
+                        `Este campo solo permite archivos de formato ${types.join(
+                            ", "
+                        )}`,
+                        files
+                    );
+                }
+                const mb = 1000000;
+                const size = file.size;
+                if (maxSize && size > maxSize * mb) {
+                    return getPipeIssues(
+                        "custom",
+                        `Este archivo es demasiado pesado ${file.name.slice(
+                            0,
+                            12
+                        )}. Máximo ${maxSize} MB`,
+                        files
+                    );
+                }
 
-        for (const file of files) {
-            if (!types.includes(file.type)) {
-                return getPipeIssues(
-                    "custom",
-                    `Este campo solo permite archivos de formato ${types.join(
-                        ", "
-                    )}`,
-                    files
-                );
-            }
-            const mb = 1000000;
-            const size = file.size;
-            if (maxSize && size > maxSize * mb) {
-                return getPipeIssues(
-                    "custom",
-                    `Este archivo es demasiado pesado ${file.name.slice(
-                        0,
-                        12
-                    )}. Máximo ${maxSize} MB`,
-                    files
-                );
-            }
-
-            if (minSize && size < minSize * mb) {
-                return getPipeIssues(
-                    "custom",
-                    `Este archivo es demasiado ligero ${file.name.slice(
-                        0,
-                        12
-                    )}. Mínimo ${minSize} MB`,
-                    files
-                );
+                if (minSize && size < minSize * mb) {
+                    return getPipeIssues(
+                        "custom",
+                        `Este archivo es demasiado ligero ${file.name.slice(
+                            0,
+                            12
+                        )}. Mínimo ${minSize} MB`,
+                        files
+                    );
+                }
             }
         }
 

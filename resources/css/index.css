@@ -4,7 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 :root {
-    --primary: #fea624;
     --secondary: #000000;
 }
 

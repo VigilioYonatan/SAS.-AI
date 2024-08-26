@@ -14,6 +14,7 @@ import { Op } from "sequelize";
 import bcryptjs from "bcryptjs";
 import type { UsersPasswordDto } from "../dtos/users.password.dto";
 import type { InformationEntity } from "@/information/entities/information.entity";
+import { ROLES } from "../libs";
 
 @Injectable()
 export class UsersApiService {
@@ -25,14 +26,20 @@ export class UsersApiService {
         };
     }
 
-    async show(slug: string) {
+    async show(information: InformationEntity, slug: string) {
         let user = null;
         if (!Number.isNaN(Number(slug))) {
-            user = await Users.scope("hiddePassword").findByPk(Number(slug));
+            user = await Users.scope("hiddePassword").findOne({
+                where: {
+                    id: slug,
+                    information_id: information.id,
+                },
+            });
         } else {
             user = await Users.scope("hiddePassword").findOne({
                 where: {
                     slug,
+                    information_id: information.id,
                 },
             });
         }
@@ -55,7 +62,8 @@ export class UsersApiService {
         user.user_code = await generateCodeEntity(
             Users,
             "user_code" as keyof Users,
-            "USER"
+            "USER",
+            information
         );
         user.password = bcryptjs.hashSync(usersStoreDto.password);
         await user.save();
@@ -66,11 +74,15 @@ export class UsersApiService {
         };
     }
 
-    async update(id: string, usersUpdateDto: UsersUpdateDto) {
-        const { user } = await this.show(id);
-        if (user.id === 1)
+    async update(
+        information: InformationEntity,
+        id: string,
+        usersUpdateDto: UsersUpdateDto
+    ) {
+        const { user } = await this.show(information, id);
+        if (user.role_id === ROLES.admin)
             throw new BadRequestException(
-                "No se puede modificar a este superadmin"
+                "No se puede editar al administrador"
             );
 
         await user.update(usersUpdateDto);
@@ -80,13 +92,18 @@ export class UsersApiService {
         };
     }
 
-    async changePassword(body: UsersPasswordDto, user: Users) {
+    async changePassword(
+        information: InformationEntity,
+        body: UsersPasswordDto,
+        user: Users
+    ) {
         if (body.newPassword !== body.repeatNewPassword) {
             throw new BadRequestException("Contraseña no similares", {
                 body: "repeatNewPassword" as keyof UsersPasswordDto,
             });
         }
-        const findUser = await Users.findByPk(user.id, {
+        const findUser = await Users.findOne({
+            where: { user_id: user.id, information_id: information.id },
             attributes: ["password"],
         });
         if (!findUser)
@@ -131,16 +148,16 @@ export class UsersApiService {
         };
     }
 
-    async destroy(id: string) {
-        const { user } = await this.show(id);
-        if (user.id === 1) {
+    async destroy(information: InformationEntity, id: string) {
+        const { user } = await this.show(information, id);
+        if (user.id === ROLES.admin) {
             throw new BadRequestException(
                 "No se puede eliminar al super-admin"
             );
         }
         await user.destroy();
         if (user.photo) {
-            removeFile(user.photo);
+            removeFile(information.slug, user.photo);
         }
         return {
             success: true,

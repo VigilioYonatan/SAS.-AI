@@ -1,6 +1,5 @@
 import {
     Controller,
-    Get,
     Params,
     Post,
     Injectable,
@@ -18,7 +17,6 @@ import { pathUploads } from "@/uploads/libs/helpers";
 import type { InformationEntity } from "../entities/information.entity";
 import fs from "node:fs";
 import { VigilioServicesGuard } from "../guards/vigilioservices.guard";
-import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
 
 @Injectable()
 @Controller("/backup")
@@ -93,25 +91,28 @@ export class BackupApiController {
         }
     }
 
-    @PermissionAdmin()
-    @Get("/files")
-    async backsql(
-        @Res() res: Response,
-        @Req("information") information: InformationEntity
+    async download(
+        @Req("information") information: InformationEntity,
+        @Res() res: Response
     ) {
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename=${information.name_empresa}-archivos.zip`
-        );
-        res.setHeader("Content-Type", "application/zip");
-        const archive = archiver("zip", {
-            zlib: { level: 9 }, // Nivel de compresión
-        });
-        archive.on("error", (err) => {
-            throw new InternalServerErrorException(err.message);
-        });
-        archive.pipe(res);
-        archive.directory(pathUploads(), false);
-        archive.finalize();
+        try {
+            const result = await this.backupsApiService.downloadProducts(
+                information
+            );
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="backup_empresa_${information.slug}.xlsx"`
+            );
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            // Enviar el archivo Excel directamente al cliente
+            res.send(result);
+        } catch (error) {
+            throw new InternalServerErrorException(
+                "Error al descargar, comunicarse con empresa, o conexion de internet"
+            );
+        }
     }
 }

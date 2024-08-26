@@ -15,7 +15,10 @@ import {
     type UploadsEntities,
     type UploadsProperties,
 } from "../libs/helpers";
-import { productsImagesQualities } from "@/products/libs";
+import {
+    categoriesImageQualities,
+    productsImagesQualities,
+} from "@/products/libs";
 import { informationLogoQualities } from "@/information/libs";
 import type { Request } from "express";
 import { UsersApiService } from "@/users/services/users.api.service";
@@ -24,12 +27,14 @@ import { usersPhotoQualities } from "@/users/libs";
 import { Users } from "@/users/entities/users.entity";
 import { InformationEntity } from "@/information/entities/information.entity";
 import { ordersTransferenciaImage } from "@/orders/libs";
+import { CategoriesApiService } from "@/products/services/categories.api.service";
 
 @Injectable()
 export class UploadsService {
     constructor(
         private readonly usersApiService: UsersApiService,
-        private readonly productsApiService: ProductsApiService
+        private readonly productsApiService: ProductsApiService,
+        private readonly categoriesApiService: CategoriesApiService
     ) {}
     async store(props: {
         req: Request;
@@ -149,7 +154,27 @@ export class UploadsService {
                     );
                 }
                 break;
-
+            case "categories":
+                if (
+                    !userAuth ||
+                    !userAuth.enabled ||
+                    ![1].includes(userAuth.role_id)
+                )
+                    throw new UnauthorizedException(
+                        "No tiene permiso para realizar esta acción"
+                    );
+                if (property === "image") {
+                    qualities = await this.customUpload(
+                        files,
+                        {
+                            minFiles: 1,
+                            maxFiles: 1,
+                            required: true,
+                        },
+                        categoriesImageQualities
+                    );
+                }
+                break;
             default:
                 throw new InternalServerErrorException(
                     "Error server, comunicarse con desarrollador"
@@ -195,10 +220,13 @@ export class UploadsService {
                     throw new UnauthorizedException(
                         "No tiene permiso para realizar esta acción"
                     );
-                const { user } = await this.usersApiService.show(id);
+                const { user } = await this.usersApiService.show(
+                    information,
+                    id
+                );
                 entidad = user;
                 if (user.photo) {
-                    removeFile(user.photo);
+                    removeFile(information.slug, user.photo);
                 }
                 break;
             }
@@ -217,7 +245,7 @@ export class UploadsService {
                 );
                 entidad = product;
                 if (product.images) {
-                    removeFile(product.images);
+                    removeFile(information.slug, product.images);
                 }
                 break;
             }
@@ -235,24 +263,43 @@ export class UploadsService {
                 entidad = information;
                 if (property === "logo") {
                     if (information.logo) {
-                        removeFile(information.logo);
+                        removeFile(information.slug, information.logo);
                     }
                 }
 
                 if (property === "certificado") {
                     if (information.certificado) {
-                        removeFile(information.certificado);
+                        removeFile(information.slug, information.certificado);
                     }
                 }
                 if (property === "icon") {
                     if (information.icon) {
-                        removeFile(information.icon);
+                        removeFile(information.slug, information.icon);
                     }
                 }
 
                 break;
             }
+            case "categories": {
+                if (
+                    !userAuth ||
+                    !userAuth.enabled ||
+                    ![1, 2].includes(userAuth.role_id)
+                )
+                    throw new UnauthorizedException(
+                        "No tiene permiso para realizar esta acción"
+                    );
+                const { category } = await this.categoriesApiService.show(
+                    information,
+                    id
+                );
+                entidad = category;
+                if (property === "image") {
+                    removeFile(information.slug, category.image);
+                }
 
+                break;
+            }
             default:
                 throw new BadRequestException(
                     "Error server, comunicarse con desarrollador"

@@ -1,9 +1,4 @@
-interface LoaderProps {
-	width?: number;
-	height?: number;
-	border?: number;
-}
-function Loader({ height = 40, width = 40, border = 6 }: LoaderProps) {
+function Loader() {
 	return (
 		<>
 			<div class="lds-ring">
@@ -15,22 +10,31 @@ function Loader({ height = 40, width = 40, border = 6 }: LoaderProps) {
 			<style jsx>
 				{`
                     .lds-ring {
-                        display: block;
-                        margin: 0 auto;
+                        /* change color here */
+                        color: var(--primary);
+                    }
+                    .lds-ring,
+                    .lds-ring div {
+                        box-sizing: border-box;
+                    }
+                    .lds-ring {
+                        display: inline-block;
                         position: relative;
+                        width: 80px;
+                        height: 80px;
                     }
                     .lds-ring div {
                         box-sizing: border-box;
                         display: block;
                         position: absolute;
-                        width: ${width}px;
-                        height: ${height}px;
+                        width: 64px;
+                        height: 64px;
                         margin: 8px;
-                        border: ${border}px solid var(--primary);
+                        border: 8px solid currentColor;
                         border-radius: 50%;
                         animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1)
                             infinite;
-                        border-color: var(--primary) transparent transparent
+                        border-color: currentColor transparent transparent
                             transparent;
                     }
                     .lds-ring div:nth-child(1) {

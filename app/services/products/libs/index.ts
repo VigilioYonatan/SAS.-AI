@@ -8,36 +8,38 @@ import type { InformationEntity } from "@/information/entities/information.entit
 import { ProductsNormal } from "../entities/products_normal.entity";
 import { ProductsRestaurant } from "../entities/products_restaurant.entity";
 import { ProductsServicio } from "../entities/products_servicio.entity";
-import type { Empresa } from "@/information/schemas/information.schema";
 import type { ProductsNormalSchema } from "../schemas/products_normal.schema";
-import type { ProductsRestaurantSchema } from "../schemas/products_restaurant.entity";
-import type { ProductsServicioSchema } from "../schemas/products_servicios.entity";
+import type { ProductsRestaurantSchema } from "../schemas/products_restaurant.schema";
+import type { ProductsServicioSchema } from "../schemas/products_servicio.schema";
 // products
 export const productsImagesQualities = [100, 500];
 
 //  categories
-export const categoriesImageQualities = [100, 500, 800];
+export const categoriesImageQualities = [100, 500];
+export const brandsImageQualities = [100, 500];
 
 // export baseurl product /slug
 export const baseUrlProduct = "/";
 
-export function productEntity(empresa: Empresa) {
-    const empresaProduct = {
-        normal: ProductsNormal,
-        restaurant: ProductsRestaurant,
-        servicio: ProductsServicio,
-    };
+export function productEntity(id: number) {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    return empresaProduct[empresa] as any;
-}
-export function productEntityId(empresa: Empresa) {
-    const empresaProduct = {
-        normal: "product_normal_id",
-        restaurant: "product_restaurant_id",
-        servicio: "product_servicio_id",
+    const empresaProduct: Record<number, any> = {
+        1: ProductsNormal,
+        2: ProductsRestaurant,
+        3: ProductsServicio,
     };
-    return empresaProduct[empresa];
+    return empresaProduct[id];
 }
+export function productEntityId(id: number) {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const empresaProduct: Record<number, any> = {
+        1: "product_normal_id",
+        2: "product_restaurant_id",
+        3: "product_servicio_id",
+    };
+    return empresaProduct[id];
+}
+
 /** combinar para crear variantes */
 export function combinacionesVariants(
     arrays: number[][],

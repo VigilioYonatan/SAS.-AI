@@ -32,6 +32,15 @@ import { Options } from "@/products/entities/options/options.entity";
 import { Features } from "@/products/entities/options/features.entity";
 import { Variants } from "@/products/entities/options/variants.entity";
 import { VariantsFeatures } from "@/products/entities/options/variants_features.entity";
+import { Clients } from "@/users/entities/clients.entity";
+import { TipoEmpresa } from "@/information/entities/tipo_empresa.entity";
+import { TipoServicio } from "@/information/entities/tipo_servicio.entity";
+import { New } from "@/information/entities/new.entity";
+import { MetodosPago } from "@/information/entities/metodosPago.entity";
+import { Urls } from "@/urls/entities/urls.entity";
+import { Background } from "@/information/entities/background.entity";
+import { Posts } from "@/posts/entities/posts.entity";
+import { Suppliers } from "@/suppliers/entities/suppliers.entity";
 
 const sequelize = new Sequelize({
     dialect: "postgres",
@@ -81,6 +90,15 @@ sequelize.addModels([
     Features,
     Variants,
     VariantsFeatures,
+    Clients,
+    TipoEmpresa,
+    TipoServicio,
+    New,
+    MetodosPago,
+    Urls,
+    Background,
+    Posts,
+    Suppliers,
 ]);
 
 export async function connectDB() {
@@ -88,7 +106,7 @@ export async function connectDB() {
         await sequelize.authenticate();
         logger.success("conectado a base de datos correctamente");
         if (enviroments.NODE_ENV === "production") return;
-        await sequelize.sync({ force: true });
+        await sequelize.sync();
     } catch (error) {
         logger.error(`Error al conectar base de datos: ${error}`);
     }

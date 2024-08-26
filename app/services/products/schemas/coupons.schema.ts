@@ -1,4 +1,3 @@
-import { nullable } from "@vigilio/valibot";
 import {
     type Input,
     number,
@@ -7,7 +6,6 @@ import {
     array,
     coerce,
     date,
-    boolean,
     minLength,
     minValue,
     maxValue,
@@ -24,7 +22,6 @@ export const couponsSchema = objectAsync({
     ]),
     max_use: number([minValue(0), maxValue(100)]),
     date: coerce(date(), (value) => new Date(value as string)),
-    onlyRegister: nullable(boolean()),
     categories: array(number(), [minLength(1)]),
     information_id: number(),
 });

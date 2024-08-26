@@ -1,11 +1,19 @@
-import { Column, DataType, Model, Table, Index, ForeignKey, BelongsTo } from "sequelize-typescript";
+import {
+    Column,
+    DataType,
+    Model,
+    Table,
+    Index,
+    ForeignKey,
+    BelongsTo,
+} from "sequelize-typescript";
 import type { CouponsSchema } from "../schemas/coupons.schema";
 import { InformationEntity } from "@/information/entities/information.entity";
 
 @Table
 export class Coupons extends Model implements Omit<CouponsSchema, "id"> {
     @Index
-    @Column({ type: DataType.STRING(30), allowNull: false, unique: true })
+    @Column({ type: DataType.STRING(30), allowNull: false })
     coupon: string;
 
     @Column({ type: DataType.INTEGER, allowNull: false })
@@ -16,9 +24,6 @@ export class Coupons extends Model implements Omit<CouponsSchema, "id"> {
 
     @Column({ type: DataType.INTEGER, allowNull: false })
     max_use: number;
-
-    @Column({ type: DataType.BOOLEAN, defaultValue: false })
-    onlyRegister: boolean | null;
 
     @Column({ type: DataType.JSON, allowNull: false })
     categories: number[];

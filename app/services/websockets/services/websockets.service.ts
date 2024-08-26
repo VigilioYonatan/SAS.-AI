@@ -26,6 +26,7 @@ export class WebsocketsService {
         information_id: number;
         order_code: string;
         total: number;
+        client_id: number;
     }) {
         const information = await InformationEntity.findByPk(
             body.information_id,
@@ -48,6 +49,7 @@ export class WebsocketsService {
             url: `/admin/orders/${body.order_code}`,
             content,
             information_id: body.information_id,
+            client_id: body.client_id,
         });
         const users = await Users.findAll({
             where: { information_id: body.information_id },

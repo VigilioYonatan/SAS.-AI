@@ -1,4 +1,8 @@
-import express from "express";
+import express, {
+    type NextFunction,
+    type Request,
+    type Response,
+} from "express";
 import path from "node:path";
 import session from "express-session";
 import passport from "passport";
@@ -23,6 +27,10 @@ import { middlewareRoute } from "~/libs/middleware-route";
 import { initializeClients } from "@/bot/libs/ai";
 import { localStrategy } from "@/auth/strategies/local.strategy";
 import { InformationEntity } from "@/information/entities/information.entity";
+import { Users } from "@/users/entities/users.entity";
+import type { RequestVigilio } from "./types";
+import type { InformationSchema } from "@/information/schemas/information.schema";
+import type { WhereOptions } from "sequelize";
 
 export class Server {
     public readonly app: express.Application = express();
@@ -47,19 +55,60 @@ export class Server {
                 },
             })
         );
-        this.app.use(async (req, res, next) => {
+        this.app.use(async (req: Request, res, next) => {
             const host = req.headers.host;
-            const subdomain = host?.split(".")[0]; // Obtiene el subdominio
-
+            let subdomain = null;
+            if (host?.includes(".")) {
+                subdomain = host?.split(".")[0]; // Obtiene el subdominio
+                if (
+                    enviroments.CLIENT.toLowerCase() === subdomain.toLowerCase()
+                ) {
+                    return next();
+                }
+            }
+            const where: WhereOptions = subdomain
+                ? { slug: subdomain }
+                : { host };
             const information = await InformationEntity.findOne({
-                where: {
-                    name: subdomain?.replaceAll("_", " "),
+                where,
+                attributes: {
+                    exclude: [
+                        "about",
+                        "certificado",
+                        "inteligenceArtificial",
+                        "contacts",
+                        "groupWhatsapp",
+                        "transferencias",
+                        "payments",
+                        "credentials",
+                    ] as (keyof InformationSchema)[],
                 },
             });
+
             if (information) {
+                const info = information
+                    ? {
+                          ...information?.toJSON(),
+                          company: {
+                              production: information?.company.production,
+                              ruc: information?.company.ruc,
+                              razonSocial: information?.company.razonSocial,
+                              nombreComercial:
+                                  information?.company.nombreComercial,
+                          },
+                      }
+                    : null;
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                (req as any).information = info;
+                res.locals.$information = info;
+
                 next();
             } else {
-                res.status(404).send("Subdominio no encontrado");
+                if (enviroments.NODE_ENV !== "production") {
+                    next();
+                    return;
+                }
+                return res.redirect("https://www.vigilio-services.com");
             }
         });
         // habilitar cookies
@@ -110,27 +159,27 @@ export class Server {
         this.app.use(passport.session());
         // strategies
         passport.use(localStrategy());
-        passport.serializeUser((information, done) => {
-            return done(null, information);
+        passport.serializeUser((user, done) => {
+            return done(null, user);
         });
-        passport.deserializeUser(
-            async (information: InformationEntity, done) => {
-                const findInformation = await InformationEntity.findByPk(
-                    information.id,
-                    {
-                        attributes: {
-                            exclude: [
-                                "contacts",
-                                "groupWhatsapp",
-                                "password",
-                                "token",
-                            ],
-                        },
-                    }
-                );
-                if (!findInformation)
-                    return done({ message: "error authenticated" });
-                return done(null, findInformation);
+        passport.deserializeUser(async (user: Users, done) => {
+            const findInformation = await Users.findByPk(user.id, {
+                attributes: {
+                    exclude: ["password"],
+                },
+            });
+            if (!findInformation)
+                return done({ message: "error authenticated" });
+            return done(null, findInformation);
+        });
+        this.app.use(
+            async (req: Request, res: Response, next: NextFunction) => {
+                // si no existe req.user que sea nulo
+                const user = (req.user ?? null) as Users;
+                res.locals.$user = user;
+                (req as RequestVigilio).user = user;
+
+                next();
             }
         );
     }
@@ -146,8 +195,8 @@ export class Server {
         Container.provide([
             { provide: ERROR_MIDDLEWARE, useClass: ServerErrorMiddleware },
         ]);
-        this.app.use("/", webRouter);
         this.app.use("/auth", authRouter);
+        this.app.use("/", webRouter);
         this.app.use("/api", apiRouter);
         this.app.use(middlewareRoute);
     }

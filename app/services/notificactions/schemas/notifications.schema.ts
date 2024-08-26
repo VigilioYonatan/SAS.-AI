@@ -5,6 +5,7 @@ export const notificationsSchema = objectAsync({
     type: string(),
     url: string(),
     content: string(),
+    client_id: number(),
     information_id: number(),
 });
 

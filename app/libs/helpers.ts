@@ -1,12 +1,18 @@
+import type { InformationEntity } from "@/information/entities/information.entity";
+
 /* PRO-00001 */
 export async function generateCodeEntity(
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     Item: any,
     latestCode: string,
-    start: string
+    start: string,
+    information: InformationEntity
 ) {
     const latestUser = await Item.findOne({
         order: [["createdAt", "DESC"]],
+        where: {
+            information_id: information.id,
+        },
     });
     let code = null;
 
@@ -83,4 +89,8 @@ export function createIncrementArray(numbers: number[]): number[] {
         resultado.add(multiploMasCercano);
     }
     return Array.from(resultado).sort((a, b) => a - b);
+}
+
+export function NoImage() {
+    return "/images/settings/others/no-image.webp";
 }

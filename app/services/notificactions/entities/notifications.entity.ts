@@ -14,6 +14,7 @@ import type {
 import { Users } from "@/users/entities/users.entity";
 import { NotificationsUser } from "./notifications_user.entity";
 import { InformationEntity } from "@/information/entities/information.entity";
+import { Clients } from "@/users/entities/clients.entity";
 
 @Table
 export class Notifications
@@ -38,4 +39,11 @@ export class Notifications
 
     @BelongsTo(() => InformationEntity)
     information: unknown;
+
+    @ForeignKey(() => Clients)
+    @Column({ type: DataType.INTEGER, allowNull: false })
+    client_id: number;
+
+    @BelongsTo(() => Clients)
+    client: unknown;
 }

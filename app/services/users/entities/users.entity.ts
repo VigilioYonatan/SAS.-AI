@@ -18,9 +18,15 @@ import { Notifications } from "@/notificactions/entities/notifications.entity";
 import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 import { NotificationsUser } from "@/notificactions/entities/notifications_user.entity";
 import { InformationEntity } from "@/information/entities/information.entity";
+import { Posts } from "@/posts/entities/posts.entity";
 
 @DefaultScope(() => ({
-    include: [{ model: InformationEntity, attributes: ["id", "slug", "name"] }],
+    include: [
+        {
+            model: InformationEntity,
+            attributes: ["id", "slug", "name_empresa"],
+        },
+    ],
 }))
 @Scopes(() => ({
     hiddePassword: {
@@ -39,7 +45,6 @@ export class Users extends Model implements Omit<UsersSchema, "id"> {
     @Column({
         allowNull: false,
         type: DataType.STRING(30),
-        unique: true,
     })
     username: string;
 
@@ -56,7 +61,6 @@ export class Users extends Model implements Omit<UsersSchema, "id"> {
 
     @Column({
         allowNull: false,
-        unique: true,
         type: DataType.STRING(100),
     })
     email: string;
@@ -73,7 +77,6 @@ export class Users extends Model implements Omit<UsersSchema, "id"> {
     address: string | null;
 
     @Column({
-        unique: true,
         type: DataType.STRING(8),
     })
     dni: string | null;
@@ -131,7 +134,6 @@ export class Users extends Model implements Omit<UsersSchema, "id"> {
     @Index
     @Column({
         allowNull: false,
-        unique: true,
         type: DataType.STRING(30),
     })
     slug: string;
@@ -156,9 +158,9 @@ export class Users extends Model implements Omit<UsersSchema, "id"> {
     @HasMany(() => Cart)
     carts: Cart[];
 
-    @HasMany(() => Notifications)
-    notifications: Notifications[];
-
     @BelongsToMany(() => Notifications, () => NotificationsUser)
     notificationsusers: Notifications[];
+
+    @HasMany(() => Posts)
+    posts: unknown[];
 }

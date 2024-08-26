@@ -4,7 +4,6 @@ Configuración: No tocar. si tienes problema comunicarte en esta parte con vigil
 import { type FunctionComponent, render as renderPreact } from "preact";
 import { Suspense } from "preact/compat";
 import { c } from "@vigilio/sweet";
-
 function Provider(
 	el: Element,
 	children: JSX.Element | JSX.Element[],
@@ -25,6 +24,9 @@ function render(
 	// biome-ignore lint/complexity/noForEach: <explanation>
 	elements.forEach((el) => {
 		if (el) {
+			while (el.firstChild) {
+				el.removeChild(el.firstChild);
+			}
 			for (const [_key, value] of Object.entries(el?.attributes)) {
 				const printValue: string = value.name.startsWith(":")
 					? JSON.parse(value.value)

@@ -11,7 +11,10 @@ import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 import { InformationEntity } from "./information.entity";
 
 @Table
-export class Address extends Model implements Omit<MetodosPagoSchema, "id"> {
+export class MetodosPago
+    extends Model
+    implements Omit<MetodosPagoSchema, "id">
+{
     @Column({
         type: DataType.BOOLEAN,
         allowNull: false,
@@ -24,6 +27,10 @@ export class Address extends Model implements Omit<MetodosPagoSchema, "id"> {
     })
     enable_paypal: boolean;
 
+    @Column({
+        type: DataType.STRING(255),
+    })
+    mercado_pago: string | null;
     @Column({
         type: DataType.JSON,
     })
@@ -42,5 +49,5 @@ export class Address extends Model implements Omit<MetodosPagoSchema, "id"> {
     information_id: number;
 
     @BelongsTo(() => InformationEntity)
-    information: InformationEntity;
+    information: unknown;
 }

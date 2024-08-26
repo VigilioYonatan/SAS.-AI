@@ -29,7 +29,9 @@ export class CartApiService {
         user_id: number,
         product_id: string
     ) {
-        const Products = productEntity(information.type_empresa);
+        const Products = productEntity(
+            information.tipo_empresa.tipo_servicio_id
+        );
         const cart = (await Cart.findOne({
             where: {
                 user_id,
@@ -55,7 +57,9 @@ export class CartApiService {
         user_id: number,
         cartStoreDto: CartStoreDto
     ) {
-        const productId = productEntityId(information.type_empresa);
+        const productId = productEntityId(
+            information.tipo_empresa.tipo_servicio_id
+        );
         const existProductInCart = await Cart.findOne({
             where: {
                 user_id,
@@ -84,7 +88,7 @@ export class CartApiService {
         product_id: string
     ) {
         const { cart } = await this.show(information, userId, product_id);
-        if (information.type_empresa === "normal") {
+        if (information.tipo_empresa.tipo_servicio_id === 1) {
             if (
                 cart.variant.stock && // if product is stock
                 cart.variant.stock > cartUpdateDto.quantity && // quantity should dont be  more than stock
@@ -94,7 +98,9 @@ export class CartApiService {
                     "Hubo un error al modificar este comentario"
                 );
         } else {
-            const productId = productEntityId(information.type_empresa);
+            const productId = productEntityId(
+                information.tipo_empresa.tipo_servicio_id
+            );
             if (
                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 (cart as any)[productId].stock && // if product is stock

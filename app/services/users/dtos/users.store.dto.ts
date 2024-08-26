@@ -12,41 +12,55 @@ export const usersStoreDto = omitAsync(
     ["id", "user_code", "isOnline", "subscription", "enabledNotification"],
     [
         async (input) => {
-            const [byUser_name, byEmail, bySlug] = await Promise.all([
-                Users.findOne({
-                    where: {
-                        username: input.username,
-                        information_id: input.information_id,
-                    },
-                    raw: true,
-                }),
-                Users.findOne({
-                    where: {
-                        email: input.email,
-                        information_id: input.information_id,
-                    },
-                    raw: true,
-                }),
-                Users.findOne({
-                    where: {
-                        slug: input.slug,
-                        information_id: input.information_id,
-                    },
-                    raw: true,
-                }),
-            ]);
+            const [byUser_name, byTelephone, byEmail, bySlug] =
+                await Promise.all([
+                    Users.findOne({
+                        where: {
+                            username: input.username,
+                            information_id: input.information_id,
+                        },
+                        raw: true,
+                    }),
+                    Users.findOne({
+                        where: {
+                            telephone: input.telephone,
+                        },
+                        raw: true,
+                    }),
+                    Users.findOne({
+                        where: {
+                            email: input.email,
+                            information_id: input.information_id,
+                        },
+                        raw: true,
+                    }),
+                    Users.findOne({
+                        where: {
+                            slug: input.slug,
+                            information_id: input.information_id,
+                        },
+                        raw: true,
+                    }),
+                ]);
 
             if (byUser_name) {
                 return getPipeIssues(
                     "username" as keyof UsersSchema,
-                    `Ya existe un usuario con el username: ${input.dni}`,
+                    `Ya existe un usuario con el username: ${input.dni} en tu empresa`,
+                    input
+                );
+            }
+            if (byTelephone) {
+                return getPipeIssues(
+                    "telephone" as keyof UsersSchema,
+                    `Ya existe un usuario con el telefono: ${input.telephone}`,
                     input
                 );
             }
             if (byEmail) {
                 return getPipeIssues(
                     "email" as keyof UsersSchema,
-                    `Ya existe un usuario con el email: ${input.email}`,
+                    `Ya existe un usuario con el email: ${input.email} en tu empresa`,
                     input
                 );
             }

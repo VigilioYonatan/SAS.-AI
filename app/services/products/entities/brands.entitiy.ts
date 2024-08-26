@@ -15,13 +15,13 @@ import { InformationEntity } from "@/information/entities/information.entity";
 @Table
 export class Brands extends Model implements Omit<BrandsSchema, "id"> {
     @Index
-    @Column({ type: DataType.STRING(100), allowNull: false, unique: true })
+    @Column({ type: DataType.STRING(100), allowNull: false })
     name: string;
 
     @Column({ type: DataType.STRING(80), allowNull: false })
     brand_code: string;
 
-    @Column({ type: DataType.STRING(100), allowNull: false, unique: true })
+    @Column({ type: DataType.STRING(100), allowNull: false })
     slug: string;
 
     @HasMany(() => ProductsNormal)
@@ -32,5 +32,5 @@ export class Brands extends Model implements Omit<BrandsSchema, "id"> {
     information_id: number;
 
     @BelongsTo(() => InformationEntity)
-    information: InformationEntity;
+    information: unknown;
 }

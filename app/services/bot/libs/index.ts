@@ -1,19 +1,18 @@
 import path from "node:path";
 import fs from "node:fs";
 import crypto from "node:crypto";
-import enviroments from "~/config/enviroments.config";
+import cache from "@vigilio/express-core/cache";
 import { InformationEntity } from "@/information/entities/information.entity";
 import { printFileWithDimension } from "@/uploads/libs/helpers";
 import { subtotalIgv } from "@/cart/libs/helpers";
-import { NOW } from "~/libs/dayjs";
 import { distanciaDeLevenshtein } from "~/libs/helpers";
-import cache from "@vigilio/express-core/cache";
 import { Orders } from "@/orders/entities/orders.entity";
-import type { PayMethods } from "@/orders/entities/pay_methods.entity";
-import type { StatusOrders } from "@/orders/entities/status_orders.entity";
 import { Categories } from "@/products/entities/categories.entity";
 import { openAis } from "./ai";
 import { productEntity } from "@/products/libs";
+import { prompt } from "./prompt";
+import type { PayMethods } from "@/orders/entities/pay_methods.entity";
+import type { StatusOrders } from "@/orders/entities/status_orders.entity";
 import type { ProductsNormal } from "@/products/entities/products_normal.entity";
 import type { Users } from "@/users/entities/users.entity";
 
@@ -38,7 +37,7 @@ export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
 }
 
 export async function onDb(information: InformationEntity) {
-    const Products = productEntity(information.type_empresa);
+    const Products = productEntity(information.type_empresa_id);
     const [categorias, products] = await Promise.all([
         Categories.unscoped().findAll({
             attributes: ["id", "name"],
@@ -155,31 +154,8 @@ export async function promptReplace(
         ordenes += "no hay pedidos aun";
     }
 
-    const prompt = information.inteligenceArtificial.prompt
-        .replaceAll("{NAME_IA}", information.inteligenceArtificial.nameIa)
-        .replaceAll("{WEB}", enviroments.VITE_URL)
-        .replaceAll("{EMPRESA}", information.name_empresa)
-        .replaceAll("{TIPO_EMPRESA}", enviroments.TIPO_EMPRESA)
-        .replaceAll(
-            "{DB}",
-            `(${JSON.stringify({ ...data, products: productsData })}).`
-        )
-        .replaceAll("{IGV}", JSON.stringify(information.igv))
-        .replaceAll("{DATE}", NOW().format("YYYY-MM-DD"))
-        .replaceAll(
-            "{DATOS}",
-            JSON.stringify(
-                information.inteligenceArtificial.datos.map(
-                    (dato) => `- ${dato}.`
-                )
-            )
-        )
-        .replace(
-            "{NUMERO_RECLAMO}",
-            information.telephoneReclamos ?? "no disponible"
-        )
-        .replace("{DIRECCION}", JSON.stringify(information.address))
-        .replace("{EMAIL}", information.email);
-
-    return `${prompt}. ${ordenes}. ERES UNA IA POR OPEN AI, pero fuiste entrenado por https://vigilio-services.com`;
+    return `${prompt(
+        information,
+        productsData
+    )}. ${ordenes}. ERES UNA IA POR OPEN AI, pero fuiste entrenado por https://vigilio-services.com`;
 }

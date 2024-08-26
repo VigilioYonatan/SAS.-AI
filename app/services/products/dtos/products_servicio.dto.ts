@@ -8,7 +8,7 @@ import { Categories } from "../entities/categories.entity";
 import {
     productsServicioSchema,
     type ProductsServicioSchema,
-} from "../schemas/products_servicios.entity";
+} from "../schemas/products_servicio.schema";
 import { ProductsServicio } from "../entities/products_servicio.entity";
 
 export const productsServicioStoreDto = omitAsync(

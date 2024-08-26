@@ -14,82 +14,40 @@ import type { Response } from "express";
 import { MessageMedia } from "whatsapp-web.js";
 import { Pipe } from "@vigilio/express-core/valibot";
 import { objectAsync, string } from "@vigilio/valibot";
-import path from "node:path";
 import fs from "node:fs";
 import formidable from "formidable";
 import { clients, isWhatsappIA, openAis } from "../libs/ai";
 import enviroments from "~/config/enviroments.config";
 import type { InformationEntity } from "@/information/entities/information.entity";
-import util from "node:util";
-import { exec } from "node:child_process";
 import type { RequestVigilio } from "~/config/types";
-const execAsync = util.promisify(exec);
+import { pathUploads } from "@/uploads/libs/helpers";
 
 @Controller("/bot")
 export class BotApiController {
     @PermissionAdmin()
     @Get("/qr")
-    qr(@Res() res: Response) {
-        const file = path.resolve(
-            __dirname,
-            "..",
-            "..",
-            "..",
-            "..",
-            "qrcode.png"
-        );
-        return res.sendFile(file);
+    qr(
+        @Req("information") information: InformationEntity,
+        @Res() res: Response
+    ) {
+        const qrImage = `${pathUploads()}/${information.slug}/qr/${
+            information.slug
+        }-qr.png`;
+        return res.sendFile(qrImage);
     }
     @PermissionAdmin()
     @Post("/logout")
-    async cerrarSession() {
+    async cerrarSession(@Req("information") information: InformationEntity) {
         try {
-            const dumpCommandStop = `pm2 stop ${enviroments.PM2_ID}`;
-            await execAsync(dumpCommandStop);
-            const file = path.resolve(
-                __dirname,
-                "..",
-                "..",
-                "..",
-                "..",
-                "qrcode.png"
-            );
-            const whatsappauth = path.resolve(
-                __dirname,
-                "..",
-                "..",
-                "..",
-                "..",
-                ".wwebjs_auth"
-            );
-            const whatsappcache = path.resolve(
-                __dirname,
-                "..",
-                "..",
-                "..",
-                "..",
-                ".wwebjs_cache"
-            );
-            if (fs.existsSync(file)) {
-                fs.unlinkSync(file);
-            }
-            if (fs.existsSync(whatsappauth)) {
-                fs.rmSync(whatsappauth, { force: true, recursive: true });
-            }
-            if (fs.existsSync(whatsappcache)) {
-                fs.rmSync(whatsappcache, { force: true, recursive: true });
-            }
-            const dumpCommand = `pm2 restart ${enviroments.PM2_ID}`;
-            await execAsync(dumpCommand);
+            await clients[information.slug].logout();
+            await clients[information.slug].initialize();
+            return {
+                success: true,
+                message: "Cerró sesión correctamente",
+            };
         } catch (error) {
-            throw new BadRequestException(
-                "error pm2 - comunicarse con empresa."
-            );
+            throw new BadRequestException(`Error: ${(error as Error).message}`);
         }
-        return {
-            success: true,
-            message: "Eliminado correctamente",
-        };
     }
     @PermissionAdmin()
     @Pipe(objectAsync({ telephone: string() }))
@@ -181,44 +139,6 @@ export class BotApiController {
         return {
             success: true,
             description: completionText,
-        };
-    }
-    @Pipe(objectAsync({ color: string() }))
-    @Get("/color/:color")
-    async color(
-        @Params("color") color: string,
-        @Req("information") information: InformationEntity
-    ) {
-        const whatsapp = await isWhatsappIA(information.slug);
-        if (!whatsapp)
-            throw new NotFoundException(
-                "Hubo un problema al usar la ia, Recomiendo fijarse en los limites token"
-            );
-        const completion = await openAis[
-            information.slug
-        ].chat.completions.create({
-            model:
-                whatsapp.clientVigilio?.information.modelai ||
-                enviroments.MODEL_AI,
-            max_tokens: 300,
-            messages: [
-                {
-                    role: "user",
-                    // insert custom prompt
-                    content: `Dame el color ${color} en hexadecimal, formato css`,
-                },
-            ],
-        });
-        const completionText = completion.choices[0].message.content!;
-        const regexColor = completionText.match(/#[0-9a-fA-F]{3,6}/);
-        if (!regexColor || !regexColor?.length) {
-            throw new NotFoundException(
-                `No se encontro color de ${color} o intente de nuevo`
-            );
-        }
-        return {
-            success: true,
-            color: regexColor[0],
         };
     }
 }

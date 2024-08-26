@@ -1,14 +1,14 @@
 import { useContext, useState } from "preact/hooks";
 import { FormControlContext } from "./Form";
-import { type JSX } from "preact";
-import {
-	type FieldErrors,
-	type FieldValues,
-	type Path,
-	type RegisterOptions,
-	type UseFormReturn,
+import type { JSX } from "preact";
+import type {
+	FieldErrors,
+	FieldValues,
+	Path,
+	RegisterOptions,
+	UseFormReturn,
 } from "react-hook-form";
-import { type HTMLAttributes } from "preact/compat";
+import type { HTMLAttributes } from "preact/compat";
 
 interface AuthLabelProps<T extends object>
 	extends Omit<HTMLAttributes<HTMLInputElement>, "type" | "name"> {
@@ -96,7 +96,7 @@ function authFormControl<T extends object>({
 				{question ? (
 					<div class="relative group ">
 						<i class="fa-solid fa-circle-question text-xs dark:text-white" />
-						<div class="text-xs min-w-[100px] hidden group-hover:block -top-[35px] right-1 p-1 shadow text-center absolute rounded-md dark:bg-admin-background-dark bg-background-light dark:text-white">
+						<div class="text-xs min-w-[100px] hidden group-hover:block -top-[35px] right-1 p-1 shadow text-center absolute rounded-md dark:bg-admin-background-dark bg-background-light dark:text-white z-10">
 							{question}
 						</div>
 					</div>

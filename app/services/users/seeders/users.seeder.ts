@@ -4,8 +4,8 @@ import type { UsersSchema } from "../schemas/users.schema";
 import bcryptjs from "bcryptjs";
 
 export const adminUser: Omit<UsersSchema, "id"> = {
-    name: "yonatan",
-    lastname: null,
+    name: "yonatan ",
+    lastname: "Vigilio Lavado",
     email: "admin@gmail.com",
     password: bcryptjs.hashSync("123456"),
     telephone: null,

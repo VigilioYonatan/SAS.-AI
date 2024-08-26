@@ -9,11 +9,10 @@ export const informationUpdateDto = omitAsync(informationSchema, [
     "inteligenceArtificial",
     "contacts",
     "company",
-
     "schedule",
     "whatsappconfig",
     "groupWhatsapp",
     "icon",
-    "token",
+    "host",
 ]);
 export type InformationUpdateDto = Input<typeof informationUpdateDto>;

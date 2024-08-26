@@ -2,7 +2,6 @@ import { InformationEntity } from "@/information/entities/information.entity";
 import type { ProductsNormal } from "@/products/entities/products_normal.entity";
 import type { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import type { ProductsServicio } from "@/products/entities/products_servicio.entity";
-import enviroments from "~/config/enviroments.config";
 import type { Money } from "~/libs/helpers";
 
 export function subtotal(price: number, discount: number, increase = false) {
@@ -45,7 +44,7 @@ export function subtotalIgv(
         true
     );
     const subDiscount = subtotal(subtotalProduct, product.discount);
-    return information!.igv
-        ? subtotal(subDiscount, enviroments.VITE_IGV, true)
+    return information!.enabled_igv
+        ? subtotal(subDiscount, information.igv, true)
         : subDiscount;
 }

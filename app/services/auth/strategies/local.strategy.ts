@@ -1,27 +1,30 @@
 import { Strategy as LocalStrategy } from "passport-local";
 import bcryptjs from "bcryptjs";
 import { Users } from "@/users/entities/users.entity";
+import { Op } from "sequelize";
 
 export function localStrategy() {
     return new LocalStrategy(
-        { usernameField: "email" },
-        async (email, password, done) => {
+        { usernameField: "identifier" },
+        async (identifier, password, done) => {
             const user = await Users.findOne({
                 where: {
-                    email,
+                    [Op.or]: [{ email: identifier }, { telephone: identifier }],
                 },
             });
             if (!user) {
                 // por buena practica y seguridad insertar error similar para que el cliente no sepa cual es el error el correo o contraseña
                 return done(null, false, {
                     // error que se lleva al cliente
-                    message: "Correo electrónico o contraseña incorrecta",
+                    message:
+                        "Correo electrónico, télefono o contraseña incorrecta",
                 });
             }
             const validPassword = bcryptjs.compareSync(password, user.password);
             if (!validPassword) {
                 return done(null, false, {
-                    message: "Correo electrónico o contraseña incorrecta",
+                    message:
+                        "Correo electrónico, télefono o contraseña incorrecta",
                 });
             }
             if (!user.enabled) {

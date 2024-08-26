@@ -12,34 +12,67 @@ import type {
 } from "../schemas/information.schema";
 import type { InformationAddressUpdateDto } from "../dtos/information.address.update.dto";
 import { Address } from "../entities/address.entity";
+import { productEntity } from "@/products/libs";
+import { pathUploads, removeFile } from "@/uploads/libs/helpers";
+import { Invoices } from "@/orders/entities/invoices.entity";
+import fs from "node:fs";
+import { Users } from "@/users/entities/users.entity";
+import { clients, openAis } from "@/bot/libs/ai";
+import path from "node:path";
+import { Notes } from "@/orders/entities/notes.entity";
+import { Guides } from "@/orders/entities/guides.entity";
+import type { InformationStoreDto } from "../dtos/information.store.dto";
 
 @Injectable()
 export class InformationApiService {
-    async show(token: string) {
+    async showVigilio(slug: string) {
+        const data = await InformationEntity.findOne({
+            where: { slug },
+            attributes: ["groupWhatsapp", "company"],
+        });
+        return {
+            success: true,
+            data,
+        };
+    }
+
+    async show(slug: string) {
         let information = null;
-        if (!Number.isNaN(Number(token))) {
-            information = await InformationEntity.findByPk(Number(token), {
+        if (!Number.isNaN(Number(slug))) {
+            information = await InformationEntity.findByPk(Number(slug), {
                 attributes: {
-                    exclude: ["emailPassword", "company", "groupWhatsapp"],
+                    exclude: ["company", "groupWhatsapp"],
                 },
             });
         } else {
             information = await InformationEntity.findOne({
                 where: {
-                    token,
+                    slug,
+                },
+                attributes: {
+                    exclude: ["company", "groupWhatsapp"],
                 },
             });
         }
 
         if (!information) {
             throw new NotFoundException(
-                `No se encontró un informacion con ${token}`
+                `No se encontró un informacion con ${slug}`
             );
         }
 
         return {
             success: true,
             information,
+        };
+    }
+
+    async store(body: InformationStoreDto) {
+        const information = new InformationEntity(body);
+        await information.save();
+        return {
+            success: true,
+            message: "Nuevo información agregado correctamente.",
         };
     }
     async private(slug: string) {
@@ -195,7 +228,7 @@ export class InformationApiService {
         if (!information) throw new NotFoundException("Error information.");
         const findByNameContacts = information.contacts
             .filter((contact) =>
-                (contact.name ?? "")
+                (contact.telephone ?? contact.name ?? "")
                     .toLowerCase()
                     .startsWith(name.toLowerCase())
             )
@@ -384,5 +417,98 @@ export class InformationApiService {
             success: true,
             message: `Se eliminó telephone del grupo ${name}  correctamente`,
         };
+    }
+
+    async destroy(id: string) {
+        const { information } = await this.show(id);
+        const Product = productEntity(information.type_empresa_id);
+        const [products, users, invoices, notes, guides] = await Promise.all([
+            Product.findAll({
+                where: { information_id: information.id },
+                attributes: ["images", "information_id"],
+            }),
+            Users.findAll({
+                where: { information_id: information.id },
+                attributes: ["photo", "information_id"],
+            }),
+            Invoices.findAll({
+                where: {
+                    information_id: information.id,
+                },
+                attributes: ["information_id", "cdr_path", "xml_path"],
+            }),
+            Notes.findAll({
+                where: {
+                    information_id: information.id,
+                },
+                attributes: ["information_id", "cdr_path", "xml_path"],
+            }),
+            Guides.findAll({
+                where: {
+                    information_id: information.id,
+                },
+                attributes: ["information_id", "cdr_path", "xml_path"],
+            }),
+        ]);
+        for (const product of products) {
+            removeFile(information.slug, product.images);
+        }
+        for (const user of users) {
+            if (user.photo) {
+                removeFile(information.slug, user.photo);
+            }
+        }
+        for (const invoice of invoices) {
+            const filecdr = `${pathUploads()}/${invoice.cdr_path}`;
+            const filexml = `${pathUploads()}/${invoice.xml_path}`;
+            if (fs.existsSync(filecdr)) {
+                fs.unlinkSync(filecdr);
+            }
+            if (fs.existsSync(filexml)) {
+                fs.unlinkSync(filexml);
+            }
+        }
+        for (const note of notes) {
+            const filecdr = `${pathUploads()}/${note.cdr_path}`;
+            const filexml = `${pathUploads()}/${note.xml_path}`;
+            if (fs.existsSync(filecdr)) {
+                fs.unlinkSync(filecdr);
+            }
+            if (fs.existsSync(filexml)) {
+                fs.unlinkSync(filexml);
+            }
+        }
+        for (const guide of guides) {
+            const filecdr = `${pathUploads()}/${guide.cdr_path}`;
+            const filexml = `${pathUploads()}/${guide.xml_path}`;
+            if (fs.existsSync(filecdr)) {
+                fs.unlinkSync(filecdr);
+            }
+            if (fs.existsSync(filexml)) {
+                fs.unlinkSync(filexml);
+            }
+        }
+        delete clients[information.slug];
+        delete openAis[information.slug];
+        const qr = `${pathUploads()}/${information.slug}/qr/${
+            information.slug
+        }-qr.png`;
+        const whatsappauth = path.resolve(
+            __dirname,
+            "..",
+            "..",
+            "..",
+            "..",
+            ".wwebjs_auth",
+            `session-${information.slug}`
+        );
+
+        if (fs.existsSync(qr)) {
+            fs.unlinkSync(qr);
+        }
+        if (fs.existsSync(whatsappauth)) {
+            fs.rmSync(whatsappauth, { force: true, recursive: true });
+        }
+        await information.destroy();
     }
 }

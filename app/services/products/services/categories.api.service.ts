@@ -57,7 +57,8 @@ export class CategoriesApiService {
         category.category_code = await generateCodeEntity(
             Categories,
             "category_code" as keyof Categories,
-            "CAT"
+            "CAT",
+            information
         );
 
         await category.save();

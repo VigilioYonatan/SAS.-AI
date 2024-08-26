@@ -16,6 +16,11 @@ import { pathUploads } from "@/uploads/libs/helpers";
 import qrcodeTerminal from "qrcode-terminal";
 import qrcode from "qrcode";
 import openai from "openai";
+import {
+    checkCPUUsage,
+    checkDiskUsage,
+    updateVigilioServices,
+} from "~/libs/os";
 
 export function buenosDias(
     query: string,
@@ -413,7 +418,29 @@ export async function getClientVigilio() {
 }
 // clean CHAT
 // cada 24 horas se limpiara el chat assistant de ambos para consumir menos recursos
-cron.schedule("0 0 * * *", () => {
+cron.schedule("0 0 * * *", async () => {
     chatAssistant = {};
     chats = {};
+    async function monitorSystem() {
+        const cpuThreshold = 0.85; // 85%
+        const diskThreshold = 90; // 90% de uso del disco
+        const usageCPU = checkCPUUsage();
+        const usedPercentage = await checkDiskUsage();
+
+        await updateVigilioServices({ cpu: usageCPU, disk: usedPercentage });
+        // Verificar CPU
+        if (usageCPU > cpuThreshold) {
+            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+            console.log("Advertencia: El uso de CPU es alto");
+            await updateVigilioServices({ enabled: false });
+        }
+
+        // Verificar Disco
+        if (usedPercentage > diskThreshold) {
+            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+            console.log("Advertencia: El uso del disco es alto");
+            await updateVigilioServices({ enabled: false });
+        }
+    }
+    await monitorSystem();
 });

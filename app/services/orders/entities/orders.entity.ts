@@ -24,6 +24,7 @@ import { Districts } from "@/ubigeo/entities/districts.entity";
 import { InformationEntity } from "@/information/entities/information.entity";
 import { Users } from "@/users/entities/users.entity";
 import type { UsersSchema } from "@/users/schemas/users.schema";
+import { Clients } from "@/users/entities/clients.entity";
 
 @DefaultScope(() => ({
     include: [
@@ -49,6 +50,7 @@ import type { UsersSchema } from "@/users/schemas/users.schema";
             ] as (keyof UsersSchema)[],
             as: "seller",
         },
+        { model: Clients },
     ],
 }))
 @Table
@@ -123,8 +125,8 @@ export class Orders extends Model implements Omit<OrdersSchema, "id"> {
     status_order_id: number;
 
     @ForeignKey(() => Users)
-    @Column({ allowNull: false, type: DataType.INTEGER })
-    user_id: number;
+    @Column({ type: DataType.INTEGER })
+    user_id: number | null;
 
     @ForeignKey(() => PayMethods)
     @Column({ allowNull: false, type: DataType.INTEGER })
@@ -170,4 +172,11 @@ export class Orders extends Model implements Omit<OrdersSchema, "id"> {
 
     @BelongsTo(() => InformationEntity)
     information: unknown;
+
+    @ForeignKey(() => Clients)
+    @Column({ type: DataType.INTEGER })
+    client_id: number | null;
+
+    @BelongsTo(() => Clients)
+    clients: unknown[];
 }

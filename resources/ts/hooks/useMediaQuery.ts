@@ -1,5 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
-
+//  HOOK media query reactivo y no reactivo
 function useMediaQuery(query: string): boolean {
 	const getMatches = (query: string): boolean => {
 		// Prevents SSR issues
@@ -53,12 +53,12 @@ export function useMedia(props: {
 	return laptop
 		? props.laptop
 		: tablet
-		  ? props.tablet
-		  : minitablet
-			  ? props.minitablet
-			  : mobile
-				  ? props.mobile
-				  : props.custom;
+			? props.tablet
+			: minitablet
+				? props.minitablet
+				: mobile
+					? props.mobile
+					: props.custom;
 }
 export function useMediaQueryNoReactive(query: string) {
 	return window.matchMedia(query).matches;

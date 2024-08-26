@@ -76,6 +76,7 @@ export class WebsocketsController {
         @Args()
         body: {
             information_id: number;
+            client_id: number;
             order_code: string;
             total: number;
         },

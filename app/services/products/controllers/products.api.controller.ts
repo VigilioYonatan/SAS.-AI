@@ -44,6 +44,11 @@ export class ProductsApiController {
     //     return result;
     // }
 
+    @Post("/woocomerce")
+    async woocomerce(@Req("information") information: InformationEntity) {
+        const result = await this.productsApiService.woocommerce(information);
+        return result;
+    }
     @Pipe(
         objectAsync({
             slug: string(),

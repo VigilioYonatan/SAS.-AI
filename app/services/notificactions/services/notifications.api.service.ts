@@ -60,10 +60,10 @@ export class NotificationsApiService {
     async store(notificationsStoreDto: Omit<NotificationsSchema, "id">) {
         const notification = new Notifications(notificationsStoreDto);
         await notification.save();
-        const user = await notification.$get("usernotifications");
+        const client = await notification.$get("client");
         return {
             success: true,
-            notification: { ...notification.toJSON(), user },
+            notification: { ...notification.toJSON(), client },
         };
     }
 

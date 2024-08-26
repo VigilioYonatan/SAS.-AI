@@ -1,9 +1,9 @@
 import Loading from "@/admin/components/Loading";
-import { type UseQuery } from "@vigilio/preact-fetching";
-import { type UseTable } from "@vigilio/preact-table";
+import type { UseQuery } from "@vigilio/preact-fetching";
+import type { UseTable } from "@vigilio/preact-table";
 import { createContext } from "preact";
 import { useEffect } from "preact/hooks";
-import { type JSX } from "preact/jsx-runtime";
+import type { JSX } from "preact/jsx-runtime";
 
 export const vigilioTableContext = <
 	T extends object,

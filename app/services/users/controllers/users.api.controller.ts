@@ -45,8 +45,11 @@ export class UsersApiController {
         })
     )
     @Get("/:slug")
-    async show(@Params("slug") slug: string) {
-        const result = await this.usersApiService.show(slug);
+    async show(
+        @Params("slug") slug: string,
+        @Req("information") information: InformationEntity
+    ) {
+        const result = await this.usersApiService.show(information, slug);
         return result;
     }
 
@@ -76,10 +79,15 @@ export class UsersApiController {
     @Status(201)
     @Post("/change-password")
     async changePassword(
+        @Req("information") information: InformationEntity,
         @Body() body: UsersPasswordDto,
         @Req("user") user: Users
     ) {
-        const result = await this.usersApiService.changePassword(body, user);
+        const result = await this.usersApiService.changePassword(
+            information,
+            body,
+            user
+        );
         return result;
     }
 
@@ -92,8 +100,12 @@ export class UsersApiController {
     @Validator(usersUpdateDto)
     @Status(200)
     @Put("/:id")
-    async update(@Params("id") id: string, @Body() body: UsersUpdateDto) {
-        const result = await this.usersApiService.update(id, body);
+    async update(
+        @Req("information") information: InformationEntity,
+        @Params("id") id: string,
+        @Body() body: UsersUpdateDto
+    ) {
+        const result = await this.usersApiService.update(information, id, body);
         return result;
     }
 
@@ -105,8 +117,11 @@ export class UsersApiController {
     )
     @Status(201)
     @Delete("/:id")
-    async destroy(@Params("id") id: string) {
-        const result = await this.usersApiService.destroy(id);
+    async destroy(
+        @Req("information") information: InformationEntity,
+        @Params("id") id: string
+    ) {
+        const result = await this.usersApiService.destroy(information, id);
         return result;
     }
 }

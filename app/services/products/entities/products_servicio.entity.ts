@@ -14,7 +14,7 @@ import { Categories } from "./categories.entity";
 import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 import { DetailOrders } from "@/orders/entities/detail_orders.entity";
 import type { CategoriesSchema } from "../schemas/categories.schema";
-import type { ProductsServicioSchema } from "../schemas/products_servicios.entity";
+import type { ProductsServicioSchema } from "../schemas/products_servicio.schema";
 import { InformationEntity } from "@/information/entities/information.entity";
 
 @DefaultScope(() => ({
@@ -38,14 +38,17 @@ export class ProductsServicio
     product_code: string;
 
     @Index
-    @Column({ type: DataType.STRING(255), unique: true })
+    @Column({ type: DataType.STRING(255) })
     name: string;
+
+    @Column({ type: DataType.STRING(255) })
+    url: string;
 
     @Column({ type: DataType.TEXT })
     description: string;
 
-    @Column({ type: DataType.DATE })
-    duracion: Date;
+    @Column({ type: DataType.INTEGER })
+    months: number;
 
     @Column({
         type: DataType.JSON,
@@ -93,7 +96,6 @@ export class ProductsServicio
     @Index
     @Column({
         allowNull: false,
-        unique: true,
         type: DataType.STRING(255),
     })
     slug: string;

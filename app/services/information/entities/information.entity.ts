@@ -7,12 +7,13 @@ import {
     ForeignKey,
     DefaultScope,
     HasMany,
+    HasOne,
 } from "sequelize-typescript";
 import type {
     CompanySchema,
     ContactsSchema,
     Credentials,
-    Empresa,
+    CredentialsWeb,
     GroupWhatsapp,
     InformationSchema,
     InteligenceArtificial,
@@ -31,8 +32,15 @@ import { Users } from "@/users/entities/users.entity";
 import { ProductsOptions } from "@/products/entities/options/products_options.entity";
 import { VariantsFeatures } from "@/products/entities/options/variants_features.entity";
 import { Brands } from "@/products/entities/brands.entitiy";
+import { TipoEmpresa } from "./tipo_empresa.entity";
+import { New } from "./new.entity";
+import { MetodosPago } from "./metodosPago.entity";
+import { Urls } from "@/urls/entities/urls.entity";
+import { Posts } from "@/posts/entities/posts.entity";
+import { Background } from "./background.entity";
+import { Suppliers } from "@/suppliers/entities/suppliers.entity";
 
-@DefaultScope(() => ({ include: [{ model: Address }] }))
+@DefaultScope(() => ({ include: [Address, MetodosPago] }))
 @Table({ tableName: "information" })
 export class InformationEntity
     extends Model
@@ -44,6 +52,11 @@ export class InformationEntity
         unique: true,
     })
     name_empresa: string;
+    // auth
+    @Column({
+        type: DataType.STRING(200),
+    })
+    web: string;
 
     @Column({
         type: DataType.STRING(200),
@@ -54,6 +67,10 @@ export class InformationEntity
         type: DataType.JSON,
     })
     payments: Payments;
+    @Column({
+        type: DataType.STRING(20),
+    })
+    bg_color: string;
 
     @Column({
         type: DataType.STRING(200),
@@ -161,6 +178,12 @@ export class InformationEntity
         type: DataType.BOOLEAN,
         defaultValue: false,
     })
+    enable_sell_country: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: false,
+    })
     enabledAnimation: boolean;
 
     @Column({
@@ -206,28 +229,10 @@ export class InformationEntity
     enabled: boolean;
 
     @Column({
-        type: DataType.BOOLEAN,
-        defaultValue: false,
-    })
-    enable_efectivo: boolean;
-
-    @Column({
-        type: DataType.BOOLEAN,
-        defaultValue: false,
-    })
-    enable_paypal: boolean;
-
-    @Column({
         type: DataType.DATE,
         allowNull: false,
     })
     yearFounded: Date;
-
-    @Column({
-        type: DataType.ENUM("normal", "restaurant", "servicio" as Empresa),
-        allowNull: false,
-    })
-    type_empresa: Empresa;
 
     @Column({
         type: DataType.JSON,
@@ -248,6 +253,12 @@ export class InformationEntity
     enable_map_marker: boolean;
 
     @Column({
+        type: DataType.BOOLEAN,
+        allowNull: false,
+    })
+    enabled_catalogo: boolean;
+
+    @Column({
         type: DataType.JSON,
         defaultValue: [],
     })
@@ -258,6 +269,10 @@ export class InformationEntity
         defaultValue: [],
     })
     groupWhatsapp: GroupWhatsapp[];
+    @Column({
+        type: DataType.JSON,
+    })
+    credentials_web: CredentialsWeb | null;
 
     @Column({
         type: DataType.JSON,
@@ -275,15 +290,24 @@ export class InformationEntity
     })
     transferencias: TransferenciaSchema | null;
 
-    // relations
-    @ForeignKey(() => Address)
+    @ForeignKey(() => TipoEmpresa)
     @Column({
         type: DataType.INTEGER,
-        allowNull: false,
     })
-    address_id: number;
+    type_empresa_id: number;
 
-    @BelongsTo(() => Address)
+    @Column({
+        type: DataType.STRING,
+    })
+    host: string | null;
+
+    @Column({
+        type: DataType.STRING,
+    })
+    type_empresa_other: string;
+
+    // relations
+    @HasOne(() => Address)
     address: unknown;
 
     @HasMany(() => ProductsNormal)
@@ -299,14 +323,35 @@ export class InformationEntity
     coupons: unknown[];
 
     @HasMany(() => Users)
-    users: unknown[];
+    users: Users[];
 
     @HasMany(() => ProductsOptions)
-    productsOptions: unknown[];
+    productsOptions: ProductsOptions[];
 
     @HasMany(() => VariantsFeatures)
-    variantsFeatures: unknown[];
+    variantsFeatures: VariantsFeatures[];
 
     @HasMany(() => Brands)
-    brands: unknown[];
+    brands: Brands[];
+
+    @BelongsTo(() => TipoEmpresa)
+    tipo_empresa: TipoEmpresa;
+
+    @HasOne(() => New)
+    new: New;
+
+    @HasOne(() => MetodosPago)
+    metodos_pago: unknown;
+
+    @HasMany(() => Urls)
+    urls: unknown[];
+
+    @HasMany(() => Posts)
+    posts: unknown[];
+
+    @HasMany(() => Background)
+    backgrounds: unknown[];
+
+    @HasMany(() => Suppliers)
+    suppliers: unknown[];
 }

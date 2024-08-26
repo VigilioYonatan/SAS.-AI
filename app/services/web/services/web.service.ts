@@ -1,15 +1,20 @@
 import { Injectable } from "@vigilio/express-core";
-import type { InformationEntity } from "@/information/entities/information.entity";
+import { InformationEntity } from "@/information/entities/information.entity";
 
 @Injectable()
 export class WebService {
-    async home() {
+    async home(information: InformationEntity) {
         return {
-            title: "Vigilio Services chat - ia",
-            description: "Inteligencia Artificial para whatsapp y whatsapp CRM",
+            title: `${information.name_empresa} - Inicio`,
+            description: `${information.about}`,
         };
     }
 
+    async admin() {
+        return {
+            success: true,
+        };
+    }
     async orders() {
         return {
             title: "Pedidos",

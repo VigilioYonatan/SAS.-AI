@@ -51,6 +51,8 @@ import type { RequestVigilio } from "~/config/types";
 import type { Variants } from "@/products/entities/options/variants.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
+import { ClientsApiService } from "@/users/services/clients.api.service";
+import { dniV1Api } from "../apis/dni.v1.api";
 
 @Injectable()
 export class OrdersApiService {
@@ -60,7 +62,8 @@ export class OrdersApiService {
         private readonly notesApiService: NotesApiService,
         private readonly guidesApiService: GuidesApiService,
         private readonly detailOrdersApiService: DetailOrdersApiService,
-        private readonly ubigeoApiService: UbigeoApiService
+        private readonly ubigeoApiService: UbigeoApiService,
+        private readonly clientsApiService: ClientsApiService
     ) {}
 
     async index(information: InformationEntity) {
@@ -179,7 +182,11 @@ export class OrdersApiService {
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             (acc: any, order: any) => {
                 const productId =
-                    order[productEntityId(information.type_empresa)];
+                    order[
+                        productEntityId(
+                            information.tipo_empresa.tipo_servicio_id
+                        )
+                    ];
                 acc[productId] = (acc[productId] || 0) + 1;
                 return acc;
             },
@@ -366,6 +373,27 @@ export class OrdersApiService {
             pasarela_comision: false,
         };
 
+        if (
+            ordersStoreDto.telephone &&
+            ordersStoreDto.invoice?.identification_number
+        ) {
+            const findClient = await this.clientsApiService.show(
+                information,
+                ordersStoreDto.telephone
+            );
+            if (!findClient) {
+                const dniApi = await dniV1Api(
+                    ordersStoreDto.invoice?.identification_number
+                );
+                await this.clientsApiService.store(information, {
+                    telephone: ordersStoreDto.telephone,
+                    enabled: true,
+                    fullname: dniApi.nombre_completo,
+                    information_id: information.id,
+                });
+            }
+        }
+
         if (!information?.enabled || !information.isOpen)
             throw new BadRequestException(information.whatsappconfig.enabled);
         const findDay = information.schedule.find(
@@ -385,7 +413,9 @@ export class OrdersApiService {
                 const productId = String(
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                     (detail_order as any)[
-                        productEntityId(information.type_empresa)
+                        productEntityId(
+                            information.tipo_empresa.tipo_servicio_id
+                        )
                     ]
                 );
                 const { product } = await this.productsApiService.show(
@@ -394,7 +424,7 @@ export class OrdersApiService {
                 );
 
                 let sub = subtotalIgv(information, product);
-                if (information.type_empresa === "normal") {
+                if (information.tipo_empresa.tipo_servicio_id === 1) {
                     // encontrar variant
                     const variant = (
                         product.dataValues.variants as Variants[]
@@ -424,7 +454,8 @@ export class OrdersApiService {
                                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                     (detail_order as any)[
                                         productEntityId(
-                                            information.type_empresa
+                                            information.tipo_empresa
+                                                .tipo_servicio_id
                                         )
                                     ]
                                 ),
@@ -483,11 +514,11 @@ export class OrdersApiService {
             const { data } = await this.ubigeoApiService.districtsShow(
                 ordersStoreDto.district_id
             );
-            const priceShip = information.igv
+            const priceShip = information.enabled_igv
                 ? subtotal(
                       ((data!.province as Provinces).department as Departments)
                           .priceShipping,
-                      enviroments.VITE_IGV,
+                      information.igv,
                       true
                   )
                 : ((data!.province as Provinces).department as Departments)
@@ -511,7 +542,8 @@ export class OrdersApiService {
         order.order_code = await generateCodeEntity(
             Orders,
             "order_code" as keyof Orders,
-            "ORD"
+            "ORD",
+            information
         );
         await order.save();
         if (invoice) {
@@ -547,11 +579,13 @@ export class OrdersApiService {
                         information,
                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                         (detail_order as any)[
-                            productEntityId(information.type_empresa)
+                            productEntityId(
+                                information.tipo_empresa.tipo_servicio_id
+                            )
                         ]
                     ),
                 ]);
-                if (information.type_empresa === "normal") {
+                if (information.tipo_empresa.tipo_servicio_id === 1) {
                     // encontrar variant
                     const variant = (
                         product.dataValues.variants as Variants[]
@@ -688,7 +722,7 @@ export class OrdersApiService {
                             String(detail_order.product_normal_id)
                         );
                         // encontrar variant
-                        if (information.type_empresa === "normal") {
+                        if (information.tipo_empresa.tipo_servicio_id === 1) {
                             const variant = (
                                 product.dataValues.variants as Variants[]
                             ).find(
@@ -1215,16 +1249,21 @@ export class OrdersApiService {
             try {
                 const products = await Promise.all(
                     detail_orders.map(async (prod, i) => {
-                        const Product = productEntity(information.type_empresa);
+                        const Product = productEntity(
+                            information.tipo_empresa.tipo_servicio_id
+                        );
                         const product = await Product.findOne({
                             where: {
                                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                 id: (prod as any)[
-                                    productEntityId(information.type_empresa)
+                                    productEntityId(
+                                        information.tipo_empresa
+                                            .tipo_servicio_id
+                                    )
                                 ],
                                 information_id: information.id,
                             },
-                            attributes: ["id", "name"],
+                            attributes: ["id", "username"],
                         });
                         if (!product)
                             throw new BadRequestException(

@@ -39,8 +39,11 @@ export class ProductsNormal
     product_code: string;
 
     @Index
-    @Column({ type: DataType.STRING(255), unique: true })
+    @Column({ type: DataType.STRING(255) })
     name: string;
+
+    @Column({ type: DataType.STRING(255) })
+    url: string;
 
     @Column({ type: DataType.TEXT })
     description: string;
@@ -76,15 +79,6 @@ export class ProductsNormal
         );
     }
 
-    @Column({ type: DataType.STRING(100) })
-    sku: string;
-
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    stock: number;
-
-    @Column({ type: DataType.BOOLEAN, allowNull: false })
-    ilimit: boolean;
-
     @Column({
         type: DataType.BOOLEAN,
         defaultValue: true,
@@ -106,7 +100,6 @@ export class ProductsNormal
     @Index
     @Column({
         allowNull: false,
-        unique: true,
         type: DataType.STRING(255),
     })
     slug: string;
@@ -116,11 +109,6 @@ export class ProductsNormal
         defaultValue: true,
     })
     isNew: boolean;
-
-    @Column({
-        type: DataType.INTEGER,
-    })
-    monthGarantia: number | null;
 
     @ForeignKey(() => Categories)
     @Column({ type: DataType.INTEGER, allowNull: false })
@@ -132,8 +120,8 @@ export class ProductsNormal
     category: unknown;
 
     @ForeignKey(() => Brands)
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    brand_id: number;
+    @Column({ type: DataType.INTEGER })
+    brand_id: number | null;
 
     /*****  RELATIONS *****/
     // products - categorias : uno a muchos

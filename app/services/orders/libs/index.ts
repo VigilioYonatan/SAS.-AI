@@ -21,7 +21,6 @@ import { KindDebitNotes } from "../entities/kind_debit_notes.entity";
 import { ticketHTML } from "./ticket";
 import { Orders } from "../entities/orders.entity";
 import puppeteer from "puppeteer";
-import enviroments from "~/config/enviroments.config";
 import fs from "node:fs";
 import { slug } from "@vigilio/express-core/helpers";
 import type { Guides } from "../entities/guides.entity";
@@ -34,6 +33,7 @@ import type { Provinces } from "@/ubigeo/entities/provinces.entity";
 import type { Departments } from "@/ubigeo/entities/departments.entity";
 import { guidePDFSunatApi } from "../sunat/guide.pdf.api";
 import { productEntity, productEntityId } from "@/products/libs";
+import { Op, type WhereAttributeHash } from "sequelize";
 export const ordersTransferenciaImage = [800];
 
 export const isValidDni = new RegExp(/^\d{8}$/);
@@ -130,9 +130,7 @@ export async function xmlGenerate(props: PdfGenerateProps) {
     if (props.type === "note") {
         xml = await noteXMLSunatApi(props.sunat as SunatNoteDto);
     }
-    const file = `sunat/${slug(props.information.slug)}-${
-        props.order.order_code
-    }-${props.type}.xml`;
+    const file = `${props.information.slug}/sunat/${props.information.slug}-${props.order.order_code}-${props.type}.xml`;
     if (fs.existsSync(`${pathUploads()}/${file}`)) {
         fs.unlinkSync(`${pathUploads()}/${file}`);
     }
@@ -144,7 +142,7 @@ export async function crdGenerate(props: {
     orderCode: string;
     cdrzip: string;
 }) {
-    const file = `sunat/${slug(props.information.slug)}-${
+    const file = `${props.information.slug}/sunat/${props.information.slug}-${
         props.orderCode
     }-${Date.now().toString(32).slice(3)}.cdr`;
     if (fs.existsSync(`${pathUploads()}/${file}`)) {
@@ -430,7 +428,7 @@ export async function getOrder(
     order: Orders,
     showDetailsOrder = true
 ) {
-    const Product = productEntity(information.type_empresa);
+    const Product = productEntity(information.type_empresa_id);
     const [details_orders, invoice, guide] = await Promise.all([
         showDetailsOrder
             ? order.$get("details_orders", {
@@ -479,16 +477,18 @@ export async function detailInvoice(
         : null;
     const ig = departamento
         ? order.igv
-            ? subtotal(departamento.priceShipping, enviroments.VITE_IGV, true)
+            ? subtotal(departamento.priceShipping, information.igv, true)
             : departamento.priceShipping
         : 0;
 
     const details: SunatInvoiceDto["details"] = await Promise.all(
         detail_orders.map(async (prod) => {
-            const Product = productEntity(information.type_empresa);
+            const Product = productEntity(
+                information.tipo_empresa.tipo_servicio_id
+            );
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             const product_id = (prod as any)[
-                productEntityId(information.type_empresa)
+                productEntityId(information.tipo_empresa.tipo_servicio_id)
             ];
             const product = await Product.findByPk();
             if (!product)
@@ -575,4 +575,44 @@ export async function detailInvoice(
     }
 
     return details;
+}
+export async function usersMostOrders(
+    information: InformationEntity,
+    date: WhereAttributeHash
+) {
+    const orders = await Orders.unscoped().findAll({
+        where: {
+            status_order_id: STATUSORDER.pagado,
+            client_id: {
+                [Op.ne]: null,
+            },
+            information_id: information.id,
+            ...date,
+        },
+        attributes: ["id", "client_id"],
+    });
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const groupedById: any = {};
+    // Iterar sobre el array original
+    for (const item of orders) {
+        const id = item.client_id!;
+        // Si el "id" ya existe en el objeto agrupado, incrementa la cantidad
+        if (groupedById[id]) {
+            groupedById[id].cantidad++;
+        } else {
+            // Si no existe, crea una nueva entrada en el objeto agrupado
+            groupedById[id] = {
+                id: id,
+                cantidad: 1,
+                user: item.user,
+            };
+        }
+    }
+    // Convertir el objeto agrupado de nuevo a un array
+    const arrayGroup = Object.values(groupedById).sort(
+        (a, b) =>
+            (b as { cantidad: number }).cantidad -
+            (a as { cantidad: number }).cantidad
+    );
+    return arrayGroup;
 }

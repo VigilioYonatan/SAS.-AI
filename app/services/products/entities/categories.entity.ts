@@ -13,6 +13,7 @@ import type { CategoriesSchema } from "../schemas/categories.schema";
 import { InformationEntity } from "@/information/entities/information.entity";
 import { ProductsRestaurant } from "./products_restaurant.entity";
 import { ProductsServicio } from "./products_servicio.entity";
+import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 
 @Table
 export class Categories extends Model implements Omit<CategoriesSchema, "id"> {
@@ -26,15 +27,19 @@ export class Categories extends Model implements Omit<CategoriesSchema, "id"> {
     @Index
     @Column({
         allowNull: false,
-        unique: true,
         type: DataType.STRING(255),
     })
     name: string;
 
+    @Column({
+        allowNull: false,
+        type: DataType.JSON,
+    })
+    image: FilesSchema[];
+
     @Index
     @Column({
         allowNull: false,
-        unique: true,
         type: DataType.STRING(255),
     })
     slug: string;
