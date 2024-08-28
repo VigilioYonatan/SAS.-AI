@@ -147,7 +147,6 @@ export class ProductsApiService {
                             ).slice(0, 1000)}...`,
                             characteristics: [], // Aquí puedes definir cómo mapear características
                             enabled: product.status === "publish",
-                            earning: null, // Puedes calcular esto si es necesario
                             price: 0,
                             discount: 0, // Aquí puedes calcular el descuento si lo manejas
                             slug: product.slug,
@@ -238,7 +237,6 @@ export class ProductsApiService {
                             ).slice(0, 1000)}...`,
                             characteristics: [], // Aquí puedes definir cómo mapear características
                             enabled: product.published_at,
-                            earning: null, // Puedes calcular esto si es necesario
                             price: 0,
                             discount: 0, // Aquí puedes calcular el descuento si lo manejas
                             slug: product.handle,
@@ -314,7 +312,6 @@ export class ProductsApiService {
                                 ).slice(0, 1000)}...`,
                                 characteristics: [], // Aquí puedes definir cómo mapear características
                                 enabled: true, // Cambia según el estado del producto
-                                earning: null, // Puedes calcular esto si es necesario
                                 price: 0, // Convertir el precio a número
                                 discount: 0, // Aquí puedes calcular el descuento si lo manejas
                                 slug: slug(product.name[0]), // Generar slug a partir del nombre
@@ -416,8 +413,9 @@ export class ProductsApiService {
                 (productsStoreDto as ProductsNormalStoreDto).options.map(
                     async (option) => {
                         await ProductsOptions.create({
-                            product_id: product.id,
                             ...option,
+                            product_id: product.id,
+                            information_id: information.id,
                         });
                     }
                 )
@@ -441,6 +439,7 @@ export class ProductsApiService {
                                 await VariantsFeatures.create({
                                     variant_id: variant.id,
                                     feature_id: comb,
+                                    information_id: information.id,
                                 });
                             })
                         );

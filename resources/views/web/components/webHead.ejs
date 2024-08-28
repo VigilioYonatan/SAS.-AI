@@ -1,0 +1,47 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= locals.$information?.name %> - <%= title %></title>
+<meta name="description" content="<%= description  %>">
+<!-- METAS -->
+<meta name="robots" content="index, follow">
+<meta name="keywords" content="sistema web, tienda online, ecommerce">
+
+<!-- Schema.org markup for Google+ -->
+<meta itemprop="name" content="Los mejores productos en un solo lugar">
+<meta itemprop="description" content="<%= locals.$information ? $information.name:''   %> ofrece los mejores productos del mercado a un precio bajo">
+<meta itemprop="image" content="<%= locals.$information?.logo ? printFileWithDimension(locals.$information?.logo) :''   %>"> <!-- puedes poner una imagen de oferta -->
+
+
+<!-- Twitter Card data -->
+<meta name="twitter:card" content="product">
+<meta name="twitter:site" content="@publisher_handle">
+<meta name="twitter:title" content="Los mejores productos en un solo lugar">
+<meta name="twitter:description" content="<%= locals.$information ? $information.name:''   %> ofrece los mejores productos del mercado a un precio bajo">
+<meta name="twitter:creator" content="@author_handle">
+<meta name="twitter:image" content=""> <!-- puedes poner una imagen de oferta -->
+
+<!-- Open Graph data -->
+<meta property="og:title" content="Los mejores productos en un solo lugar">
+<meta property="og:type" content="website">
+<meta property="og:url" content="<%= route("/")  %>">
+<meta property="og:image" content="<%= locals.$information?.logo ? printFileWithDimension(locals.$information?.logo) :''   %>"> <!-- puedes poner una imagen de oferta -->
+<meta property="og:description" content="<%=locals.$information ? $information.name:''  %> ofrece los mejores productos del mercado a un precio bajo">
+<meta property="og:site_name" content="<%= locals.$information ? $information.name:''  %>">
+<meta property="fb:app_id" content="">
+<link rel="manifest" href="/dist/manifest.webmanifest">
+
+
+<!-- ICONO -->
+<link rel="shortcut icon" href="<%=   locals.$information?.icon ? printFileWithDimension(locals.$information.icon,100)[0] :'' %>" type="image/x-icon" />
+<%- `<script> 
+    localStorage.setItem("user", ${JSON.stringify(JSON.stringify(typeof $user !== "undefined" ? $user  ?? null : null  ))});
+    localStorage.setItem("information", ${JSON.stringify(JSON.stringify(typeof $information !== "undefined" ? $information  : null))});
+    </script>` %>
+<style>
+  :root {
+    --primary: <%=$information.bg_color %>;
+  }
+</style>
+<%- vite  %>
+<!-- initial base -->
+<initial></initial>

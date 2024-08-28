@@ -2,7 +2,7 @@ import enviroments from "~/config";
 import { printImagesProduct } from "@/products/libs/helpers";
 import type { CartProductSchema } from "../schemas";
 import Hr from "@/web/components/Hr";
-import { formatSoles } from "../libs/helpers";
+import { formatMoney } from "../libs/helpers";
 interface CartProductAlertProps {
     product: CartProductSchema;
 }
@@ -24,7 +24,7 @@ function CartProductAlert({ product }: CartProductAlertProps) {
                     <div class="flex flex-col">
                         <span class="text-sm">Precio: </span>
                         <b class="line-clamp-2 text-sm font-bold">
-                            {formatSoles(product.subtotal)}
+                            {formatMoney(product.subtotal)}
                         </b>
                     </div>
                 </div>

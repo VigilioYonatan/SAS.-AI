@@ -6,7 +6,7 @@ import bcryptjs from "bcryptjs";
 import crypto from "node:crypto";
 import type { AuthForgotPasswordDto } from "../dtos/auth.forgot-password.dto";
 import type { AuthConfirmPasswordDto } from "../dtos/auth.confirm-password.dto";
-import { clients } from "@/bot/libs/ai";
+import { clientsWhatsapp } from "@/bot/libs/ai";
 
 @Injectable()
 export class AuthApiService {
@@ -27,7 +27,7 @@ export class AuthApiService {
         }
         const token = crypto.randomUUID();
         await user.update({ token });
-        await clients[user.information.slug].sendMessage(
+        await clientsWhatsapp[user.information.slug].sendMessage(
             `51${user.telephone}@c.us`,
             `Hola ${user.username}, Recupera tu contraseña aquí: ${enviroments.VITE_URL}/auth/forgot-password?token=${token}`
         );
@@ -40,7 +40,10 @@ export class AuthApiService {
     async confirmPassword(authConfirmPasswordDto: AuthConfirmPasswordDto) {
         const user = await Users.findByPk(authConfirmPasswordDto.user_id);
         if (!user) throw new NotFoundException("Usuario no válido");
-        const hashPassword = bcryptjs.hashSync(authConfirmPasswordDto.password);
+        const hashPassword = bcryptjs.hashSync(
+            authConfirmPasswordDto.password,
+            bcryptjs.genSaltSync(10)
+        );
         await user.update({ password: hashPassword });
         return {
             success: true,

@@ -1,3 +1,4 @@
+import enviroments from "~/config/enviroments.config";
 import type { InformationSchema } from "../schemas/information.schema";
 
 export async function informationSeeder(): Promise<
@@ -7,16 +8,21 @@ export async function informationSeeder(): Promise<
     const pm8 = "22:00";
 
     return {
+        money: {
+            international_simbolo: "es-PE",
+            money: "Sol Peruano",
+            simbolo: "PEN",
+        },
         name_empresa: "vigilio services",
+        dial_code: "51",
         host: null,
-        bg_color: "#000",
+        bg_color: "#117ACD",
         enable_sell_country: false,
         type_empresa_other: null,
         web: null,
         email: "yonatanvigilio@vigilio-services.com",
         telephoneFirst: "959884398",
         about: "this is a a about page",
-        enabled: true,
         isOpen: true,
         company: {
             nombreComercial: "VigilioServices",
@@ -41,7 +47,6 @@ export async function informationSeeder(): Promise<
         igv: 18,
         credentials: {
             open_ai: "",
-            paypal: { PAYPAL_CLIENT_ID: "", PAYPAL_SECRET_KEY: "" },
         },
         inteligenceArtificial: {
             didactrices: [
@@ -116,11 +121,9 @@ export async function informationSeeder(): Promise<
                 closeTime: pm8,
             },
         ],
-        earning: 30,
         groupWhatsapp: [],
         enabledSendSunat: true,
         enabledSendMessage: true,
-        transferencias: null,
         enabledAnimation: true,
         enabledClientPayComision: true,
         whatsappconfig: {
@@ -139,10 +142,33 @@ export async function informationSeeder(): Promise<
         payments: {
             ia: { date: new Date(), enabled: true, price: 10, tokens: 1000000 },
             sunat: { date: new Date(), enabled: true, price: 25 },
-            clients: { price: 10, enabled: true, quantity: 10 },
+            telegram: {
+                date: new Date(),
+                enabled: false,
+                price: 35,
+                tokens: 100000,
+            },
             catalogo: { price: 0, enabled: true },
         },
         type_empresa_id: 1,
         credentials_web: null,
+        bancos: [
+            {
+                key: "bcp",
+                value: "BCP",
+                image: `${enviroments.VITE_VIGILIO_WEB}/images/settings/others/bancos/bcp.png`,
+            },
+            {
+                key: "interbank",
+                value: "Interbank",
+                image: `${enviroments.VITE_VIGILIO_WEB}/images/settings/others/bancos/interbank.png`,
+            },
+            {
+                key: "bbva",
+                value: "BBVA",
+                image: `${enviroments.VITE_VIGILIO_WEB}/images/settings/others/bancos/bbva.png`,
+            },
+        ],
+        telegram_token: null,
     };
 }

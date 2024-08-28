@@ -16,7 +16,7 @@ import { Pipe } from "@vigilio/express-core/valibot";
 import { objectAsync, string } from "@vigilio/valibot";
 import fs from "node:fs";
 import formidable from "formidable";
-import { clients, isWhatsappIA, openAis } from "../libs/ai";
+import { clientsWhatsapp, isWhatsappIA, openAis } from "../libs/ai";
 import enviroments from "~/config/enviroments.config";
 import type { InformationEntity } from "@/information/entities/information.entity";
 import type { RequestVigilio } from "~/config/types";
@@ -39,8 +39,8 @@ export class BotApiController {
     @Post("/logout")
     async cerrarSession(@Req("information") information: InformationEntity) {
         try {
-            await clients[information.slug].logout();
-            await clients[information.slug].initialize();
+            await clientsWhatsapp[information.slug].logout();
+            await clientsWhatsapp[information.slug].initialize();
             return {
                 success: true,
                 message: "Cerró sesión correctamente",
@@ -61,7 +61,7 @@ export class BotApiController {
             const form = formidable();
             const [fields, files] = await form.parse(req);
             if (fields.message) {
-                clients[information!.slug].sendMessage(
+                clientsWhatsapp[information!.slug].sendMessage(
                     telephone,
                     fields.message[0],
                     {
@@ -82,7 +82,10 @@ export class BotApiController {
                     files.message[0].originalFilename,
                     files.message[0].size
                 );
-                await clients[information!.slug].sendMessage(telephone, file);
+                await clientsWhatsapp[information!.slug].sendMessage(
+                    telephone,
+                    file
+                );
             }
             return {
                 success: true,

@@ -9,41 +9,35 @@ import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
 @Injectable()
 @Controller("/ubigeo")
 export class UbigeoApiController {
-	constructor(private readonly ubigeoApiService: UbigeoApiService) {}
+    constructor(private readonly ubigeoApiService: UbigeoApiService) {}
 
-	@Get("/departments")
-	async departments() {
-		const result = await this.ubigeoApiService.departments();
-		return result;
-	}
+    @Get("/regions")
+    async regions() {
+        const result = await this.ubigeoApiService.regions();
+        return result;
+    }
 
-	@Pipe(objectAsync({ ubigeo: string() }))
-	@Get("/departments/:ubigeo")
-	async departmentsShow(@Params("ubigeo") ubigeo: string) {
-		const result = await this.ubigeoApiService.departmentsShow(ubigeo);
-		return result;
-	}
+    @Pipe(objectAsync({ id: string() }))
+    @Get("/regions/:id")
+    async regionsShow(@Params("id") id: string) {
+        const result = await this.ubigeoApiService.regionsShow(id);
+        return result;
+    }
 
-	@PermissionAdmin()
-	@Pipe(objectAsync({ ubigeo: string() }))
-	@Put("/departments/:ubigeo")
-	async departmentsUpdate(
-		@Body() body: DepartmentsUpdateDto,
-		@Params("ubigeo") ubigeo: string,
-	) {
-		const result = await this.ubigeoApiService.departmentsUpdate(ubigeo, body);
-		return result;
-	}
+    @PermissionAdmin()
+    @Pipe(objectAsync({ id: string() }))
+    @Put("/regions/:id")
+    async regionsUpdate(
+        @Body() body: DepartmentsUpdateDto,
+        @Params("id") id: string
+    ) {
+        const result = await this.ubigeoApiService.regionsUpdate(id, body);
+        return result;
+    }
 
-	@Get("/provinces")
-	async provinces() {
-		const result = await this.ubigeoApiService.provinces();
-		return result;
-	}
-
-	@Get("/districts")
-	async districts() {
-		const result = await this.ubigeoApiService.districts();
-		return result;
-	}
+    @Get("/cities")
+    async cities() {
+        const result = await this.ubigeoApiService.cities();
+        return result;
+    }
 }

@@ -8,6 +8,8 @@ import session from "express-session";
 import passport from "passport";
 import compression from "compression";
 import cookieParser from "cookie-parser";
+import * as socket from "socket.io";
+import http from "node:http";
 import morgan from "morgan";
 import enviroments from "~/config/enviroments.config";
 import memoryStore from "memorystore";
@@ -15,6 +17,8 @@ import {
     ERROR_MIDDLEWARE,
     attachControllers,
     Container,
+    attachSocketControllers,
+    IO_MIDDLEWARE,
 } from "@vigilio/express-core";
 import { connectDB } from "~/config/db.config";
 import { ServerErrorMiddleware } from "@vigilio/express-core/handler";
@@ -24,13 +28,17 @@ import { apiRouters } from "~/routers/api.router";
 import { webRouters } from "~/routers/web.router";
 import { authRouters } from "~/routers/auth.router";
 import { middlewareRoute } from "~/libs/middleware-route";
-import { initializeClients } from "@/bot/libs/ai";
 import { localStrategy } from "@/auth/strategies/local.strategy";
 import { InformationEntity } from "@/information/entities/information.entity";
 import { Users } from "@/users/entities/users.entity";
 import type { RequestVigilio } from "./types";
 import type { InformationSchema } from "@/information/schemas/information.schema";
 import type { WhereOptions } from "sequelize";
+import cors from "cors";
+import { adminRouters } from "~/routers/admin.router";
+import { GlobalMiddleware } from "~/libs/websocket";
+import { socketsRouters } from "~/routers/sockets.router";
+import type { MetodosPago } from "@/information/entities/metodosPago.entity";
 
 export class Server {
     public readonly app: express.Application = express();
@@ -39,25 +47,24 @@ export class Server {
         this.middlewares();
         this.auth();
         this.routes();
+        // initialTelegram();
         // Llama a la función para inicializar las instancias
-        initializeClients();
+        // initializeClients();
     }
     middlewares() {
         // comprimir paginas webs para mejor rendimiento - NO TOCAR si no es necesario
-        this.app.use(
-            compression({
-                threshold: 10000,
-                filter: (req, res) => {
-                    if (req.headers["x-no-compression"]) {
-                        return false;
-                    }
-                    return compression.filter(req, res);
-                },
-            })
-        );
+        this.app.use(cors());
+        this.app.use(compression());
+
+        // habilitar cookies
+        this.app.use(cookieParser());
+        // habilitar para consumir json
+        this.app.use(express.json({ limit: "50mb" }));
+        this.app.use(express.json());
         this.app.use(async (req: Request, res, next) => {
             const host = req.headers.host;
             let subdomain = null;
+
             if (host?.includes(".")) {
                 subdomain = host?.split(".")[0]; // Obtiene el subdominio
                 if (
@@ -75,47 +82,51 @@ export class Server {
                     exclude: [
                         "about",
                         "certificado",
-                        "inteligenceArtificial",
                         "contacts",
                         "groupWhatsapp",
-                        "transferencias",
-                        "payments",
                         "credentials",
                     ] as (keyof InformationSchema)[],
                 },
             });
+            const metodos_pago = (await information?.$get(
+                "metodos_pago"
+            )) as MetodosPago;
 
             if (information) {
                 const info = information
                     ? {
                           ...information?.toJSON(),
-                          company: {
-                              production: information?.company.production,
-                              ruc: information?.company.ruc,
-                              razonSocial: information?.company.razonSocial,
-                              nombreComercial:
-                                  information?.company.nombreComercial,
+                          metodos_pago: {
+                              ...metodos_pago,
+                              transferencias: metodos_pago.transferencias,
+                              paypal: { enabled: metodos_pago.paypal },
+                              mercado_pago: { enabled: metodos_pago.paypal },
+                          },
+                          company: information?.company
+                              ? {
+                                    production: information?.company.production,
+                                    ruc: information?.company.ruc,
+                                    razonSocial:
+                                        information?.company.razonSocial,
+                                    nombreComercial:
+                                        information?.company.nombreComercial,
+                                }
+                              : null,
+                          inteligenceArtificial: {
+                              usage: information.inteligenceArtificial.usage,
                           },
                       }
                     : null;
                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 (req as any).information = info;
                 res.locals.$information = info;
-
-                next();
-            } else {
-                if (enviroments.NODE_ENV !== "production") {
-                    next();
-                    return;
-                }
-                return res.redirect("https://www.vigilio-services.com");
+                return next();
             }
+            if (enviroments.NODE_ENV !== "production") {
+                return next();
+            }
+            return res.redirect("https://www.vigilio-services.com");
         });
-        // habilitar cookies
-        this.app.use(cookieParser());
-        // habilitar para consumir json
-        this.app.use(express.json({ limit: "50mb" }));
-        this.app.use(express.json());
         // habilitar carpeta public
         this.app.use(
             express.static(path.resolve(import.meta.dir, "..", "..", "public"))
@@ -163,14 +174,13 @@ export class Server {
             return done(null, user);
         });
         passport.deserializeUser(async (user: Users, done) => {
-            const findInformation = await Users.findByPk(user.id, {
+            const findUser = await Users.findByPk(user.id, {
                 attributes: {
                     exclude: ["password"],
                 },
             });
-            if (!findInformation)
-                return done({ message: "error authenticated" });
-            return done(null, findInformation);
+            if (!findUser) return done({ message: "error authenticated" });
+            return done(null, findUser);
         });
         this.app.use(
             async (req: Request, res: Response, next: NextFunction) => {
@@ -189,19 +199,32 @@ export class Server {
         const apiRouter = express.Router();
         const webRouter = express.Router();
         const authRouter = express.Router();
+        const adminRouter = express.Router();
         attachControllers(apiRouter, apiRouters);
         attachControllers(webRouter, webRouters);
         attachControllers(authRouter, authRouters);
+        attachControllers(adminRouter, adminRouters);
         Container.provide([
             { provide: ERROR_MIDDLEWARE, useClass: ServerErrorMiddleware },
         ]);
         this.app.use("/auth", authRouter);
+        this.app.use("/admin", adminRouter);
         this.app.use("/", webRouter);
         this.app.use("/api", apiRouter);
         this.app.use(middlewareRoute);
     }
+    sockets() {
+        // socket io
+        const server = new http.Server(this.app);
+        const io = new socket.Server(server);
+        Container.provide([
+            { provide: IO_MIDDLEWARE, useClass: GlobalMiddleware },
+        ]);
+        attachSocketControllers(io, socketsRouters);
+        return server;
+    }
     listen() {
-        const server = this.app.listen(enviroments.PORT, () => {
+        const server = this.sockets().listen(enviroments.PORT, () => {
             logger.primary(`Run server in port ${enviroments.PORT}`);
         });
         return server;

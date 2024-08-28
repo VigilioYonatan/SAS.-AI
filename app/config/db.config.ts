@@ -21,9 +21,6 @@ import { StatusOrders } from "@/orders/entities/status_orders.entity";
 import { Brands } from "@/products/entities/brands.entitiy";
 import { Categories } from "@/products/entities/categories.entity";
 import { Coupons } from "@/products/entities/coupons.entity";
-import { Departments } from "@/ubigeo/entities/departments.entity";
-import { Districts } from "@/ubigeo/entities/districts.entity";
-import { Provinces } from "@/ubigeo/entities/provinces.entity";
 import { Notifications } from "@/notificactions/entities/notifications.entity";
 import { NotificationsUser } from "@/notificactions/entities/notifications_user.entity";
 import { Documents } from "@/orders/entities/documents.entity";
@@ -41,6 +38,9 @@ import { Urls } from "@/urls/entities/urls.entity";
 import { Background } from "@/information/entities/background.entity";
 import { Posts } from "@/posts/entities/posts.entity";
 import { Suppliers } from "@/suppliers/entities/suppliers.entity";
+import { Regions } from "@/ubigeo/entities/regions.entity";
+import { Cities } from "@/ubigeo/entities/cities.entity";
+import { Countries } from "@/ubigeo/entities/countries.entity";
 
 const sequelize = new Sequelize({
     dialect: "postgres",
@@ -79,9 +79,7 @@ sequelize.addModels([
     Brands,
     Categories,
     Coupons,
-    Departments,
-    Districts,
-    Provinces,
+
     Notifications,
     NotificationsUser,
     Documents,
@@ -99,6 +97,9 @@ sequelize.addModels([
     Background,
     Posts,
     Suppliers,
+    Regions,
+    Cities,
+    Countries,
 ]);
 
 export async function connectDB() {

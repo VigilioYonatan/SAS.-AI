@@ -1,5 +1,4 @@
 import { slug } from "@vigilio/express-core/helpers";
-import { faker } from "@faker-js/faker";
 import type { UsersSchema } from "../schemas/users.schema";
 import bcryptjs from "bcryptjs";
 
@@ -7,14 +6,13 @@ export const adminUser: Omit<UsersSchema, "id"> = {
     name: "yonatan ",
     lastname: "Vigilio Lavado",
     email: "admin@gmail.com",
-    password: bcryptjs.hashSync("123456"),
-    telephone: null,
+    password: bcryptjs.hashSync("123456", bcryptjs.genSaltSync(10)),
+    telephone: "959884398",
     user_code: "USER-1000",
     username: "Vigilio1000",
     enabled: true,
     address: null,
     birthday: new Date(),
-    dni: faker.string.numeric(8),
     photo: null,
     token: null,
     isOnline: false,

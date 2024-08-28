@@ -28,12 +28,11 @@ import type { GuidesSchema } from "../schemas/guides.schema";
 import type { SunatGuideDto } from "../sunat/dtos/sunat.guide.dto";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
 import type { DetailOrders } from "../entities/detail_orders.entity";
-import type { Districts } from "@/ubigeo/entities/districts.entity";
-import type { Provinces } from "@/ubigeo/entities/provinces.entity";
-import type { Departments } from "@/ubigeo/entities/departments.entity";
 import { guidePDFSunatApi } from "../sunat/guide.pdf.api";
 import { productEntity, productEntityId } from "@/products/libs";
 import { Op, type WhereAttributeHash } from "sequelize";
+import type { Cities } from "@/ubigeo/entities/cities.entity";
+import type { Regions } from "@/ubigeo/entities/regions.entity";
 export const ordersTransferenciaImage = [800];
 
 export const isValidDni = new RegExp(/^\d{8}$/);
@@ -229,7 +228,7 @@ export async function onInvoiceSunat({
             telephone: information.telephoneFirst,
             vendedor,
             address,
-            ...information.company,
+            ...information.company!,
         },
     };
 }
@@ -327,7 +326,7 @@ export async function onNoteSunat({
             telephone: information.telephoneFirst,
             vendedor,
             address,
-            ...information.company,
+            ...information.company!,
         },
     };
 }
@@ -418,7 +417,7 @@ export async function onGuideSunat({
             telephone: information.telephoneFirst,
             vendedor,
             address,
-            ...information.company,
+            ...information.company!,
         },
     };
 }
@@ -471,9 +470,8 @@ export async function detailInvoice(
     const lengthDetails = (
         order.dataValues.details_orders as DetailOrders[]
     ).reduce((total, obj) => total + obj.quantity, 0);
-    const departamento = order.district_id
-        ? (((order.district as Districts).province as Provinces)
-              .department as Departments)
+    const departamento = order.city_id
+        ? ((order.city as Cities).region as Regions)
         : null;
     const ig = departamento
         ? order.igv

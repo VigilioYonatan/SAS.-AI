@@ -18,7 +18,6 @@ export class AdminApiController {
         return result;
     }
 
-    @PermissionAuth()
     @PermissionAdmin()
     @Get("/earning")
     async earning(@Req("information") information: InformationEntity) {

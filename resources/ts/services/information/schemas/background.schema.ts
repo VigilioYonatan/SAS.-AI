@@ -19,3 +19,7 @@ export const backgroundSchema = object({
     information_id: number(),
 });
 export type BackgroundSchema = Input<typeof backgroundSchema>;
+export type BackgroundSchemaFromServer = BackgroundSchema & {
+    createdAt: Date;
+    updatedAt: Date;
+};

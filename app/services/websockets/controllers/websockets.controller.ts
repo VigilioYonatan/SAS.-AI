@@ -7,12 +7,13 @@ import {
     IO,
     Socket,
 } from "@vigilio/express-core";
+// biome-ignore lint/correctness/noUnusedImports: <explanation>
 import * as socket from "socket.io";
 import { WebsocketsService } from "../services/websockets.service";
 import { chatAssistant, cloudeAi } from "@/bot/libs/ai";
 import { Injectable } from "@vigilio/express-core";
 
-let usersInWeb: string[] = [];
+let usersInWeb: Record<string, string[]> = {};
 
 @Injectable()
 @SocketController("/")
@@ -22,8 +23,13 @@ export class WebsocketsController {
     @Disconnect()
     async disconnect(@Socket() socket: socket.Socket, @IO() io: socket.Socket) {
         const token = (socket.handshake.query?.["x-token"] as string) ?? "null";
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
         if (!token) return;
-        usersInWeb = usersInWeb.filter((user) => user !== token);
+        usersInWeb = {
+            ...usersInWeb,
+            [empresa]: usersInWeb[empresa].filter((user) => user !== token),
+        };
         io.emit("users-count:index", usersInWeb.length);
         const user = await this.websocketsService.index(
             socket.handshake.query?.["x-user"] as string
@@ -38,6 +44,8 @@ export class WebsocketsController {
     async index(@Socket() socket: socket.Socket, @IO() io: socket.Socket) {
         // token localstorage
         const token = (socket.handshake.query?.["x-token"] as string) ?? "null";
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
         if (!token) return;
         // user - user auth
         const user = await this.websocketsService.index(
@@ -51,8 +59,8 @@ export class WebsocketsController {
                 await user.update({ isOnline: true });
             }
             socket.join(user.id);
-            if (!chatAssistant[user.id]?.length) {
-                chatAssistant[user.id] = [
+            if (!chatAssistant[empresa][user.id]?.length) {
+                chatAssistant[empresa][user.id] = [
                     [
                         "assistant",
                         `Hola ${user.username}, Soy tu asistente virtual 😀. ¿En que  podriamos ayudarte?`,
@@ -62,10 +70,15 @@ export class WebsocketsController {
             }
             io.to(user.id).emit("chat-assistant:ai", chatAssistant[user.id]);
         }
-        const existUserInWeb = usersInWeb.find((user) => user === token);
+        const existUserInWeb = usersInWeb[empresa].find(
+            (user) => user === token
+        );
         if (!existUserInWeb) {
             // si no existe usuari con el mismo token que ya no agregre
-            usersInWeb = [...usersInWeb, token]; // add user
+            usersInWeb = {
+                ...usersInWeb,
+                [empresa]: [...usersInWeb[empresa], token],
+            }; // add user
         }
 
         io.emit("users-count:index", usersInWeb.length);
@@ -75,14 +88,17 @@ export class WebsocketsController {
     async orderStore(
         @Args()
         body: {
-            information_id: number;
             client_id: number;
             order_code: string;
             total: number;
         },
-        @IO() io: socket.Socket
+        @IO() io: socket.Socket,
+        @Socket() socket: socket.Socket
     ) {
-        const result = await this.websocketsService.orderStore(body);
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+        if (!empresa) return;
+        const result = await this.websocketsService.orderStore(empresa, body);
         io.emit("notifications:store", result);
     }
 

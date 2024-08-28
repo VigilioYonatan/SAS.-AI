@@ -1,7 +1,5 @@
 import { attachMiddleware } from "@vigilio/express-core";
 import { type NextFunction, type Request, type Response } from "express";
-import passport from "passport";
-import { ROLES } from "@/users/libs";
 import type { Users } from "@/users/entities/users.entity";
 
 export function PermissionAdmin() {
@@ -18,7 +16,7 @@ export function PermissionAdmin() {
                 // local
                 if (req.isAuthenticated()) {
                     const user = req.user as Users;
-                    if (user.role_id !== ROLES.admin || !user.enabled) {
+                    if (!user || !user.enabled) {
                         return res.status(403).json({
                             success: false,
                             message:
@@ -27,28 +25,11 @@ export function PermissionAdmin() {
                     }
                     return next();
                 }
-                //  jwt
-                passport.authenticate(
-                    "jwt",
-                    { session: false },
-                    (err: Error, user: Users) => {
-                        if (err || !user) {
-                            return res.status(401).json({
-                                success: false,
-                                message: "Unauthorized",
-                            });
-                        }
-                        if (user.role_id !== ROLES.admin || !user.enabled) {
-                            return res.status(403).json({
-                                success: false,
-                                message:
-                                    "No está permitido realizar esta acción solo admin",
-                            });
-                        }
-                        req.user = user;
-                        return next();
-                    }
-                )(req, res, next);
+                return res.status(403).json({
+                    success: false,
+                    message:
+                        "Unauthorized",
+                });
             }
         );
     };

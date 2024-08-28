@@ -1,4 +1,4 @@
-import { formatSoles } from "../libs/helpers";
+import { formatMoney } from "../libs/helpers";
 import Form from "~/components/form";
 import { useForm } from "react-hook-form";
 import { valibotVigilio } from "~/libs/valibot";
@@ -59,7 +59,7 @@ function AdminCart() {
                 <p>
                     Total: <b>${
                         /* @ts-ignore */
-                        formatSoles(ordersStoreDtoForm.getValues("total"))
+                        formatMoney(ordersStoreDtoForm.getValues("total"))
                     }</b>
                 </p>
             </div>
@@ -170,7 +170,7 @@ function AdminCart() {
                 >
                     <span class="w-full justify-between mb-2 text-primary dark:text-white  gap-2 flex ">
                         <span>Total:</span>
-                        <b>{formatSoles(cartStore.methods.getTotal())}</b>
+                        <b>{formatMoney(cartStore.methods.getTotal())}</b>
                     </span>
                     <Form.button.submit
                         disabled={ordersStoreApiMutation.isLoading || false}

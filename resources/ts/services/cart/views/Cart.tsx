@@ -7,7 +7,7 @@ import {
 } from "@/products/libs/helpers";
 import {
     calculatePorcentajeDiscount,
-    formatSoles,
+    formatMoney,
     igv,
     subtotalIgv,
 } from "../libs/helpers";
@@ -223,10 +223,8 @@ function Cart({ cart }: CartProps) {
                                                                 </span>
                                                                 <span className="block font-bold text-zinc-400">
                                                                     {formatMoney(
-                                                                        formatMoneyDinamic(
-                                                                            product.subtotal /
-                                                                                product.quantity
-                                                                        )
+                                                                        product.subtotal /
+                                                                            product.quantity
                                                                     )}
                                                                 </span>
                                                                 <span className="font-semibold text-sm  bg-danger px-4 py-1 rounded-md text-white">
@@ -291,7 +289,7 @@ function Cart({ cart }: CartProps) {
                                                                     </div>
                                                                 </td>
                                                                 <td className="py-3">
-                                                                    {formatSoles(
+                                                                    {formatMoney(
                                                                         product.subtotal
                                                                     )}
                                                                 </td>
@@ -339,7 +337,7 @@ function Cart({ cart }: CartProps) {
                                         <b>
                                             {distrito?.province.department
                                                 .priceShipping! > 0
-                                                ? formatSoles(
+                                                ? formatMoney(
                                                       igv(
                                                           distrito!.province
                                                               .department
@@ -366,7 +364,7 @@ function Cart({ cart }: CartProps) {
                             <span class="dark:text-secondary-light">
                                 Total:{" "}
                                 <b>
-                                    {formatSoles(
+                                    {formatMoney(
                                         ordersCartStoreDtoForm.watch("total")
                                     )}
                                 </b>
@@ -419,7 +417,7 @@ function Cart({ cart }: CartProps) {
                                             <i class="fa-solid fa-truck-fast mr-2" />
                                             {distrito?.province.department
                                                 .priceShipping! > 0
-                                                ? `Se agregó +${formatSoles(
+                                                ? `Se agregó +${formatMoney(
                                                       igv(
                                                           distrito!.province
                                                               .department

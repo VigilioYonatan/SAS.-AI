@@ -53,7 +53,7 @@ export const whatsappconfig = objectAsync({
     sendpdf: string(),
 });
 export type Whatsappconfig = Input<typeof whatsappconfig>;
-export const companySchema = objectAsync({
+export const companySchema = object({
     ruc: string([toTrimmed(), regex(/^(10|20)\d{9}$/, "Ruc no válido")]),
     razonSocial: string([
         toTrimmed(),
@@ -110,29 +110,7 @@ export const inteligenceArtificial = object({
     didactrices: array(string([minLength(3)])),
     otros: array(string()),
 });
-export const transferenciaSchema = object({
-    bcp: nullable(
-        object({
-            titular: nullable(string()),
-            soles: nullable(string()),
-            dolares: nullable(string()),
-        })
-    ),
-    bbva: nullable(
-        object({
-            titular: nullable(string()),
-            soles: nullable(string()),
-            dolares: nullable(string()),
-        })
-    ),
-    interbank: nullable(
-        object({
-            titular: nullable(string()),
-            soles: nullable(string()),
-            dolares: nullable(string()),
-        })
-    ),
-});
+export const transferenciaSchema = object({});
 
 export type TransferenciaSchema = Input<typeof transferenciaSchema>;
 export type ScheduleSchema = Input<typeof scheduleSchema>;
@@ -154,14 +132,14 @@ export type ContactsSchema = Input<typeof contactsSchema>;
 export type GroupWhatsapp = Input<typeof groupWhatsapp>;
 export const informationSchema = objectAsync({
     id: number(),
+    dial_code: string(),
     name_empresa: string([minLength(2), maxLength(100)]),
     web: nullable(string([startsWith("https://", "Web no válida. https://")])),
     email: string(),
     bg_color: string([minLength(2), maxLength(8)]),
-    telephoneFirst: string([minLength(1), minLength(9), maxLength(30)]), //obligatorio
-    telephoneReclamos: nullable(string([minLength(9), maxLength(30)])),
-    telephoneThird: nullable(string([minLength(9), maxLength(30)])),
-    earning: number([minValue(0, "Mínimo 0"), maxValue(100, "Máximo 100")]), //GLOBAL: ganancia de empresa. si producto cuesta 100soles. ganancia 30% ejemplo. 130soles mostrara
+    telephoneFirst: string([minLength(1), maxLength(30)]), //obligatorio
+    telephoneReclamos: nullable(string([minLength(1), maxLength(30)])),
+    telephoneThird: nullable(string([minLength(1), maxLength(30)])),
     icon: nullable(array(filesSchema())), //obligatorio
     logo: nullable(array(filesSchema())), //obligatorio
     // urls
@@ -210,8 +188,8 @@ export const informationSchema = objectAsync({
             maxLength(100),
         ])
     ),
-    about: string([minLength(1), minLength(20)]), //  acerca de la empresa
-    company: companySchema, // informacion de compania para sunat
+    about: string(), //  acerca de la empresa
+    company: nullable(companySchema), // informacion de compania para sunat
     certificado: nullable(array(filesSchema())),
     enabled_igv: boolean(), // La tienda  pagará impuestos
     igv: number(),
@@ -245,7 +223,20 @@ export const informationSchema = objectAsync({
     enabled: boolean(), // habilitar web
     enabled_catalogo: boolean(),
     type_empresa_id: number(),
+    telegram_token: nullable(string()),
     type_empresa_other: nullable(string()),
+    bancos: array(
+        object({
+            key: string(),
+            value: string(),
+            image: string(),
+        })
+    ),
+    money: object({
+        money: string(),
+        international_simbolo: string(),
+        simbolo: string(),
+    }),
 });
 
 export type InformationSchema = Input<typeof informationSchema> & {

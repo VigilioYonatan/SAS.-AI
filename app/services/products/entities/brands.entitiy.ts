@@ -11,6 +11,7 @@ import {
 import { ProductsNormal } from "./products_normal.entity";
 import type { BrandsSchema } from "../schemas/brands.schema";
 import { InformationEntity } from "@/information/entities/information.entity";
+import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 
 @Table
 export class Brands extends Model implements Omit<BrandsSchema, "id"> {
@@ -20,6 +21,9 @@ export class Brands extends Model implements Omit<BrandsSchema, "id"> {
 
     @Column({ type: DataType.STRING(80), allowNull: false })
     brand_code: string;
+
+    @Column({ type: DataType.JSON, allowNull: false })
+    image: FilesSchema[];
 
     @Column({ type: DataType.STRING(100), allowNull: false })
     slug: string;

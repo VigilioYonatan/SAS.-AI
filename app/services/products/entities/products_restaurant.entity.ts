@@ -64,11 +64,6 @@ export class ProductsRestaurant
     }
 
     @Column({
-        type: DataType.INTEGER,
-    })
-    earning: number | null;
-
-    @Column({
         type: DataType.DECIMAL(10, 2),
         defaultValue: 0,
     })

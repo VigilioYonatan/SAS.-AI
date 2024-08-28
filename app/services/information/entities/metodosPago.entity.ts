@@ -6,7 +6,10 @@ import {
     Model,
     Table,
 } from "sequelize-typescript";
-import type { MetodosPagoSchema } from "../schemas/metodosPago.schema";
+import type {
+    MetodosPagoSchema,
+    TransferenciaSchema,
+} from "../schemas/metodosPago.schema";
 import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 import { InformationEntity } from "./information.entity";
 
@@ -22,15 +25,28 @@ export class MetodosPago
     enable_efectivo: boolean;
 
     @Column({
-        type: DataType.BOOLEAN,
+        type: DataType.JSON,
         allowNull: false,
     })
-    enable_paypal: boolean;
+    paypal: {
+        enabled: boolean;
+        paypal_client_id: string | null;
+        paypal_secret_key: string | null;
+    };
 
     @Column({
-        type: DataType.STRING(255),
+        type: DataType.JSON,
     })
-    mercado_pago: string | null;
+    transferencias: TransferenciaSchema | null;
+
+    @Column({
+        type: DataType.JSON,
+    })
+    mercado_pago: {
+        enabled: boolean;
+        token: string | null;
+    };
+
     @Column({
         type: DataType.JSON,
     })

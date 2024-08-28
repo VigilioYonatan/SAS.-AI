@@ -11,6 +11,7 @@ import { converterMoneyApi } from "~/libs/apis";
 import type { OrdersStoreDto } from "@/orders/dtos/orders.store.dto";
 import type { OrdersUpdateDto } from "@/orders/dtos/orders.update.dto";
 import type { RequestVigilio } from "~/config/types";
+import type { MetodosPago } from "@/information/entities/metodosPago.entity";
 
 @Injectable()
 export class PaypalService {
@@ -19,21 +20,33 @@ export class PaypalService {
         private readonly informationApiService: InformationApiService
     ) {}
     async order(slug: string, body: OrdersStoreDto) {
+        const { information } = await this.informationApiService.show(slug);
+        const from = information.money.simbolo;
         const response = await converterMoneyApi({
             amount: "1",
-            from: "PEN",
+            from,
             to: "USD",
         });
-        const { information } = await this.informationApiService.show(slug);
         const value = Number.parseFloat(response.result.todayNumber); // its necesary to fix
+        const metodo = (await information.$get("metodos_pago")) as MetodosPago;
+        if (
+            !metodo.paypal.enabled ||
+            !metodo.paypal.paypal_client_id ||
+            !metodo.paypal.paypal_secret_key
+        )
+            throw new BadRequestException("No disponible en este momento");
         const total = information.enabledClientPayComision
             ? paypalComision(body.total, value).toFixed(2)
             : (body.total / value).toFixed(2);
         const { createOrder } = paypal({
-            client_id: information.credentials.paypal.PAYPAL_CLIENT_ID,
-            secret_key: information.credentials.paypal.PAYPAL_SECRET_KEY,
+            client_id: metodo.paypal.paypal_client_id,
+            secret_key: metodo.paypal.paypal_secret_key,
             sandbox: enviroments.PAYPAL_SANDBOX,
         });
+        const url = information.host
+            ? `https://${information.host}`
+            : `https://${information.slug}.vigilio-services.com`;
+
         const result = await createOrder({
             intent: "CAPTURE",
             purchase_units: [
@@ -51,8 +64,9 @@ export class PaypalService {
                 landing_page: "NO_PREFERENCE",
                 // shipping_preference: "SET_PROVIDED_ADDRESS",
                 user_action: "PAY_NOW",
-                return_url: `${enviroments.VITE_URL}/paypal/${information.slug}/success`,
-                cancel_url: `${enviroments.VITE_URL}/paypal/${information.slug}/cancel`,
+                //!
+                return_url: `${url}/paypal/success`,
+                cancel_url: `${url}/paypal/cancel`,
             },
         });
 
@@ -83,9 +97,18 @@ export class PaypalService {
         if (!order) throw new NotFoundException("Orden no encontrado.");
         let result = null;
         try {
+            const metodoPago = (await information.$get(
+                "metodos_pago"
+            )) as MetodosPago;
+            if (
+                !metodoPago.paypal.enabled ||
+                !metodoPago.paypal.paypal_client_id ||
+                !metodoPago.paypal.paypal_secret_key
+            )
+                throw new BadRequestException("No disponible en este momento");
             const { captureOrder } = paypal({
-                client_id: information.credentials.paypal.PAYPAL_CLIENT_ID,
-                secret_key: information.credentials.paypal.PAYPAL_SECRET_KEY,
+                client_id: metodoPago.paypal.paypal_client_id,
+                secret_key: metodoPago.paypal.paypal_secret_key,
                 sandbox: enviroments.PAYPAL_SANDBOX,
             });
             result = await captureOrder(token);

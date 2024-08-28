@@ -48,7 +48,7 @@ export const ordersSchema = objectAsync({
     moneyChange: number(),
     igv: boolean(),
     is_pasarela_client: boolean(),
-    district_id: nullable(string()),
+    city_id: nullable(number()),
     map_marker: nullable(
         object({ lng: number(), lat: number() }, "Coordenadas no válida.")
     ),

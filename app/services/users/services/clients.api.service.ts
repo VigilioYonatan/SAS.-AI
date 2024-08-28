@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@vigilio/express-core";
+import { Injectable } from "@vigilio/express-core";
 import { Clients } from "../entities/clients.entity";
 import { NotFoundException } from "@vigilio/express-core";
 import { type ClientsStoreDto } from "../dtos/clients.store.dto";
@@ -47,16 +47,6 @@ export class ClientsApiService {
         information: InformationEntity,
         clientsStoreDto: ClientsStoreDto
     ) {
-        const total = await Clients.count({
-            where: {
-                information_id: information.id,
-            },
-        });
-        if (total > information.payments.clients.quantity) {
-            throw new BadRequestException(
-                `Limite de clientes para ${information.name_empresa}`
-            );
-        }
         const client = new Clients({
             ...clientsStoreDto,
             information_id: information.id,

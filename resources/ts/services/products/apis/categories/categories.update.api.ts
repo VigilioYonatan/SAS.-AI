@@ -1,4 +1,3 @@
-import enviroments from "~/config";
 import { type UseMutation, useMutation } from "@vigilio/preact-fetching";
 import { type CategoriesUpdateDto } from "../../dtos/categories.update.dto";
 import type { CategoriesSchemaFromServer } from "../../schemas/categories.schema";
@@ -11,7 +10,7 @@ export function categoriesUpdateApi(
     categoriesUpdateErrorAPI
 > {
     return useMutation(`/categories/${slug}`, async (url, body) => {
-        const response = await fetch(`${enviroments.VITE_URL}/api${url}`, {
+        const response = await fetch(`/api${url}`, {
             method: "PUT",
             body: JSON.stringify(body),
             headers: {

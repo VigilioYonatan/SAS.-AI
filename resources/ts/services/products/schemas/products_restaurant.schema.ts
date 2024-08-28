@@ -27,7 +27,6 @@ export const productsRestaurantSchema = object({
         })
     ),
     enabled: boolean(), // esta disponible el producto?
-    earning: nullable(number([minValue(0), maxValue(100)])), // ganancia de empresa. si producto cuesta 100soles. ganancia 30% ejemplo. 130soles mostrara. SI ES nullo tomará el 30% de information schema
     price: number([minValue(0)]), // precio
     stock: nullable(number([minValue(0, "Minimo 0 cantidades.")])),
     ilimit: boolean(),
@@ -44,6 +43,6 @@ export type ProductsRestaurantSchema = Input<
     createdAt?: Date;
     updatedAt?: Date;
 };
-export type ProductsSchemaFromServer = ProductsRestaurantSchema & {
+export type ProductsRestaurantSchemaFromServer = ProductsRestaurantSchema & {
     category: CategoriesSchema;
 };

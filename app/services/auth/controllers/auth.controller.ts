@@ -11,16 +11,13 @@ import {
 @Controller("/")
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
-
-    @Get("/forgot-password", [authNoAuthenticatedMiddleware])
-    async changePassword(
-        @Res() res: Response,
-        @Query("token") token: string | null
-    ) {
-        const result = await this.authService.forgotPassword(token);
-        return res.render("auth/forgot-password", result);
+    @Get("/login", [authNoAuthenticatedMiddleware])
+    async login(@Res() res: Response) {
+        return res.render("auth/login", {
+            title: "Iniciar sesión",
+            description: "Bienvenido a",
+        });
     }
-
     @Get("/logout", [authAuthenticatedMiddleware])
     async logout(
         @Req() req: Request,
@@ -33,5 +30,14 @@ export class AuthController {
             }
             res.redirect("/");
         });
+    }
+
+    @Get("/forgot-password", [authNoAuthenticatedMiddleware])
+    async changePassword(
+        @Res() res: Response,
+        @Query("token") token: string | null
+    ) {
+        const result = await this.authService.forgotPassword(token);
+        return res.render("auth/forgot-password", result);
     }
 }

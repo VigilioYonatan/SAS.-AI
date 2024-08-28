@@ -60,10 +60,9 @@ export class Users extends Model implements Omit<UsersSchema, "id"> {
     lastname: string | null;
 
     @Column({
-        allowNull: false,
         type: DataType.STRING(100),
     })
-    email: string;
+    email: string | null;
 
     @Column({
         allowNull: false,
@@ -77,14 +76,10 @@ export class Users extends Model implements Omit<UsersSchema, "id"> {
     address: string | null;
 
     @Column({
-        type: DataType.STRING(8),
+        type: DataType.STRING(80),
+        allowNull: false,
     })
-    dni: string | null;
-
-    @Column({
-        type: DataType.STRING(30),
-    })
-    telephone: string | null;
+    telephone: string;
 
     @Column({
         type: DataType.JSON,

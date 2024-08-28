@@ -21,7 +21,7 @@ import {
     checkDiskUsage,
     updateVigilioServices,
 } from "~/libs/os";
-
+import TelegramBot from "node-telegram-bot-api";
 export function buenosDias(
     query: string,
     name: string,
@@ -67,7 +67,8 @@ export function gracias(query: string) {
 
 // 	return new mistral.default(enviroments.MISTRAL_TOKEN);
 // }
-export let clients: Record<string, WAWebJS.Client> = {};
+export let clientsWhatsapp: Record<string, WAWebJS.Client> = {};
+export let clientsTelegram: Record<string, TelegramBot> = {};
 export let openAis: Record<string, openai> = {};
 export async function initializeClients() {
     // Conexión a la base de datos
@@ -95,7 +96,7 @@ export async function initializeClients() {
                     });
                 });
         });
-        clients = { ...clients, [information.slug]: client };
+        clientsWhatsapp = { ...clientsWhatsapp, [information.slug]: client };
         openAis = { ...openAis, [information.slug]: openAiClient };
 
         // Opcional: Manejar eventos para cada cliente
@@ -137,6 +138,42 @@ export async function initializeClients() {
             // await this.bot();
         });
         client.initialize();
+    }
+}
+export async function initialTelegram() {
+    const informations = await InformationEntity.findAll();
+    // for (const information of informations) {
+    // if (!information.telegram_token) return;
+
+    await initializeBot("a", "");
+    //     console.log({ a: information.slug });
+    // }
+    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+    console.log("************ TELEGRAM *******************");
+}
+export async function initializeBot(slug: string, _token: string) {
+    try {
+        if (clientsTelegram[slug]) {
+            return;
+        }
+
+        const bot = new TelegramBot(
+            "7504180864:AAG70K8XyFmAM7qGf2OWF6DGP2tkrJyInOU",
+            { polling: true }
+        );
+        bot.on("message", async (msg) => {
+            const chatId = msg.chat.id;
+            const messageText = msg.text;
+            // Envía una respuesta al usuario
+            bot.sendMessage(
+                chatId,
+                `Recibido tu mensaje: ${chatId} : ${messageText}`
+            );
+            await AiTelegram(slug, msg);
+        });
+        clientsTelegram = { ...clientsTelegram, [slug]: bot };
+    } catch (error) {
+        delete clientsTelegram[slug];
     }
 }
 
@@ -189,13 +226,60 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
         latestInformationUsage,
     };
 }
+export async function isTelegramIA(empresa: string) {
+    let clientVigilio = null;
+    try {
+        clientVigilio = await getClientVigilio();
+    } catch (error) {
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log("Error al hacer fetch a la empresa");
+    }
+    const [information] = await Promise.all([
+        InformationEntity.findOne({
+            where: { slug: empresa },
+            attributes: {
+                exclude: ["certificado", "groupWhatsapp"],
+            },
+        }),
+    ]);
+    if (!information) return null;
+    const latestInformationUsage = information!.inteligenceArtificial.usage;
+    if (!information?.enabledBot) return null;
+    const isDateNow = restarDays(
+        NOW().toDate(),
+        information.payments.telegram.date!
+    );
+    if (isDateNow <= 0 && latestInformationUsage.input_tokens <= 0) {
+        // actualizamos uso de tokens
+        await information.update({
+            ...information,
+            inteligenceArtificial: {
+                ...information.inteligenceArtificial,
+                usage: {
+                    ...latestInformationUsage,
+                    input_tokens: 0,
+                    output_tokens: 0,
+                },
+            },
+        });
+    }
+
+    return {
+        information,
+        clientVigilio,
+        latestInformationUsage,
+    };
+}
 export async function humanTyping(chat: WAWebJS.Chat, random: number) {
     await delay(random);
     await chat.sendSeen(); // dejar en visto
     await chat.sendStateTyping(); // escribiendo
     await delay(2);
 }
-export let chats: Record<string, ["assistant" | "user", string][]> = {};
+export const chats: Record<
+    string,
+    Record<string, ["assistant" | "user", string][]>
+> = {};
 export async function cloudeAiWhatsapp(
     empresa: string,
     client: Client,
@@ -256,10 +340,13 @@ export async function cloudeAiWhatsapp(
         }
 
         // imporante que esto este acá
-        chats[userId] = [...(chats[userId] ?? []), ["user", body]];
+        chats[empresa][userId] = [
+            ...(chats[empresa][userId] ?? []),
+            ["user", body],
+        ];
 
-        if (chats[userId]) {
-            const messages = chats[userId].map(([role, content]) => ({
+        if (chats[empresa][userId]) {
+            const messages = chats[empresa][userId].map(([role, content]) => ({
                 role,
                 content,
             }));
@@ -317,8 +404,8 @@ export async function cloudeAiWhatsapp(
                 removeNote = removeNote.replace(urlPattern, "").trim();
             }
 
-            chats[userId] = [
-                ...(chats[userId] || []),
+            chats[empresa][userId] = [
+                ...(chats[empresa][userId] || []),
                 ["assistant", removeNote],
             ];
 
@@ -333,14 +420,151 @@ export async function cloudeAiWhatsapp(
             }
         }
     } catch (error) {
-        chats[userId] = [];
+        chats[empresa][userId] = [];
     }
 }
-
-/**** bot to admin  *****/
-export let chatAssistant: Record<
+export const chatsTelegram: Record<
     string,
-    ["user" | "assistant", string, number][]
+    Record<string, ["assistant" | "user", string][]>
+> = {};
+export async function AiTelegram(
+    empresa: string,
+    message: TelegramBot.Message
+) {
+    const userId = message.chat.id;
+    let body = message.text ?? null;
+    const voice = message.voice ?? null;
+
+    if (!voice && !body) return;
+
+    try {
+        const telegram = await isTelegramIA(empresa);
+        if (!telegram) return;
+        const { clientVigilio, information, latestInformationUsage } = telegram;
+
+        const random = randomNumber(
+            information.inteligenceArtificial.timer.start,
+            information.inteligenceArtificial.timer.finish
+        );
+        // delay en 5 - 15 segundos
+        await delay(random);
+        //  cuando cierra el restaurante
+        const findDay = information.schedule.find(
+            (day) => day.id === NOW().day()
+        );
+        if (
+            NOW().isAfter(formatTime(findDay!.openTime)) &&
+            NOW().isBefore(formatTime(findDay!.closeTime))
+        ) {
+        } else {
+            return;
+        }
+        if (voice) {
+            const fileLink = await clientsTelegram[empresa].getFileLink(
+                voice.file_id
+            );
+            const getVoice = await fetch(fileLink, { method: "GET" });
+            const responseGetVoice = await getVoice.arrayBuffer();
+            const binaryData = Buffer.from(responseGetVoice);
+            const audioToTxt = await transcribeAudio(empresa, binaryData);
+            body = audioToTxt.text;
+        }
+        const buenas = buenosDias(
+            body!,
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            (message as any)._data.notifyName,
+            information
+        );
+        const thanks = gracias(body!);
+        if (buenas) {
+            await clientsTelegram[empresa].sendMessage(userId, buenas);
+            return;
+        }
+        if (thanks) {
+            await clientsTelegram[empresa].sendMessage(userId, thanks);
+            return;
+        }
+        // imporante que esto este acá
+        chatsTelegram[empresa][userId] = [
+            ...(chatsTelegram[empresa][userId] ?? []),
+            ["user", body!],
+        ];
+        if (chatsTelegram[empresa][userId]) {
+            const messages = chatsTelegram[empresa][userId].map(
+                ([role, content]) => ({
+                    role,
+                    content,
+                })
+            );
+            // Si el primer mensaje en lastMessages no es del role
+            const prompt = await promptReplace(body!, information);
+
+            const completion = await openAis[
+                information.slug
+            ].chat.completions.create({
+                model: clientVigilio
+                    ? clientVigilio.information.modelai
+                    : enviroments.MODEL_AI,
+                max_tokens: 300,
+                messages: [
+                    {
+                        role: "user",
+                        content: `${prompt} -  Solo enviamen la imagen ( mandarme la url de la imagen) ${enviroments.VITE_URL}/images/products/... , si te pido información de un producto o si te pido una imagen de un producto, por ultimo responde bonito en formato whatsapp`,
+                    },
+                    { role: "assistant", content: "Entendido, Empezemos." }, // getting start
+                    ...messages.slice(
+                        -information.inteligenceArtificial.memory
+                    ), // solos los ultimo 7 mensajes
+                ],
+            });
+            // actualizamos uso de tokens
+            await information.update({
+                ...information,
+                inteligenceArtificial: {
+                    ...information.inteligenceArtificial,
+                    usage: {
+                        ...latestInformationUsage,
+                        input_tokens:
+                            latestInformationUsage.input_tokens +
+                            completion.usage!.prompt_tokens,
+                        output_tokens:
+                            latestInformationUsage.output_tokens +
+                            completion.usage!.completion_tokens,
+                    },
+                },
+            });
+            // get message ai
+            const completionText = completion.choices[0].message.content!;
+            let removeNote = completionText.replace(/\s*\(.*?\)\s*/g, " ");
+            // quitar las imagenes para enviar imagen
+            const baseURL = `${enviroments.VITE_URL}/${empresa}/images/products`;
+            const urlPattern = new RegExp(`${baseURL}[^\\s]*`, "g");
+            const match = removeNote.match(urlPattern);
+            const urlExtraida = match ? match[0] : null;
+
+            if (urlExtraida) {
+                removeNote = removeNote.replace(urlPattern, "").trim();
+            }
+
+            chatsTelegram[empresa][userId] = [
+                ...(chatsTelegram[empresa][userId] || []),
+                ["assistant", removeNote],
+            ];
+
+            await clientsTelegram[empresa].sendMessage(userId, removeNote);
+            // enviar imagen
+            if (urlExtraida) {
+                await clientsTelegram[empresa].sendMessage(userId, urlExtraida);
+            }
+        }
+    } catch (error) {
+        chatsTelegram[empresa][userId] = [];
+    }
+}
+/**** bot to admin  *****/
+export const chatAssistant: Record<
+    string,
+    Record<string, ["user" | "assistant", string, number][]>
 > = {};
 export async function cloudeAi(
     empresa: string,
@@ -352,15 +576,17 @@ export async function cloudeAi(
         if (!whatsapp) return;
         const { clientVigilio, information, latestInformationUsage } = whatsapp;
 
-        chatAssistant[userId] = [
-            ...(chatAssistant[userId] || []),
+        chatAssistant[empresa][userId] = [
+            ...(chatAssistant[empresa][userId] || []),
             ["user", message, Date.now()],
         ];
         // mapped messages to messages cloude
-        const messages = chatAssistant[userId].map(([role, content]) => ({
-            role,
-            content,
-        }));
+        const messages = chatAssistant[empresa][userId].map(
+            ([role, content]) => ({
+                role,
+                content,
+            })
+        );
 
         const completion = await openAis[
             information.slug
@@ -395,8 +621,8 @@ export async function cloudeAi(
             },
         });
 
-        chatAssistant[userId] = [
-            ...(chatAssistant[userId] || []),
+        chatAssistant[empresa][userId] = [
+            ...(chatAssistant[empresa][userId] || []),
             ["assistant", removeNote, Date.now()],
         ];
 
@@ -419,15 +645,16 @@ export async function getClientVigilio() {
 // clean CHAT
 // cada 24 horas se limpiara el chat assistant de ambos para consumir menos recursos
 cron.schedule("0 0 * * *", async () => {
-    chatAssistant = {};
-    chats = {};
     async function monitorSystem() {
         const cpuThreshold = 0.85; // 85%
         const diskThreshold = 90; // 90% de uso del disco
         const usageCPU = checkCPUUsage();
         const usedPercentage = await checkDiskUsage();
 
-        await updateVigilioServices({ cpu: usageCPU, disk: usedPercentage });
+        await updateVigilioServices({
+            cpu: usageCPU * 100,
+            disk: usedPercentage,
+        });
         // Verificar CPU
         if (usageCPU > cpuThreshold) {
             // biome-ignore lint/suspicious/noConsoleLog: <explanation>

@@ -36,5 +36,6 @@ export async function authDashboardPermissionMiddleware(
     if (!user.enabled) {
         return res.redirect("/");
     }
+
     next();
 }

@@ -24,6 +24,7 @@ export const usersStoreDto = omitAsync(
                     Users.findOne({
                         where: {
                             telephone: input.telephone,
+                            information_id: input.information_id,
                         },
                         raw: true,
                     }),
@@ -46,7 +47,7 @@ export const usersStoreDto = omitAsync(
             if (byUser_name) {
                 return getPipeIssues(
                     "username" as keyof UsersSchema,
-                    `Ya existe un usuario con el username: ${input.dni} en tu empresa`,
+                    `Ya existe un usuario con el username: ${input.username} en tu empresa`,
                     input
                 );
             }

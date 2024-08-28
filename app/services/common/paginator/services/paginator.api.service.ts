@@ -27,11 +27,11 @@ import type { Request } from "express";
 import type { RequestVigilio } from "~/config/types";
 import { Categories } from "@/products/entities/categories.entity";
 import { getProductAll, productEntity } from "@/products/libs";
-import { Departments } from "@/ubigeo/entities/departments.entity";
 import { ProductsOptions } from "@/products/entities/options/products_options.entity";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { Urls } from "@/urls/entities/urls.entity";
 import { Brands } from "@/products/entities/brands.entitiy";
+import { Regions } from "@/ubigeo/entities/regions.entity";
 
 @Injectable()
 export class PaginatorApiServices {
@@ -104,8 +104,7 @@ export class PaginatorApiServices {
                     },
                     { where: brand ? { slug: brand } : {} },
                 ];
-                const priceEarning = `(price + (price * COALESCE(earning, ${information.earning})) / 100)`;
-                const price = `(${priceEarning} - (${priceEarning} * discount) / 100)`;
+                const price = "(price - (price * discount) / 100)";
                 const subtotal = information.enabled_igv
                     ? `(${price} + (${price} * ${information.igv}) / 100)`
                     : `(${price})`;
@@ -679,14 +678,14 @@ export class PaginatorApiServices {
                 break;
             }
 
-            case "departments": {
+            case "regions": {
                 data = await Promise.all([
-                    Departments.findAll({
+                    Regions.findAll({
                         offset: offsetConverted,
                         limit: limitConverted,
                         order: Object.entries(rest),
                     }),
-                    Departments.count({}),
+                    Regions.count({}),
                 ]);
                 break;
             }

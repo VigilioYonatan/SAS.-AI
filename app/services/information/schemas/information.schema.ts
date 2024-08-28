@@ -19,30 +19,36 @@ import {
     minValue,
     maxValue,
     custom,
+    nullableAsync,
 } from "@vigilio/valibot";
 import { informationLogoQualities } from "../libs";
 import type { AddressSchemaEntity } from "./address.schema";
 
 export type Empresa = "normal" | "restaurant" | "servicio";
 
-const payments = object({
+export const payments = objectAsync({
     catalogo: object({ price: number(), enabled: boolean() }),
     ia: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
         price: number("Este campo es obligatorio"),
-        tokens: number("Solo numeros"),
         enabled: boolean("Este campo es obligatorio"),
+        tokens: number("Solo numeros"),
     }),
-    sunat: object({
+    telegram: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
         price: number("Este campo es obligatorio"),
         enabled: boolean("Este campo es obligatorio"),
+        tokens: number("Solo numeros"),
     }),
-    clients: object({
-        quantity: number(),
-        price: number("Este campo es obligatorio"),
-        enabled: boolean("Este campo es obligatorio"),
-    }),
+    sunat: nullable(
+        object({
+            date: nullable(
+                coerce(date(), (value) => new Date(value as string))
+            ),
+            price: number("Este campo es obligatorio"),
+            enabled: boolean("Este campo es obligatorio"),
+        })
+    ),
 });
 export type Payments = Input<typeof payments>;
 
@@ -79,10 +85,6 @@ export const scheduleSchema = objectAsync({
     closeTime: string(),
 });
 export const credentials = object({
-    paypal: object({
-        PAYPAL_CLIENT_ID: string(),
-        PAYPAL_SECRET_KEY: string(),
-    }),
     open_ai: string(),
 });
 export type Credentials = Input<typeof credentials>;
@@ -111,31 +113,7 @@ export const inteligenceArtificial = object({
     didactrices: array(string([minLength(3)])),
     otros: array(string()),
 });
-export const transferenciaSchema = object({
-    bcp: nullable(
-        object({
-            titular: nullable(string()),
-            soles: nullable(string()),
-            dolares: nullable(string()),
-        })
-    ),
-    bbva: nullable(
-        object({
-            titular: nullable(string()),
-            soles: nullable(string()),
-            dolares: nullable(string()),
-        })
-    ),
-    interbank: nullable(
-        object({
-            titular: nullable(string()),
-            soles: nullable(string()),
-            dolares: nullable(string()),
-        })
-    ),
-});
 
-export type TransferenciaSchema = Input<typeof transferenciaSchema>;
 export type ScheduleSchema = Input<typeof scheduleSchema>;
 export type InteligenceArtificial = Input<typeof inteligenceArtificial>;
 
@@ -178,6 +156,7 @@ export const credentialsWeb = nullable(
 export type CredentialsWeb = Input<typeof credentialsWeb>;
 export const informationSchema = objectAsync({
     id: number(),
+    dial_code: string(),
     name_empresa: string([minLength(2), maxLength(100)]),
     web: nullable(
         string([
@@ -188,10 +167,9 @@ export const informationSchema = objectAsync({
     credentials_web: credentialsWeb,
     email: string(),
     bg_color: string([minLength(2), maxLength(8)]),
-    telephoneFirst: string([minLength(1), minLength(9), maxLength(30)]), //obligatorio
-    telephoneReclamos: nullable(string([minLength(9), maxLength(30)])),
-    telephoneThird: nullable(string([minLength(9), maxLength(30)])),
-    earning: number([minValue(0, "Mínimo 0"), maxValue(100, "Máximo 100")]), //GLOBAL: ganancia de empresa. si producto cuesta 100soles. ganancia 30% ejemplo. 130soles mostrara
+    telephoneFirst: string([minLength(1), maxLength(30)]), //obligatorio
+    telephoneReclamos: nullable(string([maxLength(30)])),
+    telephoneThird: nullable(string([maxLength(30)])),
     icon: nullable(array(filesSchema([100, 300]))), //obligatorio
     logo: nullable(array(filesSchema(informationLogoQualities))), //obligatorio
     // urls
@@ -240,8 +218,8 @@ export const informationSchema = objectAsync({
             maxLength(100),
         ])
     ),
-    about: string([minLength(1), minLength(20)]), //  acerca de la empresa
-    company: companySchema, // informacion de compania para sunat
+    about: string(), //  acerca de la empresa
+    company: nullableAsync(companySchema), // informacion de compania para sunat
     certificado: nullable(array(filesSchema())),
     enabled_igv: boolean(), // La tienda  pagará impuestos
     igv: number(),
@@ -260,7 +238,6 @@ export const informationSchema = objectAsync({
     schedule: arrayAsync(scheduleSchema), // horario de trabajo
     enabledAnimation: boolean(),
     host: nullable(string("https://")),
-    transferencias: nullable(transferenciaSchema), // array de numero de transferencia si el cliente quiero poner como metodo de pago
     map_marker: object(
         // mapa de la empresa del cliente ?
         { lng: number(), lat: number() },
@@ -272,10 +249,22 @@ export const informationSchema = objectAsync({
     payments,
     slug: string(),
     credentials,
-    enabled: boolean(), // habilitar web
     enabled_catalogo: boolean(),
     type_empresa_id: number(),
     type_empresa_other: nullable(string()),
+    telegram_token: nullable(string([maxLength(100)])),
+    bancos: array(
+        object({
+            key: string(),
+            value: string(),
+            image: string(),
+        })
+    ),
+    money: object({
+        money: string(),
+        international_simbolo: string(),
+        simbolo: string(),
+    }),
 });
 
 export type InformationSchema = Input<typeof informationSchema> & {

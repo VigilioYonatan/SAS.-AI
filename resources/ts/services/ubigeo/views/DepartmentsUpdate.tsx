@@ -12,7 +12,7 @@ import View404 from "@/admin/views/404";
 import Loading from "@/admin/components/Loading";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { handlerError } from "~/libs/helpers";
-import { formatSoles, subtotal } from "@/cart/libs/helpers";
+import { formatMoney, subtotal } from "@/cart/libs/helpers";
 import enviroments from "~/config";
 import useInformationStore from "@/information/stores/information.store";
 
@@ -111,7 +111,7 @@ function DepartmentsUpdate({
                             {information.state!.igv ? (
                                 <span class="dark:text-white text-xs">
                                     inc. +{enviroments.VITE_IGV}%{" "}
-                                    {formatSoles(
+                                    {formatMoney(
                                         subtotal(
                                             price,
                                             enviroments.VITE_IGV,

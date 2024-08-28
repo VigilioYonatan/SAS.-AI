@@ -18,7 +18,7 @@ import {
 } from "@/orders/dtos/orders.store.dto";
 import { objectAsync, string } from "@vigilio/valibot";
 import type { RequestVigilio } from "~/config/types";
-import type { InformationApiService } from "@/information/services/information.api.service";
+import { InformationApiService } from "@/information/services/information.api.service";
 
 @Injectable()
 @Controller("/paypal")

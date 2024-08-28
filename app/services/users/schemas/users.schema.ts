@@ -9,11 +9,9 @@ import {
     string,
     array,
     boolean,
-    custom,
     date,
     coerce,
     nullable,
-    startsWith,
     transform,
     toTrimmed,
     nullableAsync,
@@ -34,29 +32,12 @@ export const usersSchema = objectAsync({
     name: string([toTrimmed(), minLength(1), minLength(3), maxLength(30)]),
     lastname: nullable(string([toTrimmed(), minLength(3), maxLength(60)])),
     birthday: nullable(coerce(date(), (value) => new Date(value as string))),
-    email: string([toTrimmed(), minLength(1), email(), maxLength(100)]),
+    email: nullable(
+        string([toTrimmed(), minLength(1), email(), maxLength(100)])
+    ),
     password: string([toTrimmed(), minLength(1), minLength(6), maxLength(30)]),
     address: nullable(string([toTrimmed(), minLength(10), maxLength(100)])),
-    dni: nullable(
-        string([
-            toTrimmed(),
-            minLength(8),
-            maxLength(8),
-            custom((value) => /^[0-9]+$/.test(value), "Dni no válido."),
-        ])
-    ),
-    telephone: nullable(
-        string([
-            toTrimmed(),
-            minLength(9),
-            maxLength(9),
-            custom(
-                (value) => /^[0-9]+$/.test(value),
-                "Numero de celular válido."
-            ),
-            startsWith("9"),
-        ])
-    ),
+    telephone: string([toTrimmed(), minLength(6), maxLength(30)]),
     photo: nullable(array(filesSchema(usersPhotoQualities))),
     enabled: boolean(),
     isOnline: boolean(),

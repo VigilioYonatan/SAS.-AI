@@ -19,7 +19,6 @@ import type {
     InteligenceArtificial,
     Payments,
     ScheduleSchema,
-    TransferenciaSchema,
     Whatsappconfig,
 } from "../schemas/information.schema";
 import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
@@ -40,7 +39,7 @@ import { Posts } from "@/posts/entities/posts.entity";
 import { Background } from "./background.entity";
 import { Suppliers } from "@/suppliers/entities/suppliers.entity";
 
-@DefaultScope(() => ({ include: [Address, MetodosPago] }))
+@DefaultScope(() => ({ include: [Address, MetodosPago, TipoEmpresa] }))
 @Table({ tableName: "information" })
 export class InformationEntity
     extends Model
@@ -49,9 +48,14 @@ export class InformationEntity
     // auth
     @Column({
         type: DataType.STRING(200),
-        unique: true,
     })
     name_empresa: string;
+
+    @Column({
+        type: DataType.STRING(200),
+    })
+    dial_code: string;
+
     // auth
     @Column({
         type: DataType.STRING(200),
@@ -67,6 +71,7 @@ export class InformationEntity
         type: DataType.JSON,
     })
     payments: Payments;
+
     @Column({
         type: DataType.STRING(20),
     })
@@ -99,12 +104,6 @@ export class InformationEntity
         type: DataType.STRING(30),
     })
     telephoneThird: string | null;
-
-    @Column({
-        type: DataType.INTEGER,
-        allowNull: false,
-    })
-    earning: number;
 
     @Column({
         type: DataType.JSON,
@@ -148,9 +147,8 @@ export class InformationEntity
 
     @Column({
         type: DataType.JSON,
-        allowNull: false,
     })
-    company: CompanySchema;
+    company: CompanySchema | null;
 
     @Column({
         type: DataType.JSON,
@@ -193,6 +191,9 @@ export class InformationEntity
     })
     dateRelease: Date;
 
+    @Column({ type: DataType.JSON })
+    money: { money: string; international_simbolo: string; simbolo: string };
+
     @Column({
         type: DataType.INTEGER,
     })
@@ -221,12 +222,6 @@ export class InformationEntity
 
     @Column({ type: DataType.BOOLEAN, allowNull: true })
     isOpen: boolean;
-
-    @Column({
-        type: DataType.BOOLEAN,
-        defaultValue: false,
-    })
-    enabled: boolean;
 
     @Column({
         type: DataType.DATE,
@@ -268,6 +263,16 @@ export class InformationEntity
         type: DataType.JSON,
         defaultValue: [],
     })
+    bancos: {
+        key: string;
+        value: string;
+        image: string;
+    }[];
+
+    @Column({
+        type: DataType.JSON,
+        defaultValue: [],
+    })
     groupWhatsapp: GroupWhatsapp[];
     @Column({
         type: DataType.JSON,
@@ -285,16 +290,16 @@ export class InformationEntity
     })
     schedule: ScheduleSchema[];
 
-    @Column({
-        type: DataType.JSON,
-    })
-    transferencias: TransferenciaSchema | null;
-
     @ForeignKey(() => TipoEmpresa)
     @Column({
         type: DataType.INTEGER,
     })
     type_empresa_id: number;
+
+    @Column({
+        type: DataType.STRING(60),
+    })
+    telegram_token: string | null;
 
     @Column({
         type: DataType.STRING,

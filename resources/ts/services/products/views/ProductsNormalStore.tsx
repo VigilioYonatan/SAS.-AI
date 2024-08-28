@@ -1,12 +1,8 @@
 import Form from "~/components/form";
-import {
-    type ProductsNormalStoreDto,
-    productsNormalStoreDto,
-} from "../dtos/products.store.dto";
 import { slug as transformSlug } from "@vigilio/express-core/helpers";
 import { useFieldArray, useForm, type UseFormReturn } from "react-hook-form";
 import { useEffect, useMemo } from "preact/hooks";
-import { subtotal as subtotalCart, formatSoles } from "@/cart/libs/helpers";
+import { formatMoney, subtotal as subtotalCart } from "@/cart/libs/helpers";
 import { valibotVigilio } from "~/libs/valibot";
 import { handlerError } from "~/libs/helpers";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
@@ -18,11 +14,7 @@ import { subWhatsappIA } from "~/config/guards";
 import { reactComponent } from "~/libs/preact";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import useAuthstore from "@/auth/stores/auth.store";
-import { familiesIndexApi } from "../apis/families/families.index.api";
 import { brandsIndexApi } from "../apis/brands/brands.index.api";
-import { productsNormalStoreApi } from "../apis/products/products.store.api";
-import { familiesCategoriesApi } from "../apis/families/families.categories.api";
-import { categoriesSubcategoriesApi } from "../apis/categories/categories.subcategories.api";
 import { aiDescriptionApi } from "@/bot/apis/ai.description.api";
 import { formSelectNumber } from "~/components/form/WebFormSelect";
 import AdminHr from "~/components/AdminHr";
@@ -34,7 +26,13 @@ import {
     type OptionsOptionValuesAPI,
 } from "../apis/options/options.features.api";
 import { Fragment } from "preact/jsx-runtime";
-import type { ProductsUpdateDto } from "../dtos/products.update.dto";
+import {
+    productsNormalStoreDto,
+    ProductsNormalStoreDto,
+    ProductsNormalUpdateDto,
+} from "../dtos/products_normal.dto";
+import { productsNormalStoreApi } from "../apis/products/products_normal.store.api";
+import { categoriesIndexApi } from "../apis/categories/categories.index.api";
 
 interface ProductsNormalStoreProps {
     refetch: (clean?: boolean | undefined) => Promise<void>;
@@ -61,16 +59,9 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
     const productsNormalStoreMutation = productsNormalStoreApi();
     const aiDescriptionQuery = aiDescriptionApi();
     const optionsFeaturesQuery = optionsFeaturesApi();
-    const family_id = productsNormalStoreDtoForm.watch("family_id");
-    const category_id = productsNormalStoreDtoForm.watch("category_id");
-    const earning = productsNormalStoreDtoForm.watch("earning");
     const [copy] = useCopyToClipboard();
-
-    const familiesIndexQuery = familiesIndexApi();
+    const categoriesIndexQuery = categoriesIndexApi();
     const brandsIndexQuery = brandsIndexApi();
-    const familiesCategoriesQuery = familiesCategoriesApi(family_id);
-    const categoriesSubcategoriesQuery =
-        categoriesSubcategoriesApi(category_id);
 
     const optionsFeaturesData = useMemo(() => {
         if (optionsFeaturesQuery.isSuccess && optionsFeaturesQuery.data) {
@@ -79,15 +70,15 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
         return [];
     }, [optionsFeaturesQuery.data, optionsFeaturesQuery.isSuccess]);
 
-    const familiesSelect = useMemo(() => {
-        if (familiesIndexQuery.isSuccess && familiesIndexQuery.data) {
-            return familiesIndexQuery.data.data.map((value) => ({
+    const categoriesSelect = useMemo(() => {
+        if (categoriesIndexQuery.isSuccess && categoriesIndexQuery.data) {
+            return categoriesIndexQuery.data.data.map((value) => ({
                 key: value.id,
                 value: value.name,
             }));
         }
         return [];
-    }, [familiesIndexQuery.data, familiesIndexQuery.isSuccess]);
+    }, [categoriesIndexQuery.data, categoriesIndexQuery.isSuccess]);
 
     const brandsSelect = useMemo(() => {
         if (brandsIndexQuery.isSuccess && brandsIndexQuery.data) {
@@ -98,63 +89,9 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
         }
         return [];
     }, [brandsIndexQuery.data, brandsIndexQuery.isSuccess]);
-
-    const categoriesSelect = useMemo(() => {
-        if (familiesCategoriesQuery.isSuccess && familiesCategoriesQuery.data) {
-            return familiesCategoriesQuery.data.data.map((value) => ({
-                key: value.id,
-                value: value.name,
-            }));
-        }
-        return [];
-    }, [familiesCategoriesQuery.data, familiesCategoriesQuery.isSuccess]);
-    const subcategoriesSelect = useMemo(() => {
-        if (
-            categoriesSubcategoriesQuery.isSuccess &&
-            categoriesSubcategoriesQuery.data
-        ) {
-            return categoriesSubcategoriesQuery.data.data.map((value) => ({
-                key: value.id,
-                value: value.name,
-            }));
-        }
-        return [];
-    }, [
-        categoriesSubcategoriesQuery.data,
-        categoriesSubcategoriesQuery.isSuccess,
-    ]);
-
     const name = productsNormalStoreDtoForm.watch("name");
     const discount = productsNormalStoreDtoForm.watch("discount");
     const price = productsNormalStoreDtoForm.watch("price");
-
-    useEffect(() => {
-        productsNormalStoreDtoForm.unregister("category_id");
-        productsNormalStoreDtoForm.unregister("subcategory_id");
-        if (family_id) {
-            familiesCategoriesQuery.refetch();
-        } else {
-            familiesCategoriesQuery.transformData((data) => ({
-                ...data,
-                data: [],
-            }));
-            categoriesSubcategoriesQuery.transformData((data) => ({
-                ...data,
-                data: [],
-            }));
-        }
-    }, [family_id]);
-    useEffect(() => {
-        productsNormalStoreDtoForm.unregister("subcategory_id");
-        if (category_id) {
-            categoriesSubcategoriesQuery.refetch();
-        } else {
-            categoriesSubcategoriesQuery.transformData((data) => ({
-                ...data,
-                data: [],
-            }));
-        }
-    }, [category_id]);
 
     useEffect(() => {
         if (name) {
@@ -169,16 +106,8 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
     }, [name]);
 
     const subtotal = useMemo(
-        () =>
-            subtotalCart(
-                subtotalCart(
-                    price,
-                    earning ?? information.state!.earning,
-                    true
-                ),
-                discount
-            ),
-        [discount, price, earning]
+        () => subtotalCart(price, discount),
+        [discount, price]
     );
 
     const { fields, append, remove } = useFieldArray({
@@ -254,39 +183,6 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                                 },
                             }}
                         />
-                        <Form.control
-                            name={"earning" as keyof ProductsNormalStoreDto}
-                            type="number"
-                            step={0.01}
-                            title="Ganancia por producto"
-                            options={{
-                                setValueAs(value) {
-                                    return Number(value) > 0
-                                        ? Number(value)
-                                        : null;
-                                },
-                            }}
-                            placeholder={`${information.state!.earning}%`}
-                            ico={<i class="fas fa-sack" />}
-                            question={
-                                <div class="w-[200px]">
-                                    El % de ganancia que obtendras por producto.{" "}
-                                    <br />
-                                    Si dejas este campo vació tendrá la ganancia
-                                    puesta en configuración.
-                                    <br />
-                                    Puedes cambiar el % en{" "}
-                                    <a
-                                        href="/admin/empresa"
-                                        rel="noreferrer"
-                                        class="text-primary hover:underline"
-                                        target="_blank"
-                                    >
-                                        configuración.
-                                    </a>
-                                </div>
-                            }
-                        />
                         <div class="w-full flex items-center gap-2">
                             <Form.control
                                 name={
@@ -308,11 +204,11 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                             <div class="flex flex-col gap-1">
                                 <span class="text-lg whitespace-nowrap  text-primary">
                                     <span class="text-gray-400">
-                                        {formatSoles(subtotal)}
+                                        {formatMoney(subtotal)}
                                     </span>{" "}
                                     -{" "}
                                     {information.state!.igv
-                                        ? formatSoles(
+                                        ? formatMoney(
                                               subtotalCart(
                                                   subtotal,
                                                   enviroments.VITE_IGV,
@@ -322,10 +218,6 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                                         : null}{" "}
                                 </span>
                                 <span class="text-xs whitespace-nowrap dark:text-white flex gap-2 items-center">
-                                    <span class="text-xs dark:text-white text-black">
-                                        + incl.{" "}
-                                        {earning ?? information.state!.earning}%
-                                    </span>
                                     {discount ? (
                                         <span class="text-xs dark:text-white text-black">
                                             - incl. {discount}%
@@ -344,12 +236,6 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                             title="Disponibilidad"
                             question="Cuando está habilitado los clientes podrán comprar el producto."
                         />
-                        <Form.control.toggle
-                            name={"isNew" as keyof ProductsNormalStoreDto}
-                            title="¿Es nuevo?"
-                            question="¿El producto es nuevo?"
-                        />
-                       
                     </div>
                     <div class="w-full flex flex-row gap-2">
                         <Form.control.select
@@ -362,16 +248,6 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                                 setValueAs: formSelectNumber,
                             }}
                         />
-                        <Form.control.select
-                            name={"family_id" as keyof ProductsNormalStoreDto}
-                            title="Familia"
-                            placeholder="Escoger familía"
-                            array={familiesSelect}
-                            options={{
-                                setValueAs: formSelectNumber,
-                            }}
-                            isLoading={familiesIndexQuery.isLoading || false}
-                        />
                     </div>
                     <div class="w-full flex flex-row gap-2">
                         <Form.control.select
@@ -382,29 +258,13 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                             options={{
                                 setValueAs: formSelectNumber,
                             }}
-                            isLoading={
-                                familiesCategoriesQuery.isLoading || false
-                            }
-                        />
-                        <Form.control.select
-                            name={
-                                "subcategory_id" as keyof ProductsNormalStoreDto
-                            }
-                            title="Subcategoría"
-                            placeholder="Escoger subcategoria"
-                            array={subcategoriesSelect}
-                            isLoading={
-                                categoriesSubcategoriesQuery.isLoading || false
-                            }
-                            options={{
-                                setValueAs: formSelectNumber,
-                            }}
+                            isLoading={categoriesIndexQuery.isLoading || false}
                         />
                     </div>
-                    <Form.control.editor
+                    <Form.control.area
                         name={"description" as keyof ProductsNormalStoreDto}
                         title="Descripción"
-                        height={200}
+                        placeholder="Descripción de producto"
                     />
                     {name &&
                     !productsNormalStoreDtoForm.formState.errors.name
@@ -546,7 +406,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                                             productsNormalStoreDtoForm={
                                                 productsNormalStoreDtoForm as UseFormReturn<
                                                     | ProductsNormalStoreDto
-                                                    | ProductsUpdateDto
+                                                    | ProductsNormalUpdateDto
                                                 >
                                             }
                                             onClose={onClose}
@@ -712,7 +572,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
 interface ProductOptions {
     optionsFeaturesData: OptionsOptionValuesAPI["data"];
     productsNormalStoreDtoForm: UseFormReturn<
-        ProductsNormalStoreDto | ProductsUpdateDto
+        ProductsNormalStoreDto | ProductsNormalUpdateDto
     >;
     onClose: () => void;
 }

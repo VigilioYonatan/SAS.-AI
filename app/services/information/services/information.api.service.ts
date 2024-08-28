@@ -17,19 +17,36 @@ import { pathUploads, removeFile } from "@/uploads/libs/helpers";
 import { Invoices } from "@/orders/entities/invoices.entity";
 import fs from "node:fs";
 import { Users } from "@/users/entities/users.entity";
-import { clients, openAis } from "@/bot/libs/ai";
+import { clientsTelegram, clientsWhatsapp, openAis } from "@/bot/libs/ai";
 import path from "node:path";
 import { Notes } from "@/orders/entities/notes.entity";
 import { Guides } from "@/orders/entities/guides.entity";
 import type { InformationStoreDto } from "../dtos/information.store.dto";
+import type { MetodosPagoUpdateDto } from "../dtos/metodosPago.update.dto";
+import { MetodosPago } from "../entities/metodosPago.entity";
+import type { PaymentDto } from "@/payments/dtos/payment.dto";
+import type { MetodosPagoSchema } from "../schemas/metodosPago.schema";
+import { UsersApiService } from "@/users/services/users.api.service";
+import bcryptjs from "bcryptjs";
+import { slug } from "@vigilio/express-core/helpers";
 
 @Injectable()
 export class InformationApiService {
-    async showVigilio(slug: string) {
+    constructor(private readonly UsersApiService: UsersApiService) {}
+    async payment(slug: string) {
         const data = await InformationEntity.findOne({
             where: { slug },
-            attributes: ["groupWhatsapp", "company"],
+            attributes: ["payments", "slug", "id"],
         });
+        if (!data) throw new NotFoundException(`no se encontró ${slug}`);
+        return {
+            success: true,
+            data,
+        };
+    }
+    async paymentUpdate(slug: string, paymentDto: PaymentDto) {
+        const { data } = await this.payment(slug);
+        await data.update({ payments: paymentDto });
         return {
             success: true,
             data,
@@ -68,8 +85,52 @@ export class InformationApiService {
     }
 
     async store(body: InformationStoreDto) {
-        const information = new InformationEntity(body);
+        const { password, fullname, ...rest } = body;
+        const information = new InformationEntity(rest);
         await information.save();
+
+        const transferencias = {} as Record<
+            keyof typeof information.bancos,
+            { titular: null; dolares: null }
+        >;
+        for (const banco of information.bancos) {
+            transferencias[banco.key as keyof typeof information.bancos] = {
+                titular: null,
+                dolares: null,
+                [information.money.simbolo]: null,
+            };
+        }
+        // como hacer qeu sea {[bank.key]:{titular:null}}
+        await information.$create("metodos_pago", {
+            transferencias,
+            enable_efectivo: false,
+            mercado_pago: { token: null, enabled: false },
+            qrYape: null,
+            qrPlin: null,
+            paypal: {
+                enabled: false,
+                paypal_client_id: null,
+                paypal_secret_key: null,
+            },
+        } as Omit<MetodosPagoSchema, "information_id">);
+        const username = `${fullname}${Math.random().toString(32).slice(3, 4)}`;
+        const name = fullname.split(" ");
+        await this.UsersApiService.store(information, {
+            name: name[0],
+            lastname: name[1] ?? "",
+            email: null,
+            password,
+            telephone: information.telephoneFirst,
+            username,
+            enabled: true,
+            address: null,
+            birthday: new Date(),
+            photo: null,
+            token: null,
+            slug: slug(username),
+            role_id: 1,
+            information_id: information.id,
+        });
         return {
             success: true,
             message: "Nuevo información agregado correctamente.",
@@ -92,24 +153,33 @@ export class InformationApiService {
             information,
         };
     }
-
-    async update(
+    async metodospago(
         information: InformationEntity,
-        informationUpdateDto: InformationUpdateDto
+        body: MetodosPagoUpdateDto
     ) {
         const data = Object.entries(
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            informationUpdateDto.transferencias as any
+            body.transferencias as any
         ).map(
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             (body) => Object.values((body as any)[1]).filter((val) => val)
         );
         // aca si  esta vacio entonces que sea null
-        informationUpdateDto.transferencias =
+        body.transferencias =
             data[0].length || data[1].length || data[2].length
-                ? informationUpdateDto.transferencias
+                ? body.transferencias
                 : null;
-
+        const metodo = await MetodosPago.findOne({
+            where: {
+                information_id: information.id,
+            },
+        });
+        await metodo?.update(body);
+    }
+    async update(
+        information: InformationEntity,
+        informationUpdateDto: InformationUpdateDto
+    ) {
         await information.update(informationUpdateDto);
         return {
             success: true,
@@ -488,7 +558,8 @@ export class InformationApiService {
                 fs.unlinkSync(filexml);
             }
         }
-        delete clients[information.slug];
+        delete clientsWhatsapp[information.slug];
+        delete clientsTelegram[information.slug];
         delete openAis[information.slug];
         const qr = `${pathUploads()}/${information.slug}/qr/${
             information.slug
@@ -510,5 +581,6 @@ export class InformationApiService {
             fs.rmSync(whatsappauth, { force: true, recursive: true });
         }
         await information.destroy();
+        return { success: true, message: "Eliminado correctamente" };
     }
 }

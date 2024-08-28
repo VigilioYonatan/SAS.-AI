@@ -1,19 +1,12 @@
 import { useFieldArray, useForm } from "react-hook-form";
-import {
-    type ProductsNormalUpdateDto,
-    productsNormalUpdateDto,
-    productsNormalUpdateImagesDto,
-    type ProductsNormalUpdateImagesDto,
-} from "../dtos/products.update.dto";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { useEffect, useMemo } from "preact/hooks";
 import { slug as transformSlug } from "@vigilio/express-core/helpers";
-
 import Form from "~/components/form";
 import Loading from "@/admin/components/Loading";
 import View404 from "@/admin/views/404";
 import AdminHr from "~/components/AdminHr";
-import { subtotal as subtotalCart, formatSoles } from "@/cart/libs/helpers";
+import { subtotal as subtotalCart, formatMoney } from "@/cart/libs/helpers";
 import { Fragment, type JSX } from "preact/jsx-runtime";
 import { valibotVigilio } from "~/libs/valibot";
 import { getFilesEdit } from "~/libs/upload";
@@ -28,20 +21,27 @@ import {
     productsShowApi,
     type ProductsShowAPI,
 } from "../apis/products/products.show.api";
-import {
-    productsNormalUpdateApi,
-    productsNormalUpdateImagesApi,
-} from "../apis/products/products.update.api";
 import { formSelectNumber } from "~/components/form/WebFormSelect";
 import useCopyToClipboard from "~/hooks/useCopyToClipboard";
 import { brandsIndexApi } from "../apis/brands/brands.index.api";
-import { categoriesSubcategoriesApi } from "../apis/categories/categories.subcategories.api";
 import { reactComponent } from "~/libs/preact";
 import { optionsFeaturesApi } from "../apis/options/options.features.api";
 import { ProductOptions } from "./ProductsNormalStore";
 import VariantsShow from "./options/VariantsShow";
 import { printImagesProduct } from "../libs/helpers";
 import { variantsDeleteApi } from "../apis/options/variants.delete.api";
+import {
+    productsNormalUpdateDto,
+    ProductsNormalUpdateDto,
+    productsUpdateImagesDto,
+    ProductsUpdateImagesDto,
+} from "../dtos/products_normal.dto";
+import {
+    productsNormalUpdateApi,
+    productsUpdateImagesApi,
+} from "../apis/products/products_normal.update.api";
+import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schema";
+import { categoriesIndexApi } from "../apis/categories/categories.index.api";
 
 interface ProductsNormalUpdateProps {
     id?: string | number;
@@ -83,13 +83,13 @@ function ProductsNormalUpdate({
             updatedAt,
             images,
             id,
-            subcategory,
-            brand,
             options,
+            brand,
+            category,
+            information_id,
             ...rest
-        } = product;
+        } = product as ProductsNormalSchemaFromServer;
         const variantsDeleteMutation = variantsDeleteApi(id);
-
         const formProductsNormalUpdate = useForm<ProductsNormalUpdateDto>({
             resolver: valibotVigilio(productsNormalUpdateDto),
             mode: "all",
@@ -97,8 +97,6 @@ function ProductsNormalUpdate({
                 ...rest,
                 price: Number(rest.price),
                 discount: Number(rest.discount),
-                category_id: subcategory.category_id,
-                family_id: subcategory.category.family_id,
                 options: options.map((opt) => ({
                     option_id: opt.id,
                     features: opt.features.map((feat) => feat.id),
@@ -106,23 +104,34 @@ function ProductsNormalUpdate({
             },
         });
         const name = formProductsNormalUpdate.watch("name");
-        const earning = formProductsNormalUpdate.watch("earning");
         const discount = formProductsNormalUpdate.watch("discount");
         const price = formProductsNormalUpdate.watch("price");
         const [copy] = useCopyToClipboard();
         const brandsIndexQuery = brandsIndexApi();
+        const categoriesIndexQuery = categoriesIndexApi();
 
-        const formProductsNormalUpdateImages =
-            useForm<ProductsNormalUpdateImagesDto>({
+        const categoriesSelect = useMemo(() => {
+            if (categoriesIndexQuery.isSuccess && categoriesIndexQuery.data) {
+                return categoriesIndexQuery.data.data.map((value) => ({
+                    key: value.id,
+                    value: value.name,
+                }));
+            }
+            return [];
+        }, [categoriesIndexQuery.data, categoriesIndexQuery.isSuccess]);
+        const formProductsNormalUpdateImages = useForm<ProductsUpdateImagesDto>(
+            {
                 mode: "all",
-                resolver: valibotVigilio(productsNormalUpdateImagesDto),
-            });
+                resolver: valibotVigilio(productsUpdateImagesDto),
+            }
+        );
 
         const mutateProductsNormalUpdateApi = productsNormalUpdateApi(
             product.id
         );
-        const mutateProductsNormalUpdateImagesApi =
-            productsNormalUpdateImagesApi(product.id);
+        const mutateProductsNormalUpdateImagesApi = productsUpdateImagesApi(
+            product.id
+        );
         const aiDescriptionQuery = aiDescriptionApi();
 
         function onUpdateProduct(data: ProductsNormalUpdateDto) {
@@ -155,7 +164,7 @@ function ProductsNormalUpdate({
                 }
             });
         }
-        const onUpdateImagesProduct = (data: ProductsNormalUpdateImagesDto) => {
+        const onUpdateImagesProduct = (data: ProductsUpdateImagesDto) => {
             sweetModal({
                 title: "¿Estás seguro de editar las imagenes de este producto?",
                 customIcon:
@@ -199,8 +208,6 @@ function ProductsNormalUpdate({
             return [];
         }, [brandsIndexQuery.data, brandsIndexQuery.isSuccess]);
 
-       
-       
         useEffect(() => {
             if (name) {
                 formProductsNormalUpdate.setValue(
@@ -231,16 +238,8 @@ function ProductsNormalUpdate({
         }
 
         const subtotal = useMemo(
-            () =>
-                subtotalCart(
-                    subtotalCart(
-                        price,
-                        earning ?? information.state!.earning,
-                        true
-                    ),
-                    discount
-                ),
-            [discount, price, earning]
+            () => subtotalCart(price, discount),
+            [discount, price]
         );
 
         useEffect(() => {
@@ -289,40 +288,7 @@ function ProductsNormalUpdate({
                                 placeholder="S/. 10.00"
                                 options={{ setValueAs: Number }}
                             />
-                            <Form.control
-                                name={
-                                    "earning" as keyof ProductsNormalUpdateDto
-                                }
-                                type="number"
-                                title="Ganancia por producto"
-                                options={{
-                                    setValueAs(value) {
-                                        return Number(value) > 0
-                                            ? Number(value)
-                                            : null;
-                                    },
-                                }}
-                                placeholder={`${information.state!.earning}%`}
-                                ico={<i class="fas fa-sack" />}
-                                question={
-                                    <div class="w-[200px]">
-                                        El % de ganancia que obtendras por
-                                        producto. <br />
-                                        Si dejas este campo vació tendrá la
-                                        ganancia puesta en configuración.
-                                        <br />
-                                        Puedes cambiar el % en{" "}
-                                        <a
-                                            href="/admin/empresa"
-                                            rel="noreferrer"
-                                            class="text-primary hover:underline"
-                                            target="_blank"
-                                        >
-                                            configuración.
-                                        </a>
-                                    </div>
-                                }
-                            />
+
                             <div class="w-full flex items-center gap-2">
                                 <Form.control
                                     name={
@@ -343,11 +309,11 @@ function ProductsNormalUpdate({
                                 <div class="flex flex-col gap-1">
                                     <span class="text-lg whitespace-nowrap  text-primary">
                                         <span class="text-gray-400">
-                                            {formatSoles(subtotal)}
+                                            {formatMoney(subtotal)}
                                         </span>{" "}
                                         -{" "}
                                         {information.state!.igv
-                                            ? formatSoles(
+                                            ? formatMoney(
                                                   subtotalCart(
                                                       subtotal,
                                                       enviroments.VITE_IGV,
@@ -357,12 +323,6 @@ function ProductsNormalUpdate({
                                             : null}{" "}
                                     </span>
                                     <span class="text-xs whitespace-nowrap dark:text-white flex gap-2 items-center">
-                                        <span class="text-xs dark:text-white text-black">
-                                            + incl.{" "}
-                                            {earning ??
-                                                information.state!.earning}
-                                            %
-                                        </span>
                                         {discount ? (
                                             <span class="text-xs dark:text-white text-black">
                                                 - incl. {discount}%
@@ -388,21 +348,6 @@ function ProductsNormalUpdate({
                                 }}
                                 isLoading={brandsIndexQuery.isLoading || false}
                             />
-
-                            <Form.control.select
-                                name={
-                                    "family_id" as keyof ProductsNormalUpdateDto
-                                }
-                                title="Familia"
-                                placeholder="Escoger familía"
-                                array={familiesSelect}
-                                options={{
-                                    setValueAs: formSelectNumber,
-                                }}
-                                isLoading={
-                                    familiesIndexQuery.isLoading || false
-                                }
-                            />
                         </div>
                         <div class="w-full flex flex-row gap-2">
                             <Form.control.select
@@ -413,27 +358,11 @@ function ProductsNormalUpdate({
                                 placeholder="Escoger categoría"
                                 array={categoriesSelect}
                                 isLoading={
-                                    familiesCategoriesQuery.isLoading || false
+                                    categoriesIndexQuery.isLoading || false
                                 }
                                 options={{
                                     setValueAs: formSelectNumber,
                                 }}
-                            />
-
-                            <Form.control.select
-                                name={
-                                    "subcategory_id" as keyof ProductsNormalUpdateDto
-                                }
-                                title="Subcategoría"
-                                placeholder="Escoger subcategoria"
-                                array={subcategoriesSelect}
-                                options={{
-                                    setValueAs: formSelectNumber,
-                                }}
-                                isLoading={
-                                    categoriesSubcategoriesQuery.isLoading ||
-                                    false
-                                }
                             />
                         </div>
                         <div class="w-full flex flex-row gap-2">
@@ -443,22 +372,16 @@ function ProductsNormalUpdate({
                                 }
                                 title="Disponibilidad"
                                 question="Cuando no está habilitado los clientes NO podrán comprar NI VER el producto, ."
-                            />{" "}
-                            <Form.control.toggle
-                                name={"isNew" as keyof ProductsNormalUpdateDto}
-                                title="¿Es nuevo?"
-                                question="¿El producto es nuevo?"
                             />
-                           
                         </div>
                     </div>
                     <>
-                        <Form.control.editor
+                        <Form.control.area
                             name={
                                 "description" as keyof ProductsNormalUpdateDto
                             }
                             title="Descripción"
-                            height={200}
+                            placeholder="descripción de producto"
                         />
                         {name &&
                         !formProductsNormalUpdate.formState.errors.name
@@ -1034,37 +957,6 @@ function ProductsNormalUpdate({
                         </div>
                     </div>
                     <AdminHr />
-                    <div class="flex flex-col gap-2">
-                        <span class="text-xs dark:text-white">
-                            Detalles de Envio
-                        </span>
-                        <div class="flex gap-2 items-center">
-                            <Form.control
-                                title="Peso"
-                                placeholder="0 kg"
-                                name={
-                                    "details.peso" as keyof ProductsNormalUpdateDto
-                                }
-                                options={{ setValueAs: Number }}
-                            />
-                            <Form.control
-                                title="Largo"
-                                placeholder="0 cm"
-                                name={
-                                    "details.largo" as keyof ProductsNormalUpdateDto
-                                }
-                                options={{ setValueAs: Number }}
-                            />
-                            <Form.control
-                                title="Ancho"
-                                placeholder="0 cm"
-                                name={
-                                    "details.ancho" as keyof ProductsNormalUpdateDto
-                                }
-                                options={{ setValueAs: Number }}
-                            />
-                        </div>
-                    </div>
                     <div class="flex justify-center">
                         <Form.button.submit
                             disabled={
@@ -1089,7 +981,7 @@ function ProductsNormalUpdate({
                     onSubmit={onUpdateImagesProduct}
                 >
                     <Form.control.file
-                        name={"images" as keyof ProductsNormalUpdateImagesDto}
+                        name={"images" as keyof ProductsUpdateImagesDto}
                         title="Images de perfil"
                         accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
                         typeFile="image"

@@ -2,7 +2,6 @@ import numeroALetras from "@vigilio/numeros-a-letras";
 import { formatDateTwo } from "~/libs/dayjs";
 import { formatMoney, subtotal } from "@/cart/libs/helpers";
 import type { Orders } from "../entities/orders.entity";
-import type { OrdersSchemaFromServer } from "../schemas/orders.schema";
 import type { InformationEntity } from "@/information/entities/information.entity";
 import type { Invoices } from "../entities/invoices.entity";
 import type { Address } from "@/information/entities/address.entity";
@@ -10,10 +9,10 @@ import { detailInvoice } from ".";
 import fs from "node:fs";
 import { pathUploads } from "@/uploads/libs/helpers";
 import { MONEYDOLARES, MONEYSOLES } from "~/libs/helpers";
-import type { Districts } from "@/ubigeo/entities/districts.entity";
-import type { Provinces } from "@/ubigeo/entities/provinces.entity";
-import type { Departments } from "@/ubigeo/entities/departments.entity";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
+import type { Cities } from "@/ubigeo/entities/cities.entity";
+import type { Regions } from "@/ubigeo/entities/regions.entity";
+import type { Users } from "@/users/entities/users.entity";
 
 export async function ticketHTML(
     order: Orders,
@@ -28,14 +27,13 @@ export async function ticketHTML(
         (total, i) => total + Number(i.totalImpuestos.toFixed(2)),
         0
     );
-    const departamento = order.district_id
-        ? (((order.district as Districts).province as Provinces)
-              .department as Departments)
+    const region = order.city_id
+        ? ((order.city as Cities).region as Regions)
         : null;
-    const ig = departamento
+    const ig = region
         ? order.igv
-            ? subtotal(departamento.priceShipping, information.igv, true)
-            : departamento.priceShipping
+            ? subtotal(region.priceShipping, information.igv, true)
+            : region.priceShipping
         : 0;
     const money = order.moneyChange === 1 ? MONEYSOLES : MONEYDOLARES;
 
@@ -108,7 +106,13 @@ export async function ticketHTML(
                                             ${
                                                 information.logo
                                                     ? `<img src="data:image/png;base64,${image}" height="80" style="text-align:center" border="0">`
-                                                    : `<span style="font-size:4rem;font-weight:bolder;">${information.company.nombreComercial[0]}</span>`
+                                                    : `<span style="font-size:4rem;font-weight:bolder;">${
+                                                          information.company
+                                                              ? information
+                                                                    .company
+                                                                    .nombreComercial[0]
+                                                              : information.name_empresa
+                                                      }</span>`
                                             }
                                           </span>
                                         </td>                
@@ -119,17 +123,19 @@ export async function ticketHTML(
                                                 <table width="100%" border="0"  cellpadding="0" cellspacing="0">
                                                     <tbody><tr>
                                                         <td align="center">
-                                                            <span style="font-family:Tahoma, Geneva, sans-serif; font-size:29px" text-align="center">T I C K E T</span>
+                                                            <span style="font-family:Tahoma, Geneva, sans-serif; font-size:29px" text-align="center">R E C I B O</span>
                                                         </td>
                                                     </tr>
-                                                    <tr>
+                                                    ${
+                                                        information.company
+                                                            ? `<tr>
                                                         <td align="center">
-                                                            <span style="font-size:15px" text-align="center">R.U.C.: ${
-                                                                information
-                                                                    .company.ruc
-                                                            }</span>
+                                                            <span style="font-size:15px" text-align="center">R.U.C.: ${information.company.ruc}</span>
                                                         </td>
-                                                    </tr>
+                                                    </tr>`
+                                                            : ""
+                                                    }
+                                                    
                                                     <tr>
                                                         <td align="center">
                                                             <span style="font-size:24px">${
@@ -155,9 +161,11 @@ export async function ticketHTML(
                                                     <tbody><tr>
                                                         <td align="center">
                                                             <strong><span style="font-size:15px">${
-                                                                information
-                                                                    .company
-                                                                    .razonSocial
+                                                                information.company
+                                                                    ? information
+                                                                          .company
+                                                                          .razonSocial
+                                                                    : information.name_empresa
                                                             }</span></strong>
                                                         </td>
                                                     </tr>
@@ -248,10 +256,10 @@ export async function ticketHTML(
                                                         <p>
                                                          ${
                                                              (
-                                                                 order as OrdersSchemaFromServer
-                                                             ).user?.name ?? ""
+                                                                 order.user as Users
+                                                             )?.name ?? ""
                                                          }  ${
-        (order as OrdersSchemaFromServer).user?.lastname ?? ""
+        (order.user as Users)?.lastname ?? ""
     }
                                                         </p>
                                                     </td>

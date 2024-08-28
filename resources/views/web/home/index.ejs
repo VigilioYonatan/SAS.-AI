@@ -52,6 +52,7 @@
 
 <body class="bg-black bg-opacity-80">
   <h1 class="font-bold text-3xl text-primary"><%=$information.name_empresa  %></h1>
+  <%= JSON.stringify($information.metodos_pago.transferencias)  %>
   <web-page></web-page>
 </body>
 

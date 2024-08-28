@@ -5,11 +5,7 @@ import { useSignal } from "@preact/signals";
 import dayjs, { deepEqual, NOW } from "~/libs/helpers";
 import type { ProductsSchemaFromServer } from "../schemas/products.schema";
 import type { CartProductSchema } from "@/cart/schemas";
-import {
-    formatMoney,
-    formatMoneyDinamic,
-    subtotalIgv,
-} from "@/cart/libs/helpers";
+import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
 import { cartStoreApi } from "@/cart/apis/cart.store.api";
 import { printImagesProduct } from "../libs/helpers";
 import { NoImage } from "~/config/settings";
@@ -226,7 +222,7 @@ function useProduct({ product }: UseProductProps) {
                                 : `${producto.value.quantity} productos agregados`}{" "}
                             correctamente. (
                             <span class="text-principal-primary font-semibold">
-                                {formatMoney(formatMoneyDinamic(subtotal))}
+                                {formatMoney(subtotal)}
                             </span>
                             )
                         </p>

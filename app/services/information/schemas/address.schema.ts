@@ -1,4 +1,4 @@
-import type { DistrictsSchemaEntity } from "@/ubigeo/schemas/districts.schema";
+import type { CitiesSchema } from "@/ubigeo/schemas/cities.schema";
 import {
     minLength,
     number,
@@ -10,7 +10,7 @@ import {
 
 export const addressSchema = objectAsync({
     id: number(),
-    district_id: string(),
+    city_id: number(),
     urbanizacion: string([toTrimmed(), minLength(1)]),
     direccion: string([toTrimmed(), minLength(1)]),
     codLocal: string([toTrimmed()]),
@@ -18,5 +18,5 @@ export const addressSchema = objectAsync({
 });
 export type AddressSchema = Input<typeof addressSchema>;
 export type AddressSchemaEntity = AddressSchema & {
-    district: DistrictsSchemaEntity;
+    district: CitiesSchema;
 };

@@ -1,28 +1,32 @@
-import enviroments from "~/config";
+import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
+import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
+import { ProductsSchemaFromServer } from "@/products/schemas/products_servicio.schema";
 import { type UseQuery, useQuery } from "@vigilio/preact-fetching";
-import { type ProductsSchemaFromServer } from "../../schemas/products.schema";
 
 export function productsShowApi(
-	slug: number | string,
+    slug: number | string
 ): UseQuery<ProductsShowAPI, ProductsShowErrorAPI> {
-	return useQuery<ProductsShowAPI, ProductsShowErrorAPI>(
-		`/products/${slug}`,
-		productShowFetch,
-	);
+    return useQuery<ProductsShowAPI, ProductsShowErrorAPI>(
+        `/products/${slug}`,
+        productShowFetch
+    );
 }
 export async function productShowFetch(url: string) {
-	const response = await fetch(`${enviroments.VITE_URL}/api${url}`);
-	const result: ProductsShowAPI = await response.json();
-	if (!result.success) throw result;
-	return result;
+    const response = await fetch(`/api${url}`);
+    const result: ProductsShowAPI = await response.json();
+    if (!result.success) throw result;
+    return result;
 }
 
 export interface ProductsShowAPI {
-	success: boolean;
-	product: ProductsSchemaFromServer;
+    success: boolean;
+    product:
+        | ProductsNormalSchemaFromServer
+        | ProductsRestaurantSchemaFromServer
+        | ProductsSchemaFromServer;
 }
 
 export interface ProductsShowErrorAPI {
-	success: boolean;
-	message: string;
+    success: boolean;
+    message: string;
 }

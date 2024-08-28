@@ -22,6 +22,7 @@ export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
         fs.mkdirSync(dirTemp);
     }
     const filePath = `${dirTemp}/${crypto.randomUUID()}.wav`;
+
     fs.writeFileSync(filePath, fileBuffer);
     const file = fs.createReadStream(filePath);
     // Send the audio file for transcription using the specified model.

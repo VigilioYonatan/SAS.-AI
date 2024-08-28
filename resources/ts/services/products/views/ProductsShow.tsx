@@ -3,7 +3,7 @@ import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { printImagesProduct } from "../libs/helpers";
 import useAuthstore from "@/auth/stores/auth.store";
 import useInformationstore from "@/information/stores/information.store";
-import { formatSoles, subtotal, subtotalIgv } from "@/cart/libs/helpers";
+import { formatMoney, subtotal, subtotalIgv } from "@/cart/libs/helpers";
 import View404 from "@/admin/views/404";
 import Loading from "@/admin/components/Loading";
 import enviroments from "~/config";
@@ -80,7 +80,7 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
                     </div>
 
                     <p class="mx-auto text-xl relative font-bold dark:text-white">
-                        {formatSoles(
+                        {formatMoney(
                             subtotal(
                                 subtotal(
                                     product.price,
@@ -91,7 +91,7 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
                                 product.discount ?? 0
                             )
                         )}{" "}
-                        - {formatSoles(subtotalIgv(product))}
+                        - {formatMoney(subtotalIgv(product))}
                         <div class="flex gap-2 items-center">
                             {product.discount > 0 ? (
                                 <span class="absolute -top-3 right-6 text-xs bg-success  rounded-md text-white">
@@ -203,7 +203,7 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
                                     Precio Normal:
                                 </span>
                                 <span class="dark:text-secondary-light text-secondary-dark tracking-wide">
-                                    {formatSoles(product.price)}
+                                    {formatMoney(product.price)}
                                 </span>
                             </div>
                             <div class="flex gap-1 flex-col mb-3  p-2 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md">
@@ -217,7 +217,7 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
                                             : informationStore.state!.earning
                                     }`}{" "}
                                     -{" "}
-                                    {formatSoles(
+                                    {formatMoney(
                                         subtotal(
                                             product.price,
                                             product.earning

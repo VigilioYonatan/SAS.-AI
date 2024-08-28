@@ -2,7 +2,7 @@ import type { AddressSchema } from "../schemas/address.schema";
 
 export const addressSeeder: Omit<AddressSchema, "id">[] = [
     {
-        district_id: "010101",
+        city_id: 1,
         codLocal: "0000",
         urbanizacion: "-",
         direccion:

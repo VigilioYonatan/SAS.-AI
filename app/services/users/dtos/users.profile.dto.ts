@@ -5,7 +5,6 @@ export const usersProfileDto = pickAsync(usersSchema, [
     "name",
     "address",
     "birthday",
-    "dni",
     "lastname",
     "telephone",
     "enabledNotification",

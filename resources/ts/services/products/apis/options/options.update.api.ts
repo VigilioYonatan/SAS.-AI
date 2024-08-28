@@ -1,35 +1,34 @@
 import type { FeaturesStoreDto } from "@/products/dtos/options/features.store.dto";
 import { useMutation } from "@vigilio/preact-fetching";
-import enviroments from "~/config";
 
 export function optionsUpdateApi() {
-	return useMutation<
-		OptionsUpdateAPI,
-		FeaturesStoreDto & { id: number },
-		OptionsUpdateErrorAPI
-	>("/options", async (url, body) => {
-		const { id, ...rest } = body;
-		const response = await fetch(`${enviroments.VITE_URL}/api${url}/${id}`, {
-			body: JSON.stringify(rest),
-			method: "PUT",
-			headers: {
-				"content-type": "application/json",
-			},
-		});
-		const result = await response.json();
+    return useMutation<
+        OptionsUpdateAPI,
+        FeaturesStoreDto & { id: number },
+        OptionsUpdateErrorAPI
+    >("/options", async (url, body) => {
+        const { id, ...rest } = body;
+        const response = await fetch(`/api${url}/${id}`, {
+            body: JSON.stringify(rest),
+            method: "PUT",
+            headers: {
+                "content-type": "application/json",
+            },
+        });
+        const result = await response.json();
 
-		if (!result.success) throw result;
-		return result;
-	});
+        if (!result.success) throw result;
+        return result;
+    });
 }
 
 export interface OptionsUpdateAPI {
-	success: boolean;
-	message: string;
+    success: boolean;
+    message: string;
 }
 
 export interface OptionsUpdateErrorAPI {
-	success: boolean;
-	message: string;
-	body: string;
+    success: boolean;
+    message: string;
+    body: string;
 }

@@ -40,19 +40,18 @@ import { guideSendSunatApi } from "../sunat/guide.send.api";
 import { notePDFSunatApi } from "../sunat/note.pdf.api";
 import { UbigeoApiService } from "@/ubigeo/services/ubigeo.api.service";
 import type { SunatNoteDto } from "../sunat/dtos/sunat.note.dto";
-import type { Provinces } from "@/ubigeo/entities/provinces.entity";
-import type { Departments } from "@/ubigeo/entities/departments.entity";
 import type { SunatGuideDto } from "../sunat/dtos/sunat.guide.dto";
 import { guidePDFSunatApi } from "../sunat/guide.pdf.api";
 import type { Users } from "@/users/entities/users.entity";
 import { productEntity, productEntityId } from "../../products/libs/index";
-import { clients } from "@/bot/libs/ai";
+import { clientsWhatsapp } from "@/bot/libs/ai";
 import type { RequestVigilio } from "~/config/types";
 import type { Variants } from "@/products/entities/options/variants.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ClientsApiService } from "@/users/services/clients.api.service";
 import { dniV1Api } from "../apis/dni.v1.api";
+import type { Regions } from "@/ubigeo/entities/regions.entity";
 
 @Injectable()
 export class OrdersApiService {
@@ -394,7 +393,7 @@ export class OrdersApiService {
             }
         }
 
-        if (!information?.enabled || !information.isOpen)
+        if (!information.isOpen)
             throw new BadRequestException(information.whatsappconfig.enabled);
         const findDay = information.schedule.find(
             (day) => day.id === NOW().day()
@@ -510,19 +509,17 @@ export class OrdersApiService {
         }, 0);
         let totalWithDistrict = total;
 
-        if (ordersStoreDto.district_id) {
-            const { data } = await this.ubigeoApiService.districtsShow(
-                ordersStoreDto.district_id
+        if (ordersStoreDto.city_id) {
+            const { data } = await this.ubigeoApiService.citiesShow(
+                ordersStoreDto.city_id
             );
             const priceShip = information.enabled_igv
                 ? subtotal(
-                      ((data!.province as Provinces).department as Departments)
-                          .priceShipping,
+                      (data!.region as Regions).priceShipping,
                       information.igv,
                       true
                   )
-                : ((data!.province as Provinces).department as Departments)
-                      .priceShipping;
+                : (data!.region as Regions).priceShipping;
             totalWithDistrict = totalWithDistrict + priceShip;
         }
 
@@ -644,7 +641,7 @@ export class OrdersApiService {
         );
         try {
             if (information.enabledSendMessage && ordersStoreDto.telephone) {
-                await clients[information.slug].sendMessage(
+                await clientsWhatsapp[information.slug].sendMessage(
                     `51${ordersStoreDto.telephone}@c.us`,
                     `Hola 😊, Aquí está el código de su orden *${order.order_code}*.\nPara ver el estado de su orden revise en ${enviroments.VITE_URL}/pedidos`
                 );
@@ -912,7 +909,7 @@ export class OrdersApiService {
                         ? "BOLETA"
                         : "";
                 try {
-                    await clients[information.slug].sendMessage(
+                    await clientsWhatsapp[information.slug].sendMessage(
                         `51${ordersUpdateDto.telephone}@c.us`,
                         information.whatsappconfig.thank.replace(
                             "{COMPROBANTE}",
@@ -936,13 +933,13 @@ export class OrdersApiService {
                         file
                     );
 
-                    await clients[information.slug].sendMessage(
+                    await clientsWhatsapp[information.slug].sendMessage(
                         `51${ordersUpdateDto.telephone}@c.us`,
                         media,
                         { sendMediaAsDocument: true }
                     );
                     await delay(2);
-                    await clients[information.slug].sendMessage(
+                    await clientsWhatsapp[information.slug].sendMessage(
                         `51${ordersUpdateDto.telephone}@c.us`,
                         information.whatsappconfig.thank2.replace(
                             "{URL}",
@@ -1082,7 +1079,7 @@ export class OrdersApiService {
                     information.enabledSendMessage
                 ) {
                     try {
-                        await clients[information.slug].sendMessage(
+                        await clientsWhatsapp[information.slug].sendMessage(
                             `51${ordersUpdateDto.telephone}@c.us`,
                             information.whatsappconfig.sendpdf.replace(
                                 "{COMPROBANTE}",
@@ -1101,13 +1098,13 @@ export class OrdersApiService {
                             pdfBuffer.toString(),
                             file
                         );
-                        await clients[information.slug].sendMessage(
+                        await clientsWhatsapp[information.slug].sendMessage(
                             `51${ordersUpdateDto.telephone}@c.us`,
                             media,
                             { sendMediaAsDocument: true }
                         );
                         await delay(2);
-                        await clients[information.slug].sendMessage(
+                        await clientsWhatsapp[information.slug].sendMessage(
                             `51${ordersUpdateDto.telephone}@c.us`,
                             information.whatsappconfig.thank2.replace(
                                 "{URL}",
@@ -1277,7 +1274,7 @@ export class OrdersApiService {
                         )}, *Cantidad*: ${prod.quantity} UND.\n`;
                     })
                 );
-                await clients[information.slug].sendMessage(
+                await clientsWhatsapp[information.slug].sendMessage(
                     `51${ordersUpdateDto.telephone}@c.us`,
                     `Hola 😊, Somos ${information.name_empresa}. \n Su orden *${order.order_code}*:\n Se está enviando su pedido a su domicilio ${order.address}.\n${products}`
                 );

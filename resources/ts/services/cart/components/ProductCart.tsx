@@ -5,7 +5,7 @@ import {
 } from "@/products/libs/helpers.ts";
 import {
     calculatePorcentajeDiscount,
-    formatSoles,
+    formatMoney,
     subtotalIgv,
 } from "../libs/helpers";
 import type { CartProductSchema } from "../schemas/index.ts";
@@ -94,7 +94,7 @@ function ProductCart({ product }: ProductCartProps) {
                                             : null}
                                     </span>
                                     <span class="text-sm dark:text-secondary-light font-bold text-principal-dark">
-                                        {formatSoles(product.subtotal)}
+                                        {formatMoney(product.subtotal)}
                                     </span>
                                 </div>
                                 <div>

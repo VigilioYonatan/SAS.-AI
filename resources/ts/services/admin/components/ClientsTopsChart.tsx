@@ -5,7 +5,6 @@ import { useRef, useEffect } from "preact/hooks";
 import useThemeStore from "~/stores/theme.store";
 import { prominent } from "color.js";
 import ContainerBox from "./ContainerBox";
-import { webStandard } from "~/config/guards";
 import AdminHr from "~/components/AdminHr";
 import { sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
@@ -19,9 +18,6 @@ interface ClientsTopsChartProps {
     }[];
 }
 function ClientsTopsChart({ data }: ClientsTopsChartProps) {
-    if (!webStandard()) {
-        return null;
-    }
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const theme = useThemeStore();
     async function init() {

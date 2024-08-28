@@ -1,6 +1,5 @@
 import { type CategoriesStoreDto } from "../../dtos/categories.store.dto";
 import { type UseMutation, useMutation } from "@vigilio/preact-fetching";
-import enviroments from "~/config";
 import type { CategoriesSchemaFromServer } from "../../schemas/categories.schema";
 
 export function categoriesStoreApi(): UseMutation<
@@ -9,7 +8,7 @@ export function categoriesStoreApi(): UseMutation<
     CategoriesStoreErrorAPI
 > {
     return useMutation("/categories", async (url, body) => {
-        const response = await fetch(`${enviroments.VITE_URL}/api${url}`, {
+        const response = await fetch(`/api${url}`, {
             body: JSON.stringify(body),
             method: "POST",
             headers: {

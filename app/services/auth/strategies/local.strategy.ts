@@ -5,11 +5,16 @@ import { Op } from "sequelize";
 
 export function localStrategy() {
     return new LocalStrategy(
-        { usernameField: "identifier" },
-        async (identifier, password, done) => {
+        { usernameField: "telephone", passReqToCallback: true },
+        async (req, telephone, password, done) => {
+            // como puedo usar req
             const user = await Users.findOne({
                 where: {
-                    [Op.or]: [{ email: identifier }, { telephone: identifier }],
+                    [Op.or]: [
+                        { telephone: telephone }, // Suponiendo que 'identifier' puede ser teléfono o email
+                        { email: telephone },
+                    ],
+                    information_id: req.body.information_id,
                 },
             });
             if (!user) {
@@ -17,14 +22,14 @@ export function localStrategy() {
                 return done(null, false, {
                     // error que se lleva al cliente
                     message:
-                        "Correo electrónico, télefono o contraseña incorrecta",
+                        "Télefono, Correo electrónico o contraseña incorrecta",
                 });
             }
             const validPassword = bcryptjs.compareSync(password, user.password);
             if (!validPassword) {
                 return done(null, false, {
                     message:
-                        "Correo electrónico, télefono o contraseña incorrecta",
+                        "Télefono, Correo electrónico o contraseña incorrecta",
                 });
             }
             if (!user.enabled) {

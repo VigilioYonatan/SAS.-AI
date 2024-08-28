@@ -1,4 +1,4 @@
-import type { InformationSchema } from "@/information/schemas/information.schema";
+import type { Users } from "@/users/entities/users.entity";
 
-export type AuthUserLogin = Pick<InformationSchema, "id">;
-export type AuthUser = Omit<InformationSchema, "password">;
+export type AuthUserLogin = Pick<Users, "id">;
+export type AuthUser = Omit<Users, "password">;

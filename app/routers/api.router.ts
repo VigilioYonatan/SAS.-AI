@@ -27,6 +27,7 @@ import { BrandsApiController } from "@/products/controllers/brands.api.controlle
 import { SeederApiController } from "@/seeders/controllers/seeders.api.controller";
 import { PaginatorApiController } from "@/common/paginator/controllers/paginator.api.controller";
 import { ServicioApiController } from "@/information/controllers/servicio.api.controller";
+import { AdminApiController } from "@/admin/controllers/admin.api.controller";
 
 export const apiRouters: Type[] = [
     InformationApiController,
@@ -49,7 +50,6 @@ export const apiRouters: Type[] = [
     KindCreditNotesApiController,
     KindDebitNotesApiController,
     NotesApiController,
-    OrdersApiController,
     PayMethodsApiController,
     StatusOrdersApiController,
     TicketApiController,
@@ -58,4 +58,5 @@ export const apiRouters: Type[] = [
     SeederApiController,
     PaginatorApiController,
     ServicioApiController,
+    AdminApiController,
 ];

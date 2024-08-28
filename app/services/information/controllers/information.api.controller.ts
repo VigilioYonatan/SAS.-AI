@@ -31,6 +31,7 @@ import {
 import {
     contactsSchema,
     groupWhatsapp,
+    payments,
     scheduleSchema,
     whatsappconfig,
     type ContactsSchema,
@@ -48,6 +49,7 @@ import {
     informationStoreDto,
     type InformationStoreDto,
 } from "../dtos/information.store.dto";
+import { type PaymentDto } from "@/payments/dtos/payment.dto";
 
 @Injectable()
 @Controller("/information")
@@ -58,9 +60,23 @@ export class InformationApiController {
 
     @VigilioServicesGuard()
     @Pipe(objectAsync({ slug: string() }))
-    @Get("/:slug/full")
-    async showVigilio(@Params("slug") slug: string) {
-        const result = await this.informationApiService.showVigilio(slug);
+    @Get("/:slug/payment")
+    async payment(@Params("slug") slug: string) {
+        const result = await this.informationApiService.payment(slug);
+        return result;
+    }
+    @VigilioServicesGuard()
+    @Validator(payments)
+    @Pipe(objectAsync({ slug: string() }))
+    @Put("/:slug/payment")
+    async paymentUpdate(
+        @Params("slug") slug: string,
+        @Body() paymentDto: PaymentDto
+    ) {
+        const result = await this.informationApiService.paymentUpdate(
+            slug,
+            paymentDto
+        );
         return result;
     }
 

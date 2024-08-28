@@ -30,19 +30,14 @@ export const productsNormalSchema = object({
             value: string([toTrimmed(), minLength(1)]),
         })
     ),
-    // isNew: boolean(), // es nuevo el producto
     enabled: boolean(), // esta disponible el producto?
-    earning: nullable(number([minValue(0), maxValue(100)])), // ganancia de empresa. si producto cuesta 100soles. ganancia 30% ejemplo. 130soles mostrara. SI ES nullo tomará el 30% de information schema
     price: number([minValue(0)]), // precio
-    sku: nullable(string([toTrimmed(), minLength(3), maxLength(45)])),
-    stock: nullable(number([minValue(0, "Minimo 0 cantidades.")])),
-    ilimit: boolean(),
     discount: number([minValue(0), maxValue(100)]), //si tiene descuento
     slug: string([minLength(1), minLength(3), maxLength(255)]), // slug
     images: nullable(array(filesSchema())),
-    isNew: boolean(),
     category_id: number(),
     brand_id: nullable(number()),
+    url: nullable(string()),
     information_id: number(),
 });
 

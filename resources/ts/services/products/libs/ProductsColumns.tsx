@@ -2,11 +2,7 @@ import type { Columns } from "@vigilio/preact-table";
 import { sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import { printImagesProduct } from "./helpers";
-import {
-    formatMoney,
-    formatMoneyDinamic,
-    subtotalIgv,
-} from "@/cart/libs/helpers";
+import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
 import type { ProductsSchemaFromServer } from "../schemas/products.schema";
 import useAuthstore from "@/auth/stores/auth.store";
 import useInformationstore from "@/information/stores/information.store";
@@ -95,7 +91,7 @@ const productsColumns: Columns<
         header: "precio",
         cell: (props, _index) => (
             <span class="relative text-md font-bold">
-                {formatMoney(formatMoneyDinamic(subtotalIgv(props)))}
+                {formatMoney(subtotalIgv(props))}
                 {props.discount > 0 ? (
                     <div class="absolute flex text-[0.7rem] font-bold justify-center text-white items-center bottom-[16px] right-[-10px] bg-red-600 w-[20px] h-[20px] rounded-full">
                         {props.discount} %

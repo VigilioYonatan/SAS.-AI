@@ -8,18 +8,18 @@ import {
     DefaultScope,
 } from "sequelize-typescript";
 import type { AddressSchema } from "../schemas/address.schema";
-import { Districts } from "@/ubigeo/entities/districts.entity";
 import { InformationEntity } from "./information.entity";
+import { Cities } from "@/ubigeo/entities/cities.entity";
 
-@DefaultScope(() => ({ include: [{ model: Districts }] }))
+@DefaultScope(() => ({ include: [{ model: Cities }] }))
 @Table({ timestamps: false })
 export class Address extends Model implements Omit<AddressSchema, "id"> {
-    @ForeignKey(() => Districts)
+    @ForeignKey(() => Cities)
     @Column({
         allowNull: false,
-        type: DataType.STRING,
+        type: DataType.INTEGER,
     })
-    district_id: string;
+    city_id: number;
 
     @Column({
         allowNull: false,
@@ -40,8 +40,8 @@ export class Address extends Model implements Omit<AddressSchema, "id"> {
     codLocal: string;
 
     // relations
-    @BelongsTo(() => Districts)
-    district: unknown;
+    @BelongsTo(() => Cities)
+    city: unknown;
 
     @ForeignKey(() => InformationEntity)
     @Column({

@@ -10,7 +10,6 @@ import { type UsersUpdateDto } from "../dtos/users.update.dto";
 import { removeFile } from "@/uploads/libs/helpers";
 import { generateCodeEntity } from "~/libs/helpers";
 import type { UsersProfileDto } from "../dtos/users.profile.dto";
-import { Op } from "sequelize";
 import bcryptjs from "bcryptjs";
 import type { UsersPasswordDto } from "../dtos/users.password.dto";
 import type { InformationEntity } from "@/information/entities/information.entity";
@@ -65,7 +64,10 @@ export class UsersApiService {
             "USER",
             information
         );
-        user.password = bcryptjs.hashSync(usersStoreDto.password);
+        user.password = bcryptjs.hashSync(
+            usersStoreDto.password,
+            bcryptjs.genSaltSync(10)
+        );
         await user.save();
 
         return {
@@ -115,7 +117,10 @@ export class UsersApiService {
             });
         }
         // cambiar de contraseña
-        user.password = bcryptjs.hashSync(body.repeatNewPassword);
+        user.password = bcryptjs.hashSync(
+            body.repeatNewPassword,
+            bcryptjs.genSaltSync(10)
+        );
         await user.save();
         return {
             success: true,
@@ -123,23 +128,6 @@ export class UsersApiService {
         };
     }
     async profile(usersProfileDto: UsersProfileDto, user: Users) {
-        const [byDni] = await Promise.all([
-            Users.findOne({
-                where: {
-                    dni: usersProfileDto.dni,
-                    id: { [Op.not]: user.id },
-                },
-                raw: true,
-            }),
-        ]);
-
-        if (byDni) {
-            throw new BadRequestException(
-                `Este usuario con el dni ${usersProfileDto.dni} ya existe`,
-                { body: "dni" as keyof UsersUpdateDto }
-            );
-        }
-
         await user.update(usersProfileDto);
 
         return {

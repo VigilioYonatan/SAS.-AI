@@ -1,55 +1,48 @@
 import { Injectable, NotFoundException } from "@vigilio/express-core";
-import { Departments } from "../entities/departments.entity";
-import { Provinces } from "../entities/provinces.entity";
-import { Districts } from "../entities/districts.entity";
+
 import type { DepartmentsUpdateDto } from "../dtos/departments.update.dto";
+import { Regions } from "../entities/regions.entity";
+import { Cities } from "../entities/cities.entity";
 
 @Injectable()
 export class UbigeoApiService {
-	async departments() {
-		const data = await Departments.findAll();
-		return {
-			success: true,
-			data,
-		};
-	}
-	async departmentsShow(ubigeo: string) {
-		const department = await Departments.findByPk(ubigeo);
-		if (!department)
-			throw new NotFoundException("No se encontró departamento.");
-		return {
-			success: true,
-			department,
-		};
-	}
-	async departmentsUpdate(ubigeo: string, body: DepartmentsUpdateDto) {
-		const { department } = await this.departmentsShow(ubigeo);
-		await department.update(body);
-		return {
-			success: true,
-			message: "Se actualizó departamento correctamente.",
-		};
-	}
-	async provinces() {
-		const data = await Provinces.findAll();
-		return {
-			success: true,
-			data,
-		};
-	}
-	async districts() {
-		const data = await Districts.findAll();
-		return {
-			success: true,
-			data,
-		};
-	}
-	async districtsShow(ubigeo: string) {
-		const data = await Districts.findByPk(ubigeo);
-		if (!data) throw new NotFoundException(`No se encontró distrito ${ubigeo}`);
-		return {
-			success: true,
-			data,
-		};
-	}
+    async regions() {
+        const data = await Regions.findAll();
+        return {
+            success: true,
+            data,
+        };
+    }
+    async regionsShow(id: string) {
+        const region = await Regions.findByPk(id);
+        if (!region) throw new NotFoundException("No se encontró region.");
+        return {
+            success: true,
+            region,
+        };
+    }
+    async regionsUpdate(id: string, body: DepartmentsUpdateDto) {
+        const { region } = await this.regionsShow(id);
+        await region.update(body);
+        return {
+            success: true,
+            message: "Se actualizó departamento correctamente.",
+        };
+    }
+
+    async cities() {
+        const data = await Cities.findAll();
+        return {
+            success: true,
+            data,
+        };
+    }
+    async citiesShow(id: number) {
+        const data = await Cities.findByPk(id);
+        if (!data) throw new NotFoundException(`No se encontró ciudad ${id}`);
+        return {
+            success: true,
+            data,
+        };
+    }
 }

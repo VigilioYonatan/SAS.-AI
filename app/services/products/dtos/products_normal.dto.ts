@@ -20,7 +20,10 @@ export const productsNormalStoreDto = mergeAsync(
         omitAsync(productsNormalSchema, ["id", "product_code"]),
         objectAsync({
             options: arrayAsync(
-                omitAsync(productsOptionsSchema, ["product_normal_id"])
+                omitAsync(productsOptionsSchema, [
+                    "product_normal_id",
+                    "information_id",
+                ])
             ),
         }),
     ],

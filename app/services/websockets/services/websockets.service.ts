@@ -22,18 +22,19 @@ export class WebsocketsService {
         return user;
     }
 
-    async orderStore(body: {
-        information_id: number;
-        order_code: string;
-        total: number;
-        client_id: number;
-    }) {
-        const information = await InformationEntity.findByPk(
-            body.information_id,
-            {
-                attributes: ["id", "logo"],
-            }
-        );
+    async orderStore(
+        empresa: string,
+        body: {
+            order_code: string;
+            total: number;
+            client_id: number;
+        }
+    ) {
+        const information = await InformationEntity.findOne({
+            where: { slug: empresa },
+            attributes: ["id", "logo"],
+        });
+        if (!information) return;
         const content = `Se registró una nueva orden registrado <b>S/.${body.total}</b>`;
         const payload = {
             title: `Nueva orden registrada ${body.order_code}`,
@@ -48,11 +49,11 @@ export class WebsocketsService {
             type: "order",
             url: `/admin/orders/${body.order_code}`,
             content,
-            information_id: body.information_id,
+            information_id: information.id,
             client_id: body.client_id,
         });
         const users = await Users.findAll({
-            where: { information_id: body.information_id },
+            where: { information_id: information.id },
         });
 
         await Promise.all(

@@ -15,7 +15,7 @@ export type PaginatorModel =
     | "contacts"
     | "suppliers"
     | "posts"
-    | "departments"
+    | "regions"
     | "urls"
     | "complaints";
 
@@ -34,7 +34,7 @@ export const paginatorModel: PaginatorModel[] = [
     "suppliers",
     "posts",
     "orders_user",
-    "departments",
+    "regions",
     "urls",
     "complaints",
 ];

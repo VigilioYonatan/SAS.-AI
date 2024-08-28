@@ -19,7 +19,7 @@ import {
 } from "../dtos/brands.update.dto";
 import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
 import type { InformationEntity } from "@/information/entities/information.entity";
-import type { BrandsApiService } from "../services/brands.api.service";
+import { BrandsApiService } from "../services/brands.api.service";
 
 @Injectable()
 @Controller("/brands")

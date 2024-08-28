@@ -37,13 +37,7 @@ export function subtotalIgv(
     information: InformationEntity,
     product: ProductsNormal | ProductsServicio | ProductsRestaurant
 ) {
-    const subtotalProduct = subtotal(
-        product.price,
-        //   si no tiene ganancia en producto. tomará por defecto la de configuración
-        product.earning ?? information.earning,
-        true
-    );
-    const subDiscount = subtotal(subtotalProduct, product.discount);
+    const subDiscount = subtotal(product.price, product.discount ?? 0);
     return information!.enabled_igv
         ? subtotal(subDiscount, information.igv, true)
         : subDiscount;

@@ -20,11 +20,11 @@ import { Invoices } from "./invoices.entity";
 import { Notes } from "./notes.entity";
 import { Guides } from "./guides.entity";
 import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
-import { Districts } from "@/ubigeo/entities/districts.entity";
 import { InformationEntity } from "@/information/entities/information.entity";
 import { Users } from "@/users/entities/users.entity";
 import type { UsersSchema } from "@/users/schemas/users.schema";
 import { Clients } from "@/users/entities/clients.entity";
+import { Cities } from "@/ubigeo/entities/cities.entity";
 
 @DefaultScope(() => ({
     include: [
@@ -36,7 +36,7 @@ import { Clients } from "@/users/entities/clients.entity";
             model: StatusOrders,
             attributes: ["id", "name"] as (keyof StatusOrdersSchema)[],
         },
-        { model: Districts },
+        { model: Cities },
         {
             model: Users,
             attributes: [
@@ -48,7 +48,6 @@ import { Clients } from "@/users/entities/clients.entity";
                 "email",
                 "role_id",
             ] as (keyof UsersSchema)[],
-            as: "seller",
         },
         { model: Clients },
     ],
@@ -132,15 +131,15 @@ export class Orders extends Model implements Omit<OrdersSchema, "id"> {
     @Column({ allowNull: false, type: DataType.INTEGER })
     pay_method_id: number;
 
-    @ForeignKey(() => Districts)
-    @Column({ type: DataType.STRING })
-    district_id: string | null;
+    @ForeignKey(() => Cities)
+    @Column({ type: DataType.INTEGER })
+    city_id: number | null;
 
     /*****  RELATIONS   *****/
 
     // orders - status_order: one to many
-    @BelongsTo(() => Districts)
-    district: unknown;
+    @BelongsTo(() => Cities)
+    city: unknown;
 
     @BelongsTo(() => Users)
     user: unknown;
