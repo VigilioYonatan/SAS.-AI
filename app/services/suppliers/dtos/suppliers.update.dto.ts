@@ -7,5 +7,6 @@ export const suppliersUpdateDto = omitAsync(suppliersSchema, [
 	"logo",
 	"razon_social",
 	"ruc",
+	"information_id",
 ]);
 export type SuppliersUpdateDto = Input<typeof suppliersUpdateDto>;

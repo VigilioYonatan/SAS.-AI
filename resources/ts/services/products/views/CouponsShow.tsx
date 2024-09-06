@@ -63,15 +63,15 @@ function CouponsShow({ coupon }: CouponsShowProps) {
 				<div class="flex-1 min-w-[250px]">
 					<div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
 						<span class="text-primary dark:text-terciary font-bold">
-							Subcategorías:
+							categorías:
 						</span>
 						<div class="flex items-center  flex-wrap gap-1">
-							{coupon.subcategory.map((subcategories) => (
+							{coupon.category.map((category) => (
 								<span
 									class="dark:text-white text-xs  rounded-md px-4 py-1 dark:bg-admin-paper-dark bg-white"
-									key={subcategories.id}
+									key={category.id}
 								>
-									{subcategories.name}
+									{category.name}
 								</span>
 							))}
 						</div>

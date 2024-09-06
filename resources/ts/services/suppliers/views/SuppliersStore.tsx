@@ -13,6 +13,7 @@ import { rucApi } from "@/orders/apis/others/ruc.api";
 import { useEffect } from "preact/hooks";
 import { isValidRUC } from "@/orders/libs";
 import LoaderSubmit from "~/components/LoaderSubmit";
+import { storageInformation } from "@/information/stores/information.store";
 
 interface SupplierstoreProps {
 	refetch: (clean: boolean) => void;
@@ -27,6 +28,9 @@ function SuppliersStore({ refetch }: SupplierstoreProps) {
 	const suppliersStoreDtoForm = useForm<SuppliersStoreDto>({
 		resolver: valibotVigilio(suppliersStoreDto),
 		mode: "all",
+		defaultValues: {
+			information_id: storageInformation!.id,
+		},
 	});
 	const suppliersStoreMutation = suppliersStoreApi();
 
@@ -143,14 +147,14 @@ function SuppliersStore({ refetch }: SupplierstoreProps) {
 						title="Celular"
 						name={"phone_one" as keyof SuppliersStoreDto}
 						placeholder="9XXXXXXXX"
-						ico={<span>+51</span>}
+						ico={<span>+{storageInformation?.dial_code}</span>}
 					/>
 					<Form.control
 						type="tel"
 						title="Celular 2"
 						name={"phone_two" as keyof SuppliersStoreDto}
 						question="Este campo no es obligatorio"
-						ico={<span>+51</span>}
+						ico={<span>+{storageInformation?.dial_code}</span>}
 						placeholder="9XXXXXXXX"
 					/>
 				</div>

@@ -5,40 +5,46 @@ import type { ProductsServicio } from "@/products/entities/products_servicio.ent
 import type { Money } from "~/libs/helpers";
 
 export function subtotal(price: number, discount: number, increase = false) {
-    if (increase) {
-        return price + (discount * price) / 100;
-    }
-    return price - (discount * price) / 100;
+	if (increase) {
+		return price + (discount * price) / 100;
+	}
+	return price - (discount * price) / 100;
 }
-export function formatSoles(number: number) {
-    return number.toLocaleString("es-PE", {
-        style: "currency",
-        currency: "PEN",
-    });
-}
-export function formatMoney(number: number, money: Money) {
-    return money === "SOLES"
-        ? formatSoles(number)
-        : number.toLocaleString("en-US", {
-              style: "currency",
-              currency: "USD",
-          });
+
+export function formatMoney(
+	information: InformationEntity,
+	number: number,
+	money: Money,
+) {
+	return money === "DOLARES"
+		? number.toLocaleString("en-US", {
+				style: "currency",
+				currency: "USD",
+			})
+		: number.toLocaleString(information.money.international_simbolo, {
+				style: "currency",
+				currency: information.money.simbolo,
+			});
 }
 
 export function calculatePorcentajeDiscount(initial: number, final: number) {
-    const porcentajeDescuento = ((initial - final) / initial) * 100;
-    return Number(porcentajeDescuento.toFixed()); //
+	const porcentajeDescuento = ((initial - final) / initial) * 100;
+	return Number(porcentajeDescuento.toFixed()); //
 }
 
 export function redondeo(total: number) {
-    return Math.floor(total * 10) / 10;
+	return Math.floor(total * 10) / 10;
 }
 export function subtotalIgv(
-    information: InformationEntity,
-    product: ProductsNormal | ProductsServicio | ProductsRestaurant
+	information: InformationEntity,
+	product: ProductsNormal | ProductsServicio | ProductsRestaurant,
+	coupon: null | number = null,
 ) {
-    const subDiscount = subtotal(product.price, product.discount ?? 0);
-    return information!.enabled_igv
-        ? subtotal(subDiscount, information.igv, true)
-        : subDiscount;
+	let subDiscount = subtotal(product.price, product.discount ?? 0);
+	if (coupon) {
+		subDiscount = subtotal(subDiscount, coupon);
+	}
+	return information!.enabled_igv
+		? subtotal(subDiscount, information.igv, true)
+		: subDiscount;
 }

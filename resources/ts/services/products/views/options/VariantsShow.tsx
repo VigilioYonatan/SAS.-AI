@@ -10,18 +10,18 @@ import {
 	type VariantsUpdateDto,
 } from "@/products/dtos/options/variants.update.dto";
 import { useEffect, useMemo } from "preact/hooks";
-import type { ProductsSchemaFromServer } from "@/products/schemas/products.schema";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import { type FilesSchema } from "~/libs/upload";
 import { printImagesProduct } from "@/products/libs/helpers";
 import { useSignal } from "@preact/signals";
 import { handlerError } from "~/libs/helpers";
+import type { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 
 interface VariantsShowProps {
 	product_id: number;
 	variant_id: number;
-	product: ProductsSchemaFromServer;
+	product: ProductsNormalSchemaFromServer;
 	refetch: (clean?: boolean) => void;
 }
 function VariantsShow({
@@ -46,7 +46,7 @@ function VariantsShow({
 		const variantUpdateForm = useForm<VariantsUpdateDto>({
 			resolver: valibotVigilio(variantsUpdateDto),
 			defaultValues: useMemo(() => {
-				const { createdAt, updatedAt, id, product_id, ...rest } = variant;
+				const { id, ...rest } = variant;
 				return rest;
 			}, []),
 		});

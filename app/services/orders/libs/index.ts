@@ -4,7 +4,6 @@ import type { DetailOrdersStoreDto } from "../dtos/detail_orders.store.dto";
 import type { NotesSchema } from "../schemas/notes.schema";
 import type { SunatNoteDto } from "../sunat/dtos/sunat.note.dto";
 import type { Invoices } from "../entities/invoices.entity";
-import type { InformationEntitySchema } from "@/information/schemas/information.schema";
 import { InformationEntity } from "@/information/entities/information.entity";
 import { pathUploads } from "@/uploads/libs/helpers";
 import { invoicePDFSunatApi } from "../sunat/invoice.pdf.api";
@@ -20,7 +19,6 @@ import { KindCreditNotes } from "../entities/kind_credit_notes.entity";
 import { KindDebitNotes } from "../entities/kind_debit_notes.entity";
 import { ticketHTML } from "./ticket";
 import { Orders } from "../entities/orders.entity";
-import puppeteer from "puppeteer";
 import fs from "node:fs";
 import { slug } from "@vigilio/express-core/helpers";
 import type { Guides } from "../entities/guides.entity";
@@ -29,10 +27,17 @@ import type { SunatGuideDto } from "../sunat/dtos/sunat.guide.dto";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
 import type { DetailOrders } from "../entities/detail_orders.entity";
 import { guidePDFSunatApi } from "../sunat/guide.pdf.api";
-import { productEntity, productEntityId } from "@/products/libs";
+import { Product, productEntityId } from "@/products/libs";
 import { Op, type WhereAttributeHash } from "sequelize";
 import type { Cities } from "@/ubigeo/entities/cities.entity";
 import type { Regions } from "@/ubigeo/entities/regions.entity";
+import type { Address } from "@/information/entities/address.entity";
+import { provincesSeeder } from "@/ubigeo/seeders/peru/provinces.seeder";
+import { RegionsEmpresa } from "@/ubigeo/entities/regions_empresa.entity";
+import { ProductsNormal } from "@/products/entities/products_normal.entity";
+import { ProductsServicio } from "@/products/entities/products_servicio.entity";
+import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
+import htmlpdf from "html-pdf";
 export const ordersTransferenciaImage = [800];
 
 export const isValidDni = new RegExp(/^\d{8}$/);
@@ -73,16 +78,12 @@ export const PAYMETHOD: Record<PayMethodType, number> = {
 
 interface PdfGenerateProps {
     information: InformationEntity;
-    type: "invoice" | "note" | "ticket" | "guide";
+    type: "invoice" | "note" | "recibo" | "guide";
     sunat: SunatInvoiceDto | SunatNoteDto | SunatGuideDto | null;
     order: Orders;
 }
 // save: boolean save in filessystem
 export async function pdfGenerate(props: PdfGenerateProps, save = false) {
-    const browser = await puppeteer.launch({
-        headless: true,
-        args: ["--no-sandbox"],
-    });
     try {
         let pdf: string | null = null;
         if (props.type === "invoice") {
@@ -94,16 +95,26 @@ export async function pdfGenerate(props: PdfGenerateProps, save = false) {
         if (props.type === "guide") {
             pdf = await guidePDFSunatApi(props.sunat as SunatGuideDto);
         }
-        if (props.type === "ticket") {
+
+        if (props.type === "recibo") {
             pdf = await ticketHTML(props.order, props.information);
         }
 
-        const page = await browser.newPage();
-        await page.setContent(pdf!);
-        const pdfBuffer = await page.pdf({
-            width: "95mm",
-            height: "385mm",
-        });
+        function convertAsync() {
+            return new Promise((res, rej) => {
+                htmlpdf
+                    .create(pdf!, {
+                        width: "95mm",
+                        height: props.type === "recibo" ? "300mm" : "385mm",
+                        type: "pdf",
+                    })
+                    .toBuffer((err, buffer) => {
+                        if (err) return rej(err);
+                        return res(buffer);
+                    });
+            });
+        }
+        const buffer = await convertAsync();
         const file = `${props.information.slug}/sunat/${slug(
             props.information.slug
         )}-${props.order.order_code}-${props.type}.pdf`;
@@ -111,13 +122,14 @@ export async function pdfGenerate(props: PdfGenerateProps, save = false) {
             if (fs.existsSync(`${pathUploads()}/${file}`)) {
                 fs.unlinkSync(`${pathUploads()}/${file}`);
             }
-            fs.writeFileSync(`${pathUploads()}/${file}`, pdfBuffer);
+            fs.writeFileSync(`${pathUploads()}/${file}`, buffer as Buffer);
         }
-        await browser.close();
-        return { file, pdfBuffer };
+        return { file, pdfBuffer: buffer as Buffer };
     } catch (error) {
         throw new InternalServerErrorException(
-            "PDF no se subio correctamente, comunicarte con desarrollador, Posible error: no está disponible web de factura"
+            `PDF no se subio correctamente, comunicarte con desarrollador, Posible error: no está disponible web de factura, ${
+                (error as Error).message
+            }`
         );
     }
 }
@@ -181,17 +193,24 @@ export async function onInvoiceSunat({
         rznSocial: invoice.razon_social ?? "Cliente General",
         numDoc: invoice.identification_number ?? "00000000",
     } as SunatInvoiceDto["client"];
-    const addressInformation = (information as InformationEntitySchema).address;
+    const addressInformation = (information as InformationEntity)
+        .address as Address;
     const address = {
-        ubigeo: addressInformation.district_id,
-        departamento: addressInformation.district.department.name,
-        provincia: addressInformation.district.province.name,
-        distrito: addressInformation.district.name,
+        ubigeo: (addressInformation.city as Cities).code,
+        departamento: ((addressInformation.city as Cities).region as Regions)
+            .name,
+        provincia: provincesSeeder.find(
+            (pro) =>
+                pro.department_id ===
+                ((addressInformation.city as Cities).region as Regions).code
+        )?.name!,
+        distrito: (addressInformation.city as Cities).name,
         urbanizacion: addressInformation.urbanizacion,
         direccion: addressInformation.direccion,
         codLocal: addressInformation.codLocal,
     };
     const details = await detailInvoice(information, detail_orders, order);
+
     return {
         ublVersion: "2.1",
         tipoOperacion: "0101",
@@ -213,14 +232,18 @@ export async function onInvoiceSunat({
             logo: information.logo
                 ? fs
                       .readFileSync(
-                          `${pathUploads()}/${information.logo[0].file}` // trae a la imagen 100px
+                          `${pathUploads()}/${information.slug}/${
+                              information.logo[0].file
+                          }` // trae a la imagen 100px
                       )
                       .toString("base64")
                 : "", //si no existe logo que envie un string vacio
             certificado: information.certificado
                 ? fs
                       .readFileSync(
-                          `${pathUploads()}/${information.certificado[0].file}` // trae a la imagen 100px
+                          `${pathUploads()}/${information.slug}/${
+                              information.certificado[0].file
+                          }` // trae a la imagen 100px
                       )
                       .toString("base64")
                 : null,
@@ -275,12 +298,18 @@ export async function onNoteSunat({
         rznSocial: note.razon_social ?? "Cliente General",
         numDoc: note.identification_number ?? "00000000",
     } as SunatInvoiceDto["client"];
-    const addressInformation = (information as InformationEntitySchema).address;
+    const addressInformation = (information as InformationEntity)
+        .address as Address;
     const address = {
-        ubigeo: addressInformation.district_id,
-        departamento: addressInformation.district.department.name,
-        provincia: addressInformation.district.province.name,
-        distrito: addressInformation.district.name,
+        ubigeo: (addressInformation.city as Cities).code,
+        departamento: ((addressInformation.city as Cities).region as Regions)
+            .name,
+        provincia: provincesSeeder.find(
+            (pro) =>
+                pro.department_id ===
+                ((addressInformation.city as Cities).region as Regions).code
+        )?.name!,
+        distrito: (addressInformation.city as Cities).name,
         urbanizacion: addressInformation.urbanizacion,
         direccion: addressInformation.direccion,
         codLocal: addressInformation.codLocal,
@@ -311,14 +340,18 @@ export async function onNoteSunat({
             logo: information.logo
                 ? fs
                       .readFileSync(
-                          `${pathUploads()}/${information.logo[0].file}` // trae a la imagen 100px
+                          `${pathUploads()}/${information.slug}/${
+                              information.logo[0].file
+                          }` // trae a la imagen 100px
                       )
                       .toString("base64")
                 : "", //si no existe logo que envie un string vacio
             certificado: information.certificado
                 ? fs
                       .readFileSync(
-                          `${pathUploads()}/${information.certificado[0].file}` // trae a la imagen 100px
+                          `${pathUploads()}/${information.slug}/${
+                              information.certificado[0].file
+                          }` // trae a la imagen 100px
                       )
                       .toString("base64")
                 : null,
@@ -348,12 +381,18 @@ export async function onGuideSunat({
     order,
     vendedor,
 }: OnGuideSunatProps): Promise<SunatGuideDto> {
-    const addressInformation = (information as InformationEntitySchema).address;
+    const addressInformation = (information as InformationEntity)
+        .address as Address;
     const address = {
-        ubigeo: addressInformation.district_id,
-        departamento: addressInformation.district.department.name,
-        provincia: addressInformation.district.province.name,
-        distrito: addressInformation.district.name,
+        ubigeo: (addressInformation.city as Cities).code,
+        departamento: ((addressInformation.city as Cities).region as Regions)
+            .name,
+        provincia: provincesSeeder.find(
+            (pro) =>
+                pro.department_id ===
+                ((addressInformation.city as Cities).region as Regions).code
+        )?.name!,
+        distrito: (addressInformation.city as Cities).name,
         urbanizacion: addressInformation.urbanizacion,
         direccion: addressInformation.direccion,
         codLocal: addressInformation.codLocal,
@@ -402,14 +441,18 @@ export async function onGuideSunat({
             logo: information.logo
                 ? fs
                       .readFileSync(
-                          `${pathUploads()}/${information.logo[0].file}` // trae a la imagen 100px
+                          `${pathUploads()}/${information.slug}/${
+                              information.logo[0].file
+                          }` // trae a la imagen 100px
                       )
                       .toString("base64")
                 : "", //si no existe logo que envie un string vacio
             certificado: information.certificado
                 ? fs
                       .readFileSync(
-                          `${pathUploads()}/${information.certificado[0].file}` // trae a la imagen 100px
+                          `${pathUploads()}/${information.slug}/${
+                              information.certificado[0].file
+                          }` // trae a la imagen 100px
                       )
                       .toString("base64")
                 : null,
@@ -427,13 +470,32 @@ export async function getOrder(
     order: Orders,
     showDetailsOrder = true
 ) {
-    const Product = productEntity(information.type_empresa_id);
     const [details_orders, invoice, guide] = await Promise.all([
         showDetailsOrder
             ? order.$get("details_orders", {
                   include: [
                       {
-                          model: Product,
+                          model: ProductsNormal,
+                          attributes: [
+                              "id",
+                              "product_code",
+                              "name",
+                              "images",
+                              "slug",
+                          ],
+                      },
+                      {
+                          model: ProductsServicio,
+                          attributes: [
+                              "id",
+                              "product_code",
+                              "name",
+                              "images",
+                              "slug",
+                          ],
+                      },
+                      {
+                          model: ProductsRestaurant,
                           attributes: [
                               "id",
                               "product_code",
@@ -459,6 +521,22 @@ export async function getOrder(
         order.dataValues.details_orders = details_orders;
     }
     order.dataValues.note = note;
+    let city = null;
+    if (order.city) {
+        const regionsInformation = await RegionsEmpresa.findOne({
+            where: {
+                information_id: information.id,
+                region_id: (order.city as Cities).region_id,
+            },
+        });
+        city = {
+            ...(order.city as Cities),
+            days: regionsInformation?.days,
+            enabled: regionsInformation?.enabled,
+            priceShipping: regionsInformation?.priceShipping,
+        };
+    }
+    order.dataValues.city = city;
     return order;
 }
 export async function detailInvoice(
@@ -470,28 +548,26 @@ export async function detailInvoice(
     const lengthDetails = (
         order.dataValues.details_orders as DetailOrders[]
     ).reduce((total, obj) => total + obj.quantity, 0);
-    const departamento = order.city_id
-        ? ((order.city as Cities).region as Regions)
-        : null;
-    const ig = departamento
+    const region = order.city_id ? order.dataValues.city.region : null;
+    const ig = region
         ? order.igv
-            ? subtotal(departamento.priceShipping, information.igv, true)
-            : departamento.priceShipping
+            ? subtotal(region.priceShipping, information.igv, true)
+            : region.priceShipping
         : 0;
 
     const details: SunatInvoiceDto["details"] = await Promise.all(
         detail_orders.map(async (prod) => {
-            const Product = productEntity(
-                information.tipo_empresa.tipo_servicio_id
-            );
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            const product_id = (prod as any)[
-                productEntityId(information.tipo_empresa.tipo_servicio_id)
-            ];
-            const product = await Product.findByPk();
+            const product = await Product(information).findOne({
+                where: {
+                    id: prod[productEntityId(information) as keyof typeof prod],
+                    information_id: information.id,
+                },
+            });
             if (!product)
                 throw new NotFoundException(
-                    `Hubo un error al encontrar este producto ${product_id}`
+                    `Hubo un error al encontrar este producto ${
+                        prod[productEntityId(information) as keyof typeof prod]
+                    }`
                 );
             const priceWithoutIGV: number = order!.igv // dividir  con la cantida para obtener el precio original del producto
                 ? prod.price / ((100 + IGV) / 100) / prod.quantity
@@ -503,7 +579,8 @@ export async function detailInvoice(
                 if (order.pasarela_comision) {
                     const totalw = total / ((100 + IGV) / 100);
                     priceWithPasarelaCommission =
-                        (totalw + pasarelaComision(totalw)) / lengthDetails;
+                        (totalw + pasarelaComision(information, totalw)) /
+                        lengthDetails;
                 }
 
                 if (order.paypal_token) {
@@ -550,22 +627,21 @@ export async function detailInvoice(
             };
         })
     );
-    if (departamento && departamento.priceShipping > 0) {
+    if (region && region.priceShipping > 0) {
         details.push({
             tipAfeIgv: 10, // catalogo 7
             codProducto: "0",
-            descripcion: `Precio de Envio - ${departamento.name}`,
+            descripcion: `Precio de Envio - ${region.name}`,
             unidad: "NIU",
             cantidad: 1, // cantidad de producto
-            mtoValorUnitario: departamento.priceShipping / order.moneyChange, //precio sin igv
-            mtoValorVenta: departamento.priceShipping / order.moneyChange, // precio sin igv * cantidad
-            mtoBaseIgv: departamento.priceShipping / order.moneyChange, // mismo mtoValorVenta
+            mtoValorUnitario: region.priceShipping / order.moneyChange, //precio sin igv
+            mtoValorVenta: region.priceShipping / order.moneyChange, // precio sin igv * cantidad
+            mtoBaseIgv: region.priceShipping / order.moneyChange, // mismo mtoValorVenta
             mtoPrecioUnitario:
-                subtotal(departamento.priceShipping, IGV, true) /
-                order.moneyChange, // MONTO INCLUYENDO IGV
-            igv: (departamento.priceShipping * (IGV / 100)) / order.moneyChange,
+                subtotal(region.priceShipping, IGV, true) / order.moneyChange, // MONTO INCLUYENDO IGV
+            igv: (region.priceShipping * (IGV / 100)) / order.moneyChange,
             totalImpuestos:
-                (departamento.priceShipping * (IGV / 100)) / order.moneyChange,
+                (region.priceShipping * (IGV / 100)) / order.moneyChange,
             porcentajeIgv: IGV,
             factorIcbper: null,
             icbper: null,

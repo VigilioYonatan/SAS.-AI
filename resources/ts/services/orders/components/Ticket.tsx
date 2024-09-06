@@ -2,21 +2,25 @@ import { formatDateTwo } from "~/libs/helpers";
 import { PdfImage } from "~/config/settings";
 import type { OrdersSchemaFromServer } from "../schemas/orders.schema";
 import usePdfInvoice from "../hooks/usePdfInvoice";
+import { storageInformation } from "@/information/stores/information.store";
 
 interface InvoiceProps {
 	order: OrdersSchemaFromServer;
 }
-function Ticket({ order }: InvoiceProps) {
+function Recibo({ order }: InvoiceProps) {
 	const { onPdf } = usePdfInvoice({ order });
 	return (
 		<div class="flex flex-col gap-2  w-full p-2">
 			<div class="flex flex-col gap-2">
 				<span class="flex gap-2 items-center text-primary  font-bold ">
-					{order.invoice!.kind_invoice_code === "00" ? "Ticket" : null}
+					{order.invoice!.kind_invoice_code === "00" ? "Recibo" : null}
 				</span>
 			</div>
 			<span class="flex gap-2 items-center text-primary dark:text-terciary font-bold">
-				Serie - Correlativo:
+				{storageInformation?.dial_code === "51"
+					? "Serie - Correlativo"
+					: "Comprobante - N° de documento"}
+				:
 				<b class="dark:text-secondary-light text-secondary-dark tracking-wide">
 					{order.invoice!.serie}-{order.invoice!.correlativo}
 				</b>
@@ -48,4 +52,4 @@ function Ticket({ order }: InvoiceProps) {
 	);
 }
 
-export default Ticket;
+export default Recibo;

@@ -6,6 +6,10 @@ import {
 	omit,
 	object,
 	instance,
+	number,
+	string,
+	maxLength,
+	minLength,
 } from "@vigilio/valibot";
 import { ordersSchema } from "../schemas/orders.schema";
 import { invoicesStoreDto } from "./invoices.store.dto";
@@ -24,6 +28,9 @@ export const ordersStoreDto = merge([
 		"moneyChange",
 		"transferencia_image",
 		"is_pasarela_client",
+		"client_id",
+		"information_id",
+		"mercado_pago_token",
 	]),
 	object({
 		invoice: nullable(
@@ -36,7 +43,9 @@ export const ordersStoreDto = merge([
 				"response_sunat",
 			]),
 		),
-		details_orders: array(omit(detailOrdersSchema, ["id", "order_id"])),
+		details_orders: array(
+			omit(detailOrdersSchema, ["id", "order_id", "information_id"]),
+		),
 		transferencia_image: nullable(
 			array(instance(File), [
 				validFileValibot({
@@ -46,6 +55,8 @@ export const ordersStoreDto = merge([
 				}),
 			]),
 		),
+		fullName: nullable(string([minLength(3), maxLength(30)])),
+		floor_id: nullable(number()),
 	}),
 ]);
 export type OrdersStoreDto = Input<typeof ordersStoreDto>;

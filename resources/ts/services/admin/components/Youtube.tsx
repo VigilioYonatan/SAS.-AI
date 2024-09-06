@@ -56,7 +56,7 @@ function Youtube() {
 					Tienda Virtual - Aplicacion Web Eccomerce con Inteligencia Artificial
 					CHAT - Whatsapp CRM por{" "}
 					<a
-						href={`${enviroments.VITE_URL}`}
+						href={`${enviroments.VITE_VIGILIO_WEB}`}
 						rel="noreferrer"
 						target="_blank"
 						class="text-primary"

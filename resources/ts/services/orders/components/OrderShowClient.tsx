@@ -3,13 +3,13 @@ import { ordersShowApi } from "../apis/orders.show.api";
 import View404 from "@/admin/views/404";
 import TableDetailsOrder from "./TableDetailsOrder";
 import Invoice from "./Invoice";
-import Ticket from "./Ticket";
 import Note from "./Note";
 import { printFileUser } from "@/users/libs/helpers";
 import { payMethodIcon } from "../libs";
 import { sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import { showTime } from "~/libs/helpers";
+import Recibo from "./Ticket";
 
 interface OrderShowClientProps {
 	order_code: string;
@@ -68,7 +68,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 								<Invoice order={order} refetch={ordersShowQuery.refetch} />
 							) : null}
 							{order.invoice?.kind_invoice_code === "00" ? (
-								<Ticket order={order} />
+								<Recibo order={order} />
 							) : null}
 							{order.note?.kind_invoice_code === "07" ||
 							order.note?.kind_invoice_code === "08" ? (
@@ -92,7 +92,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 									{order.address || "No se ingresó"}
 								</span>
 							</div>
-							{order.seller_id ? (
+							{order.user_id ? (
 								<div class="w-full flex gap-1 flex-col mb-3  p-2">
 									<span class="text-primary dark:text-terciary font-bold">
 										Trabajador
@@ -100,18 +100,18 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 
 									<img
 										class="rounded-full w-[40px] h-[40px] "
-										src={printFileUser(order.seller.photo, 100)[0]}
+										src={printFileUser(order.user.photo, 100)[0]}
 										width={100}
 										height={100}
-										alt={order.seller.username}
+										alt={order.user.username}
 									/>
 									<a
-										href={`/admin/usuarios/${order.seller.id}`}
+										href={`/admin/usuarios/${order.user.id}`}
 										target="_blank"
 										rel="noreferrer"
 										class="dark:text-secondary-light text-secondary-dark tracking-wide text-xs"
 									>
-										{order.seller.username}
+										{order.user.username}
 									</a>
 								</div>
 							) : null}

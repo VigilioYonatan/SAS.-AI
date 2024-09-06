@@ -12,6 +12,7 @@ import type { OrdersStoreDto } from "@/orders/dtos/orders.store.dto";
 import type { OrdersUpdateDto } from "@/orders/dtos/orders.update.dto";
 import type { RequestVigilio } from "~/config/types";
 import type { MetodosPago } from "@/information/entities/metodosPago.entity";
+import { BASE_URL } from "@/information/libs";
 
 @Injectable()
 export class PaypalService {
@@ -39,13 +40,19 @@ export class PaypalService {
             ? paypalComision(body.total, value).toFixed(2)
             : (body.total / value).toFixed(2);
         const { createOrder } = paypal({
-            client_id: metodo.paypal.paypal_client_id,
-            secret_key: metodo.paypal.paypal_secret_key,
-            sandbox: enviroments.PAYPAL_SANDBOX,
+            client_id:
+                enviroments.NODE_ENV === "production"
+                    ? metodo.paypal.paypal_client_id
+                    : "AdAUJtqTTHeXqxRvut3TvNlCMSbUfWNoS_Xkq1mXmQaP1jvzUEtvdktdewxGaWXkjkP7N8BzaUu4j4ay",
+            secret_key:
+                enviroments.NODE_ENV === "production"
+                    ? metodo.paypal.paypal_secret_key
+                    : "EEqnW3MIBx9rKvmKmOrmX3SWOvFC3hUVKzdEPBq7HQ78jdigXLun14wEIizoaZcbD13E1xO8NQfdx7Ba",
+            sandbox:
+                enviroments.NODE_ENV === "production"
+                    ? "https://api-m.paypal.com"
+                    : enviroments.PAYPAL_SANDBOX,
         });
-        const url = information.host
-            ? `https://${information.host}`
-            : `https://${information.slug}.vigilio-services.com`;
 
         const result = await createOrder({
             intent: "CAPTURE",
@@ -65,8 +72,8 @@ export class PaypalService {
                 // shipping_preference: "SET_PROVIDED_ADDRESS",
                 user_action: "PAY_NOW",
                 //!
-                return_url: `${url}/paypal/success`,
-                cancel_url: `${url}/paypal/cancel`,
+                return_url: `${BASE_URL(information)}/paypal/success`,
+                cancel_url: `${BASE_URL(information)}/paypal/cancel`,
             },
         });
 

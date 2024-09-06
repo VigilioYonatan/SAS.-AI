@@ -1,23 +1,23 @@
 import { useMutation, type UseMutation } from "@vigilio/preact-fetching";
 
 export type InvoicesLatestCorrelativoMutation = UseMutation<
-    InvoicesLatestCorrelativoAPI,
-    string,
-    unknown
+	InvoicesLatestCorrelativoAPI,
+	string,
+	unknown
 >;
 export function invoicesLatestCorrelativoApi(): InvoicesLatestCorrelativoMutation {
-    return useMutation(
-        "/invoices/latest_correlativo",
-        async (url, kind_invoice_code: string) => {
-            const response = await fetch(`/api${url}/${kind_invoice_code}`);
-            const result = await response.json();
-            if (!result.success) throw result;
-            return result;
-        }
-    );
+	return useMutation(
+		"/invoices/latest_correlativo",
+		async (url, kind_invoice_code: string) => {
+			const response = await fetch(`/api${url}/${kind_invoice_code}`);
+			const result = await response.json();
+			if (!result.success) throw result;
+			return result;
+		},
+	);
 }
 
 export interface InvoicesLatestCorrelativoAPI {
-    success: boolean;
-    correlativo: string;
+	success: boolean;
+	correlativo: string;
 }

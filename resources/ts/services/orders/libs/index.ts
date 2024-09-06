@@ -1,9 +1,5 @@
-import { verifyBank } from "@/cart/views/Niubiz";
-import useInformationstore from "@/information/stores/information.store";
 import {
-	bbvaImage,
-	bcpImage,
-	interbankImage,
+	mercadoPagoImage,
 	paypalICOImage,
 	plinImage,
 	yapeImage,
@@ -66,39 +62,13 @@ export const visaRegex = new RegExp(/^4\d{15}$/);
 export const mastercardRegex = new RegExp(/^5[1-5]\d{14}$/);
 
 export function payMethodIcon(): Record<number, string> {
-	const information = useInformationstore();
 	return {
 		1: "<span class='flex  gap-1 items-center'><i class='fas fa-money-bill-wave' class='mr-1'></i> efectivo</span>",
-		2: `<span class='flex  gap-1 items-center'><i class='fas fa-credit-car' class='mr-1'></i>${
-			information.state!.pasarela === "izipay"
-				? "tarjeta de credito o yape"
-				: "Tarjeta de credito"
-		} </span>`,
+		2: `<span class='flex  gap-1 items-center'><img src='${mercadoPagoImage()}' width='30' height='30' /></span>`,
 		3: `<div class='flex gap-1 items-center '>
 		<img src='${yapeImage()}' width='30' height='30' /><img src='${plinImage()}' width='30' height='30' /></div>`,
 		4: `<div class='flex gap-1 items-center '><img src='${paypalICOImage()}' width='30' height='30' /></div>`,
-		5: `<div class='flex flex-col justify-center items-center'>
-    <span>Transferiencia B.</span>
-    <div>${
-			information.state!.transferencias?.bcp &&
-			verifyBank(information.state!.transferencias.bcp)
-				? `<img src='${bcpImage()}' width='30' height='30' />
-    </div>`
-				: ""
-		}${
-			information.state!.transferencias?.bbva &&
-			verifyBank(information.state!.transferencias.bbva)
-				? `<img src='${bbvaImage()}' width='30' height='30' />
-    </div>`
-				: ""
-		}${
-			information.state!.transferencias?.interbank &&
-			verifyBank(information.state!.transferencias.interbank)
-				? `<img src='${interbankImage()}' width='30' height='30' />
-    </div>`
-				: ""
-		}
-     </div>`,
+		5: `<div class='flex flex-col justify-center items-center'><span>Transferiencia B.</span></div>`,
 		6: "<span>Otro</span>",
 	};
 }

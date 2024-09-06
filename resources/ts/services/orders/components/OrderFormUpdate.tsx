@@ -9,7 +9,9 @@ import {
 	ordersUpdateDto,
 	type OrdersUpdateDto,
 } from "../dtos/orders.update.dto";
-import useInformationstore from "@/information/stores/information.store";
+import useInformationstore, {
+	storageInformation,
+} from "@/information/stores/information.store";
 import Form from "~/components/form";
 import { kindInvoiceIndexApi } from "../apis/kind_invoice.index.api";
 import { invoicesLatestCorrelativoApi } from "../apis/invoices.lastestCorrelativo.api";
@@ -42,10 +44,21 @@ import LogoImage from "~/components/LogoImage";
 import useTemporizador from "~/hooks/useTemporizador";
 import AlertDanger from "~/components/Alerts/AlertDanger";
 import enviroments from "~/config";
-import { districtsIndexApi } from "@/ubigeo/apis/districts.api.index";
 import { guidesLatestCorrelativoApi } from "../apis/guides.latestCorrelativo.api";
 import TableDetailsOrder from "./TableDetailsOrder";
-
+import { citiesIndexApi } from "@/ubigeo/apis/citites.api.index";
+import useSocketStore from "~/stores/socket.store";
+import { formSelectNumber } from "~/components/form/FormSelect";
+import { floorMesasIndexApi } from "../apis/mesas/floors.mesas.index.api";
+import { floorsIndexApi } from "../apis/mesas/floors.index.api";
+import { Input, merge, nullable, number, object } from "@vigilio/valibot";
+const orderUpdateAdminDto = merge([
+	ordersUpdateDto,
+	object({
+		floor_id: nullable(number()),
+	}),
+]);
+type OrderUpdateAdminDto = Input<typeof orderUpdateAdminDto>;
 interface OrderFormUpdateProps {
 	order: OrdersSchemaFromServer;
 	refetch: (clean?: boolean) => void;
@@ -64,11 +77,14 @@ function OrderFormUpdate({
 	const invoicesLatestCorrelativoQuery = invoicesLatestCorrelativoApi();
 	const notesLatestCorrelativoQuery = notesLatestCorrelativoApi();
 	const guidesLatestCorrelativoQuery = guidesLatestCorrelativoApi();
-
+	const floorMesasQuery = floorMesasIndexApi();
+	const floorsIndexQuery = floorsIndexApi();
 	const dniMutation = dniApi();
 	const rucMutation = rucApi();
-	const ordersUpdateDtoForm = useForm<OrdersUpdateDto>({
-		resolver: valibotVigilio(ordersUpdateDto),
+	const { io } = useSocketStore();
+
+	const ordersUpdateDtoForm = useForm<OrderUpdateAdminDto>({
+		resolver: valibotVigilio(orderUpdateAdminDto),
 		mode: "all",
 		defaultValues: useMemo(() => {
 			return {
@@ -95,10 +111,13 @@ function OrderFormUpdate({
 					: null,
 				isDelivery: order.isDelivery,
 				transferencia_image: order.transferencia_image,
-				district_id: order.district_id,
+				city_id: order.city_id,
+				mesa_id: order.mesa_id ?? null,
+				floor_id: order.mesa ? order.mesa!.floor!.id : null,
 			};
 		}, []),
 	});
+
 	function onOrdersUpdateDtoForm(body: OrdersUpdateDto) {
 		if (
 			body.status_order_id === STATUSORDER.entregado &&
@@ -274,6 +293,12 @@ function OrderFormUpdate({
 							if (refetch) {
 								refetch(false);
 							}
+							if (
+								data.order.mesa_id &&
+								data.order.status_order_id !== STATUSORDER.entregado
+							) {
+								io?.emit("floors_mesas:index");
+							}
 							showRefetch(false);
 							sweetAlert({
 								icon: "success",
@@ -329,7 +354,33 @@ function OrderFormUpdate({
 	const kindGuidesCode = ordersUpdateDtoForm.watch("guide.kind_guide_code");
 	const guideCorrelativo = ordersUpdateDtoForm.watch("guide.correlativo");
 	const guideSerie = ordersUpdateDtoForm.watch("guide.serie");
+	const floorId = ordersUpdateDtoForm.watch("floor_id");
 
+	const arrayFloors = useMemo(
+		() =>
+			floorsIndexQuery.isSuccess && floorsIndexQuery.data
+				? floorsIndexQuery.data.data.map((floor) => ({
+						key: floor.id,
+						value: floor.name,
+					}))
+				: [],
+		[floorsIndexQuery],
+	);
+	const arrayMesas = useMemo(
+		() =>
+			floorMesasQuery.isSuccess && floorMesasQuery.data
+				? floorMesasQuery.data.data.map((floor) => ({
+						key: floor.id,
+						value: floor.mesa_code,
+					}))
+				: [],
+		[floorMesasQuery],
+	);
+	useEffect(() => {
+		if (floorId) {
+			floorMesasQuery.mutate(floorId);
+		}
+	}, [floorId]);
 	const arrayKindInvoices = useMemo(
 		() =>
 			kindInvoiceIndexQuery.isSuccess && kindInvoiceIndexQuery.data
@@ -399,7 +450,7 @@ function OrderFormUpdate({
 			ordersUpdateDtoForm.setValue("invoice.document_code", null);
 			if (kindInvoice === "00") {
 				ordersUpdateDtoForm.setValue("invoice", {
-					serie: "TICKET",
+					serie: "R001",
 					razon_social: null,
 					document_code: null,
 					send_sunat: false,
@@ -736,7 +787,34 @@ function OrderFormUpdate({
 				<div class="overflow-auto dark:bg-admin-terciary bg-paper-light rounded-md mb-3 w-full dark:border-none ">
 					<TableDetailsOrder order={order} />
 				</div>
-
+				<>
+					{order.mesa_id ? (
+						<>
+							<Form.control.select
+								title="Piso"
+								name={"floor_id" as keyof OrdersUpdateDto}
+								placeholder="Seleccionar Piso"
+								array={arrayFloors}
+								options={{
+									setValueAs: formSelectNumber,
+								}}
+								isLoading={floorsIndexQuery.isLoading || false}
+							/>
+							{floorId ? (
+								<Form.control.select
+									title="Mesa"
+									name={"mesa_id" as keyof OrdersUpdateDto}
+									placeholder="Seleccionar Mesa"
+									array={arrayMesas}
+									options={{
+										setValueAs: formSelectNumber,
+									}}
+									isLoading={floorMesasQuery.isLoading || false}
+								/>
+							) : null}
+						</>
+					) : null}
+				</>
 				{/*  */}
 				<Form.control.select
 					name={"status_order_id" as keyof OrdersUpdateDto}
@@ -795,46 +873,48 @@ function OrderFormUpdate({
 							isLoading={payMethodsIndexQuery.isLoading || false}
 						/>
 					) : null}
-					{statusOrder === STATUSORDER.pagado ||
-					statusOrder === STATUSORDER.problema ? (
-						<InformationForm
-							kindInvoice={kindInvoice}
-							invoiceSerie={invoiceSerie}
-							invoiceCorrelativo={invoiceCorrelativo}
-							arrayKindInvoices={arrayKindInvoices}
-							statusOrder={statusOrder}
-							order={order}
-							noteSerie={noteSerie}
-							noteCorrelativo={noteCorrelativo}
-							kindInvoiceNote={kindInvoiceNote}
-							payMethod={payMethod}
-						/>
-					) : null}
-					{statusOrder === STATUSORDER.enviando ? (
-						<>
-							<Form.control.select
-								name="guide.kind_guide_code"
-								title="Tipo de guía de Remisión"
-								placeholder="Escoja el tipo de GuÍa de Remisión"
-								array={[
-									{
-										key: "09",
-										value: "Guía de Remisión del Remitente",
-									},
-								]}
+					<>
+						{statusOrder === STATUSORDER.pagado ||
+						statusOrder === STATUSORDER.problema ? (
+							<InformationForm
+								kindInvoice={kindInvoice}
+								invoiceSerie={invoiceSerie}
+								invoiceCorrelativo={invoiceCorrelativo}
+								arrayKindInvoices={arrayKindInvoices}
+								statusOrder={statusOrder}
+								order={order}
+								noteSerie={noteSerie}
+								noteCorrelativo={noteCorrelativo}
+								kindInvoiceNote={kindInvoiceNote}
+								payMethod={payMethod}
 							/>
-							{kindGuidesCode ? (
-								<GuideForm
-									Form={Form}
-									guideCorrelativo={guideCorrelativo}
-									guideSerie={guideSerie}
-									order={order}
-									dniMutation={dniMutation}
-									rucMutation={rucMutation}
+						) : null}
+						{statusOrder === STATUSORDER.enviando ? (
+							<>
+								<Form.control.select
+									name="guide.kind_guide_code"
+									title="Tipo de guía de Remisión"
+									placeholder="Escoja el tipo de GuÍa de Remisión"
+									array={[
+										{
+											key: "09",
+											value: "Guía de Remisión del Remitente",
+										},
+									]}
 								/>
-							) : null}
-						</>
-					) : null}
+								{kindGuidesCode ? (
+									<GuideForm
+										Form={Form}
+										guideCorrelativo={guideCorrelativo}
+										guideSerie={guideSerie}
+										order={order}
+										dniMutation={dniMutation}
+										rucMutation={rucMutation}
+									/>
+								) : null}
+							</>
+						) : null}
+					</>
 				</>
 				<>
 					{statusOrder === STATUSORDER.pagado && kindInvoice ? (
@@ -865,7 +945,7 @@ function OrderFormUpdate({
 									<Form.control
 										name={"telephone" as keyof OrdersUpdateDto}
 										title="Numero de celular"
-										ico={<span>+51</span>}
+										ico={<span>+{storageInformation!.dial_code}</span>}
 										placeholder="9XXXXXXXX"
 										question="Si deseas enviar el comprobante pdf a whatsapp o estado de orden."
 									/>
@@ -1153,7 +1233,7 @@ function InformationForm({
 	const information = useInformationstore();
 	return (
 		<>
-			{order.igv ? (
+			{order.igv && information.state?.dial_code === "51" ? (
 				<>
 					{!order.invoice ? (
 						<>
@@ -1201,7 +1281,7 @@ function InformationForm({
 							name={"invoice.kind_invoice_code" as keyof OrdersUpdateDto}
 							title="Tipo de comprobante"
 							array={arrayKindInvoices.filter((invoice) =>
-								information.state?.certificado && information.state?.igv
+								information.state?.certificado && information.state?.enabled_igv
 									? invoice.key === "00" ||
 										invoice.key === "01" ||
 										invoice.key === "03"
@@ -1238,7 +1318,7 @@ function InformationForm({
 							</div>
 							<div class=" flex-col hidden md:flex">
 								<span class="dark:text-white uppercase">
-									{information.state!.name}
+									{information.state!.name_empresa}
 								</span>
 								<span class="dark:text-white text-sm font-normal">
 									{information.state!.address.direccion}
@@ -1246,16 +1326,20 @@ function InformationForm({
 							</div>
 						</div>
 						<div class="flex flex-col justify-center items-center border border-dashed p-2 w-full md:w-auto min-w-[200px] bg-paper-light dark:bg-admin-terciary">
-							<span class="text-sm font-normal dark:text-white">
-								R.U.C {information.state!.company.ruc}
-							</span>
+							{information.state?.company &&
+							storageInformation?.dial_code === "51" ? (
+								<span class="text-sm font-normal dark:text-white">
+									R.U.C {information.state!.company.ruc}
+								</span>
+							) : null}
+
 							<p class="text-black dark:text-white text-center">
 								<>
 									{statusOrder === STATUSORDER.pagado ? (
 										<>
 											{" "}
 											{kindInvoice === "00"
-												? "TICKET"
+												? "RECIBO"
 												: kindInvoice === "03"
 													? "BOLETA"
 													: kindInvoice === "01"
@@ -1309,13 +1393,13 @@ function GuideForm({
 }: InformationGuideFormProps) {
 	const documentsIndexQuery = documentsIndexApi();
 	const information = useInformationstore();
-	const districtsIndexQuery = districtsIndexApi();
+	const districtsIndexQuery = citiesIndexApi();
 
 	const districtsSelect = useMemo(() => {
 		if (districtsIndexQuery.isSuccess && districtsIndexQuery.data) {
 			return districtsIndexQuery.data.data.map((value) => ({
-				key: value.ubigeo,
-				value: `${value.name} - ${value.province.name} - ${value.province.department.name}`,
+				key: value.code,
+				value: `${value.region.name} -  ${value.name}`,
 			}));
 		}
 		return [];
@@ -1340,7 +1424,7 @@ function GuideForm({
 					</div>
 					<div class=" flex-col hidden md:flex">
 						<span class="dark:text-white uppercase">
-							{information.state!.name}
+							{information.state!.name_empresa}
 						</span>
 						<span class="dark:text-white text-sm font-normal">
 							{information.state!.address.direccion}
@@ -1349,7 +1433,7 @@ function GuideForm({
 				</div>
 				<div class="flex flex-col justify-center items-center border border-dashed p-2 w-full md:w-auto min-w-[200px] bg-paper-light dark:bg-admin-terciary">
 					<span class="text-sm font-normal dark:text-white">
-						R.U.C {information.state!.company.ruc}
+						R.U.C {information.state!.company?.ruc}
 					</span>
 					<p class="text-black dark:text-white text-center">Guía de Remisión</p>
 					<span class="font-normal dark:text-white">

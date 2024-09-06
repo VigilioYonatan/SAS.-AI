@@ -4,12 +4,12 @@ import { TipoEmpresa } from "./tipo_empresa.entity";
 
 @Table
 export class TipoServicio
-    extends Model
-    implements Omit<TipoServicioSchema, "id">
+	extends Model
+	implements Omit<TipoServicioSchema, "id">
 {
-    @Column({ type: DataType.STRING })
-    tipo: string;
+	@Column({ type: DataType.STRING })
+	tipo: string;
 
-    @HasMany(() => TipoEmpresa)
-    tipo_empresas: unknown[];
+	@HasMany(() => TipoEmpresa)
+	tipo_empresas: unknown[];
 }

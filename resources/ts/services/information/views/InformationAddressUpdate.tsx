@@ -3,7 +3,6 @@ import { informationAddressUpdateApi } from "../apis/information.address.update.
 import { useForm } from "react-hook-form";
 import useInformationstore from "../stores/information.store";
 import { useMemo, useEffect } from "preact/hooks";
-import { districtsIndexApi } from "@/ubigeo/apis/districts.api.index";
 import {
 	informationAddressUpdateDto,
 	type InformationAddressUpdateDto,
@@ -13,45 +12,43 @@ import { handlerError } from "~/libs/helpers";
 import Container from "@/admin/components/Container";
 import AdminBreadCrumb from "@/admin/components/AdminBreadCrumb";
 import { valibotVigilio } from "~/libs/valibot";
+import { citiesIndexApi } from "@/ubigeo/apis/citites.api.index";
 
 function InformationAddressUpdate() {
 	const information = useInformationstore();
 	const informationAddressUpdateMutation = informationAddressUpdateApi();
-	const districtsIndexQuery = districtsIndexApi();
+	const citysIndexQuery = citiesIndexApi();
 
 	const informationAddressUpdateForm = useForm<
 		InformationAddressUpdateDto & {
-			department: string;
-			province: string;
+			region: string;
 			ubigeo: string;
 		}
 	>({
 		defaultValues: {
 			...information.state!.address,
-			department: information.state!.address.district.province.department.name,
-			province: information.state!.address.district.province.name,
-			ubigeo: information.state!.address.district_id,
+			region: information.state!.address.city.region.name,
+			ubigeo: information.state!.address.city.code,
 		},
 		resolver: valibotVigilio(informationAddressUpdateDto),
 	});
-	const district_id = informationAddressUpdateForm.watch("district_id");
-	const districtsSelect = useMemo(() => {
-		if (districtsIndexQuery.isSuccess && districtsIndexQuery.data) {
-			return districtsIndexQuery.data.data.map((value) => ({
-				key: value.ubigeo,
-				value: `${value.name} - ${value.province.name} - ${value.province.department.name}`,
+	const city_id = informationAddressUpdateForm.watch("city_id");
+	const citysSelect = useMemo(() => {
+		if (citysIndexQuery.isSuccess && citysIndexQuery.data) {
+			return citysIndexQuery.data.data.map((value) => ({
+				key: value.id,
+				value: `${value.region.name} - ${value.name}`,
 			}));
 		}
 		return [];
-	}, [districtsIndexQuery.data, districtsIndexQuery.isSuccess]);
+	}, [citysIndexQuery.data, citysIndexQuery.isSuccess]);
 	function onInformationAddressUpdate(
 		data: InformationAddressUpdateDto & {
-			department: string;
-			province: string;
+			region: string;
 			ubigeo: string;
 		},
 	) {
-		const { department, province, ubigeo, ...rest } = data;
+		const { ubigeo, region, ...rest } = data;
 		sweetModal({
 			title: "¿Estás seguro de editar la dirección?",
 			showCancelButton: true,
@@ -72,23 +69,17 @@ function InformationAddressUpdate() {
 	}
 
 	useEffect(() => {
-		if (district_id) {
-			const distrito = districtsIndexQuery.data?.data.find(
-				(dis) => dis.ubigeo === district_id,
+		if (city_id) {
+			const distrito = citysIndexQuery.data?.data.find(
+				(dis) => dis.id === city_id,
 			);
 			if (distrito) {
-				informationAddressUpdateForm.setValue(
-					"department",
-					distrito.province.department.name,
-				);
-				informationAddressUpdateForm.setValue(
-					"province",
-					distrito.province.name,
-				);
-				informationAddressUpdateForm.setValue("ubigeo", district_id);
+				informationAddressUpdateForm.setValue("region", distrito.region.name);
+
+				informationAddressUpdateForm.setValue("ubigeo", distrito.code);
 			}
 		}
-	}, [district_id]);
+	}, [city_id]);
 	return (
 		<Container className="p-2">
 			<div className="flex flex-col gap-4 mx-1 ">
@@ -105,33 +96,23 @@ function InformationAddressUpdate() {
 				>
 					<div class="w-full relative">
 						<Form.control.selectInput
-							title="Distrito"
-							array={districtsSelect}
-							placeholder="Escriba su distrito"
-							name={"district_id" as keyof InformationAddressUpdateDto}
-							isLoading={districtsIndexQuery.isLoading || false}
-						/>
-					</div>
-
-					<div class="flex gap-2 w-full">
+							title="Ciudad"
+							array={citysSelect}
+							placeholder="Escriba su ciudad"
+							name={"city_id" as keyof InformationAddressUpdateDto}
+							isLoading={citysIndexQuery.isLoading || false}
+						/>{" "}
 						<Form.control
-							title="Departamento"
+							title="Region"
 							placeholder="XXXXXX"
-							name={"department" as keyof InformationAddressUpdateDto}
-							disabled
-						/>
-						<Form.control
-							title="Provincia"
-							placeholder="XXXXXX"
-							name={"province" as keyof InformationAddressUpdateDto}
+							name={"region" as keyof InformationAddressUpdateDto}
 							disabled
 						/>
 					</div>
-
 					<div class="flex gap-2 w-full">
 						<Form.control
 							title="Urbanización"
-							placeholder="MZ XXXX XXX"
+							placeholder=" XXXX XXX"
 							name={"urbanizacion" as keyof InformationAddressUpdateDto}
 						/>
 						<Form.control

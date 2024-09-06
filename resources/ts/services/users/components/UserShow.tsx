@@ -25,10 +25,10 @@ function UserShow(props: ShowUserProps) {
 					/>
 				</div>
 				<div class="flex flex-col">
-					<span class="text-sm font-bold dark:text-principal-light text-principal-dark">
+					<span class="text-sm font-bold dark:text-white ">
 						{user.username}
 					</span>
-					<span class="text-sm dark:text-principal-light text-principal-dark">
+					<span class="text-sm dark:text-white ">
 						Se unió {formatDateTwo(user.createdAt!)}
 					</span>
 				</div>

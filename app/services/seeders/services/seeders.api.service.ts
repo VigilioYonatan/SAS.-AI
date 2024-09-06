@@ -4,7 +4,7 @@ import { payMethodsSeeder } from "@/orders/seeders/pay_methods.seeder";
 import { statusOrdersSeeder } from "@/orders/seeders/status_orders.seeder";
 import { Injectable } from "@vigilio/express-core";
 import { sequelize } from "~/config/db.config";
-import { informationSeeder } from "@/information/seeders/information.seeder";
+import { informationSeeder2 } from "@/information/seeders/information.seeder";
 import { KindInvoice } from "@/orders/entities/kind_invoice.entity";
 import { kindInvoiceSeeder } from "@/orders/seeders/kind_invoice.seeder";
 import { documentsSeeder } from "@/orders/seeders/documents.seeder";
@@ -23,73 +23,74 @@ import enviroments from "~/config/enviroments.config";
 import { TipoServicio } from "@/information/entities/tipo_servicio.entity";
 import { servicios } from "@/information/seeders/tipo_empresa.seeder";
 import { InformationApiService } from "@/information/services/information.api.service";
+import { ubigeoSeeder } from "@/ubigeo/seeders/countries.seeder";
 
 @Injectable()
 export class SeedersApiService {
-    constructor(
-        private readonly informationApiService: InformationApiService
-    ) {}
-    async index() {
-        try {
-            if (enviroments.NODE_ENV !== "production") {
-                await sequelize.sync({ force: true });
-            }
-            await Promise.all([
-                StatusOrders.bulkCreate(statusOrdersSeeder),
-                PayMethods.bulkCreate(payMethodsSeeder),
-                Documents.bulkCreate(documentsSeeder),
-                KindCreditNotes.bulkCreate(kindCreditNotesSeeder),
-                KindDebitNotes.bulkCreate(kindDebitNotesSeeder),
-            ]);
-            //    await ubigeoSeeder()
-            await Promise.all([KindInvoice.bulkCreate(kindInvoiceSeeder)]);
-            await Promise.all(
-                servicios.map(async (servicio) => {
-                    const { tipo, empresas } = servicio;
-                    const service = await TipoServicio.create({ tipo });
-                    await Promise.all(
-                        empresas.map(async (empresa) => {
-                            await service.$create("tipo_empresa", empresa);
-                        })
-                    );
-                })
-            );
-            const information = await informationSeeder();
-            await this.informationApiService.store({
-                ...information,
-                fullname: "Yonatan Vigilio",
-                password: "123456",
-            });
-            // await Promise.all([Address.bulkCreate(addressSeeder)]);
+	constructor(private readonly informationApiService: InformationApiService) {}
+	async index() {
+		try {
+			if (enviroments.NODE_ENV !== "production") {
+				await sequelize.sync({ force: true });
+			}
+			await Promise.all([
+				StatusOrders.bulkCreate(statusOrdersSeeder),
+				PayMethods.bulkCreate(payMethodsSeeder),
+				Documents.bulkCreate(documentsSeeder),
+				KindCreditNotes.bulkCreate(kindCreditNotesSeeder),
+				KindDebitNotes.bulkCreate(kindDebitNotesSeeder),
+			]);
+			await Promise.all([KindInvoice.bulkCreate(kindInvoiceSeeder)]);
+			await Promise.all(
+				servicios.map(async (servicio) => {
+					const { tipo, empresas } = servicio;
+					const service = await TipoServicio.create({ tipo });
+					await Promise.all(
+						empresas.map(async (empresa) => {
+							await service.$create("tipo_empresa", empresa);
+						}),
+					);
+				}),
+			);
+			await ubigeoSeeder();
+			const information = await informationSeeder2();
 
-            // if (enviroments.NODE_ENV === "production") {
+			await this.informationApiService.store({
+				...information,
+				fullname: "Yonatan Vigilio",
+				password: "123456",
+			});
+			// await Promise.all([Address.bulkCreate(addressSeeder)]);
 
-            await Promise.all([Suppliers.bulkCreate(suppliersSeeder)]);
-            await Promise.all(
-                optionsSeeder.map(async (prod) => {
-                    const { features, ...rest } = prod;
-                    const option = await Options.create(rest);
-                    await Promise.all(
-                        features.map(async (feature) => {
-                            await option.$create("feature", {
-                                value: feature.value,
-                                description: feature.description,
-                            });
-                        })
-                    );
-                })
-            );
+			// if (enviroments.NODE_ENV === "production") {
 
-            // await Promise.all([Users.bulkCreate([...usersSeeder])]);
-            await Promise.all([Posts.bulkCreate(postsSeeder)]);
-            return { success: true, message: "Seed executed" };
-        } catch (error) {
-            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-            console.log(error);
-            return {
-                success: false,
-                message: JSON.stringify((error as unknown as Error).message),
-            };
-        }
-    }
+			await Promise.all([Suppliers.bulkCreate(suppliersSeeder)]);
+			await Promise.all(
+				optionsSeeder.map(async (prod) => {
+					const { features, ...rest } = prod;
+					const option = await Options.create(rest);
+					await Promise.all(
+						features.map(async (feature) => {
+							await option.$create("feature", {
+								value: feature.value,
+								description: feature.description,
+							});
+						}),
+					);
+				}),
+			);
+
+			// await Promise.all([Users.bulkCreate([...usersSeeder])]);
+			await Promise.all([Posts.bulkCreate(postsSeeder)]);
+
+			return { success: true, message: "Seed executed" };
+		} catch (error) {
+			// biome-ignore lint/suspicious/noConsoleLog: <explanation>
+			console.log(error);
+			return {
+				success: false,
+				message: JSON.stringify((error as unknown as Error).message),
+			};
+		}
+	}
 }

@@ -19,12 +19,14 @@ export const suppliersStoreDto = omitAsync(
 				Suppliers.findOne({
 					where: {
 						ruc: input.ruc,
+						information_id: input.information_id,
 					},
 					raw: true,
 				}),
 				Suppliers.findOne({
 					where: {
 						razon_social: input.razon_social,
+						information_id: input.information_id,
 					},
 					raw: true,
 				}),

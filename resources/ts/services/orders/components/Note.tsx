@@ -1,6 +1,5 @@
 import { formatDateTwo, onDownload } from "~/libs/helpers";
 import { PdfImage, SunatImage, XmlImage, cdrImage } from "~/config/settings";
-import enviroments from "~/config";
 import type { OrdersSchemaFromServer } from "../schemas/orders.schema";
 import useSendSunat from "../hooks/useSendSunat";
 import usePdfInvoice from "../hooks/usePdfInvoice";
@@ -56,7 +55,7 @@ function Note({ order, refetch }: NoteProps) {
 						onClick={() => {
 							if (!order.note?.xml_path) return;
 							onDownload(
-								`${enviroments.VITE_URL}/${order.note!.xml_path}`,
+								`/${order.note!.xml_path}`,
 								`${order.order_code}-note-xml`,
 							);
 						}}
@@ -77,7 +76,7 @@ function Note({ order, refetch }: NoteProps) {
 						onClick={() => {
 							if (!order.note?.cdr_path) return;
 							onDownload(
-								`${enviroments.VITE_URL}/${order.note!.cdr_path}`,
+								`/${order.note!.cdr_path}`,
 								`${order.order_code}-note-cdr`,
 							);
 						}}

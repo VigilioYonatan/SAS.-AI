@@ -2,6 +2,7 @@ import Loading from "@/admin/components/Loading";
 import View404 from "@/admin/views/404";
 import { complaintsShowApi } from "../apis/complaints.show.api";
 import { formatDateTwo } from "~/libs/helpers";
+import { storageInformation } from "../stores/information.store";
 
 interface ComplaintsShowProps {
 	id: number;
@@ -36,6 +37,15 @@ function ComplaintsShow({ id }: ComplaintsShowProps) {
 							{complaint.fullName}
 						</span>
 					</div>
+
+					<div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
+						<span class="text-primary dark:text-terciary font-bold">
+							Documento de Identidad:
+						</span>
+						<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
+							{complaint.numberDocument}
+						</span>
+					</div>
 					<div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
 						<span class="text-primary dark:text-terciary font-bold">
 							Email:
@@ -49,7 +59,7 @@ function ComplaintsShow({ id }: ComplaintsShowProps) {
 							Telefono:
 						</span>
 						<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
-							{complaint.phone}
+							+{storageInformation?.dial_code} {complaint.phone}
 						</span>
 					</div>
 					<div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
@@ -70,14 +80,7 @@ function ComplaintsShow({ id }: ComplaintsShowProps) {
 							{complaint.typeComplaint} - {complaint.detailsOfComplaint}
 						</span>
 					</div>
-					<div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
-						<span class="text-primary dark:text-terciary font-bold">
-							Documento:
-						</span>
-						<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
-							{complaint.typeOfDocument} - {complaint.numberDocument}
-						</span>
-					</div>
+
 					<div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
 						<span class="text-primary dark:text-terciary font-bold">
 							Fecha:{" "}

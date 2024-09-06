@@ -1,12 +1,43 @@
 import { NoImage } from "~/config/settings";
 import { type FilesSchema, printFileWithDimension } from "~/libs/upload";
-import type { ProductsSchemaFromServer } from "../schemas/products.schema";
 import type { VariantSchemaFromServer } from "../schemas/options/variants.schema";
-export type ProductImagesQualities = 100 | 500 | 800;
+import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schema";
+import { storageInformation } from "@/information/stores/information.store";
+export type ProductImagesQualities = 100 | 500;
 
+export function productEntityId() {
+	const pr = {
+		1: "product_normal_id",
+		2: "product_restaurant_id",
+		3: "product_servicio_id",
+	};
+	return pr[
+		storageInformation!.tipo_empresa.tipo_servicio_id as keyof typeof pr
+	];
+}
+export function productEntity() {
+	const pr = {
+		1: "product_normal",
+		2: "product_restaurant",
+		3: "product_servicio",
+	};
+	return pr[
+		storageInformation!.tipo_empresa.tipo_servicio_id as keyof typeof pr
+	];
+}
+export function productOBJ(id: number) {
+	return {
+		product_restaurant_id:
+			storageInformation!.tipo_empresa.tipo_servicio_id === 2 ? id : null,
+		product_normal_id:
+			storageInformation!.tipo_empresa.tipo_servicio_id === 1 ? id : null,
+		product_servicio_id:
+			storageInformation!.tipo_empresa.tipo_servicio_id === 3 ? id : null,
+	};
+}
 export function printImagesProduct(
 	images: FilesSchema[] | null,
-	quality: ProductImagesQualities = 800,
+	quality: ProductImagesQualities = 500,
 ) {
 	if (images) {
 		return printFileWithDimension(images, quality);
@@ -15,7 +46,7 @@ export function printImagesProduct(
 }
 
 export function printProductVariant(
-	product: ProductsSchemaFromServer,
+	product: ProductsNormalSchemaFromServer,
 	variant: VariantSchemaFromServer,
 ) {
 	const result = variant.features.map((option) => {

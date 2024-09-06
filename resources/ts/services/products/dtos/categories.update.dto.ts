@@ -5,9 +5,9 @@ import { categoriesStoreDto } from "./categories.store.dto";
 export const categoriesUpdateDto = omit(categoriesSchema, [
 	"id",
 	"category_code",
-	"image",
+	"information_id",
 ]);
-export const categoriesUpdateImageDto = pick(categoriesStoreDto, ["image"]);
 
+export const categoriesUpdateImageDto = pick(categoriesStoreDto, ["image"]);
 export type CategoriesUpdateDto = Input<typeof categoriesUpdateDto>;
 export type CategoriesUpdateImageDto = Input<typeof categoriesUpdateImageDto>;

@@ -1,10 +1,9 @@
 import type { OrdersStoreDto } from "@/orders/dtos/orders.store.dto";
 import { useMutation } from "@vigilio/preact-fetching";
-import enviroments from "~/config";
 
 export function paypalPaymentApi() {
 	return useMutation<PaypalAPI, OrdersStoreDto, PaypalErrorAPI>(
-		`${enviroments.VITE_URL}/paypal/api/order`,
+		"/paypal/api/order",
 		async (url, body) => {
 			const response = await fetch(url, {
 				body: JSON.stringify(body),
@@ -14,6 +13,7 @@ export function paypalPaymentApi() {
 				},
 			});
 			const result = await response.json();
+
 			if (!result.success) throw result;
 			return result;
 		},

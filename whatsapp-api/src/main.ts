@@ -4,33 +4,48 @@ import cors from "cors";
 import qrcodeTerminal from "qrcode-terminal";
 import qrcode from "qrcode";
 import fs from "node:fs";
-import { Client, LocalAuth } from "whatsapp-web.js";
+import WAWebJS from "whatsapp-web.js";
 import {
     getQr,
-    sendAudio,
-    sendImage,
+    sendFile,
+    sendLogout,
     sendMessage,
+    removeQR,
     sendSeen,
     sendTyping,
 } from "./endpoints";
 import path from "node:path";
+import { authenticateToken } from "./middleware";
+import morgan from "morgan";
 dotenv.config({ path: ".env" });
 
 const PORT = Number(process.env.PORT);
 export const SESSION_NAME = process.env.SESSION_NAME;
+export const VITE_TOKEN_VIGILIO_SERVICES =
+    process.env.VITE_TOKEN_VIGILIO_SERVICES!;
+export const NODE_ENV = process.env.NODE_ENV!;
 export const qrImage = path.resolve(__dirname, "..", `${SESSION_NAME}-qr.png`);
+export const BASE_URL =
+    NODE_ENV === "production"
+        ? `https://www.${process.env.SESSION_NAME}.vigilio-services.com`
+        : `http://${process.env.SESSION_NAME}.localhost:4003.com`;
 
-export let client: Client;
+export let client: WAWebJS.Client;
 
 const app = express();
 app.use(cors());
+app.use(morgan("dev"));
 
 export async function initialWhatsapp() {
-    client = new Client({
-        authStrategy: new LocalAuth({
+    client = new WAWebJS.Client({
+        authStrategy: new WAWebJS.LocalAuth({
             clientId: SESSION_NAME,
             // dataPath: path.join(__dirname, SESSION_NAME!),
         }),
+        puppeteer: {
+            headless: true,
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        },
     });
 
     client.on("qr", (qr) => {
@@ -48,10 +63,10 @@ export async function initialWhatsapp() {
     client.on("ready", async () => {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("******      ready      *********");
-        await fetch(
-            `https://www.${SESSION_NAME}.vigilio-services.com/api/bot/ready`,
-            { method: "POST" }
-        );
+        await fetch(`${BASE_URL}/api/bot/whatsapp/ready`, {
+            method: "POST",
+            body: JSON.stringify(client),
+        });
     });
 
     client.on("message", async (message) => {
@@ -61,27 +76,22 @@ export async function initialWhatsapp() {
             const binaryData = Buffer.from(media.data, "base64");
             return binaryData;
         }
-        await fetch(
-            `https://www.${SESSION_NAME}.vigilio-services.com/api/bot/receive-message`,
-            {
-                method: "POST",
-                body: JSON.stringify({
-                    type: message.type,
-                    isGroup: chat.isGroup,
-                    content:
-                        message.type === "chat"
-                            ? message.body
-                            : await getFile(),
-                    from: message.from,
-                }),
-            }
-        );
+        await fetch(`${BASE_URL}/api/bot/receive-message`, {
+            method: "POST",
+            body: JSON.stringify({
+                isGroup: chat.isGroup,
+                content:
+                    message.type === "chat" ? message.body : await getFile(),
+                from: message.from,
+                props: message,
+            }),
+            headers: {
+                "Content-Type": "application-json",
+            },
+        });
     });
     client.on("disconnected", async () => {
-        await fetch(
-            `https://www.${SESSION_NAME}.vigilio-services.com/api/bot/disconnected`,
-            { method: "POST" }
-        );
+        await fetch(`${BASE_URL}/api/bot/disconnected`, { method: "POST" });
         // eliminar qrcodee
         if (fs.existsSync(qrImage)) {
             fs.unlinkSync(qrImage);
@@ -90,13 +100,13 @@ export async function initialWhatsapp() {
     client.initialize();
 }
 
-app.post("/api/whatsapp/send-message", sendMessage);
-app.post("/api/whatsapp/send-image", sendImage);
-app.post("/api/whatsapp/send-sticker", sendImage);
-app.post("/api/whatsapp/send-audio", sendAudio);
-app.post("/api/whatsapp/send-seen", sendSeen);
-app.post("/api/whatsapp/send-typing", sendTyping);
-app.post("/api/whatsapp/qr", getQr);
+app.post("/api/whatsapp/send-message", authenticateToken, sendMessage);
+app.post("/api/whatsapp/send-file", authenticateToken, sendFile);
+app.post("/api/whatsapp/send-seen", authenticateToken, sendSeen);
+app.post("/api/whatsapp/send-typing", authenticateToken, sendTyping);
+app.get("/api/whatsapp/qr", authenticateToken, getQr);
+app.post("/api/whatsapp/logout", authenticateToken, sendLogout);
+app.post("/api/whatsapp/remove-qr", authenticateToken, removeQR);
 
 // whatsapp
 initialWhatsapp();

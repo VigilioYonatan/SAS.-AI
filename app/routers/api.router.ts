@@ -6,7 +6,6 @@ import { ProductsApiController } from "@/products/controllers/products.api.contr
 import { CategoriesApiController } from "@/products/controllers/categories.api.controller";
 import { CouponsApiController } from "@/products/controllers/coupons.api.controller";
 import { OrdersApiController } from "@/orders/controllers/orders.api.controller";
-import { PaymentApiController } from "@/payments/controllers/payment.api.controller";
 import { CartApiController } from "@/cart/controllers/cart.api.controller";
 import { BotApiController } from "@/bot/controllers/bot.api.controller";
 import { AuthApiController } from "@/auth/controllers/auth.api.controller";
@@ -28,35 +27,58 @@ import { SeederApiController } from "@/seeders/controllers/seeders.api.controlle
 import { PaginatorApiController } from "@/common/paginator/controllers/paginator.api.controller";
 import { ServicioApiController } from "@/information/controllers/servicio.api.controller";
 import { AdminApiController } from "@/admin/controllers/admin.api.controller";
+import { SuppliersApiController } from "@/suppliers/controllers/suppliers.api.controller";
+import { PostsApiController } from "@/posts/controllers/posts.api.controller";
+import { UploadsController } from "@/uploads/controllers/uploads.controller";
+import { OptionsApiController } from "@/products/controllers/options/options.api.controller";
+import { MesasApiController } from "@/orders/controllers/mesas.api.controller";
+import { ComplaintApiController } from "@/information/controllers/complaints.api.controller";
+import { UrlsController } from "@/urls/controllers/urls.controller";
+import { NewApiController } from "@/information/controllers/new.api.controller";
+import { BackgroundApiController } from "@/information/controllers/background.api.controller";
+import { SettingsApiController } from "@/information/controllers/settings.api.controller";
+import { KindInvoiceApiController } from "@/orders/controllers/kind_invoice.api.controller";
+import { FloorsApiController } from "@/orders/controllers/floors.api.controller";
 
 export const apiRouters: Type[] = [
-    InformationApiController,
-    ClientsApiController,
-    UsersApiController,
-    ProductsApiController,
-    CategoriesApiController,
-    CouponsApiController,
-    OrdersApiController,
-    PaymentApiController,
-    CartApiController,
-    BotApiController,
-    AuthApiController,
-    BackupApiController,
-    NotificationsApiController,
-    DetailOrdersApiController,
-    DocumentsApiController,
-    GuidesApiController,
-    InvoicesApiController,
-    KindCreditNotesApiController,
-    KindDebitNotesApiController,
-    NotesApiController,
-    PayMethodsApiController,
-    StatusOrdersApiController,
-    TicketApiController,
-    BrandsApiController,
-    UbigeoApiController,
-    SeederApiController,
-    PaginatorApiController,
-    ServicioApiController,
-    AdminApiController,
+	InformationApiController,
+	ClientsApiController,
+	UsersApiController,
+	ProductsApiController,
+	CategoriesApiController,
+	CouponsApiController,
+	OrdersApiController,
+	CartApiController,
+	BotApiController,
+	AuthApiController,
+	NotificationsApiController,
+	DetailOrdersApiController,
+	DocumentsApiController,
+	GuidesApiController,
+	InvoicesApiController,
+	KindCreditNotesApiController,
+	KindDebitNotesApiController,
+	NotesApiController,
+	PayMethodsApiController,
+	StatusOrdersApiController,
+	TicketApiController,
+	BrandsApiController,
+	UbigeoApiController,
+	SeederApiController,
+	PaginatorApiController,
+	ServicioApiController,
+	AdminApiController,
+	SuppliersApiController,
+	PostsApiController,
+	UploadsController,
+	OptionsApiController,
+	MesasApiController,
+	ComplaintApiController,
+	UrlsController,
+	NewApiController,
+	BackgroundApiController,
+	BackupApiController,
+	SettingsApiController,
+	KindInvoiceApiController,
+	FloorsApiController,
 ];

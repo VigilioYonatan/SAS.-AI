@@ -28,7 +28,7 @@ interface BackgroundUpdateProps {
 }
 function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
 	const { guards } = useAuthstore();
-	if (!guards.permissionAdminModifierGuard()) {
+	if (!guards.permissionAdminGuard()) {
 		window.history.back();
 		return null;
 	}

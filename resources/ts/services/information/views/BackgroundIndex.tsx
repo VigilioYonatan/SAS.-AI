@@ -3,22 +3,12 @@ import Container from "@/admin/components/Container";
 import { backgroundIndexApi } from "../apis/background.index.api";
 import Loading from "@/admin/components/Loading";
 import View404 from "@/admin/views/404";
-import { getFilesEdit, printFileWithDimension } from "~/libs/upload";
+import { printFileWithDimension } from "~/libs/upload";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import BackgroundStore from "./BackgroundStore";
 import { backgroundDestroyApi } from "../apis/background.destroy.api";
 import BackgroundUpdate from "./BackgroundUpdate";
-import {
-	imagesIndexApi,
-	imagesUpdateApi,
-	imagesUpdateDto,
-	type ImagesUpdateDto,
-} from "../apis/images.index.api";
-import Form from "~/components/form";
-import { useForm } from "react-hook-form";
-import { valibotVigilio } from "~/libs/valibot";
-import { useEffect } from "preact/hooks";
 
 function BackgroundIndex() {
 	const backgroundIndexQuery = backgroundIndexApi();
@@ -32,7 +22,6 @@ function BackgroundIndex() {
 	}
 	if (backgroundIndexQuery.isSuccess) {
 		const backgroundDestroyDestroy = backgroundDestroyApi();
-		const images = imagesIndexApi();
 		component = (
 			<div class="flex flex-col gap-4">
 				<div class="">
@@ -137,61 +126,6 @@ function BackgroundIndex() {
 						) : (
 							<span class="dark:text-white">No hay background</span>
 						)}
-					</div>
-				</div>
-
-				<hr />
-				<div>
-					<span class="font-bold text-xl dark:text-white">Images</span>
-					<div class=" gap-2 items-center grid grid-cols-3">
-						{images.data?.data.map((image) => {
-							const imageUpdate = imagesUpdateApi(image.id);
-							const imageform = useForm<ImagesUpdateDto>({
-								resolver: valibotVigilio(imagesUpdateDto),
-							});
-
-							async function initialUpdateImage() {
-								if (image.image) {
-									const images = await getFilesEdit(image.image, 800);
-									imageform.setValue("image", images);
-								}
-							}
-							function onUpadteImage(data: ImagesUpdateDto) {
-								imageUpdate.mutate(data, {
-									onSuccess() {
-										sweetAlert({
-											title: "Editado correctamente",
-											icon: "success",
-										});
-									},
-									onError() {
-										sweetAlert({
-											title: "error ",
-											icon: "danger",
-										});
-									},
-								});
-							}
-							useEffect(() => {
-								initialUpdateImage();
-							}, []);
-							return (
-								<Form key={image.id} {...imageform} onSubmit={onUpadteImage}>
-									<Form.control.file
-										name={"image" as keyof ImagesUpdateDto}
-										title="Imagen"
-										typeFile="image"
-										accept="image/*"
-									/>
-									<Form.button.submit
-										title="ACTUALIZAR"
-										disabled={imageUpdate.isLoading || false}
-										isLoading={imageUpdate.isLoading || false}
-										ico={null}
-									/>
-								</Form>
-							);
-						})}
 					</div>
 				</div>
 			</div>

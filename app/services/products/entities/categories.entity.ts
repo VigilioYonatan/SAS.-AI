@@ -1,63 +1,64 @@
 import {
-    Column,
-    DataType,
-    Table,
-    Model,
-    HasMany,
-    Index,
-    ForeignKey,
-    BelongsTo,
+	Column,
+	DataType,
+	Table,
+	Model,
+	HasMany,
+	Index,
+	ForeignKey,
+	BelongsTo,
 } from "sequelize-typescript";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import type { CategoriesSchema } from "../schemas/categories.schema";
 import { InformationEntity } from "@/information/entities/information.entity";
 import { ProductsRestaurant } from "./products_restaurant.entity";
-import { ProductsServicio } from "./products_servicio.entity";
 import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 
 @Table
 export class Categories extends Model implements Omit<CategoriesSchema, "id"> {
-    @Index
-    @Column({
-        allowNull: false,
-        type: DataType.STRING(30),
-    })
-    category_code: string;
+	@Index
+	@Column({
+		allowNull: false,
+		type: DataType.STRING(30),
+	})
+	category_code: string;
 
-    @Index
-    @Column({
-        allowNull: false,
-        type: DataType.STRING(255),
-    })
-    name: string;
+	@Index
+	@Column({
+		allowNull: false,
+		type: DataType.STRING(255),
+	})
+	name: string;
 
-    @Column({
-        allowNull: false,
-        type: DataType.JSON,
-    })
-    image: FilesSchema[];
+	@Column({
+		type: DataType.JSON,
+		defaultValue: [],
+	})
+	image: FilesSchema[] | null;
 
-    @Index
-    @Column({
-        allowNull: false,
-        type: DataType.STRING(255),
-    })
-    slug: string;
+	@Column({
+		type: DataType.STRING(255),
+	})
+	icon: string;
 
-    // products - subcategories : uno a muchos
-    @HasMany(() => ProductsNormal)
-    productsNormals: unknown[];
+	@Index
+	@Column({
+		allowNull: false,
+		type: DataType.STRING(255),
+	})
+	slug: string;
 
-    @HasMany(() => ProductsRestaurant)
-    productsRestaurants: unknown[];
+	// products - subcategories : uno a muchos
+	@HasMany(() => ProductsNormal)
+	productsNormals: unknown[];
 
-    @HasMany(() => ProductsServicio)
-    productsServicio: unknown[];
+	@HasMany(() => ProductsRestaurant)
+	productsRestaurants: unknown[];
 
-    @ForeignKey(() => InformationEntity)
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    information_id: number;
+	@ForeignKey(() => InformationEntity)
+	@Column({ type: DataType.INTEGER, allowNull: false })
+	information_id: number;
 
-    @BelongsTo(() => InformationEntity)
-    information: unknown;
+	@BelongsTo(() => InformationEntity)
+	information: unknown;
 }

@@ -1,24 +1,24 @@
 import { useMutation } from "@vigilio/preact-fetching";
 
 export function notificationsCleanApi() {
-    return useMutation<
-        NotificationsCleanAPI,
-        unknown,
-        NotificationsCleanErrorAPI
-    >("/notifications/clean", async (url) => {
-        const response = await fetch(`/api${url}`);
-        const result: NotificationsCleanAPI = await response.json();
-        if (!result.success) throw result;
-        return result;
-    });
+	return useMutation<
+		NotificationsCleanAPI,
+		unknown,
+		NotificationsCleanErrorAPI
+	>("/notifications/clean", async (url) => {
+		const response = await fetch(`/api${url}`);
+		const result: NotificationsCleanAPI = await response.json();
+		if (!result.success) throw result;
+		return result;
+	});
 }
 
 export interface NotificationsCleanAPI {
-    success: boolean;
-    message: string;
+	success: boolean;
+	message: string;
 }
 
 export interface NotificationsCleanErrorAPI {
-    success: boolean;
-    message: string;
+	success: boolean;
+	message: string;
 }

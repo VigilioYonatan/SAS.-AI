@@ -3,6 +3,6 @@ import type { Users } from "@/users/entities/users.entity";
 import type { Request } from "express";
 
 export type RequestVigilio = Request & {
-    information: InformationEntity;
-    user: Users;
+	information: InformationEntity;
+	user: Users;
 };

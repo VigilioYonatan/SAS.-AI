@@ -1,8 +1,12 @@
 import { printImagesProduct } from "../libs/helpers";
-import type { ProductsSchemaFromServer } from "../schemas/products.schema";
-
+import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schema";
+import { ProductsRestaurantSchemaFromServer } from "../schemas/products_restaurant.schema";
+import { ProductsServicioSchemaFromServer } from "../schemas/products_servicio.schema";
 interface ProductNotificationProps {
-	product: ProductsSchemaFromServer;
+	product:
+		| ProductsNormalSchemaFromServer
+		| ProductsRestaurantSchemaFromServer
+		| ProductsServicioSchemaFromServer;
 }
 function ProductNotification({ product }: ProductNotificationProps) {
 	return (

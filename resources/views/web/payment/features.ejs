@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="https://static.micuentaweb.pe/static/js/krypton-client/V4.0/ext/classic-reset.css">
+  <script type="text/javascript" src="https://static.micuentaweb.pe/static/js/krypton-client/V4.0/ext/classic.js"></script>
+  <%- include('../webHead') %>
+</head>
+
+<body class="bg-black  h-screen flex justify-center items-center flex-col gap-2">
+  <payment-features class="m-2" :web="<%= JSON.stringify(web)  %>"></payment-features>
+  <a class="block" href="<%= route("/")  %>">
+    <img src="<%= route("/images/settings/logo-white.webp")  %>" width="100" height="100" alt="">
+  </a>
+</body>
+
+<html>

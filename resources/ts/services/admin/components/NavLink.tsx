@@ -20,6 +20,7 @@ const NavLink = <H extends BaseLocationHook>(
 	return (
 		<div
 			ref={dropdown}
+			id={title.split(" ").join("")}
 			class={`${
 				isActive || dropdownOpen
 					? "dark:bg-admin-terciary bg-paper-light [>&svg]:text-terciary "

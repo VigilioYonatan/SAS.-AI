@@ -44,9 +44,9 @@ export class NotificationsUser
 	notification: unknown[];
 
 	@ForeignKey(() => InformationEntity)
-    @Column({ type: DataType.INTEGER, allowNull: false })
-    information_id: number;
+	@Column({ type: DataType.INTEGER, allowNull: false })
+	information_id: number;
 
-    @BelongsTo(() => InformationEntity)
-    information: unknown;
+	@BelongsTo(() => InformationEntity)
+	information: unknown;
 }

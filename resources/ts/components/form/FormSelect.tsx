@@ -73,7 +73,7 @@ function FormSelect<T extends object>({
 						id={name as string}
 						class={`${
 							(errors as T)[name] ? "border-red-600" : ""
-						}  bg-transparent font-normal my-1 text-sm w-full outline-none shadow-sm`}
+						}  bg-transparent font-normal my-1 text-sm w-full outline-none`}
 						{...rest}
 						{...register(name as unknown as Path<T>, options)}
 						disabled={isLoading || false}

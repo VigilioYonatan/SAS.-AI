@@ -2,7 +2,7 @@ import { formatMoney } from "../libs/helpers";
 import Form from "~/components/form";
 import { useForm } from "react-hook-form";
 import { valibotVigilio } from "~/libs/valibot";
-import { useEffect } from "preact/hooks";
+import { useEffect, useMemo } from "preact/hooks";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 // import useSocketStore from "~/stores/socket.store";
 import useCartStore from "../stores/cart.store";
@@ -15,15 +15,23 @@ import { handlerError } from "~/libs/helpers";
 import useAuthStore from "@/auth/stores/auth.store";
 import { PAYMETHOD, STATUSORDER } from "@/orders/libs";
 import { ordersStoreApi } from "@/orders/apis/orders.store.api";
-import { printProductVariant } from "@/products/libs/helpers";
+import { printProductVariant, productOBJ } from "@/products/libs/helpers";
 import { cartDestroyApi } from "../apis/cart.destroy.api";
 import Hr from "@/web/components/Hr";
+import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
+import { floorsIndexApi } from "@/orders/apis/mesas/floors.index.api";
+import { floorMesasIndexApi } from "@/orders/apis/mesas/floors.mesas.index.api";
+import { useSignal } from "@preact/signals";
+import { storageInformation } from "@/information/stores/information.store";
 
 function AdminCart() {
     const cartStore = useCartStore();
     const authStore = useAuthStore();
     const ordersStoreApiMutation = ordersStoreApi();
     const cartDestroyMutation = cartDestroyApi();
+    const floorsIndexQuery = floorsIndexApi();
+    const floorMesasQuery = floorMesasIndexApi();
+    const isOpen = useSignal(true);
 
     const ordersStoreDtoForm = useForm<OrdersStoreDto>({
         resolver: valibotVigilio(ordersStoreDto),
@@ -34,17 +42,60 @@ function AdminCart() {
             pay_method_id: PAYMETHOD.efectivo, //efectivo,
             invoice: null,
             description: null,
-            user_id: null,
-            seller_id: authStore.state!.id,
+            user_id: authStore.state ? authStore.state!.id : null,
             isDelivery: false,
             transferencia_image: null,
-            district_id: null,
+            city_id: null,
             map_marker: null,
+            floor_id: null,
+            mesa_id: null,
+            fullName: null,
         },
         mode: "all",
     });
+    const floorId = ordersStoreDtoForm.watch("floor_id");
 
+    const arrayFloors = useMemo(
+        () =>
+            floorsIndexQuery.isSuccess && floorsIndexQuery.data
+                ? floorsIndexQuery.data.data.map((floor) => ({
+                      key: floor.id,
+                      value: floor.name,
+                  }))
+                : [],
+        [floorsIndexQuery]
+    );
+    const arrayMesas = useMemo(
+        () =>
+            floorMesasQuery.isSuccess && floorMesasQuery.data
+                ? floorMesasQuery.data.data.map((floor) => ({
+                      key: floor.id,
+                      value: floor.mesa_code,
+                  }))
+                : [],
+        [floorMesasQuery]
+    );
+    useEffect(() => {
+        ordersStoreDtoForm.unregister("mesa_id");
+        if (floorId) {
+            floorMesasQuery.mutate(floorId);
+        }
+    }, [floorId]);
     function onOrder(body: OrdersStoreDto) {
+        if (storageInformation?.tipo_empresa.tipo_servicio_id === 2) {
+            if (!body.floor_id) {
+                ordersStoreDtoForm.setError("floor_id", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+            if (!body.mesa_id) {
+                ordersStoreDtoForm.setError("mesa_id", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+        }
         sweetModal({
             customIcon:
                 "<i class='fas fa-store text-5xl dark:text-white text-secondary-dark mb-2' />",
@@ -76,8 +127,10 @@ function AdminCart() {
                             cartStore.state.cart!.map(
                                 async (cart) =>
                                     await cartDestroyMutation.mutateAsync({
-                                        product_id: cart.id,
-                                        variant_id: cart.variant.id,
+                                        ...productOBJ(cart.id),
+                                        variant_id: cart.variant
+                                            ? cart.variant.id
+                                            : null,
                                     })
                             )
                         );
@@ -102,15 +155,21 @@ function AdminCart() {
                     product_id: cart.id,
                     quantity: cart.quantity,
                     coupon: null,
-                    variante: printProductVariant(cart, cart.variant)
-                        .map((variant) => {
-                            // si es color que muestre el color, sino solo el valor
-                            return variant?.features.map(
-                                (feature) => feature?.description
-                            );
-                        })
-                        .join(" - "),
-                    variant_id: cart.variant.id,
+                    variante: cart.variant
+                        ? printProductVariant(
+                              cart as ProductsNormalSchemaFromServer,
+                              cart.variant
+                          )
+                              .map((variant) => {
+                                  // si es color que muestre el color, sino solo el valor
+                                  return variant?.features.map(
+                                      (feature) => feature?.description
+                                  );
+                              })
+                              .join(" - ")
+                        : null,
+                    ...productOBJ(cart.id),
+                    variant_id: cart.variant ? cart.variant.id : null,
                 }))
             );
         }
@@ -157,17 +216,57 @@ function AdminCart() {
                 ) : (
                     <>
                         {cartStore.state?.cart.map((prod) => (
-                            <ProductCart product={prod} key={prod.variant.id} />
+                            <ProductCart
+                                product={prod}
+                                key={prod.variant ? prod.variant.id : prod.id}
+                            />
                         ))}
                     </>
                 )}
             </div>
             {cartStore.state.cart?.length ? (
                 <Form
-                    className="right-0 delay-custom-1 mb-4 shadow-lg left-0 absolute bottom-0  dark:bg-admin-paper-dark bg-background-light px-2"
+                    className={`${
+                        isOpen.value ? "max-h-auto" : "max-h-[30px]"
+                    } right-0 delay-custom-1 mb-4 shadow-lg left-0 absolute bottom-0  dark:bg-admin-paper-dark bg-background-light px-2`}
                     onSubmit={onOrder}
                     {...ordersStoreDtoForm}
                 >
+                    <button
+                        class=" dark:text-white flex justify-center w-full border-t  py-2"
+                        type="button"
+                        aria-label="to hidden"
+                        onClick={() => {
+                            isOpen.value = !isOpen.value;
+                        }}
+                    >
+                        <i class="fas fa-bars" />
+                    </button>
+                    <Form.control.select
+                        title="Piso"
+                        name={"floor_id" as keyof OrdersStoreDto}
+                        placeholder="Seleccionar Piso"
+                        array={arrayFloors}
+                        options={{
+                            setValueAs: (value) =>
+                                Number(value) > 0 ? Number(value) : null,
+                        }}
+                    />
+                    {floorId ? (
+                        <Form.control.select
+                            title="Mesa"
+                            name={"mesa_id" as keyof OrdersStoreDto}
+                            placeholder="Seleccionar Mesa"
+                            array={arrayMesas}
+                            options={{
+                                setValueAs: (value) =>
+                                    Number(value) > 0 ? Number(value) : null,
+                            }}
+                        />
+                    ) : (
+                        <></>
+                    )}
+                    <hr class="border-dashed border-2 mb-2" />
                     <span class="w-full justify-between mb-2 text-primary dark:text-white  gap-2 flex ">
                         <span>Total:</span>
                         <b>{formatMoney(cartStore.methods.getTotal())}</b>

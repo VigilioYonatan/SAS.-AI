@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= locals.$information?.name %> - <%= title %></title>
+  <title><%= locals.$information?.name_empresa %> - <%= title %></title>
   <meta name="description" content="<%= description  %>">
   <!-- METAS -->
   <meta name="robots" content="index, follow">
@@ -12,7 +12,7 @@
 
   <!-- Schema.org markup for Google+ -->
   <meta itemprop="name" content="Los mejores productos en un solo lugar">
-  <meta itemprop="description" content="<%= locals.$information ? $information.name:''   %> ofrece los mejores productos del mercado a un precio bajo">
+  <meta itemprop="description" content="<%= locals.$information ? $information.name_empresa:''   %> ofrece los mejores productos del mercado a un precio bajo">
   <meta itemprop="image" content=""> <!-- puedes poner una imagen de oferta -->
 
 
@@ -22,19 +22,19 @@
   <meta name="twitter:title" content="Los mejores productos en un solo lugar">
   <meta name="twitter:description" content="<%= locals.$information ? $information.name:''   %> ofrece los mejores productos del mercado a un precio bajo">
   <meta name="twitter:creator" content="@author_handle">
-  <meta name="twitter:image" content="<%=   locals.$information?.icon ? printFileWithDimension(locals.$information.icon,100)[0] :'' %>"> <!-- puedes poner una imagen de oferta -->
+  <meta name="twitter:image" content="<%=   locals.$information.logo ? printFileWithDimension(locals.$information.logo,100)[0] :'' %>"> <!-- puedes poner una imagen de oferta -->
 
   <!-- Open Graph data -->
   <meta property="og:title" content="Los mejores productos en un solo lugar">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="<%= route("/")  %>">
-  <meta property="og:image" content="<%=   locals.$information?.icon ? printFileWithDimension(locals.$information.icon,100)[0] :'' %>"> <!-- puedes poner una imagen de oferta -->
-  <meta property="og:description" content="<%=locals.$information ? $information.name:''  %> ofrece los mejores productos del mercado a un precio bajo">
-  <meta property="og:site_name" content="<%= locals.$information ? $information.name:''  %>">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="<%=   locals.$information.logo ? printFileWithDimension(locals.$information.logo,100)[0] :'' %>"> <!-- puedes poner una imagen de oferta -->
+  <meta property="og:description" content="<%=locals.$information ? $information.name_empresa:''  %> ofrece los mejores productos del mercado a un precio bajo">
+  <meta property="og:site_name" content="<%= locals.$information ? $information.name_empresa:''  %>">
   <meta property="fb:app_id" content="">
   <link rel="manifest" href="/dist/manifest.webmanifest">
   <!-- ICONO -->
-  <link rel="shortcut icon" href="<%=   locals.$information?.icon ? printFileWithDimension(locals.$information.icon,100)[0] :'' %>" type="image/x-icon" />
+  <link rel="shortcut icon" href="<%=   locals.$information.setting?.icon ? printFileWithDimension(locals.$information.setting.icon,100)[0] :'' %>" type="image/x-icon" />
   <%- `<script> 
       localStorage.setItem("information", ${JSON.stringify(JSON.stringify(typeof $information !== "undefined" ? $information  : null))});
       localStorage.setItem("user", ${JSON.stringify(JSON.stringify(typeof $user !== "undefined" ? $user  : null))});
@@ -42,7 +42,7 @@
   <%- vite  %>
   <style>
     :root {
-      --primary: <%=$information.bg_color%>
+      --primary: <%=$information.setting?.bg_color%>
     }
   </style>
   <!-- initial base -->
@@ -50,10 +50,9 @@
 </head>
 
 
-<body class="bg-black bg-opacity-80">
-  <h1 class="font-bold text-3xl text-primary"><%=$information.name_empresa  %></h1>
-  <%= JSON.stringify($information.metodos_pago.transferencias)  %>
-  <web-page></web-page>
+<body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
+
+  <home-page :header="<%= JSON.stringify(header)  %>" :backgrounds="<%= JSON.stringify(backgrounds)  %>" :posts="<%= JSON.stringify(posts)  %>" :productsOffert6Mapped="<%= JSON.stringify(productsOffert6Mapped)  %>" :productsLatest6Mapped="<%= JSON.stringify(productsLatest6Mapped)  %>" :productMostDiscountMapped="<%= JSON.stringify(productMostDiscountMapped)  %>" :productLatestMapped="<%= JSON.stringify(productLatestMapped)  %>" :getProductsByCategories="<%= JSON.stringify(getProductsByCategories)  %>"></home-page>
 </body>
 
 </html>

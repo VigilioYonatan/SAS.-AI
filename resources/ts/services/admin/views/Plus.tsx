@@ -1,5 +1,5 @@
 function Plus() {
-    return <div>Plus</div>;
+	return <div>Plus</div>;
 }
 
 export default Plus;

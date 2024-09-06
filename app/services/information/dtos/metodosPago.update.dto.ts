@@ -1,9 +1,9 @@
-import {  omitAsync, type Input } from "@vigilio/valibot";
+import { omitAsync, type Input } from "@vigilio/valibot";
 import { metodosPagoSchema } from "../schemas/metodosPago.schema";
 
-export const metodosPagoUpdatedDto = omitAsync(metodosPagoSchema, [
-    "information_id",
-    "qrPlin",
-    "qrYape",
+export const metodosPagoUpdateDto = omitAsync(metodosPagoSchema, [
+	"information_id",
+	"qrPlin",
+	"qrYape",
 ]);
-export type MetodosPagoUpdateDto = Input<typeof metodosPagoUpdatedDto>
+export type MetodosPagoUpdateDto = Input<typeof metodosPagoUpdateDto>;

@@ -8,10 +8,8 @@ import type { Address } from "@/information/entities/address.entity";
 import { detailInvoice } from ".";
 import fs from "node:fs";
 import { pathUploads } from "@/uploads/libs/helpers";
-import { MONEYDOLARES, MONEYSOLES } from "~/libs/helpers";
+import { MONEYDOLARES } from "~/libs/helpers";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
-import type { Cities } from "@/ubigeo/entities/cities.entity";
-import type { Regions } from "@/ubigeo/entities/regions.entity";
 import type { Users } from "@/users/entities/users.entity";
 
 export async function ticketHTML(
@@ -23,23 +21,22 @@ export async function ticketHTML(
         order.dataValues.details_orders,
         order
     );
+
     const igv = mapped.reduce(
         (total, i) => total + Number(i.totalImpuestos.toFixed(2)),
         0
     );
-    const region = order.city_id
-        ? ((order.city as Cities).region as Regions)
-        : null;
+    const region = order.city_id ? order.dataValues.city.region : null;
     const ig = region
         ? order.igv
             ? subtotal(region.priceShipping, information.igv, true)
             : region.priceShipping
         : 0;
-    const money = order.moneyChange === 1 ? MONEYSOLES : MONEYDOLARES;
+    const money =
+        order.moneyChange === 1 ? information.money.money : MONEYDOLARES;
 
-    const mappedDetails = await Promise.all(
-        mapped.map(async (prod) => {
-            return `<tr class="border_top">
+    const mappedDetails = mapped.map((prod) => {
+        return `<tr class="border_top">
         <td align="center">
            ${prod.cantidad}
             NIU
@@ -51,24 +48,26 @@ export async function ticketHTML(
             <span>${prod.descripcion}</span><br>
         </td>
         <td align="center">
-            ${formatMoney(prod.mtoValorUnitario, money)}
+            ${formatMoney(information, prod.mtoValorUnitario, money)}
         </td>
         <td align="center">
-            ${formatMoney(prod.mtoValorVenta, money)}
+            ${formatMoney(information, prod.mtoValorVenta, money)}
         </td>
     </tr>`;
-        })
-    );
+    });
+
     const image = information.logo
         ? fs
               .readFileSync(
-                  `${pathUploads()}/${information.logo[0].file}` // trae a la imagen 100px
+                  `${pathUploads()}/${information.slug}/${
+                      information.logo[0].file
+                  }` // trae a la imagen 100px
               )
               .toString("base64")
         : "";
     let total =
         (order.pasarela_comision && order.is_pasarela_client
-            ? order.total + pasarelaComision(order.total)
+            ? order.total + pasarelaComision(information, order.total)
             : order.total) / order.moneyChange;
     if (order.paypal_token) {
         total = order.is_pasarela_client
@@ -77,7 +76,13 @@ export async function ticketHTML(
     }
     const moneyLetter =
         order.moneyChange === 1
-            ? numeroALetras(total, true, { isInvoice: true })
+            ? numeroALetras(
+                  total,
+                  true,
+                  MONEDASIMBOLO[
+                      information.money.simbolo as keyof typeof MONEDASIMBOLO
+                  ]
+              )
             : numeroALetras(total, true, {
                   isInvoice: true,
                   Monedasingular: "DOLAR",
@@ -85,6 +90,7 @@ export async function ticketHTML(
                   centSingular: "CENTAVO",
                   Monedaplural: "DOLARES",
               });
+
     return /*html*/ `
                 <!DOCTYPE html>
                     <html lang="es">
@@ -94,7 +100,7 @@ export async function ticketHTML(
                         <style type="text/css">.bold,b,strong{font-weight:700}body{background-repeat:no-repeat;background-position:center center;text-align:center;margin:0;font-family: Verdana, monospace}  .tabla_borde{border:1px solid #666;border-radius:10px}  tr.border_bottom td{border-bottom:1px solid #000}  tr.border_top td{border-top:1px solid #666}td.border_right{border-right:1px solid #666}.table-valores-totales tbody>tr>td{border:0}  .table-valores-totales>tbody>tr>td:first-child{text-align:right}  .table-valores-totales>tbody>tr>td:last-child{border-bottom:1px solid #666;text-align:right;width:30%}  hr,img{border:0}  table td{font-size:12px}  html{font-family:sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;font-size:10px;-webkit-tap-highlight-color:transparent}  a{background-color:transparent}  a:active,a:hover{outline:0}  img{vertical-align:middle}  hr{height:0;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;margin-top:20px;margin-bottom:20px;border-top:1px solid #eee}  table{border-spacing:0;border-collapse:collapse}@media print{blockquote,img,tr{page-break-inside:avoid}*,:after,:before{color:#000!important;text-shadow:none!important;background:0 0!important;-webkit-box-shadow:none!important;box-shadow:none!important}a,a:visited{text-decoration:underline}a[href]:after{content:" (" attr(href) ")"}blockquote{border:1px solid #999}img{max-width:100%!important}p{orphans:3;widows:3}.table{border-collapse:collapse!important}.table td{background-color:#fff!important}}  a,a:focus,a:hover{text-decoration:none}  *,:after,:before{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}  a{color:#428bca;cursor:pointer}  a:focus,a:hover{color:#2a6496}  a:focus{outline:dotted thin;outline:-webkit-focus-ring-color auto 5px;outline-offset:-2px}  h6{font-family:inherit;line-height:1.1;color:inherit;margin-top:10px;margin-bottom:10px}  p{margin:0 0 10px}  blockquote{padding:10px 20px;margin:0 0 20px;border-left:5px solid #eee}  table{background-color:transparent}  .table{width:100%;max-width:100%;margin-bottom:20px}  h6{font-weight:100;font-size:10px}  body{line-height:1.42857143;font-family:"open sans","Helvetica Neue",Helvetica,Arial,sans-serif;background-color:#2f4050;font-size:13px;color:#676a6c;overflow-x:hidden}  .table>tbody>tr>td{vertical-align:top;border-top:1px solid #e7eaec;line-height:1.42857;padding:8px}  .white-bg{background-color:#fff}  td{padding:6}  .table-valores-totales tbody>tr>td{border-top:0 none!important}
                         </style>
                     </head>
-                    <body style="padding:10px; !important">
+                    <body style="padding:10px; !important;background-color:white;">
                     <table width="100%">
                         <tbody><tr>
                             <td>
@@ -105,13 +111,14 @@ export async function ticketHTML(
                                             <span>
                                             ${
                                                 information.logo
-                                                    ? `<img src="data:image/png;base64,${image}" height="80" style="text-align:center" border="0">`
+                                                    ? `<img src="data:image/png;base64,${image}" height="80" style="text-align:center;" border="0">`
                                                     : `<span style="font-size:4rem;font-weight:bolder;">${
                                                           information.company
                                                               ? information
                                                                     .company
                                                                     .nombreComercial[0]
-                                                              : information.name_empresa
+                                                              : information
+                                                                    .name_empresa[0]
                                                       }</span>`
                                             }
                                           </span>
@@ -126,15 +133,15 @@ export async function ticketHTML(
                                                             <span style="font-family:Tahoma, Geneva, sans-serif; font-size:29px" text-align="center">R E C I B O</span>
                                                         </td>
                                                     </tr>
-                                                    ${
-                                                        information.company
-                                                            ? `<tr>
+                                                   <tr>
                                                         <td align="center">
-                                                            <span style="font-size:15px" text-align="center">R.U.C.: ${information.company.ruc}</span>
+                                                            <span style="font-size:15px" text-align="center"> ${
+                                                                information.company
+                                                                    ? `R.U.C.:${information.company.ruc}`
+                                                                    : information.name_empresa
+                                                            }</span>
                                                         </td>
-                                                    </tr>`
-                                                            : ""
-                                                    }
+                                                    </tr>
                                                     
                                                     <tr>
                                                         <td align="center">
@@ -276,6 +283,7 @@ export async function ticketHTML(
                                                 <tr>
                                                     <td align="right"><strong>Op. Gravadas:</strong></td>
                                                     <td width="120" align="right"><span id="ride-importeTotal" class="ride-importeTotal">${formatMoney(
+                                                        information,
                                                         mapped.reduce(
                                                             (total, obj) =>
                                                                 total +
@@ -288,6 +296,7 @@ export async function ticketHTML(
                                                 <tr>
                                                     <td align="right"><strong>I.G.V:</strong></td>
                                                     <td width="120" align="right"><span id="ride-importeTotal" class="ride-importeTotal">${formatMoney(
+                                                        information,
                                                         igv,
                                                         money
                                                     )}</span></td>
@@ -295,6 +304,7 @@ export async function ticketHTML(
                                                 <tr>
                                                     <td align="right"><strong>Precio Venta:</strong></td>
                                                     <td width="120" align="right"><span id="ride-importeTotal" class="ride-importeTotal">${formatMoney(
+                                                        information,
                                                         total,
                                                         money
                                                     )}</span></td>
@@ -311,3 +321,55 @@ export async function ticketHTML(
                     </body>
                     </html>`;
 }
+
+export const MONEDASIMBOLO = {
+    PEN: {
+        isInvoice: true,
+        Monedasingular: "SOL",
+        centPlural: "CÉNTIMOS",
+        centSingular: "CÉNTIMO",
+        Monedaplural: "SOLES",
+    },
+    ARS: {
+        isInvoice: true,
+        Monedasingular: "PESO",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "PESOS",
+    },
+    BRL: {
+        isInvoice: true,
+        Monedasingular: "REAL",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "REAIS",
+    },
+    USD: {
+        isInvoice: true,
+        Monedasingular: "DÓLAR",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "DÓLARES",
+    },
+    CLP: {
+        isInvoice: true,
+        Monedasingular: "PESO",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "PESOS",
+    },
+    MXN: {
+        isInvoice: true,
+        Monedasingular: "PESO",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "PESOS",
+    },
+    COP: {
+        isInvoice: true,
+        Monedasingular: "PESO",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "PESOS",
+    },
+};

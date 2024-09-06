@@ -13,7 +13,7 @@ import {
 import { couponsShowApi } from "../apis/coupons/coupons.show.api";
 import { couponsUpdateApi } from "../apis/coupons/coupons.update.api";
 import Form from "~/components/form";
-import { familiesAllApi } from "../apis/families/families.all.api";
+import { categoriesIndexApi } from "../apis/categories/categories.index.api";
 
 interface CouponUpdateProps {
     id: number;
@@ -41,25 +41,19 @@ function CouponsUpdate({ id, refetch }: CouponUpdateProps) {
             resolver: valibotVigilio(couponsUpdateDto),
             mode: "all",
             defaultValues: useMemo(() => {
-                const {
-                    date,
-                    createdAt,
-                    updatedAt,
-                    subcategories,
-                    id,
-                    ...rest
-                } = coupon;
+                const { date, createdAt, updatedAt, categories, id, ...rest } =
+                    coupon;
                 return {
                     ...rest,
-                    subcategories,
+                    categories,
                     date: formatDateTwo(date, "YYYY-MM-DDTHH:mm") as Date,
                 };
             }, []),
         });
         const couponsUpdateMutation = couponsUpdateApi(id);
-        // subcategories
-        const familiesAllQuery = familiesAllApi();
-        const subcategories = couponsUpdateDtoForm.watch("subcategories");
+        // categories
+        const categoriesAllQuery = categoriesIndexApi();
+        const categories = couponsUpdateDtoForm.watch("categories");
 
         function onUpdateCoupon(data: CouponsUpdateDto) {
             sweetModal({
@@ -151,10 +145,6 @@ function CouponsUpdate({ id, refetch }: CouponUpdateProps) {
                             }}
                             question="Máximo cuantas veces será usado este cupón. Si quieres que el cupon sea ilimitado dejar vacio este campo."
                         />
-                        <Form.control.toggle
-                            title="Solo clientes registrados"
-                            name={"onlyRegister" as keyof CouponsUpdateDto}
-                        />
                     </div>
 
                     <div class="w-full mb-2">
@@ -165,98 +155,55 @@ function CouponsUpdate({ id, refetch }: CouponUpdateProps) {
                             Categorias
                         </label>
                         <div class="flex gap-4 flex-wrap">
-                            {familiesAllQuery.data?.data.map((family) => (
+                            {categoriesAllQuery.data?.data.map((category) => (
                                 <div
-                                    key={family.id}
+                                    key={category.id}
                                     class="flex gap-1 text-xs dark:text-white flex-col"
                                 >
                                     <span class="text-primary font-bold">
-                                        {family.name}
+                                        {category.name}
                                     </span>
-                                    {family.categories.map((cat) => (
-                                        <div
-                                            key={cat.id}
-                                            class="flex flex-col gap-1"
-                                        >
-                                            <b>{cat.name}</b>
-                                            <div>
-                                                {cat.subcategories.map(
-                                                    (subcategory) => (
-                                                        <div
-                                                            key={subcategory.id}
-                                                            class="flex items-center gap-1"
-                                                        >
-                                                            <input
-                                                                type="checkbox"
-                                                                value={
-                                                                    subcategory.id
-                                                                }
-                                                                checked={subcategories.some(
-                                                                    (cat) =>
-                                                                        cat ===
-                                                                        subcategory.id
-                                                                )}
-                                                                onChange={(
-                                                                    e
-                                                                ) => {
-                                                                    const id =
-                                                                        Number(
-                                                                            (
-                                                                                e.target as HTMLInputElement
-                                                                            )
-                                                                                .value
-                                                                        );
-                                                                    const existID =
-                                                                        subcategories.some(
-                                                                            (
-                                                                                cat
-                                                                            ) =>
-                                                                                cat ===
-                                                                                id
-                                                                        );
-                                                                    if (
-                                                                        existID
-                                                                    ) {
-                                                                        const filterCategory =
-                                                                            subcategories.filter(
-                                                                                (
-                                                                                    cat
-                                                                                ) =>
-                                                                                    cat !==
-                                                                                    id
-                                                                            );
-                                                                        couponsUpdateDtoForm.setValue(
-                                                                            "subcategories",
-                                                                            filterCategory
-                                                                        );
-                                                                    } else {
-                                                                        couponsUpdateDtoForm.setValue(
-                                                                            "subcategories",
-                                                                            [
-                                                                                ...subcategories,
-                                                                                id,
-                                                                            ]
-                                                                        );
-                                                                    }
-                                                                }}
-                                                            />
-                                                            {subcategory.name}
-                                                        </div>
-                                                    )
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
+
+                                    <input
+                                        type="checkbox"
+                                        value={category.id}
+                                        checked={categories.some(
+                                            (cat) => cat === category.id
+                                        )}
+                                        onChange={(e) => {
+                                            const id = Number(
+                                                (e.target as HTMLInputElement)
+                                                    .value
+                                            );
+                                            const existID = categories.some(
+                                                (cat) => cat === id
+                                            );
+                                            if (existID) {
+                                                const filterCategory =
+                                                    categories.filter(
+                                                        (cat) => cat !== id
+                                                    );
+                                                couponsUpdateDtoForm.setValue(
+                                                    "categories",
+                                                    filterCategory
+                                                );
+                                            } else {
+                                                couponsUpdateDtoForm.setValue(
+                                                    "categories",
+                                                    [...categories, id]
+                                                );
+                                            }
+                                        }}
+                                    />
                                 </div>
                             ))}
                         </div>
 
-                        {couponsUpdateDtoForm.formState.errors
-                            ?.subcategories ? (
+                        {couponsUpdateDtoForm.formState.errors?.categories ? (
                             <p class="text-xs text-red-600">
                                 {
                                     couponsUpdateDtoForm.formState.errors
-                                        ?.subcategories.message
+                                        ?.categories.message
                                 }
                             </p>
                         ) : null}

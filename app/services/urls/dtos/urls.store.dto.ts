@@ -16,12 +16,14 @@ export const urlsStoreDto = omitAsync(
 				Urls.findOne({
 					where: {
 						web: input.web,
+						information_id: input.information_id,
 					},
 					raw: true,
 				}),
 				Urls.findOne({
 					where: {
 						hash: input.hash,
+						information_id: input.information_id,
 					},
 					raw: true,
 				}),

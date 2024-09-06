@@ -7,7 +7,6 @@ import AdminBreadCrumb from "@/admin/components/AdminBreadCrumb";
 import OrderFormUpdate from "../components/OrderFormUpdate";
 import Invoice from "../components/Invoice";
 import Note from "../components/Note";
-import Ticket from "../components/Ticket";
 import Container from "@/admin/components/Container";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
@@ -16,6 +15,8 @@ import useCopyToClipboard from "~/hooks/useCopyToClipboard";
 import { printFileWithDimension } from "~/libs/upload";
 import Guide from "../components/Guide";
 import MapValue from "~/components/MapValue";
+import { storageInformation } from "@/information/stores/information.store";
+import Recibo from "../components/Ticket";
 
 interface OrdersShowProps {
 	params: { order_code?: string };
@@ -86,7 +87,7 @@ function OrdersShow({ params: { order_code }, refetch }: OrdersShowProps) {
 								<Invoice order={order} refetch={ordersShowQuery.refetch} />
 							) : null}
 							{order.invoice?.kind_invoice_code === "00" ? (
-								<Ticket order={order} />
+								<Recibo order={order} />
 							) : null}
 							{order.note?.kind_invoice_code === "07" ||
 							order.note?.kind_invoice_code === "08" ? (
@@ -98,14 +99,13 @@ function OrdersShow({ params: { order_code }, refetch }: OrdersShowProps) {
 						</div>
 						{order.guide?.kind_guide_code}
 						<div class="grid md:grid-cols-2 gap-2 w-full">
-							{order.district ? (
+							{order.city ? (
 								<div class="w-full flex gap-1 flex-col mb-3  p-2">
 									<span class="text-primary dark:text-terciary font-bold">
 										Ubigeo:
 									</span>
 									<span class="dark:text-secondary-light text-secondary-dark tracking-wide text-wrap break-words">
-										{order.district.province.department.name} -{" "}
-										{order.district.province.name} - {order.district.name}
+										{order.city.region.name} -{order.city.name}
 									</span>
 								</div>
 							) : null}
@@ -147,25 +147,25 @@ function OrdersShow({ params: { order_code }, refetch }: OrdersShowProps) {
 									</div>
 								</div>
 							) : null}
-							{order.seller_id ? (
+							{order.user ? (
 								<div class="w-full flex gap-1 flex-col mb-3  p-2">
 									<span class="text-primary dark:text-terciary font-bold">
 										Trabajador
 									</span>
 									<img
 										class="rounded-full w-[40px] h-[40px] "
-										src={printFileUser(order.seller.photo, 100)[0]}
+										src={printFileUser(order.user.photo, 100)[0]}
 										width={100}
 										height={100}
-										alt={order.seller.username}
+										alt={order.user.username}
 									/>
 									<a
-										href={`/admin/usuarios/${order.seller.id}`}
+										href={`/admin/usuarios/${order.user.id}`}
 										target="_blank"
 										rel="noreferrer"
 										class="dark:text-secondary-light text-secondary-dark tracking-wide text-xs"
 									>
-										{order.seller.username}
+										{order.user.username}
 									</a>
 								</div>
 							) : null}
@@ -343,7 +343,9 @@ function OrdersShow({ params: { order_code }, refetch }: OrdersShowProps) {
 							</div>
 						) : null}
 						<span class="dark:text-white text-xs">
-							{order.igv ? "IGV includo" : "IGV no incluido"}
+							{order.igv
+								? `${storageInformation?.tipo_impuesto} includo`
+								: `${storageInformation?.tipo_impuesto} no incluido`}
 						</span>
 					</div>
 				</div>

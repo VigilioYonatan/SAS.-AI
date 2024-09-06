@@ -5,5 +5,6 @@ export const postsUpdateDto = omitAsync(postsSchema, [
 	"id",
 	"image",
 	"user_id",
+	"information_id",
 ]);
 export type PostsUpdateDto = Input<typeof postsUpdateDto>;

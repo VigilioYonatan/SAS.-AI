@@ -1,5 +1,6 @@
 @import "./fonts.css";
 @import "./utils.css";
+@import "./driver.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -30,6 +31,9 @@
 
 .admin .vigilio-modal .modal .vigilio-icon {
     width: 5em;
+}
+.vigilio-modal {
+    z-index: 99999 !important;
 }
 .admin .vigilio-alert-container {
     @apply dark:bg-admin-terciary bg-paper-light;
@@ -117,4 +121,45 @@
 
 ::-webkit-scrollbar-track:horizontal {
     @apply bg-transparent;
+}
+
+/* react - slider */
+.slick-arrow,
+.slick-arrow {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 30px !important;
+    height: 30px !important;
+    @apply !bg-white dark:!bg-background-dark;
+    position: absolute !important;
+    z-index: 10;
+    border-radius: 1rem !important;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.slick-next {
+    right: -10px !important;
+}
+.slick-prev {
+    left: -10px !important;
+}
+.slick-prev::before,
+.slick-next::before {
+    display: none !important;
+}
+.slick-prev:hover,
+.slick-prev:focus,
+.slick-next:hover,
+.slick-next:focus {
+    scale: 1.1 !important;
+}
+/* scroll hide */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Para Firefox */
+.scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }

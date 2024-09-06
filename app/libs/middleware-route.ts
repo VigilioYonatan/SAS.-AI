@@ -8,7 +8,5 @@ export async function middlewareRoute(req: Request, res: Response) {
 			message: "This endpoint is not correct",
 		});
 	}
-
-	res.status(404);
-	res.render("web/404");
+	res.redirect("/404");
 }

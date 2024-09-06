@@ -1,22 +1,18 @@
 import { subtotal } from "@/cart/libs/helpers";
+import type { InformationEntity } from "@/information/entities/information.entity";
 import enviroments from "~/config/enviroments.config";
 
-export function pasarelaComision(monto: number) {
-	const tasaIziPay = enviroments.VITE_PASARELA_COMISION / 100;
-	const tasaIGV = enviroments.VITE_PASARELA_COMISION_IMPUESTO / 100;
+export function pasarelaComision(
+	information: InformationEntity,
+	monto: number,
+) {
+	const porcentajeComision = information.mercado_pago_comision.comision / 100;
+	const comisionPorcentajeTotal = monto * porcentajeComision;
 
-	const comisionIziPay = monto * tasaIziPay;
-	const igvIziPay = comisionIziPay * tasaIGV;
-
-	const igvCanalVirtual =
-		enviroments.VITE_PASARELA_COMISION_TRANSACCION * tasaIGV;
-
+	// Calcular la comisión total sumando la comisión fija
 	const comisionTotal =
-		comisionIziPay +
-		igvIziPay +
-		enviroments.VITE_PASARELA_COMISION_TRANSACCION +
-		igvCanalVirtual;
-
+		comisionPorcentajeTotal +
+		(information.mercado_pago_comision.transaccion ?? 0);
 	return comisionTotal;
 }
 export function paypalComision(monto: number, dolarNow: number) {

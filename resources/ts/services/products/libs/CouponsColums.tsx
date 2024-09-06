@@ -63,12 +63,7 @@ export const couponsColumns: Columns<
 			</div>
 		),
 	},
-	{
-		key: "onlyRegister",
-		isSort: true,
-		header: "registrados",
-		cell: (props) => (props.onlyRegister ? "SÍ" : "NO"),
-	},
+
 	{
 		key: "acciones",
 		cell: (props, _, methods) => {

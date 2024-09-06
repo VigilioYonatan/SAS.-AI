@@ -1,7 +1,7 @@
 import type { KindInvoiceSchema } from "../schemas/kind_invoice.schema";
 
 export const kindInvoiceSeeder: Omit<KindInvoiceSchema, "id">[] = [
-	{ code: "00", name: "Ticket" },
+	{ code: "00", name: "Recibo" },
 	{ code: "01", name: "Factura" },
 	{ code: "03", name: "Boleta" },
 	{ code: "07", name: "Nota de Crédito" },

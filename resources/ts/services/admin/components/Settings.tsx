@@ -15,7 +15,8 @@ import Loading from "./Loading";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import AssistantVirtualAdmin from "./AssistantVirtualAdmin";
 import useAuthStore from "@/auth/stores/auth.store";
-import Youtube from "./Youtube";
+import { driverInitial } from "../libs";
+import { storageInformation } from "@/information/stores/information.store";
 
 function Settings() {
 	const showBottom = useSignal(false);
@@ -26,6 +27,7 @@ function Settings() {
 	return (
 		<div className="fixed top-28 right-1 z-[999999999999999999999999999]">
 			<button
+				id="herramientas"
 				className="dark:bg-admin-terciary shadow  w-[30px] h-[30px] bg-white  flex justify-center items-center dark:text-white font-bold  rounded"
 				type="button"
 				aria-label="change button"
@@ -127,34 +129,7 @@ function Settings() {
 				>
 					<i class="fas fa-newspaper" />
 				</button>
-				{/* <button
-                    onClick={() =>
-                        sweetModal({
-                            html: reactComponent(<VigilioServices />),
-                            showCloseButton: true,
-                            sweetWidth: "750px",
-                            isCloseInBackground: false,
-                            position: "start",
-                        })
-                    }
-                    className={`${
-                        showBottom.value ? "block" : "hidden"
-                    } dark:bg-admin-terciary bg-opacity-60 w-[30px] h-[30px] bg-white shadow flex justify-center items-center dark:text-white font-bold  rounded my-2`}
-                    type="button"
-                    aria-label="change button"
-                    style={{
-                        position: "absolute",
-                        left: "-0px",
-                        transform: "translateY(44px)",
-                    }}
-                >
-                    <img
-                        src={vigilioServicesImage()}
-                        width={20}
-                        height={20}
-                        alt="vigilio-services"
-                    />
-                </button> */}{" "}
+
 				<button
 					className={`${
 						showBottom.value ? "block" : "hidden"
@@ -168,24 +143,18 @@ function Settings() {
 					}}
 					onClick={() => {
 						showYoutube.value = !showYoutube.value;
+						driverInitial();
 					}}
 				>
-					<i class="fab fa-youtube" />
+					<i class="far fa-chalkboard-teacher" />
 				</button>
-				<div
-					class={`fixed top-[48px] right-[40px] w-[300px] ${
-						showYoutube.value ? "visible" : "invisible"
-					}`}
-				>
-					<Youtube />
-				</div>
 			</div>
 		</div>
 	);
 }
 
 function News() {
-	const location = useSignal("peru");
+	const location = useSignal("mundo");
 	const newsApi = webNewsApi(location.value);
 
 	let component: JSX.Element | null = null;
@@ -363,7 +332,10 @@ function Weather() {
 								title="Moneda"
 								placeholder="Escoja tipo de moneda"
 								array={[
-									{ key: "PEN", value: "Soles" },
+									{
+										key: storageInformation?.money.simbolo,
+										value: storageInformation?.money.money!,
+									},
 									{ key: "USD", value: "Dolar" },
 									{ key: "EUR", value: "Euro" },
 								]}
@@ -379,7 +351,10 @@ function Weather() {
 								title="Moneda"
 								placeholder="Escoja tipo de moneda"
 								array={[
-									{ key: "PEN", value: "Soles" },
+									{
+										key: storageInformation?.money.simbolo,
+										value: storageInformation?.money.money!,
+									},
 									{ key: "USD", value: "Dolar" },
 									{ key: "EUR", value: "Euro" },
 								]}
@@ -424,65 +399,69 @@ function Weather() {
 					</Form>
 				</div>
 				<div class="h-[0.1px] w-full bg-terciary" />
-				<div class="w-full">
-					<Form {...formdnisunat} onSubmit={onDniSunat}>
-						<Form.control.select
-							name={"type"}
-							array={[
-								{ key: "DNI", value: "DNI" },
-								{ key: "RUC", value: "RUC" },
-							]}
-							title="Documento"
-							placeholder="Escoja documento"
-						/>
-						{formdnisunat.watch("type") === "DNI" ? (
-							<Form.control
-								name="value"
-								title="DNI"
-								options={{
-									validate: {
-										ruc: (val) => isValidDni.test(val),
-									},
-								}}
+				{storageInformation?.dial_code === "51" ? (
+					<div class="w-full">
+						<Form {...formdnisunat} onSubmit={onDniSunat}>
+							<Form.control.select
+								name={"type"}
+								array={[
+									{ key: "DNI", value: "DNI" },
+									{ key: "RUC", value: "RUC" },
+								]}
+								title="Documento"
+								placeholder="Escoja documento"
 							/>
-						) : (
-							<Form.control
-								name="value"
-								title="RUC"
-								options={{
-									validate: {
-										ruc: (val) => isValidRUC.test(val),
-									},
-								}}
-							/>
-						)}
-						<>
-							{type === "DNI" &&
-							dniMutation.isSuccess &&
-							!dniMutation.isLoading ? (
-								<pre class="w-full dark:text-white text-xs break-words text-wrap">
-									{JSON.stringify(dniMutation.data?.data, null, 3)}
-								</pre>
-							) : null}
-							{type === "RUC" &&
-							rucMutation.isSuccess &&
-							!rucMutation.isLoading ? (
-								<pre class="w-full dark:text-white text-xs text-wrap  break-words">
-									{JSON.stringify(rucMutation.data?.result, null, 3)}
-								</pre>
-							) : null}
-						</>
+							{formdnisunat.watch("type") === "DNI" ? (
+								<Form.control
+									name="value"
+									title="DNI"
+									options={{
+										validate: {
+											ruc: (val) => isValidDni.test(val),
+										},
+									}}
+								/>
+							) : (
+								<Form.control
+									name="value"
+									title="RUC"
+									options={{
+										validate: {
+											ruc: (val) => isValidRUC.test(val),
+										},
+									}}
+								/>
+							)}
+							<>
+								{type === "DNI" &&
+								dniMutation.isSuccess &&
+								!dniMutation.isLoading ? (
+									<pre class="w-full dark:text-white text-xs break-words text-wrap">
+										{JSON.stringify(dniMutation.data?.data, null, 3)}
+									</pre>
+								) : null}
+								{type === "RUC" &&
+								rucMutation.isSuccess &&
+								!rucMutation.isLoading ? (
+									<pre class="w-full dark:text-white text-xs text-wrap  break-words">
+										{JSON.stringify(rucMutation.data?.result, null, 3)}
+									</pre>
+								) : null}
+							</>
 
-						<Form.button.submit
-							disabled={dniMutation.isLoading || rucMutation.isLoading || false}
-							isLoading={
-								dniMutation.isLoading || rucMutation.isLoading || false
-							}
-							ico={<i class="fas fa-search" />}
-							title="Buscar"
-						/>
-					</Form>
-				</div>
+							<Form.button.submit
+								disabled={
+									dniMutation.isLoading || rucMutation.isLoading || false
+								}
+								isLoading={
+									dniMutation.isLoading || rucMutation.isLoading || false
+								}
+								ico={<i class="fas fa-search" />}
+								title="Buscar"
+							/>
+						</Form>
+					</div>
+				) : null}
 			</div>
 		);
 	}

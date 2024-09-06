@@ -9,7 +9,6 @@ export class CartController {
 	@Get("/")
 	async index(@Res() res: Response, @Query("items") items: string) {
 		let itemsResult: { id: number; quantity: number }[] | null = null;
-
 		if (items) {
 			try {
 				itemsResult = JSON.parse(items) as {

@@ -9,21 +9,21 @@ function LogoImage({ height = "100", width = "100" }: LogoImageProps) {
     const { state } = useInformationstore();
 
     return (
-        <>
+        <a href="/">
             {state?.logo ? (
                 <img
-                    class={`w-[${width}px] h-[${height}px] object-contain`}
+                    class={`w-[${width}px] h-[${height}px] object-contain `}
                     width={width}
                     height={height}
                     src={printLogoInformation(state.logo, 300)[0]}
-                    alt="Yonatan Logo"
+                    alt="auth Logo"
                 />
             ) : (
-                <span class="text-primary text-4xl font-vigilio-title">
+                <span class="text-primary text-4xl font-bold">
                     {state?.name_empresa[0]}
                 </span>
             )}
-        </>
+        </a>
     );
 }
 

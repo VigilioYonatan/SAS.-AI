@@ -5,6 +5,10 @@ import {
 	nullableAsync,
 	objectAsync,
 	arrayAsync,
+	string,
+	nullable,
+	minLength,
+	maxLength,
 } from "@vigilio/valibot";
 import { ordersSchema } from "../schemas/orders.schema";
 import { detailOrdersStoreDto } from "./detail_orders.store.dto";
@@ -21,6 +25,9 @@ export const ordersStoreDto = mergeAsync([
 		"paypal_token",
 		"moneyChange",
 		"is_pasarela_client",
+		"information_id",
+		"client_id",
+		"mercado_pago_token",
 	]),
 	objectAsync({
 		invoice: nullableAsync(
@@ -30,10 +37,13 @@ export const ordersStoreDto = mergeAsync([
 				"xml_path",
 				"order_id",
 				"correlativo",
+				"information_id",
 				"response_sunat",
+				"information_id",
 			]),
 		),
 		details_orders: arrayAsync(omitAsync(detailOrdersStoreDto, ["order_id"])),
+		fullName: nullable(string([minLength(3), maxLength(30)])),
 	}),
 ]);
 export type OrdersStoreDto = Input<typeof ordersStoreDto>;

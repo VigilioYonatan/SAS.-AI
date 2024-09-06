@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../../components/webHead.ejs') %>
+</head>
+
+<body class="dark:bg-background-dark bg-background-light">
+  <div class="bg-white dark:bg-paper-dark p-6 rounded-lg shadow-lg m-2 mt-16 max-w-[500px] mx-auto relative">
+    <img src="/images/settings/others/mercado_pago.png" width="50" height="50" alt="mercado pago">
+    <h2 class="text-2xl font-bold text-red-600"><%= description  %></h2>
+    <div>
+      <p class="mt-4 dark:text-white text-terciary-light">Orden: <b><%= order  %></b> cancelado.</p>
+    </div>
+    <a href="/cart" class=" mt-4 inline-block  text-white bg-primary px-6 py-2 rounded-md font-bold">Ir a carrito</a>
+    <% if($information.logo){ %>
+    <img src="<%= printFileWithDimension($information.logo,300)[0] %>" width="100" height="100" alt="logo" class="absolute bottom-0 m-2 opacity-50 right-0" />
+    <% } %>
+  </div>
+
+</body>
+
+</html>

@@ -41,75 +41,85 @@ import { Suppliers } from "@/suppliers/entities/suppliers.entity";
 import { Regions } from "@/ubigeo/entities/regions.entity";
 import { Cities } from "@/ubigeo/entities/cities.entity";
 import { Countries } from "@/ubigeo/entities/countries.entity";
+import { RegionsEmpresa } from "@/ubigeo/entities/regions_empresa.entity";
+import { Mesas } from "@/orders/entities/mesas.entity";
+import { Floors } from "@/orders/entities/floors.entity";
+import { Complaints } from "@/information/entities/complaints.entity";
+import { Settings } from "@/information/entities/settings.entity";
 
 const sequelize = new Sequelize({
-    dialect: "postgres",
-    host: enviroments.DB_HOST,
-    username: enviroments.DB_USER,
-    password: enviroments.DB_PASS,
-    database: enviroments.DB_NAME,
-    port: enviroments.DB_PORT,
-    pool: {
-        max: 30,
-        min: 10,
-        acquire: 60000,
-        idle: 20000,
-    },
+	dialect: "postgres",
+	host: enviroments.DB_HOST,
+	username: enviroments.DB_USER,
+	password: enviroments.DB_PASS,
+	database: enviroments.DB_NAME,
+	port: enviroments.DB_PORT,
+	pool: {
+		max: 30,
+		min: 10,
+		acquire: 60000,
+		idle: 20000,
+	},
 });
 
 sequelize.addModels([
-    // here entities
-    ProductsServicio,
-    ProductsNormal,
-    ProductsRestaurant,
-    InformationEntity,
-    Users,
-    Cart,
-    Address,
-    Orders,
-    DetailOrders,
-    Guides,
-    Invoices,
-    KindCreditNotes,
-    KindDebitNotes,
-    KindInvoice,
-    Notes,
-    PayMethods,
-    StatusOrders,
-    Brands,
-    Categories,
-    Coupons,
-
-    Notifications,
-    NotificationsUser,
-    Documents,
-    ProductsOptions,
-    Options,
-    Features,
-    Variants,
-    VariantsFeatures,
-    Clients,
-    TipoEmpresa,
-    TipoServicio,
-    New,
-    MetodosPago,
-    Urls,
-    Background,
-    Posts,
-    Suppliers,
-    Regions,
-    Cities,
-    Countries,
+	// here entities
+	ProductsServicio,
+	ProductsNormal,
+	ProductsRestaurant,
+	InformationEntity,
+	Users,
+	Cart,
+	Address,
+	Orders,
+	DetailOrders,
+	Guides,
+	Invoices,
+	KindCreditNotes,
+	KindDebitNotes,
+	KindInvoice,
+	Notes,
+	PayMethods,
+	StatusOrders,
+	Brands,
+	Categories,
+	Coupons,
+	Notifications,
+	NotificationsUser,
+	Documents,
+	ProductsOptions,
+	Options,
+	Features,
+	Variants,
+	VariantsFeatures,
+	Clients,
+	TipoEmpresa,
+	TipoServicio,
+	New,
+	MetodosPago,
+	Urls,
+	Background,
+	Posts,
+	Suppliers,
+	Regions,
+	Cities,
+	Countries,
+	RegionsEmpresa,
+	Mesas,
+	Complaints,
+	Floors,
+	Settings,
 ]);
 
 export async function connectDB() {
-    try {
-        await sequelize.authenticate();
-        logger.success("conectado a base de datos correctamente");
-        if (enviroments.NODE_ENV === "production") return;
-        await sequelize.sync();
-    } catch (error) {
-        logger.error(`Error al conectar base de datos: ${error}`);
-    }
+	try {
+		await sequelize.authenticate();
+		logger.success("conectado a base de datos correctamente");
+		if (enviroments.NODE_ENV === "production") return;
+		await sequelize.sync();
+	} catch (error) {
+		logger.error(`Error al conectar base de datos: ${error}`);
+	}
 }
+
 export { sequelize };

@@ -10,7 +10,7 @@ import { backgroundSchema } from "../schemas/background.schema";
 import validFileValibot from "~/libs/valibot";
 
 export const backgroundStoreDto = merge([
-	omit(backgroundSchema, ["id", "image"]),
+	omit(backgroundSchema, ["id", "image", "information_id"]),
 	object({
 		image: array(instance(File), [
 			validFileValibot({

@@ -56,7 +56,7 @@ export async function registerPushNotification() {
 	if ("serviceWorker" in navigator && "PushManager" in window) {
 		try {
 			const registration = await navigator.serviceWorker.register(
-				`${enviroments.VITE_URL}/js/service-worker.js`,
+				"/js/service-worker.js",
 			);
 
 			const permission = await Notification.requestPermission();

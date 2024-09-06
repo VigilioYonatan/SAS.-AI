@@ -1,5 +1,8 @@
+import {
+	BASE_URL,
+	storageInformation,
+} from "@/information/stores/information.store";
 import { type Input, number, object, string, optional } from "@vigilio/valibot";
-import enviroments from "~/config";
 
 export function filesSchema() {
 	return object({ dimension: number(), file: optional(string()) });
@@ -22,7 +25,7 @@ export function printFileWithDimension(
 	return filterImages.map((file) =>
 		file.file!.startsWith("https://")
 			? file.file
-			: `${enviroments.VITE_URL}/${file.file}`,
+			: `${BASE_URL}/empresas/${storageInformation?.slug}/${file.file}`,
 	);
 }
 
@@ -43,7 +46,7 @@ export async function getFilesEdit(
 			return await fetch(
 				file.file!.startsWith("https://")
 					? file.file!
-					: `${enviroments.VITE_URL}/${file.file}`,
+					: `${BASE_URL}/empresas/${storageInformation?.slug}/${file.file}`,
 			);
 		}),
 	);

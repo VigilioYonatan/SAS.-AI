@@ -2,83 +2,79 @@ import type { Request, Response } from "express";
 import formidable from "formidable";
 import fs from "node:fs";
 import { client, initialWhatsapp, qrImage } from "./main";
-import { MessageMedia } from "whatsapp-web.js";
+import WAWebJS from "whatsapp-web.js";
 
 /** SEND MESSAGE - TEXT */
 export async function sendMessage(req: Request, res: Response) {
     try {
-        const body = req.body as { message: string };
+        const body = req.body as {
+            message: string;
+            options?: WAWebJS.MessageSendOptions;
+        };
         const query = req.query as { telephone: string };
         if (!body.message || !query.telephone)
             return res.status(400).json({
                 success: false,
                 message: "required message or telephone body",
             });
-        await client.sendMessage(query.telephone, body.message);
+        await client.sendMessage(
+            query.telephone,
+            body.message,
+            body.options ?? {}
+        );
         return res.json({
             success: true,
             message: "Mensaje enviado correctamente",
         });
     } catch (error) {
         return res.status(500).json({
-            success: true,
+            success: false,
             message: `Server error: ${(error as Error).message}`,
         });
     }
 }
 
 /** SEND MESSAGE - IMAGE */
-export async function sendImage(req: Request, res: Response) {
+export async function sendFile(req: Request, res: Response) {
     try {
         const query = req.query as { telephone: string };
+        const form = formidable();
+        const [field, files] = await form.parse(req);
+
+        const options: WAWebJS.MessageSendOptions = field.options
+            ? JSON.parse(field.options[0])
+            : {};
         if (!query.telephone)
             return res.status(400).json({
                 success: false,
-                message: "required telephone body",
+                message: "required telephone body or file",
             });
-        const form = formidable();
-        const [field, files] = await form.parse(req);
-        if (files.message) {
-            const extensions = [
-                "jpg",
-                "jpeg",
-                "png",
-                "webp",
-                "svg",
-                "ico",
-                "png",
-                "avif",
-            ];
-            const filePath = files.message[0].filepath;
-            const extension = files.message[0].originalFilename
-                ?.split(".")
-                .at(-1);
+        if (field.url) {
+            await client.sendMessage(
+                query.telephone,
+                await WAWebJS.MessageMedia.fromUrl(field.url[0]),
+                options
+            );
+        }
 
-            if (!extensions.includes(extension!)) {
-                return res.status(401).json({
-                    success: true,
-                    message: `Extension no valid ${extensions.join(", ")}`,
-                });
-            }
+        if (files.file) {
+            const filePath = files.file[0].filepath;
+            const ext = files.file[0].originalFilename?.split(".").at(-1);
+
             const bufferFile = Buffer.from(fs.readFileSync(filePath)).toString(
                 "base64"
             );
             // delete filepath
             fs.unlinkSync(filePath);
-            if (field.url) {
-                await client.sendMessage(
-                    query.telephone,
-                    await MessageMedia.fromUrl(field.url[0])
-                );
-            } else {
-                const file = await new MessageMedia(
-                    files.message[0].mimetype!,
-                    bufferFile,
-                    files.message[0].originalFilename,
-                    files.message[0].size
-                );
-                await client.sendMessage(query.telephone, file);
-            }
+            const file = new WAWebJS.MessageMedia(
+                files.file[0].mimetype!,
+                bufferFile,
+                field.name
+                    ? `${field.name[0]}.${ext}`
+                    : files.file[0].originalFilename,
+                files.file[0].size
+            );
+            await client.sendMessage(query.telephone, file, options);
             return res.json({
                 success: true,
                 message: "Mensaje enviado correctamente",
@@ -86,144 +82,7 @@ export async function sendImage(req: Request, res: Response) {
         }
     } catch (error) {
         return res.status(500).json({
-            success: true,
-            message: `Server error: ${(error as Error).message}`,
-        });
-    }
-}
-
-/** SEND MESSAGE - AUDI */
-export async function sendAudio(req: Request, res: Response) {
-    try {
-        const query = req.query as { telephone: string };
-        if (!query.telephone)
-            return res.status(400).json({
-                success: false,
-                message: "required telephone body",
-            });
-        const form = formidable();
-        const [field, files] = await form.parse(req);
-        if (files.message) {
-            const extensions = [
-                "wav",
-                "mp3",
-                "aac",
-                "flac",
-                "m4a",
-                "ogg",
-                "wma",
-            ];
-            const filePath = files.message[0].filepath;
-            const extension = files.message[0].originalFilename
-                ?.split(".")
-                .at(-1);
-
-            if (!extensions.includes(extension!)) {
-                return res.status(401).json({
-                    success: true,
-                    message: `Extension no valid ${extensions.join(", ")}`,
-                });
-            }
-            const bufferFile = Buffer.from(fs.readFileSync(filePath)).toString(
-                "base64"
-            );
-            // delete filepath
-            fs.unlinkSync(filePath);
-            if (field.url) {
-                await client.sendMessage(
-                    query.telephone,
-                    await MessageMedia.fromUrl(field.url[0])
-                );
-            } else {
-                const file = await new MessageMedia(
-                    files.message[0].mimetype!,
-                    bufferFile,
-                    files.message[0].originalFilename,
-                    files.message[0].size
-                );
-                await client.sendMessage(query.telephone, file, {
-                    sendAudioAsVoice: true,
-                });
-            }
-
-            return res.json({
-                success: true,
-                message: "Mensaje enviado correctamente",
-            });
-        }
-    } catch (error) {
-        return res.status(500).json({
-            success: true,
-            message: `Server error: ${(error as Error).message}`,
-        });
-    }
-}
-
-/** SEND MESSAGE - STICKER */
-export async function sendSticker(req: Request, res: Response) {
-    try {
-        const query = req.query as { telephone: string };
-        if (!query.telephone)
-            return res.status(400).json({
-                success: false,
-                message: "required telephone body",
-            });
-        const form = formidable();
-        const [field, files] = await form.parse(req);
-        if (files.message) {
-            const extensions = [
-                "jpg",
-                "jpeg",
-                "png",
-                "webp",
-                "svg",
-                "ico",
-                "png",
-                "avif",
-            ];
-            const filePath = files.message[0].filepath;
-            const extension = files.message[0].originalFilename
-                ?.split(".")
-                .at(-1);
-
-            if (!extensions.includes(extension!)) {
-                return res.status(401).json({
-                    success: true,
-                    message: `Extension no valid ${extensions.join(", ")}`,
-                });
-            }
-            const bufferFile = Buffer.from(fs.readFileSync(filePath)).toString(
-                "base64"
-            );
-            // delete filepath
-            fs.unlinkSync(filePath);
-            if (field.url) {
-                await client.sendMessage(
-                    query.telephone,
-                    await MessageMedia.fromUrl(field.url[0]),
-                    {
-                        sendMediaAsSticker: true,
-                    }
-                );
-            } else {
-                const file = await new MessageMedia(
-                    files.message[0].mimetype!,
-                    bufferFile,
-                    files.message[0].originalFilename,
-                    files.message[0].size
-                );
-                await client.sendMessage(query.telephone, file, {
-                    sendMediaAsSticker: true,
-                });
-            }
-            return res.json({
-                success: true,
-                message: "Mensaje enviado correctamente",
-            });
-        }
-    } catch (error) {
-        return res.status(500).json({
-            success: true,
+            success: false,
             message: `Server error: ${(error as Error).message}`,
         });
     }
@@ -250,10 +109,12 @@ export async function sendTyping(req: Request, res: Response) {
             message: "required telephone o delay body",
         });
     const chat = await client.getChatById(query.telephone);
+    await chat.sendSeen();
     await chat.sendStateTyping();
     await new Promise((res) => setTimeout(res, Number(query.delay) * 1000));
     return { success: true, message: "typing success" };
 }
+
 /** SEND MESSAGE - QR */
 export async function getQr(_req: Request, res: Response) {
     return res.sendFile(qrImage);
@@ -265,4 +126,10 @@ export async function sendLogout() {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     await initialWhatsapp();
     return { success: true, message: "logout success" };
+}
+export async function removeQR() {
+    if (fs.existsSync(qrImage)) {
+        fs.unlinkSync(qrImage);
+    }
+    return { success: true, message: "qr removed" };
 }

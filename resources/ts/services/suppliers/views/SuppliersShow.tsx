@@ -66,6 +66,14 @@ function SuppliersShow({ supplier, refetch, onClose }: SuppliersShowProps) {
 						</div>
 						<div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
 							<span class="text-primary dark:text-terciary font-bold">
+								Actividad:
+							</span>
+							<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
+								{supplier.activity}
+							</span>
+						</div>
+						<div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
+							<span class="text-primary dark:text-terciary font-bold">
 								Web:
 							</span>
 							<span class="dark:text-secondary-light text-secondary-dark tracking-wide">

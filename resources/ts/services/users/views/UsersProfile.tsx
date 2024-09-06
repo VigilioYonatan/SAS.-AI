@@ -36,13 +36,10 @@ function UsersProfile() {
 			return {
 				user_code: user.user_code,
 				username: user.username,
-				specialty: user.specialty,
 				name: user.name,
 				address: user.address,
-				dni: user.dni,
 				email: user.email,
-				father_lastname: user.father_lastname,
-				mother_lastname: user.mother_lastname,
+				lastname: user.lastname,
 				enabledNotification: user.enabledNotification,
 				birthday: user.birthday
 					? (formatDateTwo(user.birthday, "YYYY-MM-DD") as Date)
@@ -203,28 +200,19 @@ function UsersProfile() {
 						</div>
 						<div class="w-full flex flex-col sm:flex-row gap-2">
 							<Form.control
-								ico={<i class="fas fa-male" />}
-								name={"father_lastname" as keyof UsersProfileDto}
-								title="Apellido paterno"
-								placeholder=""
-								question="Este campo no es obligatorio"
-							/>
-							<Form.control
-								ico={<i class="fas fa-female" />}
-								name={"mother_lastname" as keyof UsersProfileDto}
-								title="Apellido materno"
-								placeholder=""
-								question="Este campo no es obligatorio"
-							/>
-						</div>
-						<div class="w-full flex flex-col sm:flex-row gap-2">
-							<Form.control
 								ico={<i class="fas fa-at" />}
 								name={"email" as keyof UsersProfileDto}
 								type="email"
 								title="Correo Electrónico"
 								placeholder="correo@gmail.com"
 								disabled
+							/>
+							<Form.control
+								ico={<i class="fas fa-female" />}
+								name={"lastname" as keyof UsersProfileDto}
+								title="Apellidos"
+								placeholder=""
+								question="Este campo no es obligatorio"
 							/>
 						</div>
 						<div class="w-full flex flex-col sm:flex-row gap-2">
@@ -235,16 +223,6 @@ function UsersProfile() {
 								title="Numero de Celular"
 								placeholder="9XXXXXXXX"
 								question="Este campo no es obligatorio"
-							/>
-						</div>
-						<div class="w-full flex flex-col sm:flex-row gap-2">
-							<Form.control
-								ico={<i class="fas fa-id-card" />}
-								name={"dni" as keyof UsersProfileDto}
-								type="tel"
-								title="DNI"
-								placeholder="dni"
-								question={"Este campo no es obligatorio"}
 							/>
 							<Form.control
 								ico={<i class="fas fa-birthday-cake" />}
@@ -279,11 +257,6 @@ function UsersProfile() {
 						</div>
 						<h3 class="dark:text-white text-sm font-semibold">Configuración</h3>
 						<div class="w-full flex flex-col sm:flex-row gap-2">
-							<Form.control.toggle
-								name={"enabledEmailsOffers" as keyof UsersProfileDto}
-								title="Habilitar  Ofertas y Eventos"
-								question="Ya no estará habilitado los correos de ofertas y eventos."
-							/>
 							<Form.control.toggle
 								name={"enabledNotification" as keyof UsersProfileDto}
 								title="Habilitar Notificaciones"

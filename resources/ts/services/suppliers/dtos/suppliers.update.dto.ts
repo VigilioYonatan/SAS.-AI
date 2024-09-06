@@ -8,6 +8,7 @@ export const suppliersUpdateDto = omit(suppliersSchema, [
 	"logo",
 	"razon_social",
 	"ruc",
+	"information_id",
 ]);
 export const suppliersLogoUpdateDto = pick(suppliersStoreDto, ["logo"]);
 

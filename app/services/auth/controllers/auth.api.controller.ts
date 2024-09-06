@@ -7,38 +7,32 @@ import { type AuthUserLogin } from "../types";
 @Injectable()
 @Controller("/auth")
 export class AuthApiController {
-    @Post("/login", [
-        (req: Request, res: Response, next: NextFunction) => {
-            passport.authenticate(
-                "local",
-                (
-                    err: Error,
-                    user: AuthUserLogin,
-                    message: { message: string }
-                ) => {
-                    if (err) {
-                        return next(err);
-                    }
+	@Post("/login", [
+		(req: Request, res: Response, next: NextFunction) => {
+			passport.authenticate(
+				"local",
+				(err: Error, user: AuthUserLogin, message: { message: string }) => {
+					if (err) {
+						return next(err);
+					}
 
-                    if (!user) {
-                        return res
-                            .status(401)
-                            .json({ success: false, ...message });
-                    }
+					if (!user) {
+						return res.status(401).json({ success: false, ...message });
+					}
 
-                    req.logIn(user, (err) => {
-                        if (err) {
-                            return next(err);
-                        }
+					req.logIn(user, (err) => {
+						if (err) {
+							return next(err);
+						}
 
-                        return res.status(200).json({
-                            success: true,
-                            user,
-                        });
-                    });
-                }
-            )(req, res, next);
-        },
-    ])
-    login() {}
+						return res.status(200).json({
+							success: true,
+							user,
+						});
+					});
+				},
+			)(req, res, next);
+		},
+	])
+	login() {}
 }

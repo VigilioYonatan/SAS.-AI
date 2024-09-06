@@ -1,3 +1,8 @@
 @layer utilities {
-    /* here utils */
+    .delay-custom-transform-1 {
+        transition: all 0.3s ease;
+    }
+    .delay-custom-1 {
+        transition: all 0.3s ease;
+    }
 }

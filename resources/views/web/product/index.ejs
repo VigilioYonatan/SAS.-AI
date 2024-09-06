@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<% 
+ const productDescription = product.description ?  product.description.replace(/(<([^>]+)>)/gi, "").slice(0,200) + "...":null;
+%>
+
+<head>
+  <meta name="app-url" content="<%= route("/")  %>">
+  <meta name="file-base-url" content="<%= route("/public")  %>">
+  <meta name="robots" content="index, follow">
+  <meta name="description" content="<%= productDescription  %>">
+  <meta name="keywords" content="">
+  <!-- Schema.org markup for Google+ -->
+  <meta itemprop="name" content="<%= product.title  %>">
+  <meta itemprop="description" content="<%=   %>">
+  <meta itemprop="image" content="<%=  printImagesProduct(product.images,500)[0]  %>">
+  <!-- Twitter Card data -->
+  <meta name="twitter:card" content="product">
+  <meta name="twitter:site" content="@publisher_handle">
+  <meta name="twitter:title" content="<%= product.title  %>">
+  <meta name="twitter:description" content="<%= productDescription  %>">
+  <meta name="twitter:creator" content="@author_handle">
+  <meta name="twitter:image" content="<%=  printImagesProduct(product.images,500)[0]  %>">
+  <meta name="twitter:data1" content="S/. <%= product.price  %>">
+  <meta name="twitter:label1" content="Price">
+  <!-- Open Graph data -->
+  <meta property="og:title" content="<%= product.title  %>">
+  <meta property="og:type" content="og:product">
+  <meta property="og:url" content="<%= `/${product.slug}` %>">
+  <meta property="og:image" content="<%=  printImagesProduct(product.images,500)[0]  %>">
+  <meta property="og:description" content="<%= productDescription  %>">
+  <meta property="og:site_name" content="Los mejores productos en un solo lugar">
+  <meta property="og:price:amount" content="S/. <%= product.price  %>">
+  <meta property="product:condition" content="new">
+  <meta property="product:price:amount" content="S/. <%= product.price  %>">
+  <meta property="product:retailer_item_id" content="<%= product.slug  %>">
+  <meta property="product:price:currency" content="<%= locals.$information.money.simbolo  %>">
+  <meta property="fb:app_id" content="">
+  <link rel="manifest" href="/dist/manifest.webmanifest">
+  <!-- ICONO -->
+  <link rel="shortcut icon" href="<%=   locals.$information.setting?.icon ? printFileWithDimension(locals.$information.setting.icon,100)[0] :'' %>" type="image/x-icon" />
+  <%- `<script> 
+      localStorage.setItem("information", ${JSON.stringify(JSON.stringify(typeof $information !== "undefined" ? $information  : null))});
+      localStorage.setItem("user", ${JSON.stringify(JSON.stringify(typeof $user !== "undefined" ? $user  : null))});
+      </script>` %>
+  <%- vite  %>
+  <style>
+    :root {
+      --primary: <%=$information.setting?.bg_color%>
+    }
+  </style>
+  <!-- initial base -->
+  <initial></initial>
+</head>
+
+<body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
+  <product-page :product="<%= JSON.stringify(product)  %>" category_name="<%= category_name %>" :productbybrands="<%= JSON.stringify(productByBrands)  %>" :categoriesproductsrandom="<%= JSON.stringify(categoriesProductsRandom)  %>" :header="<%= JSON.stringify(header)  %>"></product-page>
+</body>
+
+</html>

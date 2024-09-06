@@ -35,6 +35,7 @@ type FormMapProps<T extends object> = {
 	zoom?: number;
 	disabled?: boolean;
 	defaultValue?: LeafletMouseEvent["latlng"] | null;
+	isLocal?: boolean;
 };
 function FormMap<T extends object>({
 	name,
@@ -44,6 +45,7 @@ function FormMap<T extends object>({
 	style = { height: "300px", width: "100%", zIndex: 0 },
 	zoom = 14,
 	disabled = false,
+	isLocal = false,
 }: FormMapProps<T>) {
 	const {
 		register,
@@ -74,19 +76,43 @@ function FormMap<T extends object>({
 	}
 
 	function MyMap() {
+		const handleLocateMe = () => {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition((position) => {
+					const { latitude, longitude } = position.coords;
+					setValue(
+						name as Path<T>,
+						{ lat: latitude, lng: longitude } as PathValue<T, Path<T>>,
+					);
+				});
+			}
+		};
+
 		return (
-			<MapContainer
-				center={value}
-				style={style}
-				zoom={zoom}
-				scrollWheelZoom={false}
-			>
-				<TileLayer
-					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-				/>
-				<LocationMarker />
-			</MapContainer>
+			<div class="w-full relative">
+				{isLocal ? (
+					<button
+						class="absolute z-[40] right-0 bottom-0 bg-primary m-2 text-white px-3 py-2 rounded-md text-xs"
+						type="button"
+						onClick={handleLocateMe}
+					>
+						<i class="fas fa-search" />
+					</button>
+				) : null}
+
+				<MapContainer
+					center={value}
+					style={style}
+					zoom={zoom}
+					scrollWheelZoom={false}
+				>
+					<TileLayer
+						url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+						attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+					/>
+					<LocationMarker />
+				</MapContainer>
+			</div>
 		);
 	}
 

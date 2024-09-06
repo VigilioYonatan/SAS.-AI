@@ -17,7 +17,6 @@ export const ordersUpdateDto = merge([
 		"order_code",
 		"user_id",
 		"igv",
-		"seller_id",
 		"pasarela_comision",
 		"paypal_token",
 		"pasarela_response",
@@ -25,6 +24,9 @@ export const ordersUpdateDto = merge([
 		"moneyChange",
 		"is_pasarela_client",
 		"map_marker",
+		"mercado_pago_token",
+		"information_id",
+		"client_id",
 	]),
 	object({
 		invoice: nullable(

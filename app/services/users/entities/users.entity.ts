@@ -1,15 +1,15 @@
 import {
-    Column,
-    DataType,
-    Table,
-    Model,
-    Scopes,
-    HasMany,
-    BelongsToMany,
-    Index,
-    ForeignKey,
-    BelongsTo,
-    DefaultScope,
+	Column,
+	DataType,
+	Table,
+	Model,
+	Scopes,
+	HasMany,
+	BelongsToMany,
+	Index,
+	ForeignKey,
+	BelongsTo,
+	DefaultScope,
 } from "sequelize-typescript";
 import type { Subscription, UsersSchema } from "../schemas/users.schema";
 import { Orders } from "@/orders/entities/orders.entity";
@@ -21,141 +21,144 @@ import { InformationEntity } from "@/information/entities/information.entity";
 import { Posts } from "@/posts/entities/posts.entity";
 
 @DefaultScope(() => ({
-    include: [
-        {
-            model: InformationEntity,
-            attributes: ["id", "slug", "name_empresa"],
-        },
-    ],
+	include: [
+		{
+			model: InformationEntity,
+			attributes: ["id", "slug", "name_empresa"],
+		},
+	],
 }))
 @Scopes(() => ({
-    hiddePassword: {
-        attributes: { exclude: ["password"] as (keyof UsersSchema)[] },
-    },
+	hiddePassword: {
+		attributes: { exclude: ["password"] as (keyof UsersSchema)[] },
+	},
 }))
 @Table
 export class Users extends Model implements Omit<UsersSchema, "id"> {
-    @Index
-    @Column({
-        allowNull: false,
-        type: DataType.STRING(30),
-    })
-    user_code: string;
+	@Index
+	@Column({
+		allowNull: false,
+		type: DataType.STRING(30),
+	})
+	user_code: string;
 
-    @Column({
-        allowNull: false,
-        type: DataType.STRING(30),
-    })
-    username: string;
+	@Column({
+		allowNull: false,
+		type: DataType.STRING(30),
+	})
+	username: string;
 
-    @Column({
-        allowNull: false,
-        type: DataType.STRING(30),
-    })
-    name: string;
+	@Column({
+		allowNull: false,
+		type: DataType.STRING(30),
+	})
+	name: string;
 
-    @Column({
-        type: DataType.STRING(100),
-    })
-    lastname: string | null;
+	@Column({
+		type: DataType.STRING(100),
+	})
+	lastname: string | null;
 
-    @Column({
-        type: DataType.STRING(100),
-    })
-    email: string | null;
+	@Column({
+		type: DataType.STRING(100),
+	})
+	email: string | null;
 
-    @Column({
-        allowNull: false,
-        type: DataType.STRING(200),
-    })
-    password: string;
+	@Column({
+		allowNull: false,
+		type: DataType.STRING(200),
+	})
+	password: string;
 
-    @Column({
-        type: DataType.STRING(100),
-    })
-    address: string | null;
+	@Column({
+		type: DataType.STRING(100),
+	})
+	address: string | null;
 
-    @Column({
-        type: DataType.STRING(80),
-        allowNull: false,
-    })
-    telephone: string;
+	@Column({
+		type: DataType.STRING(80),
+		allowNull: false,
+	})
+	telephone: string;
 
-    @Column({
-        type: DataType.JSON,
-    })
-    photo: FilesSchema[] | null;
+	@Column({
+		type: DataType.JSON,
+	})
+	photo: FilesSchema[] | null;
 
-    @Column({
-        allowNull: false,
-        type: DataType.BOOLEAN,
-        defaultValue: false,
-    })
-    enabled: boolean;
+	@Column({
+		allowNull: false,
+		type: DataType.BOOLEAN,
+		defaultValue: false,
+	})
+	enabled: boolean;
 
-    @Column({
-        type: DataType.BOOLEAN,
-        defaultValue: false,
-    })
-    enabledNotification: boolean | null;
+	@Column({
+		type: DataType.BOOLEAN,
+		defaultValue: false,
+	})
+	enabledNotification: boolean | null;
 
-    @Column({
-        type: DataType.BOOLEAN,
-        defaultValue: false,
-    })
-    enabledEmailsOffers: boolean | null;
+	@Column({
+		type: DataType.BOOLEAN,
+		defaultValue: false,
+	})
+	enabledEmailsOffers: boolean | null;
 
-    @Column({
-        type: DataType.BOOLEAN,
-        defaultValue: false,
-    })
-    isOnline: boolean;
+	@Column({
+		type: DataType.BOOLEAN,
+		defaultValue: false,
+	})
+	isOnline: boolean;
 
-    @Column({
-        type: DataType.JSON,
-    })
-    subscription: Subscription | null;
+	@Column({
+		type: DataType.JSON,
+	})
+	subscription: Subscription | null;
 
-    @Column({
-        type: DataType.DATE,
-    })
-    birthday: Date;
+	@Column({
+		type: DataType.DATE,
+	})
+	birthday: Date;
 
-    @Column({
-        type: DataType.STRING(255),
-    })
-    token: string | null;
+	@Column({
+		type: DataType.STRING(255),
+	})
+	token: string | null;
 
-    @Index
-    @Column({
-        allowNull: false,
-        type: DataType.STRING(30),
-    })
-    slug: string;
+	@Index
+	@Column({
+		allowNull: false,
+		type: DataType.STRING(30),
+	})
+	slug: string;
 
-    @Column({ allowNull: false, type: DataType.INTEGER })
-    role_id: number;
+	@Column({ allowNull: false, type: DataType.INTEGER })
+	role_id: number;
 
-    @ForeignKey(() => InformationEntity)
-    @Column({ allowNull: false, type: DataType.INTEGER })
-    information_id: number;
+	@ForeignKey(() => InformationEntity)
+	@Column({ allowNull: false, type: DataType.INTEGER })
+	information_id: number;
 
-    @BelongsTo(() => InformationEntity)
-    information: InformationEntity;
+	@BelongsTo(() => InformationEntity)
+	information: InformationEntity;
 
-    /*****  RELATIONS *****/
+	/*****  RELATIONS *****/
 
-    // user - roles : uno a muchos
+	// user - roles : uno a muchos
 
-    @HasMany(() => Orders)
-    orders: Orders[];
+	@HasMany(() => Orders)
+	orders: Orders[];
 
-    @HasMany(() => Cart)
-    carts: Cart[];
+	@HasMany(() => Cart)
+	carts: Cart[];
 
-    @BelongsToMany(() => Notifications, () => NotificationsUser)
-    notificationsusers: Notifications[];
+	@BelongsToMany(
+		() => Notifications,
+		() => NotificationsUser,
+	)
+	notificationsusers: Notifications[];
 
-    @HasMany(() => Posts)
-    posts: unknown[];
+	@HasMany(() => Posts)
+	posts: unknown[];
 }

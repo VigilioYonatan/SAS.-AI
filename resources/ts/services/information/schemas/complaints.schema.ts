@@ -12,11 +12,6 @@ import {
 	string,
 } from "valibot";
 
-export const documentTypeSchema = picklist(
-	["DNI", "CE", "Pasaporte", "RUC"],
-	"Tipo de Documento no válido",
-);
-
 export const typeOfConsumptionSchema = picklist(
 	["Producto", "Servicio"],
 	"Tipo de consumo no válido",
@@ -34,14 +29,13 @@ export const complaintsSchema = object({
 		maxLength(100, "El nombre completo debe tener como máximo 100 caracteres."),
 	]),
 	phone: string("El número de teléfono es requerido.", [
-		minLength(9, "El número de teléfono debe tener al menos 9 caracteres."),
-		maxLength(9, "El número de teléfono debe tener como máximo 9 caracteres."),
+		minLength(6, "El número de teléfono debe tener al menos 9 caracteres."),
+		maxLength(15, "El número de teléfono debe tener como máximo 9 caracteres."),
 	]),
-	typeOfDocument: documentTypeSchema,
 	numberDocument: string("El número de documento es requerido.", [
-		minLength(8, "El número de documento debe tener al menos 8 caracteres."),
+		minLength(5, "El número de documento debe tener al menos 8 caracteres."),
 		maxLength(
-			11,
+			15,
 			"El número de documento debe tener como máximo 11 caracteres.",
 		),
 	]),

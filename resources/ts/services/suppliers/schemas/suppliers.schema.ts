@@ -26,10 +26,7 @@ export const suppliersSchema = object({
 		toTrimmed(),
 		minLength(9),
 		maxLength(20),
-		custom(
-			(value) => /^[0-9]+$/.test(value),
-			"Este campo permite solo números.",
-		),
+		custom((value) => /^\d+$/.test(value), "Este campo permite solo números."),
 	]),
 	phone_two: nullable(
 		string([
@@ -37,7 +34,7 @@ export const suppliersSchema = object({
 			minLength(9),
 			maxLength(20),
 			custom(
-				(value) => /^[0-9]+$/.test(value),
+				(value) => /^\d+$/.test(value),
 				"Este campo permite solo números.",
 			),
 		]),
@@ -53,6 +50,7 @@ export const suppliersSchema = object({
 		]),
 	),
 	logo: nullable(array(filesSchema())),
+	information_id: number(),
 });
 
 export type SuppliersSchema = Input<typeof suppliersSchema> & {

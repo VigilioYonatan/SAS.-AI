@@ -1,62 +1,66 @@
 import { slug } from "@vigilio/express-core/helpers";
 import {
-    type Input,
-    number,
-    minLength,
-    objectAsync,
-    email,
-    maxLength,
-    string,
-    array,
-    boolean,
-    date,
-    coerce,
-    nullable,
-    transform,
-    toTrimmed,
-    nullableAsync,
-    object,
+	type Input,
+	number,
+	minLength,
+	objectAsync,
+	email,
+	maxLength,
+	string,
+	array,
+	boolean,
+	date,
+	coerce,
+	nullable,
+	transform,
+	toTrimmed,
+	nullableAsync,
+	object,
+	custom,
 } from "@vigilio/valibot";
 import { usersPhotoQualities } from "../libs";
 import { filesSchema } from "@/uploads/schemas/uploads.schema";
 
 export const subscription = objectAsync({
-    endpoint: string(),
-    keys: object({ p256dh: string(), auth: string() }),
+	endpoint: string(),
+	keys: object({ p256dh: string(), auth: string() }),
 });
 export type Subscription = Input<typeof subscription>;
 export const usersSchema = objectAsync({
-    id: number(),
-    user_code: string(),
-    username: string([toTrimmed(), minLength(1), minLength(6), maxLength(30)]),
-    name: string([toTrimmed(), minLength(1), minLength(3), maxLength(30)]),
-    lastname: nullable(string([toTrimmed(), minLength(3), maxLength(60)])),
-    birthday: nullable(coerce(date(), (value) => new Date(value as string))),
-    email: nullable(
-        string([toTrimmed(), minLength(1), email(), maxLength(100)])
-    ),
-    password: string([toTrimmed(), minLength(1), minLength(6), maxLength(30)]),
-    address: nullable(string([toTrimmed(), minLength(10), maxLength(100)])),
-    telephone: string([toTrimmed(), minLength(6), maxLength(30)]),
-    photo: nullable(array(filesSchema(usersPhotoQualities))),
-    enabled: boolean(),
-    isOnline: boolean(),
-    slug: transform(
-        string([toTrimmed(), minLength(1), minLength(3), maxLength(30)]),
-        slug
-    ),
-    token: nullable(string()),
-    role_id: number(),
-    information_id: number(),
-    subscription: nullableAsync(subscription),
-    enabledNotification: nullable(boolean()),
+	id: number(),
+	user_code: string(),
+	username: string([toTrimmed(), minLength(1), minLength(6), maxLength(30)]),
+	name: string([toTrimmed(), minLength(1), minLength(3), maxLength(30)]),
+	lastname: nullable(string([toTrimmed(), minLength(3), maxLength(60)])),
+	birthday: nullable(coerce(date(), (value) => new Date(value as string))),
+	email: nullable(string([toTrimmed(), minLength(1), email(), maxLength(100)])),
+	password: string([toTrimmed(), minLength(1), minLength(6), maxLength(30)]),
+	address: nullable(string([toTrimmed(), minLength(10), maxLength(100)])),
+	telephone: string([
+		toTrimmed(),
+		minLength(6),
+		maxLength(30),
+		custom((value) => /^\d+$/.test(value), "Solo numeros."),
+	]),
+	photo: nullable(array(filesSchema(usersPhotoQualities))),
+	enabled: boolean(),
+	isOnline: boolean(),
+	slug: transform(
+		string([toTrimmed(), minLength(1), minLength(3), maxLength(30)]),
+		slug,
+	),
+	token: nullable(string()),
+	role_id: number(),
+	information_id: number(),
+	subscription: nullableAsync(subscription),
+	enabledNotification: nullable(boolean()),
 });
 
 export type UsersSchema = Input<typeof usersSchema> & {
-    updatedAt?: Date;
-    createdAt?: Date;
+	updatedAt?: Date;
+	createdAt?: Date;
 };
 export type UsersSchemaFromServer = UsersSchema & {
-    createdAt?: Date;
-    updatedAt?: Date;
+	createdAt?: Date;
+	updatedAt?: Date;
 };
