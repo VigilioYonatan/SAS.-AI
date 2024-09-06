@@ -13,8 +13,8 @@
       <p class="mt-4 dark:text-white text-terciary-light">Orden: <b><%= order  %></b> cancelado.</p>
     </div>
     <a href="/cart" class=" mt-4 inline-block  text-white bg-primary px-6 py-2 rounded-md font-bold">Ir a carrito</a>
-    <% if($information.logo){ %>
-    <img src="<%= printFileWithDimension($information.logo,300)[0] %>" width="100" height="100" alt="logo" class="absolute bottom-0 m-2 opacity-50 right-0" />
+    <% if($empresa.logo){ %>
+    <img src="<%= printFileWithDimension($empresa.logo,300)[0] %>" width="100" height="100" alt="logo" class="absolute bottom-0 m-2 opacity-50 right-0" />
     <% } %>
   </div>
 

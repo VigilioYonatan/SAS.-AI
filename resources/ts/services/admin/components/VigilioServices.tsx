@@ -8,8 +8,8 @@
 
 //  */
 
-// import type { InformationSchemaFromServer } from "@/information/schemas/information.schema";
-// import useInformationStore from "@/information/stores/information.store";
+// import type { EmpresasSchemaFromServer } from "@/empresa/schemas/empresas.schema";
+// import useEmpresastore from "@/empresa/stores/empresa.store";
 // import { useMutation, useQuery, type UseQuery } from "@vigilio/preact-fetching";
 // import { useTable, type Columns, type UseTable } from "@vigilio/preact-table";
 // import { sweetAlert, sweetModal } from "@vigilio/sweet";
@@ -276,13 +276,13 @@
 //     refetch: (clean?: boolean | undefined) => Promise<void>;
 // }
 // function HelperStore({ refetch }: HelpersStore) {
-//     const informationStore = useInformationStore();
+//     const empresaStore = useEmpresastore();
 //     const helperStoreMutation = helperStoreApi();
 
 //     const formHelperStore = useForm<HelpersStoreDto>({
 //         resolver: valibotVigilio(helpersStoreDto),
 //         defaultValues: {
-//             token: informationStore.state!.token,
+//             token: empresaStore.state!.token,
 //         },
 //     });
 
@@ -355,7 +355,7 @@
 //     }
 //     if (helpersShowQuery.isSuccess) {
 //         const data = helpersShowQuery.data!.helper;
-//         const informationStore = useInformationStore();
+//         const empresaStore = useEmpresastore();
 //         const destroyHelper = helpersDestroyApi(data.id);
 //         const updateHelper = helperUpdateApi(data.id);
 //         component = (
@@ -389,7 +389,7 @@
 //                 <div class="flex gap-2 items-center">
 //                     <>
 //                         {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-//                         {informationStore.state!.id === (data as any).web_id ? (
+//                         {empresaStore.state!.id === (data as any).web_id ? (
 //                             <button
 //                                 type="button"
 //                                 onClick={() => {
@@ -399,7 +399,7 @@
 //                                         if (isConfirmed) {
 //                                             destroyHelper.mutate(
 //                                                 {
-//                                                     token: informationStore.state!
+//                                                     token: empresaStore.state!
 //                                                         .token,
 //                                                 },
 //                                                 {
@@ -435,19 +435,19 @@
 //                                 onClick={() => {
 //                                     if (
 //                                         data.likes.includes(
-//                                             informationStore.state!.token
+//                                             empresaStore.state!.token
 //                                         )
 //                                     ) {
 //                                         const remove = data.likes.filter(
 //                                             (like) =>
 //                                                 like !==
-//                                                 informationStore.state!.token
+//                                                 empresaStore.state!.token
 //                                         );
 //                                         updateHelper.mutate(
 //                                             {
 //                                                 ...data,
 //                                                 likes: remove,
-//                                                 token: informationStore.state!
+//                                                 token: empresaStore.state!
 //                                                     .token,
 //                                             },
 //                                             {
@@ -473,13 +473,13 @@
 //                                     }
 //                                     const addLikes = [
 //                                         ...data.likes,
-//                                         informationStore.state!.token,
+//                                         empresaStore.state!.token,
 //                                     ];
 //                                     updateHelper.mutate(
 //                                         {
 //                                             ...data,
 //                                             likes: addLikes,
-//                                             token: informationStore.state!
+//                                             token: empresaStore.state!
 //                                                 .token,
 //                                         },
 //                                         {
@@ -531,7 +531,7 @@
 
 // function CommentsHelpers({ id, isClose }: CommentsHelpersProps) {
 //     const commentsStoreApiMutation = commentsStoreVigilioApi("helpers", id);
-//     const informationStore = useInformationStore();
+//     const empresaStore = useEmpresastore();
 
 //     const paginator = usePaginator({ limit: 6 });
 
@@ -547,7 +547,7 @@
 //         commentsStoreApiMutation.mutate(
 //             {
 //                 ...body,
-//                 token: informationStore.state!.token,
+//                 token: empresaStore.state!.token,
 //             },
 //             {
 //                 onSuccess() {
@@ -740,7 +740,7 @@
 //     images: FilesSchema[];
 //     likes: number[];
 //     web_id: number;
-//     web: InformationSchemaFromServer;
+//     web: EmpresasSchemaFromServer;
 //     user: { id: number; name: string; photo: FilesSchema[] };
 //     comentario: number;
 //     createdAt: Date;
@@ -1246,14 +1246,14 @@
 //     const commentsUpdateForm = useForm<CommentsUpdateDto>({
 //         resolver: valibotVigilio(commentsUpdateDto),
 //     });
-//     const informationStore = useInformationStore();
+//     const empresaStore = useEmpresastore();
 
 //     function onCommentsUpdate(body: CommentsUpdateDto) {
 //         if (!authStore.state) return;
 //         commentsUpdateMutation.mutate(
 //             {
 //                 ...body,
-//                 token: informationStore.state!.token,
+//                 token: empresaStore.state!.token,
 //             },
 //             {
 //                 onSuccess() {
@@ -1279,7 +1279,7 @@
 //                 commentsDestroyMutation.mutate(
 //                     {
 //                         id,
-//                         token: informationStore.state!.token,
+//                         token: empresaStore.state!.token,
 //                     },
 //                     {
 //                         onSuccess() {

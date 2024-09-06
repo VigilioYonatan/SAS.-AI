@@ -34,19 +34,19 @@
   <meta property="product:condition" content="new">
   <meta property="product:price:amount" content="S/. <%= product.price  %>">
   <meta property="product:retailer_item_id" content="<%= product.slug  %>">
-  <meta property="product:price:currency" content="<%= locals.$information.money.simbolo  %>">
+  <meta property="product:price:currency" content="<%= locals.$empresa.money.simbolo  %>">
   <meta property="fb:app_id" content="">
   <link rel="manifest" href="/dist/manifest.webmanifest">
   <!-- ICONO -->
-  <link rel="shortcut icon" href="<%=   locals.$information.setting?.icon ? printFileWithDimension(locals.$information.setting.icon,100)[0] :'' %>" type="image/x-icon" />
+  <link rel="shortcut icon" href="<%=   locals.$empresa.setting?.icon ? printFileWithDimension(locals.$empresa.setting.icon,100)[0] :'' %>" type="image/x-icon" />
   <%- `<script> 
-      localStorage.setItem("information", ${JSON.stringify(JSON.stringify(typeof $information !== "undefined" ? $information  : null))});
+      localStorage.setItem("empresa", ${JSON.stringify(JSON.stringify(typeof $empresa !== "undefined" ? $empresa  : null))});
       localStorage.setItem("user", ${JSON.stringify(JSON.stringify(typeof $user !== "undefined" ? $user  : null))});
       </script>` %>
   <%- vite  %>
   <style>
     :root {
-      --primary: <%=$information.setting?.bg_color%>
+      --primary: <%=$empresa.setting?.bg_color%>
     }
   </style>
   <!-- initial base -->

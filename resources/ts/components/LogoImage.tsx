@@ -1,12 +1,12 @@
-import { printLogoInformation } from "@/information/libs/helpers";
-import useInformationstore from "@/information/stores/information.store";
+import { printLogoempresa } from "@/empresas/libs/helpers";
+import useEmpresastore from "@/empresas/stores/empresa.store";
 
 interface LogoImageProps {
     width?: string;
     height?: string;
 }
 function LogoImage({ height = "100", width = "100" }: LogoImageProps) {
-    const { state } = useInformationstore();
+    const { state } = useEmpresastore();
 
     return (
         <a href="/">
@@ -15,7 +15,7 @@ function LogoImage({ height = "100", width = "100" }: LogoImageProps) {
                     class={`w-[${width}px] h-[${height}px] object-contain `}
                     width={width}
                     height={height}
-                    src={printLogoInformation(state.logo, 300)[0]}
+                    src={printLogoempresa(state.logo, 300)[0]}
                     alt="auth Logo"
                 />
             ) : (

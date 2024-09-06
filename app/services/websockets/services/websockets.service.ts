@@ -4,9 +4,9 @@ import { NotificationsApiService } from "@/notificactions/services/notifications
 import { NotificationsUser } from "@/notificactions/entities/notifications_user.entity";
 import webpush from "@/notificactions/libs/webpush";
 import { removeTextHTML } from "~/libs/helpers";
-import { InformationEntity } from "@/information/entities/information.entity";
+import { Empresas } from "@/empresas/entities/empresas.entity";
 import { printFileWithDimension } from "@/uploads/libs/helpers";
-import { BASE_URL } from "@/information/libs";
+import { BASE_URL } from "@/empresas/libs";
 import { formatMoney } from "@/cart/libs/helpers";
 import { Orders } from "@/orders/entities/orders.entity";
 import { Mesas } from "@/orders/entities/mesas.entity";
@@ -37,22 +37,22 @@ export class WebsocketsService {
             client_id: number | null;
         }
     ) {
-        const information = await InformationEntity.findOne({
+        const emp = await Empresas.findOne({
             where: { id: empresa },
             attributes: ["id", "logo", "money", "slug", "money"],
         });
-        if (!information) return;
+        if (!emp) return;
         const content = `Se registró una nueva orden registrado <b>${formatMoney(
-            information,
+            emp,
             body.total,
-            information.money.money
+            emp.money.money
         )}</b>`;
         const payload = {
             title: `Nueva orden registrada ${body.order_code}`,
             message: removeTextHTML(content), // Asegúrate de que content sea el mensaje que quieres enviar
-            url: `${BASE_URL(information)}/admin/orders/${body.order_code}`, // URL dinámica
-            logo: information.logo
-                ? printFileWithDimension(information)(information.logo!, 100)[0]
+            url: `${BASE_URL(emp)}/admin/orders/${body.order_code}`, // URL dinámica
+            logo: emp.logo
+                ? printFileWithDimension(emp)(emp.logo!, 100)[0]
                 : "",
             tag: "nueva-orden",
         };
@@ -60,11 +60,11 @@ export class WebsocketsService {
             type: "order",
             url: `/admin/orders/${body.order_code}`,
             content,
-            information_id: information.id,
+            empresa_id: emp.id,
             client_id: body.client_id ?? null,
         });
         const users = await Users.findAll({
-            where: { information_id: information.id },
+            where: { empresa_id: emp.id },
         });
 
         await Promise.all(
@@ -72,7 +72,7 @@ export class WebsocketsService {
                 const noti = new NotificationsUser({
                     user_id: user.id,
                     notification_id: notification.notification.id,
-                    information_id: information.id,
+                    empresa_id: emp.id,
                     isRead: false,
                 });
                 await noti.save();
@@ -120,7 +120,7 @@ export class WebsocketsService {
                 },
             ],
             where: {
-                information_id: empresa,
+                empresa_id: empresa,
             },
         });
 

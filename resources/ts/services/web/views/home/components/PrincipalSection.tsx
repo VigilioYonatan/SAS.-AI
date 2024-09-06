@@ -1,4 +1,4 @@
-// import useInformationStore from "@/information/stores/information.store";
+// import useEmpresastore from "@/empresa/stores/empresa.store";
 // import {
 // 	SampleNextArrow,
 // 	SamplePrevArrow,
@@ -8,7 +8,7 @@
 // import { printFileWithDimension } from "~/libs/upload";
 
 // function PrincipalSection() {
-// 	const wallpapers = useInformationStore().state!.images_home;
+// 	const wallpapers = useEmpresastore().state!.images_home;
 
 // 	return (
 // 		<div className="max-w-6xl mx-auto  flex gap-4  lg:h-[400px] flex-col lg:flex-row px-4 my-12">

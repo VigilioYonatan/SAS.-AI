@@ -1,52 +1,52 @@
 import {
-	Column,
-	DataType,
-	Table,
-	Model,
-	ForeignKey,
-	BelongsTo,
-	DefaultScope,
+    Column,
+    DataType,
+    Table,
+    Model,
+    ForeignKey,
+    BelongsTo,
+    DefaultScope,
 } from "sequelize-typescript";
 import type { PostsSchema } from "../schemas/posts.schema";
 import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 import { Users } from "@/users/entities/users.entity";
-import { InformationEntity } from "@/information/entities/information.entity";
+import { Empresas } from "@/empresas/entities/empresas.entity";
 
 @DefaultScope(() => ({
-	include: { model: Users, attributes: ["id", "username", "photo"] },
+    include: { model: Users, attributes: ["id", "username", "photo"] },
 }))
 @Table
 export class Posts extends Model implements Omit<PostsSchema, "id"> {
-	@Column({
-		allowNull: false,
-		type: DataType.STRING(255),
-	})
-	content: string;
-	@Column({
-		allowNull: false,
-		type: DataType.STRING(100),
-	})
-	title: string;
-	@Column({
-		allowNull: false,
-		type: DataType.JSON,
-	})
-	image: FilesSchema[];
+    @Column({
+        allowNull: false,
+        type: DataType.STRING(255),
+    })
+    content: string;
+    @Column({
+        allowNull: false,
+        type: DataType.STRING(100),
+    })
+    title: string;
+    @Column({
+        allowNull: false,
+        type: DataType.JSON,
+    })
+    image: FilesSchema[];
 
-	@ForeignKey(() => Users)
-	@Column({ allowNull: false, type: DataType.INTEGER })
-	user_id: number;
+    @ForeignKey(() => Users)
+    @Column({ allowNull: false, type: DataType.INTEGER })
+    user_id: number;
 
-	@BelongsTo(() => Users)
-	user: unknown;
+    @BelongsTo(() => Users)
+    user: unknown;
 
-	@ForeignKey(() => InformationEntity)
-	@Column({
-		allowNull: false,
-		type: DataType.INTEGER,
-	})
-	information_id: number;
+    @ForeignKey(() => Empresas)
+    @Column({
+        allowNull: false,
+        type: DataType.INTEGER,
+    })
+    empresa_id: number;
 
-	@BelongsTo(() => InformationEntity)
-	information: unknown;
+    @BelongsTo(() => Empresas)
+    empresa: unknown;
 }

@@ -6,52 +6,52 @@ import crypto from "node:crypto";
 import type { AuthForgotPasswordDto } from "../dtos/auth.forgot-password.dto";
 import type { AuthConfirmPasswordDto } from "../dtos/auth.confirm-password.dto";
 import { whatsappSendMessageApi } from "@/bot/api";
-import type { InformationEntity } from "@/information/entities/information.entity";
+import type { Empresas } from "@/empresas/entities/empresas.entity";
 
 @Injectable()
 export class AuthApiService {
-	async forgotPassword(
-		information: InformationEntity,
-		authForgotPassword: AuthForgotPasswordDto,
-	) {
-		const user = await Users.findOne({
-			where: {
-				email: authForgotPassword.email,
-			},
-		});
-		if (!user)
-			throw new BadRequestException(
-				"No se encontró este correo electrónico en nuestro sistema",
-				{ body: "email" as keyof AuthForgotPasswordDto },
-			);
+    async forgotPassword(
+        empresa: Empresas,
+        authForgotPassword: AuthForgotPasswordDto
+    ) {
+        const user = await Users.findOne({
+            where: {
+                email: authForgotPassword.email,
+            },
+        });
+        if (!user)
+            throw new BadRequestException(
+                "No se encontró este correo electrónico en nuestro sistema",
+                { body: "email" as keyof AuthForgotPasswordDto }
+            );
 
-		if (!user.enabled) {
-			throw new BadRequestException("Tu cuenta no está habilitado");
-		}
-		const token = crypto.randomUUID();
-		await user.update({ token });
-		whatsappSendMessageApi(information, {
-			telephone: `${information.dial_code}${user.telephone}@c.us`,
-			message: `Hola ${user.username}, Recupera tu contraseña aquí: /auth/forgot-password?token=${token}`,
-		});
+        if (!user.enabled) {
+            throw new BadRequestException("Tu cuenta no está habilitado");
+        }
+        const token = crypto.randomUUID();
+        await user.update({ token });
+        whatsappSendMessageApi(empresa, {
+            telephone: `${empresa.dial_code}${user.telephone}@c.us`,
+            message: `Hola ${user.username}, Recupera tu contraseña aquí: /auth/forgot-password?token=${token}`,
+        });
 
-		return {
-			success: true,
-			message: "Se envió un mensaje a tu numero de celular",
-		};
-	}
+        return {
+            success: true,
+            message: "Se envió un mensaje a tu numero de celular",
+        };
+    }
 
-	async confirmPassword(authConfirmPasswordDto: AuthConfirmPasswordDto) {
-		const user = await Users.findByPk(authConfirmPasswordDto.user_id);
-		if (!user) throw new NotFoundException("Usuario no válido");
-		const hashPassword = bcryptjs.hashSync(
-			authConfirmPasswordDto.password,
-			bcryptjs.genSaltSync(10),
-		);
-		await user.update({ password: hashPassword });
-		return {
-			success: true,
-			message: `Cambiaste tu contraseña correctamente <b>${user.username}</b>`,
-		};
-	}
+    async confirmPassword(authConfirmPasswordDto: AuthConfirmPasswordDto) {
+        const user = await Users.findByPk(authConfirmPasswordDto.user_id);
+        if (!user) throw new NotFoundException("Usuario no válido");
+        const hashPassword = bcryptjs.hashSync(
+            authConfirmPasswordDto.password,
+            bcryptjs.genSaltSync(10)
+        );
+        await user.update({ password: hashPassword });
+        return {
+            success: true,
+            message: `Cambiaste tu contraseña correctamente <b>${user.username}</b>`,
+        };
+    }
 }

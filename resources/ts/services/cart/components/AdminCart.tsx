@@ -22,7 +22,7 @@ import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_norm
 import { floorsIndexApi } from "@/orders/apis/mesas/floors.index.api";
 import { floorMesasIndexApi } from "@/orders/apis/mesas/floors.mesas.index.api";
 import { useSignal } from "@preact/signals";
-import { storageInformation } from "@/information/stores/information.store";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 function AdminCart() {
     const cartStore = useCartStore();
@@ -82,7 +82,7 @@ function AdminCart() {
         }
     }, [floorId]);
     function onOrder(body: OrdersStoreDto) {
-        if (storageInformation?.tipo_empresa.tipo_servicio_id === 2) {
+        if (storageEmpresa?.tipo_empresa.tipo_servicio_id === 2) {
             if (!body.floor_id) {
                 ordersStoreDtoForm.setError("floor_id", {
                     message: "Este campo es obligatorio.",

@@ -1,5 +1,5 @@
 import { randomNumber } from "~/libs/helpers";
-import { InformationEntity } from "@/information/entities/information.entity";
+import { Empresas } from "@/empresas/entities/empresas.entity";
 import { promptAssitant } from "./prompt";
 import { NOW, restarDays } from "~/libs/dayjs";
 import cron from "node-cron";
@@ -9,15 +9,11 @@ import {
     checkDiskUsage,
     updateVigilioServices,
 } from "~/libs/os";
-import { openAis } from "@/information/services/information.api.service";
+import { openAis } from "@/empresas/services/empresas.api.service";
 
-export function buenosDias(
-    query: string,
-    name: string,
-    information: InformationEntity
-) {
+export function buenosDias(query: string, name: string, empresa: Empresas) {
     const messages = [
-        `¡Hola ${name}! Bienvenido a ${information.name_empresa}, ¿en qué puedo ayudarte hoy? 😊.`,
+        `¡Hola ${name}! Bienvenido a ${empresa.name_empresa}, ¿en qué puedo ayudarte hoy? 😊.`,
         `¡Hola ${name}! ¿Cómo puedo ayudarte el día de hoy? 😀.\n `,
     ];
     if (
@@ -91,34 +87,34 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("Error al hacer fetch a la empresa");
     }
-    const [information] = await Promise.all([
-        InformationEntity.findOne({
+    const [emp] = await Promise.all([
+        Empresas.findOne({
             where: { slug: empresa },
             attributes: {
                 exclude: ["certificado", "groupWhatsapp"],
             },
         }),
     ]);
-    if (!information) return null;
-    const latestInformationUsage = information!.inteligenceArtificial.usage;
-    if (!information?.enabledBot) return null;
-    const isDateNow = restarDays(NOW().toDate(), information.payments.ia.date!);
-    if (!information?.enabledBot) return null;
+    if (!empresa) return null;
+    const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
+    if (!emp?.enabledBot) return null;
+    const isDateNow = restarDays(NOW().toDate(), emp.payments.ia.date!);
+    if (!emp?.enabledBot) return null;
     if (telephone) {
-        const contact = information!.contacts.find(
+        const contact = emp!.contacts.find(
             (contact) => contact.telephone === telephone
         );
         if (contact && !contact.ia) return null;
         // si existe en el array de contacto y la ia es false que salga null
     }
-    if (isDateNow <= 0 && latestInformationUsage.input_tokens <= 0) {
+    if (isDateNow <= 0 && latestEmpresaUsage.input_tokens <= 0) {
         // actualizamos uso de tokens
-        await information.update({
-            ...information,
+        await emp.update({
+            ...emp.toJSON(),
             inteligenceArtificial: {
-                ...information.inteligenceArtificial,
+                ...emp.inteligenceArtificial,
                 usage: {
-                    ...latestInformationUsage,
+                    ...latestEmpresaUsage,
                     input_tokens: 0,
                     output_tokens: 0,
                 },
@@ -127,9 +123,9 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
     }
 
     return {
-        information,
+        empresa: emp,
         clientVigilio,
-        latestInformationUsage,
+        latestEmpresaUsage,
     };
 }
 export async function isTelegramIA(empresa: string) {
@@ -140,29 +136,26 @@ export async function isTelegramIA(empresa: string) {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("Error al hacer fetch a la empresa");
     }
-    const [information] = await Promise.all([
-        InformationEntity.findOne({
+    const [emp] = await Promise.all([
+        Empresas.findOne({
             where: { slug: empresa },
             attributes: {
                 exclude: ["certificado", "groupWhatsapp"],
             },
         }),
     ]);
-    if (!information) return null;
-    const latestInformationUsage = information!.inteligenceArtificial.usage;
-    if (!information?.enabledBot) return null;
-    const isDateNow = restarDays(
-        NOW().toDate(),
-        information.payments.telegram.date!
-    );
-    if (isDateNow <= 0 && latestInformationUsage.input_tokens <= 0) {
+    if (!emp) return null;
+    const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
+    if (!emp?.enabledBot) return null;
+    const isDateNow = restarDays(NOW().toDate(), emp.payments.telegram.date!);
+    if (isDateNow <= 0 && latestEmpresaUsage.input_tokens <= 0) {
         // actualizamos uso de tokens
-        await information.update({
-            ...information,
+        await emp.update({
+            ...emp.toJSON(),
             inteligenceArtificial: {
-                ...information.inteligenceArtificial,
+                ...emp.toJSON().inteligenceArtificial,
                 usage: {
-                    ...latestInformationUsage,
+                    ...latestEmpresaUsage,
                     input_tokens: 0,
                     output_tokens: 0,
                 },
@@ -171,9 +164,9 @@ export async function isTelegramIA(empresa: string) {
     }
 
     return {
-        information,
+        empresa,
         clientVigilio,
-        latestInformationUsage,
+        latestEmpresaUsage,
     };
 }
 
@@ -194,16 +187,16 @@ export async function isTelegramIA(empresa: string) {
 //     try {
 //         const telegram = await isTelegramIA(empresa);
 //         if (!telegram) return;
-//         const { clientVigilio, information, latestInformationUsage } = telegram;
+//         const { clientVigilio, empresa, latestEmpresaUsage } = telegram;
 
 //         const random = randomNumber(
-//             information.inteligenceArtificial.timer.start,
-//             information.inteligenceArtificial.timer.finish
+//             empresa.inteligenceArtificial.timer.start,
+//             empresa.inteligenceArtificial.timer.finish
 //         );
 //         // delay en 5 - 15 segundos
 //         await delay(random);
 //         //  cuando cierra el restaurante
-//         const findDay = information.schedule.find(
+//         const findDay = empresa.schedule.find(
 //             (day) => day.id === NOW().day()
 //         );
 //         if (
@@ -227,7 +220,7 @@ export async function isTelegramIA(empresa: string) {
 //             body!,
 //             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 //             (message as any)._data.notifyName,
-//             information
+//             empresa
 //         );
 //         const thanks = gracias(body!);
 //         if (buenas) {
@@ -251,13 +244,13 @@ export async function isTelegramIA(empresa: string) {
 //                 })
 //             );
 //             // Si el primer mensaje en lastMessages no es del role
-//             const prompt = await promptReplace(body!, information);
+//             const prompt = await promptReplace(body!, empresa);
 
 //             const completion = await openAis[
-//                 information.slug
+//                 empresa.slug
 //             ].chat.completions.create({
 //                 model: clientVigilio
-//                     ? clientVigilio.information.modelai
+//                     ? clientVigilio.empresa.modelai
 //                     : enviroments.MODEL_AI,
 //                 max_tokens: 300,
 //                 messages: [
@@ -267,22 +260,22 @@ export async function isTelegramIA(empresa: string) {
 //                     },
 //                     { role: "assistant", content: "Entendido, Empezemos." }, // getting start
 //                     ...messages.slice(
-//                         -information.inteligenceArtificial.memory
+//                         -empresa.inteligenceArtificial.memory
 //                     ), // solos los ultimo 7 mensajes
 //                 ],
 //             });
 //             // actualizamos uso de tokens
-//             await information.update({
-//                 ...information,
+//             await empresa.update({
+//                 ...empresa,
 //                 inteligenceArtificial: {
-//                     ...information.inteligenceArtificial,
+//                     ...empresa.inteligenceArtificial,
 //                     usage: {
-//                         ...latestInformationUsage,
+//                         ...latestEmpresaUsage,
 //                         input_tokens:
-//                             latestInformationUsage.input_tokens +
+//                             latestEmpresaUsage.input_tokens +
 //                             completion.usage!.prompt_tokens,
 //                         output_tokens:
-//                             latestInformationUsage.output_tokens +
+//                             latestEmpresaUsage.output_tokens +
 //                             completion.usage!.completion_tokens,
 //                     },
 //                 },
@@ -291,8 +284,8 @@ export async function isTelegramIA(empresa: string) {
 //             const completionText = completion.choices[0].message.content!;
 //             let removeNote = completionText.replace(/\s*\(.*?\)\s*/g, " ");
 //             // quitar las imagenes para enviar imagen
-//             const baseURL = `${BASE_URL(information)}/${
-//                 information.slug
+//             const baseURL = `${BASE_URL(empresa)}/${
+//                 empresa.slug
 //             }/images/products`;
 //             const urlPattern = new RegExp(`${baseURL}[^\\s]*`, "g");
 //             const match = removeNote.match(urlPattern);
@@ -322,63 +315,55 @@ export const chatAssistant: Record<
     string,
     Record<string, ["user" | "assistant", string, number][]>
 > = {};
-export async function cloudeAi(
-    empresa: string,
-    userId: string,
-    message: string
-) {
+export async function cloudeAi(emp: string, userId: string, message: string) {
     try {
-        const whatsapp = await isWhatsappIA(empresa);
+        const whatsapp = await isWhatsappIA(emp);
         if (!whatsapp) return;
-        const { clientVigilio, information, latestInformationUsage } = whatsapp;
+        const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
 
-        chatAssistant[empresa][userId] = [
-            ...(chatAssistant[empresa][userId] || []),
+        (chatAssistant[emp] ?? [])[userId] = [
+            ...((chatAssistant[emp] ?? [])[userId] || []),
             ["user", message, Date.now()],
         ];
         // mapped messages to messages cloude
-        const messages = chatAssistant[empresa][userId].map(
+        const messages = ((chatAssistant[emp] ?? [])[userId] ?? []).map(
             ([role, content]) => ({
                 role,
                 content,
             })
         );
 
-        const completion = await openAis[
-            information.slug
-        ].chat.completions.create({
+        const completion = await openAis[empresa.slug].chat.completions.create({
             model: clientVigilio
-                ? clientVigilio.information.modelai
+                ? clientVigilio.empresa.modelai
                 : enviroments.MODEL_AI,
             max_tokens: 300,
             messages: [
                 {
                     role: "user",
-                    content: promptAssitant(information!),
+                    content: promptAssitant(empresa!),
                 },
-                ...messages.slice(
-                    -(information.inteligenceArtificial.memory - 1)
-                ),
+                ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
             ],
         });
         // get message ai
         const completionText = completion.choices[0].message.content!;
         const removeNote = completionText.replace(/\s*\(.*?\)\s*/g, " ");
-        await information!.update({
-            ...information!.inteligenceArtificial,
+        await empresa!.update({
+            ...empresa!.inteligenceArtificial,
             usage: {
-                ...latestInformationUsage,
+                ...latestEmpresaUsage,
                 input_tokens:
-                    latestInformationUsage.input_tokens +
+                    latestEmpresaUsage.input_tokens +
                     completion.usage!.prompt_tokens,
                 output_tokens:
-                    latestInformationUsage.output_tokens +
+                    latestEmpresaUsage.output_tokens +
                     completion.usage!.completion_tokens,
             },
         });
 
-        chatAssistant[empresa][userId] = [
-            ...(chatAssistant[empresa][userId] || []),
+        chatAssistant[emp][userId] = [
+            ...(chatAssistant[emp][userId] || []),
             ["assistant", removeNote, Date.now()],
         ];
 
@@ -390,11 +375,11 @@ export async function cloudeAi(
 
 export async function getClientVigilio() {
     const response = await fetch(
-        `${enviroments.VITE_VIGILIO_WEB}/api/information/client`
+        `${enviroments.VITE_VIGILIO_WEB}/api/empresa/client`
     );
     const result: {
         success: true;
-        information: { whatsappVersion: string; modelai: string };
+        empresa: { whatsappVersion: string; modelai: string };
     } = await response.json();
     return result;
 }
@@ -402,65 +387,57 @@ export const chatAssistantWeb: Record<
     string,
     ["user" | "assistant", string][]
 > = {};
-export async function cloudeAiWeb(
-    empresa: string,
-    token: string,
-    message: string
-) {
+export async function cloudeAiWeb(emp: string, token: string, message: string) {
     try {
-        const whatsapp = await isWhatsappIA(empresa);
+        const whatsapp = await isWhatsappIA(emp);
         if (!whatsapp) return;
-        const { clientVigilio, information, latestInformationUsage } = whatsapp;
+        const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
 
-        (chatAssistant[empresa] ?? [])[token] = [
-            ...((chatAssistant[empresa] ?? [])[token] || []),
+        (chatAssistant[emp] ?? [])[token] = [
+            ...((chatAssistant[emp] ?? [])[token] || []),
             ["user", message, Date.now()],
         ];
         // mapped messages to messages cloude
-        const messages = (chatAssistant[empresa] ?? [])[token].map(
+        const messages = (chatAssistant[emp] ?? [])[token].map(
             ([role, content]) => ({
                 role,
                 content,
             })
         );
 
-        const completion = await openAis[
-            information.slug
-        ].chat.completions.create({
+        const completion = await openAis[empresa.slug].chat.completions.create({
             model: clientVigilio
-                ? clientVigilio.information.modelai
+                ? clientVigilio.empresa.modelai
                 : enviroments.MODEL_AI,
             max_tokens: 300,
             messages: [
                 {
                     role: "user",
                     content: `${promptAssitant(
-                        information!
+                        empresa!
                     )} - Por ultimo, cada vez que te pida informacion de un producto  trate de responder con una imagen o link. si envias imagen , que sea en etiqueta image <img width="100" height="100" class="w-[100px] h-[150px] rounded-md object-contain"/>   y si te pido links por favor etiqueta html <a href="..." class="text-primary font-semibold"></a> , responde como si fuera html con espacios usando br en productos o pedidos. para que lea bien.  y no uses ** mejor utiliza la etiqueta <b></b>`,
                 },
-                ...messages.slice(
-                    -(information.inteligenceArtificial.memory - 1)
-                ),
+                ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
             ],
         });
         // get message ai
         const completionText = completion.choices[0].message.content!;
         const removeNote = completionText.replace(/\s*\(.*?\)\s*/g, " ");
-        await information!.update({
-            ...information!.inteligenceArtificial,
+        await empresa!.update({
+            ...empresa!.inteligenceArtificial,
             usage: {
-                ...latestInformationUsage,
+                ...latestEmpresaUsage,
                 input_tokens:
-                    latestInformationUsage.input_tokens +
+                    latestEmpresaUsage.input_tokens +
                     completion.usage!.prompt_tokens,
                 output_tokens:
-                    latestInformationUsage.output_tokens +
+                    latestEmpresaUsage.output_tokens +
                     completion.usage!.completion_tokens,
             },
         });
 
-        (chatAssistant[empresa] ?? [])[token] = [
-            ...((chatAssistant[empresa] ?? [])[token] || []),
+        (chatAssistant[emp] ?? [])[token] = [
+            ...((chatAssistant[emp] ?? [])[token] || []),
             ["assistant", removeNote, Date.now()],
         ];
 

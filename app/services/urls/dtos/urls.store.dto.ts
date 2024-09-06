@@ -1,49 +1,49 @@
 import {
-	omitAsync,
-	type Input,
-	getPipeIssues,
-	getOutput,
+    omitAsync,
+    type Input,
+    getPipeIssues,
+    getOutput,
 } from "@vigilio/valibot";
 import { urlsSchema, type UrlsSchema } from "../schemas/urls.schema";
 import { Urls } from "../entities/urls.entity";
 
 export const urlsStoreDto = omitAsync(
-	urlsSchema,
-	["id"],
-	[
-		async (input) => {
-			const [byName, byhash] = await Promise.all([
-				Urls.findOne({
-					where: {
-						web: input.web,
-						information_id: input.information_id,
-					},
-					raw: true,
-				}),
-				Urls.findOne({
-					where: {
-						hash: input.hash,
-						information_id: input.information_id,
-					},
-					raw: true,
-				}),
-			]);
-			if (byName) {
-				return getPipeIssues(
-					"web" as keyof UrlsSchema,
-					`Ya existe un url con el web: ${input.web}`,
-					input,
-				);
-			}
-			if (byhash) {
-				return getPipeIssues(
-					"hash" as keyof UrlsSchema,
-					`Ya existe un url con el web: ${input.hash}`,
-					input,
-				);
-			}
-			return getOutput(input);
-		},
-	],
+    urlsSchema,
+    ["id"],
+    [
+        async (input) => {
+            const [byName, byhash] = await Promise.all([
+                Urls.findOne({
+                    where: {
+                        web: input.web,
+                        empresa_id: input.empresa_id,
+                    },
+                    raw: true,
+                }),
+                Urls.findOne({
+                    where: {
+                        hash: input.hash,
+                        empresa_id: input.empresa_id,
+                    },
+                    raw: true,
+                }),
+            ]);
+            if (byName) {
+                return getPipeIssues(
+                    "web" as keyof UrlsSchema,
+                    `Ya existe un url con el web: ${input.web}`,
+                    input
+                );
+            }
+            if (byhash) {
+                return getPipeIssues(
+                    "hash" as keyof UrlsSchema,
+                    `Ya existe un url con el web: ${input.hash}`,
+                    input
+                );
+            }
+            return getOutput(input);
+        },
+    ]
 );
 export type UrlsStoreDto = Input<typeof urlsStoreDto>;

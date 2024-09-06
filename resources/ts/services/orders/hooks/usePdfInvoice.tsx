@@ -8,7 +8,7 @@ import LoaderSubmit from "~/components/LoaderSubmit";
 import { STATUSORDER } from "../libs";
 import { ordersHTMLApi } from "../apis/orders.html.api";
 import { whatsappSendFileApi } from "@/bot/apis/whatsapp.api";
-import { storageInformation } from "@/information/stores/information.store";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import AlertInfo from "~/components/Alerts/AlertInfo";
 import Helper from "~/components/Helper";
 
@@ -18,7 +18,7 @@ interface usePdfInvoiceProps {
 }
 function usePdfInvoice({
     order,
-    type = storageInformation?.dial_code === "51" ? "invoice" : "recibo",
+    type = storageEmpresa?.dial_code === "51" ? "invoice" : "recibo",
 }: usePdfInvoiceProps) {
     function onPdf(isClient = false) {
         if (!order.invoice) {
@@ -89,7 +89,7 @@ function usePdfInvoice({
                             {
                                 file: archivoPDF,
                                 name: `${order.order_code}-${type}`,
-                                telephone: `${storageInformation?.dial_code}${order.telephone}@c.us`,
+                                telephone: `${storageEmpresa?.dial_code}${order.telephone}@c.us`,
                             },
                             {
                                 onSuccess() {
@@ -150,7 +150,7 @@ function usePdfInvoice({
                                         <>
                                             <i class="fa-brands fa-whatsapp ml-1" />
                                             Enviar a +
-                                            {storageInformation?.dial_code}{" "}
+                                            {storageEmpresa?.dial_code}{" "}
                                             {order.telephone}
                                         </>
                                     )}

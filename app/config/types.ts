@@ -1,8 +1,8 @@
-import type { InformationEntity } from "@/information/entities/information.entity";
+import type { Empresas } from "@/empresas/entities/empresas.entity";
 import type { Users } from "@/users/entities/users.entity";
 import type { Request } from "express";
 
 export type RequestVigilio = Request & {
-	information: InformationEntity;
-	user: Users;
+    empresa: Empresas;
+    user: Users;
 };

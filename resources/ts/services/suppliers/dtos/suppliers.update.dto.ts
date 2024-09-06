@@ -3,12 +3,12 @@ import { suppliersSchema } from "../schemas/suppliers.schema";
 import { suppliersStoreDto } from "./suppliers.store.dto";
 
 export const suppliersUpdateDto = omit(suppliersSchema, [
-	"id",
-	"supplier_code",
-	"logo",
-	"razon_social",
-	"ruc",
-	"information_id",
+    "id",
+    "supplier_code",
+    "logo",
+    "razon_social",
+    "ruc",
+    "empresa_id",
 ]);
 export const suppliersLogoUpdateDto = pick(suppliersStoreDto, ["logo"]);
 

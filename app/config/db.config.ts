@@ -5,9 +5,9 @@ import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import { Users } from "@/users/entities/users.entity";
-import { InformationEntity } from "@/information/entities/information.entity";
+import { Empresas } from "@/empresas/entities/empresas.entity";
 import { Cart } from "@/cart/entites/cart.entity";
-import { Address } from "@/information/entities/address.entity";
+import { Address } from "@/empresas/entities/address.entity";
 import { Orders } from "@/orders/entities/orders.entity";
 import { DetailOrders } from "@/orders/entities/detail_orders.entity";
 import { Guides } from "@/orders/entities/guides.entity";
@@ -30,12 +30,12 @@ import { Features } from "@/products/entities/options/features.entity";
 import { Variants } from "@/products/entities/options/variants.entity";
 import { VariantsFeatures } from "@/products/entities/options/variants_features.entity";
 import { Clients } from "@/users/entities/clients.entity";
-import { TipoEmpresa } from "@/information/entities/tipo_empresa.entity";
-import { TipoServicio } from "@/information/entities/tipo_servicio.entity";
-import { New } from "@/information/entities/new.entity";
-import { MetodosPago } from "@/information/entities/metodosPago.entity";
+import { TipoEmpresa } from "@/empresas/entities/tipo_empresa.entity";
+import { TipoServicio } from "@/empresas/entities/tipo_servicio.entity";
+import { New } from "@/empresas/entities/new.entity";
+import { MetodosPago } from "@/empresas/entities/metodosPago.entity";
 import { Urls } from "@/urls/entities/urls.entity";
-import { Background } from "@/information/entities/background.entity";
+import { Background } from "@/empresas/entities/background.entity";
 import { Posts } from "@/posts/entities/posts.entity";
 import { Suppliers } from "@/suppliers/entities/suppliers.entity";
 import { Regions } from "@/ubigeo/entities/regions.entity";
@@ -44,82 +44,84 @@ import { Countries } from "@/ubigeo/entities/countries.entity";
 import { RegionsEmpresa } from "@/ubigeo/entities/regions_empresa.entity";
 import { Mesas } from "@/orders/entities/mesas.entity";
 import { Floors } from "@/orders/entities/floors.entity";
-import { Complaints } from "@/information/entities/complaints.entity";
-import { Settings } from "@/information/entities/settings.entity";
+import { Complaints } from "@/empresas/entities/complaints.entity";
+import { Settings } from "@/empresas/entities/settings.entity";
+import { Information } from "@/empresas/entities/information.entity";
 
 const sequelize = new Sequelize({
-	dialect: "postgres",
-	host: enviroments.DB_HOST,
-	username: enviroments.DB_USER,
-	password: enviroments.DB_PASS,
-	database: enviroments.DB_NAME,
-	port: enviroments.DB_PORT,
-	pool: {
-		max: 30,
-		min: 10,
-		acquire: 60000,
-		idle: 20000,
-	},
+    dialect: "postgres",
+    host: enviroments.DB_HOST,
+    username: enviroments.DB_USER,
+    password: enviroments.DB_PASS,
+    database: enviroments.DB_NAME,
+    port: enviroments.DB_PORT,
+    pool: {
+        max: 30,
+        min: 10,
+        acquire: 60000,
+        idle: 20000,
+    },
 });
 
 sequelize.addModels([
-	// here entities
-	ProductsServicio,
-	ProductsNormal,
-	ProductsRestaurant,
-	InformationEntity,
-	Users,
-	Cart,
-	Address,
-	Orders,
-	DetailOrders,
-	Guides,
-	Invoices,
-	KindCreditNotes,
-	KindDebitNotes,
-	KindInvoice,
-	Notes,
-	PayMethods,
-	StatusOrders,
-	Brands,
-	Categories,
-	Coupons,
-	Notifications,
-	NotificationsUser,
-	Documents,
-	ProductsOptions,
-	Options,
-	Features,
-	Variants,
-	VariantsFeatures,
-	Clients,
-	TipoEmpresa,
-	TipoServicio,
-	New,
-	MetodosPago,
-	Urls,
-	Background,
-	Posts,
-	Suppliers,
-	Regions,
-	Cities,
-	Countries,
-	RegionsEmpresa,
-	Mesas,
-	Complaints,
-	Floors,
-	Settings,
+    // here entities
+    ProductsServicio,
+    ProductsNormal,
+    ProductsRestaurant,
+    Empresas,
+    Users,
+    Cart,
+    Address,
+    Orders,
+    DetailOrders,
+    Guides,
+    Invoices,
+    KindCreditNotes,
+    KindDebitNotes,
+    KindInvoice,
+    Notes,
+    PayMethods,
+    StatusOrders,
+    Brands,
+    Categories,
+    Coupons,
+    Notifications,
+    NotificationsUser,
+    Documents,
+    ProductsOptions,
+    Options,
+    Features,
+    Variants,
+    VariantsFeatures,
+    Clients,
+    TipoEmpresa,
+    TipoServicio,
+    New,
+    MetodosPago,
+    Urls,
+    Background,
+    Posts,
+    Suppliers,
+    Regions,
+    Cities,
+    Countries,
+    RegionsEmpresa,
+    Mesas,
+    Complaints,
+    Floors,
+    Settings,
+    Information,
 ]);
 
 export async function connectDB() {
-	try {
-		await sequelize.authenticate();
-		logger.success("conectado a base de datos correctamente");
-		if (enviroments.NODE_ENV === "production") return;
-		await sequelize.sync();
-	} catch (error) {
-		logger.error(`Error al conectar base de datos: ${error}`);
-	}
+    try {
+        await sequelize.authenticate();
+        logger.success("conectado a base de datos correctamente");
+        if (enviroments.NODE_ENV === "production") return;
+        await sequelize.sync();
+    } catch (error) {
+        logger.error(`Error al conectar base de datos: ${error}`);
+    }
 }
 
 export { sequelize };

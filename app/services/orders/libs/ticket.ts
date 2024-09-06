@@ -2,9 +2,9 @@ import numeroALetras from "@vigilio/numeros-a-letras";
 import { formatDateTwo } from "~/libs/dayjs";
 import { formatMoney, subtotal } from "@/cart/libs/helpers";
 import type { Orders } from "../entities/orders.entity";
-import type { InformationEntity } from "@/information/entities/information.entity";
+import type { Empresas } from "@/empresas/entities/empresas.entity";
 import type { Invoices } from "../entities/invoices.entity";
-import type { Address } from "@/information/entities/address.entity";
+import type { Address } from "@/empresas/entities/address.entity";
 import { detailInvoice } from ".";
 import fs from "node:fs";
 import { pathUploads } from "@/uploads/libs/helpers";
@@ -12,12 +12,9 @@ import { MONEYDOLARES } from "~/libs/helpers";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
 import type { Users } from "@/users/entities/users.entity";
 
-export async function ticketHTML(
-    order: Orders,
-    information: InformationEntity
-) {
+export async function ticketHTML(order: Orders, empresa: Empresas) {
     const mapped = await detailInvoice(
-        information,
+        empresa,
         order.dataValues.details_orders,
         order
     );
@@ -29,11 +26,10 @@ export async function ticketHTML(
     const region = order.city_id ? order.dataValues.city.region : null;
     const ig = region
         ? order.igv
-            ? subtotal(region.priceShipping, information.igv, true)
+            ? subtotal(region.priceShipping, empresa.igv, true)
             : region.priceShipping
         : 0;
-    const money =
-        order.moneyChange === 1 ? information.money.money : MONEYDOLARES;
+    const money = order.moneyChange === 1 ? empresa.money.money : MONEYDOLARES;
 
     const mappedDetails = mapped.map((prod) => {
         return `<tr class="border_top">
@@ -48,26 +44,24 @@ export async function ticketHTML(
             <span>${prod.descripcion}</span><br>
         </td>
         <td align="center">
-            ${formatMoney(information, prod.mtoValorUnitario, money)}
+            ${formatMoney(empresa, prod.mtoValorUnitario, money)}
         </td>
         <td align="center">
-            ${formatMoney(information, prod.mtoValorVenta, money)}
+            ${formatMoney(empresa, prod.mtoValorVenta, money)}
         </td>
     </tr>`;
     });
 
-    const image = information.logo
+    const image = empresa.logo
         ? fs
               .readFileSync(
-                  `${pathUploads()}/${information.slug}/${
-                      information.logo[0].file
-                  }` // trae a la imagen 100px
+                  `${pathUploads()}/${empresa.slug}/${empresa.logo[0].file}` // trae a la imagen 100px
               )
               .toString("base64")
         : "";
     let total =
         (order.pasarela_comision && order.is_pasarela_client
-            ? order.total + pasarelaComision(information, order.total)
+            ? order.total + pasarelaComision(empresa, order.total)
             : order.total) / order.moneyChange;
     if (order.paypal_token) {
         total = order.is_pasarela_client
@@ -80,7 +74,7 @@ export async function ticketHTML(
                   total,
                   true,
                   MONEDASIMBOLO[
-                      information.money.simbolo as keyof typeof MONEDASIMBOLO
+                      empresa.money.simbolo as keyof typeof MONEDASIMBOLO
                   ]
               )
             : numeroALetras(total, true, {
@@ -110,14 +104,13 @@ export async function ticketHTML(
                                         <td width="100%" height="90" align="center">
                                             <span>
                                             ${
-                                                information.logo
+                                                empresa.logo
                                                     ? `<img src="data:image/png;base64,${image}" height="80" style="text-align:center;" border="0">`
                                                     : `<span style="font-size:4rem;font-weight:bolder;">${
-                                                          information.company
-                                                              ? information
-                                                                    .company
+                                                          empresa.company
+                                                              ? empresa.company
                                                                     .nombreComercial[0]
-                                                              : information
+                                                              : empresa
                                                                     .name_empresa[0]
                                                       }</span>`
                                             }
@@ -136,9 +129,9 @@ export async function ticketHTML(
                                                    <tr>
                                                         <td align="center">
                                                             <span style="font-size:15px" text-align="center"> ${
-                                                                information.company
-                                                                    ? `R.U.C.:${information.company.ruc}`
-                                                                    : information.name_empresa
+                                                                empresa.company
+                                                                    ? `R.U.C.:${empresa.company.ruc}`
+                                                                    : empresa.name_empresa
                                                             }</span>
                                                         </td>
                                                     </tr>
@@ -168,11 +161,11 @@ export async function ticketHTML(
                                                     <tbody><tr>
                                                         <td align="center">
                                                             <strong><span style="font-size:15px">${
-                                                                information.company
-                                                                    ? information
+                                                                empresa.company
+                                                                    ? empresa
                                                                           .company
                                                                           .razonSocial
-                                                                    : information.name_empresa
+                                                                    : empresa.name_empresa
                                                             }</span></strong>
                                                         </td>
                                                     </tr>
@@ -180,7 +173,7 @@ export async function ticketHTML(
                                                         <td align="left">
                                                             <strong>Dirección: </strong>${
                                                                 (
-                                                                    information.address as Address
+                                                                    empresa.address as Address
                                                                 ).direccion
                                                             }
                                                         </td>
@@ -188,7 +181,7 @@ export async function ticketHTML(
                                                     <tr>
                                                         <td align="left">
                                                         <strong>Telf: </strong>${
-                                                            information.telephoneFirst
+                                                            empresa.telephoneFirst
                                                         }
                                                         </td>
                                                     </tr>
@@ -283,7 +276,7 @@ export async function ticketHTML(
                                                 <tr>
                                                     <td align="right"><strong>Op. Gravadas:</strong></td>
                                                     <td width="120" align="right"><span id="ride-importeTotal" class="ride-importeTotal">${formatMoney(
-                                                        information,
+                                                        empresa,
                                                         mapped.reduce(
                                                             (total, obj) =>
                                                                 total +
@@ -296,7 +289,7 @@ export async function ticketHTML(
                                                 <tr>
                                                     <td align="right"><strong>I.G.V:</strong></td>
                                                     <td width="120" align="right"><span id="ride-importeTotal" class="ride-importeTotal">${formatMoney(
-                                                        information,
+                                                        empresa,
                                                         igv,
                                                         money
                                                     )}</span></td>
@@ -304,7 +297,7 @@ export async function ticketHTML(
                                                 <tr>
                                                     <td align="right"><strong>Precio Venta:</strong></td>
                                                     <td width="120" align="right"><span id="ride-importeTotal" class="ride-importeTotal">${formatMoney(
-                                                        information,
+                                                        empresa,
                                                         total,
                                                         money
                                                     )}</span></td>

@@ -4,10 +4,10 @@ import { formatMoney } from "@vigilio/express-core/helpers";
 import enviroments from "~/config";
 import { SampleNextArrow, SamplePrevArrow } from "../ArrowsSlider";
 import useThemeStore from "~/stores/theme.store";
-import useInformationStore, {
+import useEmpresastore, {
     BASE_URL,
-    storageInformation,
-} from "@/information/stores/information.store";
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import useShowImage from "~/hooks/useShowImage";
 import Form from "~/components/form";
 import {
@@ -25,7 +25,7 @@ interface ProductCardViewProps {
 }
 function ProductCardView({ product }: ProductCardViewProps) {
     const themeStore = useThemeStore();
-    const informationStore = useInformationStore();
+    const empresaStore = useEmpresastore();
     const {
         isImagesLength,
         handleInsertProduct,
@@ -215,7 +215,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                 </div>
                 <span
                     class={`${
-                        storageInformation?.tipo_empresa.tipo_servicio_id === 2
+                        storageEmpresa?.tipo_empresa.tipo_servicio_id === 2
                             ? (
                                   producto.value as ProductsRestaurantSchemaFromServer
                               ).ilimit ||
@@ -230,7 +230,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             : ""
                     } ${
                         [1, 3].includes(
-                            storageInformation!.tipo_empresa.tipo_servicio_id
+                            storageEmpresa!.tipo_empresa.tipo_servicio_id
                         )
                             ? (!product.varianteChoose!.ilimit &&
                                   product.varianteChoose!.stock! < 1) ||
@@ -241,7 +241,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                     }  font-bold text-xs flex items-center gap-2`}
                 >
                     <i class="fa-duotone fa-circle-check text-xl" />
-                    {storageInformation!.tipo_empresa.tipo_servicio_id === 2 ? (
+                    {storageEmpresa!.tipo_empresa.tipo_servicio_id === 2 ? (
                         <>
                             {(
                                 producto.value as ProductsRestaurantSchemaFromServer
@@ -254,7 +254,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                   } unidades`}
                         </>
                     ) : null}
-                    {storageInformation!.tipo_empresa.tipo_servicio_id === 1 ? (
+                    {storageEmpresa!.tipo_empresa.tipo_servicio_id === 1 ? (
                         <>
                             {product.varianteChoose!.ilimit
                                 ? "En stock"
@@ -264,7 +264,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                 </span>
                 {/* coupon form  si  esta en el carrito que no se vea el formulario de cupon */}
                 {!existProductInCart &&
-                storageInformation!.tipo_empresa.tipo_servicio_id === 1 ? (
+                storageEmpresa!.tipo_empresa.tipo_servicio_id === 1 ? (
                     product.varianteChoose!.ilimit ||
                     (!product.varianteChoose!.ilimit &&
                         product.varianteChoose!.stock! > 0) ||
@@ -434,7 +434,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             target="_blank"
                             rel="noreferrer"
                             href={`https://wa.me/51${
-                                informationStore.state!.telephoneFirst
+                                empresaStore.state!.telephoneFirst
                             }?text=Hola, estoy interesado en ${
                                 product.producto.value.name
                             }`}
@@ -456,14 +456,14 @@ function ProductCardView({ product }: ProductCardViewProps) {
 }
 
 export function MetodosDePago() {
-    const informationStore = useInformationStore();
+    const empresaStore = useEmpresastore();
     return (
         <div class="flex flex-col gap-2">
             <span class="dark:text-white text-xs font-bold text-black ">
                 Métodos de pago disponible
             </span>
             <div class="flex gap-2 items-center overflow-auto scrollbar-hide">
-                {informationStore.state?.metodos_pago.mercado_pago.enabled ? (
+                {empresaStore.state?.metodos_pago.mercado_pago.enabled ? (
                     <img
                         src={VisaMastercardImage()}
                         width={80}
@@ -472,13 +472,13 @@ export function MetodosDePago() {
                     />
                 ) : null}
 
-                {informationStore.state?.metodos_pago.qrYape ? (
+                {empresaStore.state?.metodos_pago.qrYape ? (
                     <img src={yapeImage()} width={30} height={30} alt="yape" />
                 ) : null}
-                {informationStore.state?.metodos_pago.qrPlin ? (
+                {empresaStore.state?.metodos_pago.qrPlin ? (
                     <img src={plinImage()} width={30} height={30} alt="yape" />
                 ) : null}
-                {informationStore.state?.metodos_pago.paypal.enabled ? (
+                {empresaStore.state?.metodos_pago.paypal.enabled ? (
                     <img
                         src={paypalICOImage()}
                         width={30}
@@ -486,17 +486,17 @@ export function MetodosDePago() {
                         alt="yape"
                     />
                 ) : null}
-                {informationStore.state?.metodos_pago.enable_efectivo ? (
+                {empresaStore.state?.metodos_pago.enable_efectivo ? (
                     <p class="text-xs  text-center border p-1 rounded-md border-gray-400 text-black dark:text-white">
                         <i class="far fa-handshake" /> Efectivo
                     </p>
                 ) : null}
-                {/* {informationStore.state!.transferencias?.bcp &&
-                verifyBank(informationStore.state!.transferencias.bcp) ? (
+                {/* {empresaStore.state!.transferencias?.bcp &&
+                verifyBank(empresaStore.state!.transferencias.bcp) ? (
                     <img src={bcpImage()} width={50} height={30} alt="yape" />
                 ) : null}
-                {informationStore.state!.transferencias?.interbank &&
-                verifyBank(informationStore.state!.transferencias.interbank) ? (
+                {empresaStore.state!.transferencias?.interbank &&
+                verifyBank(empresaStore.state!.transferencias.interbank) ? (
                     <img
                         src={interbankImage()}
                         width={50}
@@ -504,8 +504,8 @@ export function MetodosDePago() {
                         alt="yape"
                     />
                 ) : null}
-                {informationStore.state!.transferencias?.bbva &&
-                verifyBank(informationStore.state!.transferencias.bbva) ? (
+                {empresaStore.state!.transferencias?.bbva &&
+                verifyBank(empresaStore.state!.transferencias.bbva) ? (
                     <img src={bbvaImage()} width={50} height={30} alt="yape" />
                 ) : null} */}
             </div>

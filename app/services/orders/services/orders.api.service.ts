@@ -34,7 +34,7 @@ import type { SunatInvoiceDto } from "../sunat/dtos/sunat.invoice.dto";
 import { NOW, TimePeru, formatTime, restarDays } from "~/libs/dayjs";
 import type { InvoiceResponseSunat } from "../schemas/invoices.schema";
 import type { NoteResponseSunat } from "../schemas/notes.schema";
-import type { InformationEntity } from "@/information/entities/information.entity";
+import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { guideSendSunatApi } from "../sunat/guide.send.api";
 import { notePDFSunatApi } from "../sunat/note.pdf.api";
 import { UbigeoApiService } from "@/ubigeo/services/ubigeo.api.service";
@@ -52,7 +52,7 @@ import {
     whatsappSendMessageApi,
     whatsappSendTypingApi,
 } from "@/bot/api";
-import { BASE_URL } from "@/information/libs";
+import { BASE_URL } from "@/empresas/libs";
 import { Product, productEntityId } from "@/products/libs";
 import { ticketHTML } from "../libs/ticket";
 import { Clients } from "@/users/entities/clients.entity";
@@ -69,10 +69,10 @@ export class OrdersApiService {
         private readonly clientsApiService: ClientsApiService
     ) {}
 
-    async index(information: InformationEntity) {
+    async index(empresa: Empresas) {
         const data = await Orders.findAll({
             where: {
-                information_id: information.id,
+                empresa_id: empresa.id,
             },
         });
         return {
@@ -81,11 +81,7 @@ export class OrdersApiService {
         };
     }
 
-    async earningMonth(
-        information: InformationEntity,
-        year: string,
-        month: string
-    ) {
+    async earningMonth(empresa: Empresas, year: string, month: string) {
         const startDate = new Date(Number(year), Number(month) - 1, 1); // Restamos 1 al mes porque en JavaScript los meses van de 0 a 11
 
         // Luego, calculamos la fecha de fin del mes
@@ -95,7 +91,7 @@ export class OrdersApiService {
             createdAt: {
                 [Op.between]: [startDate, endDate],
             },
-            information_id: information.id,
+            empresa_id: empresa.id,
         };
         const [
             earning,
@@ -185,7 +181,7 @@ export class OrdersApiService {
         const productsMost = await detailOrders.reduce(
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             (acc: any, order: any) => {
-                const typeProduct = productEntityId(information);
+                const typeProduct = productEntityId(empresa);
                 acc[order[typeProduct]] = (acc[order[typeProduct]] || 0) + 1;
                 return acc;
             },
@@ -197,7 +193,7 @@ export class OrdersApiService {
                 .slice(0, 3)
                 .map(async (ord) => {
                     const { product } = await this.productsApiService.show(
-                        information,
+                        empresa,
                         ord
                     );
                     return {
@@ -224,16 +220,16 @@ export class OrdersApiService {
         };
     }
 
-    async show(information: InformationEntity, order_code: string) {
+    async show(empresa: Empresas, order_code: string) {
         let order = await Orders.findOne({
-            where: { order_code, information_id: information.id },
+            where: { order_code, empresa_id: empresa.id },
         });
         if (!order) {
             throw new NotFoundException(
                 `No se encontró un orden con ${order_code}`
             );
         }
-        order = await getOrder(information, order, true);
+        order = await getOrder(empresa, order, true);
 
         return {
             success: true,
@@ -244,9 +240,9 @@ export class OrdersApiService {
     async pdf(
         order_code: string,
         type: "note" | "invoice" | "guide" | "recibo",
-        information: InformationEntity
+        empresa: Empresas
     ) {
-        const { order } = await this.show(information, order_code);
+        const { order } = await this.show(empresa, order_code);
         if (!["note", "invoice", "guide", "recibo"].includes(type))
             throw new BadRequestException("Solo note, guide o invoice");
 
@@ -261,7 +257,7 @@ export class OrdersApiService {
         ) {
             sunat = await onInvoiceSunat({
                 detail_orders: order.dataValues.details_orders,
-                information,
+                empresa,
                 invoice: order.dataValues.invoice as Invoices,
                 order,
                 vendedor,
@@ -270,7 +266,7 @@ export class OrdersApiService {
         if (order.dataValues.note && type === "note") {
             sunat = await onNoteSunat({
                 detail_orders: order.dataValues.details_orders,
-                information,
+                empresa,
                 note: order.dataValues.note,
                 order,
                 invoice: order.dataValues.invoice,
@@ -281,7 +277,7 @@ export class OrdersApiService {
         if (order.dataValues.guide && type === "guide") {
             sunat = await onGuideSunat({
                 detail_orders: order.dataValues.details_orders,
-                information,
+                empresa,
                 order,
                 vendedor,
                 guide: order.dataValues.guide,
@@ -301,7 +297,7 @@ export class OrdersApiService {
                 : "guide";
 
         const result = await pdfGenerate({
-            information,
+            empresa,
             sunat,
             order,
             type: typePDF,
@@ -312,9 +308,9 @@ export class OrdersApiService {
     async html(
         order_code: string,
         type: "note" | "invoice" | "guide" | "recibo",
-        information: InformationEntity
+        empresa: Empresas
     ) {
-        const { order } = await this.show(information, order_code);
+        const { order } = await this.show(empresa, order_code);
         if (!["note", "invoice", "guide", "recibo"].includes(type))
             throw new BadRequestException("Solo note, guide o invoice");
         const vendedor = `${(order.user as Users)?.name ?? ""} ${
@@ -326,7 +322,7 @@ export class OrdersApiService {
         if (order.dataValues.invoice && type === "invoice") {
             sunat = await onInvoiceSunat({
                 detail_orders: order.dataValues.details_orders,
-                information,
+                empresa,
                 invoice: order.dataValues.invoice as Invoices,
                 order,
                 vendedor,
@@ -337,17 +333,17 @@ export class OrdersApiService {
         if (order.dataValues.invoice && type === "recibo") {
             sunat = await onInvoiceSunat({
                 detail_orders: order.dataValues.details_orders,
-                information,
+                empresa,
                 invoice: order.dataValues.invoice as Invoices,
                 order,
                 vendedor,
             });
-            stringHTML = await ticketHTML(order, information);
+            stringHTML = await ticketHTML(order, empresa);
         }
         if (order.dataValues.note && type === "note") {
             sunat = await onNoteSunat({
                 detail_orders: order.dataValues.details_orders,
-                information,
+                empresa,
                 note: order.dataValues.note,
                 order,
                 invoice: order.dataValues.invoice,
@@ -358,7 +354,7 @@ export class OrdersApiService {
         if (order.dataValues.guide && type === "guide") {
             sunat = await onGuideSunat({
                 detail_orders: order.dataValues.details_orders,
-                information,
+                empresa,
                 order,
                 vendedor,
                 guide: order.dataValues.guide,
@@ -374,7 +370,7 @@ export class OrdersApiService {
     // agregar orden
     async store(
         ordersStoreDto: OrdersStoreDto,
-        information: InformationEntity,
+        empresa: Empresas,
         moneyConverter = 1,
         comision?: {
             pasarela_comision?: boolean;
@@ -389,46 +385,44 @@ export class OrdersApiService {
             const client = await Clients.findOne({
                 where: {
                     telephone: ordersStoreDto.telephone,
-                    information_id: information.id,
+                    empresa_id: empresa.id,
                 },
             });
             if (!client) {
-                await this.clientsApiService.store(information, {
+                await this.clientsApiService.store(empresa, {
                     telephone: ordersStoreDto.telephone,
                     enabled: true,
                     fullname: ordersStoreDto.fullName,
-                    information_id: information.id,
+                    empresa_id: empresa.id,
                 });
             }
         }
 
-        if (!information.isOpen)
-            throw new BadRequestException(information.whatsappconfig.enabled);
-        const findDay = information.schedule.find(
-            (day) => day.id === NOW().day()
-        );
+        if (!empresa.isOpen)
+            throw new BadRequestException(empresa.whatsappconfig.enabled);
+        const findDay = empresa.schedule.find((day) => day.id === NOW().day());
 
         if (
             NOW().isAfter(formatTime(findDay!.openTime)) &&
             NOW().isBefore(formatTime(findDay!.closeTime))
         ) {
         } else {
-            throw new BadRequestException(information.whatsappconfig.cerrado);
+            throw new BadRequestException(empresa.whatsappconfig.cerrado);
         }
 
         const detailsOrder = await Promise.all(
             details_orders.map(async (detail_order) => {
-                const typeProduct = productEntityId(information);
+                const typeProduct = productEntityId(empresa);
 
                 const { product } = await this.productsApiService.show(
-                    information,
+                    empresa,
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                     (detail_order as any)[typeProduct],
                     true
                 );
 
                 let disc = null;
-                if (information.tipo_empresa.tipo_servicio_id === 1) {
+                if (empresa.tipo_empresa.tipo_servicio_id === 1) {
                     // encontrar variant
                     const variant = (
                         product.dataValues.variants as Variants[]
@@ -455,7 +449,7 @@ export class OrdersApiService {
                                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                 (detail_order as any)[typeProduct],
                                 detail_order.coupon,
-                                information
+                                empresa
                             );
 
                         disc = discount;
@@ -491,7 +485,7 @@ export class OrdersApiService {
                                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                 (detail_order as any)[typeProduct],
                                 detail_order.coupon,
-                                information
+                                empresa
                             );
                         disc = discount;
                     }
@@ -499,7 +493,7 @@ export class OrdersApiService {
 
                 return {
                     subtotal:
-                        subtotalIgv(information, product, disc) *
+                        subtotalIgv(empresa, product, disc) *
                         detail_order.quantity,
                 };
             })
@@ -512,13 +506,13 @@ export class OrdersApiService {
 
         if (ordersStoreDto.city_id) {
             const { data } = await this.ubigeoApiService.citiesShow(
-                information,
+                empresa,
                 ordersStoreDto.city_id
             );
-            const priceShip = information.enabled_igv
+            const priceShip = empresa.enabled_igv
                 ? subtotal(
                       data.dataValues.region.priceShipping,
-                      information.igv,
+                      empresa.igv,
                       true
                   )
                 : data.dataValues.region.priceShipping;
@@ -533,17 +527,17 @@ export class OrdersApiService {
 
         const order = new Orders({
             ...rest,
-            igv: information!.enabled_igv,
+            igv: empresa!.enabled_igv,
             pasarela_comision,
             moneyChange: moneyConverter,
-            is_pasarela_client: information!.enabledClientPayComision,
-            information_id: information.id,
+            is_pasarela_client: empresa!.enabledClientPayComision,
+            empresa_id: empresa.id,
         });
         order.order_code = await generateCodeEntity(
             Orders,
             "order_code" as keyof Orders,
             "ORD",
-            information
+            empresa
         );
         await order.save();
         if (invoice) {
@@ -566,19 +560,19 @@ export class OrdersApiService {
                 xml_path: null,
                 correlativo,
                 response_sunat: null,
-                information_id: information.id,
+                empresa_id: empresa.id,
             });
         }
         await Promise.all(
             details_orders.map(async (detail_order) => {
-                const productID = productEntityId(information);
+                const productID = productEntityId(empresa);
                 const [newDetailOrder, { product }] = await Promise.all([
-                    this.detailOrdersApiService.store(information, {
+                    this.detailOrdersApiService.store(empresa, {
                         ...detail_order,
                         order_id: order.id,
                     }),
                     this.productsApiService.show(
-                        information,
+                        empresa,
                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                         (detail_order as any)[
                             productID as keyof typeof detail_order
@@ -586,7 +580,7 @@ export class OrdersApiService {
                         true
                     ),
                 ]);
-                if (information.tipo_empresa.tipo_servicio_id === 1) {
+                if (empresa.tipo_empresa.tipo_servicio_id === 1) {
                     // encontrar variant
                     const variant = (
                         product.dataValues.variants as Variants[]
@@ -603,7 +597,7 @@ export class OrdersApiService {
                         const { coupon } = await this.productsApiService.coupon(
                             product.id,
                             detail_order.coupon,
-                            information
+                            empresa
                         );
                         if (coupon) {
                             if (coupon.max_use > 0) {
@@ -631,7 +625,7 @@ export class OrdersApiService {
                     const { coupon } = await this.productsApiService.coupon(
                         product.id,
                         detail_order.coupon,
-                        information
+                        empresa
                     );
                     if (coupon) {
                         if (coupon.max_use > 0) {
@@ -644,16 +638,16 @@ export class OrdersApiService {
             })
         );
         try {
-            if (information.enabledSendMessage && ordersStoreDto.telephone) {
-                const telephone = `${information.dial_code}${ordersStoreDto.telephone}@c.us`;
-                await whatsappSendTypingApi(information, {
+            if (empresa.enabledSendMessage && ordersStoreDto.telephone) {
+                const telephone = `${empresa.dial_code}${ordersStoreDto.telephone}@c.us`;
+                await whatsappSendTypingApi(empresa, {
                     telephone,
                     delay: 4,
                 });
-                await whatsappSendMessageApi(information, {
+                await whatsappSendMessageApi(empresa, {
                     telephone,
                     message:
-                        information.dial_code === "55"
+                        empresa.dial_code === "55"
                             ? `Olá 😊, aqui está o código do seu pedido ${order.order_code}.\n Não se esqueça de nos perguntar o status do seu pedido, digitando o código do pedido.`
                             : `Hola 😊, Aquí está el código de su orden *${order.order_code}*.\n. No olvides preguntarnos el estado de tu orden, digitando el *código* del orden.`,
                 });
@@ -673,14 +667,14 @@ export class OrdersApiService {
         req: Request;
     }) {
         const { invoice, note, ...rest } = props.ordersUpdateDto;
-        const information = (props.req as RequestVigilio).information!;
+        const empresa = (props.req as RequestVigilio).empresa!;
         const user = props.req.user as Users;
 
         // const subFacturacion = (
         //     props.req as RequestVigilio
         // ).permissionWeb.subFacturacion();
         const subFacturacion = true; //!
-        const { order } = await this.show(information, props.order_code);
+        const { order } = await this.show(empresa, props.order_code);
         const vendedor = `${user?.name ?? ""} ${user?.lastname ?? ""}`;
 
         if (
@@ -689,7 +683,7 @@ export class OrdersApiService {
         ) {
             await this.onInvoice({
                 order,
-                information,
+                empresa,
                 ordersUpdateDto: props.ordersUpdateDto,
                 vendedor,
                 subFacturacion,
@@ -702,7 +696,7 @@ export class OrdersApiService {
         ) {
             await this.onGuides({
                 order,
-                information,
+                empresa,
                 ordersUpdateDto: props.ordersUpdateDto,
                 vendedor,
                 subFacturacion,
@@ -711,11 +705,11 @@ export class OrdersApiService {
         // si no envio factura o boleta y tenga el sunat props
         if (
             rest.status_order_id === STATUSORDER.problema &&
-            information.dial_code === "51"
+            empresa.dial_code === "51"
         ) {
             await this.onNote({
                 order,
-                information,
+                empresa,
                 ordersUpdateDto: props.ordersUpdateDto,
                 vendedor,
                 subFacturacion,
@@ -729,15 +723,15 @@ export class OrdersApiService {
             await Promise.all(
                 (order.dataValues.details_orders as DetailOrders[]).map(
                     async (detail_order) => {
-                        const productId = productEntityId(information);
+                        const productId = productEntityId(empresa);
                         const { product } = await this.productsApiService.show(
-                            information,
+                            empresa,
                             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                             (detail_order as any)[productId],
                             true
                         );
                         // encontrar variant
-                        if (information.tipo_empresa.tipo_servicio_id === 1) {
+                        if (empresa.tipo_empresa.tipo_servicio_id === 1) {
                             const variant = (
                                 product.dataValues.variants as Variants[]
                             ).find(
@@ -756,7 +750,7 @@ export class OrdersApiService {
                                     await this.productsApiService.coupon(
                                         detail_order.coupon,
                                         product.id,
-                                        information
+                                        empresa
                                     );
                                 if (coupon) {
                                     if (coupon.max_use > 0) {
@@ -787,7 +781,7 @@ export class OrdersApiService {
                                     await this.productsApiService.coupon(
                                         detail_order.coupon,
                                         product.id,
-                                        information
+                                        empresa
                                     );
                                 if (coupon) {
                                     if (coupon.max_use > 0) {
@@ -813,17 +807,12 @@ export class OrdersApiService {
     async onInvoice(props: {
         ordersUpdateDto: OrdersUpdateDto;
         order: Orders;
-        information: InformationEntity;
+        empresa: Empresas;
         vendedor: string;
         subFacturacion: boolean;
     }) {
-        const {
-            information,
-            order,
-            ordersUpdateDto,
-            subFacturacion,
-            vendedor,
-        } = props;
+        const { empresa, order, ordersUpdateDto, subFacturacion, vendedor } =
+            props;
         const { invoice } = ordersUpdateDto;
         const detail_orders = order.dataValues.details_orders as DetailOrders[];
         const getInvoice = order.dataValues.invoice;
@@ -855,13 +844,13 @@ export class OrdersApiService {
 
             const sunat = await onInvoiceSunat({
                 detail_orders,
-                information,
+                empresa,
                 invoice,
                 order,
                 vendedor,
             });
             // solo peru
-            if (information.dial_code === "51") {
+            if (empresa.dial_code === "51") {
                 // si no existe pdf path que cree y guarda y si tiene subfacturacion
                 if (
                     !files.xml_path &&
@@ -869,7 +858,7 @@ export class OrdersApiService {
                         invoice.kind_invoice_code === "03")
                 ) {
                     const xml = await xmlGenerate({
-                        information,
+                        empresa,
                         sunat,
                         order,
                         type: "invoice",
@@ -903,7 +892,7 @@ export class OrdersApiService {
                     }
                     const cdr = await crdGenerate({
                         cdrzip: sunatResponse.cdrZip,
-                        information,
+                        empresa,
                         orderCode: props.order.order_code,
                     });
                     files = {
@@ -920,7 +909,7 @@ export class OrdersApiService {
             if (
                 ordersUpdateDto.telephone &&
                 ordersUpdateDto.send_message &&
-                information.enabledSendMessage
+                empresa.enabledSendMessage
             ) {
                 const type =
                     invoice?.kind_invoice_code === "01"
@@ -929,20 +918,20 @@ export class OrdersApiService {
                         ? "BOLETA"
                         : "";
                 try {
-                    const telephone = `${information.dial_code}${ordersUpdateDto.telephone}@c.us`;
-                    await whatsappSendMessageApi(information, {
+                    const telephone = `${empresa.dial_code}${ordersUpdateDto.telephone}@c.us`;
+                    await whatsappSendMessageApi(empresa, {
                         telephone,
-                        message: information.whatsappconfig.thank.replace(
+                        message: empresa.whatsappconfig.thank.replace(
                             "{COMPROBANTE}",
                             type
                         ),
                     });
-                    await whatsappSendTypingApi(information, {
+                    await whatsappSendTypingApi(empresa, {
                         telephone,
                         delay: 4,
                     });
                     const { pdfBuffer, file } = await pdfGenerate({
-                        information,
+                        empresa,
                         sunat,
                         order,
                         type:
@@ -952,22 +941,22 @@ export class OrdersApiService {
                                 : "recibo",
                     });
 
-                    whatsappSendFileApi(information, {
+                    whatsappSendFileApi(empresa, {
                         telephone,
                         file: new File([pdfBuffer], file, {
                             type: "application/pdf",
                         }),
                         option: { sendMediaAsDocument: true },
                     });
-                    await whatsappSendTypingApi(information, {
+                    await whatsappSendTypingApi(empresa, {
                         telephone,
                         delay: 4,
                     });
-                    await whatsappSendMessageApi(information, {
+                    await whatsappSendMessageApi(empresa, {
                         telephone,
-                        message: information.whatsappconfig.thank2.replace(
+                        message: empresa.whatsappconfig.thank2.replace(
                             "{URL}",
-                            BASE_URL(information)
+                            BASE_URL(empresa)
                         ),
                     });
                 } catch (error) {}
@@ -980,7 +969,7 @@ export class OrdersApiService {
                             ...invoice!,
                             ...files,
                             order_id: order.id,
-                            information_id: information.id,
+                            empresa_id: empresa.id,
                         }
                     );
                 }
@@ -989,7 +978,7 @@ export class OrdersApiService {
                     ...invoice!,
                     ...files,
                     order_id: order.id,
-                    information_id: information.id,
+                    empresa_id: empresa.id,
                 });
             }
         }
@@ -997,7 +986,7 @@ export class OrdersApiService {
     async onNote(props: {
         ordersUpdateDto: OrdersUpdateDto;
         order: Orders;
-        information: InformationEntity;
+        empresa: Empresas;
         vendedor: string;
         subFacturacion: boolean;
     }) {
@@ -1005,7 +994,7 @@ export class OrdersApiService {
         const getInvoice = props.order.dataValues.invoice;
         if (getInvoice) {
             const {
-                information,
+                empresa,
                 order,
                 ordersUpdateDto,
                 subFacturacion,
@@ -1041,7 +1030,7 @@ export class OrdersApiService {
                 }
                 const sunat = await onNoteSunat({
                     detail_orders,
-                    information,
+                    empresa,
                     note,
                     order,
                     invoice: getInvoice,
@@ -1056,7 +1045,7 @@ export class OrdersApiService {
                     // si no existe pdf path ni xml_path que cree y guarda
                     if (!files.xml_path) {
                         const xml = await xmlGenerate({
-                            information,
+                            empresa,
                             sunat,
                             order,
                             type: "note",
@@ -1080,7 +1069,7 @@ export class OrdersApiService {
                         }
                         const cdr = await crdGenerate({
                             cdrzip: sunatResponse.cdrZip,
-                            information,
+                            empresa,
                             orderCode: props.order.order_code,
                         });
                         files = {
@@ -1102,24 +1091,24 @@ export class OrdersApiService {
                 if (
                     ordersUpdateDto.telephone &&
                     ordersUpdateDto.send_message &&
-                    information.enabledSendMessage
+                    empresa.enabledSendMessage
                 ) {
                     try {
-                        const telephone = `${information.dial_code}${ordersUpdateDto.telephone}@c.us`;
-                        await whatsappSendMessageApi(information, {
+                        const telephone = `${empresa.dial_code}${ordersUpdateDto.telephone}@c.us`;
+                        await whatsappSendMessageApi(empresa, {
                             telephone,
-                            message: information.whatsappconfig.sendpdf.replace(
+                            message: empresa.whatsappconfig.sendpdf.replace(
                                 "{COMPROBANTE}",
                                 type
                             ),
                         });
 
-                        await whatsappSendTypingApi(information, {
+                        await whatsappSendTypingApi(empresa, {
                             telephone,
                             delay: 4,
                         });
                         const { pdfBuffer, file } = await pdfGenerate({
-                            information,
+                            empresa,
                             sunat,
                             order,
                             type: "note",
@@ -1127,20 +1116,20 @@ export class OrdersApiService {
                         const media = new File([pdfBuffer], file, {
                             type: "application/pdf",
                         });
-                        await whatsappSendFileApi(information, {
+                        await whatsappSendFileApi(empresa, {
                             telephone,
                             file: media,
                             option: { sendMediaAsDocument: true },
                         });
-                        await whatsappSendTypingApi(information, {
+                        await whatsappSendTypingApi(empresa, {
                             telephone,
                             delay: 4,
                         });
-                        await whatsappSendMessageApi(information, {
+                        await whatsappSendMessageApi(empresa, {
                             telephone,
-                            message: information.whatsappconfig.thank2.replace(
+                            message: empresa.whatsappconfig.thank2.replace(
                                 "{URL}",
-                                BASE_URL(information)
+                                BASE_URL(empresa)
                             ),
                         });
                     } catch (error) {}
@@ -1152,7 +1141,7 @@ export class OrdersApiService {
                             ...files,
                             invoice_id: getInvoice.id,
                             order_id: order.id,
-                            information_id: information.id,
+                            empresa_id: empresa.id,
                         });
                     }
                 } else {
@@ -1161,7 +1150,7 @@ export class OrdersApiService {
                         ...files,
                         invoice_id: getInvoice.id,
                         order_id: order.id,
-                        information_id: information.id,
+                        empresa_id: empresa.id,
                     });
                 }
             }
@@ -1170,20 +1159,15 @@ export class OrdersApiService {
     async onGuides(props: {
         ordersUpdateDto: OrdersUpdateDto;
         order: Orders;
-        information: InformationEntity;
+        empresa: Empresas;
         vendedor: string;
         subFacturacion: boolean;
     }) {
         const detail_orders = props.order.dataValues
             .details_orders as DetailOrders[];
         const getGuide = props.order.dataValues.guide;
-        const {
-            information,
-            order,
-            ordersUpdateDto,
-            subFacturacion,
-            vendedor,
-        } = props;
+        const { empresa, order, ordersUpdateDto, subFacturacion, vendedor } =
+            props;
         const { guide } = ordersUpdateDto;
         if (guide) {
             // si no existe nota
@@ -1207,8 +1191,8 @@ export class OrdersApiService {
             }
             const sunat = await onGuideSunat({
                 detail_orders,
-                information,
-                guide: { ...guide, information_id: information.id },
+                empresa,
+                guide: { ...guide, empresa_id: empresa.id },
                 order,
                 vendedor,
             });
@@ -1220,7 +1204,7 @@ export class OrdersApiService {
                 // si no existe pdf path ni xml_path que cree y guarda
                 if (!files.xml_path) {
                     const xml = await xmlGenerate({
-                        information,
+                        empresa,
                         sunat,
                         order,
                         type: "guide",
@@ -1245,7 +1229,7 @@ export class OrdersApiService {
                     }
                     const cdr = await crdGenerate({
                         cdrzip: sunatResponse.cdrZip,
-                        information,
+                        empresa,
                         orderCode: props.order.order_code,
                     });
                     files = {
@@ -1264,32 +1248,32 @@ export class OrdersApiService {
                     ...guide!,
                     ...files,
                     order_id: order.id,
-                    information_id: information.id,
+                    empresa_id: empresa.id,
                 });
             } else {
                 await this.guidesApiService.store({
                     ...guide!,
                     ...files,
-                    information_id: information.id,
+                    empresa_id: empresa.id,
                     order_id: order.id,
                 });
             }
         }
         if (
             ordersUpdateDto.status_order_id === STATUSORDER.enviando &&
-            information.enabledSendMessage
+            empresa.enabledSendMessage
         ) {
             try {
                 const products = await Promise.all(
                     detail_orders.map(async (prod, i) => {
-                        const product = await Product(information).findOne({
+                        const product = await Product(empresa).findOne({
                             where: {
                                 id: prod[
                                     productEntityId(
-                                        information
+                                        empresa
                                     ) as keyof typeof prod
                                 ],
-                                information_id: information.id,
+                                empresa_id: empresa.id,
                             },
                             attributes: ["id", "name"],
                         });
@@ -1300,21 +1284,21 @@ export class OrdersApiService {
                         return `${i + 1} - *Producto*: ${
                             product.name
                         }, *Precio Total*: ${formatMoney(
-                            information,
+                            empresa,
                             prod.price,
                             props.order.moneyChange === 1
-                                ? information.money.money
+                                ? empresa.money.money
                                 : "DOLARES"
                         )}, *Cantidad*: ${prod.quantity} UND.\n`;
                     })
                 );
-                const telephone = `${information.dial_code}${ordersUpdateDto.telephone}@c.us`;
-                await whatsappSendMessageApi(information, {
+                const telephone = `${empresa.dial_code}${ordersUpdateDto.telephone}@c.us`;
+                await whatsappSendMessageApi(empresa, {
                     telephone,
                     message:
-                        information.dial_code === "55"
-                            ? `Olá 😊, somos ${information.name_empresa}. \n Seu pedido ${order.order_code}:\n Está sendo enviado para o seu endereço ${order.address}.\n${products}                          `
-                            : `Hola 😊, Somos ${information.name_empresa}. \n Su orden *${order.order_code}*:\n Se está enviando su pedido a su domicilio ${order.address}.\n${products}`,
+                        empresa.dial_code === "55"
+                            ? `Olá 😊, somos ${empresa.name_empresa}. \n Seu pedido ${order.order_code}:\n Está sendo enviado para o seu endereço ${order.address}.\n${products}                          `
+                            : `Hola 😊, Somos ${empresa.name_empresa}. \n Su orden *${order.order_code}*:\n Se está enviando su pedido a su domicilio ${order.address}.\n${products}`,
                 });
             } catch (error) {}
         }

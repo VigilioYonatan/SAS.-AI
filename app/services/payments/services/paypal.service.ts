@@ -6,37 +6,37 @@ import { STATUSORDER } from "@/orders/libs";
 import enviroments from "~/config/enviroments.config";
 import { paypal } from "@vigilio/payments";
 import { paypalComision } from "../libs";
-import { InformationApiService } from "@/information/services/information.api.service";
+import { EmpresasApiService } from "@/empresas/services/empresas.api.service";
 import { converterMoneyApi } from "~/libs/apis";
 import type { OrdersStoreDto } from "@/orders/dtos/orders.store.dto";
 import type { OrdersUpdateDto } from "@/orders/dtos/orders.update.dto";
 import type { RequestVigilio } from "~/config/types";
-import type { MetodosPago } from "@/information/entities/metodosPago.entity";
-import { BASE_URL } from "@/information/libs";
+import type { MetodosPago } from "@/empresas/entities/metodosPago.entity";
+import { BASE_URL } from "@/empresas/libs";
 
 @Injectable()
 export class PaypalService {
     constructor(
         private readonly ordersApiService: OrdersApiService,
-        private readonly informationApiService: InformationApiService
+        private readonly empresasApiService: EmpresasApiService
     ) {}
     async order(slug: string, body: OrdersStoreDto) {
-        const { information } = await this.informationApiService.show(slug);
-        const from = information.money.simbolo;
+        const { empresa } = await this.empresasApiService.show(slug);
+        const from = empresa.money.simbolo;
         const response = await converterMoneyApi({
             amount: "1",
             from,
             to: "USD",
         });
         const value = Number.parseFloat(response.result.todayNumber); // its necesary to fix
-        const metodo = (await information.$get("metodos_pago")) as MetodosPago;
+        const metodo = (await empresa.$get("metodos_pago")) as MetodosPago;
         if (
             !metodo.paypal.enabled ||
             !metodo.paypal.paypal_client_id ||
             !metodo.paypal.paypal_secret_key
         )
             throw new BadRequestException("No disponible en este momento");
-        const total = information.enabledClientPayComision
+        const total = empresa.enabledClientPayComision
             ? paypalComision(body.total, value).toFixed(2)
             : (body.total / value).toFixed(2);
         const { createOrder } = paypal({
@@ -65,15 +65,15 @@ export class PaypalService {
                 },
             ],
             application_context: {
-                brand_name: information!.name_empresa,
+                brand_name: empresa!.name_empresa,
                 // payment_method: "IMMEDIATE_PAYMENT_REQUIRED",
                 // locale: "en-US",
                 landing_page: "NO_PREFERENCE",
                 // shipping_preference: "SET_PROVIDED_ADDRESS",
                 user_action: "PAY_NOW",
                 //!
-                return_url: `${BASE_URL(information)}/paypal/success`,
-                cancel_url: `${BASE_URL(information)}/paypal/cancel`,
+                return_url: `${BASE_URL(empresa)}/paypal/success`,
+                cancel_url: `${BASE_URL(empresa)}/paypal/cancel`,
             },
         });
 
@@ -88,14 +88,14 @@ export class PaypalService {
                 paypal_token: result.id,
                 status_order_id: STATUSORDER.pendiente,
             } as OrdersStoreDto,
-            information,
+            empresa,
             value
         );
 
         return { success: true, result };
     }
     async success(slug: string, token: string, req: RequestVigilio) {
-        const { information } = await this.informationApiService.show(slug);
+        const { empresa } = await this.empresasApiService.show(slug);
         const order = await Orders.findOne({
             where: {
                 paypal_token: token,
@@ -104,7 +104,7 @@ export class PaypalService {
         if (!order) throw new NotFoundException("Orden no encontrado.");
         let result = null;
         try {
-            const metodoPago = (await information.$get(
+            const metodoPago = (await empresa.$get(
                 "metodos_pago"
             )) as MetodosPago;
             if (
@@ -136,7 +136,7 @@ export class PaypalService {
             throw new Error((error as Error).message);
         }
         const { order: orderShow } = await this.ordersApiService.show(
-            information,
+            empresa,
             order.order_code
         );
         await this.ordersApiService.update({
@@ -145,11 +145,11 @@ export class PaypalService {
                 ...orderShow.toJSON(),
                 status_order_id: STATUSORDER.pagado,
                 note: null,
-                send_message: information.enabledSendMessage, // enviar mensaje a whatsapp
+                send_message: empresa.enabledSendMessage, // enviar mensaje a whatsapp
                 invoice: {
                     ...orderShow.dataValues.invoice.toJSON(),
                     sendMessage: true,
-                    send_sunat: information.enabledSendSunat, // enviar a sunat
+                    send_sunat: empresa.enabledSendSunat, // enviar a sunat
                 },
                 paypal_response: result,
                 description: "Pago realizado correctamente",

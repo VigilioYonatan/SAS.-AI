@@ -3,10 +3,10 @@ import { postsSchema } from "../schemas/posts.schema";
 import { postsStoreDto } from "./posts.store.dto";
 
 export const postsUpdateDto = omit(postsSchema, [
-	"id",
-	"image",
-	"user_id",
-	"information_id",
+    "id",
+    "image",
+    "user_id",
+    "empresa_id",
 ]);
 export const postsImageUpdateDto = pick(postsStoreDto, ["image"]);
 
