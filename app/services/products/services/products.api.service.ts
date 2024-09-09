@@ -1,8 +1,12 @@
 import { Injectable } from "@vigilio/express-core";
 import { ProductsNormal } from "../entities/products_normal.entity";
-import { BadRequestException, NotFoundException } from "@vigilio/express-core";
+import {
+    BadRequestException,
+    NotFoundException,
+    UnauthorizedException,
+} from "@vigilio/express-core";
 import { Op } from "sequelize";
-import { generateCodeEntity, NoImage } from "~/libs/helpers";
+import { generateCodeEntity } from "~/libs/helpers";
 import { removeFile } from "@/uploads/libs/helpers";
 import { NOW, TimePeru, restarDays } from "~/libs/dayjs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
@@ -29,16 +33,6 @@ import type {
 } from "../dtos/products_servicio.dto";
 import { ProductsOptions } from "../entities/options/products_options.entity";
 import { VariantsFeatures } from "../entities/options/variants_features.entity";
-import WooCommerceRestApi, {
-    type WooCommerceRestApiOptions,
-} from "@woocommerce/woocommerce-rest-api";
-import type { ProductsNormalSchema } from "../schemas/products_normal.schema";
-import { removeTextHTML } from "../../../libs/helpers";
-import { Categories } from "../entities/categories.entity";
-import type { CategoriesSchema } from "../schemas/categories.schema";
-import Shopify from "shopify-api-node";
-import { parseStringPromise } from "xml2js";
-import { slug } from "@vigilio/express-core/helpers";
 import type { VariantsUpdateDto } from "../dtos/options/variants.update.dto";
 import { Variants } from "../entities/options/variants.entity";
 import type { Features } from "../entities/options/features.entity";
@@ -46,8 +40,12 @@ import type { Options } from "../entities/options/options.entity";
 
 @Injectable()
 export class ProductsApiService {
-    async index() {
-        const data = await ProductsNormal.findAll();
+    async index(empresa: Empresas, token: string) {
+        if (!token)
+            throw new UnauthorizedException("token is required ?token=");
+        if (token !== empresa.token)
+            throw new UnauthorizedException("Token no válido");
+        const data = await Product(empresa).findAll();
         return {
             success: true,
             data,
@@ -84,268 +82,268 @@ export class ProductsApiService {
             product,
         };
     }
-    async woocommerce(empresa: Empresas) {
-        if (!empresa.credentials_web?.woocommerce)
-            throw new BadRequestException("No está permitido");
-        async function getAll(key: string) {
-            let page = 1;
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            let allProducts: any[] = [];
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            let products: any;
+    // async woocommerce(empresa: Empresas) {
+    //     if (!empresa.credentials_web?.woocommerce)
+    //         throw new BadRequestException("No está permitido");
+    //     async function getAll(key: string) {
+    //         let page = 1;
+    //         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    //         let allProducts: any[] = [];
+    //         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    //         let products: any;
 
-            try {
-                while (true) {
-                    products = await api.get(key, {
-                        per_page: 100,
-                        page,
-                    });
-                    if (products.length === 0) {
-                        break;
-                    }
-                    allProducts = allProducts.concat(products.data);
+    //         try {
+    //             while (true) {
+    //                 products = await api.get(key, {
+    //                     per_page: 100,
+    //                     page,
+    //                 });
+    //                 if (products.length === 0) {
+    //                     break;
+    //                 }
+    //                 allProducts = allProducts.concat(products.data);
 
-                    page++;
-                }
-            } catch (error) {
-                console.error("Error al obtener productos:", error);
-            }
+    //                 page++;
+    //             }
+    //         } catch (error) {
+    //             console.error("Error al obtener productos:", error);
+    //         }
 
-            return allProducts;
-        }
-        const opt: WooCommerceRestApiOptions = {
-            url: empresa.web,
-            consumerKey: empresa.credentials_web?.woocommerce.consumerKey,
-            consumerSecret: empresa.credentials_web?.woocommerce.consumerSecret,
-            version: "wc/v3",
-        };
-        const api = new WooCommerceRestApi(opt);
-        const products = await getAll("products");
-        await Categories.destroy({
-            where: {
-                empresa_id: empresa.id,
-            },
-        });
-        const category = await Categories.create({
-            name: "test",
-            category_code: "CAT-000001",
-            image: [{ file: NoImage(), dimension: 500 }],
-            empresa_id: empresa.id,
-            slug: "test",
-        } as Omit<CategoriesSchema, "id">);
+    //         return allProducts;
+    //     }
+    //     const opt: WooCommerceRestApiOptions = {
+    //         url: empresa.web,
+    //         consumerKey: empresa.credentials_web?.woocommerce.consumerKey,
+    //         consumerSecret: empresa.credentials_web?.woocommerce.consumerSecret,
+    //         version: "wc/v3",
+    //     };
+    //     const api = new WooCommerceRestApi(opt);
+    //     const products = await getAll("products");
+    //     await Categories.destroy({
+    //         where: {
+    //             empresa_id: empresa.id,
+    //         },
+    //     });
+    //     const category = await Categories.create({
+    //         name: "test",
+    //         category_code: "CAT-000001",
+    //         image: [{ file: NoImage(), dimension: 500 }],
+    //         empresa_id: empresa.id,
+    //         slug: "test",
+    //     } as Omit<CategoriesSchema, "id">);
 
-        if (empresa.tipo_empresa.tipo_servicio === 1) {
-            await ProductsNormal.destroy({
-                where: { empresa_id: empresa.id },
-            });
+    //     if (empresa.tipo_empresa.tipo_servicio === 1) {
+    //         await ProductsNormal.destroy({
+    //             where: { empresa_id: empresa.id },
+    //         });
 
-            const productsMapped: Omit<ProductsNormalSchema, "id">[] =
-                products.map(
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    (product: any, i: number) => {
-                        return {
-                            product_code: `PROD-000${i + 1}`,
-                            name: product.name,
-                            description: `${removeTextHTML(
-                                product.description
-                            ).slice(0, 1000)}...`,
-                            characteristics: [], // Aquí puedes definir cómo mapear características
-                            enabled: product.status === "publish",
-                            price: product.regular_price,
-                            discount:
-                                ((product.regular_price - product.sale_price) /
-                                    product.regular_price) *
-                                    100 ?? 0, // Aquí puedes calcular el descuento si lo manejas
-                            slug: product.slug,
-                            images: product.images
-                                ? product.images.map(
-                                      (img: { src: string }) => ({
-                                          dimension: 500,
-                                          file: img.src ?? NoImage(),
-                                      })
-                                  )
-                                : [{ dimension: 500, file: NoImage() }],
-                            category_id: category.id,
-                            brand_id: null, // Puedes definir una lógica para esto si es necesario
-                            url: product.permalink,
-                            empresa_id: empresa.id, // Puedes definir cómo establecer esto
-                        };
-                    }
-                );
-            await ProductsNormal.bulkCreate(productsMapped);
-        }
+    //         const productsMapped: Omit<ProductsNormalSchema, "id">[] =
+    //             products.map(
+    //                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    //                 (product: any, i: number) => {
+    //                     return {
+    //                         product_code: `PROD-000${i + 1}`,
+    //                         name: product.name,
+    //                         description: `${removeTextHTML(
+    //                             product.description
+    //                         ).slice(0, 1000)}...`,
+    //                         characteristics: [], // Aquí puedes definir cómo mapear características
+    //                         enabled: product.status === "publish",
+    //                         price: product.regular_price,
+    //                         discount:
+    //                             ((product.regular_price - product.sale_price) /
+    //                                 product.regular_price) *
+    //                                 100 ?? 0, // Aquí puedes calcular el descuento si lo manejas
+    //                         slug: product.slug,
+    //                         images: product.images
+    //                             ? product.images.map(
+    //                                   (img: { src: string }) => ({
+    //                                       dimension: 500,
+    //                                       file: img.src ?? NoImage(),
+    //                                   })
+    //                               )
+    //                             : [{ dimension: 500, file: NoImage() }],
+    //                         category_id: category.id,
+    //                         brand_id: null, // Puedes definir una lógica para esto si es necesario
+    //                         url: product.permalink,
+    //                         empresa_id: empresa.id, // Puedes definir cómo establecer esto
+    //                     };
+    //                 }
+    //             );
+    //         await ProductsNormal.bulkCreate(productsMapped);
+    //     }
 
-        return { success: true, message: "Ejecutado woocomerce" };
-    }
+    //     return { success: true, message: "Ejecutado woocomerce" };
+    // }
 
-    async shopify(empresa: Empresas) {
-        if (!empresa.credentials_web?.shopify)
-            throw new BadRequestException("No está permitido");
-        const shopify = new Shopify({
-            shopName: empresa.credentials_web?.shopify.dominioweb, // El nombre de tu tienda Shopify sin 'myshopify.com'
-            apiKey: empresa.credentials_web?.shopify.apiKey, // Tu API Key
-            password: empresa.credentials_web?.shopify.password, // Tu API Password
-            autoLimit: true, // Opcional: Gestiona automáticamente los límites de tasa});
-        });
+    // async shopify(empresa: Empresas) {
+    //     if (!empresa.credentials_web?.shopify)
+    //         throw new BadRequestException("No está permitido");
+    //     const shopify = new Shopify({
+    //         shopName: empresa.credentials_web?.shopify.dominioweb, // El nombre de tu tienda Shopify sin 'myshopify.com'
+    //         apiKey: empresa.credentials_web?.shopify.apiKey, // Tu API Key
+    //         password: empresa.credentials_web?.shopify.password, // Tu API Password
+    //         autoLimit: true, // Opcional: Gestiona automáticamente los límites de tasa});
+    //     });
 
-        async function getAll(key: string) {
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            let products: any[] = [];
-            let page = 1;
-            try {
-                while (true) {
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    const response = await (shopify as any)[key].list({
-                        limit: 250, // Máximo de productos por página (Shopify permite hasta 250)
-                        page: page,
-                    });
+    //     async function getAll(key: string) {
+    //         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    //         let products: any[] = [];
+    //         let page = 1;
+    //         try {
+    //             while (true) {
+    //                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    //                 const response = await (shopify as any)[key].list({
+    //                     limit: 250, // Máximo de productos por página (Shopify permite hasta 250)
+    //                     page: page,
+    //                 });
 
-                    if (response.length === 0) {
-                        break;
-                    }
+    //                 if (response.length === 0) {
+    //                     break;
+    //                 }
 
-                    products = products.concat(response);
-                    page++;
-                }
-            } catch (error) {
-                console.error("Error obteniendo los productos:", error);
-            }
-            return products;
-        }
-        const products = await getAll("product");
+    //                 products = products.concat(response);
+    //                 page++;
+    //             }
+    //         } catch (error) {
+    //             console.error("Error obteniendo los productos:", error);
+    //         }
+    //         return products;
+    //     }
+    //     const products = await getAll("product");
 
-        await Categories.destroy({
-            where: {
-                empresa_id: empresa.id,
-            },
-        });
-        const category = await Categories.create({
-            name: "test",
-            category_code: "CAT-000001",
-            image: [{ file: NoImage(), dimension: 500 }],
-            empresa_id: empresa.id,
-            slug: "test",
-        } as Omit<CategoriesSchema, "id">);
-        if (empresa.tipo_empresa.tipo_servicio === 1) {
-            await ProductsNormal.destroy({
-                where: { empresa_id: empresa.id },
-            });
+    //     await Categories.destroy({
+    //         where: {
+    //             empresa_id: empresa.id,
+    //         },
+    //     });
+    //     const category = await Categories.create({
+    //         name: "test",
+    //         category_code: "CAT-000001",
+    //         image: [{ file: NoImage(), dimension: 500 }],
+    //         empresa_id: empresa.id,
+    //         slug: "test",
+    //     } as Omit<CategoriesSchema, "id">);
+    //     if (empresa.tipo_empresa.tipo_servicio === 1) {
+    //         await ProductsNormal.destroy({
+    //             where: { empresa_id: empresa.id },
+    //         });
 
-            const productsMapped: Omit<ProductsNormalSchema, "id">[] =
-                products.map(
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    (product: any, i: number) => {
-                        return {
-                            product_code: `PROD-000${i + 1}`,
-                            name: product.title,
-                            description: `${removeTextHTML(
-                                product.body_html
-                            ).slice(0, 1000)}...`,
-                            characteristics: [], // Aquí puedes definir cómo mapear características
-                            enabled: product.status === "active",
-                            price: product.variants[0].compare_at_price ?? 0,
-                            discount:
-                                ((product.variants[0].compare_at_price -
-                                    product.variants[0].price) /
-                                    product.variants[0].compare_at_price) *
-                                    100 ?? 0, // Aquí puedes calcular el descuento si lo manejas
-                            slug: product.handle,
-                            images: product.images
-                                ? product.images.map(
-                                      (img: { src: string }) => ({
-                                          dimension: 500,
-                                          file: img.src ?? NoImage(),
-                                      })
-                                  )
-                                : [{ dimension: 500, file: NoImage() }],
-                            category_id: category.id,
-                            brand_id: null, // Puedes definir una lógica para esto si es necesario
-                            url: null,
-                            empresa_id: empresa.id, // Puedes definir cómo establecer esto
-                        };
-                    }
-                );
-            await ProductsNormal.bulkCreate(productsMapped);
-            return { success: true, message: "Ejecutado shopify" };
-        }
-    }
+    //         const productsMapped: Omit<ProductsNormalSchema, "id">[] =
+    //             products.map(
+    //                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    //                 (product: any, i: number) => {
+    //                     return {
+    //                         product_code: `PROD-000${i + 1}`,
+    //                         name: product.title,
+    //                         description: `${removeTextHTML(
+    //                             product.body_html
+    //                         ).slice(0, 1000)}...`,
+    //                         characteristics: [], // Aquí puedes definir cómo mapear características
+    //                         enabled: product.status === "active",
+    //                         price: product.variants[0].compare_at_price ?? 0,
+    //                         discount:
+    //                             ((product.variants[0].compare_at_price -
+    //                                 product.variants[0].price) /
+    //                                 product.variants[0].compare_at_price) *
+    //                                 100 ?? 0, // Aquí puedes calcular el descuento si lo manejas
+    //                         slug: product.handle,
+    //                         images: product.images
+    //                             ? product.images.map(
+    //                                   (img: { src: string }) => ({
+    //                                       dimension: 500,
+    //                                       file: img.src ?? NoImage(),
+    //                                   })
+    //                               )
+    //                             : [{ dimension: 500, file: NoImage() }],
+    //                         category_id: category.id,
+    //                         brand_id: null, // Puedes definir una lógica para esto si es necesario
+    //                         url: null,
+    //                         empresa_id: empresa.id, // Puedes definir cómo establecer esto
+    //                     };
+    //                 }
+    //             );
+    //         await ProductsNormal.bulkCreate(productsMapped);
+    //         return { success: true, message: "Ejecutado shopify" };
+    //     }
+    // }
 
-    async prestaShop(empresa: Empresas) {
-        if (!empresa.credentials_web?.prestashop)
-            throw new BadRequestException("No está permitido");
-        try {
-            const response = await fetch(`${empresa.web}/api/products`, {
-                headers: {
-                    Authorization: `Basic ${Buffer.from(
-                        `${"API_KEY"}:`
-                    ).toString("base64")}`,
-                    "Content-Type": "application/xml",
-                },
-            });
-            if (!response.ok) {
-                throw new BadRequestException(`Error: ${response.statusText}`);
-            }
-            const productsXml = await response.text();
-            const result = await parseStringPromise(productsXml);
-            const products = result.prestashop.products;
+    // async prestaShop(empresa: Empresas) {
+    //     if (!empresa.credentials_web?.prestashop)
+    //         throw new BadRequestException("No está permitido");
+    //     try {
+    //         const response = await fetch(`${empresa.web}/api/products`, {
+    //             headers: {
+    //                 Authorization: `Basic ${Buffer.from(
+    //                     `${"API_KEY"}:`
+    //                 ).toString("base64")}`,
+    //                 "Content-Type": "application/xml",
+    //             },
+    //         });
+    //         if (!response.ok) {
+    //             throw new BadRequestException(`Error: ${response.statusText}`);
+    //         }
+    //         const productsXml = await response.text();
+    //         const result = await parseStringPromise(productsXml);
+    //         const products = result.prestashop.products;
 
-            await Categories.destroy({
-                where: {
-                    empresa_id: empresa.id,
-                },
-            });
-            const category = await Categories.create({
-                name: "test",
-                category_code: "CAT-000001",
-                image: [{ file: NoImage(), dimension: 500 }],
-                empresa_id: empresa.id,
-                slug: "test",
-            } as Omit<CategoriesSchema, "id">);
-            if (empresa.tipo_empresa.tipo_servicio === 1) {
-                await ProductsNormal.destroy({
-                    where: { empresa_id: empresa.id },
-                });
+    //         await Categories.destroy({
+    //             where: {
+    //                 empresa_id: empresa.id,
+    //             },
+    //         });
+    //         const category = await Categories.create({
+    //             name: "test",
+    //             category_code: "CAT-000001",
+    //             image: [{ file: NoImage(), dimension: 500 }],
+    //             empresa_id: empresa.id,
+    //             slug: "test",
+    //         } as Omit<CategoriesSchema, "id">);
+    //         if (empresa.tipo_empresa.tipo_servicio === 1) {
+    //             await ProductsNormal.destroy({
+    //                 where: { empresa_id: empresa.id },
+    //             });
 
-                const productsMapped = products.map(
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    (product: any, i: number) => {
-                        const name = product.name[0].language.find(
-                            (lang: { $: { id: string } }) => lang.$.id === "1"
-                        )._;
+    //             const productsMapped = products.map(
+    //                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    //                 (product: any, i: number) => {
+    //                     const name = product.name[0].language.find(
+    //                         (lang: { $: { id: string } }) => lang.$.id === "1"
+    //                     )._;
 
-                        const description =
-                            product.description[0].language.find(
-                                (lang: { $: { id: string } }) =>
-                                    lang.$.id === "1"
-                            )._;
+    //                     const description =
+    //                         product.description[0].language.find(
+    //                             (lang: { $: { id: string } }) =>
+    //                                 lang.$.id === "1"
+    //                         )._;
 
-                        return {
-                            product_code: `PROD-000${i + 1}`,
-                            name: name, // Tomando el primer valor del array
-                            description: `${removeTextHTML(description).slice(
-                                0,
-                                1000
-                            )}...`,
-                            characteristics: [], // Aquí puedes definir cómo mapear características
-                            enabled: true, // Cambia según el estado del producto
-                            price: Number.parseFloat(product.price[0]), // Convertir el precio a número
-                            discount: 0, // Aquí puedes calcular el descuento si lo manejas
-                            slug: slug(name), // Generar slug a partir del nombre
-                            images: null,
-                            category_id: category.id, // Ajusta según tu categoría
-                            brand_id: null, // Ajusta según tu marca
-                            url: null, // Genera URL del producto
-                            empresa_id: empresa.id, // Puedes definir cómo establecer esto
-                        };
-                    }
-                );
-                await ProductsNormal.bulkCreate(productsMapped);
-                return { success: true, message: "Ejecutado shopify" };
-            }
-        } catch (error) {
-            console.error("Error al obtener productos:", error);
-        }
-    }
+    //                     return {
+    //                         product_code: `PROD-000${i + 1}`,
+    //                         name: name, // Tomando el primer valor del array
+    //                         description: `${removeTextHTML(description).slice(
+    //                             0,
+    //                             1000
+    //                         )}...`,
+    //                         characteristics: [], // Aquí puedes definir cómo mapear características
+    //                         enabled: true, // Cambia según el estado del producto
+    //                         price: Number.parseFloat(product.price[0]), // Convertir el precio a número
+    //                         discount: 0, // Aquí puedes calcular el descuento si lo manejas
+    //                         slug: slug(name), // Generar slug a partir del nombre
+    //                         images: null,
+    //                         category_id: category.id, // Ajusta según tu categoría
+    //                         brand_id: null, // Ajusta según tu marca
+    //                         url: null, // Genera URL del producto
+    //                         empresa_id: empresa.id, // Puedes definir cómo establecer esto
+    //                     };
+    //                 }
+    //             );
+    //             await ProductsNormal.bulkCreate(productsMapped);
+    //             return { success: true, message: "Ejecutado shopify" };
+    //         }
+    //     } catch (error) {
+    //         console.error("Error al obtener productos:", error);
+    //     }
+    // }
     async coupon(product_id: string, coupon_code: string, empresa: Empresas) {
         const [{ product }, coupon] = await Promise.all([
             this.show(empresa, product_id),

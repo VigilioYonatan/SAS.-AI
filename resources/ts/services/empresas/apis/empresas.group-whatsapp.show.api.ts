@@ -10,7 +10,7 @@ export type GroupWhatsappShowApiMethod = UseMutation<
 export function groupWhatsappShowApi(
     telephone: string
 ): GroupWhatsappShowApiMethod {
-    return useMutation(`/empresa/group-whatsapp/${telephone}`, async (url) => {
+    return useMutation(`/empresas/group-whatsapp/${telephone}`, async (url) => {
         const response = await fetch(`/api${url}`);
         const result: GroupWhatsappShowAPI = await response.json();
         if (!result.success) throw result;

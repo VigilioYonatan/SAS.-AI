@@ -4,7 +4,7 @@ import { ContactsSchema } from "../schemas/empresas.schema";
 
 export function empresaContactsSearchApi(name: Signal<string>) {
     return useQuery(
-        `/empresa/contacts/${name.value}`,
+        `/empresas/contacts/${name.value}`,
         async (url) => {
             const response = await fetch(`/api${url}`);
             const result: empresaContactsSearchAPI = await response.json();

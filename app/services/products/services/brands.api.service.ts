@@ -6,6 +6,7 @@ import type { BrandsStoreDto } from "../dtos/brands.store.dto";
 import type { BrandsUpdateDto } from "../dtos/brands.update.dto";
 import { Brands } from "../entities/brands.entitiy";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
+import { removeFile } from "@/uploads/libs/helpers";
 
 @Injectable()
 export class BrandsApiService {
@@ -115,6 +116,9 @@ export class BrandsApiService {
             );
 
         await brand.destroy();
+        if (brand.image) {
+            removeFile(empresa.slug, brand.image);
+        }
         return {
             success: true,
             message: `La marca con el id: ${id} fue eliminado`,

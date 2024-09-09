@@ -13,6 +13,7 @@ import type { CategoriesSchema } from "../schemas/categories.schema";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { ProductsRestaurant } from "./products_restaurant.entity";
 import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
+import { ProductsServicio } from "./products_servicio.entity";
 
 @Table
 export class Categories extends Model implements Omit<CategoriesSchema, "id"> {
@@ -54,6 +55,9 @@ export class Categories extends Model implements Omit<CategoriesSchema, "id"> {
 
     @HasMany(() => ProductsRestaurant)
     productsRestaurants: unknown[];
+
+    @HasMany(() => ProductsServicio)
+    productsServicios: unknown[];
 
     @ForeignKey(() => Empresas)
     @Column({ type: DataType.INTEGER, allowNull: false })

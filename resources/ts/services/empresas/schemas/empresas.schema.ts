@@ -45,23 +45,28 @@ export type CredentialsWeb = Input<typeof credentialsWeb>;
 export type Empresa = "normal" | "restaurant" | "servicio";
 
 const payments = object({
-    catalogo: object({ price: number(), enabled: boolean() }),
-    ia: object({
+    tienda: object({
+        enabled: boolean(),
+    }),
+    mensual: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
-        price: number("Este campo es obligatorio"),
+        enabled: boolean(),
+    }),
+    tokens: object({
         tokens: number("Solo numeros"),
-        enabled: boolean("Este campo es obligatorio"),
     }),
-    sunat: object({
+    telegram: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
-        price: number("Este campo es obligatorio"),
         enabled: boolean("Este campo es obligatorio"),
     }),
-    clients: object({
-        quantity: number(),
-        price: number("Este campo es obligatorio"),
-        enabled: boolean("Este campo es obligatorio"),
-    }),
+    facturacion: nullable(
+        object({
+            date: nullable(
+                coerce(date(), (value) => new Date(value as string))
+            ),
+            enabled: boolean("Este campo es obligatorio"),
+        })
+    ),
 });
 export type Payments = Input<typeof payments>;
 
@@ -271,11 +276,7 @@ export const empresasSchema = object({
         url: string(),
         transaccion: nullable(number()),
     }),
-    pricing: object({
-        ia: number(),
-        sunat: nullable(number()),
-        telegram: number(),
-    }),
+    token: string(),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

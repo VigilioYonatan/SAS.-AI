@@ -1,6 +1,4 @@
-import useEmpresastore, {
-    storageEmpresa,
-} from "@/empresas/stores/empresa.store";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { NOW, TimePeru, restarDays } from "~/libs/helpers";
 
 // subscripciones
@@ -19,18 +17,16 @@ const payments = storageEmpresa?.payments!;
 
 export function subFacturacion() {
     return (
-        payments.sunat.enabled &&
-        restarDays(NOW().toDate(), TimePeru(payments.sunat.date!).toDate()) >= 0
+        payments.facturacion?.enabled &&
+        restarDays(
+            NOW().toDate(),
+            TimePeru(payments.facturacion?.date!).toDate()
+        ) >= 0
     );
 }
 export function subWhatsappIA() {
-    const empresa = useEmpresastore().state!;
-    return (
-        payments.ia.enabled &&
-        restarDays(NOW().toDate(), TimePeru(payments.ia.date!).toDate()) >= 0 &&
-        payments.ia.tokens &&
-        payments.ia.tokens > empresa.inteligenceArtificial.usage.input_tokens
-    );
+    // const empresa = useEmpresastore().state!;
+    return true;
 }
 
 //  si agregas mas

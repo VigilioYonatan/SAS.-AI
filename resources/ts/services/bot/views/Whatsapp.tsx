@@ -27,7 +27,6 @@ import Form from "~/components/form";
 import { valibotVigilio } from "~/libs/valibot";
 import { empresaContactsStoreUpdateApi } from "@/empresas/apis/empresas.contacts.store.api";
 import LoaderSubmit from "~/components/LoaderSubmit";
-import { linkVigilio } from "~/config/settings";
 import { Fragment } from "preact/jsx-runtime";
 import { groupWhatsappStoreApi } from "../apis/group-whatsapp.store.api";
 import { groupWhatsappIndexApi } from "../apis/group-whatsapp.index.api";
@@ -680,6 +679,7 @@ export function QrWhatsapp() {
                         <button
                             type="button"
                             class="self-end bg-black bg-opacity-60 w-[30px] h-[30px] flex justify-center items-center rounded-md"
+                            disabled={qrCodeQuery.isLoading || false}
                             onClick={() => {
                                 whatsappRestartMutation.mutate(null, {
                                     onSuccess() {
@@ -697,7 +697,13 @@ export function QrWhatsapp() {
                                 });
                             }}
                         >
-                            <i class="fa-solid fa-rotate-right text-white text-xl" />
+                            {qrCodeQuery.isLoading ? (
+                                <span class="text-xs dark:text-white">
+                                    Cargando...
+                                </span>
+                            ) : (
+                                <i class="fa-solid fa-rotate-right text-white text-xl" />
+                            )}
                         </button>
                         <div />
                     </div>
@@ -705,16 +711,8 @@ export function QrWhatsapp() {
             )}
             <ul class="list-image-none flex flex-col gap-2">
                 <li class="dark:text-white text-center">
-                    *Si no está funcionando el qr.{" "}
-                    <a
-                        href={linkVigilio()}
-                        class="text-md text-blue-400 hover:underline"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        Comunicarte con la empresa
-                    </a>{" "}
-                    para solucionarte el problema.
+                    *Si no está funcionando el qr. Recarga la pagina y reiniciar{" "}
+                    <i class="fa-solid fa-rotate-right text-white text-xs" />
                 </li>
             </ul>
         </div>

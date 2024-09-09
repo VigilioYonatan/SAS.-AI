@@ -1,9 +1,10 @@
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { useQuery } from "@vigilio/preact-fetching";
 import enviroments from "~/config";
 
 export function vigilioServicesQuery() {
     return useQuery(
-        `${enviroments.VITE_VIGILIO_WEB}/api/empresa/client`,
+        `${enviroments.VITE_VIGILIO_WEB}/api/information/client`,
         async (url) => {
             const response = await fetch(url);
             const result: {
@@ -17,6 +18,49 @@ export function vigilioServicesQuery() {
                     tiktok: string;
                     linkedin: string;
                     twitter: string;
+                };
+            } = await response.json();
+            if (!result.success) throw result;
+            return result;
+        }
+    );
+}
+export function vigilioServicesPricingQuery() {
+    return useQuery(
+        `${enviroments.VITE_VIGILIO_WEB}/api/countries/${storageEmpresa?.dial_code}`,
+        async (url) => {
+            const response = await fetch(url);
+            const result: {
+                success: true;
+                country: {
+                    dial_code: string;
+                    id: number;
+                    value: string;
+                    key: string;
+                    map_marker: {
+                        lat: number;
+                        lng: number;
+                    };
+                    money: string;
+                    simbolo: string;
+                    international_simbolo: string;
+                    impuesto: number;
+                    tipo_impuesto: string;
+                    bancos: { key: string; value: string; image: string }[];
+                    pricing: {
+                        dolar: {
+                            facturacion: number | null;
+                            mensual: number;
+                            tokens: number;
+                            telegram: number;
+                        };
+                        local: {
+                            facturacion: number | null;
+                            mensual: number;
+                            tokens: number;
+                            telegram: number;
+                        };
+                    };
                 };
             } = await response.json();
             if (!result.success) throw result;

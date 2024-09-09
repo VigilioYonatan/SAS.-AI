@@ -28,25 +28,25 @@ import { empresasLogoQualities } from "../libs";
 export type Empresa = "normal" | "restaurant" | "servicio";
 
 export const payments = objectAsync({
-    catalogo: object({ price: number(), enabled: boolean() }),
-    ia: object({
+    tienda: object({
+        enabled: boolean(),
+    }),
+    mensual: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
-        price: number("Este campo es obligatorio"),
-        enabled: boolean("Este campo es obligatorio"),
+        enabled: boolean(),
+    }),
+    tokens: object({
         tokens: number("Solo numeros"),
     }),
     telegram: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
-        price: number("Este campo es obligatorio"),
         enabled: boolean("Este campo es obligatorio"),
-        tokens: number("Solo numeros"),
     }),
-    sunat: nullable(
+    facturacion: nullable(
         object({
             date: nullable(
                 coerce(date(), (value) => new Date(value as string))
             ),
-            price: number("Este campo es obligatorio"),
             enabled: boolean("Este campo es obligatorio"),
         })
     ),
@@ -136,35 +136,34 @@ export const groupWhatsapp = objectAsync({
 export type CompanySchema = Input<typeof companySchema>;
 export type ContactsSchema = Input<typeof contactsSchema>;
 export type GroupWhatsapp = Input<typeof groupWhatsapp>;
-export const credentialsWeb = nullable(
-    object({
-        shopify: nullable(
-            object({
-                dominioweb: string(),
-                apiKey: string(),
-                password: string(),
-            })
-        ),
-        woocommerce: nullable(
-            object({
-                consumerKey: string(),
-                consumerSecret: string(),
-            })
-        ),
-        prestashop: nullable(
-            object({
-                api_key: string(),
-            })
-        ),
-    })
-);
-export type CredentialsWeb = Input<typeof credentialsWeb>;
+// export const credentialsWeb = nullable(
+//     object({
+//         shopify: nullable(
+//             object({
+//                 dominioweb: string(),
+//                 apiKey: string(),
+//                 password: string(),
+//             })
+//         ),
+//         woocommerce: nullable(
+//             object({
+//                 consumerKey: string(),
+//                 consumerSecret: string(),
+//             })
+//         ),
+//         prestashop: nullable(
+//             object({
+//                 api_key: string(),
+//             })
+//         ),
+//     })
+// );
+// export type CredentialsWeb = Input<typeof credentialsWeb>;
 export const empresasSchema = objectAsync({
     id: number(),
     web: nullable(string([startsWith("https://", "Web no válida. https://")])),
     dial_code: string(),
     name_empresa: string([minLength(2), maxLength(100)]),
-    credentials_web: credentialsWeb,
     email: string(),
     logo: nullable(array(filesSchema(empresasLogoQualities))), //obligatorio
     telephoneFirst: string([
@@ -285,12 +284,8 @@ export const empresasSchema = objectAsync({
         url: string(),
         transaccion: nullable(number()),
     }),
-    pricing: object({
-        ia: number(),
-        sunat: nullable(number()),
-        telegram: number(),
-    }),
     certificado: nullable(array(filesSchema())),
+    token:string()
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

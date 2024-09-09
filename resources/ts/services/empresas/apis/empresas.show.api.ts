@@ -6,7 +6,7 @@ export function empresaShowApi(
     skip = true
 ): UseQuery<empresaShowAPI, empresaShowErrorAPI> {
     return useQuery(
-        `/empresa/${id}`,
+        `/empresas/${id}`,
         async (url) => {
             const response = await fetch(`/api${url}`);
             const result: empresaShowAPI = await response.json();

@@ -11,10 +11,8 @@ import {
 import { Pipe } from "@vigilio/express-core/valibot";
 import { objectAsync, string } from "@vigilio/valibot";
 import { buenosDias, gracias, isWhatsappIA } from "../libs/ai";
-import enviroments from "~/config/enviroments.config";
 import { Empresas } from "@/empresas/entities/empresas.entity";
-import type { Client } from "whatsapp-web.js";
-import { randomNumber, terminal } from "~/libs/helpers";
+import { delay, randomNumber, terminal } from "~/libs/helpers";
 import {
     whatsappRemoveQR,
     whatsappSendFileApi,
@@ -26,6 +24,7 @@ import { promptReplace, transcribeAudio } from "../libs";
 import type WAWebJS from "whatsapp-web.js";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import { BASE_URL } from "@/empresas/libs";
+import { UrlsPayment } from "@/urls/entities/urls.payment.entity";
 
 export const chats: Record<
     string,
@@ -36,7 +35,8 @@ export const chats: Record<
 export class BotApiController {
     @Post("/whatsapp/ready")
     async whatsappReady(
-        @Body() client: Client,
+        @Body()
+        client: { contacts: { name: string; id: { _serialized: string } }[] },
         @Req("empresa") info: Empresas
     ) {
         const empresa = await Empresas.findOne({
@@ -45,7 +45,7 @@ export class BotApiController {
         });
         if (!empresa) throw new BadRequestException("Server error");
         if (!empresa.contacts.length) {
-            const contacts = await client.getContacts();
+            const contacts = await client.contacts;
             const mappedcontacts = contacts.map((contact) => ({
                 name: contact.name!,
                 telephone: contact.id._serialized,
@@ -157,7 +157,7 @@ export class BotApiController {
                 ].chat.completions.create({
                     model: clientVigilio
                         ? clientVigilio.empresa.modelai
-                        : enviroments.MODEL_AI,
+                        : "gpt-4o-mini",
                     max_tokens: 300,
                     messages: [
                         {
@@ -179,7 +179,7 @@ export class BotApiController {
                 await empresa.update({
                     ...empresa.toJSON(),
                     inteligenceArtificial: {
-                        ...empresa.toJSON().inteligenceArtificial,
+                        ...empresa.inteligenceArtificial,
                         usage: {
                             ...latestEmpresaUsage,
                             input_tokens:
@@ -190,21 +190,57 @@ export class BotApiController {
                                 completion.usage!.completion_tokens,
                         },
                     },
+                    payments: {
+                        ...empresa.payments,
+                        tokens: {
+                            tokens:
+                                empresa.payments.tokens.tokens -
+                                completion.usage!.completion_tokens,
+                        },
+                    },
                 });
 
                 // get message ai
                 const completionText = completion.choices[0].message.content!;
                 let removeNote = completionText.replace(/\s*\(.*?\)\s*/g, " ");
                 // quitar las imagenes para enviar imagen
-                const baseURL = `${BASE_URL(empresa)}/${empresa.slug}/${
+                const baseURL = `${BASE_URL(empresa)}/${
                     empresa.slug
                 }/images/products`;
                 const urlPattern = new RegExp(`${baseURL}[^\\s]*`, "g");
                 const match = removeNote.match(urlPattern);
-                const urlExtraida = match ? match[0] : null;
 
-                if (urlExtraida) {
-                    removeNote = removeNote.replace(urlPattern, "").trim();
+                const urlExtraidas = [];
+                if (match?.length) {
+                    for (const m of match) {
+                        removeNote = removeNote.replace(m, "").trim();
+                        urlExtraidas.push(m);
+                    }
+                }
+                // carrito
+                const expresionRegular = /\(\(cart\?items=[^\)]+\)\)/g;
+                const coincidencias = completionText.match(expresionRegular);
+
+                if (coincidencias?.length) {
+                    for (const c of coincidencias) {
+                        const hash = Math.random().toString(32).slice(4, 8);
+                        const urlGet = `${BASE_URL(empresa)}/cart/${hash}`;
+                        const date = NOW().add(1, "days");
+                        const findHash = await UrlsPayment.findOne({
+                            where: { hash, empresa_id: empresa.id },
+                        });
+                        if (findHash) {
+                            await findHash.update({ url: urlGet, time: date });
+                        } else {
+                            await UrlsPayment.create({
+                                hash,
+                                url: urlGet,
+                                empresa_id: empresa.id,
+                                time: date,
+                            });
+                        }
+                        removeNote = removeNote.replace(c, urlGet);
+                    }
                 }
 
                 chats[info.slug][userId] = [
@@ -217,12 +253,16 @@ export class BotApiController {
                     options: { quotedMessageId: props.id.id }, // id del mensaje
                 });
                 // enviar imagen
-                if (urlExtraida) {
-                    await whatsappSendFileApi(empresa, {
-                        telephone: userId,
-                        url: urlExtraida,
-                        option: { sendMediaAsSticker: true },
-                    });
+                if (urlExtraidas.length) {
+                    await delay(3);
+                    for (const url of urlExtraidas) {
+                        await whatsappSendFileApi(empresa, {
+                            telephone: userId,
+                            url: url,
+                            option: { sendMediaAsSticker: true },
+                        });
+                        await delay(3);
+                    }
                 }
             }
         } catch (error) {
@@ -230,20 +270,19 @@ export class BotApiController {
         }
     }
     @Post("/whatsapp/disconnected")
-    async whatsappDisconnected(empresa: Empresas) {
+    async whatsappDisconnected(@Req("empresa") empresa: Empresas) {
         await empresa.update({ enabledBot: false });
     }
     @Post("/whatsapp/restart")
-    async whatsappRestart(empresa: Empresas) {
-        try {
-            await whatsappRemoveQR(empresa);
-            await terminal(`docker container stop ${empresa.slug}`);
-            await terminal(`docker container start ${empresa.slug}`);
-            return {
-                success: true,
-                message: "Se reinició correctamente.",
-            };
-        } catch (error) {}
+    async whatsappRestart(@Req("empresa") empresa: Empresas) {
+        await whatsappRemoveQR(empresa);
+        await terminal(`docker container stop ${empresa.slug}`);
+        await terminal(`docker container start ${empresa.slug}`);
+
+        return {
+            success: true,
+            message: "Se reinició correctamente.",
+        };
     }
 
     @Pipe(objectAsync({ name: string() }))
@@ -258,8 +297,7 @@ export class BotApiController {
                 "Hubo un problema al usar la ia, Recomiendo fijarse en los limites token"
             );
         const completion = await openAis[empresa.slug].chat.completions.create({
-            model:
-                whatsapp.clientVigilio?.empresa.modelai || enviroments.MODEL_AI,
+            model: whatsapp.clientVigilio?.empresa.modelai ?? "gpt-4o-mini",
             max_tokens: 300,
             messages: [
                 {
@@ -281,6 +319,14 @@ export class BotApiController {
                 output_tokens:
                     latestEmpresaUsage.input_tokens +
                     completion.usage!.completion_tokens,
+            },
+            payments: {
+                ...empresa.payments,
+                tokens: {
+                    tokens:
+                        empresa.payments.tokens.tokens -
+                        completion.usage!.completion_tokens,
+                },
             },
         });
 

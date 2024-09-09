@@ -14,7 +14,6 @@ import type {
     CompanySchema,
     ContactsSchema,
     Credentials,
-    CredentialsWeb,
     EmpresasSchema,
     GroupWhatsapp,
     InteligenceArtificial,
@@ -194,6 +193,9 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     @Column({ type: DataType.BOOLEAN, defaultValue: false })
     enabled_pwa: boolean;
 
+    @Column({ type: DataType.STRING(255), defaultValue: false })
+    token: string;
+
     @Column({ type: DataType.BOOLEAN, defaultValue: false })
     enabled_booster: boolean;
 
@@ -280,10 +282,6 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
         defaultValue: [],
     })
     groupWhatsapp: GroupWhatsapp[];
-    @Column({
-        type: DataType.JSON,
-    })
-    credentials_web: CredentialsWeb | null;
 
     @Column({
         type: DataType.JSON,
@@ -304,11 +302,6 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
         url: string;
         transaccion: number | null;
     };
-
-    @Column({
-        type: DataType.JSON,
-    })
-    pricing: { ia: number; sunat: number | null; telegram: number };
 
     @Column({
         type: DataType.STRING,

@@ -521,7 +521,7 @@ function Efectivo({
             <span class="mx-auto text-xl mb-2 block">
                 {formatMoney(ordersCartStoreDtoForm.getValues("total"))}
             </span>
-            <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-3 text-sm">
                 <div class="flex items-center gap-2">
                     <span class="font-semibold">Metodo de pago:</span>
                     <span>Efectivo</span>
@@ -533,7 +533,6 @@ function Efectivo({
                         {ordersCartStoreDto.telephone}
                     </span>
                 </div>
-
                 <div class="flex items-center gap-2">
                     <span class="font-semibold">Dirección:</span>
                     <span>{ordersCartStoreDto.address}</span>
@@ -547,9 +546,14 @@ function Efectivo({
                 type="button"
                 aria-label="realizar pedido"
                 class="bg-primary px-4 py-2 rounded-md text-white uppercase font-bold mt-5 mb-2 text-xs"
+                disabled={ordersStoreMutation.isLoading || false}
                 onClick={onOrderEfectivo}
             >
-                Realizar Pedido
+                {ordersStoreMutation.isLoading ? (
+                    <LoaderSubmit />
+                ) : (
+                    "Realizar Pedido"
+                )}
             </button>
         </div>
     );
@@ -1081,6 +1085,7 @@ function PaypalPayment({
                 type="button"
                 aria-label="pay to paypal"
                 onClick={onPaymentPaypal}
+                disabled={paypalPaymentMutation.isLoading || false}
             >
                 {paypalPaymentMutation.isLoading ? (
                     <LoaderSubmit />

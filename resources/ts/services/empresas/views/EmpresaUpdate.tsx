@@ -543,6 +543,10 @@ function empresaUpdate() {
                             title="Guardar Cambios"
                         />
                     </Form>
+
+                    <span class="dark:text-white">
+                        <b>Token:</b> {empresa.token}
+                    </span>
                 </div>
             </Container>
         );

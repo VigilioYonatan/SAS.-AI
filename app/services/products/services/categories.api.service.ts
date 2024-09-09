@@ -6,6 +6,8 @@ import { Categories } from "../entities/categories.entity";
 import type { CategoriesStoreDto } from "../dtos/categories.store.dto";
 import type { CategoriesUpdateDto } from "../dtos/categories.update.dto";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
+import { removeFile } from "@/uploads/libs/helpers";
+import { ProductKeys } from "../libs";
 
 @Injectable()
 export class CategoriesApiService {
@@ -111,7 +113,21 @@ export class CategoriesApiService {
 
     async destroy(empresa: Empresas, id: string) {
         const { category } = await this.show(empresa, id);
+        const products = await category.$get(
+            ProductKeys(empresa) as keyof Categories,
+            {
+                raw: true,
+            }
+        );
+        if (products.length)
+            throw new BadRequestException(
+                `Existe productos en la categoría ${category.category_code} - ${products.length} productos`
+            );
+
         await category.destroy();
+        if (category.image) {
+            removeFile(empresa.slug, category.image);
+        }
         return {
             success: true,
             message: `La categoría con el id: ${id} fue eliminado`,

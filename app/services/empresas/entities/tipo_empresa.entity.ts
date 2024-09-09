@@ -2,6 +2,7 @@ import {
     BelongsTo,
     Column,
     DataType,
+    DefaultScope,
     ForeignKey,
     HasMany,
     Model,
@@ -11,6 +12,7 @@ import type { TipoEmpresaSchema } from "../schemas/tipo_empresa.schema";
 import { TipoServicio } from "./tipo_servicio.entity";
 import { Empresas } from "./empresas.entity";
 
+@DefaultScope(() => ({ include: [TipoServicio] }))
 @Table
 export class TipoEmpresa
     extends Model

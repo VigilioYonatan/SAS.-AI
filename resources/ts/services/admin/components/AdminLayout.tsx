@@ -210,7 +210,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
                             title="Delivery"
                             Icon={<i class="fas fa-motorcycle" />}
                         />
-                        {storageEmpresa?.payments.catalogo.enabled &&
+                        {storageEmpresa?.payments.tienda.enabled &&
                         authStore.guards.permissionAdminGuard() ? (
                             <div class="relative">
                                 <NavLink

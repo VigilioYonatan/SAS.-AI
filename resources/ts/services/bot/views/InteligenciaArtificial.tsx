@@ -185,6 +185,9 @@ function InteligenciaArtificial() {
                                                     Información de uso de tu
                                                     inteligencia Artificial
                                                 </span>
+                                                <span>
+                                                    Maximo outputs tokens:{" "}
+                                                </span>
                                                 <div>
                                                     Inputs:{" "}
                                                     <b>{usage.input_tokens}</b>{" "}
@@ -211,7 +214,7 @@ function InteligenciaArtificial() {
                                                 </span>
                                                 <a
                                                     class="text-primary text-xs hover:underline"
-                                                    href="https://www.anthropic.com/api"
+                                                    href="https://platform.openai.com/tokenizer"
                                                     target="_blank"
                                                     rel="noreferrer"
                                                 >

@@ -19,6 +19,5 @@ export const empresasUpdateDto = omitAsync(empresasSchema, [
     "tipo_impuesto",
     "mercado_pago_comision",
     "certificado",
-    "pricing",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;

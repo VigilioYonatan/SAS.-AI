@@ -137,9 +137,9 @@ export function whatsappLogout() {
 }
 export function whatsappRestart() {
     return useMutation<{ success: true; message: string }, unknown, unknown>(
-        "/whatsapp/restart",
+        "/bot/whatsapp/restart",
         async (url) => {
-            const response = await fetch(`${BASE_URL_WHATSAPP}/api${url}`, {
+            const response = await fetch(`/api${url}`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,

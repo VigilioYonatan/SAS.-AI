@@ -165,15 +165,13 @@ export function printFileWithDimension(empresa: Empresas) {
         return filterImages.map((file) =>
             file.file!.startsWith("https://")
                 ? file.file
-                : `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
-                      file.file
-                  }`
+                : `${BASE_URL(empresa)}/empresas/${empresa.slug}/${file.file}`
         );
     };
 }
 export function removeFile(slug: string, files: FilesSchema[]) {
     for (const file of files) {
-        const image = `${pathUploads()}/empresas/${slug}/${file.file}`;
+        const image = `${pathUploads()}/${slug}/${file.file}`;
         if (fs.existsSync(image)) {
             fs.unlinkSync(image);
         }

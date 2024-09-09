@@ -117,6 +117,8 @@ export async function sendTyping(req: Request, res: Response) {
 
 /** SEND MESSAGE - QR */
 export async function getQr(_req: Request, res: Response) {
+    if (!fs.existsSync(qrImage))
+        return res.status(404).json({ success: false, message: "No hay qr" });
     return res.sendFile(qrImage);
 }
 /** SEND MESSAGE - LOGOUT */

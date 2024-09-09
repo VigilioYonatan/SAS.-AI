@@ -12,6 +12,7 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
             money: "Sol Peruano",
             simbolo: "PEN",
         },
+        token: "asas",
         web: null,
         logo: null,
         name_empresa: "vigilio services",
@@ -135,23 +136,19 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         enable_map_marker: false,
         enabled_catalogo: false,
         payments: {
-            ia: {
+            mensual: {
                 date: NOW().add(7, "day").toDate(),
                 enabled: true,
-                price: 10,
-                tokens: 1000000,
             },
-            sunat: { date: new Date(), enabled: true, price: 25 },
+            facturacion: { date: new Date(), enabled: true },
             telegram: {
                 date: new Date(),
                 enabled: false,
-                price: 35,
-                tokens: 100000,
             },
-            catalogo: { price: 0, enabled: true },
+            tienda: { enabled: true },
+            tokens: { tokens: 10000 },
         },
         type_empresa_id: 1,
-        credentials_web: null,
         bancos: [
             {
                 key: "bcp",
@@ -172,7 +169,6 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         telegram_token: null,
         port: 5001,
         mercado_pago_comision: { comision: 3.49, transaccion: 1, url: "" },
-        pricing: { ia: 29, sunat: 34, telegram: 38 },
         tipo_impuesto: "igv",
         enabled_pwa: true,
         certificado: null,
@@ -302,23 +298,19 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         enable_map_marker: false,
         enabled_catalogo: false,
         payments: {
-            ia: {
+            mensual: {
                 date: NOW().add(7, "day").toDate(),
                 enabled: true,
-                price: 10,
-                tokens: 1000000,
             },
-            sunat: { date: new Date(), enabled: true, price: 25 },
+            facturacion: { date: new Date(), enabled: true },
             telegram: {
                 date: new Date(),
                 enabled: false,
-                price: 35,
-                tokens: 100000,
             },
-            catalogo: { price: 0, enabled: true },
+            tienda: { enabled: true },
+            tokens: { tokens: 10000 },
         },
         type_empresa_id: 22,
-        credentials_web: null,
         bancos: [
             {
                 key: "bbva",
@@ -343,9 +335,9 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
             transaccion: 4,
             url: "https://www.mercadopago.com.mx/ayuda/33399",
         },
-        pricing: { ia: 29, sunat: 34, telegram: 38 },
         tipo_impuesto: "IVA",
         enabled_pwa: true,
+        token: "asas",
         certificado: null,
     };
 }

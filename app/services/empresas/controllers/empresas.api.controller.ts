@@ -11,7 +11,14 @@ import {
     Req,
 } from "@vigilio/express-core";
 import { Pipe, Validator } from "@vigilio/express-core/valibot";
-import { arrayAsync, objectAsync, omitAsync, string } from "@vigilio/valibot";
+import {
+    arrayAsync,
+    mergeAsync,
+    object,
+    objectAsync,
+    omitAsync,
+    string,
+} from "@vigilio/valibot";
 import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
 import { VigilioServicesGuard } from "../guards/vigilioservices.guard";
 import { type PaymentDto } from "@/payments/dtos/payment.dto";
@@ -28,6 +35,7 @@ import {
     whatsappconfig,
     type ContactsSchema,
     type GroupWhatsapp,
+    type Payments,
     type ScheduleSchema,
     type Whatsappconfig,
 } from "../schemas/empresas.schema";
@@ -66,12 +74,12 @@ export class EmpresasApiController {
         return result;
     }
     @VigilioServicesGuard()
-    @Validator(payments)
+    @Validator(mergeAsync([payments, object({ token: string() })]))
     @Pipe(objectAsync({ slug: string() }))
     @Put("/:slug/payment")
     async paymentUpdate(
         @Params("slug") slug: string,
-        @Body() paymentDto: PaymentDto
+        @Body() paymentDto: Payments & { token: string }
     ) {
         const result = await this.empresaApiService.paymentUpdate(
             slug,

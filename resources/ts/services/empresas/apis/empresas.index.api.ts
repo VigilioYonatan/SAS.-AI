@@ -11,7 +11,7 @@ export function empresaIndexApi(
     options?: OptionsQuery<empresaIndexAPI, unknown>
 ): empresaIndexApiMethod {
     return useQuery(
-        "/empresa",
+        "/empresas",
         async (url) => {
             const response = await fetch(`/api${url}`);
             const result: empresaIndexAPI = await response.json();

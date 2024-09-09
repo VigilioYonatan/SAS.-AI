@@ -4,7 +4,6 @@ import { payMethodsSeeder } from "@/orders/seeders/pay_methods.seeder";
 import { statusOrdersSeeder } from "@/orders/seeders/status_orders.seeder";
 import { Injectable } from "@vigilio/express-core";
 import { sequelize } from "~/config/db.config";
-import { empresasSeeder2 } from "@/empresas/seeders/empresas.seeder";
 import { KindInvoice } from "@/orders/entities/kind_invoice.entity";
 import { kindInvoiceSeeder } from "@/orders/seeders/kind_invoice.seeder";
 import { documentsSeeder } from "@/orders/seeders/documents.seeder";
@@ -13,18 +12,17 @@ import { KindCreditNotes } from "@/orders/entities/kind_credit_notes.entity";
 import { KindDebitNotes } from "@/orders/entities/kind_debit_notes.entity";
 import { kindCreditNotesSeeder } from "@/orders/seeders/kind_credit_notes.seeder";
 import { kindDebitNotesSeeder } from "@/orders/seeders/kind_debit_notes.seeder";
-import { Suppliers } from "@/suppliers/entities/suppliers.entity";
-import { suppliersSeeder } from "@/suppliers/seeders/suppliers.seeder";
-import { Posts } from "@/posts/entities/posts.entity";
-import { postsSeeder } from "@/posts/seeders/posts.seeder";
 import { Options } from "@/products/entities/options/options.entity";
 import { optionsSeeder } from "@/products/seeders/options.seeder";
 import enviroments from "~/config/enviroments.config";
 import { TipoServicio } from "@/empresas/entities/tipo_servicio.entity";
 import { servicios } from "@/empresas/seeders/tipo_empresa.seeder";
-import { EmpresasApiService } from "@/empresas/services/empresas.api.service";
 import { ubigeoSeeder } from "@/ubigeo/seeders/countries.seeder";
 import { Information } from "@/empresas/entities/information.entity";
+import { empresasSeeder2 } from "@/empresas/seeders/empresas.seeder";
+import { EmpresasApiService } from "@/empresas/services/empresas.api.service";
+import { Address } from "@/empresas/entities/address.entity";
+import { addressSeeder } from "@/empresas/seeders/address.seeder";
 
 @Injectable()
 export class SeedersApiService {
@@ -61,12 +59,13 @@ export class SeedersApiService {
                 ...empresa,
                 fullname: "Yonatan Vigilio",
                 password: "123456",
+                servicio_id: 2,
             });
-            // await Promise.all([Address.bulkCreate(addressSeeder)]);
+            await Promise.all([Address.bulkCreate(addressSeeder)]);
 
             // if (enviroments.NODE_ENV === "production") {
 
-            await Promise.all([Suppliers.bulkCreate(suppliersSeeder)]);
+            // await Promise.all([Suppliers.bulkCreate(suppliersSeeder)]);
             await Promise.all(
                 optionsSeeder.map(async (prod) => {
                     const { features, ...rest } = prod;
@@ -83,7 +82,7 @@ export class SeedersApiService {
             );
 
             // await Promise.all([Users.bulkCreate([...usersSeeder])]);
-            await Promise.all([Posts.bulkCreate(postsSeeder)]);
+            // await Promise.all([Posts.bulkCreate(postsSeeder)]);
 
             return { success: true, message: "Seed executed" };
         } catch (error) {

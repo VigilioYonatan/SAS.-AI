@@ -18,8 +18,8 @@ export const empresasUpdateDto = omit(empresasSchema, [
     "port",
     "tipo_impuesto",
     "mercado_pago_comision",
-    "pricing",
     "certificado",
     "logo",
+    "token",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;

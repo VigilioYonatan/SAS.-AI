@@ -128,7 +128,7 @@ function CategoriesShow({ id, onClose, refetch }: CategoriesShowProps) {
 																	icon: "danger",
 																	text: `La categoría ${
 																		category.name
-																	} no fue eliminado, comunicarse con el desarrollador:${JSON.stringify(
+																	} no fue eliminado:${JSON.stringify(
 																		error,
 																	)}`,
 																	title: "Error!",

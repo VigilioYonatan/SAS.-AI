@@ -18,7 +18,7 @@ export function prompt(
               "Evita reescribir los nombres de los productos ![example] ó [example] omite esos, no hagas imitaciones. y no encierres [] a las palabras.",
               `Si te pido información más detallada de un  producto que no está en la BASE_DE_DATOS enviar ${
                   empresa.web
-                      ? `${empresa.web}/urldeproductooservicio,`
+                      ? `${empresa.web}/productourl_o_serviciourl,`
                       : `https://www.${url}/slugdeproductooservicio`
               }`,
               "enviamen la imagen ( mandarme la url de la imagen)  si te pido una imagen de un producto",
@@ -38,16 +38,16 @@ export function prompt(
     if (empresa.inteligenceArtificial.settings.enabled_cart) {
         instrucctions = [
             ...instrucctions,
-            `Siempre preguntame si quiero llevar algo más, antes de enviarme link para pagar, el link será como en el siguiente ejemplo enviar un enlace y  como en el siguiente ejemplo   ${url}/cart?items=${
+            `Siempre preguntame si quiero llevar algo más, antes de enviarme ((cart?=)),  será como en el siguiente ejemplo   ((cart?items=${
                 empresa.tipo_empresa.tipo_servicio_id === 1
                     ? "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%2C%20%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%5D"
                     : "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%7D%2C%20%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%7D%5D"
-            } que es un formato URL percent-encoding, sin las etiquestas <> a los costados de los links.`,
+            })) que es un formato URL percent-encoding,. Solo enviame ((cart?=)), se podria decir que es un enlace pero en ((cart?=URL percent-encoding)) de productos o servicios de base de datos`,
         ];
         directrices = [
-            "No menciones 'carrito' ni 'BASE_DE_DATOS'. no seas muy tecnico!!! y SOLO response las preguntas que te diga y NO sobrecargues mucho tu respuesta. NO me des feedback ni recomendaciones",
+            "No menciones 'carrito' ni 'BASE_DE_DATOS'. no seas muy tecnico!!! y SOLO response las preguntas que te diga y NO sobrecargues mucho tu respuesta. NO me des feedback ni recomendaciones, sin que me lo pidas",
             "NO ENVIES EL LINK si no confirmo el pedido!!! y no sugieras links cuando no haya confirmado el pedido.  SOLO CUANDO  CONFIRME PEDIDO.",
-            "No Menciones de que te entregaremos un link. Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el link.",
+            "No Menciones de que te entregaremos un ((cart?=)). Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el ((cart?=)).",
             ...directrices,
         ];
     }

@@ -10,6 +10,7 @@ import {
     Status,
     Injectable,
     Req,
+    Query,
 } from "@vigilio/express-core";
 import { Pipe, Validator } from "@vigilio/express-core/valibot";
 import { objectAsync, string } from "@vigilio/valibot";
@@ -42,17 +43,15 @@ import {
 export class ProductsApiController {
     constructor(private readonly productsApiService: ProductsApiService) {}
 
-    // @Get("/")
-    // async index() {
-    //     const result = await this.productsApiService.index();
-    //     return result;
-    // }
-
-    @Post("/woocomerce")
-    async woocomerce(@Req("empresa") empresa: Empresas) {
-        const result = await this.productsApiService.woocommerce(empresa);
+    @Get("/")
+    async index(
+        @Req("empresa") empresa: Empresas,
+        @Query("token") token: string
+    ) {
+        const result = await this.productsApiService.index(empresa, token);
         return result;
     }
+
     @Pipe(
         objectAsync({
             slug: string(),

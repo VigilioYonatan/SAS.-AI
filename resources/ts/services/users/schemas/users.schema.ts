@@ -14,7 +14,6 @@ import {
     transform,
     toTrimmed,
     object,
-    custom,
 } from "@vigilio/valibot";
 import { filesSchema } from "~/libs/upload";
 
@@ -35,14 +34,7 @@ export const usersSchema = object({
     ),
     password: string([toTrimmed(), minLength(1), minLength(6), maxLength(30)]),
     address: nullable(string([toTrimmed(), minLength(10), maxLength(100)])),
-    telephone: nullable(
-        string([
-            toTrimmed(),
-            minLength(6),
-            maxLength(30),
-            custom((value) => /^\d+$/.test(value), "Solo numeros."),
-        ])
-    ),
+    telephone: nullable(string([toTrimmed(), minLength(6), maxLength(60)])),
     photo: nullable(array(filesSchema())),
     enabled: boolean(),
     isOnline: boolean(),

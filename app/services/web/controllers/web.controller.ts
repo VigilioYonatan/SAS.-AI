@@ -90,6 +90,7 @@ export class WebController {
         const result = await this.webService.product(slug, empresa);
         return res.render("web/product", result);
     }
+
     @Pipe(objectAsync({ hash: string() }))
     @Get("/sh/:hash")
     async link(@Params("hash") hash: string, @Res() res: Response) {

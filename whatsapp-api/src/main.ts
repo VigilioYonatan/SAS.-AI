@@ -28,7 +28,7 @@ export const qrImage = path.resolve(__dirname, "..", `${SESSION_NAME}-qr.png`);
 export const BASE_URL =
     NODE_ENV === "production"
         ? `https://www.${process.env.SESSION_NAME}.vigilio-services.com`
-        : `http://${process.env.SESSION_NAME}.localhost:4003.com`;
+        : `http://${process.env.SESSION_NAME}.localhost:4003`;
 
 export let client: WAWebJS.Client;
 
@@ -38,10 +38,7 @@ app.use(morgan("dev"));
 
 export async function initialWhatsapp() {
     client = new WAWebJS.Client({
-        authStrategy: new WAWebJS.LocalAuth({
-            clientId: SESSION_NAME,
-            // dataPath: path.join(__dirname, SESSION_NAME!),
-        }),
+        authStrategy: new WAWebJS.LocalAuth(),
         puppeteer: {
             headless: true,
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -63,9 +60,14 @@ export async function initialWhatsapp() {
     client.on("ready", async () => {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("******      ready      *********");
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log(JSON.stringify((await client.getContacts()).slice(0, 10)));
         await fetch(`${BASE_URL}/api/bot/whatsapp/ready`, {
             method: "POST",
-            body: JSON.stringify(client),
+            body: JSON.stringify({ contacts: await client.getContacts() }),
+            headers: {
+                "Content-Type": "application-json",
+            },
         });
     });
 

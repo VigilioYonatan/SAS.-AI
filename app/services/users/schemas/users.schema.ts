@@ -16,7 +16,6 @@ import {
     toTrimmed,
     nullableAsync,
     object,
-    custom,
 } from "@vigilio/valibot";
 import { usersPhotoQualities } from "../libs";
 import { filesSchema } from "@/uploads/schemas/uploads.schema";
@@ -38,12 +37,7 @@ export const usersSchema = objectAsync({
     ),
     password: string([toTrimmed(), minLength(1), minLength(6), maxLength(30)]),
     address: nullable(string([toTrimmed(), minLength(10), maxLength(100)])),
-    telephone: string([
-        toTrimmed(),
-        minLength(6),
-        maxLength(30),
-        custom((value) => /^\d+$/.test(value), "Solo numeros."),
-    ]),
+    telephone: string([toTrimmed(), minLength(6), maxLength(60)]),
     photo: nullable(array(filesSchema(usersPhotoQualities))),
     enabled: boolean(),
     isOnline: boolean(),

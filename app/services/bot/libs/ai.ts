@@ -98,8 +98,7 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
     if (!empresa) return null;
     const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
     if (!emp?.enabledBot) return null;
-    const isDateNow = restarDays(NOW().toDate(), emp.payments.ia.date!);
-    if (!emp?.enabledBot) return null;
+    const isDateNow = restarDays(NOW().toDate(), emp.payments.mensual.date!);
     if (telephone) {
         const contact = emp!.contacts.find(
             (contact) => contact.telephone === telephone
@@ -107,20 +106,8 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
         if (contact && !contact.ia) return null;
         // si existe en el array de contacto y la ia es false que salga null
     }
-    if (isDateNow <= 0 && latestEmpresaUsage.input_tokens <= 0) {
-        // actualizamos uso de tokens
-        await emp.update({
-            ...emp.toJSON(),
-            inteligenceArtificial: {
-                ...emp.inteligenceArtificial,
-                usage: {
-                    ...latestEmpresaUsage,
-                    input_tokens: 0,
-                    output_tokens: 0,
-                },
-            },
-        });
-    }
+    // si se vencio la fecha y no hay tokens
+    if (isDateNow <= 0 || emp.payments.tokens.tokens < 1) return null;
 
     return {
         empresa: emp,
@@ -148,21 +135,8 @@ export async function isTelegramIA(empresa: string) {
     const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
     if (!emp?.enabledBot) return null;
     const isDateNow = restarDays(NOW().toDate(), emp.payments.telegram.date!);
-    if (isDateNow <= 0 && latestEmpresaUsage.input_tokens <= 0) {
-        // actualizamos uso de tokens
-        await emp.update({
-            ...emp.toJSON(),
-            inteligenceArtificial: {
-                ...emp.toJSON().inteligenceArtificial,
-                usage: {
-                    ...latestEmpresaUsage,
-                    input_tokens: 0,
-                    output_tokens: 0,
-                },
-            },
-        });
-    }
-
+    // si se vencio la fecha y no hay tokens
+    if (isDateNow <= 0 || emp.payments.tokens.tokens < 1) return null;
     return {
         empresa,
         clientVigilio,
@@ -334,9 +308,7 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
         );
 
         const completion = await openAis[empresa.slug].chat.completions.create({
-            model: clientVigilio
-                ? clientVigilio.empresa.modelai
-                : enviroments.MODEL_AI,
+            model: clientVigilio?.empresa.modelai ?? "gpt-4o-mini",
             max_tokens: 300,
             messages: [
                 {
@@ -360,16 +332,24 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
                     latestEmpresaUsage.output_tokens +
                     completion.usage!.completion_tokens,
             },
+            payments: {
+                ...empresa.payments,
+                tokens: {
+                    tokens:
+                        empresa.payments.tokens.tokens -
+                        completion.usage!.completion_tokens,
+                },
+            },
         });
 
-        chatAssistant[emp][userId] = [
-            ...(chatAssistant[emp][userId] || []),
+        (chatAssistant[emp] ?? [])[userId] = [
+            ...((chatAssistant[emp] ?? [])[userId] || []),
             ["assistant", removeNote, Date.now()],
         ];
 
         return removeNote;
     } catch (error) {
-        return "Hubo un error al usar ia, posible errores no hay tokens.";
+        return "No disponible.";
     }
 }
 
@@ -406,9 +386,7 @@ export async function cloudeAiWeb(emp: string, token: string, message: string) {
         );
 
         const completion = await openAis[empresa.slug].chat.completions.create({
-            model: clientVigilio
-                ? clientVigilio.empresa.modelai
-                : enviroments.MODEL_AI,
+            model: clientVigilio?.empresa.modelai ?? "gpt-4o-mini",
             max_tokens: 300,
             messages: [
                 {
@@ -433,6 +411,14 @@ export async function cloudeAiWeb(emp: string, token: string, message: string) {
                 output_tokens:
                     latestEmpresaUsage.output_tokens +
                     completion.usage!.completion_tokens,
+            },
+            payments: {
+                ...empresa.payments,
+                tokens: {
+                    tokens:
+                        empresa.payments.tokens.tokens -
+                        completion.usage!.completion_tokens,
+                },
             },
         });
 

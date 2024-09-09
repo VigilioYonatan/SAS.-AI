@@ -42,18 +42,14 @@ RUN  apt-get update && apt-get install -y \
     wget \
     git \ 
  && rm -rf /var/lib/apt/lists/*
-RUN npm install -g pnpm 
-
-
-FROM base AS dependencies
-COPY package.json .
-RUN pnpm install
+RUN npm install -g bun 
 
 FROM base AS build
-COPY --from=dependencies /usr/src/app/node_modules ./node_modules
 COPY . .
-RUN pnpm build:serve && \
-    pnpm prune --prod
+RUN bun install
+RUN  bun build:serve && \
+    rm -rf node_modules && bun install --production && \ 
+    bun install --platform=linux --arch=x64 sharp
 
 FROM base AS production
 COPY --from=build  /usr/src/app/node_modules  ./node_modules

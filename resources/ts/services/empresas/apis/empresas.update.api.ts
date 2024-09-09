@@ -9,7 +9,7 @@ export function empresaUpdateApi(): UseMutation<
     EmpresasUpdateDto,
     empresaUpdateErrorAPI
 > {
-    return useMutation("/empresa", async (url, body) => {
+    return useMutation("/empresas", async (url, body) => {
         const response = await fetch(`/api${url}`, {
             method: "PUT",
             body: JSON.stringify(body),

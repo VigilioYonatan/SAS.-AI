@@ -35,6 +35,14 @@ export function Product(empresa: Empresas): any {
     };
     return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
 }
+export function ProductKeys(empresa: Empresas) {
+    const pr = {
+        1: "ProductsNormals",
+        2: "ProductsRestaurants",
+        3: "ProductsServicios",
+    };
+    return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
+}
 export function productEntityId(empresa: Empresas) {
     const pr = {
         1: "product_normal_id",

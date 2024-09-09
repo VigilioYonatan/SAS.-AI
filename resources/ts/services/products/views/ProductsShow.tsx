@@ -346,7 +346,7 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
                                                                         icon: "danger",
                                                                         text: `El producto ${
                                                                             product.name
-                                                                        } no fue eliminado, comunicarse con el desarrollador:${JSON.stringify(
+                                                                        } no fue eliminado, :${JSON.stringify(
                                                                             error
                                                                         )}`,
                                                                         title: "Error!",

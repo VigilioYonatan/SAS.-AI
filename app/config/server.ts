@@ -98,6 +98,7 @@ export class Server {
                         "contacts",
                         "groupWhatsapp",
                         "credentials",
+                        "token",
                     ] as (keyof EmpresasSchema)[],
                 },
             });
@@ -118,9 +119,8 @@ export class Server {
                     },
                     metodos_pago: {
                         ...(empresa.metodos_pago as MetodosPago).toJSON(),
-                        transferencias: (
-                            empresa.metodos_pago as MetodosPago
-                        ).transferencias,
+                        transferencias: (empresa.metodos_pago as MetodosPago)
+                            .transferencias,
                         paypal: {
                             enabled: (empresa.metodos_pago as MetodosPago)
                                 .paypal.enabled,
@@ -149,6 +149,7 @@ export class Server {
 
                 return next();
             }
+
             if (enviroments.NODE_ENV !== "production") {
                 return next();
             }

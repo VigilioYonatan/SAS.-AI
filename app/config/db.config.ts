@@ -47,6 +47,7 @@ import { Floors } from "@/orders/entities/floors.entity";
 import { Complaints } from "@/empresas/entities/complaints.entity";
 import { Settings } from "@/empresas/entities/settings.entity";
 import { Information } from "@/empresas/entities/information.entity";
+import { UrlsPayment } from "@/urls/entities/urls.payment.entity";
 
 const sequelize = new Sequelize({
     dialect: "postgres",
@@ -111,6 +112,7 @@ sequelize.addModels([
     Floors,
     Settings,
     Information,
+    UrlsPayment,
 ]);
 
 export async function connectDB() {

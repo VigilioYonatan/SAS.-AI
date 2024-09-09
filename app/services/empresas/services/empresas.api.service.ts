@@ -1,4 +1,7 @@
-import { Injectable } from "@vigilio/express-core";
+import {
+    Injectable,
+    InternalServerErrorException,
+} from "@vigilio/express-core";
 import { Empresas } from "../entities/empresas.entity";
 import { BadRequestException, NotFoundException } from "@vigilio/express-core";
 import type { EmpresasUpdateDto } from "../dtos/empresas.update.dto";
@@ -7,32 +10,30 @@ import type { EmpresasIAUpdateDto } from "../dtos/empresas.ia.update.dto";
 import type {
     ContactsSchema,
     GroupWhatsapp,
+    Payments,
     ScheduleSchema,
     Whatsappconfig,
 } from "../schemas/empresas.schema";
 import type { EmpresasAddressUpdateDto } from "../dtos/empresas.address.update.dto";
 import { Address } from "../entities/address.entity";
-import { pathUploads, removeFile } from "@/uploads/libs/helpers";
-import { Invoices } from "@/orders/entities/invoices.entity";
+import { pathUploads } from "@/uploads/libs/helpers";
 import fs from "node:fs";
-import { Users } from "@/users/entities/users.entity";
-import path from "node:path";
-import { Notes } from "@/orders/entities/notes.entity";
-import { Guides } from "@/orders/entities/guides.entity";
 import type { EmpresasStoreDto } from "../dtos/empresas.store.dto";
 import type { MetodosPagoUpdateDto } from "../dtos/metodosPago.update.dto";
 import { MetodosPago } from "../entities/metodosPago.entity";
-import type { PaymentDto } from "@/payments/dtos/payment.dto";
 import type { MetodosPagoSchema } from "../schemas/metodosPago.schema";
 import { UsersApiService } from "@/users/services/users.api.service";
-import { slug } from "@vigilio/express-core/helpers";
+import { generateId, slug } from "@vigilio/express-core/helpers";
 import openai from "openai";
 import { Regions } from "@/ubigeo/entities/regions.entity";
 import { RegionsEmpresa } from "@/ubigeo/entities/regions_empresa.entity";
 import { Countries } from "@/ubigeo/entities/countries.entity";
-import { Product } from "@/products/libs";
 import { BackgroundApiService } from "./background.api.service";
 import { BASE_URL } from "../libs";
+import { mesasSeeder } from "../seeders/mesas.seeder";
+import { Floors } from "@/orders/entities/floors.entity";
+import { terminal } from "~/libs/helpers";
+import enviroments from "~/config/enviroments.config";
 
 export let openAis: Record<string, openai> = {};
 
@@ -45,7 +46,7 @@ export class EmpresasApiService {
     async payment(slug: string) {
         const data = await Empresas.findOne({
             where: { slug },
-            attributes: ["payments", "slug", "id"],
+            attributes: ["payments", "slug", "id", "credentials"],
         });
         if (!data) throw new NotFoundException(`no se encontró ${slug}`);
         return {
@@ -53,9 +54,15 @@ export class EmpresasApiService {
             data,
         };
     }
-    async paymentUpdate(slug: string, paymentDto: PaymentDto) {
+    async paymentUpdate(
+        slug: string,
+        paymentDto: Payments & { token: string }
+    ) {
         const { data } = await this.payment(slug);
-        await data.update({ payments: paymentDto });
+        await data.update({
+            payments: paymentDto,
+            credentials: { ...data.credentials, open_ai: paymentDto.token },
+        });
         return {
             success: true,
             data,
@@ -94,126 +101,153 @@ export class EmpresasApiService {
     }
 
     async store(body: EmpresasStoreDto) {
-        const { password, fullname, ...rest } = body;
-        const empresa = new Empresas({
-            ...rest,
-            enabled_booster: false,
-            enabledBot: true,
-            enabledBotWeb: true,
-            enabledClientPayComision: true,
-            enabled_igv: true,
-            isOpen: true,
-            enable_sell_country: false,
-        });
-        await empresa.save();
-        await this.backgroundApiService.store(empresa, {
-            title: "Los Mejores Precios",
-            description: "Bienvenido a nuestra Tienda Online",
-            image: [
-                {
-                    file: `${BASE_URL(
-                        empresa
-                    )}/images/settings/others/slider.jpg`,
-                    dimension: 1000,
-                },
-            ],
-            url: "/",
-        });
-        const transferencias = {} as Record<
-            keyof typeof empresa.bancos,
-            { titular: null; dolares: null }
-        >;
-        for (const banco of empresa.bancos) {
-            transferencias[banco.key as keyof typeof empresa.bancos] = {
-                titular: null,
-                dolares: null,
-                [empresa.money.simbolo]: null,
-            };
-        }
-        // como hacer qeu sea {[bank.key]:{titular:null}}
-        await empresa.$create("metodos_pago", {
-            transferencias,
-            enable_efectivo: true,
-            mercado_pago: { token: null, enabled: false },
-            qrYape: null,
-            qrPlin: null,
-            paypal: {
-                enabled: false,
-                paypal_client_id: null,
-                paypal_secret_key: null,
-            },
-        } as Omit<MetodosPagoSchema, "empresa_id">);
-        await empresa.$create("address", {
-            city_id: 1,
-            urbanizacion: "",
-            direccion: "",
-            codLocal: "",
-        });
-        await empresa.$create("setting", {
-            web: body.web,
-            host: null,
-            about: "",
-            bg_color: "#117ACD",
-            bg_color_responsive: "rgb(38, 38, 39)",
-            type_border: "square",
-            type_cart: "far fa-shopping-cart",
-            icon: null,
-            logo: null,
-            photo: null,
-        });
-        const username = `${fullname}${Math.random().toString(32).slice(3, 4)}`;
-        const name = fullname.split(" ");
-        await this.UsersApiService.store(empresa, {
-            name: name[0],
-            lastname: name[1] ?? "",
-            email: null,
-            password,
-            telephone: empresa.telephoneFirst,
-            username,
-            enabled: true,
-            address: null,
-            birthday: new Date(),
-            slug: slug(username),
-            role_id: 1,
-            empresa_id: empresa.id,
-        });
-        const openAiClient = new openai.OpenAI({
-            apiKey: empresa.credentials.open_ai,
-        });
-
-        openAis = { ...openAis, [empresa.slug]: openAiClient };
-
-        const regions = await Regions.findAll({
-            include: [
-                {
-                    model: Countries,
-                    where: {
-                        code: empresa.dial_code,
+        try {
+            const { password, fullname, ...rest } = body;
+            const empresa = new Empresas({
+                ...rest,
+                enabled_booster: false,
+                enabledBot: true,
+                enabledBotWeb: true,
+                enabledClientPayComision: true,
+                enabled_igv: true,
+                isOpen: true,
+                enable_sell_country: false,
+                token: `${body.slug}-${generateId().slice(4, 12)}`,
+            });
+            await empresa.save();
+            if (body.servicio_id === 2) {
+                await Promise.all(
+                    mesasSeeder.map(async (floor) => {
+                        const newFloor = await Floors.create({
+                            ...floor,
+                            empresa_id: empresa.id,
+                        });
+                        await Promise.all(
+                            floor.mesas.map(async (mesa) => {
+                                await newFloor.$create("mesa", {
+                                    ...mesa,
+                                    empresa_id: empresa.id,
+                                });
+                            })
+                        );
+                    })
+                );
+            }
+            await this.backgroundApiService.store(empresa, {
+                title: "Los Mejores Precios",
+                description: "Bienvenido a nuestra Tienda Online",
+                image: [
+                    {
+                        file: `${BASE_URL(
+                            empresa
+                        )}/images/settings/others/slider.jpg`,
+                        dimension: 1000,
                     },
-                    required: true,
-                },
-            ],
-        });
-        await Promise.all(
-            regions.map(async (region) => {
-                await RegionsEmpresa.create({
-                    region_id: region.id,
-                    empresa_id: empresa.id,
-                    days: 3,
-                    enabled: true,
-                    priceShipping: 0,
-                });
-            })
-        );
+                ],
+                url: "/",
+            });
+            const transferencias = {} as Record<
+                keyof typeof empresa.bancos,
+                { titular: null; dolares: null }
+            >;
+            for (const banco of empresa.bancos) {
+                transferencias[banco.key as keyof typeof empresa.bancos] = {
+                    titular: null,
+                    dolares: null,
+                    [empresa.money.simbolo]: null,
+                };
+            }
+            // como hacer qeu sea {[bank.key]:{titular:null}}
+            await Promise.all([
+                empresa.$create("metodos_pago", {
+                    transferencias,
+                    enable_efectivo: true,
+                    mercado_pago: { token: null, enabled: false },
+                    qrYape: null,
+                    qrPlin: null,
+                    paypal: {
+                        enabled: false,
+                        paypal_client_id: null,
+                        paypal_secret_key: null,
+                    },
+                } as Omit<MetodosPagoSchema, "empresa_id">),
+                await empresa.$create("address", {
+                    city_id: 1,
+                    urbanizacion: "",
+                    direccion: "",
+                    codLocal: "",
+                }),
+                await empresa.$create("setting", {
+                    web: body.web,
+                    host: null,
+                    about: "",
+                    bg_color: "#117ACD",
+                    bg_color_responsive: "rgb(38, 38, 39)",
+                    type_border: "square",
+                    type_cart: "far fa-shopping-cart",
+                    icon: null,
+                    logo: null,
+                    photo: null,
+                }),
+            ]);
+            const username = `${fullname}${Math.random()
+                .toString(32)
+                .slice(3, 4)}`;
+            const name = fullname.split(" ");
+            await this.UsersApiService.store(empresa, {
+                name: name[0],
+                lastname: name[1] ?? "",
+                email: null,
+                password,
+                telephone: empresa.telephoneFirst,
+                username,
+                enabled: true,
+                address: null,
+                birthday: new Date(),
+                slug: slug(username),
+                role_id: 1,
+                empresa_id: empresa.id,
+            });
+            const openAiClient = new openai.OpenAI({
+                apiKey: empresa.credentials.open_ai,
+            });
 
-        // crear whatsapp contenedor
-        // await terminal(
-        //     `docker volume create ${empresas.slug} && docker run -d --name ${empresas.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresas.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --memory="250m" --cpus="0.05" -p ${empresas.port}:5000 -v ${empresas.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
-        // );
-        return {
-            success: true,
-            message: "Nuevo información agregado correctamente.",
-        };
+            openAis = { ...openAis, [empresa.slug]: openAiClient };
+
+            const regions = await Regions.findAll({
+                include: [
+                    {
+                        model: Countries,
+                        where: {
+                            code: empresa.dial_code,
+                        },
+                        required: true,
+                    },
+                ],
+            });
+            await Promise.all(
+                regions.map(async (region) => {
+                    await RegionsEmpresa.create({
+                        region_id: region.id,
+                        empresa_id: empresa.id,
+                        days: 3,
+                        enabled: true,
+                        priceShipping: 0,
+                    });
+                })
+            );
+
+            // crear whatsapp contenedor
+            await terminal(
+                `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --memory="400m" --cpus="0.15" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+            );
+            return {
+                success: true,
+                message: "Nuevo información agregado correctamente.",
+            };
+        } catch (error) {
+            throw new InternalServerErrorException("Error al agregar empresa");
+        }
     }
     async private(slug: string) {
         const empresa = await Empresas.findOne({
@@ -269,11 +303,17 @@ export class EmpresasApiService {
         };
     }
     async update(empresa: Empresas, empresasUpdateDto: EmpresasUpdateDto) {
-        await empresa.update(empresasUpdateDto);
-        return {
-            success: true,
-            empresa,
-        };
+        try {
+            await empresa.update(empresasUpdateDto);
+            return {
+                success: true,
+                empresa,
+            };
+        } catch (error) {
+            throw new InternalServerErrorException(
+                "hubo un error al detener contenedor"
+            );
+        }
     }
     async whatsappConfigUpdate(slug: string, whatsappconfig: Whatsappconfig) {
         const empresa = await Empresas.findOne({
@@ -576,94 +616,21 @@ export class EmpresasApiService {
     }
 
     async destroy(id: string) {
-        const { empresa } = await this.show(id);
-        const [products, users, invoices, notes, guides] = await Promise.all([
-            Product(empresa).findAll({
-                where: { empresa_id: empresa.id },
-                attributes: ["images", "empresa_id"],
-            }),
-            Users.findAll({
-                where: { empresa_id: empresa.id },
-                attributes: ["photo", "empresa_id"],
-            }),
-            Invoices.findAll({
-                where: {
-                    empresa_id: empresa.id,
-                },
-                attributes: ["empresa_id", "cdr_path", "xml_path"],
-            }),
-            Notes.findAll({
-                where: {
-                    empresa_id: empresa.id,
-                },
-                attributes: ["empresa_id", "cdr_path", "xml_path"],
-            }),
-            Guides.findAll({
-                where: {
-                    empresa_id: empresa.id,
-                },
-                attributes: ["empresa_id", "cdr_path", "xml_path"],
-            }),
-        ]);
-        for (const product of products) {
-            removeFile(empresa.slug, product.images);
-        }
-        for (const user of users) {
-            if (user.photo) {
-                removeFile(empresa.slug, user.photo);
-            }
-        }
-        for (const invoice of invoices) {
-            const filecdr = `${pathUploads()}/${invoice.cdr_path}`;
-            const filexml = `${pathUploads()}/${invoice.xml_path}`;
-            if (fs.existsSync(filecdr)) {
-                fs.unlinkSync(filecdr);
-            }
-            if (fs.existsSync(filexml)) {
-                fs.unlinkSync(filexml);
-            }
-        }
-        for (const note of notes) {
-            const filecdr = `${pathUploads()}/${note.cdr_path}`;
-            const filexml = `${pathUploads()}/${note.xml_path}`;
-            if (fs.existsSync(filecdr)) {
-                fs.unlinkSync(filecdr);
-            }
-            if (fs.existsSync(filexml)) {
-                fs.unlinkSync(filexml);
-            }
-        }
-        for (const guide of guides) {
-            const filecdr = `${pathUploads()}/${guide.cdr_path}`;
-            const filexml = `${pathUploads()}/${guide.xml_path}`;
-            if (fs.existsSync(filecdr)) {
-                fs.unlinkSync(filecdr);
-            }
-            if (fs.existsSync(filexml)) {
-                fs.unlinkSync(filexml);
-            }
-        }
-        // delete clientsWhatsapp[empresas.slug];
-        // delete clientsTelegram[empresas.slug];
-        delete openAis[empresa.slug];
-        const qr = `${pathUploads()}/${empresa.slug}/qr/${empresa.slug}-qr.png`;
-        const whatsappauth = path.resolve(
-            __dirname,
-            "..",
-            "..",
-            "..",
-            "..",
-            ".wwebjs_auth",
-            `session-${empresa.slug}`
-        );
+        try {
+            const { empresa } = await this.show(id);
 
-        if (fs.existsSync(qr)) {
-            fs.unlinkSync(qr);
+            const dir = `${pathUploads()}/${empresa.slug}`;
+            if (fs.existsSync(dir)) {
+                fs.rmdirSync(dir, { recursive: true });
+            }
+
+            await empresa.destroy();
+            await terminal(`docker container stop ${empresa.slug}`);
+            await terminal(`docker container rm -f ${empresa.slug}`);
+            delete openAis[empresa.slug];
+            return { success: true, message: "Eliminado correctamente" };
+        } catch (error) {
+            throw new InternalServerErrorException("Error al eliminar");
         }
-        if (fs.existsSync(whatsappauth)) {
-            fs.rmSync(whatsappauth, { force: true, recursive: true });
-        }
-        await empresa.destroy();
-        return { success: true, message: "Eliminado correctamente" };
     }
 }

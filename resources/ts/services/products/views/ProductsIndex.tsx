@@ -14,8 +14,8 @@ import { useTable } from "@vigilio/preact-table";
 import { reactComponent } from "~/libs/preact";
 import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schema";
 import { categoriesIndexApi } from "../apis/categories/categories.index.api";
-import CategoriesStore from "./CategoriesStore";
-import BrandsStore from "./BrandsStore";
+import CategoriesIndex from "./CategoriesIndex";
+import BrandsIndex from "./BrandsIndex";
 
 function ProductsIndex() {
     const { guards } = useAuthstore();
@@ -59,27 +59,23 @@ function ProductsIndex() {
             isCloseInBackground: false,
         }));
     }
-    function onCategoriesStore() {
-        sweetModal((onClose) => ({
-            html: reactComponent(
-                <CategoriesStore onClose={onClose} refetch={query.refetch} />
-            ),
+    function onCategories() {
+        sweetModal({
+            html: reactComponent(<CategoriesIndex />),
             sweetWidth: "600px",
             showCloseButton: true,
             position: "start",
             isCloseInBackground: false,
-        }));
+        });
     }
-    function onBrandsStore() {
-        sweetModal((onClose) => ({
-            html: reactComponent(
-                <BrandsStore onClose={onClose} refetch={query.refetch} />
-            ),
-            sweetWidth: "600px",
+    function onBrands() {
+        sweetModal({
+            html: reactComponent(<BrandsIndex />),
+            sweetWidth: "800px",
             showCloseButton: true,
             position: "start",
             isCloseInBackground: false,
-        }));
+        });
     }
 
     useEffect(() => {
@@ -115,18 +111,18 @@ function ProductsIndex() {
                             <button
                                 type="button"
                                 class="bg-primary px-6 py-2 text-xs font-bold self-start rounded-md text-white"
-                                aria-label="button to open to create products"
-                                onClick={onCategoriesStore}
+                                aria-label="button to open to show Categorías"
+                                onClick={onCategories}
                             >
-                                <i class="fas fa-boxes" /> Agregar Categoría
+                                <i class="fas fa-boxes" /> Categorías
                             </button>
                             <button
                                 type="button"
                                 class="bg-primary px-6 py-2 text-xs font-bold self-start rounded-md text-white"
-                                aria-label="button to open to create products"
-                                onClick={onBrandsStore}
+                                aria-label="button to open to create brands"
+                                onClick={onBrands}
                             >
-                                <i class="fas fa-tags" /> Agregar Marca
+                                <i class="fas fa-tags" /> Marcas
                             </button>
                         </div>
                         <Link

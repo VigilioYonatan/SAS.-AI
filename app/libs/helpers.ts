@@ -102,7 +102,13 @@ const execAsync = util.promisify(exec);
 
 export async function terminal(comando: string) {
     try {
-        await execAsync(comando);
+        const { stdout, stderr } = await execAsync(comando);
+        if (stderr) {
+            throw new InternalServerErrorException(
+                `Error en el comando, ${stderr}`
+            );
+        }
+        return stdout; // Devuelve la salida estándar
     } catch (error) {
         throw new InternalServerErrorException(
             `Error server, ${(error as Error).message}`

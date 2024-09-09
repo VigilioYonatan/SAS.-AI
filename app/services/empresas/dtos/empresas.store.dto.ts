@@ -2,6 +2,7 @@ import {
     getOutput,
     getPipeIssues,
     mergeAsync,
+    number,
     object,
     omitAsync,
     string,
@@ -13,7 +14,7 @@ import { Empresas } from "../entities/empresas.entity";
 export const empresasStoreDto = mergeAsync([
     omitAsync(
         empresasSchema,
-        ["id"],
+        ["id", "token"],
         [
             async (input) => {
                 const [slug] = await Promise.all([
@@ -35,7 +36,11 @@ export const empresasStoreDto = mergeAsync([
             },
         ]
     ),
-    object({ fullname: string(), password: string() }),
+    object({
+        fullname: string(),
+        password: string(),
+        servicio_id: number(),
+    }),
 ]);
 
 export type EmpresasStoreDto = Input<typeof empresasStoreDto>;
