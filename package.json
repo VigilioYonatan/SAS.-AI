@@ -9,7 +9,7 @@
         "serve": "bun --watch app/main.ts ",
         "build:serve": "rimraf dist && tsc  --project tsconfig.build.json ",
         "build:client": "tsc --project ./resources/tsconfig.json && bun dev build ",
-        "start": "NODE_ENV=production bun dist/main.js",
+        "start": "NODE_ENV=production bun dist/app/main.js",
         "test": "vitest",
         "biome:format:server": " biome format  ./app --write",
         "biome:check:server": "biome check ./app",
