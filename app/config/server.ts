@@ -54,7 +54,7 @@ export class Server {
         // Llama a la función para inicializar las instancias
     }
     async middlewares() {
-        connectDB();
+        await connectDB();
         // comprimir paginas webs para mejor rendimiento - NO TOCAR si no es necesario
         this.app.use(
             cors({
