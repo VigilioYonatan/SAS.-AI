@@ -105,6 +105,7 @@ export class Server {
                     ] as (keyof EmpresasSchema)[],
                 },
             });
+            console.log({ empresa, host });
 
             if (empresa) {
                 const certificado =
