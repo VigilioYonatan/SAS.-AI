@@ -164,14 +164,8 @@ function Local() {
                                     )}
                                 </>
                             ) : (
-                                <span class="dark:text-white font-bold text-sm">
+                                <span class="dark:text-white font-bold text-sm  ml-1">
                                     No hay productos{" "}
-                                    <a
-                                        href="/admin/productos"
-                                        class="bg-primary text-white px-4 py-2 rounded-md ml-2"
-                                    >
-                                        +
-                                    </a>
                                 </span>
                             )}
                         </>

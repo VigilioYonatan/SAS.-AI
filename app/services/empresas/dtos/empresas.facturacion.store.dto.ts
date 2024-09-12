@@ -4,5 +4,5 @@ import { companySchema } from "../schemas/empresas.schema";
 export const empresasFacturacionUpdateDto = companySchema;
 
 export type EmpresasFacturacionUpdateDto = Input<
-    typeof empresasFacturacionUpdateDto
+	typeof empresasFacturacionUpdateDto
 >;

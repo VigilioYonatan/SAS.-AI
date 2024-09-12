@@ -213,9 +213,9 @@ function Header({ header }: HeaderProps) {
                             </button>
                         </button>
                         <div
-                            class={`flex p-2 bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
+                            class={`flex p-2 bg-background-light dark:bg-background-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
                                 isOpen.value
-                                    ? "max-h-[500px]  opacity-100"
+                                    ? "max-h-[800px]  opacity-100"
                                     : "max-h-0 overflow-hidden opacity-0"
                             } `}
                         >
@@ -225,7 +225,7 @@ function Header({ header }: HeaderProps) {
                                     return (
                                         <a
                                             href={`/shop/${category.slug}`}
-                                            class="flex gap-2 items-center justify-between p-2 hover:bg-primary group w-full rounded-md"
+                                            class="flex gap-2 items-center justify-between p-2 hover:bg-primary hover:text-white group w-full rounded-md"
                                             ref={dropdown.dropdown}
                                             key={category.id}
                                             aria-label="sho category"

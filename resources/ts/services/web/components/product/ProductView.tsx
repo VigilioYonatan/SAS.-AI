@@ -40,6 +40,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
         productCouponMutation,
         varianteChoose,
         zoom,
+        images500Variant,
         images500,
     } = useProduct({
         product: product.producto.value as
@@ -49,7 +50,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
     const { ShowImage, changeShowImage, state } = useShowImage();
 
     return (
-        <div class="flex gap-6 flex-col md:flex-row  product-card p-2 ">
+        <div class="flex gap-6 flex-col md:flex-row  product-card p-2  h-[500px]">
             <Slider
                 {...{
                     customPaging: (i) => {
@@ -65,8 +66,8 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             </div>
                         );
                     },
-                    dots: images500.length > 1,
-                    arrows: images500.length > 1,
+                    dots: images500Variant.length > 0,
+                    arrows: images500Variant.length > 0,
                     dotsClass: "slick-dots slick-thumb",
                     infinite: false,
                     speed: 500,
@@ -85,7 +86,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         onMouseMove={zoom.handleMouseMove}
                         onMouseLeave={zoom.handleMouseLeave}
                     >
-                        {images500.length ? (
+                        {images500Variant.length > 0 ? (
                             <button
                                 class="absolute right-0 m-2 dark:text-white z-10"
                                 type="button"
@@ -167,12 +168,28 @@ function ProductCardView({ product }: ProductCardViewProps) {
                 }
             `}</style>
             <div class="flex flex-col gap-2 md:w-5/12 mt-8">
-                <div class="flex gap-2 text-terciary text-xs">
-                    <span>{product.producto.value.category.name}</span>
+                {product.varianteChoose?.sku ? (
+                    <span>{product.varianteChoose?.sku}</span>
+                ) : null}
+                <div class="flex  text-terciary text-xs flex-col">
+                    <div class="flex gap-2">
+                        {product.producto.value.category.icon ? (
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html: product.producto.value.category
+                                        .icon,
+                                }}
+                            />
+                        ) : null}
+                        <span class=" font-bold text-xs">
+                            {product.producto.value.category.name}
+                        </span>
+                    </div>
+
+                    <span class="dark:text-white text-black font-bold text-lg">
+                        {product.producto.value.name}
+                    </span>
                 </div>
-                <h3 class="text-primary font-bold dark:text-white line-clamp-2">
-                    {product.producto.value.name}
-                </h3>
                 <div class="flex flex-col">
                     <div class="flex gap-2">
                         {product.producto.value.discount > 0 ? (
@@ -198,7 +215,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                     </div>
 
                     <span
-                        class="text-primary font-bold dark:text-white text-xl"
+                        class="text-black font-bold dark:text-white text-xl"
                         itemprop="price"
                         content={formatMoney(
                             subtotalIgv(product.producto.value, true)
@@ -229,18 +246,15 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                 : "text-danger"
                             : ""
                     } ${
-                        [1, 3].includes(
-                            storageEmpresa!.tipo_empresa.tipo_servicio_id
-                        )
+                        storageEmpresa!.tipo_empresa.tipo_servicio_id === 1
                             ? (!product.varianteChoose!.ilimit &&
-                                  product.varianteChoose!.stock! < 1) ||
+                                  product.varianteChoose!.stock! < 0) ||
                               !product.producto.value.enabled
-                                ? "text-success"
-                                : ""
+                                ? "text-primary"
+                                : "text-danger"
                             : ""
-                    }  font-bold text-xs flex items-center gap-2`}
+                    }  font-bold text-sm flex items-center gap-2`}
                 >
-                    <i class="fa-duotone fa-circle-check text-xl" />
                     {storageEmpresa!.tipo_empresa.tipo_servicio_id === 2 ? (
                         <>
                             {(
@@ -394,11 +408,13 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </>
                     )}
                 </div>
+
+                <MetodosDePago />
                 <div class="flex  flex-col gap-1">
                     <span class=" dark:text-white text-xs font-bold text-black">
                         Compartir
                     </span>
-                    <div class="flex gap-2 items-center dark:text-white text-primary">
+                    <div class="flex gap-6 items-center dark:text-white text-primary w-full">
                         <a
                             target="_self"
                             rel="noreferrer"
@@ -407,8 +423,9 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             )}&amp;body=${BASE_URL}/${
                                 product.producto.value.slug
                             }`}
+                            class="flex  items-center   "
                         >
-                            <i class="fas fa-envelope" />
+                            <i class="fas fa-envelope  text-lg" />
                         </a>
                         <a
                             target="_blank"
@@ -418,8 +435,9 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             }&amp;text=${encodeURIComponent(
                                 `Más información de ${product.producto.value.name}`
                             )}`}
+                            class="flex  items-center   "
                         >
-                            <i class="fab fa-twitter" />
+                            <i class="fab fa-twitter  text-lg" />
                         </a>
                         <a
                             target="_blank"
@@ -427,8 +445,9 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             href={`https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                                 `${BASE_URL}/${product.producto.value.slug}`
                             )}`}
+                            class="flex  items-center   "
                         >
-                            <i class="fab fa-facebook" />
+                            <i class="fab fa-facebook text-lg" />
                         </a>
                         <a
                             target="_blank"
@@ -438,15 +457,23 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             }?text=Hola, estoy interesado en ${
                                 product.producto.value.name
                             }`}
+                            class="flex  items-center   "
                         >
-                            <i class="fab fa-whatsapp" />
+                            <i class="fab fa-whatsapp  text-lg" />
                         </a>
                     </div>
                 </div>
-                <MetodosDePago />
+                <div class="flex  flex-col gap-1">
+                    <span class=" dark:text-white text-xs font-bold text-black">
+                        Descripción
+                    </span>
+                    <p class="text-xs line-clamp-4 dark:text-white">
+                        {product.producto.value.description}
+                    </p>
+                </div>
                 <a
                     href={`${BASE_URL}/${product.producto.value.slug}`}
-                    class="self-end hover:underline delay-custom-1 text-primary text-xs font-semibold"
+                    class="self-end hover:underline delay-custom-1 text-primary text-xs font-semibold "
                 >
                     Más información
                 </a>

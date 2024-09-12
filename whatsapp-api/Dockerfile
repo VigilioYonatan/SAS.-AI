@@ -41,7 +41,13 @@ RUN  apt-get update && apt-get install -y \
     xdg-utils \
     wget \
     git \ 
+    openvpn \
  && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /etc/openvpn
+
+COPY start-vpn.sh /usr/local/bin/start-vpn.sh
+RUN chmod +x /usr/local/bin/start-vpn.sh
+
 RUN npm install -g bun 
 
 FROM base AS build

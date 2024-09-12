@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../web/components/webHead",{title:"Confirmar Cuenta",description:"Confirmar Cuenta tu cuenta"})  %>
+</head>
+
+<body class="dark:bg-background-dark bg-background-light">
+  <section class="flex justify-center items-center h-screen">
+    <% if(user){ %>
+    <span>Cuenta Verificado correctamente <%= user.username  %></span>
+    <% }else{ %>
+    <span>Token no valido</span>
+    <% } %>
+  </section>
+</body>
+
+</html>

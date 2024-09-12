@@ -116,10 +116,8 @@ function empresaUpdate() {
                         {
                             onSuccess(data) {
                                 empresaStore.methods.updateempresa({
-                                    setting: {
-                                        ...empresaStore.state!.setting,
-                                        logo: data.files,
-                                    },
+                                    ...empresaStore.state!,
+                                    logo: data.files,
                                 });
                                 sweetAlert({
                                     icon: "success",
@@ -156,13 +154,22 @@ function empresaUpdate() {
                             <div class="flex items-center justify-between w-full gap-2 flex-wrap">
                                 <Form.button.reset />
                             </div>
-                            <a
-                                href="/api/backup"
-                                type="button"
-                                class="bg-green-600 text-white px-5 py-2 rounded-md"
-                            >
-                                <i class="far fa-file-spreadsheet" />
-                            </a>
+                            <div class="flex  items-center gap-2">
+                                <a
+                                    href="/api/backup"
+                                    type="button"
+                                    class="bg-green-600 text-white px-5 py-2 rounded-md"
+                                >
+                                    <i class="far fa-file-spreadsheet" />
+                                </a>
+                                <a
+                                    href="/api/backup/files"
+                                    type="button"
+                                    class=" text-white px-5 py-2 rounded-md bg-primary"
+                                >
+                                    <i class="fas fa-folder-open" />
+                                </a>
+                            </div>
                         </div>
                         <div class="flex flex-col gap-4 justify-center items-center">
                             <div class="w-full flex flex-col md:flex-row gap-2">

@@ -127,3 +127,60 @@ export function driverInitial() {
     // Iniciar el recorrido
     driverA.drive();
 }
+
+type Pay = "mensual" | "facturacion" | "telegram" | "tienda" | "tokens";
+export const payments: Record<Pay, string[]> = {
+    mensual: [
+        " Acceso a la tienda y administrador de tu web.",
+        "Agregar Categorías, Marcas y Productos.",
+        "Agregar Cupones de descuento.",
+        "Carrito de Compra Y Metodos de pagos.",
+        "Gestion de Pedidos.",
+        "Perzonalicación de tu web.",
+        "Boton de WhatsApp y Chat con Inteligencia Artificial.",
+        "Short Links.",
+        "+ 10 Millones de Tokens A.I por mes.",
+        "Reclamaciones, noticia y publicaciónes.",
+        "Vender en Todo el País (opcional)",
+        "Multiplataforma - Todos los dispositivos.",
+        "Pasarela de Pagos y mucho más...",
+    ],
+    tienda: [
+        "Acceso a la tienda y administrador de tu web.",
+        "Usuarios ilimitados",
+        "Productos ilimitados",
+        "Clientes ilimitados",
+        "Ventas Local y Delivery.",
+        "Notificaciones de tus pedidos.",
+        "Whatsapp CRM - Enviar mensajes masivos.",
+        storageEmpresa?.tipo_empresa.tipo_servicio_id === 2
+            ? "Pisos y Mesas en tiempo Real."
+            : null,
+        "Inteligencia Artificial CLAUDE AI Y OPEN AI.",
+        "Genera links de Pago",
+        "Asistente Artificial - Entrenamiento personalizado.",
+        "Gestión de órdenes o pedidos.",
+        "Automatización de Respuestas y tareas.",
+        "Reconocimiento de Voz Whatsapp.",
+        "15 millones de tokens para el uso de la Inteligencia Artificial mensualmente GRATIS",
+        "Soporte, mantenimiento y mucho más..",
+    ].filter(Boolean) as string[],
+    facturacion: [
+        "Acceso al Dashboard de Facturación.",
+        "Emitir Boleta, Notas, Guías.",
+        "PDF ilimitado.",
+        "XML ilimitado.",
+        "CDR ilimitado.",
+        "Soporte y mantenimiento.",
+    ],
+    telegram: [
+        "Inteligencia Artificial CLAUDE AI Y OPEN AI.",
+        "Bot Artificial - Entrenamiento personalizado.",
+        "Genera links de Pago.",
+        "Gestión de órdenes o pedidos.",
+        "Automatización de Respuestas y tareas.",
+        "Reconocimiento de Voz Whatsapp.",
+        "Soporte, mantenimiento y mucho más..",
+    ],
+    tokens: [],
+};

@@ -18,6 +18,7 @@ import {
     empresasIAUpdateDto,
     EmpresasIAUpdateDto,
 } from "@/empresas/dtos/empresas.ia.update.dto";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 function InteligenciaArtificial() {
     const empresaShowQuery = empresaPrivateApi();
@@ -186,7 +187,12 @@ function InteligenciaArtificial() {
                                                     inteligencia Artificial
                                                 </span>
                                                 <span>
-                                                    Maximo outputs tokens:{" "}
+                                                    Maximo outputs :{" "}
+                                                    {
+                                                        storageEmpresa?.payments
+                                                            .tokens.tokens
+                                                    }{" "}
+                                                    tokens
                                                 </span>
                                                 <div>
                                                     Inputs:{" "}
@@ -200,11 +206,8 @@ function InteligenciaArtificial() {
                                                 </div>
                                                 <span class="dark:text-white text-sm">
                                                     Si llegas al limite de token
-                                                    mensual en inputs se
-                                                    inhabilitará tu ia. Cada mes
-                                                    reiniciarán tus tokens a 0,
-                                                    Cuantos maximos tokens al
-                                                    mes tienes?{" "}
+                                                    en outputs se inhabilitará
+                                                    la inteligencia Artificial.
                                                     <a
                                                         href="/admin/plus"
                                                         class="text-primary hover:underline"

@@ -6,6 +6,7 @@ import {
 	authAuthenticatedMiddleware,
 	authNoAuthenticatedMiddleware,
 } from "../middlewares/auth.middleware";
+import type { Empresas } from "@/empresas/entities/empresas.entity";
 
 @Injectable()
 @Controller("/")
@@ -28,12 +29,22 @@ export class AuthController {
 		});
 	}
 
-	@Get("/forgot-password", [authNoAuthenticatedMiddleware])
+	@Get("/forgot-password")
 	async changePassword(
+		@Res() res: Response,
+		@Req("empresa") empresa: Empresas,
+		@Query("token") token: string | null,
+	) {
+		const result = await this.authService.forgotPassword(empresa, token);
+		return res.render("auth/forgot-password", result);
+	}
+	@Get("/confirmed-account")
+	async confirmedAccount(
+		@Req("empresa") empresa: Empresas,
 		@Res() res: Response,
 		@Query("token") token: string | null,
 	) {
-		const result = await this.authService.forgotPassword(token);
-		return res.render("auth/forgot-password", result);
+		const result = await this.authService.confirmedAccount(empresa, token);
+		return res.render("auth/confirmed-account", result);
 	}
 }

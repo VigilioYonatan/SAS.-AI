@@ -2,8 +2,8 @@ import { productsOptionsSchema } from "@/products/schemas/options/products_optio
 import { omitAsync, type Input } from "@vigilio/valibot";
 
 export const productsOptionsStoreDto = omitAsync(productsOptionsSchema, [
-    "product_normal_id",
-    "empresa_id",
+	"product_normal_id",
+	"empresa_id",
 ]);
 
 export type ProductsOptionsStoreDto = Input<typeof productsOptionsStoreDto>;

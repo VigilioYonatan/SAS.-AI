@@ -3,13 +3,13 @@ import type { InformationSchema } from "../schemas/information.schema";
 
 @Table
 export class Information
-    extends Model
-    implements Omit<InformationSchema, "id">
+	extends Model
+	implements Omit<InformationSchema, "id">
 {
-    @Column({
-        allowNull: false,
-        type: DataType.STRING(50),
-        unique: true,
-    })
-    token: string;
+	@Column({
+		allowNull: false,
+		type: DataType.STRING(50),
+		unique: true,
+	})
+	token: string;
 }

@@ -5,39 +5,39 @@ import { NOW, restarDays } from "~/libs/dayjs";
 import cron from "node-cron";
 import enviroments from "~/config/enviroments.config";
 import {
-    checkCPUUsage,
-    checkDiskUsage,
-    updateVigilioServices,
+	checkCPUUsage,
+	checkDiskUsage,
+	updateVigilioServices,
 } from "~/libs/os";
 import { openAis } from "@/empresas/services/empresas.api.service";
 
 export function buenosDias(query: string, name: string, empresa: Empresas) {
-    const messages = [
-        `¡Hola ${name}! Bienvenido a ${empresa.name_empresa}, ¿en qué puedo ayudarte hoy? 😊.`,
-        `¡Hola ${name}! ¿Cómo puedo ayudarte el día de hoy? 😀.\n `,
-    ];
-    if (
-        [
-            "buenos dias",
-            "hola",
-            "buenas",
-            "buenas noches",
-            "buenas tardes",
-        ].includes(query.toLowerCase())
-    ) {
-        return messages[randomNumber(0, 1)];
-    }
-    return null;
+	const messages = [
+		`¡Hola ${name}! Bienvenido a ${empresa.name_empresa}, ¿en qué puedo ayudarte hoy? 😊.`,
+		`¡Hola ${name}! ¿Cómo puedo ayudarte el día de hoy? 😀.\n `,
+	];
+	if (
+		[
+			"buenos dias",
+			"hola",
+			"buenas",
+			"buenas noches",
+			"buenas tardes",
+		].includes(query.toLowerCase())
+	) {
+		return messages[randomNumber(0, 1)];
+	}
+	return null;
 }
 export function gracias(query: string) {
-    const messages = [
-        "De nada, estamos aquí para ayudarte 😊.\n",
-        "Que bien, estamos aquí para ayudarte 😊.\n .",
-    ];
-    if (["gracias", "muchas gracias"].includes(query.toLowerCase())) {
-        return messages[randomNumber(0, 1)];
-    }
-    return null;
+	const messages = [
+		"De nada, estamos aquí para ayudarte 😊.\n",
+		"Que bien, estamos aquí para ayudarte 😊.\n .",
+	];
+	if (["gracias", "muchas gracias"].includes(query.toLowerCase())) {
+		return messages[randomNumber(0, 1)];
+	}
+	return null;
 }
 
 // export async function loadAnthropic() {
@@ -80,68 +80,71 @@ export function gracias(query: string) {
 // }
 
 export async function isWhatsappIA(empresa: string, telephone?: string) {
-    let clientVigilio = null;
-    try {
-        clientVigilio = await getClientVigilio();
-    } catch (error) {
-        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-        console.log("Error al hacer fetch a la empresa");
-    }
-    const [emp] = await Promise.all([
-        Empresas.findOne({
-            where: { slug: empresa },
-            attributes: {
-                exclude: ["certificado", "groupWhatsapp"],
-            },
-        }),
-    ]);
-    if (!empresa) return null;
-    const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
-    if (!emp?.enabledBot) return null;
-    const isDateNow = restarDays(NOW().toDate(), emp.payments.mensual.date!);
-    if (telephone) {
-        const contact = emp!.contacts.find(
-            (contact) => contact.telephone === telephone
-        );
-        if (contact && !contact.ia) return null;
-        // si existe en el array de contacto y la ia es false que salga null
-    }
-    // si se vencio la fecha y no hay tokens
-    if (isDateNow <= 0 || emp.payments.tokens.tokens < 1) return null;
+	let clientVigilio = null;
+	try {
+		clientVigilio = await getClientVigilio();
+	} catch (error) {
+		// biome-ignore lint/suspicious/noConsoleLog: <explanation>
+		console.log("Error al hacer fetch a la empresa");
+	}
+	const where = !Number.isNaN(Number(empresa))
+		? { id: empresa }
+		: { slug: empresa };
+	const [emp] = await Promise.all([
+		Empresas.findOne({
+			where,
+			attributes: {
+				exclude: ["certificado", "groupWhatsapp"],
+			},
+		}),
+	]);
+	if (!empresa) return null;
+	const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
+	if (!emp?.enabledBot) return null;
+	const isDateNow = restarDays(NOW().toDate(), emp.payments.mensual.date!);
+	if (telephone) {
+		const contact = emp!.contacts.find(
+			(contact) => contact.telephone === telephone,
+		);
+		if (contact && !contact.ia) return null;
+		// si existe en el array de contacto y la ia es false que salga null
+	}
+	// si se vencio la fecha y no hay tokens
+	if (isDateNow <= 0 || emp.payments.tokens.tokens < 1) return null;
 
-    return {
-        empresa: emp,
-        clientVigilio,
-        latestEmpresaUsage,
-    };
+	return {
+		empresa: emp,
+		clientVigilio,
+		latestEmpresaUsage,
+	};
 }
 export async function isTelegramIA(empresa: string) {
-    let clientVigilio = null;
-    try {
-        clientVigilio = await getClientVigilio();
-    } catch (error) {
-        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-        console.log("Error al hacer fetch a la empresa");
-    }
-    const [emp] = await Promise.all([
-        Empresas.findOne({
-            where: { slug: empresa },
-            attributes: {
-                exclude: ["certificado", "groupWhatsapp"],
-            },
-        }),
-    ]);
-    if (!emp) return null;
-    const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
-    if (!emp?.enabledBot) return null;
-    const isDateNow = restarDays(NOW().toDate(), emp.payments.telegram.date!);
-    // si se vencio la fecha y no hay tokens
-    if (isDateNow <= 0 || emp.payments.tokens.tokens < 1) return null;
-    return {
-        empresa,
-        clientVigilio,
-        latestEmpresaUsage,
-    };
+	let clientVigilio = null;
+	try {
+		clientVigilio = await getClientVigilio();
+	} catch (error) {
+		// biome-ignore lint/suspicious/noConsoleLog: <explanation>
+		console.log("Error al hacer fetch a la empresa");
+	}
+	const [emp] = await Promise.all([
+		Empresas.findOne({
+			where: { slug: empresa },
+			attributes: {
+				exclude: ["certificado", "groupWhatsapp"],
+			},
+		}),
+	]);
+	if (!emp) return null;
+	const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
+	if (!emp?.enabledBot) return null;
+	const isDateNow = restarDays(NOW().toDate(), emp.payments.telegram.date!);
+	// si se vencio la fecha y no hay tokens
+	if (isDateNow <= 0 || emp.payments.tokens.tokens < 1) return null;
+	return {
+		empresa,
+		clientVigilio,
+		latestEmpresaUsage,
+	};
 }
 
 // export const chatsTelegram: Record<
@@ -285,186 +288,121 @@ export async function isTelegramIA(empresa: string) {
 //     }
 // }
 /**** bot to admin  *****/
-export const chatAssistant: Record<
-    string,
-    Record<string, ["user" | "assistant", string, number][]>
+export let chatAssistant: Record<
+	string,
+	["user" | "assistant", string, number][]
 > = {};
 export async function cloudeAi(emp: string, userId: string, message: string) {
-    try {
-        const whatsapp = await isWhatsappIA(emp);
-        if (!whatsapp) return;
-        const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
+	try {
+		const whatsapp = await isWhatsappIA(emp);
+		if (!whatsapp) return;
+		const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
 
-        (chatAssistant[emp] ?? [])[userId] = [
-            ...((chatAssistant[emp] ?? [])[userId] || []),
-            ["user", message, Date.now()],
-        ];
-        // mapped messages to messages cloude
-        const messages = ((chatAssistant[emp] ?? [])[userId] ?? []).map(
-            ([role, content]) => ({
-                role,
-                content,
-            })
-        );
+		chatAssistant = {
+			...chatAssistant,
+			[`${emp}:${userId}`]: [
+				...(chatAssistant[`${emp}:${userId}`] ?? []),
+				["user", message, Date.now()],
+			],
+		};
 
-        const completion = await openAis[empresa.slug].chat.completions.create({
-            model: clientVigilio?.empresa.modelai ?? "gpt-4o-mini",
-            max_tokens: 300,
-            messages: [
-                {
-                    role: "user",
-                    content: promptAssitant(empresa!),
-                },
-                ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
-            ],
-        });
-        // get message ai
-        const completionText = completion.choices[0].message.content!;
-        const removeNote = completionText.replace(/\s*\(.*?\)\s*/g, " ");
-        await empresa!.update({
-            ...empresa!.inteligenceArtificial,
-            usage: {
-                ...latestEmpresaUsage,
-                input_tokens:
-                    latestEmpresaUsage.input_tokens +
-                    completion.usage!.prompt_tokens,
-                output_tokens:
-                    latestEmpresaUsage.output_tokens +
-                    completion.usage!.completion_tokens,
-            },
-            payments: {
-                ...empresa.payments,
-                tokens: {
-                    tokens:
-                        empresa.payments.tokens.tokens -
-                        completion.usage!.completion_tokens,
-                },
-            },
-        });
+		// mapped messages to messages cloude
+		const messages = chatAssistant[`${emp}:${userId}`].map(
+			([role, content]) => ({
+				role,
+				content,
+			}),
+		);
 
-        (chatAssistant[emp] ?? [])[userId] = [
-            ...((chatAssistant[emp] ?? [])[userId] || []),
-            ["assistant", removeNote, Date.now()],
-        ];
+		const completion = await openAis[empresa.slug].chat.completions.create({
+			model: clientVigilio?.information.modelai ?? "gpt-4o-mini",
+			max_tokens: 300,
+			messages: [
+				{
+					role: "user",
+					content: promptAssitant(empresa!),
+				},
+				...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
+			],
+		});
+		// get message ai
+		const completionText = completion.choices[0].message.content!;
+		const removeNote = completionText.replace(/\s*\(.*?\)\s*/g, " ");
+		await empresa!.update({
+			...empresa!.inteligenceArtificial,
+			usage: {
+				...latestEmpresaUsage,
+				input_tokens:
+					latestEmpresaUsage.input_tokens + completion.usage!.prompt_tokens,
+				output_tokens:
+					latestEmpresaUsage.output_tokens +
+					completion.usage!.completion_tokens,
+			},
+			payments: {
+				...empresa.payments,
+				tokens: {
+					tokens:
+						empresa.payments.tokens.tokens -
+						completion.usage!.completion_tokens,
+				},
+			},
+		});
 
-        return removeNote;
-    } catch (error) {
-        return "No disponible.";
-    }
+		chatAssistant[`${emp}:${userId}`] = [
+			...(chatAssistant[`${emp}:${userId}`] || []),
+			["assistant", removeNote, Date.now()],
+		];
+
+		return removeNote;
+	} catch (error) {
+		return "No disponible.";
+	}
 }
 
 export async function getClientVigilio() {
-    const response = await fetch(
-        `${enviroments.VITE_VIGILIO_WEB}/api/empresa/client`
-    );
-    const result: {
-        success: true;
-        empresa: { whatsappVersion: string; modelai: string };
-    } = await response.json();
-    return result;
+	const response = await fetch(
+		`${enviroments.VITE_VIGILIO_WEB}/api/information/client`,
+	);
+	const result: {
+		success: true;
+		information: { whatsappVersion: string; modelai: string };
+	} = await response.json();
+	return result;
 }
-export const chatAssistantWeb: Record<
-    string,
-    ["user" | "assistant", string][]
-> = {};
-export async function cloudeAiWeb(emp: string, token: string, message: string) {
-    try {
-        const whatsapp = await isWhatsappIA(emp);
-        if (!whatsapp) return;
-        const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
 
-        (chatAssistant[emp] ?? [])[token] = [
-            ...((chatAssistant[emp] ?? [])[token] || []),
-            ["user", message, Date.now()],
-        ];
-        // mapped messages to messages cloude
-        const messages = (chatAssistant[emp] ?? [])[token].map(
-            ([role, content]) => ({
-                role,
-                content,
-            })
-        );
-
-        const completion = await openAis[empresa.slug].chat.completions.create({
-            model: clientVigilio?.empresa.modelai ?? "gpt-4o-mini",
-            max_tokens: 300,
-            messages: [
-                {
-                    role: "user",
-                    content: `${promptAssitant(
-                        empresa!
-                    )} - Por ultimo, cada vez que te pida informacion de un producto  trate de responder con una imagen o link. si envias imagen , que sea en etiqueta image <img width="100" height="100" class="w-[100px] h-[150px] rounded-md object-contain"/>   y si te pido links por favor etiqueta html <a href="..." class="text-primary font-semibold"></a> , responde como si fuera html con espacios usando br en productos o pedidos. para que lea bien.  y no uses ** mejor utiliza la etiqueta <b></b>`,
-                },
-                ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
-            ],
-        });
-        // get message ai
-        const completionText = completion.choices[0].message.content!;
-        const removeNote = completionText.replace(/\s*\(.*?\)\s*/g, " ");
-        await empresa!.update({
-            ...empresa!.inteligenceArtificial,
-            usage: {
-                ...latestEmpresaUsage,
-                input_tokens:
-                    latestEmpresaUsage.input_tokens +
-                    completion.usage!.prompt_tokens,
-                output_tokens:
-                    latestEmpresaUsage.output_tokens +
-                    completion.usage!.completion_tokens,
-            },
-            payments: {
-                ...empresa.payments,
-                tokens: {
-                    tokens:
-                        empresa.payments.tokens.tokens -
-                        completion.usage!.completion_tokens,
-                },
-            },
-        });
-
-        (chatAssistant[emp] ?? [])[token] = [
-            ...((chatAssistant[emp] ?? [])[token] || []),
-            ["assistant", removeNote, Date.now()],
-        ];
-
-        return removeNote;
-    } catch (error) {
-        return "Hubo un error al usar ia, posible errores no hay tokens.";
-    }
-}
 // clean CHAT
 // cada 24 horas se limpiara el chat assistant de ambos para consumir menos recursos
 cron.schedule("0 0 * * *", async () => {
-    async function monitorSystem() {
-        const cpuThreshold = 0.85; // 85%
-        const diskThreshold = 90; // 90% de uso del disco
-        const usageCPU = checkCPUUsage();
-        const usedPercentage = await checkDiskUsage();
-        const update = {
-            cpu: usageCPU * 100,
-            disk: usedPercentage,
-        };
-        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-        console.log(update);
+	async function monitorSystem() {
+		const cpuThreshold = 0.85; // 85%
+		const diskThreshold = 90; // 90% de uso del disco
+		const usageCPU = checkCPUUsage();
+		const usedPercentage = await checkDiskUsage();
+		const update = {
+			cpu: usageCPU * 100,
+			disk: usedPercentage,
+		};
+		// biome-ignore lint/suspicious/noConsoleLog: <explanation>
+		console.log(update);
 
-        await updateVigilioServices(update);
-        // Verificar CPU
-        if (usageCPU > cpuThreshold) {
-            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-            console.log("Advertencia: El uso de CPU es alto");
-            await updateVigilioServices({ enabled: false });
-        } else {
-            await updateVigilioServices({ enabled: true });
-        }
+		await updateVigilioServices(update);
+		// Verificar CPU
+		if (usageCPU > cpuThreshold) {
+			// biome-ignore lint/suspicious/noConsoleLog: <explanation>
+			console.log("Advertencia: El uso de CPU es alto");
+			await updateVigilioServices({ enabled: false });
+		} else {
+			await updateVigilioServices({ enabled: true });
+		}
 
-        // Verificar Disco
-        if (usedPercentage > diskThreshold) {
-            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-            console.log("Advertencia: El uso del disco es alto");
-            await updateVigilioServices({ enabled: false });
-        } else {
-            await updateVigilioServices({ enabled: true });
-        }
-    }
-    await monitorSystem();
+		// Verificar Disco
+		if (usedPercentage > diskThreshold) {
+			// biome-ignore lint/suspicious/noConsoleLog: <explanation>
+			console.log("Advertencia: El uso del disco es alto");
+			await updateVigilioServices({ enabled: false });
+		} else {
+			await updateVigilioServices({ enabled: true });
+		}
+	}
+	await monitorSystem();
 });

@@ -11,48 +11,80 @@ function ProductBody({ showDescription }: ProductBodyProps) {
     const { product } = useContext(productContext);
 
     return (
-        <div class="flex flex-col gap-2 py-2  w-full">
+        <div class="flex flex-col gap-2 px-2 pt-2  w-full justify-center items-center">
             <style jsx>{`
                 .slick-slide > div {
                     margin-inline: 4px;
                     outline: none;
                 }
             `}</style>
-            {storageEmpresa?.tipo_empresa.tipo_servicio_id === 2 ? (
-                <div>
-                    {(
-                        product.producto
-                            .value as ProductsRestaurantSchemaFromServer
-                    ).ilimit ? (
-                        <span class="font-semibold dark:text-white text-xs">
-                            En stock
-                        </span>
-                    ) : (
-                          product.producto
-                              .value! as ProductsRestaurantSchemaFromServer
-                      ).stock! > 0 ? (
-                        <span class="font-semibold dark:text-white text-xs">
-                            {
-                                (
-                                    product.producto
-                                        .value! as ProductsRestaurantSchemaFromServer
-                                ).stock
-                            }{" "}
-                            unidades
-                        </span>
-                    ) : (
-                        <span class="text-danger font-semibold text-xs">
-                            Agotado
-                        </span>
-                    )}
-                </div>
-            ) : null}
-            <a
-                href={`/${product.producto.value.slug}`}
-                class="line-clamp-2 text-sm  md:text-base font-semibold dark:text-white hover:text-primary dark:hover:text-primary delay-custom-1 "
-            >
-                {product.producto.value.name}
-            </a>
+
+            <div class="flex flex-col justify-center items-center">
+                <span
+                    class={`${
+                        storageEmpresa?.tipo_empresa.tipo_servicio_id === 2
+                            ? (
+                                  product.producto
+                                      .value as ProductsRestaurantSchemaFromServer
+                              ).ilimit ||
+                              (!(
+                                  product.producto
+                                      .value as ProductsRestaurantSchemaFromServer
+                              ).ilimit &&
+                                  (
+                                      product.producto
+                                          .value as ProductsRestaurantSchemaFromServer
+                                  ).stock! > 0)
+                                ? "text-primary"
+                                : "text-danger"
+                            : ""
+                    } ${
+                        storageEmpresa!.tipo_empresa.tipo_servicio_id === 1
+                            ? (!product.varianteChoose!.ilimit &&
+                                  product.varianteChoose!.stock! < 0) ||
+                              !product.producto.value.enabled
+                                ? "text-primary"
+                                : "text-danger"
+                            : ""
+                    }  font-bold  py-1 rounded-md uppercase text-xs flex items-center gap-2`}
+                >
+                    {storageEmpresa!.tipo_empresa.tipo_servicio_id === 2 ? (
+                        <>
+                            {(
+                                product.producto
+                                    .value as ProductsRestaurantSchemaFromServer
+                            ).ilimit
+                                ? "En stock"
+                                : `${
+                                      (
+                                          product.producto
+                                              .value as ProductsRestaurantSchemaFromServer
+                                      ).stock
+                                  } unidades`}
+                        </>
+                    ) : null}
+                    {storageEmpresa!.tipo_empresa.tipo_servicio_id === 1 ? (
+                        <>
+                            {product.varianteChoose!.ilimit
+                                ? "En stock"
+                                : `${
+                                      product.varianteChoose!.stock! > 0
+                                          ? `${
+                                                product.varianteChoose!.stock
+                                            } unidades`
+                                          : "Agotado"
+                                  } `}
+                        </>
+                    ) : null}
+                </span>{" "}
+                <a
+                    href={`/${product.producto.value.slug}`}
+                    class="line-clamp-2 text-sm h-[45px]  md:text-base font-semibold dark:text-white hover:text-primary dark:hover:text-primary delay-custom-1  text-center"
+                >
+                    {product.producto.value.name}
+                </a>
+            </div>
+
             {showDescription && product.producto.value.description ? (
                 <p class="text-gray-400   line-clamp-3  h-[70px]  w-full">
                     {removeTextHTML(product.producto.value.description)}

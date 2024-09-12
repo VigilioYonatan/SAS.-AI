@@ -36,7 +36,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                 key={background.id}
                             >
                                 <div
-                                    class=" bg-cover bg-center  p-6  h-[300px] w-full flex flex-col gap-4 justify-center  group-hover:scale-105 delay-custom-1"
+                                    class=" bg-cover bg-center  p-6  h-[450px] w-full flex flex-col gap-4 justify-center  group-hover:scale-105 delay-custom-1"
                                     style={{
                                         backgroundImage: `url('${
                                             printFileWithDimension(
@@ -77,7 +77,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
 
                     <CardType
                         title="Soporte 24/7"
-                        subtitle="Contactanos 24 horas al dia"
+                        subtitle="Contactanos 24 horas al dia con inteligencia Artificial"
                         image="https://demo-39.woovinapro.com/wp-content/uploads/2020/05/icon2.png"
                     />
                     <CardType

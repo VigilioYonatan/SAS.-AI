@@ -303,7 +303,7 @@ interface ChatWhatsappProps {
 function ChatWhatsapp({ contacts, type, onClose }: ChatWhatsappProps) {
     const messages = useSignal<(string | File)[]>([]);
     const messageForm = useForm<{ message: string }>({});
-    const delayValue = useSignal(35);
+    const delayValue = useSignal(15);
     const botSendMessageMutation = whatsappSendMessageApi();
     const whatsappSendFileMutation = whatsappSendFileApi();
     const empresaFavoritesMutation = empresaContactsFavoritesApi();
@@ -497,8 +497,8 @@ function ChatWhatsapp({ contacts, type, onClose }: ChatWhatsappProps) {
                             const delay = Number(
                                 (e.target as HTMLInputElement).value
                             );
-                            if (delay < 50) {
-                                delayValue.value = 50;
+                            if (delay < 15) {
+                                delayValue.value = 15;
                                 return;
                             }
                             delayValue.value = delay;

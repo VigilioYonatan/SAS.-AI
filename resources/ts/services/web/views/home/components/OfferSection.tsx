@@ -1,4 +1,3 @@
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 import ProductCard from "@/web/components/product";
@@ -29,12 +28,7 @@ function OfferSection({
                         <ProductCard product={productlatestmapped}>
                             <ProductCard.header className="[&>img]:w-full [&>img]:h-[300px!important] [&>img]:object-cover" />
                             <ProductCard.body showDescription={false} />
-                            <ProductCard.footer
-                                showButtonCart={
-                                    storageEmpresa?.tipo_empresa
-                                        .tipo_servicio_id === 2
-                                }
-                            />
+                            <ProductCard.footer showButtonCart />
                         </ProductCard>
                     ) : null}
                 </div>
@@ -45,7 +39,7 @@ function OfferSection({
                                 <ProductCard.buttons isAbsolute />
                             </ProductCard.header>
                             <ProductCard.body showDescription={false} />
-                            <ProductCard.footer showButtonCart={false} />
+                            <ProductCard.footer showButtonCart />
                         </ProductCard>
                     ))}
                 </div>

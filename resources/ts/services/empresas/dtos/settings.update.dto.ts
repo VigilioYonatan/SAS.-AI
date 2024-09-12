@@ -14,7 +14,6 @@ export const settingsUpdateDto = omitAsync(settingsSchema, [
     "empresa_id",
     "icon",
     "photo",
-    "logo",
 ]);
 export type SettingsUpdateDto = Input<typeof settingsUpdateDto>;
 export const settingsLogoUpdateDto = object({

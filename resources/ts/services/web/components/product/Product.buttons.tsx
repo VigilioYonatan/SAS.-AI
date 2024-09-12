@@ -6,7 +6,6 @@ import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
 import { productContext } from "./Product";
 import ProductCardView from "./ProductView";
 import enviroments from "~/config";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 
 interface ProductsButtonProps {
@@ -14,7 +13,6 @@ interface ProductsButtonProps {
 }
 function ProductButtons({ isAbsolute }: ProductsButtonProps) {
     const { product } = useContext(productContext);
-    if (storageEmpresa?.tipo_empresa.tipo_servicio_id === 1) return null;
     return (
         <div
             class={`grid grid-cols-2 w-full delay-custom-1 ${
@@ -77,6 +75,7 @@ function ProductButtons({ isAbsolute }: ProductsButtonProps) {
                             ? "center"
                             : "start",
                         isCloseInBackground: false,
+                        
                     });
                 }}
             >

@@ -1,6 +1,7 @@
 import { CitiesSchemaFromServer } from "@/ubigeo/schemas/cities.schema";
 import {
     array,
+    boolean,
     custom,
     maxLength,
     minLength,
@@ -37,8 +38,8 @@ export const settingsSchema = objectAsync({
             "Border no válido"
         ),
     ]),
+    isCoverImage: boolean(),
     icon: nullable(array(filesSchema())), //obligatorio
-    logo: nullable(array(filesSchema())), //obligatorio
     photo: nullable(array(filesSchema())),
     empresa_id: number(),
 });

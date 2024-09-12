@@ -1,12 +1,24 @@
 import passport from "passport";
-import { Controller, Post } from "@vigilio/express-core";
+import { Body, Controller, Post, Put, Req } from "@vigilio/express-core";
 import type { NextFunction, Request, Response } from "express";
 import { Injectable } from "@vigilio/express-core";
 import { type AuthUserLogin } from "../types";
+import {
+	authConfirmPasswordDto,
+	type AuthConfirmPasswordDto,
+} from "../dtos/auth.confirm-password.dto";
+import { AuthApiService } from "../services/auth.api.service";
+import {
+	authForgotPasswordDto,
+	type AuthForgotPasswordDto,
+} from "../dtos/auth.forgot-password.dto";
+import { Validator } from "@vigilio/express-core/valibot";
+import type { Empresas } from "@/empresas/entities/empresas.entity";
 
 @Injectable()
 @Controller("/auth")
 export class AuthApiController {
+	constructor(private readonly authApiService: AuthApiService) {}
 	@Post("/login", [
 		(req: Request, res: Response, next: NextFunction) => {
 			passport.authenticate(
@@ -35,4 +47,23 @@ export class AuthApiController {
 		},
 	])
 	login() {}
+	@Validator(authForgotPasswordDto)
+	@Post("/forgot-password")
+	async forgotPassword(
+		@Body() body: AuthForgotPasswordDto,
+		@Req("empresa") empresa: Empresas,
+	) {
+		const result = await this.authApiService.forgotPassword(empresa, body);
+		return result;
+	}
+
+	@Validator(authConfirmPasswordDto)
+	@Put("/confirm-password")
+	async confirmPassword(
+		@Req("empresa") empresa: Empresas,
+		@Body() body: AuthConfirmPasswordDto,
+	) {
+		const result = await this.authApiService.confirmPassword(empresa, body);
+		return result;
+	}
 }

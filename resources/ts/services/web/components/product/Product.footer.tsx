@@ -3,37 +3,35 @@ import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import useThemeStore from "~/stores/theme.store";
 import { productContext } from "./Product";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 interface ProductFooterProps {
     showButtonCart?: boolean;
 }
-function ProductFooter({ showButtonCart }: ProductFooterProps) {
+function ProductFooter({ showButtonCart = false }: ProductFooterProps) {
     const { product } = useContext(productContext);
 
     return (
-        <div class="flex gap-4 items-center justify-between w-full">
-            <div class="flex gap-4 justify-between">
-                <div class="flex gap-2  text-sm md:text-base items-center">
-                    {product.producto.value.discount > 0 ? (
-                        <span class="text-gray-400 line-through  font-semibold  self-end  text-xs  ">
-                            {formatMoney(
-                                subtotalIgv(product.producto.value, false)
-                            )}
-                        </span>
-                    ) : null}
+        <div class="flex gap-2 items-center  w-full pt-2 flex-col">
+            <div class="flex gap-1  text-sm  items-center flex-col justify-center w-full">
+                {product.producto.value.discount > 0 ? (
+                    <span class="text-gray-400 line-through  font-semibold   text-xs  text-center">
+                        {formatMoney(
+                            subtotalIgv(product.producto.value, false)
+                        )}
+                    </span>
+                ) : null}
 
-                    <p class="text-primary dark:text-white text-lg font-bold  self-end leading-tight">
-                        {formatMoney(subtotalIgv(product.producto.value))}
-                    </p>
-                </div>
+                <p class="text-primary dark:text-white text-lg font-bold   leading-tight">
+                    {formatMoney(subtotalIgv(product.producto.value))}
+                </p>
             </div>
-
             {showButtonCart ? (
                 <button
                     type="button"
                     aria-label="cart"
                     class={`${
                         product.existProductInCart ? "bg-black" : "bg-primary"
-                    } text-white font-bold uppercase py-3 px-4 tracking-widest text-sm text-center`}
+                    } text-white font-bold uppercase py-3 px-4 tracking-widest text-sm text-center w-full`}
                     disabled={product.cartStoreMutation.isLoading || false}
                     onClick={async () => {
                         await product.handleInsertProduct(false);
@@ -53,7 +51,12 @@ function ProductFooter({ showButtonCart }: ProductFooterProps) {
                                         }
                                     />
                                 ) : (
-                                    "Agregar carrito"
+                                    <span>
+                                        <i
+                                            class={`${storageEmpresa?.setting.type_cart} mr-2 text-md`}
+                                        />
+                                        Agregar carrito
+                                    </span>
                                 )}
                             </>
                         )}

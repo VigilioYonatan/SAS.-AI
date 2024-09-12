@@ -10,6 +10,7 @@ function getId() {
     if (!localStorage.getItem(key)) {
         localStorage.setItem(key, generateId());
     }
+
     return localStorage.getItem(key);
 }
 
@@ -20,14 +21,15 @@ export function useSocketStore() {
     function connectSocket() {
         const socketio = socket({
             query: {
-                "x-user": authStorage ? authStorage?.id : null,
-                "x-token": getId(),
+                "x-user": authStorage ? authStorage?.id : "null",
+                "x-token": getId() ?? "null",
                 "x-empresa": storageEmpresa ? storageEmpresa.id : "null",
             },
             autoConnect: true,
             forceNew: true,
         });
         io.value = socketio;
+
         return () => socketio.disconnect();
     }
 

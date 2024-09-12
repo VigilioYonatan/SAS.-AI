@@ -27,7 +27,7 @@ export function empresaUpdateLogoApi() {
         ResultApiImages,
         SettingsLogoUpdateDto & { name: string },
         { success: false; message: string }
-    >("/uploads/empresa/logo/1", async (url, body) => {
+    >("/uploads/empresas/logo/1", async (url, body) => {
         const result = await uploadApi(`/api${url}`, {
             file: body.logo,
             name: body.name,

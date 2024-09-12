@@ -6,14 +6,13 @@ import {
     vigilioServicesPricingQuery,
     vigilioServicesQuery,
 } from "../apis/vigilio-services.api";
-import AlertInfo from "~/components/Alerts/AlertInfo";
-import { reactComponent } from "~/libs/preact";
-import { sweetModal } from "@vigilio/sweet";
 import enviroments from "~/config";
 import Loading from "../components/Loading";
 import View404 from "./404";
 import { formatDolares } from "@/cart/libs/helpers";
 import { formatMoney } from "@vigilio/express-core/helpers";
+import { payments } from "../libs";
+import { formatDateTwo, NOW, restarDays } from "~/libs/helpers";
 
 export type TypePayment =
     | "mensual"
@@ -39,71 +38,51 @@ function Plus() {
                 <div className="max-w-3xl w-full p-6 ">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Tarjeta Grande */}
-                        <div className="md:col-span-2 md:w-[400px] mx-auto bg-white dark:bg-admin-background-dark dark:text-white shadow-lg rounded-lg overflow-hidden md:h-[800px]">
-                            <img
-                                className="w-full h-96 object-cover"
-                                src="/images/settings/others/tienda.jpg"
-                                alt="Producto 1"
-                            />
-                            <div className="p-6">
-                                <h2 className="text-xl  text-gray-800 font-bold dark:text-white">
-                                    Tienda Virtual Con Inteligencia Artificial
-                                </h2>
-                                <p className="text-gray-600 mt-2 font-bold dark:text-white">
-                                    Gratis
-                                </p>
-                                <ul className="mt-4 list-disc font-semibold   pl-5">
-                                    <li class="text-sm">
-                                        Agregar Categorías, Marcas y Productos.
-                                    </li>
-                                    <li class="text-sm">
-                                        Agregar Cupones de descuento.
-                                    </li>
-                                    <li class="text-sm">
-                                        Carrito de Compra Y Metodos de pagos.
-                                    </li>
-                                    <li class="text-sm">Gestion de Pedidos.</li>
-                                    <li class="text-sm">
-                                        Perzonalicación de tu web.
-                                    </li>
-                                    <li class="text-sm">
-                                        Boton de WhatsApp y Chat Inteligencia
-                                        Artificial.
-                                    </li>
-                                    <li class="text-sm">Short Links.</li>
-                                    <li class="text-sm">
-                                        Reclamaciones, noticia y publicaciónes.
-                                    </li>
-                                    <li class="text-sm">
-                                        Vender en Todo el País (opcional)
-                                    </li>
-                                    <li class="text-sm">
-                                        Multiplataforma - Todos los
-                                        dispositivos.
-                                    </li>
-                                    <li class="text-sm">
-                                        Pasarela de Pagos y mucho más...
-                                    </li>
-                                </ul>
-                                <a
-                                    href={`${
-                                        enviroments.VITE_VIGILIO_WEB
-                                    }/payment/${storageEmpresa?.slug}?type=${
-                                        "facturacion" as TypePayment
-                                    }`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="mt-4 bg-primary px-4 py-2 rounded-md text-white font-semibold items-center gap-2 flex justify-center"
-                                >
-                                    <i class="fa-regular fa-cart-shopping" />{" "}
-                                    Realizar Pedido
-                                </a>
+                        {!storageEmpresa?.payments.tienda.enabled &&
+                        storageEmpresa!.tipo_empresa.tipo_servicio_id !== 3 ? (
+                            <div className="md:col-span-2 md:w-[400px] mx-auto bg-white dark:bg-admin-background-dark dark:text-white shadow-lg rounded-lg overflow-hidden ">
+                                <img
+                                    className="w-full h-96 object-cover"
+                                    src="/images/settings/others/tienda.jpg"
+                                    alt="Producto 1"
+                                />
+                                <div className="p-6">
+                                    <h2 className="text-xl  text-gray-800 font-bold dark:text-white">
+                                        Tienda Virtual Con Inteligencia
+                                        Artificial
+                                    </h2>
+                                    <p className="text-gray-600 mt-2 font-bold dark:text-white">
+                                        Gratis
+                                    </p>
+                                    <ul className="mt-4 list-disc font-semibold   pl-5 md:h-[200px] overflow-auto">
+                                        {payments.tienda.map((tienda) => (
+                                            <li class="text-sm" key={tienda}>
+                                                {tienda}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    <a
+                                        href={`${
+                                            enviroments.VITE_VIGILIO_WEB
+                                        }/payment/${
+                                            storageEmpresa?.slug
+                                        }?type=${"tienda" as TypePayment}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="mt-4 bg-primary px-4 py-2 rounded-md text-white font-semibold items-center gap-2 flex justify-center"
+                                    >
+                                        <i class="fa-regular fa-cart-shopping" />{" "}
+                                        {storageEmpresa?.payments.tienda.enabled
+                                            ? "Pagado"
+                                            : " Realizar Pedido"}
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+                        ) : null}
 
                         {/* Tarjetas Pequeñas */}
                         <ProductCard
-                            title="PLAN MENSUAL"
+                            title="SUSCRIPCIÓN MENSUAL"
                             priceLocal={price!.local.mensual}
                             priceDolar={price!.dolar.mensual}
                             discount={3}
@@ -124,72 +103,16 @@ function Plus() {
                                             }  overflow-hidden `}
                                         >
                                             <ul className="list-disc font-semibold  pl-5">
-                                                <li class="text-sm">
-                                                    Acceso a la tienda y
-                                                    administrador de tu web.
-                                                </li>
-                                                <li class="text-sm">
-                                                    Usuarios ilimitado
-                                                </li>
-                                                <li class="text-sm">
-                                                    Productos ilimitado
-                                                </li>
-                                                <li class="text-sm">
-                                                    Clientes ilimitado
-                                                </li>
-                                                <li class="text-sm">
-                                                    Ventas Local y Delivery.
-                                                </li>
-                                                <li class="text-sm">
-                                                    Notificaciones de tus
-                                                    pedidos.
-                                                </li>
-                                                <li class="text-sm">
-                                                    Whatsapp CRM - Enviar
-                                                    mensajes másivos.
-                                                </li>
-                                                {storageEmpresa?.tipo_empresa
-                                                    .tipo_servicio_id === 2 ? (
-                                                    <li class="text-sm">
-                                                        Pisos y Mesas en tiempo
-                                                        Real.
-                                                    </li>
-                                                ) : null}
-
-                                                <li class="text-sm">
-                                                    Inteligencia Artificial
-                                                    CLAUDE AI Y OPEN AI.
-                                                </li>
-                                                <li class="text-sm">
-                                                    Genera links de Pago
-                                                </li>
-                                                <li class="text-sm">
-                                                    Asistente Artificial -
-                                                    Entrenamiento personalizado.
-                                                </li>
-                                                <li class="text-sm">
-                                                    Gestion de ordenes o
-                                                    pedidos.
-                                                </li>
-
-                                                <li class="text-sm">
-                                                    Automatización de Respuestas
-                                                    y tareas.
-                                                </li>
-                                                <li class="text-sm">
-                                                    Reconocimiento de Voz
-                                                    Whatsapp.
-                                                </li>
-                                                <li class="text-sm">
-                                                    15 millones de tokens para
-                                                    el uso de la Inteligencia
-                                                    Artificial mensualmente
-                                                    GRATIS
-                                                </li>
-                                                <li class="text-sm">
-                                                    Soporte, mantenimiento y
-                                                    mucho más..
-                                                </li>
+                                                {payments.mensual.map(
+                                                    (mensual) => (
+                                                        <li
+                                                            class="text-sm"
+                                                            key={mensual}
+                                                        >
+                                                            {mensual}
+                                                        </li>
+                                                    )
+                                                )}
                                             </ul>
                                         </div>
                                         <button
@@ -208,10 +131,41 @@ function Plus() {
                                     </div>
                                 );
                             })()}
+                            <div class="flex flex-col  my-2">
+                                <span
+                                    class={`text-sm font-semibold ${
+                                        restarDays(
+                                            NOW().toDate(),
+                                            storageEmpresa!.payments.mensual
+                                                .date as Date,
+                                            "day"
+                                        ) <= 3
+                                            ? "text-danger"
+                                            : ""
+                                    }`}
+                                >
+                                    Culmina en{" "}
+                                    <b>
+                                        {restarDays(
+                                            NOW().toDate(),
+                                            storageEmpresa!.payments.mensual
+                                                .date as Date,
+                                            "day"
+                                        )}{" "}
+                                    </b>
+                                    Días
+                                </span>
+                                <span class="text-sm font-semibold">
+                                    {formatDateTwo(
+                                        storageEmpresa!.payments.mensual
+                                            .date as Date
+                                    )}
+                                </span>
+                            </div>
                         </ProductCard>
                         {price!.local.facturacion ? (
                             <ProductCard
-                                title="Sistema de Facturación Sunat"
+                                title="Sistema de Facturación"
                                 priceLocal={price!.local.facturacion!}
                                 priceDolar={price!.dolar.facturacion!}
                                 discount={3}
@@ -223,19 +177,43 @@ function Plus() {
                                 }`}
                             >
                                 <ul className="mt-4 list-disc font-semibold pl-5">
-                                    <li class="text-sm">
-                                        Acceso al Dashboard de Facturación.
-                                    </li>
-                                    <li class="text-sm">
-                                        Emitir Boleta, Notas, Guías.
-                                    </li>
-                                    <li class="text-sm">PDF ilimitado</li>
-                                    <li class="text-sm">XML ilimitado</li>
-                                    <li class="text-sm">CDR ilimitado.</li>
-                                    <li class="text-sm">
-                                        Soporte y mantenimiento
-                                    </li>
+                                    {payments.facturacion.map((facturacion) => (
+                                        <li class="text-sm" key={facturacion}>
+                                            {facturacion}
+                                        </li>
+                                    ))}
                                 </ul>
+                                <div class="flex flex-col  my-2">
+                                    <span
+                                        class={`text-sm font-semibold ${
+                                            restarDays(
+                                                NOW().toDate(),
+                                                storageEmpresa!.payments
+                                                    .facturacion!.date as Date,
+                                                "day"
+                                            ) <= 3
+                                                ? "text-danger"
+                                                : ""
+                                        }`}
+                                    >
+                                        Culmina en{" "}
+                                        <b>
+                                            {restarDays(
+                                                NOW().toDate(),
+                                                storageEmpresa!.payments
+                                                    .facturacion!.date as Date,
+                                                "day"
+                                            )}{" "}
+                                        </b>
+                                        Días
+                                    </span>
+                                    <span class="text-sm font-semibold">
+                                        {formatDateTwo(
+                                            storageEmpresa!.payments.mensual
+                                                .date as Date
+                                        )}
+                                    </span>
+                                </div>
                             </ProductCard>
                         ) : null}
 
@@ -250,28 +228,43 @@ function Plus() {
                             }?type=${"telegram" as TypePayment}`}
                         >
                             <ul className="mt-4 list-disc font-semibold pl-5">
-                                <li class="text-sm">
-                                    Inteligencia Artificial CLAUDE AI Y OPEN AI.
-                                </li>
-                                <li class="text-sm">
-                                    Bot Artificial - Entrenamiento
-                                    personalizado.
-                                </li>
-                                <li class="text-sm">Genera links de Pago</li>
-                                <li class="text-sm">
-                                    Gestion de ordenes o pedidos.
-                                </li>
-
-                                <li class="text-sm">
-                                    Automatización de Respuestas y tareas.
-                                </li>
-                                <li class="text-sm">
-                                    Reconocimiento de Voz Whatsapp.
-                                </li>
-                                <li class="text-sm">
-                                    Soporte, mantenimiento y mucho más..
-                                </li>
+                                {payments.telegram.map((telegram) => (
+                                    <li class="text-sm" key={telegram}>
+                                        {telegram}
+                                    </li>
+                                ))}
                             </ul>
+                            <div class="flex flex-col  my-2">
+                                <span
+                                    class={`text-sm font-semibold ${
+                                        restarDays(
+                                            NOW().toDate(),
+                                            storageEmpresa!.payments.telegram!
+                                                .date as Date,
+                                            "day"
+                                        ) <= 3
+                                            ? "text-danger"
+                                            : ""
+                                    }`}
+                                >
+                                    Culmina en{" "}
+                                    <b>
+                                        {restarDays(
+                                            NOW().toDate(),
+                                            storageEmpresa!.payments.telegram!
+                                                .date as Date,
+                                            "day"
+                                        )}{" "}
+                                    </b>
+                                    Días
+                                </span>
+                                <span class="text-sm font-semibold">
+                                    {formatDateTwo(
+                                        storageEmpresa!.payments.telegram
+                                            .date as Date
+                                    )}
+                                </span>
+                            </div>
                         </ProductCard>
                         <ProductCard
                             isMensual={false}
@@ -293,8 +286,8 @@ function Plus() {
                 </div>
                 <div class="mt-4">
                     <span class="dark:text-white text-xs">
-                        Siguenos en nuestras redes y obtén regalos gratis{" "}
-                        <button
+                        Siguenos en nuestras redes:{" "}
+                        {/* <button
                             type="button"
                             class="text-white px-2 py-1 rounded-md bg-black bg-opacity-80 font-bold ml-2"
                             onClick={() => {
@@ -349,7 +342,7 @@ function Plus() {
                             }}
                         >
                             ?
-                        </button>
+                        </button> */}
                     </span>
                     <Redes vigilioServices={vigilioServices} />
                 </div>
@@ -411,7 +404,7 @@ function ProductCard({
                     rel="noreferrer"
                     className="mt-4 bg-primary px-4 py-2 rounded-md text-white font-semibold items-center gap-2 flex justify-center"
                 >
-                    Realizar Pedido
+                    <i class="fa-regular fa-cart-shopping" /> Realizar Pedido
                 </a>
             </div>
         </div>

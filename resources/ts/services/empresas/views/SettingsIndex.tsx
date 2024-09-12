@@ -41,7 +41,7 @@ function SettingsIndex() {
             resolver: valibotVigilio(settingsUpdateDto),
             mode: "all",
             defaultValues: useMemo(() => {
-                const { photo, icon, logo, ...rest } = setting;
+                const { photo, icon, ...rest } = setting;
                 return rest;
             }, []),
         });

@@ -24,12 +24,13 @@ interface WebLayoutProps {
 function WebLayout({ children, header }: WebLayoutProps) {
     const empresaStore = useEmpresastore();
     const authStore = useAuthStore();
+    console.log(header.categories);
 
     return (
         <>
             {authStore.state?.role_id === 1 && hiStorage !== "ok" ? (
-                <div class="fixed top-20 right-4 w-[200px] dark:bg-background-dark shadow p-2 rounded-md z-[999]">
-                    <span class="text-white  text-center font-semibold text-xs  tracking-widest">
+                <div class="fixed top-20 right-4 w-[200px] dark:bg-background-dark bg-white  shadow p-2 rounded-md z-[999] ">
+                    <span class="dark:text-white  text-center font-semibold text-xs  tracking-widest">
                         Agrega productos y categorías, Personaliza tu web para
                         que se vea mejor tu tienda virtual en{" "}
                         <i class="fa-solid fa-face-smile-wink text-yellow-400" />
