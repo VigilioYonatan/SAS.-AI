@@ -104,7 +104,6 @@ export class Server {
                     ] as (keyof EmpresasSchema)[],
                 },
             });
-            console.log({ host });
 
             if (empresa) {
                 const certificado =
@@ -160,7 +159,6 @@ export class Server {
         });
         // habilitar carpeta public
         this.app.use(express.static(`${dirMode}/public`));
-        console.log({ dirMode });
 
         // habilitar para consumir vistas
         this.app.set("view engine", "ejs");
