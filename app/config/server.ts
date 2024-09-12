@@ -51,10 +51,10 @@ export class Server {
         this.middlewares();
         this.auth();
         this.routes();
-        initial();
         // Llama a la función para inicializar las instancias
     }
-    middlewares() {
+    async middlewares() {
+        connectDB();
         // comprimir paginas webs para mejor rendimiento - NO TOCAR si no es necesario
         this.app.use(
             cors({
@@ -165,9 +165,8 @@ export class Server {
         this.app.set("views", `${dirMode}/resources/views`);
         // vite js configuración
         this.app.use(client());
+        await initial();
         // metodos globales
-
-        connectDB();
     }
 
     async auth() {
