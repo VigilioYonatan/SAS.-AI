@@ -17,8 +17,6 @@ export const empresasStoreDto = mergeAsync([
         ["id", "token", "certificado", "logo"],
         [
             async (input) => {
-                console.log({ input });
-
                 const [slug] = await Promise.all([
                     Empresas.findOne({
                         where: {
