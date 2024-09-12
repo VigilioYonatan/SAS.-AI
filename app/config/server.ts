@@ -49,8 +49,7 @@ export class Server {
 
     constructor() {
         this.middlewares();
-        this.auth();
-        this.routes();
+
         // Llama a la función para inicializar las instancias
     }
     async middlewares() {
@@ -167,6 +166,8 @@ export class Server {
         // vite js configuración
         this.app.use(client());
         await initial();
+        await this.auth();
+        await this.routes();
         // metodos globales
     }
 
