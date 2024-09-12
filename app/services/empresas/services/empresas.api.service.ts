@@ -284,9 +284,9 @@ export class EmpresasApiService {
                 );
             }
             // crear whatsapp contenedor
-            // await terminal(
-            //     `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --memory="400m" --cpus="0.09" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
-            // );
+            await terminal(
+                `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --memory="400m" --cpus="0.09" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+            );
             return {
                 success: true,
                 message: "Nuevo información agregado correctamente.",
