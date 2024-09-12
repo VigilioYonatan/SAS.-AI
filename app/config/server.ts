@@ -54,7 +54,6 @@ export class Server {
         // Llama a la función para inicializar las instancias
     }
     async middlewares() {
-        await connectDB();
         // comprimir paginas webs para mejor rendimiento - NO TOCAR si no es necesario
         this.app.use(
             cors({
@@ -68,7 +67,8 @@ export class Server {
         this.app.use(cookieParser());
         // habilitar para consumir json
         this.app.use(express.json({ limit: "100mb" }));
-        this.app.use(express.json());
+        await connectDB();
+
         this.app.use(async (req: Request, res, next) => {
             const host = req.headers.host;
 
