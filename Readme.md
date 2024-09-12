@@ -47,6 +47,10 @@ source ~/.profile
 nvm install --lts
 # pm2
 npm i -g pm2
+
+
+pm2 start bun --name "nombredeweb" -- start
+
 ```
 
 6. NGNIX
