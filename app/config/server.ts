@@ -214,8 +214,15 @@ export class Server {
                 res.locals.$user = user;
                 (req as RequestVigilio).user = user;
                 const empresa = (req as RequestVigilio).empresa;
-                // no permitido para endpoints
-                if (!req.path.includes("/api")) {
+
+                const host = req.headers.host;
+                // no permitido para endpoints y que no sea el subdominio client
+                if (
+                    !req.path.includes("/api") &&
+                    host?.includes(".") &&
+                    enviroments.CLIENT.toLowerCase() !==
+                        host?.split(".")[0].toLowerCase()
+                ) {
                     // LAYOUT
                     const [categories] = await Promise.all([
                         Categories.findAll({
