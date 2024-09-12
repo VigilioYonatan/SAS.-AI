@@ -5,7 +5,7 @@
     "description": "create web apps with @vigilio/express now",
     "scripts": {
         "build:serve": "rimraf dist && tsc  --project tsconfig.json ",
-        "start": "NODE_ENV=production node dist/main.js"
+        "start": "NODE_ENV=production node dist/app/main.js"
     },
     "keywords": [
         "@vigilio/express",

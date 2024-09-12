@@ -3,7 +3,6 @@ import express, {
     type Request,
     type Response,
 } from "express";
-import path from "node:path";
 import session from "express-session";
 import passport from "passport";
 import compression from "compression";
