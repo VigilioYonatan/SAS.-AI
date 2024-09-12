@@ -1,100 +1,144 @@
-# VIGILIO/EXPRESS - BUN
+# VIGILIO/EXPRESS-CORE
 
-<img src="./public/images/logo.png" width="150">
-<img src="https://user-images.githubusercontent.com/709451/182802334-d9c42afe-f35d-4a7b-86ea-9985f73f20c3.png" width="150">
-<br>
 by Yonatan Vigilio Lavado
-<br><br>
 
-# Getting Started
+-   @VIGILIO/EXPRESS-CORE VERSION: 1.4.1
 
-## Sin Docker
+## INSTALAR
 
-```bash
-bun install
-# eliminar .git/ para iniciar uno nuevo
-rm -r .git/
-# empezar modo de desarrollo
-bun serve
-bun dev
-```
+docker git pm2 nvm curl bun sudo
 
-## Con Docker
+### DEPLOY
 
-1. Instalar paquetes npm
+1. Crear ssh keygen
 
 ```bash
-bun install
+ssh-keygen
+cat .ssh/id_rsa.pub # copiar
 ```
 
-2. Iniciar contenedor
+2. entrar a ssh
 
 ```bash
-docker compose up -d
+ssh root@ip
 ```
 
-Abrir vite
+3. instalacion en vps
 
 ```bash
-# shell del contenedor donde corre node express
-bun dev
-#  desde tu terminal de visual studio code tambien
-bun dev
+sudo apt update && sudo apt upgrade -y # instalar ultimas acciones
 ```
 
-Detener contenedor y iniciar contenedor
+4. crear usuario y dar acceso
 
 ```bash
-docker container stop hashdecontenedor
-docker container start hashdecontenedor
+adduser vigilio # cualquier nombre puedes poner. enter enter y
+usermod -aG sudo vigilio
+# cambiar  usuario y entrar
+su - vigilio
 ```
 
-Ver logs de contenedor
+5. instalar pm2 y nvm
 
 ```bash
-docker container logs hashdecontenedor -f
-# -f ver en tiempo real
+# nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.profile
+nvm install --lts
+# pm2
+npm i -g pm2
 ```
 
-3. Detener todos los contenedores de la imagen
+6. NGNIX
+
+Crear archivo
 
 ```bash
-docker compose down
+sudo nano /etc/nginx/sites-available/vigilio-services
 ```
 
-4. Si modificaste package.json (instalar o desintalar dependencia ) Detener contenedor de la imagen "docker compose down" y instalar dependencia pnpm add \*. Volver a construir contenedor y iniciar contenedor
+```nginx
+server {
+    listen 80;
+    server_name eccomerce.vigilio-services.com www.eccomerce.vigilio-services.com;
 
-```BASH
-# Desde el terminal del contenedor puedes instalar la nueva dependencia y tambien instalar el de local
-# ó
-# volver a contruir construir contenedor y iniciar
-docker compose up -d --build
+    location / {
+        proxy_pass http://localhost:4000; # Cambia 3000 por el puerto en el que corre tu app Node.js
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Redirige www a la versión
+    if ($host = eccomerce.vigilio-services.com) {
+        return 301 $scheme://www.eccomerce.vigilio-services.com$request_uri;
+    }
+}
+
+# Configuración SSL (se habilitará más adelante)
+server {
+    listen 443 ssl;
+    server_name eccomerce.vigilio-services.com;
+
+    ssl_certificate /etc/letsencrypt/live/eccomerce.vigilio-services.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/eccomerce.vigilio-services.com/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    location / {
+        proxy_pass http://localhost:4000; # Cambia 3000 por el puerto en el que corre tu app Node.js
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    }
 ```
 
-### Opcional en el terminal
-
-Ver filesystem de tus contenedor
+Reinciiar nginx
 
 ```bash
-# server
-docker exec -it hashdecontenedor sh
+sudo ln -s /etc/nginx/sites-available/vigilio-services /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+
 ```
 
-### Producción
-
-1. Verificar y modificar .env a producción
-2. Verificar errores de eslint
+Activar Ssl
 
 ```bash
-pnpm biome:check
-pnpm biome:format
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d www.eccomerce.vigilio-services.com -d eccomerce.vigilio-services.com
+# solo ceritificado
+sudo certbot certonly --nginx -d www.eccomerce.vigilio-services.com -d eccomerce.vigilio-services.com
 ```
 
-3. Insertar tu api de postman y dia en tu aplicación
+verificar si ssl es automatico
 
 ```bash
-docker compose down
-docker compose -f docker-compose.production.yml up -d --build
+sudo systemctl status certbot.timer
+sudo certbot renew --dry-run #probar la renovacion
+
 ```
 
-3. Verás que se iniciará en modo de producción en el contenedor
+listar ssl
+
+```bash
+ls /etc/letsencrypt/live
+```
+
+# BACKUP
+
+-docker cp ../temp/backup.sql 3006:./backup.sql
+-docker exec -it contenedo y pg_dump -U nombre_usuario -d nombre_base_datos -F c -f /var/lib/postgresql/data/backup.sql
+-pg_restore -U postgres -d mi_base_de_datos /tmp/backup.dump
+// ver psql -U postgres -d basededatos
+// SELECT \* FROM "Users";
+// \q salir
+
+scp -r root@161.132.47.141:/home/vigilio/temp C:/Users/Vigilio/Documents/backup
