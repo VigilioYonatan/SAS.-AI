@@ -16,10 +16,7 @@ import {
 } from "./endpoints";
 import path from "node:path";
 import { authenticateToken } from "./middleware";
-import puppeteer from "puppeteer";
 import morgan from "morgan";
-import { HttpsProxyAgent } from "https-proxy-agent";
-import https from "node:https";
 dotenv.config({ path: ".env" });
 
 const PORT = Number(process.env.PORT);
@@ -38,120 +35,13 @@ export let client: WAWebJS.Client;
 const app = express();
 app.use(cors());
 app.use(morgan("dev"));
-async function getIp() {
-    const response = await fetch("https://free-proxy-list.net/");
-    const result = await response.text();
-    const $ = cheerio.load(result);
-    const rows = $("table tbody tr");
-    const proxies = [];
-
-    // Itera sobre cada fila de la tabla
-    rows.each((i, row) => {
-        const cols = $(row).find("td");
-        const proxy = {
-            ipAddress: $(cols[0]).text().trim(),
-            port: $(cols[1]).text().trim(),
-            code: $(cols[2]).text().trim(),
-            country: $(cols[3]).text().trim(),
-            anonymity: $(cols[4]).text().trim(),
-            google: $(cols[5]).text().trim(),
-            https: $(cols[6]).text().trim(),
-            lastChecked: $(cols[7]).text().trim(),
-        };
-        proxies.push(proxy);
-    });
-    console.log({ rows });
-
-    return result;
-}
-function checkProxy(proxy: string) {
-    return new Promise((resolve, reject) => {
-        const agent = new HttpsProxyAgent(proxy);
-
-        https
-            .get("https://httpbin.org/ip", { agent, timeout: 5000 }, (res) => {
-                let data = "";
-
-                res.on("data", (chunk) => {
-                    data += chunk;
-                });
-
-                res.on("end", () => {
-                    try {
-                        resolve(true);
-                    } catch (error) {
-                        console.error(
-                            `Proxy ${proxy} failed to parse response. Error: ${
-                                (error as Error).message
-                            }`
-                        );
-                        reject(false);
-                    }
-                });
-            })
-            .on("error", (error) => {
-                console.error(`Proxy ${proxy} failed. Error: ${error.message}`);
-                reject(error);
-            });
-    });
-}
 
 export async function initialWhatsapp() {
-    const proxies = [
-        "http://149.129.226.9:3128",
-        "http://81.91.151.146:3128",
-        "http://68.71.247.130:4145",
-        "http://103.189.116.115:8080",
-        "http://83.219.145.108:3128",
-        "http://64.56.104.90:15027",
-        "http://116.125.141.115:80",
-        "http://103.113.149.245:6969",
-    ];
-
-    let prox = null;
-    for (const proxy of proxies) {
-        const a = await checkProxy(proxy);
-        if (a) {
-            prox = proxy;
-            break;
-        }
-    }
-    console.log({ prox });
-
-    // Selecciona un proxy aleatorio
-    const proxy = proxies[Math.floor(Math.random() * proxies.length)];
-
-    const browser = await puppeteer.launch({
-        headless: true,
-        args: [`--proxy-server=${prox}`], // Usar el prox
-    }); // Cambia a 'true' si no necesitas ver el navegador
-    try {
-        const page = await browser.newPage();
-        // Navegar a una página que muestra la IP
-        await page.goto("https://ipinfo.io");
-        // Esperar a que el contenido de la página se cargue
-        await page.waitForSelector("body"); // Puedes ajustar el selector si es necesario
-        // Extraer el contenido HTML del cuerpo de la página
-        const html = await page.content();
-        console.log(html);
-        // Cerrar el navegador
-        await browser.close();
-    } catch (error) {
-        console.error("Error:", error);
-        await browser.close();
-    }
-    return;
-    // Cerrar el navegador
-    // await getIp();
     client = new WAWebJS.Client({
         authStrategy: new WAWebJS.LocalAuth(),
         puppeteer: {
             headless: true,
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                `--proxy-server=${proxyServer}`,
-            ],
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
         },
     });
 
