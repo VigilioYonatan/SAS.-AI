@@ -42,6 +42,7 @@
         "bcryptjs": "^2.4.3",
         "canvas-confetti": "^1.9.3",
         "chart.js": "^4.4.4",
+        "cheerio": "^1.0.0",
         "color.js": "^1.2.0",
         "compression": "^1.7.4",
         "cookie-parser": "^1.4.6",
@@ -101,6 +102,7 @@
     "devDependencies": {
         "@biomejs/biome": "^1.8.3",
         "@preact/preset-vite": "2.8.3",
+        "@types/aos": "^3.0.7",
         "@types/archiver": "^6.0.2",
         "@types/bcryptjs": "^2.4.6",
         "@types/bun": "^1.1.6",
@@ -142,7 +144,7 @@
         "unplugin-swc": "^1.5.1",
         "vite": "^5.3.3",
         "vite-plugin-live-reload": "^3.0.3",
-        "vite-plugin-pwa": "^0.20.0",
+        "vite-plugin-pwa": "^0.20.5",
         "vitest": "^1.6.0"
     }
 }

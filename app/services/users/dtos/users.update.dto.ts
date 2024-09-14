@@ -1,5 +1,9 @@
 import { type Input, pickAsync } from "@vigilio/valibot";
 import { usersSchema } from "../schemas/users.schema";
 
-export const usersUpdateDto = pickAsync(usersSchema, ["role_id", "enabled"]);
+export const usersUpdateDto = pickAsync(usersSchema, [
+    "role_id",
+    "enabled",
+    "speciality",
+]);
 export type UsersUpdateDto = Input<typeof usersUpdateDto>;

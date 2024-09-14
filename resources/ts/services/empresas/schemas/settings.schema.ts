@@ -7,13 +7,13 @@ import {
     minLength,
     nullable,
     number,
-    objectAsync,
+    object,
     string,
     type Input,
 } from "@vigilio/valibot";
 import { filesSchema } from "~/libs/upload";
 
-export const settingsSchema = objectAsync({
+export const settingsSchema = object({
     id: number(),
     host: nullable(
         string([
@@ -39,8 +39,10 @@ export const settingsSchema = objectAsync({
         ),
     ]),
     isCoverImage: boolean(),
+    isScrolling: boolean(),
     icon: nullable(array(filesSchema())), //obligatorio
     photo: nullable(array(filesSchema())),
+    isDark: boolean(),
     empresa_id: number(),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;

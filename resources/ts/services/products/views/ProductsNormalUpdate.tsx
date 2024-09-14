@@ -11,19 +11,15 @@ import { Fragment, type JSX } from "preact/jsx-runtime";
 import { valibotVigilio } from "~/libs/valibot";
 import { getFilesEdit } from "~/libs/upload";
 import { handlerError } from "~/libs/helpers";
-import { aiDescriptionApi } from "@/bot/apis/ai.description.api";
 import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
-import LoaderSubmit from "~/components/LoaderSubmit";
 import useAuthstore from "@/auth/stores/auth.store";
-import { subWhatsappIA } from "~/config/guards";
 import {
     productsShowApi,
     type ProductsShowAPI,
 } from "../apis/products/products.show.api";
 import { formSelectNumber } from "~/components/form/WebFormSelect";
-import useCopyToClipboard from "~/hooks/useCopyToClipboard";
 import { brandsIndexApi } from "../apis/brands/brands.index.api";
 import { reactComponent } from "~/libs/preact";
 import { optionsFeaturesApi } from "../apis/options/options.features.api";
@@ -108,7 +104,6 @@ function ProductsNormalUpdate({
         const name = formProductsNormalUpdate.watch("name");
         const discount = formProductsNormalUpdate.watch("discount");
         const price = formProductsNormalUpdate.watch("price");
-        const [copy] = useCopyToClipboard();
         const brandsIndexQuery = brandsIndexApi();
         const categoriesIndexQuery = categoriesIndexApi();
 
@@ -134,7 +129,6 @@ function ProductsNormalUpdate({
         const mutateProductsNormalUpdateImagesApi = productsUpdateImagesApi(
             product.id
         );
-        const aiDescriptionQuery = aiDescriptionApi();
 
         function onUpdateProduct(data: ProductsNormalUpdateDto) {
             sweetModal({
@@ -387,114 +381,40 @@ function ProductsNormalUpdate({
                             title="Descripción"
                             placeholder="descripción de producto"
                         />
-                        {name &&
-                        !formProductsNormalUpdate.formState.errors.name
-                            ?.message ? (
-                            <div class="text-primary text-xs flex flex-col self-start ">
-                                <span class="dark:text-white text-black">
-                                    Usar Inteligencia Artificial para buscar
-                                    descripción
-                                </span>
-                                <div class="flex relative gap-2 items-center">
-                                    <button
-                                        type="button"
-                                        aria-label="use ai decripcion"
-                                        class=" p-2   text-sm bg-primary px-2 py-1 rounded-md self-start mt-1 flex items-center gap-2 text-white"
-                                        onClick={() => {
-                                            if (!subWhatsappIA()) {
-                                                sweetAlert({
-                                                    icon: "danger",
-                                                    title: `<span class="text-xs">No tienes la subscripción de Whatsapp y IA <a href='/admin/plus' target="_blank" class="text-primary hover:underline">Ir a PLUS</a></span>`,
-                                                });
-                                                return;
-                                            }
-                                            aiDescriptionQuery.mutate(name, {
-                                                onSuccess(data) {
-                                                    sweetModal((onClose) => ({
-                                                        position: "start",
-                                                        html: reactComponent(
-                                                            <div class="flex flex-col gap-2 dark:text-white">
-                                                                <p>
-                                                                    {
-                                                                        data.description
-                                                                    }
-                                                                </p>
-                                                                <button
-                                                                    type="button"
-                                                                    aria-label="copy"
-                                                                    class="flex gap-2 items-center justify-center active:text-primary bg-primary px-4 py-1 rounded-md"
-                                                                    onClick={() => {
-                                                                        copy(
-                                                                            data.description
-                                                                        ).then(
-                                                                            () => {
-                                                                                sweetAlert(
-                                                                                    {
-                                                                                        icon: "success",
-                                                                                        title: "Copiado correctamente",
-                                                                                    }
-                                                                                );
-                                                                                onClose();
-                                                                            }
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    <i class="far fa-copy text-base" />{" "}
-                                                                    Copiar
-                                                                </button>
-                                                            </div>
-                                                        ),
-                                                        showCloseButton: true,
-                                                    }));
-                                                },
-                                                onError(data) {
-                                                    sweetAlert({
-                                                        icon: "danger",
-                                                        title: data.message,
-                                                    });
-                                                },
-                                            });
-                                        }}
-                                    >
-                                        <i class="fa-sharp fa-solid fa-message-bot " />
-                                        {aiDescriptionQuery.isLoading ? (
-                                            <LoaderSubmit />
-                                        ) : (
-                                            name
-                                        )}
-                                    </button>
-                                </div>
-                            </div>
-                        ) : null}
                     </>
                     <div class="mt-4">
-                        <span class="dark:text-white text-xs font-bold">
+                        <span class="dark:text-white text-black text-xs font-bold">
                             Caracterísiticas
                         </span>
-                        {fields.map((field, i) => (
-                            <div class="flex gap-2 items-center" key={field.id}>
-                                <Form.control
-                                    name={`characteristics.${i}.name`}
-                                    title="Nombre"
-                                    placeholder="Modelo"
-                                />
-                                <Form.control
-                                    name={`characteristics.${i}.value`}
-                                    title="Valor"
-                                    placeholder="A32"
-                                />
-                                <button
-                                    class="mx-auto block bg-danger px-2 py-1 mt-2 rounded-md shadow text-white"
-                                    type="button"
-                                    aria-label="to add"
-                                    onClick={() => {
-                                        remove(i);
-                                    }}
+                        <div class="max-h-[300px] overflow-auto">
+                            {fields.map((field, i) => (
+                                <div
+                                    class="flex gap-2 items-center"
+                                    key={field.id}
                                 >
-                                    <i class="fa-solid fa-trash" />
-                                </button>
-                            </div>
-                        ))}
+                                    <Form.control
+                                        name={`characteristics.${i}.name`}
+                                        title="Nombre"
+                                        placeholder="Modelo"
+                                    />
+                                    <Form.control
+                                        name={`characteristics.${i}.value`}
+                                        title="Valor"
+                                        placeholder="A32"
+                                    />
+                                    <button
+                                        class="mx-auto block bg-danger px-2 py-1 mt-2 rounded-md shadow text-white"
+                                        type="button"
+                                        aria-label="to add"
+                                        onClick={() => {
+                                            remove(i);
+                                        }}
+                                    >
+                                        <i class="fa-solid fa-trash" />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                     <button
                         class=" bg-primary px-4 py-2 rounded-md shadow text-white mb-4"
@@ -507,7 +427,7 @@ function ProductsNormalUpdate({
                         +
                     </button>
                     <div class="flex flex-col gap-2 ">
-                        <span class="text-xs dark:text-white relative self-start">
+                        <span class="text-xs dark:text-white text-black relative self-start">
                             Opciones{" "}
                             <button
                                 type="button"

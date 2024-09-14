@@ -16,7 +16,7 @@ function TerminosPage({ header }: TerminosPageProps) {
             <div class="mt-6  max-w-6xl mx-auto">
                 <WebBreadCrumb current="Terminos y condiciones" />
             </div>
-            <section class="max-w-6xl mx-auto  my-12 lg:my-4 ">
+            <section class="max-w-6xl mx-auto  my-12 lg:my-4 p-4 bg-white rounded-md dark:bg-background-dark">
                 <TitleSection>Términos y condiciones</TitleSection>
                 <div class="dark:text-white">
                     <div class="container px-4 py-8 prose">
@@ -77,6 +77,7 @@ function TerminosPage({ header }: TerminosPageProps) {
                             responsabilidad en cualquiera de los puntos
                             señalados.
                         </p>
+                        <br />
                         <p class="font-semibold">IMPORTANTE</p>
                         <p>
                             {empresa.state!.name_empresa} se reserva el derecho
@@ -97,6 +98,7 @@ function TerminosPage({ header }: TerminosPageProps) {
                             al titular que figure en el voucher del abono para
                             subsanar el inconveniente.
                         </p>
+                        <br />
 
                         <h3 class="font-semibold">
                             MEDIDAS TOMADAS SI NO SE ENTREGA EL PAQUETE EN
@@ -115,6 +117,8 @@ function TerminosPage({ header }: TerminosPageProps) {
                             {empresa.state!.name_empresa} deberá recoger su
                             pedido. Esta situación anulará la promesa de envío.
                         </p>
+                        <br />
+
                         <h2 class="font-semibold">
                             ZONAS DE REPARTO Y COSTO DE ENVÍOS
                         </h2>
@@ -125,6 +129,7 @@ function TerminosPage({ header }: TerminosPageProps) {
                             varian según la zona de reparto, consulte
                             previamente con su Asesor de ventas:
                         </p>
+                        <br />
 
                         <h3 class="font-semibold">PROMESA DE ENTREGA</h3>
                         <p>
@@ -133,6 +138,7 @@ function TerminosPage({ header }: TerminosPageProps) {
                             edificio y en caso de empresas: hasta la zona de
                             recepción.
                         </p>
+                        <br />
 
                         <h2 class="font-semibold">POLÍTICAS DE GARANTÍAS</h2>
                         <p>
@@ -141,6 +147,7 @@ function TerminosPage({ header }: TerminosPageProps) {
                             edificio y en caso de empresas: hasta la zona de
                             recepción.
                         </p>
+                        <br />
 
                         <h3 class="font-semibold">Condiciones Generales</h3>
                         <p>
@@ -166,6 +173,7 @@ function TerminosPage({ header }: TerminosPageProps) {
                             cliente. "Solo se cobrara un envío el cual deberá
                             ser cancelado antes del recojo del producto"
                         </p>
+                        <br />
 
                         <h3 class="font-semibold">NO APLICA GARANTÍA</h3>
                         <p>

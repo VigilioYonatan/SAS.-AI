@@ -49,7 +49,7 @@ function HeaderMobile({ headerDropdown }: HeaderMobileProps) {
                             />
                         ) : (
                             <h2 class="text-2xl font-bold text-white uppercase">
-                                {empresaStore.state!.name_empresa}
+                                {empresaStore.state!.name_empresa[0]}
                             </h2>
                         )}
                     </a>
@@ -82,23 +82,26 @@ function HeaderMobile({ headerDropdown }: HeaderMobileProps) {
                     </div>
                     {/* endcartaside */}
                     <div class="flex gap-3 items-center   text-xl  text-white">
-                        <button
-                            type="button"
-                            aria-label="change theme"
-                            onClick={() => {
-                                themeStore.methods.changeThemeMode(
-                                    themeStore.state === "dark"
-                                        ? "light"
-                                        : "dark"
-                                );
-                            }}
-                        >
-                            {themeStore.state! === "dark" ? (
-                                <i class="fas fa-moon" />
-                            ) : (
-                                <i class="far fa-sun" />
-                            )}
-                        </button>
+                        {empresaStore.state?.setting.isDark ? (
+                            <button
+                                type="button"
+                                aria-label="change theme"
+                                onClick={() => {
+                                    themeStore.methods.changeThemeMode(
+                                        themeStore.state === "dark"
+                                            ? "light"
+                                            : "dark"
+                                    );
+                                }}
+                            >
+                                {themeStore.state! === "dark" ? (
+                                    <i class="fas fa-moon" />
+                                ) : (
+                                    <i class="far fa-sun" />
+                                )}
+                            </button>
+                        ) : null}
+
                         <button
                             type="button"
                             class=" text-xl  text-white relative"

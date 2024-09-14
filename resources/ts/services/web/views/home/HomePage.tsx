@@ -13,6 +13,10 @@ import CategoriesProductSection from "./components/CategoriesProductSection";
 import Noticia from "./components/Noticia";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
+import AboutSection from "./components/AboutSection";
+import UsersSection from "./components/UsersSection";
+import { UsersSchema } from "@/users/schemas/users.schema";
+import CategoriesSection from "./components/CategoriesSection";
 
 export interface HomePageProps {
     header: HeaderType;
@@ -38,6 +42,11 @@ export interface HomePageProps {
         | null;
     backgrounds: BackgroundSchemaFromServer[];
     noticia: NewSchema | null;
+    productsquantity: number;
+    users: Pick<
+        UsersSchema,
+        "id" | "name" | "speciality" | "photo" | "birthday"
+    >[];
 }
 function HomePage({
     header,
@@ -48,6 +57,8 @@ function HomePage({
     backgrounds,
     noticia,
     getproductsbycategories,
+    productsquantity,
+    users,
 }: HomePageProps) {
     return (
         <>
@@ -59,6 +70,8 @@ function HomePage({
                     productlatestmapped={productlatestmapped}
                     productsoffert8mapped={productsoffert6mapped}
                 />
+                <AboutSection productsquantity={productsquantity} />
+                <CategoriesSection categories={header.categories} />
                 <CategoriesProductSection
                     getProductsByCategories={getproductsbycategories}
                 />
@@ -67,6 +80,7 @@ function HomePage({
                     productmostdiscountmapped={productmostdiscountmapped}
                 />
                 <PostsSection posts={posts} />
+                <UsersSection users={users} />
                 <FindSection />
             </WebLayout>
         </>

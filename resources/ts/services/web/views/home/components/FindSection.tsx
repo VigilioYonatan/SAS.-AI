@@ -1,10 +1,17 @@
-import useEmpresastore from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import MapValue from "~/components/MapValue";
 
 function FindSection() {
     const empresaStore = useEmpresastore();
     return (
-        <section class="max-w-6xl mx-auto flex flex-col md:flex-row gap-3 px-2 bg-background-light  dark:bg-background-dark rounded-md  my-12  ">
+        <section
+            data-aos={`${
+                storageEmpresa?.setting.isScrolling ? "fade-up" : ""
+            } `}
+            class="max-w-6xl mx-auto flex flex-col md:flex-row gap-3 px-2 bg-background-light  dark:bg-background-dark rounded-md  my-12  "
+        >
             <div class="md:w-1/2 w-full relative">
                 <MapValue
                     zoom={16}

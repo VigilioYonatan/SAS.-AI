@@ -11,7 +11,6 @@ import { type JSX } from "preact/jsx-runtime";
 import { valibotVigilio } from "~/libs/valibot";
 import { getFilesEdit } from "~/libs/upload";
 import { handlerError } from "~/libs/helpers";
-import { aiDescriptionApi } from "@/bot/apis/ai.description.api";
 import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
@@ -117,8 +116,6 @@ function ProductsRestaurantUpdate({
         const mutateProductsRestaurantUpdateImagesApi = productsUpdateImagesApi(
             product.id
         );
-        const aiDescriptionQuery = aiDescriptionApi();
-
         function onUpdateProduct(data: ProductsRestaurantUpdateDto) {
             sweetModal({
                 title: "¿Estás seguro de editar este producto?",
@@ -398,85 +395,6 @@ function ProductsRestaurantUpdate({
                         ) : (
                             <></>
                         )}
-                        {name &&
-                        !formProductsRestaurantUpdate.formState.errors.name
-                            ?.message ? (
-                            <div class="text-primary text-xs flex flex-col self-start ">
-                                <span class="dark:text-white text-black">
-                                    Usar Inteligencia Artificial para buscar
-                                    descripción
-                                </span>
-                                <div class="flex relative gap-2 items-center">
-                                    <button
-                                        type="button"
-                                        aria-label="use ai decripcion"
-                                        class=" p-2   text-sm bg-primary px-2 py-1 rounded-md self-start mt-1 flex items-center gap-2 text-white"
-                                        onClick={() => {
-                                            if (!subWhatsappIA()) {
-                                                sweetAlert({
-                                                    icon: "danger",
-                                                    title: `<span class="text-xs">No tienes la subscripción de Whatsapp y IA <a href='/admin/plus' target="_blank" class="text-primary hover:underline">Ir a PLUS</a></span>`,
-                                                });
-                                                return;
-                                            }
-                                            aiDescriptionQuery.mutate(name, {
-                                                onSuccess(data) {
-                                                    sweetModal((onClose) => ({
-                                                        position: "start",
-                                                        html: reactComponent(
-                                                            <div class="flex flex-col gap-2 dark:text-white">
-                                                                <p>
-                                                                    {
-                                                                        data.description
-                                                                    }
-                                                                </p>
-                                                                <button
-                                                                    type="button"
-                                                                    aria-label="copy"
-                                                                    class="flex gap-2 items-center justify-center active:text-primary bg-primary px-4 py-1 rounded-md"
-                                                                    onClick={() => {
-                                                                        copy(
-                                                                            data.description
-                                                                        ).then(
-                                                                            () => {
-                                                                                sweetAlert(
-                                                                                    {
-                                                                                        icon: "success",
-                                                                                        title: "Copiado correctamente",
-                                                                                    }
-                                                                                );
-                                                                                onClose();
-                                                                            }
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    <i class="far fa-copy text-base" />{" "}
-                                                                    Copiar
-                                                                </button>
-                                                            </div>
-                                                        ),
-                                                        showCloseButton: true,
-                                                    }));
-                                                },
-                                                onError(data) {
-                                                    sweetAlert({
-                                                        icon: "danger",
-                                                        title: data.message,
-                                                    });
-                                                },
-                                            });
-                                        }}
-                                    >
-                                        <i class="fa-sharp fa-solid fa-message-bot " />
-                                        {aiDescriptionQuery.isLoading ? (
-                                            <LoaderSubmit />
-                                        ) : (
-                                            name
-                                        )}
-                                    </button>
-                                </div>
-                            </div>
-                        ) : null}
                     </>
                     <div class="mt-4 flex flex-col gap-2">
                         <span class="dark:text-white text-xs font-bold">

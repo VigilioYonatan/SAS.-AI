@@ -164,7 +164,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 storageEmpresa!.tipo_empresa.tipo_servicio_id !== 3 ? (
                     <a
                         href="/admin/plus"
-                        class="fixed top-36 right-0 bg-primary font-semibold text-white p-1 rounded-md m-2 text-xs w-[100px] text-center"
+                        class="fixed z-[99] top-36 right-0 bg-primary font-semibold text-white p-1 rounded-md m-2 text-xs w-[100px] text-center"
                     >
                         <i class="fa-sharp fa-solid fa-bag-shopping mr-2" />
                         Tienda Virtual con I.A Gratis

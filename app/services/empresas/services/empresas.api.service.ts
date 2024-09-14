@@ -37,6 +37,7 @@ import enviroments from "~/config/enviroments.config";
 import { productsSeeder } from "@/products/seeders/products.seeder";
 import { ProductsApiService } from "@/products/services/products.api.service";
 import { Categories } from "@/products/entities/categories.entity";
+import { Settings } from "../entities/settings.entity";
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
@@ -134,6 +135,7 @@ export class EmpresasApiService {
                 enabledClientPayComision: true,
                 enabled_igv: true,
                 isOpen: true,
+                enabledAnimation: false,
                 enable_sell_country: false,
                 token: `${body.slug}-${generateId().slice(4, 12)}`,
             });
@@ -212,6 +214,7 @@ export class EmpresasApiService {
                     logo: null,
                     photo: null,
                     isCoverImage: true,
+                    isDark: true,
                 }),
             ]);
             const username = `${fullname}${Math.random()
@@ -231,6 +234,7 @@ export class EmpresasApiService {
                 slug: slug(username),
                 role_id: 1,
                 empresa_id: empresa.id,
+                speciality: "",
             });
             const openAiClient = new openai.OpenAI({
                 apiKey: empresa.credentials.open_ai,
@@ -284,9 +288,10 @@ export class EmpresasApiService {
                 );
             }
             // crear whatsapp contenedor
-            await terminal(
-                `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --memory="400m" --cpus="0.09" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
-            );
+            // await terminal(
+            //     `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --memory="400m" --cpus="0.09" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+            // );
+
             return {
                 success: true,
                 message: "Nuevo información agregado correctamente.",
@@ -541,6 +546,19 @@ export class EmpresasApiService {
         return {
             success: true,
             message: "Se edito horario de atención correctamente",
+        };
+    }
+
+    async dominio(empresa: Empresas, body: { host: string | null }) {
+        const setting = await Settings.findOne({
+            where: {
+                empresa_id: empresa.id,
+            },
+        });
+        await setting?.update({ host: body.host });
+        return {
+            success: true,
+            message: "Se edito dominio correctamente.",
         };
     }
     async whatsappGroupIndex(slug: string) {

@@ -248,7 +248,9 @@ export class Server {
                             };
                         })
                     );
-                    res.locals.header = { categories: categoriasTotal };
+                    res.locals.header = {
+                        categories: categoriasTotal,
+                    };
                 }
                 next();
             }

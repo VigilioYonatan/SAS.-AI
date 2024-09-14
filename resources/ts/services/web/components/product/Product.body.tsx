@@ -11,7 +11,7 @@ function ProductBody({ showDescription }: ProductBodyProps) {
     const { product } = useContext(productContext);
 
     return (
-        <div class="flex flex-col gap-2 px-2 pt-2  w-full justify-center items-center">
+        <div class="flex flex-col gap-2 px-2 pt-2  w-full justify-center items-center ">
             <style jsx>{`
                 .slick-slide > div {
                     margin-inline: 4px;
@@ -41,8 +41,8 @@ function ProductBody({ showDescription }: ProductBodyProps) {
                     } ${
                         storageEmpresa!.tipo_empresa.tipo_servicio_id === 1
                             ? (!product.varianteChoose!.ilimit &&
-                                  product.varianteChoose!.stock! < 0) ||
-                              !product.producto.value.enabled
+                                  product.varianteChoose!.stock! > 0) ||
+                              product.varianteChoose!.ilimit
                                 ? "text-primary"
                                 : "text-danger"
                             : ""
@@ -72,7 +72,7 @@ function ProductBody({ showDescription }: ProductBodyProps) {
                                           ? `${
                                                 product.varianteChoose!.stock
                                             } unidades`
-                                          : "Agotado"
+                                          : ""
                                   } `}
                         </>
                     ) : null}
@@ -86,7 +86,7 @@ function ProductBody({ showDescription }: ProductBodyProps) {
             </div>
 
             {showDescription && product.producto.value.description ? (
-                <p class="text-gray-400   line-clamp-3  h-[70px]  w-full">
+                <p class="text-gray-400   line-clamp-3  h-[80px]  w-full text-sm">
                     {removeTextHTML(product.producto.value.description)}
                 </p>
             ) : null}

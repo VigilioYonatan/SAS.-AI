@@ -119,6 +119,12 @@ function UsersShow({ params: { slug }, refetch, onClose }: UsersShowProps) {
                                 </>
                             ) : null}
                             <Form onSubmit={onUpdateUser} {...usersUpdateForm}>
+                                <Form.control
+                                    title="Especialidad"
+                                    name={"speciality" as keyof UsersUpdateDto}
+                                    placeholder=""
+                                    type="text"
+                                />
                                 <div class="flex gap-1 flex-col mb-3  [&>div>label]:hidden [&>div]:h-auto  odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
                                     <span class="text-primary dark:text-terciary font-bold">
                                         Rol

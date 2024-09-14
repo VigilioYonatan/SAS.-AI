@@ -4,8 +4,15 @@ import "@vigilio/sweet/sweet.min.css";
 import { lazy } from "preact/compat";
 import render from "./libs/preact";
 import enviroments from "./config";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
+AOS.init({
+    duration: 1200, // Duración de la animación
+    once: true, // Si quieres que la animación ocurra solo una vez
+});
 render(
     "Initial",
     lazy(() => import("@/Initial"))
@@ -29,6 +36,10 @@ render(
 render(
     "HomePage",
     lazy(() => import("@/web/views/home/HomePage"))
+);
+render(
+    "AboutPage",
+    lazy(() => import("@/web/views/home/AboutPage"))
 );
 // auth
 render(

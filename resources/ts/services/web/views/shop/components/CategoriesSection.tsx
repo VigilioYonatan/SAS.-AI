@@ -1,3 +1,4 @@
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import type { CategoriesSchema } from "@/products/schemas/categories.schema";
 import {
     SampleNextArrow,
@@ -14,7 +15,12 @@ interface categoriesSectionProps {
 function CategoriesSection({ categories }: categoriesSectionProps) {
     if (!categories.length) return null;
     return (
-        <section class="max-w-6xl mx-auto px-4 my-12 categories-section">
+        <section
+            class="max-w-6xl mx-auto px-4 my-2 categories-section flex flex-col gap-4"
+            data-aos={`${
+                storageEmpresa?.setting.isScrolling ? "fade-up" : ""
+            } `}
+        >
             <TitleSection>Nuestros Productos</TitleSection>
             <Slider
                 className="w-full rounded-lg "

@@ -4,7 +4,9 @@ import type { HeaderType } from "./WebLayout";
 import HeaderMobile from "./HeaderMobile";
 import { isActive } from "~/libs/helpers";
 import Hamburguer from "./Hamburguer";
-import useEmpresastore from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import useThemeStore from "~/stores/theme.store";
 import useAuthStore from "@/auth/stores/auth.store";
 import { useSignal } from "@preact/signals";
@@ -116,28 +118,31 @@ function Header({ header }: HeaderProps) {
                     </div>
                     <div class="flex items-center gap-3">
                         <div class="flex gap-3 items-center">
-                            <button
-                                type="button"
-                                aria-label="change theme"
-                                class="flex gap-2 items-center justify-center text-md dark:text-white"
-                                onClick={() =>
-                                    themeStore.methods.changeThemeMode(
-                                        themeStore.state === "dark"
-                                            ? "light"
-                                            : "dark"
-                                    )
-                                }
-                            >
-                                {themeStore.state === "dark" ? (
-                                    <>
-                                        <i class="fa-solid fa-moon " />{" "}
-                                    </>
-                                ) : (
-                                    <>
-                                        <i class="fa-solid fa-sun " />{" "}
-                                    </>
-                                )}
-                            </button>
+                            {storageEmpresa?.setting.isDark ? (
+                                <button
+                                    type="button"
+                                    aria-label="change theme"
+                                    class="flex gap-2 items-center justify-center text-md dark:text-white"
+                                    onClick={() =>
+                                        themeStore.methods.changeThemeMode(
+                                            themeStore.state === "dark"
+                                                ? "light"
+                                                : "dark"
+                                        )
+                                    }
+                                >
+                                    {themeStore.state === "dark" ? (
+                                        <>
+                                            <i class="fa-solid fa-moon " />{" "}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i class="fa-solid fa-sun " />{" "}
+                                        </>
+                                    )}
+                                </button>
+                            ) : null}
+
                             <button
                                 type="button"
                                 class="bg-primary w-[30px] h-[30px] rounded-full text-white text-sm flex justify-center items-center relative"
@@ -269,16 +274,7 @@ function Header({ header }: HeaderProps) {
                         >
                             Shop
                         </a>
-                        <a
-                            class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
-                                isActive("/blog")
-                                    ? "text-primary"
-                                    : "text-black dark:text-white hover:text-primary"
-                            }`}
-                            href={"/blog"}
-                        >
-                            Blog
-                        </a>
+
                         <a
                             class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
                                 isActive("/nosotros")
@@ -291,13 +287,13 @@ function Header({ header }: HeaderProps) {
                         </a>
                         <a
                             class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
-                                isActive("/contactanos")
+                                isActive("/pedidos")
                                     ? "text-primary"
                                     : "text-black dark:text-white hover:text-primary"
                             }`}
-                            href={"/contactanos"}
+                            href={"/pedidos"}
                         >
-                            Contactanos
+                            Pedidos
                         </a>
                     </nav>
                     <div class="lg:hidden mr-4 flex gap-4 items-center font-semibold text-white">

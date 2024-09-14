@@ -24,7 +24,6 @@ interface WebLayoutProps {
 function WebLayout({ children, header }: WebLayoutProps) {
     const empresaStore = useEmpresastore();
     const authStore = useAuthStore();
-    console.log(header.categories);
 
     return (
         <>

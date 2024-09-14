@@ -221,7 +221,7 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
                                 <span class="text-primary dark:text-terciary font-bold">
                                     Características:
                                 </span>
-                                <div class="w-full overflow-auto">
+                                <div class="w-full overflow-auto max-h-[300px]">
                                     {product.characteristics.length ? (
                                         <>
                                             <table class="text-sm text-left  h-full shadow w-full">

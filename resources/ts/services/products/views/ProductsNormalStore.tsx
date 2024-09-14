@@ -11,12 +11,10 @@ import { imageBackgroundIA } from "~/config/settings";
 import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
-import { subWhatsappIA } from "~/config/guards";
 import { reactComponent } from "~/libs/preact";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import useAuthstore from "@/auth/stores/auth.store";
 import { brandsIndexApi } from "../apis/brands/brands.index.api";
-import { aiDescriptionApi } from "@/bot/apis/ai.description.api";
 import { formSelectNumber } from "~/components/form/WebFormSelect";
 import AdminHr from "~/components/AdminHr";
 import useCopyToClipboard from "~/hooks/useCopyToClipboard";
@@ -36,6 +34,8 @@ import { productsNormalStoreApi } from "../apis/products/products_normal.store.a
 import { categoriesIndexApi } from "../apis/categories/categories.index.api";
 import CategoriesStore from "./CategoriesStore";
 import BrandsStore from "./BrandsStore";
+import { aiProductApi } from "@/bot/apis/ai.product.api";
+import { getFilesEdit } from "~/libs/upload";
 
 interface ProductsNormalStoreProps {
     refetch: (clean?: boolean | undefined) => Promise<void>;
@@ -62,7 +62,8 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
     });
 
     const productsNormalStoreMutation = productsNormalStoreApi();
-    const aiDescriptionQuery = aiDescriptionApi();
+    const aiProductQuery = aiProductApi();
+    const isImageLoading = useSignal(false);
     const optionsFeaturesQuery = optionsFeaturesApi();
     const [copy] = useCopyToClipboard();
     const categoriesIndexQuery = categoriesIndexApi();
@@ -171,6 +172,42 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
         }));
     }
 
+    function onSearchProduct() {
+        aiProductQuery.mutate(name, {
+            async onSuccess(data) {
+                isImageLoading.value = true;
+                const images = await getFilesEdit(
+                    data.data.images.map((img) => ({
+                        dimension: 500,
+                        file: img.image,
+                    })),
+                    null
+                );
+                isImageLoading.value = false;
+                productsNormalStoreDtoForm.setValue(
+                    "characteristics",
+                    data.data.caracterisiticas.map((val) => ({
+                        name: val.key,
+                        value: val.value,
+                    }))
+                );
+                productsNormalStoreDtoForm.setValue(
+                    "description",
+                    data.data.description
+                );
+                if (images.length) {
+                    productsNormalStoreDtoForm.setValue("images", images);
+                }
+            },
+            onError() {
+                sweetAlert({
+                    icon: "danger",
+                    title: "Error al obtener información de producto",
+                });
+            },
+        });
+    }
+
     return (
         <div class="text-start  mt-6">
             <Form {...productsNormalStoreDtoForm} onSubmit={onProductStore}>
@@ -184,11 +221,30 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
 
                 <div class="">
                     <div class="w-full flex flex-row gap-2">
-                        <Form.control
-                            name={"name" as keyof ProductsNormalStoreDto}
-                            title="Nombre"
-                            placeholder="Nombre de producto"
-                        />
+                        <div class="w-full flex gap-1 items-center">
+                            <Form.control
+                                name={"name" as keyof ProductsNormalStoreDto}
+                                title="Nombre"
+                                placeholder="Nombre de producto"
+                            />
+                            <button
+                                type="button"
+                                aria-label="add"
+                                class="bg-primary px-3 py-2 rounded-md shadow text-white mt-2"
+                                disabled={
+                                    aiProductQuery.isLoading ||
+                                    isImageLoading.value ||
+                                    false
+                                }
+                                onClick={onSearchProduct}
+                            >
+                                {aiProductQuery.isLoading ? (
+                                    <LoaderSubmit />
+                                ) : (
+                                    <i class="fas fa-search" />
+                                )}
+                            </button>
+                        </div>
                         <Form.control
                             name={"slug" as keyof ProductsNormalStoreDto}
                             title="Slug"
@@ -326,117 +382,41 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                         title="Descripción"
                         placeholder="Descripción de producto"
                     />
-                    {name &&
-                    !productsNormalStoreDtoForm.formState.errors.name
-                        ?.message ? (
-                        <div class="text-primary text-xs flex flex-col self-start ">
-                            <span class="dark:text-white text-black">
-                                Usar Inteligencia Artificial para buscar
-                                descripción
-                            </span>
-                            <div class="flex relative gap-2 items-center">
-                                <button
-                                    type="button"
-                                    aria-label="use ai decripcion"
-                                    class=" p-2   text-sm  bg-primary px-2 py-1 rounded-md self-start text-white mt-1 flex items-center gap-2 "
-                                    onClick={() => {
-                                        if (!subWhatsappIA()) {
-                                            sweetAlert({
-                                                icon: "danger",
-                                                title: `<span class="text-xs">No tienes la subscripción de Whatsapp y IA <a href='/admin/plus' target="_blank" class="text-primary hover:underline">Ir a PLUS</a></span>`,
-                                            });
-                                            return;
-                                        }
-                                        aiDescriptionQuery.mutate(name, {
-                                            onSuccess(data) {
-                                                sweetModal((onClose) => ({
-                                                    position: "start",
-                                                    html: reactComponent(
-                                                        <div class="flex flex-col gap-2 dark:text-white">
-                                                            <p>
-                                                                {
-                                                                    data.description
-                                                                }
-                                                            </p>
-                                                            <button
-                                                                type="button"
-                                                                aria-label="copy"
-                                                                class="flex gap-2 items-center justify-center active:text-primary bg-primary px-4 py-1 rounded-md text-white"
-                                                                onClick={() => {
-                                                                    copy(
-                                                                        data.description
-                                                                    ).then(
-                                                                        () => {
-                                                                            sweetAlert(
-                                                                                {
-                                                                                    icon: "success",
-                                                                                    title: "Copiado correctamente",
-                                                                                }
-                                                                            );
-                                                                            onClose();
-                                                                        }
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <i class="far fa-copy text-base" />{" "}
-                                                                Copiar
-                                                            </button>
-                                                        </div>
-                                                    ),
-                                                    showCloseButton: true,
-                                                }));
-                                            },
-                                            onError(data) {
-                                                sweetAlert({
-                                                    icon: "danger",
-                                                    title: data.message,
-                                                });
-                                            },
-                                        });
-                                    }}
-                                >
-                                    <i class="fa-sharp fa-solid fa-message-bot " />
-                                    {aiDescriptionQuery.isLoading ? (
-                                        <LoaderSubmit />
-                                    ) : (
-                                        name
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    ) : null}
+
                     <div>
-                        <div class="mb-2">
+                        <div class="mb-2 h- overflow-auto">
                             <span class="dark:text-white text-xs font-bold">
                                 Caracterísiticas
                             </span>
-                            {fields.map((field, i) => (
-                                <div
-                                    class="flex gap-2 items-center"
-                                    key={field.id}
-                                >
-                                    <Form.control
-                                        name={`characteristics.${i}.name`}
-                                        title="Nombre"
-                                        placeholder="Modelo"
-                                    />
-                                    <Form.control
-                                        name={`characteristics.${i}.value`}
-                                        title="Valor"
-                                        placeholder="Resistente"
-                                    />
-                                    <button
-                                        class="mx-auto block bg-danger px-2 py-1 mt-2 rounded-md shadow text-white"
-                                        type="button"
-                                        aria-label="to add"
-                                        onClick={() => {
-                                            remove(i);
-                                        }}
+                            <div class="max-h-[300px] overflow-auto">
+                                {fields.map((field, i) => (
+                                    <div
+                                        class="flex gap-2 items-center"
+                                        key={field.id}
                                     >
-                                        <i class="fa-solid fa-trash" />
-                                    </button>
-                                </div>
-                            ))}
+                                        <Form.control
+                                            name={`characteristics.${i}.name`}
+                                            title="Nombre"
+                                            placeholder="Modelo"
+                                        />
+                                        <Form.control
+                                            name={`characteristics.${i}.value`}
+                                            title="Valor"
+                                            placeholder="Resistente"
+                                        />
+                                        <button
+                                            class="mx-auto block bg-danger px-2 py-1 mt-2 rounded-md shadow text-white"
+                                            type="button"
+                                            aria-label="to add"
+                                            onClick={() => {
+                                                remove(i);
+                                            }}
+                                        >
+                                            <i class="fa-solid fa-trash" />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                         <button
                             class="bg-primary px-4 py-2 rounded-md shadow text-white"

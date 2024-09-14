@@ -70,7 +70,7 @@ function ReclamacionesPage({ header }: ReclamacionesProps) {
             <div class="mt-6 max-w-6xl mx-auto">
                 <WebBreadCrumb current="Libro de reclamaciones" />
             </div>
-            <div className="max-w-4xl p-4 mx-auto  my-12 lg:my-4">
+            <div className="max-w-4xl p-4 mx-auto  my-12 lg:my-4 bg-white rounded-md dark:bg-background-dark ">
                 <TitleSection>Libro de Reclamaciones</TitleSection>
                 <div className="mb-6 dark:text-white">
                     <h2 className="mb-4 text-xl font-semibold underline  dark:text-white">

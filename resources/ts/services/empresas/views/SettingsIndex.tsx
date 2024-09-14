@@ -24,7 +24,12 @@ import {
     settingsUpdatePhotoApi,
 } from "../apis/settings/settings.update.api";
 import Hr from "@/web/components/Hr";
+import { settingsDominioUpdateApi } from "../apis/settings/dominio.update.api";
+import { Input, pick } from "@vigilio/valibot";
+import { settingsSchema } from "../schemas/settings.schema";
 
+const dominioUpdate = pick(settingsSchema, ["host"]);
+type DominioUpdate = Input<typeof dominioUpdate>;
 function SettingsIndex() {
     const settingsIndexQuery = settingsIndexApi();
     const empresaStore = useEmpresastore();
@@ -37,6 +42,7 @@ function SettingsIndex() {
         const empresaUpdateMutation = settingsUpdateApi();
         const empresaUpdateIconMutation = settingsUpdateIconApi();
         const settingsUpdatePhotoMutation = settingsUpdatePhotoApi();
+        const settingsDominioUpdateMutation = settingsDominioUpdateApi();
         const settingsUpdateform = useForm<SettingsUpdateDto>({
             resolver: valibotVigilio(settingsUpdateDto),
             mode: "all",
@@ -45,15 +51,24 @@ function SettingsIndex() {
                 return rest;
             }, []),
         });
+
+        const isCoverImage = settingsUpdateform.watch("isCoverImage");
+        const type_border = settingsUpdateform.watch("type_border");
         const type_cart = settingsUpdateform.watch("type_cart");
 
         const settingsIconUpdateform = useForm<SettingsIconUpdateDto>({
             resolver: valibotVigilio(settingsIconUpdateDto),
             mode: "all",
         });
+
         const settingsPhotoUpdateform = useForm<SettingsPhotoUpdateDto>({
             resolver: valibotVigilio(settingsPhotoUpdateDto),
             mode: "all",
+        });
+        const settingsPhotoDominioform = useForm<DominioUpdate>({
+            resolver: valibotVigilio(settingsPhotoUpdateDto),
+            mode: "all",
+            defaultValues: { host: setting.host },
         });
 
         async function initialUpdateIcon() {
@@ -102,6 +117,7 @@ function SettingsIndex() {
                 }
             });
         }
+
         function onUpdatePhotoempresa(body: SettingsPhotoUpdateDto) {
             sweetModal({
                 title: "¿Estas seguro de cambiar el photo de tu web?",
@@ -135,6 +151,7 @@ function SettingsIndex() {
                 }
             });
         }
+
         function onUpdateempresa(body: SettingsUpdateDto) {
             sweetModal({
                 title: "¿Estas seguro de realizar estos cambios en tu web?",
@@ -156,6 +173,20 @@ function SettingsIndex() {
                 }
             });
         }
+        function onUpdateHost(body: DominioUpdate) {
+            settingsDominioUpdateMutation.mutate(body, {
+                onSuccess() {
+                    sweetModal({
+                        icon: "success",
+                        title: "Se agregó nuevo dominio.",
+                        text: `Prueba tu dominio como <a class="font-bold text-primary" href='https://www.${body.host}.com'>Probar</a>`,
+                    });
+                },
+                onError(data) {
+                    handlerError(settingsIconUpdateform, data);
+                },
+            });
+        }
 
         useEffect(() => {
             initialUpdateIcon();
@@ -165,13 +196,17 @@ function SettingsIndex() {
         }, []);
         component = (
             <>
-                <div class="p-4">
+                <div class="p-4 max-w-3xl">
                     <h3 class="dark:text-white lg:text-2xl  font-bold uppercase text-center flex gap-2  w-full mb-4">
                         <i class="fa-solid fa-tools" />
                         Configuración de tu web
                     </h3>
-                    <Form {...settingsUpdateform} onSubmit={onUpdateempresa}>
-                        <div class="flex gap-2 items-center">
+                    <Form
+                        className="flex gap-4 flex-col"
+                        {...settingsUpdateform}
+                        onSubmit={onUpdateempresa}
+                    >
+                        <div class="grid grid-cols-2 md:grid-cols-4">
                             <div class="w-[120px]">
                                 <Form.control
                                     type="color"
@@ -188,17 +223,64 @@ function SettingsIndex() {
                                     title="color responsive"
                                 />
                             </div>
+                            <Form.control.toggle
+                                title="¿Modo Nocturno?"
+                                name={"isDark" as keyof SettingsUpdateDto}
+                            />
+                            <Form.control.toggle
+                                title="¿Animación de Scroll?"
+                                name={"isScrolling" as keyof SettingsUpdateDto}
+                            />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <span class="text-xs font-semibold dark:text-white">
+                                Producto
+                            </span>
+                            <div class="flex gap-4 items-center">
+                                <div
+                                    class={`w-[200px] shadow bg-paper-light dark:bg-admin-terciary overflow-hidden ${
+                                        type_border === "circle"
+                                            ? "rounded-md"
+                                            : ""
+                                    }`}
+                                >
+                                    <img
+                                        class={`mx-auto w-[300px] h-[200px] ${
+                                            isCoverImage
+                                                ? "object-cover"
+                                                : "object-contain"
+                                        }`}
+                                        width={200}
+                                        height={150}
+                                        src="https://http2.mlstatic.com/D_NQ_NP_993674-MLA31895860508_082019-O.webp"
+                                        alt=""
+                                    />
+                                </div>
+                                <div>
+                                    <Form.control.select
+                                        name={
+                                            "type_border" as keyof SettingsUpdateDto
+                                        }
+                                        title="Borde"
+                                        array={[
+                                            { key: "circle", value: "Redondo" },
+                                            {
+                                                key: "square",
+                                                value: "Rectangular",
+                                            },
+                                        ]}
+                                        placeholder="Escoger tipo de border"
+                                    />
+                                    <Form.control.toggle
+                                        name={
+                                            "isCoverImage" as keyof SettingsUpdateDto
+                                        }
+                                        title="¿Cover Imagen?"
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2 items-center">
-                            <Form.control.select
-                                name={"type_border" as keyof SettingsUpdateDto}
-                                title="Borde"
-                                array={[
-                                    { key: "circle", value: "Redondo" },
-                                    { key: "square", value: "Rectangular" },
-                                ]}
-                                placeholder="Escoger tipo de border"
-                            />
                             <div>
                                 <span class="text-xs dark:text-white font-semibold">
                                     Tipo de Icono
@@ -261,41 +343,64 @@ function SettingsIndex() {
                             title="Acerca de la empresa"
                             placeholder="xxxxxxxxxx"
                         />
-                        <span class="font-semibold dark:text-secondary-light">
-                            ¿Quieres tener tu propio dominio.com?
-                        </span>
-                        <Form.control
-                            type="text"
-                            ico={<i class="far fa-globe" />}
-                            name={"host" as keyof SettingsUpdateDto}
-                            title="Dominio web"
-                            placeholder="tudominio.com"
-                            question={
-                                <div>
-                                    Debes comprar un dominio web.
-                                    <br />
-                                    <span>Recomendable </span>
-                                    <a
-                                        href="https://www.hosting-ssd.com/hosting/cart.php?a=add&domain=register"
-                                        target="_blank"
-                                        class="font-bold text-primary"
-                                        rel="noreferrer"
-                                    >
-                                        Ir
-                                    </a>
-                                </div>
-                            }
-                        />
+
                         <Form.button.submit
                             title="Actualizar"
+                            className="self-start"
                             isLoading={empresaUpdateMutation.isLoading || false}
                             disabled={empresaUpdateMutation.isLoading || false}
                         />
                     </Form>
                     <Hr spacing={13} />
                     <br />
-
+                    <Form
+                        className="flex gap-4  flex-col"
+                        {...settingsPhotoDominioform}
+                        onSubmit={onUpdateHost}
+                    >
+                        <span class="font-semibold dark:text-secondary-light">
+                            ¿Quieres tener tu propio dominio.com?
+                        </span>
+                        <div class="flex gap-2 items-center">
+                            <Form.control
+                                type="text"
+                                ico={<i class="far fa-globe" />}
+                                name={"host" as keyof SettingsUpdateDto}
+                                title="Dominio web"
+                                placeholder="tudominio.com"
+                                question={
+                                    <div class="w-[180px]">
+                                        ¿Ya tienes un dominio?. Necesitas tener
+                                        uno, En internet hay muchos proveedores
+                                        de dominios como Hostinger, GoDaddy,
+                                        etc.
+                                        <br />
+                                        <span>Recomendamos el siguente </span>
+                                        <a
+                                            href="https://www.hosting-ssd.com/hosting/cart.php?a=add&domain=register"
+                                            target="_blank"
+                                            class="font-bold text-primary"
+                                            rel="noreferrer"
+                                        >
+                                            Ir
+                                        </a>
+                                    </div>
+                                }
+                            />
+                            <Form.button.submit
+                                title="Actualizar"
+                                className="py-4"
+                                isLoading={
+                                    empresaUpdateMutation.isLoading || false
+                                }
+                                disabled={
+                                    empresaUpdateMutation.isLoading || false
+                                }
+                            />
+                        </div>
+                    </Form>
                     <br />
+                    <Hr spacing={13} />
                     <Form
                         {...settingsIconUpdateform}
                         onSubmit={onUpdateIconEmpresa}
@@ -317,6 +422,9 @@ function SettingsIndex() {
                             title="Guardar Cambios"
                         />
                     </Form>
+                    <Hr spacing={13} />
+
+                    <br />
                     <Hr spacing={13} />
                     <br />
                     <Form

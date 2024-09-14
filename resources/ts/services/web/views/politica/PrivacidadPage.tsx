@@ -14,7 +14,7 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
             <div class="mt-6  max-w-6xl mx-auto">
                 <WebBreadCrumb current="Politicas de privacidad" />
             </div>
-            <section class="max-w-6xl mx-auto dark:text-white my-12 lg:my-4">
+            <section class="max-w-6xl mx-auto dark:text-white my-12 lg:my-4 bg-white rounded-md dark:bg-background-dark p-4">
                 <TitleSection>Política de privacidad</TitleSection>
                 <div class="px-4  prose relative">
                     {empresaStore.state!.logo ? (
@@ -31,16 +31,15 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
                             alt={empresaStore.state!.name_empresa}
                         />
                     ) : null}
-
                     <p>
                         En cumplimiento de lo dispuesto por la Ley, Ley de
                         Protección de Datos Personales y su reglamento aprobado
-                        por Decreto Supremo N° 003-2013-JUS,{" "}
-                        {empresaStore.state!.name_empresa} desea poner en
-                        conocimiento de sus usuarios, los siguientes aspectos
-                        relacionados con sus datos personales:
+                        por Decreto Supremo, {empresaStore.state!.name_empresa}{" "}
+                        desea poner en conocimiento de sus usuarios, los
+                        siguientes aspectos relacionados con sus datos
+                        personales:
                     </p>
-
+                    <br />
                     <h2 class="font-semibold">1. OBJETIVO.</h2>
                     <p>
                         El objetivo de la presente política es la declaración y
@@ -51,11 +50,13 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
                         los que se someten los datos de carácter personal que se
                         obtengan.
                     </p>
+                    <br />
 
                     <h2 class="font-semibold">2. REFERENCIAS NORMATIVAS.</h2>
                     <ul>
                         <li>2.1. Ley de Protección de Datos Personales.</li>
                     </ul>
+                    <br />
 
                     <h2 class="font-semibold">3. PRINCIPIOS.</h2>
                     <p>
@@ -112,6 +113,7 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
                             trate.
                         </li>
                     </ul>
+                    <br />
 
                     <h2 class="font-semibold">
                         4. DEFINICIÓN DE DATOS PERSONALES.
@@ -130,6 +132,7 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
                         nuestros formularios en nuestros sitios web o la que se
                         envía por correo electrónico.
                     </p>
+                    <br />
 
                     <h2 class="font-semibold">
                         5. TITULARIDAD DE LA BASE DE DATOS.
@@ -140,6 +143,7 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
                         los bancos de datos bajo la titularidad de la empresa{" "}
                         {empresaStore.state!.name_empresa}.
                     </p>
+                    <br />
 
                     <h2 class="font-semibold">
                         6. FINALIDADES DEL TRATAMIENTO DE LA INFORMACIÓN.
@@ -159,7 +163,6 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
                         datos personales en el banco de datos referido en tanto
                         sean útiles para la finalidad y usos antes mencionados.
                     </p>
-
                     <p>
                         El titular de datos personales tiene derecho a ser
                         informado en forma detallada, sencilla, expresa,
@@ -184,6 +187,7 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
                         privacidad, las que deben ser fácilmente accesibles e
                         identificables
                     </p>
+                    <br />
 
                     <h2 class="font-semibold">7. DECLARACIÓN DE PRIVACIDAD.</h2>
                     <p>
@@ -197,6 +201,7 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
                         transferirá los datos personales sin previo
                         consentimiento del Usuario.
                     </p>
+                    <br />
 
                     <h2 class="font-semibold">
                         8. SEGURIDAD Y CONFIDENCIALIDAD DE LOS DATOS.
@@ -210,6 +215,7 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
                         único responsable de suministrar sus datos personales a
                         la empresa {empresaStore.state!.name_empresa}.
                     </p>
+                    <br />
 
                     <h2 class="font-semibold">9. DERECHOS DE LOS USUARIOS.</h2>
                     <p>
@@ -220,7 +226,6 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
                         solicitud firmada a la dirección de correo electrónico
                         {empresaStore.state!.name_empresa} .
                     </p>
-
                     <h2 class="font-semibold">
                         DEL CONSENTIMIENTO DEL USUARIO Y ACEPTACIÓN DE LOS
                         TÉRMINOS
@@ -243,11 +248,10 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
                         cualquier información relacionada con los sitios web de
                         la empresa {empresaStore.state!.name_empresa}.
                     </p>
-
+                    <br />
                     <h3 class="font-semibold">
                         Características del consentimiento
                     </h3>
-
                     <ul>
                         <li>
                             Libre: Sin que medie error, mala fe, violencia o

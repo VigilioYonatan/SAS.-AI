@@ -36,6 +36,7 @@ export const usersSchema = object({
     address: nullable(string([toTrimmed(), minLength(10), maxLength(100)])),
     telephone: nullable(string([toTrimmed(), minLength(6), maxLength(60)])),
     photo: nullable(array(filesSchema())),
+    speciality: nullable(string()),
     enabled: boolean(),
     isOnline: boolean(),
     slug: transform(

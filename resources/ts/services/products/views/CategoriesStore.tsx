@@ -6,12 +6,16 @@ import {
 import { slug as transformSlug } from "@vigilio/express-core/helpers";
 import { useForm } from "react-hook-form";
 import { categoriesStoreApi } from "../apis/categories/categories.store.api";
-import { sweetModal } from "@vigilio/sweet";
+import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { useEffect } from "preact/hooks";
 import { valibotVigilio } from "~/libs/valibot";
 import useAuthStore from "@/auth/stores/auth.store";
 import { handlerError } from "~/libs/helpers";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import { aiCategoryApi } from "@/bot/apis/ai.category.api";
+import { getFilesEdit } from "~/libs/upload";
+import LoaderSubmit from "~/components/LoaderSubmit";
+import { useSignal } from "@preact/signals";
 
 interface CategoriesStoreProps {
     refetch: (clean?: boolean) => Promise<void>;
@@ -30,6 +34,8 @@ function CategoriesStore({ refetch, onClose }: CategoriesStoreProps) {
     });
 
     const categoriesStoreMutation = categoriesStoreApi();
+    const aiCategoryMutation = aiCategoryApi();
+    const isLoadingImage = useSignal(false);
 
     function onAddCategory(data: CategoriesStoreDto) {
         sweetModal({
@@ -60,6 +66,35 @@ function CategoriesStore({ refetch, onClose }: CategoriesStoreProps) {
     useEffect(() => {
         categoriesStoreDtoForm.setValue("slug", transformSlug(name || ""));
     }, [name]);
+    async function onSearchCategory() {
+        aiCategoryMutation.mutate(name, {
+            async onSuccess(data) {
+                isLoadingImage.value = true;
+                const images = await getFilesEdit(
+                    data.data.images.map((img) => ({
+                        dimension: 500,
+                        file: img.image,
+                    })),
+                    null
+                );
+                categoriesStoreDtoForm.setValue("icon", data.data.ico);
+                if (images.length) {
+                    categoriesStoreDtoForm.setValue("image", images);
+                }
+                isLoadingImage.value = false;
+                sweetAlert({
+                    icon: "success",
+                    title: `Se añadio correctamente propiedades para ${name}`,
+                });
+            },
+            onError() {
+                sweetAlert({
+                    icon: "danger",
+                    title: "Error al obtener información de producto",
+                });
+            },
+        });
+    }
 
     return (
         <div className="mt-6 text-start">
@@ -73,12 +108,35 @@ function CategoriesStore({ refetch, onClose }: CategoriesStoreProps) {
                 </div>
                 <div class="flex flex-col gap-4 justify-center items-center">
                     <div class="w-full flex flex-col md:flex-row gap-2">
-                        <Form.control
-                            name={"name" as keyof CategoriesStoreDto}
-                            title="Nombre"
-                            placeholder=""
-                            question="Ejemplo: Laptops, Zapatillas, Polos,Ceviches,Sopas, etc"
-                        />
+                        <div class="w-full flex gap-1 items-center">
+                            <Form.control
+                                name={"name" as keyof CategoriesStoreDto}
+                                title="Nombre"
+                                placeholder="Nombre de Categoría"
+                                question={
+                                    <span>
+                                        Ejemplo: <b>Laptops, zapatos, etc</b>
+                                    </span>
+                                }
+                            />
+                            <button
+                                type="button"
+                                aria-label="add"
+                                class="bg-primary px-3 py-2 rounded-md shadow text-white mt-2"
+                                disabled={
+                                    aiCategoryMutation.isLoading ||
+                                    isLoadingImage.value ||
+                                    false
+                                }
+                                onClick={onSearchCategory}
+                            >
+                                {aiCategoryMutation.isLoading ? (
+                                    <LoaderSubmit />
+                                ) : (
+                                    <i class="fas fa-search" />
+                                )}
+                            </button>
+                        </div>
                         <Form.control
                             name={"slug" as keyof CategoriesStoreDto}
                             title="Slug"
@@ -87,30 +145,43 @@ function CategoriesStore({ refetch, onClose }: CategoriesStoreProps) {
                             disabled
                         />
                     </div>
-                    <Form.control
-                        name={"icon" as keyof CategoriesStoreDto}
-                        title="Icono"
-                        type="text"
-                        placeholder="<i class='fa-solid fa-brush'></i>"
-                        question={
-                            <div>
-                                <p>
-                                    Busque un icono{" "}
-                                    <a
-                                        class="font-bold underline"
-                                        href="https://fontawesome.com/search"
-                                        target="_blank"
-                                        rel="noreferrer"
-                                    >
-                                        Aquí
-                                    </a>{" "}
-                                    y copie y pegue
-                                </p>
-                                <br />
-                                Este campo no es obligatorio.
-                            </div>
-                        }
-                    />
+                    <div class="w-full flex gap-2 items-center">
+                        <Form.control
+                            name={"icon" as keyof CategoriesStoreDto}
+                            title="Icono"
+                            type="text"
+                            placeholder="<i class='fa-solid fa-brush'></i>"
+                            question={
+                                <div>
+                                    <p>
+                                        Busque un icono{" "}
+                                        <a
+                                            class="font-bold underline"
+                                            href="https://fontawesome.com/search"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            Aquí
+                                        </a>{" "}
+                                        y copie y pegue
+                                    </p>
+                                    <br />
+                                    Este campo no es obligatorio.
+                                </div>
+                            }
+                        />
+                        {categoriesStoreDtoForm.watch("icon") ? (
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html: categoriesStoreDtoForm.watch(
+                                        "icon"
+                                    )!,
+                                }}
+                                class="mt-3"
+                            />
+                        ) : null}
+                    </div>
+
                     <Form.control.file
                         name={"image" as keyof CategoriesStoreDto}
                         accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"

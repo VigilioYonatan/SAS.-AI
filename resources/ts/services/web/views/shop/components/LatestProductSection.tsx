@@ -1,3 +1,4 @@
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 import ProductCard from "@/web/components/product";
@@ -11,9 +12,14 @@ interface LatestProductSectionProps {
 function LatestProductSection({ ultimosproducto }: LatestProductSectionProps) {
     if (!ultimosproducto.length) return null;
     return (
-        <section class="max-w-6xl mx-auto my-6 px-2">
+        <section
+            class="max-w-6xl mx-auto my-6 px-2  flex flex-col gap-4"
+            data-aos={`${
+                storageEmpresa?.setting.isScrolling ? "fade-up" : ""
+            } `}
+        >
             <TitleSection>Nuestros ultimos productos agregados</TitleSection>
-            <div class="grid gap-4 grid-cols-2 sm:grid-cols-4 xl:grid-cols-5 justify-center items-center">
+            <div class="grid gap-4 grid-cols-2 md:grid-cols-4 justify-center items-center">
                 {ultimosproducto.map((product) => (
                     <ProductCard key={product.id} product={product}>
                         <ProductCard.header />

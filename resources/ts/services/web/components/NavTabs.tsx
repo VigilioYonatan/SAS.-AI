@@ -54,7 +54,7 @@ function NavTabs() {
                     class={`text-gray-200  py-4 flex flex-col justify-center items-center gap-1 ${
                         isActive("/auth") ? "bg-black bg-opacity-40" : ""
                     } hover:bg-black hover:bg-opacity-40 delay-custom-1`}
-                    href={"/auth/profile"}
+                    href={"/admin"}
                 >
                     <i class="fas fa-user" />
                     <span class="text-xs font-semibold">Mi Perfil</span>

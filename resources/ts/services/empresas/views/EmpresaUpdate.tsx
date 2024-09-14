@@ -393,23 +393,6 @@ function empresaUpdate() {
                                             }
                                         />
                                     ) : null}
-                                </div>
-                                <div class="grid grid-cols-2 items-center  w-full  gap-2">
-                                    <Form.control.toggle
-                                        name={
-                                            "enabledSendMessage" as keyof EmpresasUpdateDto
-                                        }
-                                        title="Habilitar Enviar mensajes de whatsapp"
-                                        question="Ya no se podrá enviar mensajes de whatsapp de las ordenes de los clientes"
-                                    />
-                                    <Form.control.toggle
-                                        name={
-                                            "enable_sell_country" as keyof EmpresasUpdateDto
-                                        }
-                                        title="Habilitar Vender todo el pais"
-                                        question="Venderás en todo el pais, Entrar a configuración/ Precio de envio"
-                                    />
-
                                     <Form.control.toggle
                                         name={
                                             "enabledClientPayComision" as keyof EmpresasUpdateDto
@@ -434,6 +417,23 @@ function empresaUpdate() {
                                             </div>
                                         }
                                     />
+                                </div>
+                                <div class="grid grid-cols-2 items-center  w-full  gap-2">
+                                    <Form.control.toggle
+                                        name={
+                                            "enabledSendMessage" as keyof EmpresasUpdateDto
+                                        }
+                                        title="Habilitar Enviar mensajes de whatsapp"
+                                        question="Ya no se podrá enviar mensajes de whatsapp de las ordenes de los clientes"
+                                    />
+                                    <Form.control.toggle
+                                        name={
+                                            "enable_sell_country" as keyof EmpresasUpdateDto
+                                        }
+                                        title="Habilitar Vender todo el pais"
+                                        question="Venderás en todo el pais, Entrar a configuración/ Precio de envio"
+                                    />
+
                                     <Form.control
                                         type="number"
                                         name={"igv" as keyof EmpresasUpdateDto}
@@ -551,7 +551,7 @@ function empresaUpdate() {
                         />
                     </Form>
 
-                    <span class="dark:text-white">
+                    <span class="dark:text-gray-300 mt-2 text-xs block">
                         <b>Token:</b> {empresa.token}
                     </span>
                 </div>

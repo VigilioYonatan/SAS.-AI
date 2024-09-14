@@ -1,5 +1,8 @@
 import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
-import useEmpresastore, { BASE_URL } from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    BASE_URL,
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import useProduct, { type CouponStore } from "@/products/hooks/useProduct";
 import { useSignal } from "@preact/signals";
 import Slider from "react-slick";
@@ -63,7 +66,7 @@ function ProductPage({
         discount,
         productCouponMutation,
         zoom,
-        images500,
+        images500Variant,
         varianteChoose,
         changeVariant,
         variant,
@@ -103,8 +106,8 @@ function ProductPage({
                                     </div>
                                 );
                             },
-                            dots: images500.length > 1,
-                            arrows: images500.length > 1,
+                            dots: images500Variant.length > 1,
+                            arrows: images500Variant.length > 1,
                             dotsClass: "slick-dots slick-thumb",
                             infinite: false,
                             speed: 500,
@@ -123,7 +126,7 @@ function ProductPage({
                                 onMouseMove={zoom.handleMouseMove}
                                 onMouseLeave={zoom.handleMouseLeave}
                             >
-                                {images500.length ? (
+                                {images500Variant.length ? (
                                     <button
                                         class="absolute right-0 m-2 dark:text-white z-10"
                                         type="button"
@@ -151,7 +154,7 @@ function ProductPage({
                             </div>
                         ))}
                     </Slider>
-                    <ShowImage length={images500.length}>
+                    <ShowImage length={images500Variant.length}>
                         <Slider
                             className="w-full"
                             {...{
@@ -167,7 +170,7 @@ function ProductPage({
                                 },
                             }}
                         >
-                            {images500.map((image) => (
+                            {images500Variant.map((image) => (
                                 <div class="h-[800px] " key={image}>
                                     <img
                                         class="w-full h-full object-contain"
@@ -204,7 +207,7 @@ function ProductPage({
                             transform: scale(1.5);
                         }
                     `}</style>
-                    <div class="flex flex-col gap-2 md:w-5/12 mt-8">
+                    <div class="flex flex-col gap-2 md:w-5/12 mt-8 ">
                         <div class="flex gap-2 text-gray-600 dark:text-gray-300 text-xs font-normal">
                             {product.category?.icon ? (
                                 <div
@@ -239,7 +242,6 @@ function ProductPage({
                                 height={40}
                             />
                         ) : null}
-
                         <div class="flex flex-col">
                             <div class="flex gap-2">
                                 {product.discount > 0 ? (
@@ -275,203 +277,227 @@ function ProductPage({
                                     subtotalIgv(product, true, discount.value)
                                 )}
                             </span>
-                        </div>
+                        </div>{" "}
                         <span
                             class={`${
-                                varianteChoose?.ilimit ||
-                                (!varianteChoose?.ilimit &&
-                                    varianteChoose?.stock! > 0) ||
-                                (
-                                    producto.value as ProductsRestaurantSchemaFromServer
-                                )?.ilimit ||
-                                (!(
-                                    producto.value as ProductsRestaurantSchemaFromServer
-                                )?.ilimit &&
-                                    (
-                                        producto.value as ProductsRestaurantSchemaFromServer
-                                    )?.stock! > 0)
-                                    ? "text-success"
-                                    : "text-danger"
-                            }  font-bold text-xs flex items-center gap-2`}
-                        >
-                            <i class="fa-duotone fa-circle-check text-xl" />{" "}
-                            {(
-                                producto.value as ProductsRestaurantSchemaFromServer
-                            )?.ilimit || varianteChoose?.ilimit
-                                ? "En stock"
-                                : `${
-                                      (
+                                storageEmpresa?.tipo_empresa
+                                    .tipo_servicio_id === 2
+                                    ? (
                                           producto.value as ProductsRestaurantSchemaFromServer
-                                      )?.stock ?? varianteChoose?.stock
-                                  } unidades`}
-                            {"  "}
-                        </span>
-                        {/* aaaaaaaaaaaaaaaaca variante */}
-                        {(producto.value as ProductsNormalSchemaFromServer)
-                            ?.variants ? (
-                            <>
-                                {" "}
-                                <div class="flex flex-col gap-3">
+                                      ).ilimit ||
+                                      (!(
+                                          producto.value as ProductsRestaurantSchemaFromServer
+                                      ).ilimit &&
+                                          (
+                                              producto.value as ProductsRestaurantSchemaFromServer
+                                          ).stock! > 0)
+                                        ? "text-success"
+                                        : "text-danger"
+                                    : ""
+                            } ${
+                                storageEmpresa!.tipo_empresa
+                                    .tipo_servicio_id === 1
+                                    ? (!varianteChoose!.ilimit &&
+                                          varianteChoose!.stock! < 0) ||
+                                      varianteChoose!.ilimit
+                                        ? "text-primary"
+                                        : "text-danger"
+                                    : ""
+                            }  font-bold text-sm flex items-center gap-2`}
+                        >
+                            {storageEmpresa!.tipo_empresa.tipo_servicio_id ===
+                            2 ? (
+                                <>
                                     {(
-                                        producto.value as ProductsNormalSchemaFromServer
-                                    )?.options.map((option) => (
-                                        <div key={option.id}>
-                                            <span class="dark:text-white text-xs font-bold text-black">
-                                                {option.name}
-                                            </span>
-                                            <div class="flex gap-2 flex-wrap">
-                                                {option.features.length ? (
-                                                    <>
-                                                        {option.features
-                                                            .length >= 4 ? (
-                                                            <select
-                                                                onChange={(
-                                                                    e
-                                                                ) => {
-                                                                    changeVariant(
-                                                                        {
-                                                                            option_id:
-                                                                                option.id,
-                                                                            feature_id:
-                                                                                Number(
-                                                                                    (
-                                                                                        e.target as HTMLInputElement
-                                                                                    )
-                                                                                        .value
-                                                                                ),
-                                                                        }
-                                                                    );
-                                                                }}
-                                                                class="bg-white  dark:bg-primary text-xs dark:text-white w-full py-3 rounded-md shadow"
-                                                            >
-                                                                {option.features.map(
-                                                                    (
-                                                                        feature
-                                                                    ) => (
-                                                                        <option
-                                                                            value={
-                                                                                feature.id
-                                                                            }
-                                                                            class="font-bold  rounded-md  text-sm"
-                                                                            key={
-                                                                                feature.id
-                                                                            }
-                                                                        >
-                                                                            {
-                                                                                feature.description
-                                                                            }
-                                                                        </option>
-                                                                    )
-                                                                )}
-                                                            </select>
-                                                        ) : (
-                                                            <>
-                                                                {option.features.map(
-                                                                    (
-                                                                        feature
+                                        producto.value as ProductsRestaurantSchemaFromServer
+                                    ).ilimit
+                                        ? "En stock"
+                                        : `${
+                                              (
+                                                  producto.value as ProductsRestaurantSchemaFromServer
+                                              ).stock
+                                          } unidades`}
+                                </>
+                            ) : null}
+                            {storageEmpresa!.tipo_empresa.tipo_servicio_id ===
+                            1 ? (
+                                <>
+                                    {varianteChoose!.ilimit
+                                        ? "En stock"
+                                        : `${varianteChoose!.stock} unidades`}
+                                </>
+                            ) : null}
+                        </span>
+                        <div class="my-2">
+                            {/* aaaaaaaaaaaaaaaaca variante */}
+                            {(producto.value as ProductsNormalSchemaFromServer)
+                                ?.variants ? (
+                                <>
+                                    {" "}
+                                    <div class="flex flex-col gap-3">
+                                        {(
+                                            producto.value as ProductsNormalSchemaFromServer
+                                        )?.options.map((option) => (
+                                            <div key={option.id}>
+                                                <span class="dark:text-white text-xs font-bold text-black">
+                                                    {option.name}
+                                                </span>
+                                                <div class="flex gap-2 flex-wrap">
+                                                    {option.features.length ? (
+                                                        <>
+                                                            {option.features
+                                                                .length >= 4 ? (
+                                                                <select
+                                                                    onChange={(
+                                                                        e
                                                                     ) => {
-                                                                        // para checar el boton segun variante
-                                                                        const existFeature =
-                                                                            variant
-                                                                                .value!.map(
-                                                                                    (
-                                                                                        feat
-                                                                                    ) =>
-                                                                                        feat.feature_id
-                                                                                )
-                                                                                .includes(
+                                                                        changeVariant(
+                                                                            {
+                                                                                option_id:
+                                                                                    option.id,
+                                                                                feature_id:
+                                                                                    Number(
+                                                                                        (
+                                                                                            e.target as HTMLInputElement
+                                                                                        )
+                                                                                            .value
+                                                                                    ),
+                                                                            }
+                                                                        );
+                                                                    }}
+                                                                    class="bg-white  dark:bg-background-dark text-xs dark:text-white w-full py-3 rounded-md shadow"
+                                                                >
+                                                                    {option.features.map(
+                                                                        (
+                                                                            feature
+                                                                        ) => (
+                                                                            <option
+                                                                                value={
                                                                                     feature.id
-                                                                                );
-
-                                                                        return (
-                                                                            <button
-                                                                                type="button"
-                                                                                aria-label="change button"
-                                                                                key={
-                                                                                    feature?.id
                                                                                 }
-                                                                                onClick={() =>
-                                                                                    changeVariant(
-                                                                                        {
-                                                                                            option_id:
-                                                                                                option.id,
-                                                                                            feature_id:
-                                                                                                feature.id,
-                                                                                        }
-                                                                                    )
+                                                                                class="font-bold  rounded-md  text-sm"
+                                                                                key={
+                                                                                    feature.id
                                                                                 }
                                                                             >
-                                                                                {option.type ===
-                                                                                1 ? (
-                                                                                    <div
-                                                                                        class={`shadow font-bold ${
-                                                                                            enviroments.TYPE_BORDER ===
-                                                                                            "square"
-                                                                                                ? "rounded-sm"
-                                                                                                : "rounded-md"
-                                                                                        }  flex text-primary py-2  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary hover:text-white ${
-                                                                                            existFeature
-                                                                                                ? "bg-primary text-white border-2 border-primary"
-                                                                                                : "bg-white"
-                                                                                        }`}
-                                                                                    >
-                                                                                        {
-                                                                                            feature?.value
-                                                                                        }
-                                                                                    </div>
-                                                                                ) : (
-                                                                                    <div
-                                                                                        class={`w-[35px] h-[35px] ${
-                                                                                            enviroments.TYPE_BORDER ===
-                                                                                            "square"
-                                                                                                ? ""
-                                                                                                : "rounded-full"
-                                                                                        }  relative ${
-                                                                                            existFeature
-                                                                                                ? "border-4 border-primary"
-                                                                                                : ""
-                                                                                        }`}
-                                                                                        style={{
-                                                                                            backgroundColor:
-                                                                                                feature?.value,
-                                                                                        }}
-                                                                                    >
-                                                                                        <span class="absolute -bottom-2 left-2 z-10 dark:bg-admin-background-dark shadow dark:text-white bg-white text-[10px] px-2 rounded-md py-1 hidden group-hover:block ">
-                                                                                            {
-                                                                                                feature?.description
-                                                                                            }
-                                                                                        </span>
-                                                                                    </div>
-                                                                                )}
-                                                                            </button>
-                                                                        );
-                                                                    }
-                                                                )}
-                                                            </>
-                                                        )}
-                                                    </>
-                                                ) : null}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </>
-                        ) : null}
+                                                                                {
+                                                                                    feature.description
+                                                                                }
+                                                                            </option>
+                                                                        )
+                                                                    )}
+                                                                </select>
+                                                            ) : (
+                                                                <>
+                                                                    {option.features.map(
+                                                                        (
+                                                                            feature
+                                                                        ) => {
+                                                                            // para checar el boton segun variante
+                                                                            const existFeature =
+                                                                                variant
+                                                                                    .value!.map(
+                                                                                        (
+                                                                                            feat
+                                                                                        ) =>
+                                                                                            feat.feature_id
+                                                                                    )
+                                                                                    .includes(
+                                                                                        feature.id
+                                                                                    );
 
+                                                                            return (
+                                                                                <button
+                                                                                    type="button"
+                                                                                    aria-label="change button"
+                                                                                    key={
+                                                                                        feature?.id
+                                                                                    }
+                                                                                    onClick={() =>
+                                                                                        changeVariant(
+                                                                                            {
+                                                                                                option_id:
+                                                                                                    option.id,
+                                                                                                feature_id:
+                                                                                                    feature.id,
+                                                                                            }
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    {option.type ===
+                                                                                    1 ? (
+                                                                                        <div
+                                                                                            class={`shadow font-bold ${
+                                                                                                enviroments.TYPE_BORDER ===
+                                                                                                "square"
+                                                                                                    ? "rounded-sm"
+                                                                                                    : "rounded-md"
+                                                                                            }  flex text-primary py-2  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary hover:text-white ${
+                                                                                                existFeature
+                                                                                                    ? "bg-primary text-white border-2 border-primary"
+                                                                                                    : "bg-white"
+                                                                                            }`}
+                                                                                        >
+                                                                                            {
+                                                                                                feature?.value
+                                                                                            }
+                                                                                        </div>
+                                                                                    ) : (
+                                                                                        <div
+                                                                                            class={`w-[35px] h-[35px] ${
+                                                                                                enviroments.TYPE_BORDER ===
+                                                                                                "square"
+                                                                                                    ? ""
+                                                                                                    : "rounded-full"
+                                                                                            }  relative ${
+                                                                                                existFeature
+                                                                                                    ? "border-4 border-primary"
+                                                                                                    : ""
+                                                                                            }`}
+                                                                                            style={{
+                                                                                                backgroundColor:
+                                                                                                    feature?.value,
+                                                                                            }}
+                                                                                        >
+                                                                                            <span class="absolute -bottom-2 left-2 z-10 dark:bg-admin-background-dark shadow dark:text-white bg-white text-[10px] px-2 rounded-md py-1 hidden group-hover:block ">
+                                                                                                {
+                                                                                                    feature?.description
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    )}
+                                                                                </button>
+                                                                            );
+                                                                        }
+                                                                    )}
+                                                                </>
+                                                            )}
+                                                        </>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            ) : null}
+                        </div>
                         {/* coupon form  si  esta en el carrito que no se vea el formulario de cupon */}
                         {!existProductInCart &&
-                        ((producto.value as ProductsRestaurantSchemaFromServer)
-                            ?.ilimit ||
-                            (!(
-                                producto.value as ProductsRestaurantSchemaFromServer
-                            )?.ilimit &&
-                                (
-                                    producto.value as ProductsRestaurantSchemaFromServer
-                                )?.stock! > 0) ||
-                            varianteChoose?.ilimit ||
-                            (!varianteChoose?.ilimit &&
-                                varianteChoose?.stock! > 0) ||
-                            product.enabled) ? (
+                        storageEmpresa!.tipo_empresa.tipo_servicio_id === 1 ? (
+                            varianteChoose!.ilimit ||
+                            (!varianteChoose!.ilimit &&
+                                varianteChoose!.stock! > 0)
+                        ) : (
+                              producto.value as ProductsRestaurantSchemaFromServer
+                          ).ilimit ||
+                          (!(
+                              producto.value as ProductsRestaurantSchemaFromServer
+                          ).ilimit &&
+                              (
+                                  producto.value! as ProductsRestaurantSchemaFromServer
+                              ).stock! > 0) ||
+                          (producto.value as ProductsRestaurantSchemaFromServer)
+                              .ilimit ? (
                             <Form
                                 {...couponForm}
                                 onSubmit={onCoupon}
@@ -484,15 +510,13 @@ function ProductPage({
                                             descuento
                                         </p>
                                     ) : null}
-                                    <div class="w-full [&>div>div>div]:bg-white [&>div>div>div]:dark:bg-background-dark">
-                                        <Form.control.web
-                                            type="text"
-                                            title="¿Tienes un cupón de descuento?"
-                                            placeholder="XXXXX-XXXXX-XXXXX"
-                                            name={"coupon" as keyof CouponStore}
-                                            disabled={!!discount.value}
-                                        />
-                                    </div>
+                                    <Form.control.web
+                                        type="text"
+                                        title="¿Tienes un cupón de descuento?"
+                                        placeholder="XXXXX-XXXXX-XXXXX"
+                                        name={"coupon" as keyof CouponStore}
+                                        disabled={!!discount.value}
+                                    />
                                 </div>
 
                                 <Form.button.submit
@@ -522,8 +546,7 @@ function ProductPage({
                                     producto.value as ProductsRestaurantSchemaFromServer
                                 )?.stock! < 1) ||
                             (!varianteChoose?.ilimit &&
-                                varianteChoose?.stock! < 1) ||
-                            !product.enabled ? (
+                                varianteChoose?.stock! < 1) ? (
                                 <span
                                     class={`bg-danger py-3 w-full text-center ${
                                         enviroments.TYPE_BORDER === "circle"
@@ -531,7 +554,7 @@ function ProductPage({
                                             : ""
                                     } shadow text-white font-semibold`}
                                 >
-                                    {!product.enabled
+                                    {!producto.value.enabled
                                         ? "No disponible"
                                         : "Agotado"}
                                 </span>
@@ -579,7 +602,9 @@ function ProductPage({
                                             type="button"
                                             aria-label="add cart"
                                             onClick={async () => {
-                                                await handleInsertProduct();
+                                                await handleInsertProduct(
+                                                    false
+                                                );
                                             }}
                                             disabled={
                                                 cartStoreMutation.isLoading ||
@@ -659,60 +684,64 @@ function ProductPage({
                 </div>
                 <div class="flex flex-col lg:flex-row gap-4 mt-16">
                     <div class="flex flex-col gap-8 w-full">
-                        <div class="w-full md:w-1/2">
+                        <div class="w-full">
                             <h2 class="font-bold dark:text-white text-primary ">
                                 Características
                             </h2>
-                            {product.characteristics.length ? (
-                                <table
-                                    class={`text-lg font-medium w-full  overflow-hidden shadow ${
-                                        enviroments.TYPE_BORDER === "circle"
-                                            ? "rounded-md"
-                                            : ""
-                                    }`}
-                                >
-                                    <thead>
-                                        <tr class="h-[30px]">
-                                            <th class="text-sm bg-primary text-white font-semibold">
-                                                Nombre
-                                            </th>
-                                            <th class="text-sm bg-primary text-white font-semibold">
-                                                Valor
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {product.characteristics.map(
-                                            (characteristic) => (
-                                                <tr
-                                                    class="text-[12px] odd:bg-paper-light dark:bg-background-dark"
-                                                    key={characteristic.name}
-                                                >
-                                                    <td>
-                                                        <span class="font-semibold px-2 dark:text-white ">
-                                                            {
-                                                                characteristic.name
-                                                            }
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="font-normal dark:text-white px-2">
-                                                            {
-                                                                characteristic.value
-                                                            }
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        )}
-                                    </tbody>
-                                </table>
-                            ) : (
-                                <span class="dark:text-white text-sm">
-                                    No se insertó caracteristicas a este
-                                    producto
-                                </span>
-                            )}
+                            <div>
+                                {product.characteristics.length ? (
+                                    <table
+                                        class={`text-lg  font-medium w-full  overflow-hidden shadow ${
+                                            enviroments.TYPE_BORDER === "circle"
+                                                ? "rounded-md"
+                                                : ""
+                                        }`}
+                                    >
+                                        <thead>
+                                            <tr class="h-[30px]">
+                                                <th class="text-sm bg-primary text-white font-semibold">
+                                                    Nombre
+                                                </th>
+                                                <th class="text-sm bg-primary text-white font-semibold">
+                                                    Valor
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {product.characteristics.map(
+                                                (characteristic) => (
+                                                    <tr
+                                                        class="text-[12px] odd:bg-white dark:odd:bg-background-dark"
+                                                        key={
+                                                            characteristic.name
+                                                        }
+                                                    >
+                                                        <td>
+                                                            <span class="font-semibold px-2 dark:text-white ">
+                                                                {
+                                                                    characteristic.name
+                                                                }
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="font-normal dark:text-white px-2">
+                                                                {
+                                                                    characteristic.value
+                                                                }
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            )}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <span class="dark:text-white text-sm">
+                                        No se insertó caracteristicas a este
+                                        producto
+                                    </span>
+                                )}
+                            </div>
                         </div>
                         <div class="">
                             <h2 class="font-bold dark:text-white text-primary">
@@ -728,7 +757,7 @@ function ProductPage({
                                         } delay-custom-1`}
                                     >
                                         <div
-                                            class="dark:text-secondary-light text-sm"
+                                            class="dark:text-secondary-light text-sm font-normal"
                                             dangerouslySetInnerHTML={{
                                                 __html: product.description,
                                             }}
@@ -762,11 +791,11 @@ function ProductPage({
                         </div>
                         {/* si el usuario esta logueado que pueda loguear */}
                     </div>
-                    <div class="lg:w-[300px]">
+                    <div class="lg:w-[400px]">
                         <TitleSectionTwo>
                             <>Más de {category_name}</>
                         </TitleSectionTwo>
-                        <div class="gap-4 grid grid-cols-2 lg:grid-cols-1 justify-center">
+                        <div class="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 justify-center lg:h-[800px] p-2 overflow-y-auto">
                             {categoriesproductsrandom.map((product) => (
                                 <ProductCard product={product} key={product.id}>
                                     <ProductCard.header>
@@ -799,7 +828,7 @@ function ProductPage({
                                     adaptiveHeight: true,
                                     focusOnSelect: true,
                                     infinite: true,
-                                    slidesToShow: 2,
+                                    slidesToShow: 4,
                                     slidesToScroll: 1,
                                     speed: 500,
                                     nextArrow: <SampleNextArrow />,
@@ -808,19 +837,19 @@ function ProductPage({
                                         {
                                             breakpoint: 1024,
                                             settings: {
-                                                slidesToShow: 4,
+                                                slidesToShow: 3,
                                             },
                                         },
                                         {
                                             breakpoint: 600,
                                             settings: {
-                                                slidesToShow: 3,
+                                                slidesToShow: 2,
                                             },
                                         },
                                         {
                                             breakpoint: 480,
                                             settings: {
-                                                slidesToShow: 2,
+                                                slidesToShow: 1,
                                             },
                                         },
                                     ],

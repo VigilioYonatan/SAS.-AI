@@ -47,7 +47,7 @@ function Aside({ headerDropdown, categories }: AsideProps) {
                 {/* <div class="mx-4">
 					<SearchProducts />
 				</div> */}
-                <nav class="flex flex-col">
+                <nav class="flex flex-col max-h-[500px] overflow-auto">
                     <a
                         class={`text-black dark:text-white text-sm hover:bg-paper-light ${
                             isActive("/", false)
@@ -88,7 +88,7 @@ function Aside({ headerDropdown, categories }: AsideProps) {
                     >
                         <i class="fa-solid fa-phone" /> Contáctanos
                     </a>
-                    <div>
+                    <div class="">
                         {categories.map((category) => (
                             <button
                                 type="button"

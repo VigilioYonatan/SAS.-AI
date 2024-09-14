@@ -19,6 +19,9 @@ import {
 import Slider from "react-slick";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
+import { transferencias } from "@/empresas/libs/helpers";
+import { Fragment } from "preact/jsx-runtime";
+import { verifyBank } from "@/cart/views/Niubiz";
 
 interface ProductCardViewProps {
     product: ReturnType<typeof useProduct>;
@@ -41,7 +44,9 @@ function ProductCardView({ product }: ProductCardViewProps) {
         varianteChoose,
         zoom,
         images500Variant,
+        changeVariant,
         images500,
+        variant,
     } = useProduct({
         product: product.producto.value as
             | ProductsNormalSchemaFromServer
@@ -50,7 +55,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
     const { ShowImage, changeShowImage, state } = useShowImage();
 
     return (
-        <div class="flex gap-6 flex-col md:flex-row  product-card p-2  h-[500px]">
+        <div class="flex gap-6 flex-col md:flex-row  product-card p-2  lg:h-[600px]">
             <Slider
                 {...{
                     customPaging: (i) => {
@@ -167,7 +172,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                     transform: scale(1.5);
                 }
             `}</style>
-            <div class="flex flex-col gap-2 md:w-5/12 mt-8">
+            <div class="flex flex-col gap-2 md:w-5/12 mt-8 py-2">
                 {product.varianteChoose?.sku ? (
                     <span>{product.varianteChoose?.sku}</span>
                 ) : null}
@@ -249,7 +254,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         storageEmpresa!.tipo_empresa.tipo_servicio_id === 1
                             ? (!product.varianteChoose!.ilimit &&
                                   product.varianteChoose!.stock! < 0) ||
-                              !product.producto.value.enabled
+                              product.varianteChoose!.ilimit
                                 ? "text-primary"
                                 : "text-danger"
                             : ""
@@ -276,20 +281,165 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </>
                     ) : null}
                 </span>
+                <div class="my-2">
+                    {/* aaaaaaaaaaaaaaaaca variante */}
+                    {(producto.value as ProductsNormalSchemaFromServer)
+                        ?.variants ? (
+                        <>
+                            {" "}
+                            <div class="flex flex-col gap-3">
+                                {(
+                                    producto.value as ProductsNormalSchemaFromServer
+                                )?.options.map((option) => (
+                                    <div key={option.id}>
+                                        <span class="dark:text-white text-xs font-bold text-black">
+                                            {option.name}
+                                        </span>
+                                        <div class="flex gap-2 flex-wrap">
+                                            {option.features.length ? (
+                                                <>
+                                                    {option.features.length >=
+                                                    4 ? (
+                                                        <select
+                                                            onChange={(e) => {
+                                                                changeVariant({
+                                                                    option_id:
+                                                                        option.id,
+                                                                    feature_id:
+                                                                        Number(
+                                                                            (
+                                                                                e.target as HTMLInputElement
+                                                                            )
+                                                                                .value
+                                                                        ),
+                                                                });
+                                                            }}
+                                                            class="bg-white  dark:bg-background-dark text-xs dark:text-white w-full py-3 rounded-md shadow"
+                                                        >
+                                                            {option.features.map(
+                                                                (feature) => (
+                                                                    <option
+                                                                        value={
+                                                                            feature.id
+                                                                        }
+                                                                        class="font-bold  rounded-md  text-sm"
+                                                                        key={
+                                                                            feature.id
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            feature.description
+                                                                        }
+                                                                    </option>
+                                                                )
+                                                            )}
+                                                        </select>
+                                                    ) : (
+                                                        <>
+                                                            {option.features.map(
+                                                                (feature) => {
+                                                                    // para checar el boton segun variante
+                                                                    const existFeature =
+                                                                        variant
+                                                                            .value!.map(
+                                                                                (
+                                                                                    feat
+                                                                                ) =>
+                                                                                    feat.feature_id
+                                                                            )
+                                                                            .includes(
+                                                                                feature.id
+                                                                            );
+
+                                                                    return (
+                                                                        <button
+                                                                            type="button"
+                                                                            aria-label="change button"
+                                                                            key={
+                                                                                feature?.id
+                                                                            }
+                                                                            onClick={() =>
+                                                                                changeVariant(
+                                                                                    {
+                                                                                        option_id:
+                                                                                            option.id,
+                                                                                        feature_id:
+                                                                                            feature.id,
+                                                                                    }
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            {option.type ===
+                                                                            1 ? (
+                                                                                <div
+                                                                                    class={`shadow font-bold ${
+                                                                                        enviroments.TYPE_BORDER ===
+                                                                                        "square"
+                                                                                            ? "rounded-sm"
+                                                                                            : "rounded-md"
+                                                                                    }  flex text-primary py-2  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary hover:text-white ${
+                                                                                        existFeature
+                                                                                            ? "bg-primary text-white border-2 border-primary"
+                                                                                            : "bg-white"
+                                                                                    }`}
+                                                                                >
+                                                                                    {
+                                                                                        feature?.value
+                                                                                    }
+                                                                                </div>
+                                                                            ) : (
+                                                                                <div
+                                                                                    class={`w-[35px] h-[35px] ${
+                                                                                        enviroments.TYPE_BORDER ===
+                                                                                        "square"
+                                                                                            ? ""
+                                                                                            : "rounded-full"
+                                                                                    }  relative ${
+                                                                                        existFeature
+                                                                                            ? "border-4 border-primary"
+                                                                                            : ""
+                                                                                    }`}
+                                                                                    style={{
+                                                                                        backgroundColor:
+                                                                                            feature?.value,
+                                                                                    }}
+                                                                                >
+                                                                                    <span class="absolute -bottom-2 left-2 z-10 dark:bg-admin-background-dark shadow dark:text-white bg-white text-[10px] px-2 rounded-md py-1 hidden group-hover:block ">
+                                                                                        {
+                                                                                            feature?.description
+                                                                                        }
+                                                                                    </span>
+                                                                                </div>
+                                                                            )}
+                                                                        </button>
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    ) : null}
+                </div>
                 {/* coupon form  si  esta en el carrito que no se vea el formulario de cupon */}
                 {!existProductInCart &&
                 storageEmpresa!.tipo_empresa.tipo_servicio_id === 1 ? (
                     product.varianteChoose!.ilimit ||
                     (!product.varianteChoose!.ilimit &&
-                        product.varianteChoose!.stock! > 0) ||
-                    product.producto.value.enabled
+                        product.varianteChoose!.stock! > 0)
                 ) : (producto.value as ProductsRestaurantSchemaFromServer)
                       .ilimit ||
                   (!(producto.value as ProductsRestaurantSchemaFromServer)
                       .ilimit &&
                       (producto.value! as ProductsRestaurantSchemaFromServer)
                           .stock! > 0) ||
-                  product.producto.value.enabled ? (
+                  (producto.value as ProductsRestaurantSchemaFromServer)
+                      .ilimit ? (
                     <Form
                         {...couponForm}
                         onSubmit={onCoupon}
@@ -330,8 +480,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         ?.ilimit &&
                         (producto.value as ProductsRestaurantSchemaFromServer)
                             ?.stock! < 1) ||
-                    (!varianteChoose?.ilimit && varianteChoose?.stock! < 1) ||
-                    !producto.value.enabled ? (
+                    (!varianteChoose?.ilimit && varianteChoose?.stock! < 1) ? (
                         <span
                             class={`bg-danger py-3 w-full text-center ${
                                 enviroments.TYPE_BORDER === "circle"
@@ -484,6 +633,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
 
 export function MetodosDePago() {
     const empresaStore = useEmpresastore();
+
     return (
         <div class="flex flex-col gap-2">
             <span class="dark:text-white text-xs font-bold text-black ">
@@ -518,23 +668,32 @@ export function MetodosDePago() {
                         <i class="far fa-handshake" /> Efectivo
                     </p>
                 ) : null}
-                {/* {empresaStore.state!.transferencias?.bcp &&
-                verifyBank(empresaStore.state!.transferencias.bcp) ? (
-                    <img src={bcpImage()} width={50} height={30} alt="yape" />
+                {transferencias(
+                    empresaStore.state!.metodos_pago.transferencias
+                ) ? (
+                    <>
+                        {empresaStore.state!.bancos.map((bank) => {
+                            const tr =
+                                empresaStore.state!.metodos_pago
+                                    .transferencias!;
+                            return (
+                                <Fragment key={bank.key}>
+                                    {tr[bank.key as keyof typeof tr] &&
+                                    verifyBank(
+                                        tr[bank.key as keyof typeof tr]
+                                    ) ? (
+                                        <img
+                                            class="h-6 object-contain"
+                                            width={40}
+                                            src={bank.image}
+                                            alt={bank.value}
+                                        />
+                                    ) : null}
+                                </Fragment>
+                            );
+                        })}
+                    </>
                 ) : null}
-                {empresaStore.state!.transferencias?.interbank &&
-                verifyBank(empresaStore.state!.transferencias.interbank) ? (
-                    <img
-                        src={interbankImage()}
-                        width={50}
-                        height={30}
-                        alt="yape"
-                    />
-                ) : null}
-                {empresaStore.state!.transferencias?.bbva &&
-                verifyBank(empresaStore.state!.transferencias.bbva) ? (
-                    <img src={bbvaImage()} width={50} height={30} alt="yape" />
-                ) : null} */}
             </div>
         </div>
     );

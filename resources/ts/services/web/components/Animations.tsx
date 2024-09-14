@@ -9,7 +9,7 @@ function holiday() {
         case 2:
             return "/images/settings/holidays/heart.webp";
         // July
-        case 9:
+        case 7:
             return "/images/settings/holidays/rosa.png";
         // October
         case 10:

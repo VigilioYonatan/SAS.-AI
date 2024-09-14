@@ -62,7 +62,7 @@ function ProductsIndex() {
     function onCategories() {
         sweetModal({
             html: reactComponent(<CategoriesIndex />),
-            sweetWidth: "600px",
+            sweetWidth: "700px",
             showCloseButton: true,
             position: "start",
             isCloseInBackground: false,
@@ -71,7 +71,7 @@ function ProductsIndex() {
     function onBrands() {
         sweetModal({
             html: reactComponent(<BrandsIndex />),
-            sweetWidth: "800px",
+            sweetWidth: "700px",
             showCloseButton: true,
             position: "start",
             isCloseInBackground: false,

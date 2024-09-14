@@ -34,7 +34,6 @@ const categoriesColumns: Columns<CategoriesSchemaFromServer, "acciones"> = [
                 )}
             </div>
         ),
-        isSort: true,
     },
 
     {

@@ -17,6 +17,7 @@ import {
     object,
     objectAsync,
     omitAsync,
+    pickAsync,
     string,
 } from "@vigilio/valibot";
 import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
@@ -59,6 +60,7 @@ import {
     empresasIAUpdateDto,
     type EmpresasIAUpdateDto,
 } from "../dtos/empresas.ia.update.dto";
+import { settingsSchema } from "../schemas/settings.schema";
 
 @Injectable()
 @Controller("/empresas")
@@ -172,6 +174,17 @@ export class EmpresasApiController {
             empresa.slug,
             body
         );
+        return result;
+    }
+    @PermissionAdmin()
+    @Validator(pickAsync(settingsSchema, ["host"]))
+    @Status(201)
+    @Put("/dominio")
+    async dominio(
+        @Body() body: { host: string | null },
+        @Req("empresa") empresa: Empresas
+    ) {
+        const result = await this.empresaApiService.dominio(empresa.slug, body);
         return result;
     }
     @PermissionAdmin()

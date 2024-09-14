@@ -1,12 +1,16 @@
 import {
     libroReclamacionesImage,
-    mastercardImage,
-    paypalImage,
-    visaImage,
+    paypalICOImage,
+    plinImage,
+    VisaMastercardImage,
+    yapeImage,
 } from "~/config/settings";
 import useEmpresastore from "@/empresas/stores/empresa.store";
 import type { HeaderType } from "./WebLayout";
 import TitleSectionTwo from "./TitleSectionTwo";
+import { transferencias } from "@/empresas/libs/helpers";
+import { Fragment } from "preact/jsx-runtime";
+import { verifyBank } from "@/cart/views/Niubiz";
 
 interface FooterProps {
     categories: HeaderType["categories"];
@@ -42,39 +46,38 @@ function Footer({ categories }: FooterProps) {
                         <li class="font-bold">
                             <TitleSectionTwo>Corporación</TitleSectionTwo>
                         </li>
-                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold">
-                            Nosotros
+                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                            <a href={"/"}>Inicio</a>
                         </li>
-                        <li class="dark:text-gray-400  text-gray-600 hover:text-primary font-semibold">
-                            Contactanos
+                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                            <a href={"/nosotros"}>Nosotros</a>
                         </li>
-                        <li class="dark:text-gray-400  text-gray-600 hover:text-primary font-semibold">
-                            Ubicanos
-                        </li>
-                        <li class="dark:text-gray-400 hover:text-primary font-semibold  text-gray-600">
-                            Blog
-                        </li>
-                        <li class="dark:text-gray-400 hover:text-primary font-semibold  text-gray-600">
+                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/shop"}>Nuestra Tienda</a>
                         </li>
-                        <li class="dark:text-gray-400 hover:text-primary font-semibold  text-gray-600">
+                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/politica-de-privacidad"}>
                                 Politica y privacidad
                             </a>
                         </li>
-                        <li class="dark:text-gray-400 hover:text-primary font-semibold">
+                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/terminos-y-condiciones"}>
-                                Términos y condiciones
+                                Términos y Condiciones
+                            </a>{" "}
+                        </li>
+                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                            <a href={"/libro-de-reclamaciones"}>
+                                Libro de Reclamaciones
                             </a>{" "}
                         </li>
                     </ul>
-                    <ul class="">
+                    <ul class="max-h-[500px] overflow-auto">
                         <li class="font-bold">
                             <TitleSectionTwo>Shop</TitleSectionTwo>
                         </li>
                         {categories.map((category) => (
                             <li
-                                class="dark:text-gray-400 hover:text-primary font-semibold  text-gray-600"
+                                class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2"
                                 key={category.id}
                             >
                                 <a href={`/shop/${category.slug}`}>
@@ -173,7 +176,7 @@ function Footer({ categories }: FooterProps) {
                 </div>
                 <div class="h-[1px] w-full bg-primary" />
                 <div class="w-full flex justify-between items-center">
-                    <span class="text-sm  w-[250px] font-semibold text-center dark:text-gray-400">
+                    <span class="text-sm w-[160px]  md:w-[250px] font-semibold text-center dark:text-gray-400">
                         © Todos los derechos Reservados.{" "}
                         {new Date(
                             empresaStore.state!.yearFounded
@@ -190,36 +193,62 @@ function Footer({ categories }: FooterProps) {
                         <i class="fa-solid fa-caret-up" />
                     </a>
                     <div class="flex flex-col">
-                        <div class="flex gap-2">
-                            <img
-                                class="object-contain"
-                                width={30}
-                                height={30}
-                                src={visaImage()}
-                                alt=""
-                            />
-                            <img
-                                class="object-contain"
-                                width={30}
-                                height={30}
-                                src={mastercardImage()}
-                                alt=""
-                            />
-                            {empresaStore.state!.metodos_pago.paypal.enabled ? (
-                                <img
-                                    class="object-contain"
-                                    width={30}
-                                    height={30}
-                                    src={paypalImage()}
-                                    alt=""
-                                />
-                            ) : null}
-                        </div>
+                        <MetodosDePago />
                     </div>
                 </div>
             </div>
         </footer>
     );
 }
+function MetodosDePago() {
+    const empresaStore = useEmpresastore();
 
+    return (
+        <div class="flex gap-2 items-center overflow-auto ">
+            {empresaStore.state?.metodos_pago.mercado_pago.enabled ? (
+                <img
+                    src={VisaMastercardImage()}
+                    width={80}
+                    height={80}
+                    alt="visa"
+                />
+            ) : null}
+            {empresaStore.state?.metodos_pago.qrYape ? (
+                <img src={yapeImage()} width={30} height={30} alt="yape" />
+            ) : null}
+            {empresaStore.state?.metodos_pago.qrPlin ? (
+                <img src={plinImage()} width={30} height={30} alt="yape" />
+            ) : null}
+            {empresaStore.state?.metodos_pago.paypal.enabled ? (
+                <img src={paypalICOImage()} width={30} height={30} alt="yape" />
+            ) : null}
+            {empresaStore.state?.metodos_pago.enable_efectivo ? (
+                <p class="text-xs  text-center border p-1 rounded-md border-gray-400 text-black dark:text-white">
+                    <i class="far fa-handshake" /> Efectivo
+                </p>
+            ) : null}
+            {transferencias(empresaStore.state!.metodos_pago.transferencias) ? (
+                <>
+                    {empresaStore.state!.bancos.map((bank) => {
+                        const tr =
+                            empresaStore.state!.metodos_pago.transferencias!;
+                        return (
+                            <Fragment key={bank.key}>
+                                {tr[bank.key as keyof typeof tr] &&
+                                verifyBank(tr[bank.key as keyof typeof tr]) ? (
+                                    <img
+                                        class="h-6 object-contain"
+                                        width={40}
+                                        src={bank.image}
+                                        alt={bank.value}
+                                    />
+                                ) : null}
+                            </Fragment>
+                        );
+                    })}
+                </>
+            ) : null}
+        </div>
+    );
+}
 export default Footer;

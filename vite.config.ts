@@ -4,6 +4,8 @@ import preact from "@preact/preset-vite";
 import million from "million/compiler";
 import path from "node:path";
 import dotenv from "dotenv";
+import { VitePWA } from "vite-plugin-pwa";
+
 dotenv.config({ path: ".env" });
 export default defineConfig({
     plugins: [
@@ -11,6 +13,29 @@ export default defineConfig({
         splitVendorChunkPlugin(),
         million.vite({ mode: "preact" }),
         preact(),
+        VitePWA({
+            registerType: "autoUpdate",
+            manifest: {
+                name: process.env.PWA_NAME,
+                short_name: process.env.PWA_NAME,
+                description: process.env.PWA_DESCRIPTION,
+                theme_color: "#000",
+                icons: [
+                    {
+                        src: "/images/settings/others/logo.webp",
+                        sizes: "192x192",
+                        type: "image/webp",
+                    },
+                    {
+                        src: "/images/settings/others/logo.webp",
+                        sizes: "512x512",
+                        type: "image/webp",
+                    },
+                ],
+                display: "standalone",
+                start_url: "/",
+            },
+        }),
     ],
     root: "resources",
     base: process.env.NODE_ENV === "production" ? "/dist/" : "/",
