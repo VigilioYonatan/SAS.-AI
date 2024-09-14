@@ -17,7 +17,6 @@ import useAuthstore from "@/auth/stores/auth.store";
 import { brandsIndexApi } from "../apis/brands/brands.index.api";
 import { formSelectNumber } from "~/components/form/WebFormSelect";
 import AdminHr from "~/components/AdminHr";
-import useCopyToClipboard from "~/hooks/useCopyToClipboard";
 import useDropdown from "~/hooks/useDropdown";
 import { useSignal } from "@preact/signals";
 import {
@@ -65,7 +64,6 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
     const aiProductQuery = aiProductApi();
     const isImageLoading = useSignal(false);
     const optionsFeaturesQuery = optionsFeaturesApi();
-    const [copy] = useCopyToClipboard();
     const categoriesIndexQuery = categoriesIndexApi();
     const brandsIndexQuery = brandsIndexApi();
 

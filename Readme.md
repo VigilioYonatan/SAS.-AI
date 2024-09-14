@@ -146,3 +146,32 @@ ls /etc/letsencrypt/live
 // \q salir
 
 scp -r root@161.132.47.141:/home/vigilio/temp C:/Users/Vigilio/Documents/backup
+
+
+
+
+# SUBDOMINIOS DINAMICOS
+```nginx
+server {
+    listen 80;
+    server_name *.vigilio-services.com ;
+    client_max_body_size 100M; # permite subir archivos mas de 100mb
+
+    location / {
+        proxy_pass http://localhost:4003; # Cambia 3000 por el puerto en el que corre tu app Node.js
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Redirige www a la versión
+    if ($host ~* ^(.+)\.vigilio-services\.com$) {
+        return 301 https://www.$1.vigilio-services.com$request_uri;
+    }
+}
+
+
+```

@@ -40,12 +40,9 @@ export async function getFilesEdit(
                   pro.dimension === dimension
           )
         : files;
-    console.log({ filterImages });
 
     const response = await Promise.all(
         filterImages.map(async (file) => {
-            console.log(file);
-
             try {
                 return await fetch(
                     file.file?.startsWith("https://")
@@ -53,8 +50,6 @@ export async function getFilesEdit(
                         : `${BASE_URL}/empresas/${storageEmpresa?.slug}/${file.file}`
                 );
             } catch (error) {
-                console.log(error.message);
-
                 return null;
             }
         })

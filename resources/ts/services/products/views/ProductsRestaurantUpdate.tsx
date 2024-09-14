@@ -14,16 +14,12 @@ import { handlerError } from "~/libs/helpers";
 import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
-import LoaderSubmit from "~/components/LoaderSubmit";
 import useAuthstore from "@/auth/stores/auth.store";
-import { subWhatsappIA } from "~/config/guards";
 import {
     productsShowApi,
     type ProductsShowAPI,
 } from "../apis/products/products.show.api";
 import { formSelectNumber } from "~/components/form/WebFormSelect";
-import useCopyToClipboard from "~/hooks/useCopyToClipboard";
-import { reactComponent } from "~/libs/preact";
 import {
     productsUpdateImagesDto,
     ProductsUpdateImagesDto,
@@ -91,7 +87,6 @@ function ProductsRestaurantUpdate({
         const name = formProductsRestaurantUpdate.watch("name");
         const discount = formProductsRestaurantUpdate.watch("discount");
         const price = formProductsRestaurantUpdate.watch("price");
-        const [copy] = useCopyToClipboard();
         const categoriesIndexQuery = categoriesIndexApi();
         const ilimit = formProductsRestaurantUpdate.watch("ilimit");
 

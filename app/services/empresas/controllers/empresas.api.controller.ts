@@ -184,7 +184,7 @@ export class EmpresasApiController {
         @Body() body: { host: string | null },
         @Req("empresa") empresa: Empresas
     ) {
-        const result = await this.empresaApiService.dominio(empresa.slug, body);
+        const result = await this.empresaApiService.dominio(empresa, body);
         return result;
     }
     @PermissionAdmin()
