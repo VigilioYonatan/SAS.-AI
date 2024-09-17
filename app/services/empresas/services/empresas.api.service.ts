@@ -299,7 +299,7 @@ export class EmpresasApiService {
                 message: "Nuevo información agregado correctamente.",
             };
         } catch (error) {
-            console.log(error.message);
+            console.log((error as Error).message);
 
             throw new InternalServerErrorException("Error al agregar empresa");
         }
