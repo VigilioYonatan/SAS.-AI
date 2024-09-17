@@ -43,19 +43,13 @@ RUN  apt-get update && apt-get install -y \
     git \ 
     openvpn \
  && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /etc/openvpn
-
-COPY start-vpn.sh /usr/local/bin/start-vpn.sh
-RUN chmod +x /usr/local/bin/start-vpn.sh
-
 RUN npm install -g bun 
 
 FROM base AS build
 COPY . .
 RUN bun install
 RUN  bun build:serve && \
-    rm -rf node_modules && bun install --production && \ 
-    bun install --platform=linux --arch=x64 sharp
+    rm -rf node_modules && bun install --production 
 
 FROM base AS production
 COPY --from=build  /usr/src/app/node_modules  ./node_modules

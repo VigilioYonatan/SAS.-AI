@@ -27,7 +27,7 @@ export const NODE_ENV = process.env.NODE_ENV!;
 export const qrImage = path.resolve(__dirname, "..", `${SESSION_NAME}-qr.png`);
 export const BASE_URL =
     NODE_ENV === "production"
-        ? `https://www.${process.env.SESSION_NAME}.vigilio-services.com`
+        ? `https://${process.env.SESSION_NAME}.vigilio-services.com`
         : `http://${process.env.SESSION_NAME}.localhost:4003`;
 
 export let client: WAWebJS.Client;
@@ -62,7 +62,7 @@ export async function initialWhatsapp() {
         console.log("******      ready      *********");
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(JSON.stringify((await client.getContacts()).slice(0, 10)));
-        await fetch(`${BASE_URL}/api/whatsapp/whatsapp/ready`, {
+        await fetch(`${BASE_URL}/api/whatsapp/ready`, {
             method: "POST",
             body: JSON.stringify({ contacts: await client.getContacts() }),
             headers: {
