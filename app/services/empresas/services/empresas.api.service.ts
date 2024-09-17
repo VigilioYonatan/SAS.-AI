@@ -344,6 +344,7 @@ export class EmpresasApiService {
 	async update(empresa: Empresas, empresasUpdateDto: EmpresasUpdateDto) {
 		try {
 			await empresa.update(empresasUpdateDto);
+			await initializeBot(empresa)
 			return {
 				success: true,
 				empresa,
