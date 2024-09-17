@@ -29,7 +29,7 @@
         "@faker-js/faker": "^8.4.1",
         "@hookform/resolvers": "3.5.0",
         "@preact/signals": "1.2.3",
-        "@vigilio/express-core": "1.9.22",
+        "@vigilio/express-core": "^1.9.22",
         "@vigilio/numeros-a-letras": "^0.0.7",
         "@vigilio/payments": "^0.0.1",
         "@vigilio/preact-fetching": "^2.0.14",
