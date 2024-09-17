@@ -5,21 +5,21 @@ import { registerPushNotification } from "./notifications/libs";
 import useSocketStore from "~/stores/socket.store";
 
 function Initial() {
-    const cartStore = useCartStore();
-    const socketStore = useSocketStore();
-    const user = useAuthstore();
-    useEffect(() => {
-        cartStore.methods.initial();
-        socketStore.connectSocket();
-    }, []);
+	const cartStore = useCartStore();
+	const socketStore = useSocketStore();
+	const user = useAuthstore();
+	useEffect(() => {
+		cartStore.methods.initial();
+		socketStore.connectSocket();
+	}, []);
 
-    useEffect(() => {
-        // push notifications solo para registrados y admins
-        if (user.state) {
-            registerPushNotification();
-        }
-    }, [user.state]);
-    return null;
+	useEffect(() => {
+		// push notifications solo para registrados y admins
+		if (user.state) {
+			registerPushNotification();
+		}
+	}, [user.state]);
+	return null;
 }
 
 export default Initial;

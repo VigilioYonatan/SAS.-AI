@@ -4,18 +4,8 @@ import { Fragment } from "preact/jsx-runtime";
 import { useForm } from "react-hook-form";
 import { delay, showTime } from "~/libs/helpers";
 import useSocketStore from "~/stores/socket.store";
-import { subWhatsappIA } from "~/config/guards";
-import { sweetAlert } from "@vigilio/sweet";
 
 function AssistantVirtualAdmin() {
-	if (!subWhatsappIA()) {
-		sweetAlert({
-			icon: "danger",
-			title:
-				"Necesitar tener whatsapp plus activado o no tienes tokens, ve a plus",
-		});
-		return null;
-	}
 	const chats = useSignal<["user" | "assistant", string, number][]>([]);
 	const messageForm = useForm<{ message: string }>();
 	const chatBox = useRef<HTMLDivElement | null>(null);

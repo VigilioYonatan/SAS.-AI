@@ -62,7 +62,7 @@ export async function initialWhatsapp() {
         console.log("******      ready      *********");
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(JSON.stringify((await client.getContacts()).slice(0, 10)));
-        await fetch(`${BASE_URL}/api/bot/whatsapp/ready`, {
+        await fetch(`${BASE_URL}/api/whatsapp/whatsapp/ready`, {
             method: "POST",
             body: JSON.stringify({ contacts: await client.getContacts() }),
             headers: {
@@ -78,7 +78,7 @@ export async function initialWhatsapp() {
             const binaryData = Buffer.from(media.data, "base64");
             return binaryData;
         }
-        await fetch(`${BASE_URL}/api/bot/receive-message`, {
+        await fetch(`${BASE_URL}/api/whatsapp/receive-message`, {
             method: "POST",
             body: JSON.stringify({
                 isGroup: chat.isGroup,
@@ -93,7 +93,9 @@ export async function initialWhatsapp() {
         });
     });
     client.on("disconnected", async () => {
-        await fetch(`${BASE_URL}/api/bot/disconnected`, { method: "POST" });
+        await fetch(`${BASE_URL}/api/whatsapp/disconnected`, {
+            method: "POST",
+        });
         // eliminar qrcodee
         if (fs.existsSync(qrImage)) {
             fs.unlinkSync(qrImage);

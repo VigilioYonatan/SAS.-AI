@@ -8,60 +8,60 @@ import type { I18nextFunction, Paths } from "~/types/i18next";
 import type { NextFunction, Request, Response } from "express";
 
 i18next
-    .use(i18nextHttpBackend)
-    .use(i18nextHttpMiddleware.LanguageDetector)
-    .init({
-        debug: false,
-        backend: {
-            loadPath: "/locales/{{lng}}/{{ns}}.json",
-        },
-        lng: "es",
-        fallbackLng: "es",
-        interpolation: { escapeValue: false },
-        ns: ["home", "translation", "validation"],
-    });
+	.use(i18nextHttpBackend)
+	.use(i18nextHttpMiddleware.LanguageDetector)
+	.init({
+		debug: false,
+		backend: {
+			loadPath: "/locales/{{lng}}/{{ns}}.json",
+		},
+		lng: "es",
+		fallbackLng: "es",
+		interpolation: { escapeValue: false },
+		ns: ["home", "translation", "validation"],
+	});
 export interface Locales {
-    home: Paths<typeof home>;
-    translation: Paths<typeof translation>;
-    validation: Paths<typeof validation>;
+	home: Paths<typeof home>;
+	translation: Paths<typeof translation>;
+	validation: Paths<typeof validation>;
 }
 export const t: I18nextFunction<Locales> = (key, options) => {
-    return tra(key as unknown as string, options as unknown as string);
+	return tra(key as unknown as string, options as unknown as string);
 };
 export const tvalibot: I18nextFunction<Locales> = (key, options) => {
-    return JSON.stringify([key, options]);
+	return JSON.stringify([key, options]);
 };
 export function cookiei18next(language: string) {
-    const closeSession = 24 * 60 * 60 * 1000 * 30; // 30 dias
-    return (res: Response) => {
-        res.cookie("i18next", language, {
-            httpOnly: false,
-            maxAge: closeSession,
-        });
-    };
+	const closeSession = 24 * 60 * 60 * 1000 * 30; // 30 dias
+	return (res: Response) => {
+		res.cookie("i18next", language, {
+			httpOnly: false,
+			maxAge: closeSession,
+		});
+	};
 }
 // verify that language use the client by default
 export function i18nextMiddleware(
-    req: Request,
-    res: Response,
-    next: NextFunction
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) {
-    const country = req.headers["accept-language"]?.split(",")[0];
-    let detectedLanguage = req.language;
-    if (req.cookies.i18next === undefined) {
-        if (country === "en" || country === "en-US") {
-            detectedLanguage = "en";
-        } else if (country === "es" || country === "es-ES") {
-            detectedLanguage = "es";
-        } else if (country === "zh" || country === "zh-CN") {
-            detectedLanguage = "zh";
-        } else if (country === "pt" || country === "pt-BR") {
-            detectedLanguage = "pt";
-        } else {
-            detectedLanguage = "en";
-        }
-        cookiei18next(detectedLanguage)(res);
-    }
-    next();
+	const country = req.headers["accept-language"]?.split(",")[0];
+	let detectedLanguage = req.language;
+	if (req.cookies.i18next === undefined) {
+		if (country === "en" || country === "en-US") {
+			detectedLanguage = "en";
+		} else if (country === "es" || country === "es-ES") {
+			detectedLanguage = "es";
+		} else if (country === "zh" || country === "zh-CN") {
+			detectedLanguage = "zh";
+		} else if (country === "pt" || country === "pt-BR") {
+			detectedLanguage = "pt";
+		} else {
+			detectedLanguage = "en";
+		}
+		cookiei18next(detectedLanguage)(res);
+	}
+	next();
 }
 export default i18next;

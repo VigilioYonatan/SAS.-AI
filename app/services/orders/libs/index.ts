@@ -20,7 +20,6 @@ import { KindDebitNotes } from "../entities/kind_debit_notes.entity";
 import { ticketHTML } from "./ticket";
 import { Orders } from "../entities/orders.entity";
 import fs from "node:fs";
-import { slug } from "@vigilio/express-core/helpers";
 import type { Guides } from "../entities/guides.entity";
 import type { GuidesSchema } from "../schemas/guides.schema";
 import type { SunatGuideDto } from "../sunat/dtos/sunat.guide.dto";
@@ -37,7 +36,9 @@ import { RegionsEmpresa } from "@/ubigeo/entities/regions_empresa.entity";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
-import htmlpdf from "html-pdf";
+import wkhtmltopdf from "wkhtmltopdf";
+import { PassThrough } from "node:stream";
+
 export const ordersTransferenciaImage = [800];
 
 export const isValidDni = new RegExp(/^\d{8}$/);
@@ -100,24 +101,12 @@ export async function pdfGenerate(props: PdfGenerateProps, save = false) {
 			pdf = await ticketHTML(props.order, props.empresa);
 		}
 
-		function convertAsync() {
-			return new Promise((res, rej) => {
-				htmlpdf
-					.create(pdf!, {
-						width: "95mm",
-						height: props.type === "recibo" ? "300mm" : "385mm",
-						type: "pdf",
-					})
-					.toBuffer((err, buffer) => {
-						if (err) return rej(err);
-						return res(buffer);
-					});
-			});
-		}
-		const buffer = await convertAsync();
-		const file = `${props.empresa.slug}/sunat/${slug(props.empresa.slug)}-${
-			props.order.order_code
-		}-${props.type}.pdf`;
+		const buffer = await generatePdfBuffer(pdf!, {
+			pageWidth: "95mm",
+			pageHeight: "385mm",
+		});
+
+		const file = `${props.empresa.slug}/sunat/${props.empresa.slug}-${props.order.order_code}-${props.type}.pdf`;
 		if (save) {
 			if (fs.existsSync(`${pathUploads()}/${file}`)) {
 				fs.unlinkSync(`${pathUploads()}/${file}`);
@@ -148,6 +137,35 @@ export async function xmlGenerate(props: PdfGenerateProps) {
 	fs.writeFileSync(`${pathUploads()}/${file}`, xml!);
 	return file;
 }
+
+export function generatePdfBuffer(
+	html: string,
+	options: { pageWidth: string; pageHeight: string },
+): Promise<Buffer> {
+	return new Promise((resolve, reject) => {
+		const output = new PassThrough();
+		const chunks: Uint8Array[] = [];
+
+		wkhtmltopdf(html, options, (err) => {
+			if (err) {
+				reject(err.message);
+			}
+		}).pipe(output);
+
+		output.on("data", (chunk) => {
+			chunks.push(chunk);
+		});
+
+		output.on("end", () => {
+			resolve(Buffer.concat(chunks) as Buffer);
+		});
+
+		output.on("error", (err) => {
+			reject(err);
+		});
+	});
+}
+
 export async function crdGenerate(props: {
 	empresa: Empresas;
 	orderCode: string;

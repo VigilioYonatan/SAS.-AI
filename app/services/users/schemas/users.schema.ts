@@ -44,7 +44,7 @@ export const usersSchema = objectAsync({
 		slug,
 	),
 	token: nullable(string()),
-    speciality: nullable(string()),
+	speciality: nullable(string()),
 	role_id: number(),
 	empresa_id: number(),
 	subscription: nullableAsync(subscription),

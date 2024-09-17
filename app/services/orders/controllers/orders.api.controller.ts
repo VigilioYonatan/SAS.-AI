@@ -75,7 +75,7 @@ export class OrdersApiController {
 	@Get("/:order_code/pdf")
 	async pdf(
 		@Params("order_code") order_code: string,
-		@Req() empresa: Empresas,
+		@Req("empresa") empresa: Empresas,
 		@Res() res: Response,
 		@Query("type") type: "invoice" | "note" | "guide" | "recibo",
 	) {
@@ -88,7 +88,7 @@ export class OrdersApiController {
 	@Validator(ordersStoreDto)
 	@Status(201)
 	@Post("/")
-	async store(@Body() body: OrdersStoreDto, @Req() empresa: Empresas) {
+	async store(@Body() body: OrdersStoreDto, @Req("empresa") empresa: Empresas) {
 		const result = await this.ordersApiService.store(body, empresa);
 		return result;
 	}
@@ -100,12 +100,13 @@ export class OrdersApiController {
 	@Get("/:order_code/html")
 	async html(
 		@Params("order_code") order_code: string,
-		@Req() empresa: Empresas,
+		@Req("empresa") empresa: Empresas,
 		@Query("type") type: "invoice" | "note" | "guide",
 	) {
 		const result = await this.ordersApiService.html(order_code, type, empresa);
 		return result;
 	}
+
 	@PermissionAuth()
 	@Pipe(
 		objectAsync({

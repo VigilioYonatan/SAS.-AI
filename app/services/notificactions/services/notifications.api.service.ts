@@ -5,14 +5,16 @@ import { Users } from "@/users/entities/users.entity";
 import { NotificationsUser } from "../entities/notifications_user.entity";
 import type { NotificationsSchema } from "../schemas/notifications.schema";
 import type { Subscription } from "@/users/schemas/users.schema";
+import type { Empresas } from "@/empresas/entities/empresas.entity";
 
 @Injectable()
 export class NotificationsApiService {
-	async count(user: Users) {
+	async count(empresa: Empresas, user: Users) {
 		const data = await NotificationsUser.count({
 			where: {
 				user_id: user.id,
 				isRead: false,
+				empresa_id: empresa.id,
 			},
 		}); // only notifications that no read
 		return {
@@ -20,11 +22,12 @@ export class NotificationsApiService {
 			data,
 		};
 	}
-	async clean(user: Users) {
+	async clean(empresa: Empresas, user: Users) {
 		const notifications = await NotificationsUser.findAll({
 			where: {
 				user_id: user.id,
 				isRead: false,
+				empresa_id: empresa.id,
 			},
 		});
 		for (const notification of notifications) {
@@ -35,10 +38,12 @@ export class NotificationsApiService {
 			message: "Se limpiaron todas tus notificaiones",
 		};
 	}
-	async show(id: string) {
+	async show(empresa: Empresas, id: string) {
 		let notification = null;
 		if (!Number.isNaN(Number(id))) {
-			notification = await Notifications.findByPk(id);
+			notification = await Notifications.findOne({
+				where: { empresa_id: empresa.id, id },
+			});
 		}
 		if (!notification) {
 			throw new NotFoundException(`No se encontró una notificación con ${id}`);
@@ -66,6 +71,7 @@ export class NotificationsApiService {
 	}
 
 	async update(
+		empresa: Empresas,
 		user: Users,
 		body: {
 			notification_id: number;
@@ -76,6 +82,7 @@ export class NotificationsApiService {
 			where: {
 				notification_id: body.notification_id,
 				user_id: user.id,
+				empresa_id: empresa.id,
 			},
 		});
 		if (!notification)
@@ -87,8 +94,8 @@ export class NotificationsApiService {
 		};
 	}
 
-	async destroy(id: string) {
-		const { notification } = await this.show(id);
+	async destroy(empresa: Empresas, id: string) {
+		const { notification } = await this.show(empresa, id);
 		await notification.destroy();
 		return {
 			success: true,

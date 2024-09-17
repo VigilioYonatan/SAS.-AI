@@ -6,6 +6,7 @@ import { boolean, number, objectAsync, string } from "@vigilio/valibot";
 import { Users } from "@/users/entities/users.entity";
 import { PermissionAuth } from "@/auth/guards/permission-auth.guard";
 import { subscription, type Subscription } from "@/users/schemas/users.schema";
+import type { RequestVigilio } from "~/config/types";
 
 @Injectable()
 @Controller("/notifications")
@@ -16,8 +17,10 @@ export class NotificationsApiController {
 
 	@PermissionAuth()
 	@Get("/count")
-	async count(@Req("user") user: Users) {
-		const result = await this.notificationsApiService.count(user);
+	async count(@Req() req: RequestVigilio) {
+		const user = req.user;
+		const empresa = req.empresa;
+		const result = await this.notificationsApiService.count(empresa, user);
 		return result;
 	}
 
@@ -31,8 +34,10 @@ export class NotificationsApiController {
 
 	@PermissionAuth()
 	@Get("/clean")
-	async clean(@Req("user") user: Users) {
-		const result = await this.notificationsApiService.clean(user);
+	async clean(@Req() req: RequestVigilio) {
+		const user = req.user;
+		const empresa = req.empresa;
+		const result = await this.notificationsApiService.clean(empresa, user);
 		return result;
 	}
 
@@ -43,8 +48,9 @@ export class NotificationsApiController {
 		}),
 	)
 	@Get("/:id")
-	async show(@Params("id") id: string) {
-		const result = await this.notificationsApiService.show(id);
+	async show(@Req() req: RequestVigilio, @Params("id") id: string) {
+		const empresa = req.empresa;
+		const result = await this.notificationsApiService.show(empresa, id);
 		return result;
 	}
 
@@ -52,6 +58,7 @@ export class NotificationsApiController {
 	@Validator(objectAsync({ notification_id: number(), isRead: boolean() }))
 	@Put("/")
 	async update(
+		@Req() req: RequestVigilio,
 		@Body()
 		body: {
 			notification_id: number;
@@ -59,7 +66,13 @@ export class NotificationsApiController {
 		},
 		@Req("user") user: Users,
 	) {
-		const result = await this.notificationsApiService.update(user, body);
+		const empresa = req.empresa;
+
+		const result = await this.notificationsApiService.update(
+			empresa,
+			user,
+			body,
+		);
 		return result;
 	}
 }

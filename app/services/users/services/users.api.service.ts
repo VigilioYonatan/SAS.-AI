@@ -13,6 +13,7 @@ import type { UsersProfileDto } from "../dtos/users.profile.dto";
 import bcryptjs from "bcryptjs";
 import type { UsersPasswordDto } from "../dtos/users.password.dto";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
+import { Op } from "sequelize";
 
 @Injectable()
 export class UsersApiService {
@@ -118,7 +119,42 @@ export class UsersApiService {
 			message: "Se cambió la contraseña correctamente",
 		};
 	}
-	async profile(usersProfileDto: UsersProfileDto, user: Users) {
+	async profile(
+		empresa: Empresas,
+		usersProfileDto: UsersProfileDto,
+		user: Users,
+	) {
+		const [byTelephone, byEmail] = await Promise.all([
+			Users.findOne({
+				where: {
+					telephone: usersProfileDto.telephone,
+					empresa_id: empresa.id,
+					id: { [Op.not]: empresa.id },
+				},
+				raw: true,
+			}),
+			Users.findOne({
+				where: {
+					email: usersProfileDto.email,
+					empresa_id: empresa.id,
+					id: { [Op.not]: empresa.id },
+				},
+				raw: true,
+			}),
+		]);
+		if (byTelephone) {
+			throw new BadRequestException(
+				`Ya existe un usuario con el telephone: ${usersProfileDto.telephone}`,
+				{ body: "telephone" },
+			);
+		}
+
+		if (byEmail) {
+			throw new BadRequestException(
+				`Ya existe un usuario con el email: ${usersProfileDto.email}`,
+				{ body: "email" },
+			);
+		}
 		await user.update(usersProfileDto);
 
 		return {

@@ -19,72 +19,72 @@ import { UsersSchema } from "@/users/schemas/users.schema";
 import CategoriesSection from "./components/CategoriesSection";
 
 export interface HomePageProps {
-    header: HeaderType;
-    posts: PostsSchemaFromServer[];
-    productsoffert6mapped:
-        | ProductsNormalSchemaFromServer[]
-        | ProductsRestaurantSchemaFromServer[];
-    getproductsbycategories: (CategoriesSchemaFromServer & {
-        products:
-            | ProductsNormalSchemaFromServer[]
-            | ProductsRestaurantSchemaFromServer[];
-    })[];
-    productslatest6mapped:
-        | ProductsNormalSchemaFromServer[]
-        | ProductsRestaurantSchemaFromServer[];
-    productmostdiscountmapped:
-        | ProductsNormalSchemaFromServer
-        | ProductsRestaurantSchemaFromServer
-        | null;
-    productlatestmapped:
-        | ProductsNormalSchemaFromServer
-        | ProductsRestaurantSchemaFromServer
-        | null;
-    backgrounds: BackgroundSchemaFromServer[];
-    noticia: NewSchema | null;
-    productsquantity: number;
-    users: Pick<
-        UsersSchema,
-        "id" | "name" | "speciality" | "photo" | "birthday"
-    >[];
+	header: HeaderType;
+	posts: PostsSchemaFromServer[];
+	productsoffert6mapped:
+		| ProductsNormalSchemaFromServer[]
+		| ProductsRestaurantSchemaFromServer[];
+	getproductsbycategories: (CategoriesSchemaFromServer & {
+		products:
+			| ProductsNormalSchemaFromServer[]
+			| ProductsRestaurantSchemaFromServer[];
+	})[];
+	productslatest6mapped:
+		| ProductsNormalSchemaFromServer[]
+		| ProductsRestaurantSchemaFromServer[];
+	productmostdiscountmapped:
+		| ProductsNormalSchemaFromServer
+		| ProductsRestaurantSchemaFromServer
+		| null;
+	productlatestmapped:
+		| ProductsNormalSchemaFromServer
+		| ProductsRestaurantSchemaFromServer
+		| null;
+	backgrounds: BackgroundSchemaFromServer[];
+	noticia: NewSchema | null;
+	productsquantity: number;
+	users: Pick<
+		UsersSchema,
+		"id" | "name" | "speciality" | "photo" | "birthday"
+	>[];
 }
 function HomePage({
-    header,
-    productsoffert6mapped,
-    productmostdiscountmapped,
-    productlatestmapped,
-    posts,
-    backgrounds,
-    noticia,
-    getproductsbycategories,
-    productsquantity,
-    users,
+	header,
+	productsoffert6mapped,
+	productmostdiscountmapped,
+	productlatestmapped,
+	posts,
+	backgrounds,
+	noticia,
+	getproductsbycategories,
+	productsquantity,
+	users,
 }: HomePageProps) {
-    return (
-        <>
-            <WebLayout header={header}>
-                <Animations />
-                <Noticia noticia={noticia} />
-                <BackgroundSection backgrounds={backgrounds} />
-                <OfferSection
-                    productlatestmapped={productlatestmapped}
-                    productsoffert8mapped={productsoffert6mapped}
-                />
-                <AboutSection productsquantity={productsquantity} />
-                <CategoriesSection categories={header.categories} />
-                <CategoriesProductSection
-                    getProductsByCategories={getproductsbycategories}
-                />
-                <ProductsSectionRandom
-                    productlatestmapped={productlatestmapped}
-                    productmostdiscountmapped={productmostdiscountmapped}
-                />
-                <PostsSection posts={posts} />
-                <UsersSection users={users} />
-                <FindSection />
-            </WebLayout>
-        </>
-    );
+	return (
+		<>
+			<WebLayout header={header}>
+				<Animations />
+				<Noticia noticia={noticia} />
+				<BackgroundSection backgrounds={backgrounds} />
+				<OfferSection
+					productlatestmapped={productlatestmapped}
+					productsoffert8mapped={productsoffert6mapped}
+				/>
+				<AboutSection productsquantity={productsquantity} />
+				<CategoriesSection categories={header.categories} />
+				<CategoriesProductSection
+					getProductsByCategories={getproductsbycategories}
+				/>
+				<ProductsSectionRandom
+					productlatestmapped={productlatestmapped}
+					productmostdiscountmapped={productmostdiscountmapped}
+				/>
+				<PostsSection posts={posts} />
+				<UsersSection users={users} />
+				<FindSection />
+			</WebLayout>
+		</>
+	);
 }
 
 export default HomePage;

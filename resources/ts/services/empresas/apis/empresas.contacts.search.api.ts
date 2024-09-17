@@ -3,19 +3,19 @@ import type { Signal } from "@preact/signals";
 import { ContactsSchema } from "../schemas/empresas.schema";
 
 export function empresaContactsSearchApi(name: Signal<string>) {
-    return useQuery(
-        `/empresas/contacts/${name.value}`,
-        async (url) => {
-            const response = await fetch(`/api${url}`);
-            const result: empresaContactsSearchAPI = await response.json();
-            if (!result.success) throw result;
-            return result;
-        },
-        { skipFetching: true }
-    );
+	return useQuery(
+		`/empresas/contacts/${name.value}`,
+		async (url) => {
+			const response = await fetch(`/api${url}`);
+			const result: empresaContactsSearchAPI = await response.json();
+			if (!result.success) throw result;
+			return result;
+		},
+		{ skipFetching: true },
+	);
 }
 
 export interface empresaContactsSearchAPI {
-    success: boolean;
-    data: ContactsSchema[];
+	success: boolean;
+	data: ContactsSchema[];
 }

@@ -5,7 +5,7 @@
   <%- include('../components/webHead',{title:"Carrito de compra",description:"Tu carrito de compra"}) %>
 </head>
 
-<body class="bg-paper-light dark:bg-background-dark antialiased">
+<body class="bg-paper-light dark:bg-paper-dark antialiased">
   <cart-page :cart="<%= JSON.stringify(cart) %>" :header="<%= JSON.stringify(header)  %>"></cart-page>
 </body>
 

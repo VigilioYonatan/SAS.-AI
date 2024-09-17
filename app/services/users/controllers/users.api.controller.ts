@@ -63,8 +63,12 @@ export class UsersApiController {
 	@Validator(usersProfileDto)
 	@Status(200)
 	@Put("/profile")
-	async profile(@Body() body: UsersProfileDto, @Req("user") user: Users) {
-		const result = await this.usersApiService.profile(body, user);
+	async profile(
+		@Req("empresa") empresa: Empresas,
+		@Body() body: UsersProfileDto,
+		@Req("user") user: Users,
+	) {
+		const result = await this.usersApiService.profile(empresa, body, user);
 		return result;
 	}
 

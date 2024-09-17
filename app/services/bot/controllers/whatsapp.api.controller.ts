@@ -1,40 +1,41 @@
-import {
-	Controller,
-	Get,
-	Params,
-	Req,
-	NotFoundException,
-	Post,
-	Body,
-	BadRequestException,
-} from "@vigilio/express-core";
-import { Pipe } from "@vigilio/express-core/valibot";
-import { objectAsync, string } from "@vigilio/valibot";
-import { buenosDias, gracias, isWhatsappIA } from "../libs/ai";
 import { Empresas } from "@/empresas/entities/empresas.entity";
-import { delay, randomNumber, terminal } from "~/libs/helpers";
 import {
+	BadRequestException,
+	Body,
+	Controller,
+	Post,
+	Req,
+} from "@vigilio/express-core";
+import type WAWebJS from "whatsapp-web.js";
+import {
+	whatsappGetQrApi,
+	whatsappLogout,
 	whatsappRemoveQR,
 	whatsappSendFileApi,
 	whatsappSendMessageApi,
+	whatsappSendSeenApi,
 	whatsappSendTypingApi,
+	type WhatsappSendFileApi,
 } from "../api";
+import { delay, randomNumber, terminal } from "~/libs/helpers";
+import { buenosDias, featuresIA, gracias, isWhatsappIA } from "../libs/ai";
 import { formatTime, NOW } from "~/libs/dayjs";
 import { promptReplace, transcribeAudio } from "../libs";
-import type WAWebJS from "whatsapp-web.js";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import { BASE_URL } from "@/empresas/libs";
-import { UrlsPayment } from "@/urls/entities/urls.payment.entity";
-
-export const chats: Record<
+import formidable from "formidable";
+import type { RequestVigilio } from "~/config/types";
+import fs from "node:fs";
+import cron from "node-cron";
+export let chats: Record<
 	string,
 	Record<string, ["assistant" | "user", string][]>
 > = {};
 
-@Controller("/bot")
-export class BotApiController {
-	@Post("/whatsapp/ready")
-	async whatsappReady(
+@Controller("/whatsapp")
+export class whatsappApiController {
+	@Post("/ready")
+	async ready(
 		@Body()
 		client: { contacts: { name: string; id: { _serialized: string } }[] },
 		@Req("empresa") info: Empresas,
@@ -57,8 +58,8 @@ export class BotApiController {
 
 		await empresa?.update({ enabledBot: true });
 	}
-	@Post("/whatsapp/receive-message")
-	async whatsappReceiveMessage(
+	@Post("/receive-message")
+	async receiveMessage(
 		@Req("empresa") info: Empresas,
 		@Body()
 		body: {
@@ -152,7 +153,7 @@ export class BotApiController {
 					model: clientVigilio
 						? clientVigilio.information.modelai
 						: "gpt-4o-mini",
-					max_tokens: 300,
+					max_tokens: empresa.inteligenceArtificial.max_length,
 					messages: [
 						{
 							role: "user",
@@ -194,44 +195,10 @@ export class BotApiController {
 
 				// get message ai
 				const completionText = completion.choices[0].message.content!;
-				let removeNote = completionText.replace(/\s*\(.*?\)\s*/g, " ");
-				// quitar las imagenes para enviar imagen
-				const baseURL = `${BASE_URL(empresa)}/${empresa.slug}/images/products`;
-				const urlPattern = new RegExp(`${baseURL}[^\\s]*`, "g");
-				const match = removeNote.match(urlPattern);
-
-				const urlExtraidas = [];
-				if (match?.length) {
-					for (const m of match) {
-						removeNote = removeNote.replace(m, "").trim();
-						urlExtraidas.push(m);
-					}
-				}
-				// carrito
-				const expresionRegular = /\(\(cart\?items=[^\)]+\)\)/g;
-				const coincidencias = completionText.match(expresionRegular);
-
-				if (coincidencias?.length) {
-					for (const c of coincidencias) {
-						const hash = Math.random().toString(32).slice(4, 8);
-						const urlGet = `${BASE_URL(empresa)}/cart/${hash}`;
-						const date = NOW().add(1, "days");
-						const findHash = await UrlsPayment.findOne({
-							where: { hash, empresa_id: empresa.id },
-						});
-						if (findHash) {
-							await findHash.update({ url: urlGet, time: date });
-						} else {
-							await UrlsPayment.create({
-								hash,
-								url: urlGet,
-								empresa_id: empresa.id,
-								time: date,
-							});
-						}
-						removeNote = removeNote.replace(c, urlGet);
-					}
-				}
+				const [removeNote, urlExtraidas] = await featuresIA(
+					empresa,
+					completionText,
+				);
 
 				chats[info.slug][userId] = [
 					...(chats[info.slug][userId] || []),
@@ -259,12 +226,77 @@ export class BotApiController {
 			chats[info.slug][userId] = [];
 		}
 	}
-	@Post("/whatsapp/disconnected")
-	async whatsappDisconnected(@Req("empresa") empresa: Empresas) {
-		await empresa.update({ enabledBot: false });
+	@Post("/send-message")
+	async sendMessage(
+		@Req("empresa") empresa: Empresas,
+		@Body()
+		body: {
+			telephone: string;
+			message: string;
+			options?: WAWebJS.MessageSendOptions;
+		},
+	) {
+		const result = await whatsappSendMessageApi(empresa, body);
+		return result;
 	}
-	@Post("/whatsapp/restart")
-	async whatsappRestart(@Req("empresa") empresa: Empresas) {
+
+	@Post("/send-file")
+	async sendFile(@Req() req: RequestVigilio) {
+		const form = formidable({});
+		const [fields, files] = await form.parse(req);
+
+		const empresa = req.empresa;
+		const file = files.file
+			? new File(
+					[await fs.promises.readFile(files.file[0].filepath)],
+					files.file[0].originalFilename ?? "archivo",
+					{
+						type: files.file[0].mimetype!,
+					},
+				)
+			: null;
+		const data: WhatsappSendFileApi = {
+			file,
+			telephone: fields.telephone![0],
+			name: fields.name ? fields.name![0] : null,
+			option: fields.option ? JSON.parse(fields.option![0]) : null,
+			url: fields.url ? JSON.parse(fields.url[0]) : null,
+		};
+		const result = await whatsappSendFileApi(empresa, data);
+		return result;
+	}
+
+	// send-seen
+
+	@Post("/send-seen")
+	async sendSeen(
+		@Req("empresa") empresa: Empresas,
+		@Body()
+		body: {
+			telephone: string;
+		},
+	) {
+		const result = await whatsappSendSeenApi(empresa, body);
+		return result;
+	}
+	@Post("/send-typing")
+	async sendTyping(
+		@Req("empresa") empresa: Empresas,
+		@Body()
+		body: {
+			telephone: string;
+			delay: number;
+		},
+	) {
+		const result = await whatsappSendTypingApi(empresa, body);
+		return result;
+	}
+	@Post("/disconnected")
+	async disconnected(@Req("empresa") empresa: Empresas) {
+		await empresa.update({ enabledwhatsapp: false });
+	}
+	@Post("/restart")
+	async restart(@Req("empresa") empresa: Empresas) {
 		await whatsappRemoveQR(empresa);
 		await terminal(`docker container stop ${empresa.slug}`);
 		await terminal(`docker container start ${empresa.slug}`);
@@ -275,52 +307,19 @@ export class BotApiController {
 		};
 	}
 
-	@Pipe(objectAsync({ name: string() }))
-	@Get("/description/:name")
-	async description(
-		@Params("name") name: string,
-		@Req("empresa") empresa: Empresas,
-	) {
-		const whatsapp = await isWhatsappIA(empresa.slug);
-		if (!whatsapp)
-			throw new NotFoundException(
-				"Hubo un problema al usar la ia, Recomiendo fijarse en los limites token",
-			);
-		const completion = await openAis[empresa.slug].chat.completions.create({
-			model: whatsapp.clientVigilio?.information.modelai ?? "gpt-4o-mini",
-			max_tokens: 300,
-			messages: [
-				{
-					role: "user",
-					// insert custom prompt
-					content: `Dame solo la "descripcion" y no otro en formato de tienda virtual de producto de ${name} en español  y no traer fuentes y no menciones otra cosa que no sea la descripción, y sin comillas "" por favor`,
-				},
-			],
-		});
-		const completionText = completion.choices[0].message.content;
-		const latestEmpresaUsage = empresa!.inteligenceArtificial.usage;
-		await empresa.update({
-			...empresa.inteligenceArtificial,
-			usage: {
-				...latestEmpresaUsage,
-				input_tokens:
-					latestEmpresaUsage.input_tokens + completion.usage!.prompt_tokens,
-				output_tokens:
-					latestEmpresaUsage.input_tokens + completion.usage!.completion_tokens,
-			},
-			payments: {
-				...empresa.payments,
-				tokens: {
-					tokens:
-						empresa.payments.tokens.tokens -
-						completion.usage!.completion_tokens,
-				},
-			},
-		});
+	@Post("/qr")
+	async qr(@Req("empresa") empresa: Empresas) {
+		const result = await whatsappGetQrApi(empresa);
+		return result;
+	}
 
-		return {
-			success: true,
-			description: completionText,
-		};
+	@Post("/logout")
+	async logout(@Req("empresa") empresa: Empresas) {
+		const result = await whatsappLogout(empresa);
+		return result;
 	}
 }
+// cada 24 horas
+cron.schedule("0 0 * * *", () => {
+	chats = {};
+});

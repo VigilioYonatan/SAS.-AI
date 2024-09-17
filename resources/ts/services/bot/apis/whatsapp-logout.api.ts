@@ -5,7 +5,7 @@ export function whatsappLogoutApi(): UseMutation<
 	unknown,
 	WhatsappLogoutApiError
 > {
-	return useMutation("/bot/logout", async (url) => {
+	return useMutation("/whatsapp/logout", async (url) => {
 		const response = await fetch(`/api${url}`, {
 			method: "POST",
 		});

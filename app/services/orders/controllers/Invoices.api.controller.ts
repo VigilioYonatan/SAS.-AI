@@ -1,8 +1,9 @@
-import { Injectable } from "@vigilio/express-core";
+import { Injectable, Req } from "@vigilio/express-core";
 import { Controller, Get, Params } from "@vigilio/express-core";
 import { Pipe } from "@vigilio/express-core/valibot";
 import { objectAsync, string } from "@vigilio/valibot";
 import { InvoicesApiService } from "../services/invoices.api.service";
+import type { Empresas } from "@/empresas/entities/empresas.entity";
 
 @Injectable()
 @Controller("/invoices")
@@ -12,10 +13,13 @@ export class InvoicesApiController {
 	@Pipe(objectAsync({ kind_invoice_code: string("Este campo es obligatorio") }))
 	@Get("/latest_correlativo/:kind_invoice_code")
 	async latestCorrelativo(
+		@Req("empresa") empresa: Empresas,
 		@Params("kind_invoice_code") kind_invoice_code: string,
 	) {
-		const result =
-			await this.invoicesApiService.latestCorrelativo(kind_invoice_code);
+		const result = await this.invoicesApiService.latestCorrelativo(
+			empresa,
+			kind_invoice_code,
+		);
 		return result;
 	}
 
@@ -25,8 +29,14 @@ export class InvoicesApiController {
 		}),
 	)
 	@Get("/:serie_correlative")
-	async show(@Params("serie_correlative") serie_correlative: string) {
-		const result = await this.invoicesApiService.show(serie_correlative);
+	async show(
+		@Req("empresa") empresa: Empresas,
+		@Params("serie_correlative") serie_correlative: string,
+	) {
+		const result = await this.invoicesApiService.show(
+			empresa,
+			serie_correlative,
+		);
 		return result;
 	}
 }

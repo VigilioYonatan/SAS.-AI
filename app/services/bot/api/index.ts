@@ -2,7 +2,6 @@ import type { Empresas } from "@/empresas/entities/empresas.entity";
 import type WAWebJS from "whatsapp-web.js";
 import type { MessageSendOptions } from "whatsapp-web.js";
 import enviroments from "~/config/enviroments.config";
-
 export function BASE_URL_WHATSAPP(empresa: Empresas) {
 	return `http://localhost:${empresa.port}`;
 }
@@ -31,15 +30,16 @@ export async function whatsappSendMessageApi(
 	const result = await response.json();
 	return result;
 }
+export interface WhatsappSendFileApi {
+	telephone: string;
+	url?: string | null;
+	file?: File | null;
+	name?: string | null;
+	option?: MessageSendOptions | null;
+}
 export async function whatsappSendFileApi(
 	empresa: Empresas,
-	body: {
-		telephone: string;
-		url?: string;
-		file?: File;
-		name?: string;
-		option?: MessageSendOptions;
-	},
+	body: WhatsappSendFileApi,
 ): Promise<{ success: boolean; message: string }> {
 	const { telephone, ...rest } = body;
 	const formdata = new FormData();
@@ -47,6 +47,7 @@ export async function whatsappSendFileApi(
 		formdata.append("name", rest.name);
 	}
 	if (rest.file) {
+		// const fileStream = fs.createReadStream(file.filepath);
 		formdata.append("file", rest.file);
 	}
 	if (rest.url) {
@@ -61,7 +62,7 @@ export async function whatsappSendFileApi(
 		)}/api/whatsapp/send-file?telephone=${telephone}`,
 		{
 			method: "POST",
-			body: JSON.stringify(formdata),
+			body: formdata,
 			headers: {
 				Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
 			},

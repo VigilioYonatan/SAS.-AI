@@ -395,7 +395,8 @@ export class OrdersApiService {
 
 		if (
 			NOW().isAfter(formatTime(findDay!.openTime)) &&
-			NOW().isBefore(formatTime(findDay!.closeTime))
+			NOW().isBefore(formatTime(findDay!.closeTime)) &&
+			findDay!.enabled
 		) {
 		} else {
 			throw new BadRequestException(empresa.whatsappconfig.cerrado);
@@ -517,6 +518,7 @@ export class OrdersApiService {
 		await order.save();
 		if (invoice) {
 			const { correlativo } = await this.invoicesApiService.latestCorrelativo(
+				empresa,
 				invoice.kind_invoice_code,
 			);
 			const serie =
@@ -785,6 +787,7 @@ export class OrdersApiService {
 			};
 			if (!getInvoice) {
 				const { correlativo } = await this.invoicesApiService.latestCorrelativo(
+					empresa,
 					invoice.kind_invoice_code,
 				);
 				const serie =
@@ -916,7 +919,7 @@ export class OrdersApiService {
 			}
 			if (getInvoice) {
 				if (!getInvoice.send_sunat) {
-					await this.invoicesApiService.update(String(getInvoice.id), {
+					await this.invoicesApiService.update(empresa, String(getInvoice.id), {
 						...invoice!,
 						...files,
 						order_id: order.id,
@@ -960,6 +963,7 @@ export class OrdersApiService {
 				};
 				if (!getNote) {
 					const { correlativo } = await this.notesApiService.latestCorrelativo(
+						empresa,
 						note.kind_invoice_code,
 					);
 
@@ -1072,7 +1076,7 @@ export class OrdersApiService {
 				}
 				if (getNote) {
 					if (!getNote.send_sunat) {
-						await this.notesApiService.update(String(getNote.id), {
+						await this.notesApiService.update(empresa, String(getNote.id), {
 							...note!,
 							...files,
 							invoice_id: getInvoice.id,
@@ -1117,6 +1121,7 @@ export class OrdersApiService {
 			};
 			if (!getGuide) {
 				const { correlativo } = await this.guidesApiService.latestCorrelativo(
+					empresa,
 					guide.kind_guide_code,
 				);
 
@@ -1171,7 +1176,7 @@ export class OrdersApiService {
 			}
 
 			if (getGuide) {
-				await this.guidesApiService.update(String(getGuide.id), {
+				await this.guidesApiService.update(empresa, String(getGuide.id), {
 					...guide!,
 					...files,
 					order_id: order.id,

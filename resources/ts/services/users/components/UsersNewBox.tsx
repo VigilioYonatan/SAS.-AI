@@ -21,6 +21,7 @@ function UsersNewBox({ users }: UsersNewBoxProps) {
 						to={`/usuarios/${user.slug}`}
 						className="flex gap-3 w-full p-2 hover:dark:bg-admin-terciary hover:bg-paper-light"
 					>
+						{user.id}
 						<img
 							width={50}
 							height={50}

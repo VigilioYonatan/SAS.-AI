@@ -2,17 +2,17 @@ import { number, type Input, object, string } from "valibot";
 import type { OrdersSchemaFromServer } from "./orders.schema";
 
 export const mesasSchema = object({
-    id: number(),
-    mesa_code: string(),
-    floor_id: number("Este campo es obligatorio."),
-    empresa_id: number(),
+	id: number(),
+	mesa_code: string(),
+	floor_id: number("Este campo es obligatorio."),
+	empresa_id: number(),
 });
 
 export type MesasSchema = Input<typeof mesasSchema>;
 export type MesasSchemaFromserver = MesasSchema & {
-    createdAt: Date;
-    updatedAt: Date;
+	createdAt: Date;
+	updatedAt: Date;
 };
 export type MesasOrdersSchemaFromServer = MesasSchema & {
-    orders: OrdersSchemaFromServer[];
+	orders: OrdersSchemaFromServer[];
 };

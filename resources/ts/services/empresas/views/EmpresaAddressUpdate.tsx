@@ -10,146 +10,140 @@ import AdminBreadCrumb from "@/admin/components/AdminBreadCrumb";
 import { valibotVigilio } from "~/libs/valibot";
 import { citiesIndexApi } from "@/ubigeo/apis/citites.api.index";
 import useEmpresastore from "../stores/empresa.store";
+import useAuthStore from "@/auth/stores/auth.store";
 
 function EmpresaAddressUpdate() {
-    const empresa = useEmpresastore();
-    const EmpresaAddressUpdateMutation = EmpresaAddressUpdateApi();
-    const citysIndexQuery = citiesIndexApi();
+	const authStore = useAuthStore();
+	if (!authStore.guards.permissionAdminGuard()) {
+		window.history.back();
+		return null;
+	}
+	const empresa = useEmpresastore();
+	const EmpresaAddressUpdateMutation = EmpresaAddressUpdateApi();
+	const citysIndexQuery = citiesIndexApi();
 
-    const EmpresaAddressUpdateForm = useForm<
-        EmpresaAddressUpdateDto & {
-            region: string;
-            ubigeo: string;
-        }
-    >({
-        defaultValues: {
-            ...empresa.state!.address,
-            region: empresa.state!.address.city.region.name,
-            ubigeo: empresa.state!.address.city.code,
-        },
-        resolver: valibotVigilio(EmpresaAddressUpdateDto),
-    });
-    const city_id = EmpresaAddressUpdateForm.watch("city_id");
-    const citysSelect = useMemo(() => {
-        if (citysIndexQuery.isSuccess && citysIndexQuery.data) {
-            return citysIndexQuery.data.data.map((value) => ({
-                key: value.id,
-                value: `${value.region.name} - ${value.name}`,
-            }));
-        }
-        return [];
-    }, [citysIndexQuery.data, citysIndexQuery.isSuccess]);
-    function onEmpresaAddressUpdate(
-        data: EmpresaAddressUpdateDto & {
-            region: string;
-            ubigeo: string;
-        }
-    ) {
-        const { ubigeo, region, ...rest } = data;
-        sweetModal({
-            title: "¿Estás seguro de editar la dirección?",
-            showCancelButton: true,
-            showCloseButton: true,
-        }).then(({ isConfirmed }) => {
-            if (isConfirmed) {
-                EmpresaAddressUpdateMutation.mutate(rest, {
-                    onSuccess(data) {
-                        sweetAlert({ icon: "success", title: data.message });
-                        window.location.reload();
-                    },
-                    onError(error) {
-                        handlerError(EmpresaAddressUpdateForm, error);
-                    },
-                });
-            }
-        });
-    }
+	const EmpresaAddressUpdateForm = useForm<
+		EmpresaAddressUpdateDto & {
+			region: string;
+			ubigeo: string;
+		}
+	>({
+		defaultValues: {
+			...empresa.state!.address,
+			region: empresa.state!.address.city.region.name,
+			ubigeo: empresa.state!.address.city.code,
+		},
+		resolver: valibotVigilio(EmpresaAddressUpdateDto),
+	});
+	const city_id = EmpresaAddressUpdateForm.watch("city_id");
+	const citysSelect = useMemo(() => {
+		if (citysIndexQuery.isSuccess && citysIndexQuery.data) {
+			return citysIndexQuery.data.data.map((value) => ({
+				key: value.id,
+				value: `${value.region.name} - ${value.name}`,
+			}));
+		}
+		return [];
+	}, [citysIndexQuery.data, citysIndexQuery.isSuccess]);
+	function onEmpresaAddressUpdate(
+		data: EmpresaAddressUpdateDto & {
+			region: string;
+			ubigeo: string;
+		},
+	) {
+		const { ubigeo, region, ...rest } = data;
+		sweetModal({
+			title: "¿Estás seguro de editar la dirección?",
+			showCancelButton: true,
+			showCloseButton: true,
+		}).then(({ isConfirmed }) => {
+			if (isConfirmed) {
+				EmpresaAddressUpdateMutation.mutate(rest, {
+					onSuccess(data) {
+						sweetAlert({ icon: "success", title: data.message });
+						window.location.reload();
+					},
+					onError(error) {
+						handlerError(EmpresaAddressUpdateForm, error);
+					},
+				});
+			}
+		});
+	}
 
-    useEffect(() => {
-        if (city_id) {
-            const distrito = citysIndexQuery.data?.data.find(
-                (dis) => dis.id === city_id
-            );
-            if (distrito) {
-                EmpresaAddressUpdateForm.setValue(
-                    "region",
-                    distrito.region.name
-                );
+	useEffect(() => {
+		if (city_id) {
+			const distrito = citysIndexQuery.data?.data.find(
+				(dis) => dis.id === city_id,
+			);
+			if (distrito) {
+				EmpresaAddressUpdateForm.setValue("region", distrito.region.name);
 
-                EmpresaAddressUpdateForm.setValue("ubigeo", distrito.code);
-            }
-        }
-    }, [city_id]);
-    return (
-        <Container className="p-2">
-            <div className="flex flex-col gap-4 mx-1 ">
-                <AdminBreadCrumb current="dirección" />
-            </div>
-            <div class="p-2">
-                <h3 class="dark:text-white lg:text-2xl  font-bold uppercase text-center flex gap-2  w-full mb-4">
-                    <i class="fas fa-map" />
-                    Dirección de la empresa
-                </h3>
-                <Form
-                    {...EmpresaAddressUpdateForm}
-                    onSubmit={onEmpresaAddressUpdate}
-                >
-                    <div class="w-full relative">
-                        <Form.control.selectInput
-                            title="Ciudad"
-                            array={citysSelect}
-                            placeholder="Escriba su ciudad"
-                            name={"city_id" as keyof EmpresaAddressUpdateDto}
-                            isLoading={citysIndexQuery.isLoading || false}
-                        />{" "}
-                        <Form.control
-                            title="Region"
-                            placeholder="XXXXXX"
-                            name={"region" as keyof EmpresaAddressUpdateDto}
-                            disabled
-                        />
-                    </div>
-                    <div class="flex gap-2 w-full">
-                        <Form.control
-                            title="Urbanización"
-                            placeholder=" XXXX XXX"
-                            name={
-                                "urbanizacion" as keyof EmpresaAddressUpdateDto
-                            }
-                        />
-                        <Form.control
-                            title="Ubigeo"
-                            placeholder="XXXXXX"
-                            name={"ubigeo" as keyof EmpresaAddressUpdateDto}
-                            disabled
-                        />
-                    </div>
+				EmpresaAddressUpdateForm.setValue("ubigeo", distrito.code);
+			}
+		}
+	}, [city_id]);
+	return (
+		<Container className="p-2">
+			<div className="flex flex-col gap-4 mx-1 ">
+				<AdminBreadCrumb current="dirección" />
+			</div>
+			<div class="p-2">
+				<h3 class="dark:text-white lg:text-2xl  font-bold uppercase text-center flex gap-2  w-full mb-4">
+					<i class="fas fa-map" />
+					Dirección de la empresa
+				</h3>
+				<Form {...EmpresaAddressUpdateForm} onSubmit={onEmpresaAddressUpdate}>
+					<div class="w-full relative">
+						<Form.control.selectInput
+							title="Ciudad"
+							array={citysSelect}
+							placeholder="Escriba su ciudad"
+							name={"city_id" as keyof EmpresaAddressUpdateDto}
+							isLoading={citysIndexQuery.isLoading || false}
+						/>{" "}
+						<Form.control
+							title="Region"
+							placeholder="XXXXXX"
+							name={"region" as keyof EmpresaAddressUpdateDto}
+							disabled
+						/>
+					</div>
+					<div class="flex gap-2 w-full">
+						<Form.control
+							title="Urbanización"
+							placeholder=" XXXX XXX"
+							name={"urbanizacion" as keyof EmpresaAddressUpdateDto}
+						/>
+						<Form.control
+							title="Ubigeo"
+							placeholder="XXXXXX"
+							name={"ubigeo" as keyof EmpresaAddressUpdateDto}
+							disabled
+						/>
+					</div>
 
-                    <Form.control
-                        title="Direccion"
-                        placeholder="XXXXXX"
-                        name={"direccion" as keyof EmpresaAddressUpdateDto}
-                    />
-                    <Form.control
-                        title="Codigo de Local"
-                        placeholder="XXXXXX"
-                        name={"codLocal" as keyof EmpresaAddressUpdateDto}
-                        question="ejm: 0000"
-                    />
-                    <Form.button.submit
-                        title="Actualizar"
-                        ico={null}
-                        disabled={
-                            EmpresaAddressUpdateMutation.isLoading || false
-                        }
-                        isLoading={
-                            EmpresaAddressUpdateMutation.isLoading || false
-                        }
-                    />
-                </Form>
-            </div>
-        </Container>
-    );
+					<Form.control
+						title="Direccion"
+						placeholder="XXXXXX"
+						name={"direccion" as keyof EmpresaAddressUpdateDto}
+					/>
+					<Form.control
+						title="Codigo de Local"
+						placeholder="XXXXXX"
+						name={"codLocal" as keyof EmpresaAddressUpdateDto}
+						question="ejm: 0000"
+					/>
+					<Form.button.submit
+						title="Actualizar"
+						ico={null}
+						disabled={EmpresaAddressUpdateMutation.isLoading || false}
+						isLoading={EmpresaAddressUpdateMutation.isLoading || false}
+					/>
+				</Form>
+			</div>
+		</Container>
+	);
 }
 
 export default EmpresaAddressUpdate;

@@ -4,7 +4,7 @@ import { randomNumber } from "~/libs/helpers";
 import useSocketStore from "~/stores/socket.store";
 const minutes30 = 30 * 60 * 1000; // cada 30 minutos
 function UsersCount() {
-	const { io } = useSocketStore();
+	const { io, connectSocket } = useSocketStore();
 	const usersCount = useSignal(0);
 
 	useEffect(() => {
@@ -13,6 +13,10 @@ function UsersCount() {
 		});
 		return () => io?.off("users-count:index");
 	}, [io]);
+
+	useEffect(() => {
+		connectSocket();
+	}, []);
 
 	// ficticio de clientes para que el cliente no se enoje
 	useEffect(() => {

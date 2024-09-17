@@ -14,9 +14,10 @@ import { chatAssistant, cloudeAi, isWhatsappIA } from "@/bot/libs/ai";
 import { Injectable } from "@vigilio/express-core";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import { promptAssitant } from "@/bot/libs/prompt";
+import cron from "node-cron";
 export let chatAssistantWeb: Record<string, ["user" | "assistant", string][]> =
 	{};
-let usersInWeb: Record<string, string[]> = {};
+export let usersInWeb: Record<string, string[]> = {};
 async function cloudeAiWeb(emp: string, token: string, message: string) {
 	try {
 		const whatsapp = await isWhatsappIA(emp);
@@ -40,7 +41,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
 
 		const completion = await openAis[empresa.slug].chat.completions.create({
 			model: clientVigilio ? clientVigilio.information.modelai : "gpt-4o-mini",
-			max_tokens: 300,
+			max_tokens: empresa.inteligenceArtificial.max_length,
 			messages: [
 				{
 					role: "user",
@@ -115,7 +116,6 @@ export class WebsocketsController {
 		// token localstorage
 		const token = (socket.handshake.query?.["x-token"] as string) ?? "null";
 		const empresa = (socket.handshake.query?.["x-empresa"] as string) ?? "null";
-
 		if (token === "null" || empresa === "null") return;
 		socket.join(token);
 		if (!(chatAssistantWeb[`${empresa}:${token}`] ?? []).length) {
@@ -161,9 +161,10 @@ export class WebsocketsController {
 				chatAssistant[`${empresa}:${user.id}`],
 			);
 		}
-		const existUserInWeb = (usersInWeb[empresa] ?? []).find(
-			(user) => user === token,
-		);
+		const existUserInWeb = (usersInWeb[empresa] ?? []).find((tk) => {
+			return tk === token;
+		});
+
 		if (!existUserInWeb) {
 			// si no existe usuari con el mismo token que ya no agregre
 			usersInWeb = {
@@ -172,7 +173,7 @@ export class WebsocketsController {
 			}; // add user
 		}
 
-		io.emit("users-count:index", usersInWeb.length);
+		io.emit("users-count:index", usersInWeb[empresa].length);
 	}
 
 	@Event("notifications:order-store")
@@ -243,3 +244,7 @@ export class WebsocketsController {
 		}
 	}
 }
+// cada 24 horas
+cron.schedule("0 0 * * *", () => {
+	chatAssistantWeb = {};
+});

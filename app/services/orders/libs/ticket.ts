@@ -7,7 +7,7 @@ import type { Invoices } from "../entities/invoices.entity";
 import type { Address } from "@/empresas/entities/address.entity";
 import { detailInvoice } from ".";
 import fs from "node:fs";
-import { pathUploads } from "@/uploads/libs/helpers";
+import { pathUploads, printFileWithDimension } from "@/uploads/libs/helpers";
 import { MONEYDOLARES } from "~/libs/helpers";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
 import type { Users } from "@/users/entities/users.entity";
@@ -103,7 +103,11 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                             <span>
                                             ${
 																							empresa.logo
-																								? `<img src="data:image/png;base64,${image}" height="80" style="text-align:center;" border="0">`
+																								? `<img src="${
+																										printFileWithDimension(
+																											empresa,
+																										)(empresa.logo, 100)[0]
+																									}" height="80" style="text-align:center;" border="0">`
 																								: `<span style="font-size:4rem;font-weight:bolder;">${
 																										empresa.company
 																											? empresa.company

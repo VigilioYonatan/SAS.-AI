@@ -1,33 +1,33 @@
 import { SettingsSchemaFromServer } from "@/empresas/schemas/settings.schema";
 import {
-    type UseQuery,
-    useQuery,
-    type OptionsQuery,
+	type UseQuery,
+	useQuery,
+	type OptionsQuery,
 } from "@vigilio/preact-fetching";
 
 export type SettingsIndexApiMethod = UseQuery<SettingsIndexAPI, unknown>;
 
 export function settingsIndexApi(
-    options?: OptionsQuery<SettingsIndexAPI, unknown>
+	options?: OptionsQuery<SettingsIndexAPI, unknown>,
 ): SettingsIndexApiMethod {
-    return useQuery(
-        "/settings",
-        async (url) => {
-            const response = await fetch(`/api${url}`);
-            const result: SettingsIndexAPI = await response.json();
-            if (!result.success) throw result;
-            return result;
-        },
-        options
-    );
+	return useQuery(
+		"/settings",
+		async (url) => {
+			const response = await fetch(`/api${url}`);
+			const result: SettingsIndexAPI = await response.json();
+			if (!result.success) throw result;
+			return result;
+		},
+		options,
+	);
 }
 
 export interface SettingsIndexAPI {
-    success: boolean;
-    data: SettingsSchemaFromServer;
+	success: boolean;
+	data: SettingsSchemaFromServer;
 }
 
 export interface Logo {
-    dimension: number;
-    file: string;
+	dimension: number;
+	file: string;
 }

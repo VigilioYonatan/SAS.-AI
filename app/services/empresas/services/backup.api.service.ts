@@ -6,6 +6,7 @@ import dayjs from "~/libs/dayjs";
 import type { Empresas } from "../entities/empresas.entity";
 import { Clients } from "@/users/entities/clients.entity";
 import { Users } from "@/users/entities/users.entity";
+import XLSXSTYLE from "xlsx-style";
 import XLSX from "xlsx";
 import { terminal } from "~/libs/helpers";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
@@ -54,69 +55,156 @@ export class BackupApiService {
 
 	async downloadProducts(empresa: Empresas) {
 		try {
-			const [products, restaurant, servicios] = await Promise.all([
-				ProductsNormal.findAll({
-					where: {
-						empresa_id: empresa.id,
-					},
-				}),
-				ProductsRestaurant.findAll({
-					where: {
-						empresa_id: empresa.id,
-					},
-				}),
-				ProductsServicio.findAll({
-					where: {
-						empresa_id: empresa.id,
-					},
-				}),
-			]);
-
-			const clients = await Clients.findAll({
-				where: { empresa_id: empresa.id },
-			});
-
-			const users = await Users.findAll({
-				where: { empresa_id: empresa.id },
-				attributes: { exclude: ["password"] },
-			});
-
-			const workbook = XLSX.utils.book_new();
-
-			const productsSheet = XLSX.utils.json_to_sheet(
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				products.map((p: any) => p.toJSON()),
-			);
-			const serviciosSheet = XLSX.utils.json_to_sheet(
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				servicios.map((p: any) => p.toJSON()),
-			);
-			const restaurantSheet = XLSX.utils.json_to_sheet(
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				restaurant.map((p: any) => p.toJSON()),
-			);
-			const clientsSheet = XLSX.utils.json_to_sheet(
-				clients.map((c) => c.toJSON()),
-			);
-			const usersSheet = XLSX.utils.json_to_sheet(users.map((u) => u.toJSON()));
-			if (
-				empresa.tipo_empresa.tipo_servicio_id === 1 ||
-				empresa.tipo_empresa.tipo_servicio_id === 3
+			const [products, restaurant, servicios, usuarios, clients] =
+				await Promise.all([
+					ProductsNormal.findAll({
+						where: {
+							empresa_id: empresa.id,
+						},
+					}),
+					ProductsRestaurant.findAll({
+						where: {
+							empresa_id: empresa.id,
+						},
+					}),
+					ProductsServicio.findAll({
+						where: {
+							empresa_id: empresa.id,
+						},
+					}),
+					Users.findAll({
+						where: { empresa_id: empresa.id },
+						attributes: [
+							"user_code",
+							"username",
+							"name",
+							"lastname",
+							"email",
+							"address",
+							"telephone",
+							"speciality",
+							"enabled",
+							"birthday",
+							"empresa_id",
+							"createdAt",
+						],
+					}),
+					Clients.findAll({
+						where: { empresa_id: empresa.id },
+					}),
+				]);
+			const wb = XLSX.utils.book_new();
+			function dynamicStyle(
+				key: string,
+				headers: string[],
+				values: string[][],
 			) {
-				XLSX.utils.book_append_sheet(workbook, productsSheet, "Productos");
-			}
+				const ws_data = [
+					[
+						`${key}  (${values.length} UND)`,
+						Array.from({ length: headers.length - 1 }).map(() => ""),
+					],
+					[],
+					headers, // Encabezados
+					...values, // Datos
+				];
+				const ws = XLSX.utils.aoa_to_sheet(ws_data);
 
-			if (empresa.tipo_empresa.tipo_servicio_id === 2) {
-				XLSX.utils.book_append_sheet(workbook, restaurantSheet, "Productos");
-			}
-			if (empresa.tipo_empresa.tipo_servicio_id === 3) {
-				XLSX.utils.book_append_sheet(workbook, serviciosSheet, "Servicios");
-			}
-			XLSX.utils.book_append_sheet(workbook, clientsSheet, "Clientes");
-			XLSX.utils.book_append_sheet(workbook, usersSheet, "Usuarios");
+				const abecedarios = Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+				// Aplica estilos al título
+				ws.A1.s = {
+					font: { bold: true, sz: 14, color: { rgb: "000000" } },
+					alignment: { horizontal: "center" },
+					fill: {
+						fgColor: { rgb: "FFFFFF" }, // Color de fondo para el título
+					},
+				};
+				// Fusionar celdas A1:G1 para el título
+				ws["!merges"] = [
+					{ s: { r: 0, c: 0 }, e: { r: 0, c: headers.length - 1 } },
+				];
+				headers.forEach((_, i) => {
+					ws[`${abecedarios[i as keyof typeof abecedarios]}3`].s = {
+						font: { bold: true, color: { rgb: "FFFFFF" } },
+						fill: {
+							fgColor: {
+								rgb: empresa.setting.bg_color.startsWith("#")
+									? empresa.setting.bg_color.replace("#", "").toUpperCase()
+									: empresa.setting.bg_color.toUpperCase(),
+							},
+						},
+					};
+				});
 
-			// Escribir los datos del libro a un buffer
-			const excelBuffer = XLSX.write(workbook, {
+				XLSX.utils.book_append_sheet(wb, ws, key);
+			}
+			if (products.length) {
+				dynamicStyle(
+					"Productos",
+					[
+						"id",
+						"CODIGO",
+						"NOMBRE",
+						"PRECIO",
+						"DESCUENTO",
+						"URL",
+						"",
+						"DISPONIBLE",
+						"CATEGORIA",
+						"MARCA",
+						"REGISTRADO",
+					],
+					products.map((prod, i) => [
+						`${i + 1}`,
+						prod.product_code,
+						prod.name,
+						prod.price.toFixed(2),
+						prod.discount.toString(),
+						prod.url,
+						prod.enabled ? "✔" : "❌",
+						prod.category_id.toString(),
+						prod.brand_id ? prod.brand_id.toString() : "❌",
+						dayjs(prod.createdAt).format("DD-MM-YYYY") || "",
+					]),
+				);
+			}
+			dynamicStyle(
+				"Usuarios",
+				[
+					"ID",
+					"CODIGO",
+					"USUARIO",
+					"NOMBRE",
+					"APELLIDOS",
+					"CORREO",
+					"DIRECCION",
+					"TELEFONO",
+					"ESPECIALIDAD",
+					"DISPONIBLE",
+					"NACIMIENTO",
+					"REGISTRADO",
+				],
+				usuarios.map((usuario, i) => [
+					`${i + 1}`,
+					usuario.user_code,
+					usuario.username || "",
+					usuario.name || "",
+					usuario.lastname || "",
+					usuario.email || "",
+					usuario.address || "",
+					`+${empresa.dial_code} ${usuario.telephone}` || "",
+					usuario.speciality || "",
+					usuario.enabled ? "✔" : "❌",
+					dayjs(usuario.birthday).format("DD-MM-YYYY") || "",
+					dayjs(usuario.createdAt).format("DD-MM-YYYY") || "",
+				]),
+			);
+			dynamicStyle(
+				"Clientes",
+				["ID", "TELEFONO"],
+				clients.map((client, i) => [`${i + 1}`, client.telephone]),
+			);
+			const excelBuffer = XLSXSTYLE.write(wb, {
 				bookType: "xlsx",
 				type: "buffer",
 			});
