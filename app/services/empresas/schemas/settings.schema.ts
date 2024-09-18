@@ -41,7 +41,7 @@ export const settingsSchema = objectAsync({
 	isCoverImage: boolean(),
 	icon: nullable(array(filesSchema([100, 300]))), //obligatorio
 	photo: nullable(array(filesSchema())),
-
+	isScrolling: boolean(),
 	empresa_id: number(),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;

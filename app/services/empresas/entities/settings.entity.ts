@@ -39,6 +39,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
 
 	@Column({
 		type: DataType.BOOLEAN,
+	})
+	isScrolling: boolean;
+
+	@Column({
+		type: DataType.BOOLEAN,
 		defaultValue: null,
 		allowNull: true,
 	})

@@ -170,7 +170,7 @@ export const payments: Record<Pay, string[]> = {
 		"Gestión de órdenes o pedidos.",
 		"Automatización de Respuestas y tareas.",
 		"Reconocimiento de Voz Whatsapp.",
-		"15 millones de tokens para el uso de la Inteligencia Artificial mensualmente GRATIS",
+		"10 millones de tokens para el uso de la Inteligencia Artificial mensualmente GRATIS",
 		"Soporte, mantenimiento y mucho más..",
 	].filter(Boolean) as string[],
 	facturacion: [

@@ -293,13 +293,13 @@ export class PaginatorApiServices {
 						limit: limitConverted,
 						order: Object.entries(orders),
 						where: {
-							...sorteByTime(time),
+							...sorteByTime(empresa, time),
 							empresa_id: empresa.id,
 						},
 					}),
 					Orders.count({
 						where: {
-							...sorteByTime(time),
+							...sorteByTime(empresa, time),
 							empresa_id: empresa.id,
 						},
 					}),
@@ -325,14 +325,14 @@ export class PaginatorApiServices {
 						where: {
 							isDelivery: false,
 							empresa_id: empresa.id,
-							...sorteByTime(time),
+							...sorteByTime(empresa, time),
 						},
 					}),
 					Orders.count({
 						where: {
 							isDelivery: false,
 							empresa_id: empresa.id,
-							...sorteByTime(time),
+							...sorteByTime(empresa, time),
 						},
 					}),
 				]);
@@ -356,14 +356,14 @@ export class PaginatorApiServices {
 						where: {
 							isDelivery: true,
 							empresa_id: empresa.id,
-							...sorteByTime(time),
+							...sorteByTime(empresa, time),
 						},
 					}),
 					Orders.count({
 						where: {
 							isDelivery: true,
 							empresa_id: empresa.id,
-							...sorteByTime(time),
+							...sorteByTime(empresa, time),
 						},
 					}),
 				]);
@@ -387,14 +387,14 @@ export class PaginatorApiServices {
 						where: {
 							user_id: user.id,
 							empresa_id: empresa.id,
-							...sorteByTime(time),
+							...sorteByTime(empresa, time),
 						},
 					}),
 					Orders.count({
 						where: {
 							user_id: user.id,
 							empresa_id: empresa.id,
-							...sorteByTime(time),
+							...sorteByTime(empresa, time),
 						},
 					}),
 				]);
@@ -425,7 +425,7 @@ export class PaginatorApiServices {
 											where: {
 												kind_invoice_code: kind_invoice_code ?? "01", //facturas
 											},
-											...sorteByTime(time),
+											...sorteByTime(empresa, time),
 										},
 									],
 									order: Object.entries(invoices),
@@ -440,7 +440,7 @@ export class PaginatorApiServices {
 											where: {
 												kind_invoice_code: kind_invoice_code ?? "01", //facturas
 											},
-											...sorteByTime(time),
+											...sorteByTime(empresa, time),
 										},
 									],
 									where: {
@@ -458,7 +458,7 @@ export class PaginatorApiServices {
 											where: {
 												kind_invoice_code: kind_invoice_code ?? "07", //nota
 											},
-											...sorteByTime(time),
+											...sorteByTime(empresa, time),
 										},
 									],
 									order: Object.entries(invoices),
@@ -473,7 +473,7 @@ export class PaginatorApiServices {
 											where: {
 												kind_invoice_code: kind_invoice_code ?? "07", //nota
 											},
-											...sorteByTime(time),
+											...sorteByTime(empresa, time),
 										},
 									],
 									where: {
@@ -503,7 +503,7 @@ export class PaginatorApiServices {
 						where: {
 							coupon: {
 								[Op.iLike]: searchLowerCase,
-								...sorteByTime(time),
+								...sorteByTime(empresa, time),
 							},
 							empresa_id: empresa.id,
 						},
@@ -512,7 +512,7 @@ export class PaginatorApiServices {
 						where: {
 							coupon: {
 								[Op.iLike]: searchLowerCase,
-								...sorteByTime(time),
+								...sorteByTime(empresa, time),
 							},
 							empresa_id: empresa.id,
 						},

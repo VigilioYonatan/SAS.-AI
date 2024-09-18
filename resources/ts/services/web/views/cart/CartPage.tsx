@@ -7,12 +7,7 @@ import { sweetModal } from "@vigilio/sweet";
 import Form from "~/components/form";
 import { isValidDni, isValidRUC } from "@/orders/libs";
 import { type OrdersCartStoreDto } from "@/orders/dtos/orders-cart.dto";
-import {
-	mastercardImage,
-	NoImage,
-	visaImage,
-	yapeImage,
-} from "~/config/settings";
+import { NoImage } from "~/config/settings";
 import { ordersStoreApi } from "@/orders/apis/orders.store.api";
 import { reactComponent } from "~/libs/preact";
 import useCartStore from "@/cart/stores/cart.store";
@@ -32,6 +27,7 @@ import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 import { citiesIndexApi } from "@/ubigeo/apis/citites.api.index";
 import LoaderSubmit from "~/components/LoaderSubmit";
+import { MetodosDePago } from "@/web/components/product/ProductView";
 interface CartProps {
 	cart: { id: number; quantity: number; variant_id: number }[] | null;
 	header: HeaderType;
@@ -352,6 +348,14 @@ function CartPage({ cart, header }: CartProps) {
 										</span>
 									</>
 								) : null}
+								{storageEmpresa?.enabled_igv ? (
+									<div class="flex items-center justify-between h-max">
+										<span class="dark:text-white font-bold text-base lg:text-xl " />
+										<span class="font-bold dark:text-gray-400 text-gray-600 text-xs ">
+											{storageEmpresa?.tipo_impuesto} Incluido
+										</span>
+									</div>
+								) : null}
 
 								<div class="flex items-center justify-between  text-xl font-medium h-max">
 									<span class="dark:text-white font-bold text-base lg:text-xl ">
@@ -368,6 +372,25 @@ function CartPage({ cart, header }: CartProps) {
 								{...ordersCartStoreDtoForm}
 								onSubmit={onCartOrderStore}
 							>
+								<div class="w-full flex gap-2 items-center">
+									<Form.control.web
+										name={"telephone" as keyof OrdersCartStoreDto}
+										title="Numero de celular"
+										type="tel"
+										ico={
+											<span class="font-bold">
+												+{storageEmpresa?.dial_code}
+											</span>
+										}
+										question={
+											<span>
+												Este campo no es obligatorio. <br />
+												Se te enviará comprobante de pago a whatsapp.
+											</span>
+										}
+									/>
+									{clientsShowQuery.isLoading ? <LoaderSubmit /> : null}
+								</div>
 								{empresa.state!.enable_sell_country ? (
 									<Form.control.web.selectInput
 										ico={<i class="fas fa-map" />}
@@ -375,6 +398,7 @@ function CartPage({ cart, header }: CartProps) {
 										array={citysSelect}
 										placeholder="Escriba su ciudad"
 										name={"city_id" as keyof OrdersCartStoreDto}
+										disabled={clientsShowQuery.isLoading || false}
 										isLoading={citysIndexQuery.isLoading || false}
 									/>
 								) : (
@@ -384,6 +408,7 @@ function CartPage({ cart, header }: CartProps) {
 									ico={<i class="fas fa-map-marker-alt" />}
 									name={"address" as keyof OrdersCartStoreDto}
 									title="Dirección"
+									disabled={clientsShowQuery.isLoading || false}
 									placeholder="MZ XXXXXXX"
 								/>
 								{empresa.state!.enable_map_marker ? (
@@ -397,6 +422,7 @@ function CartPage({ cart, header }: CartProps) {
 												zIndex: 0,
 											}}
 											isLocal
+											disabled={clientsShowQuery.isLoading || false}
 											question="Para encontrarte mejor, por favor indícanos tu ubicación."
 										/>
 										<span class="text-[10px] dark:text-white">
@@ -460,37 +486,14 @@ function CartPage({ cart, header }: CartProps) {
 										</>
 									) : null}
 								</>
-								<div class="w-full flex gap-2 items-center">
-									<Form.control.web
-										name={"telephone" as keyof OrdersCartStoreDto}
-										title="Numero de celular"
-										type="tel"
-										ico={
-											<span class="font-bold">
-												+{storageEmpresa?.dial_code}
-											</span>
-										}
-										question={
-											<span>
-												Este campo no es obligatorio. <br />
-												Se te enviará comprobante de pago a whatsapp.
-											</span>
-										}
-									/>
-									{clientsShowQuery.isLoading ? <LoaderSubmit /> : null}
-								</div>
-								{ordersCartStoreDtoForm.watch("telephone") &&
-								!ordersCartStoreDtoForm.formState.errors.telephone?.message ? (
-									<Form.control.web
-										name={"fullName" as keyof OrdersCartStoreDto}
-										title="Nombre Completo"
-										ico={<i class="fas fa-user" />}
-										placeholder=""
-										disabled={clientsShowQuery.isLoading || false}
-									/>
-								) : (
-									<></>
-								)}
+
+								<Form.control.web
+									name={"fullName" as keyof OrdersCartStoreDto}
+									title="Nombre Completo"
+									ico={<i class="fas fa-user" />}
+									placeholder=""
+									disabled={clientsShowQuery.isLoading || false}
+								/>
 								<span class="text-sm dark:text-white mt-3">
 									Sus datos personales se utilizarán para procesar su pedido,
 									respaldar su experiencia en este sitio web y para otros fines
@@ -515,13 +518,17 @@ function CartPage({ cart, header }: CartProps) {
 									}
 									isLoading={ordersStoreApiMutation.isLoading || false}
 								/>
-								<ul class="flex flex-col gap-2 w-full bg-orange-100 px-2 py-1 rounded-lg mt-3">
-									<li class="flex justify-between items-center">
-										<span class="text-sm font-bold dark:text-paper-dark">
-											Realiza un pedido en efectivo
-										</span>
-										<span class="text-sm font-bold">ó</span>
-										<PaymentsPasarela />
+								<ul class="flex flex-col gap-2 w-full bg-orange-100 px-2 py-5 rounded-lg mt-3">
+									<li class="flex justify-between items-center flex-col overflow-auto">
+										{storageEmpresa?.metodos_pago.enable_efectivo ? (
+											<>
+												<span class="text-sm font-bold dark:text-paper-dark">
+													Realiza un pedido en efectivo
+												</span>
+												<span class="text-sm font-bold">ó</span>
+											</>
+										) : null}
+										<MetodosDePago isEfectivo={false} />
 									</li>
 								</ul>
 							</Form>
@@ -535,16 +542,6 @@ function CartPage({ cart, header }: CartProps) {
                 }
             `}</style>
 		</WebLayout>
-	);
-}
-
-function PaymentsPasarela() {
-	return (
-		<div class="flex items-center gap-1">
-			<img width={30} height={25} src={yapeImage()} alt="" />
-			<img width={30} height={30} src={visaImage()} alt="" />
-			<img width={30} height={30} src={mastercardImage()} alt="" />
-		</div>
 	);
 }
 

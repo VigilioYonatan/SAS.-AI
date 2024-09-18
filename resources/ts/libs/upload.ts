@@ -44,7 +44,7 @@ export async function getFilesEdit(
 			try {
 				return await fetch(
 					file.file?.startsWith("https://")
-						? file.file!
+						? `/proxy?url=${file.file!}`
 						: `${BASE_URL}/empresas/${storageEmpresa?.slug}/${file.file}`,
 				);
 			} catch (error) {

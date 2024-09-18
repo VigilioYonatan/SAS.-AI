@@ -147,6 +147,7 @@ function PostsUpdate({ id, onClose, refetch }: PostUpdateProps) {
 						title="Image de empresa"
 						accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
 						typeFile="image"
+						showButonCopy
 					/>
 					<div class="flex justify-center">
 						<Form.button.submit

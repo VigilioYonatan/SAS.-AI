@@ -76,7 +76,9 @@ function AdminCart() {
 		[floorMesasQuery],
 	);
 	useEffect(() => {
-		ordersStoreDtoForm.unregister("mesa_id");
+		if (storageEmpresa!.tipo_empresa.tipo_servicio_id === 2) {
+			ordersStoreDtoForm.unregister("mesa_id");
+		}
 		if (floorId) {
 			floorMesasQuery.mutate(floorId);
 		}
@@ -228,39 +230,47 @@ function AdminCart() {
 					onSubmit={onOrder}
 					{...ordersStoreDtoForm}
 				>
-					<button
-						class=" dark:text-white flex justify-center w-full border-t  py-2"
-						type="button"
-						aria-label="to hidden"
-						onClick={() => {
-							isOpen.value = !isOpen.value;
-						}}
-					>
-						<i class="fas fa-bars" />
-					</button>
-					<Form.control.select
-						title="Piso"
-						name={"floor_id" as keyof OrdersStoreDto}
-						placeholder="Seleccionar Piso"
-						array={arrayFloors}
-						options={{
-							setValueAs: (value) => (Number(value) > 0 ? Number(value) : null),
-						}}
-					/>
-					{floorId ? (
-						<Form.control.select
-							title="Mesa"
-							name={"mesa_id" as keyof OrdersStoreDto}
-							placeholder="Seleccionar Mesa"
-							array={arrayMesas}
-							options={{
-								setValueAs: (value) =>
-									Number(value) > 0 ? Number(value) : null,
-							}}
-						/>
+					{storageEmpresa?.tipo_empresa.tipo_servicio_id === 2 ? (
+						<>
+							<button
+								class=" dark:text-white flex justify-center w-full border-t  py-2"
+								type="button"
+								aria-label="to hidden"
+								onClick={() => {
+									isOpen.value = !isOpen.value;
+								}}
+							>
+								<i class="fas fa-bars" />
+							</button>
+							<Form.control.select
+								title="Piso"
+								name={"floor_id" as keyof OrdersStoreDto}
+								placeholder="Seleccionar Piso"
+								array={arrayFloors}
+								options={{
+									setValueAs: (value) =>
+										Number(value) > 0 ? Number(value) : null,
+								}}
+							/>
+							{floorId ? (
+								<Form.control.select
+									title="Mesa"
+									name={"mesa_id" as keyof OrdersStoreDto}
+									placeholder="Seleccionar Mesa"
+									array={arrayMesas}
+									options={{
+										setValueAs: (value) =>
+											Number(value) > 0 ? Number(value) : null,
+									}}
+								/>
+							) : (
+								<></>
+							)}
+						</>
 					) : (
 						<></>
 					)}
+
 					<hr class="border-dashed border-2 mb-2" />
 					<span class="w-full justify-between mb-2 text-primary dark:text-white  gap-2 flex ">
 						<span>Total:</span>

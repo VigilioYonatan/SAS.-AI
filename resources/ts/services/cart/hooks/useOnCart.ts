@@ -22,6 +22,7 @@ import {
 import { useSignal } from "@preact/signals";
 import { clientsShowApi } from "@/users/apis/clients.show.api";
 import { citiesIndexApi } from "@/ubigeo/apis/citites.api.index";
+import { useDebounce } from "@vigilio/preact-paginator";
 
 function useOnCart() {
 	const authStore = useAuthStore();
@@ -68,6 +69,7 @@ function useOnCart() {
 	);
 	const citiesIndexQuery = citiesIndexApi();
 	const clientsShowQuery = clientsShowApi();
+	const telephoneDebounce = useDebounce(telephone);
 
 	const citiesSelect = useMemo(() => {
 		if (citiesIndexQuery.isSuccess && citiesIndexQuery.data) {
@@ -231,11 +233,24 @@ function useOnCart() {
 			clientsShowQuery.mutate(telephone, {
 				onSuccess(data) {
 					ordersCartStoreDtoForm.setValue("fullName", data.client.fullname);
+					if (data.client.city_id) {
+						ordersCartStoreDtoForm.setValue("city_id", data.client.city_id);
+					}
+
+					if (data.client.address) {
+						ordersCartStoreDtoForm.setValue("address", data.client.address);
+					}
+					if (data.client.map_marker) {
+						ordersCartStoreDtoForm.setValue(
+							"map_marker",
+							data.client.map_marker,
+						);
+					}
 				},
 				onError() {},
 			});
 		}
-	}, [telephone]);
+	}, [telephoneDebounce]);
 
 	return {
 		ordersCartStoreDtoForm,

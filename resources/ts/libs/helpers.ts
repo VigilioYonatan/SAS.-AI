@@ -4,8 +4,9 @@ import "dayjs/locale/es";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import type { Path, UseFormReturn } from "react-hook-form";
-import { c, sweetModal } from "@vigilio/sweet";
+import { c, sweetAlert, sweetModal } from "@vigilio/sweet";
 import duration from "dayjs/plugin/duration";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 dayjs.extend(relativeTime);
 dayjs.locale("es");
@@ -14,11 +15,11 @@ dayjs.extend(utc);
 dayjs.extend(duration);
 
 export function NOW() {
-	return dayjs().tz("America/Lima").utc(true);
+	return dayjs().tz(storageEmpresa!.tz).utc(true);
 }
 
 export function TimePeru(date: Date | string | number | dayjs.Dayjs) {
-	return dayjs(date).tz("America/Lima").utc(true);
+	return dayjs(date).tz(storageEmpresa!.tz).utc(true);
 }
 export function restarDays(
 	now: Date | string | number | dayjs.Dayjs,
@@ -32,7 +33,7 @@ export function formatDateTwo(
 	date: string | Date | number,
 	format = "DD-MM-YYYY",
 ): string | Date {
-	return dayjs(date).tz("America/Lima").utc(true).format(format);
+	return dayjs(date).tz(storageEmpresa!.tz).utc(true).format(format);
 }
 export function delay(seg = 1) {
 	return new Promise((res, _rej) => {
@@ -44,7 +45,7 @@ export function delay(seg = 1) {
 
 /*****    convert time - example: hace 25 minutos *****/
 export function showTime(date: Date | number | string | dayjs.Dayjs) {
-	return NOW().to(dayjs(date).tz("America/Lima").utc(true));
+	return NOW().to(dayjs(date).tz(storageEmpresa!.tz).utc(true));
 }
 
 // handle error
@@ -96,6 +97,21 @@ export function onDownload(url: string, name: string | null = null) {
 		a.setAttribute("download", name);
 	}
 	a.click();
+}
+export async function onDownloadImage(
+	imageurl: string,
+	name: string | null = null,
+) {
+	const response = await fetch(`/proxy?url=${imageurl}`);
+	const blob = await response.blob();
+	const url = URL.createObjectURL(blob);
+	const a = c("a") as HTMLLinkElement;
+	a.href = url;
+	if (name) {
+		a.setAttribute("download", name);
+	}
+	a.click();
+	URL.revokeObjectURL(url);
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -164,5 +180,38 @@ export function removeTextHTML(value: string) {
 
 export function formatTelephoneNumber(telephone: string) {
 	return telephone.replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3");
+}
+export async function onPageImage<T extends object>(
+	form: UseFormReturn<T>,
+	key: keyof T,
+) {
+	const text = await navigator.clipboard.readText();
+	if (!text.startsWith("http")) {
+		sweetAlert({
+			icon: "info",
+			title:
+				"Buscar y copiar <i class='far fa-copy'></i> imagen en  <i class='fas fa-cogs'></i>",
+		});
+		return;
+	}
+	try {
+		const response = await fetch(`/proxy?url=${text}`);
+		const blob = await response.blob(); // Convertir a blob
+		const file = new File([blob], text, { type: "image/webp" });
+		form.setValue(
+			key as unknown as Path<T>,
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			[...(form.watch(key as unknown as Path<T>) ?? []), file] as any,
+		);
+		sweetAlert({
+			icon: "success",
+			title: "Imagen Agregado correctamente",
+		});
+	} catch (error) {
+		sweetAlert({
+			icon: "danger",
+			title: "Error imagen",
+		});
+	}
 }
 export default dayjs;

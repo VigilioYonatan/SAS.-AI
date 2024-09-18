@@ -9,6 +9,8 @@ import type {
 	RegisterOptions,
 	UseFormReturn,
 } from "react-hook-form";
+import { onPageImage } from "~/libs/helpers";
+import LoaderSubmit from "../LoaderSubmit";
 interface FormFileProps<T extends object> {
 	title: string;
 	name: keyof T;
@@ -17,6 +19,7 @@ interface FormFileProps<T extends object> {
 	typeFile?: "image" | "file" | "video" | { value: string };
 	typesText?: string;
 	options?: RegisterOptions<T, Path<T>>;
+	showButonCopy?: boolean;
 }
 function FormFile<T extends object>({
 	multiple = false,
@@ -26,12 +29,13 @@ function FormFile<T extends object>({
 	name,
 	title,
 	options,
+	showButonCopy = false,
 }: FormFileProps<T>) {
 	const form =
 		useContext<UseFormReturn<T, unknown, FieldValues>>(FormControlContext);
 	const isDrag = useSignal<boolean>(false);
 	const files = form.watch(name as unknown as Path<T>);
-
+	const isLoading = useSignal(false);
 	const onChange = useCallback(
 		(droppedFiles: FileList) => {
 			const value = multiple
@@ -160,12 +164,30 @@ function FormFile<T extends object>({
 	const nameCustom = `${name as string}${Date.now().toString(32).slice(4)}`;
 	return (
 		<div class="w-full lg:mb-2">
-			<label
-				class="text-xs dark:text-secondary-light text-secondary-dark capitalize font-semibold"
-				htmlFor={nameCustom}
-			>
-				{title}
-			</label>
+			<p>
+				<label
+					class="text-xs dark:text-secondary-light text-secondary-dark capitalize font-semibold"
+					htmlFor={nameCustom}
+				>
+					{title}{" "}
+				</label>{" "}
+				{showButonCopy ? (
+					<button
+						type="button"
+						aria-label="oncopy"
+						class="ml-2 text-white bg-primary px-2 py-1 rounded-md shadow relative"
+						onClick={async () => {
+							isLoading.value = true;
+							// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+							await onPageImage(form as any, name);
+							isLoading.value = false;
+						}}
+					>
+						{isLoading.value ? <LoaderSubmit /> : <i class="fas fa-images" />}
+					</button>
+				) : null}
+			</p>
+
 			<input
 				id={nameCustom as string}
 				hidden={true}

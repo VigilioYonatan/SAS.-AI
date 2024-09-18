@@ -1,4 +1,4 @@
-import { sweetModal } from "@vigilio/sweet";
+import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import { webNewsApi } from "../apis/news.api";
 import { useSignal } from "@preact/signals";
@@ -16,6 +16,11 @@ import LoaderSubmit from "~/components/LoaderSubmit";
 import AssistantVirtualAdmin from "./AssistantVirtualAdmin";
 import useAuthStore from "@/auth/stores/auth.store";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import { aiImagesApi } from "@/bot/apis/ai.image.api";
+import { Input, maxLength, minLength, object, string } from "@vigilio/valibot";
+import { valibotVigilio } from "~/libs/valibot";
+import useCopyToClipboard from "~/hooks/useCopyToClipboard";
+import { onDownloadImage } from "~/libs/helpers";
 
 function Settings() {
 	const showBottom = useSignal(false);
@@ -126,6 +131,28 @@ function Settings() {
 					}}
 				>
 					<i class="fas fa-newspaper" />
+				</button>
+				<button
+					onClick={() =>
+						sweetModal({
+							html: reactComponent(<ImagesIa />),
+							showCloseButton: true,
+							sweetWidth: "450px",
+							isCloseInBackground: false,
+						})
+					}
+					className={`${
+						showBottom.value ? "block" : "hidden"
+					} dark:bg-admin-terciary bg-opacity-60 w-[30px] h-[30px] bg-white shadow flex justify-center items-center dark:text-white font-bold  rounded my-2`}
+					type="button"
+					aria-label="change button"
+					style={{
+						position: "absolute",
+						left: "-0px",
+						transform: "translateY(45px)",
+					}}
+				>
+					<i class="fas fa-images" />
 				</button>
 			</div>
 		</div>
@@ -451,4 +478,132 @@ function Weather() {
 	);
 }
 
+function ImagesIa() {
+	const [cp] = useCopyToClipboard();
+	const imageDto = object({
+		name: string([minLength(2), maxLength(80)]),
+	});
+	type ImageDto = Input<typeof imageDto>;
+	const imageForm = useForm<ImageDto>({ resolver: valibotVigilio(imageDto) });
+	const aiImagesMutation = aiImagesApi();
+	function onSearchImage(body: ImageDto) {
+		aiImagesMutation.mutate(body.name, {
+			onSuccess() {
+				sweetAlert({ icon: "success", title: "Se encontró imagenes" });
+			},
+			onError(err) {
+				sweetAlert({ icon: "success", title: err.message });
+			},
+		});
+	}
+	return (
+		<div>
+			<Form onSubmit={onSearchImage} {...imageForm}>
+				<Form.control
+					title="Buscar"
+					name="name"
+					placeholder="Buscar Imagenes"
+				/>
+
+				<Form.button.submit
+					ico={<i class="far fa-search" />}
+					title="Buscar"
+					isLoading={aiImagesMutation.isLoading || false}
+				/>
+			</Form>
+			{aiImagesMutation.isSuccess && !aiImagesMutation.isLoading ? (
+				<div class="mt-6">
+					<span class="dark:text-white font-semibold text-xs">Resultados</span>
+					<div class="flex flex-wrap gap-2 h-[400px] overflow-auto">
+						{(() => {
+							const images = aiImagesMutation.data?.data.images;
+
+							return (
+								<>
+									{images?.map((image) => (
+										<div key={image.preview} class="w-[100px] relative group">
+											<img
+												width={100}
+												height={100}
+												src={
+													image.image.endsWith(".png")
+														? image.image
+														: image.preview
+												}
+												alt=""
+												class="rounded-md  w-full h-full object-contain"
+											/>
+											<div class=" gap-2 items-center absolute  justify-center  bottom-2 right-0 left-0 w-full hidden group-hover:flex">
+												<button
+													aria-label="btn"
+													type="button"
+													class="bg-black bg-opacity-80 text-white p-1 rounded-md text-xs"
+													onClick={() => {
+														sweetModal({
+															html: reactComponent(
+																<div>
+																	<img
+																		class="object-contain"
+																		src={image.image}
+																		width={500}
+																		height={500}
+																		alt=""
+																	/>
+																</div>,
+															),
+															showCloseButton: true,
+														});
+													}}
+												>
+													<i class="far fa-eye" />
+												</button>
+												<button
+													aria-label="btn"
+													type="button"
+													class="bg-black bg-opacity-80 text-white p-1 rounded-md text-xs"
+													onClick={async () => {
+														try {
+															cp(image.image).then(() => {
+																sweetAlert({
+																	icon: "success",
+																	title: "Copiado correctamente.",
+																});
+															});
+														} catch (error) {
+															sweetAlert({
+																icon: "danger",
+																title: "Error al copiar",
+															});
+														}
+													}}
+												>
+													<i class="far fa-copy" />
+												</button>
+												<button
+													aria-label="btn"
+													type="button"
+													class="bg-black bg-opacity-80 text-white p-1 rounded-md text-xs"
+													onClick={() => {
+														onDownloadImage(
+															image.image,
+															`${imageForm.watch("name")}.${image.image
+																.split(".")
+																.at(-1)}`,
+														);
+													}}
+												>
+													<i class="fas fa-download" />
+												</button>
+											</div>
+										</div>
+									))}
+								</>
+							);
+						})()}
+					</div>
+				</div>
+			) : null}
+		</div>
+	);
+}
 export default Settings;

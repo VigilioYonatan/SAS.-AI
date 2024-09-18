@@ -98,8 +98,8 @@ export class UsersApiService {
 			});
 		}
 		const findUser = await Users.findOne({
-			where: { user_id: user.id, empresa_id: empresa.id },
-			attributes: ["password"],
+			where: { id: user.id, empresa_id: empresa.id },
+			attributes: ["password", "id", "empresa_id"],
 		});
 		if (!findUser) throw new InternalServerErrorException("Error de servidor");
 
@@ -124,15 +124,7 @@ export class UsersApiService {
 		usersProfileDto: UsersProfileDto,
 		user: Users,
 	) {
-		const [byTelephone, byEmail] = await Promise.all([
-			Users.findOne({
-				where: {
-					telephone: usersProfileDto.telephone,
-					empresa_id: empresa.id,
-					id: { [Op.not]: empresa.id },
-				},
-				raw: true,
-			}),
+		const [byEmail] = await Promise.all([
 			Users.findOne({
 				where: {
 					email: usersProfileDto.email,
@@ -142,12 +134,6 @@ export class UsersApiService {
 				raw: true,
 			}),
 		]);
-		if (byTelephone) {
-			throw new BadRequestException(
-				`Ya existe un usuario con el telephone: ${usersProfileDto.telephone}`,
-				{ body: "telephone" },
-			);
-		}
 
 		if (byEmail) {
 			throw new BadRequestException(

@@ -52,7 +52,9 @@ function WebLayout({ children, header }: WebLayoutProps) {
 			{children}
 			<div>
 				<a
-					href={`https://wa.me/51${empresaStore.state!.telephoneFirst}`}
+					href={`https://wa.me/${empresaStore.state!.dial_code}${
+						empresaStore.state!.telephoneFirst
+					}`}
 					class="fixed bottom-16 right-10 z-[99] bg-green-600 w-[50px] h-[50px] flex justify-center items-center rounded-full text-white animate-bounce"
 				>
 					<i class="fa-brands fa-whatsapp text-2xl" />

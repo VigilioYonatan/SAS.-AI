@@ -122,6 +122,7 @@ function UsersShow({ params: { slug }, refetch, onClose }: UsersShowProps) {
 									title="Especialidad"
 									name={"speciality" as keyof UsersUpdateDto}
 									placeholder=""
+									ico={<i class="fas fa-user-hard-hat" />}
 									type="text"
 								/>
 								<div class="flex gap-1 flex-col mb-3  [&>div>label]:hidden [&>div]:h-auto  odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">

@@ -23,6 +23,7 @@ export type TypePayment =
 function Plus() {
 	const vigilioServices = vigilioServicesQuery();
 	const pricing = vigilioServicesPricingQuery();
+
 	let component: JSX.Element | JSX.Element[] | null = null;
 	if (pricing.isLoading) {
 		component = <Loading />;

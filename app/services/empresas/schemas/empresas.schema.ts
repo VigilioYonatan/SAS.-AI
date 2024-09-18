@@ -116,7 +116,7 @@ export const inteligenceArtificial = object({
 		enabled_cart: boolean(),
 		enabled_order: boolean(),
 	}),
-	max_length: number([minValue(50), maxValue(1000)]),
+	max_length: number([minValue(100), maxValue(1000)]),
 });
 
 export type ScheduleSchema = Input<typeof scheduleSchema>;
@@ -210,6 +210,7 @@ export const empresasSchema = objectAsync({
 	),
 	company: nullableAsync(companySchema), // informacion de compania para sunat
 	enabled_igv: boolean(), // La tienda  pagará impuestos
+	impuestos: array(number()),
 	igv: number(),
 	isOpen: boolean(), // La tienda esta cerrada
 	enabledBot: boolean(), //obligatorio
@@ -225,6 +226,7 @@ export const empresasSchema = objectAsync({
 	yearFounded: coerce(date(), (value) => new Date(value as string)), // año de fundación de empresa
 	contacts: arrayAsync(contactsSchema), // array de contactos
 	groupWhatsapp: arrayAsync(groupWhatsapp), // array de grupos de whatsapp
+	timeWhatsapp: coerce(date(), (value) => new Date(value as string)),
 	whatsappconfig, // configuracion whatsapp
 	schedule: arrayAsync(scheduleSchema), // horario de trabajo
 	enabledAnimation: boolean(),
@@ -256,6 +258,7 @@ export const empresasSchema = objectAsync({
 		simbolo: string(),
 	}),
 	port: number(),
+	tz: string(),
 	tipo_impuesto: string(),
 	mercado_pago_comision: object({
 		comision: number(),

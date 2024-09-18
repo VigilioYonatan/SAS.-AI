@@ -127,7 +127,7 @@ export const inteligenceArtificial = object({
 		enabled_cart: boolean(),
 		enabled_order: boolean(),
 	}),
-	max_length: boolean(),
+	max_length: number([minValue(100), maxValue(1000)]),
 });
 
 export type ScheduleSchema = Input<typeof scheduleSchema>;
@@ -275,6 +275,9 @@ export const empresasSchema = object({
 		url: string(),
 		transaccion: nullable(number()),
 	}),
+	timeWhatsapp: coerce(date(), (value) => new Date(value as string)),
+	tz: string(),
+	impuestos: array(number()),
 	token: string(),
 });
 

@@ -221,6 +221,7 @@ function UsersProfile() {
 								title="Numero de Celular"
 								placeholder="9XXXXXXXX"
 								question="Este campo no es obligatorio"
+								disabled
 							/>
 							<Form.control
 								ico={<i class="fas fa-birthday-cake" />}
@@ -325,6 +326,7 @@ function UsersProfile() {
 								title="Photo de perfil"
 								accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
 								typeFile="image"
+								showButonCopy
 							/>
 							<div class="flex justify-center">
 								<Form.button.submit

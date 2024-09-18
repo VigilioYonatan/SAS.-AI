@@ -105,7 +105,11 @@ export class Server {
 			if (empresa) {
 				if (
 					!empresa.payments.mensual.enabled ||
-					restarDays(NOW().toDate(), empresa.payments.mensual.date!, "day") < -2
+					restarDays(
+						NOW(empresa).toDate(),
+						empresa.payments.mensual.date!,
+						"day",
+					) < -2
 				) {
 					return res.redirect("/auth/login");
 				}

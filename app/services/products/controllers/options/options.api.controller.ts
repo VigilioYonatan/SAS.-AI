@@ -1,5 +1,6 @@
+import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { OptionsApiService } from "@/products/services/options/options.api.service";
-import { Controller, Get, Injectable } from "@vigilio/express-core";
+import { Controller, Get, Injectable, Req } from "@vigilio/express-core";
 
 @Injectable()
 @Controller("/options")
@@ -13,8 +14,8 @@ export class OptionsApiController {
 	}
 
 	@Get("/features")
-	async features() {
-		const result = await this.optionsApiService.features();
+	async features(@Req("empresa") empresa: Empresas) {
+		const result = await this.optionsApiService.features(empresa);
 		return result;
 	}
 }

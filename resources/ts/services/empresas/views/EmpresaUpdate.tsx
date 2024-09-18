@@ -27,6 +27,7 @@ import {
 import { getFilesEdit } from "~/libs/upload";
 import Hr from "@/web/components/Hr";
 import useEmpresastore, { storageEmpresa } from "../stores/empresa.store";
+import { formSelectNumber } from "~/components/form/FormSelect";
 
 function empresaUpdate() {
 	const { guards } = useAuthstore();
@@ -199,12 +200,40 @@ function empresaUpdate() {
 										disabled
 									/>
 								) : null}
-								<Form.control
-									type="number"
-									options={{ setValueAs: Number }}
+							</div>{" "}
+							<div class="w-full flex flex-col md:flex-row gap-2">
+								<Form.control.select
+									array={
+										storageEmpresa!.impuestos.map((imp) => ({
+											key: imp,
+											value: `${imp.toString()}%`,
+										}))!
+									}
 									name={"igv" as keyof EmpresasUpdateDto}
-									title={storageEmpresa?.tipo_impuesto!}
-									question={<span>% {storageEmpresa?.tipo_impuesto!}</span>}
+									placeholder={`Escoger ${empresa.tipo_impuesto}`}
+									title={`${empresa.tipo_impuesto}`}
+									question="Si el impuesto es distinto, puedes modificarlo"
+									options={{
+										setValueAs: formSelectNumber,
+									}}
+								/>
+								<Form.control.toggle
+									name={"enabled_igv" as keyof EmpresasUpdateDto}
+									title={`Activar impuestos ${storageEmpresa?.tipo_impuesto}`}
+									question={
+										<div class="flex flex-col">
+											<span>
+												¿incluir %{storageEmpresa?.tipo_impuesto} en tus
+												productos?
+											</span>
+											{storageEmpresa?.dial_code === "51" ? (
+												<span>
+													No podras emitir facturas ni boletas si no está
+													activado.
+												</span>
+											) : null}
+										</div>
+									}
 								/>
 							</div>
 							<div class="w-full flex flex-col md:flex-row gap-2">
@@ -236,7 +265,6 @@ function empresaUpdate() {
 									title="Fundado"
 								/>
 							</div>
-
 							<span class="font-semibold dark:text-secondary-light">
 								Redes Sociales
 							</span>
@@ -374,32 +402,6 @@ function empresaUpdate() {
 										title="Habilitar Vender todo el pais"
 										question="Venderás en todo el pais, Entrar a configuración/ Precio de envio"
 									/>
-
-									<Form.control
-										type="number"
-										name={"igv" as keyof EmpresasUpdateDto}
-										title={`${empresa.tipo_impuesto}`}
-										question="Si el impuesto es distinto, puedes modificarlo"
-										options={{ setValueAs: Number }}
-									/>
-									<Form.control.toggle
-										name={"enabled_igv" as keyof EmpresasUpdateDto}
-										title={`Activar impuestos ${storageEmpresa?.tipo_impuesto}`}
-										question={
-											<div class="flex flex-col">
-												<span>
-													incluir %{storageEmpresa?.tipo_impuesto} en tus
-													productos.
-												</span>
-												{storageEmpresa?.dial_code === "51" ? (
-													<span>
-														No podras emitir facturas ni boletas si no está
-														activado.
-													</span>
-												) : null}
-											</div>
-										}
-									/>
 								</div>
 							</div>
 						</div>
@@ -469,7 +471,7 @@ function empresaUpdate() {
 						/>
 					</Form>
 
-					<span class="dark:text-gray-300 mt-2 text-xs block">
+					<span class="dark:text-gray-300 mt-6 text-end text-xs block ">
 						<b>Token:</b> {empresa.token}
 					</span>
 				</div>

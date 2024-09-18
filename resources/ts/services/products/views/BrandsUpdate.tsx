@@ -55,18 +55,25 @@ function BrandsUpdate({ id, onClose, refetch }: BrandsUpdateProps) {
 			}, []),
 		});
 		function onUpdateBrand(body: BrandsUpdateDto) {
-			brandsUpdateMutation.mutate(body, {
-				onSuccess(data) {
-					sweetAlert({
-						icon: "success",
-						title: `<p class="text-center">Categoría actualizado correctamente <b>${data.brand.name}</b></p>`,
+			sweetModal({
+				icon: "success",
+				title: "Estas seguro de agregar Marca?",
+			}).then(({ isConfirmed }) => {
+				if (isConfirmed) {
+					brandsUpdateMutation.mutate(body, {
+						onSuccess(data) {
+							sweetAlert({
+								icon: "success",
+								title: `<p class="text-center">Categoría actualizado correctamente <b>${data.brand.name}</b></p>`,
+							});
+							onClose();
+							refetch(false);
+						},
+						onError(error) {
+							handlerError(brandsUpdateForm, error);
+						},
 					});
-					onClose();
-					refetch(false);
-				},
-				onError(error) {
-					handlerError(brandsUpdateForm, error);
-				},
+				}
 			});
 		}
 
@@ -171,6 +178,7 @@ function BrandsUpdate({ id, onClose, refetch }: BrandsUpdateProps) {
 								accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
 								typeFile="image"
 								multiple
+								showButonCopy
 							/>
 							<div class="flex justify-center">
 								<Form.button.submit

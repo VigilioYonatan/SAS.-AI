@@ -18,6 +18,58 @@ import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
 @Controller("/ia")
 export class IAApiController {
 	@PermissionAdmin()
+	@Get("/images/:name")
+	async images(
+		@Params("name") name: string,
+		@Req("empresa") empresa: Empresas,
+	) {
+		try {
+			const whatsapp = await isWhatsappIA(empresa.slug);
+			if (!whatsapp)
+				throw new NotFoundException(
+					"Hubo un problema al usar la ia, Recomiendo fijarse en los limites token",
+				);
+			const esMalaPalabra = await this.prompt(
+				whatsapp,
+				`'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'`,
+			);
+
+			if (esMalaPalabra?.includes("1"))
+				throw new BadRequestException("No válido");
+
+			const response = await fetch(
+				`https://www.bing.com/images/search?q=${`${name}`.replaceAll(
+					" ",
+					"+",
+				)}&form=HDRSC3&first=1&cw=1202&ch=935`,
+			);
+			const result = await response.text();
+			const $ = cheerio.load(result);
+
+			const fathers = $(".iusc");
+			const images = fathers
+				.map((_, el) => {
+					const element = $(el);
+					const json = JSON.parse(element.attr("m")!);
+					const preview = element.find("img").attr("src");
+					const image = json.murl;
+					return {
+						image,
+						preview: preview ? preview : image,
+					};
+				})
+				.get();
+			return {
+				success: true,
+				data: {
+					images,
+				},
+			};
+		} catch (error) {
+			throw new InternalServerErrorException("Error server");
+		}
+	}
+	@PermissionAdmin()
 	@Pipe(objectAsync({ name: string() }))
 	@Get("/product/:name")
 	async description(
@@ -54,21 +106,14 @@ export class IAApiController {
 					const json = JSON.parse(element.attr("m")!);
 					const preview = element.find("img").attr("src");
 					const image = json.murl;
-
-					return (image.endsWith(".jpg") ||
-						image.endsWith(".png") ||
-						image.endsWith(".webp") ||
-						image.endsWith(".jpeg") ||
-						image.endsWith(".tiff")) &&
-						!!preview
-						? {
-								image,
-								preview,
-							}
-						: null;
+					return {
+						image,
+						preview: preview ? preview : image,
+					};
 				})
 				.get()
-				.filter((a) => a);
+				.filter((a) => a)
+				.slice(0, 8);
 
 			const desc = `Dame solo la "descripcion" y no otro en formato de tienda virtual de producto de ${name} en español  y no traer fuentes y no menciones otra cosa que no sea la descripción, y sin comillas "" por favor`;
 			const caract = `traeme las caracterisiticas del ${name}, valor y descripcion en un json [{key:"",value:""}] minimo 10 maximo 25,. solo traemw el json, no digas nada mas`;
@@ -130,21 +175,14 @@ export class IAApiController {
 					const json = JSON.parse(element.attr("m")!);
 					const preview = element.find("img").attr("src");
 					const image = json.murl;
-
-					return (image.endsWith(".jpg") ||
-						image.endsWith(".png") ||
-						image.endsWith(".webp") ||
-						image.endsWith(".jpeg") ||
-						image.endsWith(".tiff")) &&
-						!!preview
-						? {
-								image,
-								preview,
-							}
-						: null;
+					return {
+						image,
+						preview: preview ? preview : image,
+					};
 				})
 				.get()
-				.filter((a) => a);
+				.filter((a) => a)
+				.slice(0, 8);
 
 			return {
 				success: true,
@@ -191,21 +229,14 @@ export class IAApiController {
 					const json = JSON.parse(element.attr("m")!);
 					const preview = element.find("img").attr("src");
 					const image = json.murl;
-
-					return (image.endsWith(".jpg") ||
-						image.endsWith(".png") ||
-						image.endsWith(".webp") ||
-						image.endsWith(".jpeg") ||
-						image.endsWith(".tiff")) &&
-						!!preview
-						? {
-								image,
-								preview,
-							}
-						: null;
+					return {
+						image,
+						preview: preview ? preview : image,
+					};
 				})
 				.get()
-				.filter((a) => a);
+				.filter((a) => a)
+				.slice(0, 8);
 			const prompt = `conoces fontawesome? tienes un icon en html <i class='fa' de ${name}? solo traime el html y en string y no en formato y no digas nada. solo traime el ico sin '' al principio ni al final`;
 			const ico = await this.prompt(whatsapp, prompt);
 			return {

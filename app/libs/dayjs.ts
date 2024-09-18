@@ -1,15 +1,19 @@
+import type { Empresas } from "@/empresas/entities/empresas.entity";
 import dayjs, { type OpUnitType, type QUnitType } from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(timezone);
 dayjs.extend(utc);
 // que sea de  ahora. hora peruana
-export function NOW() {
-	return dayjs().tz("America/Lima").utc(true);
+export function NOW(empresa: Empresas) {
+	return dayjs().tz(empresa.tz).utc(true);
 }
 
-export function TimePeru(date: Date | string | number | dayjs.Dayjs) {
-	return dayjs(date).tz("America/Lima").utc(true);
+export function TimePeru(
+	empresa: Empresas,
+	date: Date | string | number | dayjs.Dayjs,
+) {
+	return dayjs(date).tz(empresa.tz).utc(true);
 }
 export function restarDays(
 	now: Date | string | number | dayjs.Dayjs,
@@ -19,12 +23,14 @@ export function restarDays(
 	return dayjs(back).diff(now, time);
 }
 export function formatDateTwo(
+	empresa: Empresas,
 	date: string | Date | number,
 	format = "DD-MM-YYYY hh:mm A",
 ): string | Date {
-	return dayjs(date).tz("America/Lima").utc(true).format(format);
+	return dayjs(date).tz(empresa.tz).utc(true).format(format);
 } // verificar si esta dentro de esa fecha. pones la fecha
 export function isDateWithin(
+	empresa: Empresas,
 	date: Date | string,
 	timer: number,
 	time: dayjs.ManipulateType = "days",
@@ -32,11 +38,11 @@ export function isDateWithin(
 	const today = dayjs(date);
 	const twoWeeksFromNow = today.add(timer, time);
 
-	return NOW().isAfter(twoWeeksFromNow);
+	return NOW(empresa).isAfter(twoWeeksFromNow);
 }
 
-export function getTime() {
-	const day = dayjs().tz("America/Lima").utc(true);
+export function getTime(empresa: Empresas) {
+	const day = dayjs().tz(empresa.tz).utc(true);
 	const currentYear = day.year();
 	const currentMonth = day.month() + 1;
 	const startOfYear = day.startOf("year").add(5, "hour").toDate();
@@ -74,11 +80,11 @@ export function getTime() {
 	};
 }
 /* time : 08:00  */
-export function formatTime(time: string) {
+export function formatTime(empresa: Empresas, time: string) {
 	const partesHora = time.split(":");
 	const horas = Number.parseInt(partesHora[0], 10); // Convertir la parte de las horas a un número entero
 	const minutos = Number.parseInt(partesHora[1], 10);
-	const fecha = NOW().hour(horas).minute(minutos);
+	const fecha = NOW(empresa).hour(horas).minute(minutos);
 	return fecha;
 }
 export default dayjs;

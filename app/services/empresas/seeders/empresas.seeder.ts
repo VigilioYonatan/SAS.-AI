@@ -1,6 +1,6 @@
 import enviroments from "~/config/enviroments.config";
 import type { EmpresasSchema } from "../schemas/empresas.schema";
-import { NOW } from "~/libs/dayjs";
+import dayjs from "~/libs/dayjs";
 
 export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
 	const am8 = "08:00";
@@ -19,9 +19,12 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
 		dial_code: "51",
 		enable_sell_country: false,
 		type_empresa_other: null,
+		impuestos: [18, 10],
+		timeWhatsapp: dayjs().add(5, "minutes").toDate(),
 		enabled_booster: true,
 		email: "yonatanvigilio@vigilio-services.com",
 		telephoneFirst: "959884398",
+		tz: "America/Lima",
 		isOpen: true,
 		enabledBotWeb: true,
 		company: {
@@ -145,7 +148,7 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
 		enabled_catalogo: false,
 		payments: {
 			mensual: {
-				date: NOW().add(7, "day").toDate(),
+				date: dayjs().add(7, "day").toDate(),
 				enabled: true,
 			},
 			facturacion: { date: new Date(), enabled: true },
@@ -200,6 +203,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
 		enabledBotWeb: true,
 		enable_sell_country: false,
 		type_empresa_other: null,
+		tz: "America/Lima",
 		enabled_booster: true,
 		email: "yonatanvigilio@vigilio-services.com",
 		telephoneFirst: "959884398",
@@ -209,6 +213,8 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
 		enabledBot: true,
 		facebook: null,
 		instagram: null,
+		impuestos: [18, 10],
+		timeWhatsapp: dayjs().add(5, "minutes").toDate(),
 		telephoneReclamos: null,
 		telephoneThird: null,
 		enabled_igv: true,
@@ -315,7 +321,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
 		enabled_catalogo: false,
 		payments: {
 			mensual: {
-				date: NOW().add(7, "day").toDate(),
+				date: dayjs().add(7, "day").toDate(),
 				enabled: true,
 			},
 			facturacion: { date: new Date(), enabled: true },
@@ -326,7 +332,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
 			tienda: { enabled: true },
 			tokens: { tokens: 10000 },
 		},
-		type_empresa_id: 22,
+		type_empresa_id: 1,
 		bancos: [
 			{
 				key: "bbva",

@@ -51,7 +51,7 @@ function Header({ header }: HeaderProps) {
 						<div class="w-[1px] bg-gray-600 h-[50%] mx-2" />
 						{authStore.state ? (
 							<WebDropdown
-								className="-bottom-30 z-[99]"
+								className="-bottom-30 z-[100]"
 								triggerChildren={({ trigger }) => (
 									<button
 										class="flex gap-2 items-center"

@@ -1,21 +1,14 @@
 import { printFileWithDimension } from "@/uploads/libs/helpers";
 import type { NextFunction, Request, Response } from "express";
 import type { RequestVigilio } from "~/config/types";
-import { NOW, restarDays } from "~/libs/dayjs";
 
 export async function webEnabledMiddleware(
 	req: Request,
 	res: Response,
 	next: NextFunction,
 ) {
-	if (
-		!(req as RequestVigilio).empresa?.enabled_catalogo ||
-		restarDays(
-			NOW().toDate(),
-			(req as RequestVigilio).empresa!.payments.mensual.date as Date,
-			"day",
-		) < -2
-	) {
+	const emp = (req as RequestVigilio).empresa;
+	if (!emp.enabled_catalogo) {
 		const html = /*html*/ `<div style="width:100%;height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;">
                                     <h1>En este momento no estamos no estamos disponible</h1>
                                     <img src="${printFileWithDimension(

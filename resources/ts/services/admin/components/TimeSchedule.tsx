@@ -7,7 +7,7 @@ function TimeSchedule() {
 	const isOpen =
 		NOW().isAfter(formatTime(findDay!.openTime)) &&
 		NOW().isBefore(formatTime(findDay!.closeTime));
-	if (isOpen)
+	if (isOpen && findDay!.enabled)
 		return (
 			<div class="bg-success text-xs ml-1 px-1 py-1 rounded-md text-white font-bold text-center">
 				<i class="fas fa-store" /> Abierto

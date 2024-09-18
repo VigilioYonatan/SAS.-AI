@@ -14,6 +14,7 @@ import TelegramBot from "node-telegram-bot-api";
 import { promptReplace, transcribeAudio } from ".";
 import { BASE_URL } from "@/empresas/libs";
 import { UrlsPayment } from "@/urls/entities/urls.payment.entity";
+import cache from "@vigilio/express-core/cache";
 
 export function buenosDias(query: string, name: string, empresa: Empresas) {
 	const messages = [
@@ -50,7 +51,10 @@ export async function initializeBot(empresa: Empresas) {
 		if (
 			!empresa.telegram_token ||
 			(empresa.payments.telegram.enabled &&
-				restarDays(NOW().toDate(), empresa.payments.telegram.date as Date) <= 0)
+				restarDays(
+					NOW(empresa).toDate(),
+					empresa.payments.telegram.date as Date,
+				) <= 0)
 		)
 			return;
 		const bot = new TelegramBot(empresa.telegram_token, { polling: true });
@@ -64,9 +68,13 @@ export async function initializeBot(empresa: Empresas) {
 }
 
 export async function isWhatsappIA(empresa: string, telephone?: string) {
-	let clientVigilio = null;
+	let clientVigilio = JSON.parse(cache.get("client-vigilio") ?? "null");
 	try {
-		clientVigilio = await getClientVigilio();
+		if (!clientVigilio) {
+			clientVigilio = await getClientVigilio();
+			const hour24 = 24 * 3600;
+			cache.set("client-vigilio", JSON.stringify(clientVigilio), hour24);
+		}
 	} catch (error) {
 		// biome-ignore lint/suspicious/noConsoleLog: <explanation>
 		console.log("Error al hacer fetch a la empresa");
@@ -86,7 +94,7 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
 	const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
 	if (!emp?.enabledBot) return null;
 	const isDateNow = restarDays(
-		NOW().toDate(),
+		NOW(emp).toDate(),
 		emp.payments.mensual.date!,
 		"day",
 	);
@@ -126,7 +134,7 @@ export async function isTelegramIA(empresa: string) {
 	const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
 	if (!emp?.enabledBot) return null;
 	const isDateNow = restarDays(
-		NOW().toDate(),
+		NOW(emp).toDate(),
 		emp.payments.telegram.date!,
 		"day",
 	);
@@ -395,7 +403,7 @@ export async function featuresIA(
 		for (const c of coincidencias) {
 			const hash = Math.random().toString(32).slice(4, 8);
 			const urlGet = `${BASE_URL(empresa)}/cart/${hash}`;
-			const date = NOW().add(1, "days");
+			const date = NOW(empresa).add(1, "days");
 			const findHash = await UrlsPayment.findOne({
 				where: { hash, empresa_id: empresa.id },
 			});

@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 type CopiedValue = string | null;
-type CopyFn = (text: string) => Promise<boolean>;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type CopyFn = (text: any) => Promise<boolean>;
 
 // HOOK para copiar y pegar
 function useCopyToClipboard(): [CopyFn, CopiedValue] {

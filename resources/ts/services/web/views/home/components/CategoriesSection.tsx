@@ -12,6 +12,7 @@ interface categoriesSectionProps {
 	categories: CategoriesSchema[];
 }
 function CategoriesSection({ categories }: categoriesSectionProps) {
+	if (!categories.length) return null;
 	return (
 		<section
 			class="max-w-6xl mx-auto px-4 my-12 overflow-hidden flex flex-col gap-4"

@@ -349,6 +349,7 @@ function ProductsRestaurantStore({
 					title="Imagenes"
 					typeFile="image"
 					multiple
+					showButonCopy
 				/>
 				<div class="flex justify-center">
 					<Form.button.submit

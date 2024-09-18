@@ -1,14 +1,14 @@
 import { useSignal } from "@preact/signals";
-import dayjs from "dayjs";
 import { useEffect } from "preact/hooks";
+import { NOW } from "~/libs/helpers";
 
 function Time() {
 	const time = useSignal("");
 	const date = useSignal("");
 
 	function updateTime() {
-		const horaActual = dayjs().format("HH:mm:ss");
-		const fechaActual = dayjs().format("DD MMMM YYYY");
+		const horaActual = NOW().format("HH:mm:ss");
+		const fechaActual = NOW().format("DD MMMM YYYY");
 		time.value = horaActual;
 		date.value = fechaActual;
 	}

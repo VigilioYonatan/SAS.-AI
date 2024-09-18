@@ -9,6 +9,7 @@ import {
 	custom,
 	nullable,
 	toTrimmed,
+	object,
 } from "@vigilio/valibot";
 
 export const clientsSchema = objectAsync({
@@ -19,6 +20,11 @@ export const clientsSchema = objectAsync({
 		minLength(6),
 		custom((value) => /^\d+$/.test(value), "Solo numeros."),
 	]),
+	address: nullable(string([minLength(10), maxLength(100)])),
+	city_id: nullable(number()),
+	map_marker: nullable(
+		object({ lng: number(), lat: number() }, "Coordenadas no válida."),
+	),
 	enabled: boolean(),
 	empresa_id: number(),
 });

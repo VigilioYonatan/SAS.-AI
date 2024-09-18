@@ -31,7 +31,7 @@ export function usersProfilePhotoApi(id: number) {
 		UsersProfilePhotoDto & { name: string },
 		UsersProfileErrorAPI
 	>(`${usersUploadPhoto}/${id}`, async (url, body) => {
-		const result = await uploadApi(`/${url}`, {
+		const result = await uploadApi(`/api/${url}`, {
 			name: body.name,
 			file: body.photo,
 		});

@@ -384,18 +384,30 @@ export class OrdersApiService {
 					telephone: ordersStoreDto.telephone,
 					enabled: true,
 					fullname: ordersStoreDto.fullName,
+					address: ordersStoreDto.address || null,
+					city_id: ordersStoreDto.city_id || null,
+					map_marker: ordersStoreDto.map_marker || null,
 					empresa_id: empresa.id,
+				});
+			} else {
+				await client.update({
+					fullname: ordersStoreDto.fullName,
+					address: ordersStoreDto.address || null,
+					city_id: ordersStoreDto.city_id || null,
+					map_marker: ordersStoreDto.map_marker || null,
 				});
 			}
 		}
 
 		if (!empresa.isOpen)
 			throw new BadRequestException(empresa.whatsappconfig.enabled);
-		const findDay = empresa.schedule.find((day) => day.id === NOW().day());
+		const findDay = empresa.schedule.find(
+			(day) => day.id === NOW(empresa).day(),
+		);
 
 		if (
-			NOW().isAfter(formatTime(findDay!.openTime)) &&
-			NOW().isBefore(formatTime(findDay!.closeTime)) &&
+			NOW(empresa).isAfter(formatTime(empresa, findDay!.openTime)) &&
+			NOW(empresa).isBefore(formatTime(empresa, findDay!.closeTime)) &&
 			findDay!.enabled
 		) {
 		} else {
@@ -827,10 +839,10 @@ export class OrdersApiService {
 				// le dio enviar sunat y no habia enviado a sunat antes y que no pase de 2 dias
 				const limitInvoice =
 					restarDays(
-						NOW().toDate(),
-						TimePeru(order.createdAt!)
+						NOW(empresa).toDate(),
+						TimePeru(empresa, order.createdAt!)
 							.add(enviroments.VITE_DIASFACTURASBOLETA, "day")
-							.diff(NOW()),
+							.diff(NOW(empresa)),
 					) < 0;
 				if (
 					invoice.send_sunat &&

@@ -375,7 +375,12 @@ export class ProductsApiService {
 			);
 		}
 
-		if (restarDays(NOW().toDate(), TimePeru(coupon.date).toDate()) <= 0)
+		if (
+			restarDays(
+				NOW(empresa).toDate(),
+				TimePeru(empresa, coupon.date).toDate(),
+			) <= 0
+		)
 			throw new BadRequestException(
 				"Lastimosamente, Este cupón de descuento ya se ha vencido",
 			);

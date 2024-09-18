@@ -3,7 +3,7 @@ import Form from "~/components/form";
 import { useForm } from "react-hook-form";
 import { type AuthLoginDto, authLoginDto } from "../dtos/auth.login.dto";
 import { authLoginApi } from "../apis/auth.login.api";
-import { sweetAlert, sweetModal } from "@vigilio/sweet";
+import { sweetModal } from "@vigilio/sweet";
 import { useSignal } from "@preact/signals";
 import { reactComponent } from "~/libs/preact";
 import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
@@ -29,22 +29,15 @@ function AuthLogin() {
 		}
 		authLoginApiMutation.mutate(data, {
 			onSuccess() {
-				sweetAlert({
-					icon: "success",
-					title: "Iniciaste sessión correctamente",
-				}).then(() => {
-					if (data.rememberPassword) {
-						localStorage.setItem("rememberPassword", data.password);
-					}
-					const url = window.location.href;
-
-					if (!url.includes("/auth/login")) {
-						window.location.reload();
-						return;
-					}
-
-					window.location.href = `${window.location.origin}/admin`;
-				});
+				if (data.rememberPassword) {
+					localStorage.setItem("rememberPassword", data.password);
+				}
+				const url = window.location.href;
+				if (!url.includes("/auth/login")) {
+					window.location.reload();
+					return;
+				}
+				window.location.href = `${window.location.origin}/admin`;
 			},
 			// no es necesario onError
 		});

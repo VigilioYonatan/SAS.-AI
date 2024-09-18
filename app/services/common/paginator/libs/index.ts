@@ -1,3 +1,4 @@
+import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { Op, type WhereOptions } from "sequelize";
 import { getTime } from "~/libs/dayjs";
 export type PaginatorModel =
@@ -49,7 +50,7 @@ export type TimeTable =
 	| "yesterday";
 
 /* Filtrar por hoy,este mes,semanal,anual, todo */
-export function sorteByTime(time: TimeTable) {
+export function sorteByTime(empresa: Empresas, time: TimeTable) {
 	const {
 		startOfToday,
 		endOfToday,
@@ -61,7 +62,7 @@ export function sorteByTime(time: TimeTable) {
 		endOfYear,
 		startOfYesterday,
 		endOfYesterday,
-	} = getTime();
+	} = getTime(empresa);
 	let where: WhereOptions = {};
 
 	if (time === "today") {

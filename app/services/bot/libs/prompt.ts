@@ -83,7 +83,7 @@ export function prompt(
     HORARIO_ATENCION: // si está enabled false quiere decir que no está disponible ese dia y la hora es de 00:00am a 23:59PM ${JSON.stringify(
 			empresa.schedule,
 		)}
-    HORA Y FECHA_ACTUAL: ${NOW().format("DD-MM-YYYY hh:mm")}
+    HORA Y FECHA_ACTUAL: ${NOW(empresa).format("DD-MM-YYYY hh:mm")}
 	MAXIMO_DE_PALABRAS_QUE_DIRAS: ${empresa.inteligenceArtificial.max_length}
     BASE DE DATOS: ${productsData} \n
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:

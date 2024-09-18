@@ -191,6 +191,7 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                                     <tr>
                                                         <td align="left">
                                                         <strong>Fecha: </strong>${formatDateTwo(
+																													empresa,
 																													(
 																														order.dataValues
 																															.invoice as Invoices

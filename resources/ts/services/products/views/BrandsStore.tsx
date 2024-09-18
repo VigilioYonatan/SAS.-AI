@@ -35,19 +35,26 @@ function BrandsStore({ refetch, onClose }: BrandsStoreProps) {
 
 	const aiBrandsMutation = aiBrandsApi();
 	function onAddCategory(data: BrandsStoreDto) {
-		brandsStoreMutation.mutate(data, {
-			onSuccess(data) {
-				brandsStoreDtoForm.reset();
-				sweetModal({
-					icon: "success",
-					text: `<p class="text-center">Nueva marca insertado correctamente <b>${data.brand.name}</b></p>`,
+		sweetModal({
+			icon: "success",
+			title: "Estas seguro de agregar Marca?",
+		}).then(({ isConfirmed }) => {
+			if (isConfirmed) {
+				brandsStoreMutation.mutate(data, {
+					onSuccess(data) {
+						brandsStoreDtoForm.reset();
+						sweetModal({
+							icon: "success",
+							text: `<p class="text-center">Nueva marca insertado correctamente <b>${data.brand.name}</b></p>`,
+						});
+						refetch(false);
+						onClose();
+					},
+					onError(error) {
+						handlerError(brandsStoreDtoForm, error);
+					},
 				});
-				refetch(false);
-				onClose();
-			},
-			onError(error) {
-				handlerError(brandsStoreDtoForm, error);
-			},
+			}
 		});
 	}
 	const name = brandsStoreDtoForm.watch("name");
@@ -137,6 +144,7 @@ function BrandsStore({ refetch, onClose }: BrandsStoreProps) {
 						title="Imagen *No obligatorio"
 						typeFile="image"
 						multiple={false}
+						showButonCopy
 					/>
 					<Form.button.submit
 						isLoading={brandsStoreMutation.isLoading || false}

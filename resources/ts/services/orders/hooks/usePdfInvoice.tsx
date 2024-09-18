@@ -207,7 +207,7 @@ function usePdfInvoice({
 }
 export function HelperPDF() {
 	return (
-		<Helper top={-10}>
+		<Helper top={-10} right={-155}>
 			<div class="absolute  -top-24 dark:bg-admin-background-dark bg-white text-black p-2 rounded-sm hidden group-hover:block dark:text-white w-[300px]">
 				<span class="text-primary font-bold dark:text-white">
 					¿Como imprimir en Impresora Termica 80mm?
@@ -236,7 +236,7 @@ export function HelperPDF() {
 						</a>
 					</li>
 					<li>
-						3. Recuerda que debes tener una impresora termica con bluetooh.
+						3. Recuerda que debes tener una impresora térmica con bluetooh.
 					</li>
 				</ul>
 			</div>

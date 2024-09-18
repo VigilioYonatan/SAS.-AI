@@ -94,10 +94,12 @@ export class whatsappApiController {
 			});
 
 			//  cuando cierra el restaurante
-			const findDay = empresa.schedule.find((day) => day.id === NOW().day());
+			const findDay = empresa.schedule.find(
+				(day) => day.id === NOW(empresa).day(),
+			);
 			if (
-				NOW().isAfter(formatTime(findDay!.openTime)) &&
-				NOW().isBefore(formatTime(findDay!.closeTime))
+				NOW(empresa).isAfter(formatTime(empresa, findDay!.openTime)) &&
+				NOW(empresa).isBefore(formatTime(empresa, findDay!.closeTime))
 			) {
 			} else {
 				return;
@@ -300,7 +302,7 @@ export class whatsappApiController {
 		await whatsappRemoveQR(empresa);
 		await terminal(`docker container stop ${empresa.slug}`);
 		await terminal(`docker container start ${empresa.slug}`);
-
+		empresa.update({ timeWhatsapp: NOW(empresa).add(5, "minute") });
 		return {
 			success: true,
 			message: "Se reinició correctamente.",

@@ -732,6 +732,7 @@ function ProductsNormalUpdate({
 						accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
 						typeFile="image"
 						multiple
+						showButonCopy
 					/>
 					<div class="flex justify-center">
 						<Form.button.submit

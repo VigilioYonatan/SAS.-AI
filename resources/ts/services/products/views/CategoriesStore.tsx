@@ -184,6 +184,7 @@ function CategoriesStore({ refetch, onClose }: CategoriesStoreProps) {
 						title="Imagen *No obligatorio"
 						typeFile="image"
 						multiple={false}
+						showButonCopy
 					/>
 					<Form.button.submit
 						isLoading={categoriesStoreMutation.isLoading || false}

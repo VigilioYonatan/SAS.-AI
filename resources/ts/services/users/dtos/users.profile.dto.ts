@@ -14,7 +14,6 @@ export const usersProfileDto = pick(usersSchema, [
 	"address",
 	"birthday",
 	"lastname",
-	"telephone",
 	"enabledNotification",
 	"email",
 	"speciality",

@@ -15,7 +15,7 @@ import {
 	whatsappSendMessageApi,
 	whatsappSendFileApi,
 } from "../apis/whatsapp.api";
-import { delay, handlerError } from "~/libs/helpers";
+import { delay, handlerError, NOW, restarDays } from "~/libs/helpers";
 import {
 	contactsSchema,
 	groupWhatsapp,
@@ -46,6 +46,7 @@ import { empresaContactsFavoritesApi } from "@/empresas/apis/empresas.contacts.f
 import useEmpresastore, {
 	storageEmpresa,
 } from "@/empresas/stores/empresa.store";
+import useCountDown from "~/hooks/useCountDown";
 
 function Whatsapp() {
 	const authStore = useAuthStore();
@@ -629,58 +630,85 @@ export function QrWhatsapp() {
 				<span>Conectar bot de WhatsApp</span>{" "}
 				<i class="fa-duotone fa-message-bot" />
 			</h3>
-			<p class="text-md dark:text-white font-bold">
-				Escanea este codigo Qr en ajustes de tu whatsapp
-			</p>
-			{qrCodeQuery.isLoading && <p class="dark:text-white">Cargando QR...</p>}
-			{qrCodeQuery.data && (
-				<div class="relative flex flex-col  gap-2">
-					<img
-						width={300}
-						height={300}
-						src={URL.createObjectURL(qrCodeQuery.data)}
-						class="rounded-lg"
-						alt="bot whatsapp"
-					/>
-					<div class="flex justify-between gap-2">
-						<div />
-						<button
-							type="button"
-							class="self-end bg-black bg-opacity-60 w-[30px] h-[30px] flex justify-center items-center rounded-md"
-							disabled={qrCodeQuery.isLoading || false}
-							onClick={() => {
-								whatsappRestartMutation.mutate(null, {
-									onSuccess() {
-										sweetAlert({
-											icon: "success",
-											title: "Reinciado correctamente whatsapp",
+			{restarDays(NOW().toDate(), storageEmpresa!.timeWhatsapp, "seconds") >=
+			0 ? (
+				<>
+					{(() => {
+						const countdown = useCountDown(storageEmpresa!.timeWhatsapp);
+						return (
+							<div class="flex justify-center items-center flex-col gap-2">
+								<span class="dark:text-white">Se está generando Código QR</span>
+								<div class="flex gap-2 items-center">
+									<span class="text-3xl font-bold  dark:text-white">
+										{countdown.minutes}
+									</span>
+									<span class="text-3xl font-bold  dark:text-white"> : </span>
+									<span class="text-3xl font-bold  dark:text-white">
+										{countdown.seconds}
+									</span>
+								</div>
+							</div>
+						);
+					})()}
+				</>
+			) : (
+				<>
+					<p class="text-md dark:text-white font-bold">
+						Escanea este codigo Qr en ajustes de tu whatsapp
+					</p>
+					{qrCodeQuery.isLoading && (
+						<p class="dark:text-white">Cargando QR...</p>
+					)}
+					{qrCodeQuery.data && (
+						<div class="relative flex flex-col  gap-2">
+							<img
+								width={300}
+								height={300}
+								src={URL.createObjectURL(qrCodeQuery.data)}
+								class="rounded-lg"
+								alt="bot whatsapp"
+							/>
+							<div class="flex justify-between gap-2">
+								<div />
+								<button
+									type="button"
+									class="self-end bg-black bg-opacity-60 w-[30px] h-[30px] flex justify-center items-center rounded-md"
+									disabled={qrCodeQuery.isLoading || false}
+									onClick={() => {
+										whatsappRestartMutation.mutate(null, {
+											onSuccess() {
+												sweetAlert({
+													icon: "success",
+													title: "Reinciado correctamente whatsapp",
+												});
+											},
+											onError(err) {
+												sweetAlert({
+													icon: "success",
+													title: (err as Error).message,
+												});
+											},
 										});
-									},
-									onError(err) {
-										sweetAlert({
-											icon: "success",
-											title: (err as Error).message,
-										});
-									},
-								});
-							}}
-						>
-							{qrCodeQuery.isLoading ? (
-								<span class="text-xs dark:text-white">Cargando...</span>
-							) : (
-								<i class="fa-solid fa-rotate-right text-white text-xl" />
-							)}
-						</button>
-						<div />
-					</div>
-				</div>
+									}}
+								>
+									{qrCodeQuery.isLoading ? (
+										<span class="text-xs dark:text-white">Cargando...</span>
+									) : (
+										<i class="fa-solid fa-rotate-right text-white text-xl" />
+									)}
+								</button>
+								<div />
+							</div>
+						</div>
+					)}
+					<ul class="list-image-none flex flex-col gap-2">
+						<li class="dark:text-white text-center">
+							*Si no está funcionando el qr. Recarga la pagina y reiniciar{" "}
+							<i class="fa-solid fa-rotate-right text-white text-xs" />
+						</li>
+					</ul>
+				</>
 			)}
-			<ul class="list-image-none flex flex-col gap-2">
-				<li class="dark:text-white text-center">
-					*Si no está funcionando el qr. Recarga la pagina y reiniciar{" "}
-					<i class="fa-solid fa-rotate-right text-white text-xs" />
-				</li>
-			</ul>
 		</div>
 	);
 }

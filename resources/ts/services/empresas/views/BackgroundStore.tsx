@@ -78,6 +78,7 @@ function BackgroundStore({ onClose, refetch }: PoststoreProps) {
 					title="Imagen"
 					typeFile="image"
 					multiple={false}
+					showButonCopy
 				/>
 				<div class="flex justify-center">
 					<Form.button.submit

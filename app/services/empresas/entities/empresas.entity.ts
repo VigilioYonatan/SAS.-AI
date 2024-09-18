@@ -123,6 +123,11 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 	youtube: string | null;
 
 	@Column({
+		type: DataType.STRING(100),
+	})
+	tz: string;
+
+	@Column({
 		type: DataType.TEXT,
 	})
 	about: string;
@@ -175,7 +180,12 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 	@Column({
 		type: DataType.DATE,
 		allowNull: false,
-		unique: true,
+	})
+	timeWhatsapp: Date;
+
+	@Column({
+		type: DataType.DATE,
+		allowNull: false,
 	})
 	dateRelease: Date;
 
@@ -225,6 +235,11 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 		allowNull: false,
 	})
 	yearFounded: Date;
+
+	@Column({
+		type: DataType.JSON,
+	})
+	impuestos: number[];
 
 	@Column({
 		type: DataType.JSON,

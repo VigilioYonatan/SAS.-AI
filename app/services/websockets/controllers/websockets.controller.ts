@@ -13,8 +13,8 @@ import { WebsocketsService } from "../services/websockets.service";
 import { chatAssistant, cloudeAi, isWhatsappIA } from "@/bot/libs/ai";
 import { Injectable } from "@vigilio/express-core";
 import { openAis } from "@/empresas/services/empresas.api.service";
-import { promptAssitant } from "@/bot/libs/prompt";
 import cron from "node-cron";
+import { promptReplace } from "@/bot/libs";
 export let chatAssistantWeb: Record<string, ["user" | "assistant", string][]> =
 	{};
 export let usersInWeb: Record<string, string[]> = {};
@@ -38,16 +38,14 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
 				content,
 			}),
 		);
-
+		const prompt = await promptReplace(emp!, empresa);
 		const completion = await openAis[empresa.slug].chat.completions.create({
 			model: clientVigilio ? clientVigilio.information.modelai : "gpt-4o-mini",
 			max_tokens: empresa.inteligenceArtificial.max_length,
 			messages: [
 				{
 					role: "user",
-					content: `${promptAssitant(
-						empresa!,
-					)} - Por ultimo, cada vez que te pida informacion de un producto  trate de responder con una imagen o link. si envias imagen , que sea en etiqueta image <img width="100" height="100" class="w-[100px] h-[150px] rounded-md object-contain"/>   y si te pido links por favor etiqueta html <a href="..." class="text-primary font-semibold"></a> , responde como si fuera html con espacios usando br en productos o pedidos. para que lea bien.  y no uses ** mejor utiliza la etiqueta <b></b>`,
+					content: `${prompt} - Por ultimo, cada vez que te pida informacion de un producto  trate de responder con una imagen o link. si envias imagen , que sea en etiqueta image <img width="100" height="100" class="w-[100px] h-[150px] rounded-md object-contain"/>   y si te pido links por favor etiqueta html <a href="..." class="text-primary font-semibold"></a> , responde como si fuera html con espacios usando br en productos o pedidos. para que lea bien.  y no uses ** mejor utiliza la etiqueta <b></b>`,
 				},
 				...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
 			],

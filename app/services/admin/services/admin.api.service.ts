@@ -50,7 +50,7 @@ export class AdminApiService {
 					status_order_id: STATUSORDER.entregado,
 					empresa_id: empresa.id,
 					//  solo de este mes
-					...sorteByTime("month"),
+					...sorteByTime(empresa, "month"),
 				},
 			}),
 			Users.findAll({
@@ -69,11 +69,11 @@ export class AdminApiService {
 					status_order_id: STATUSORDER.entregado,
 					empresa_id: empresa.id,
 					// este año
-					...sorteByTime("year"),
+					...sorteByTime(empresa, "year"),
 				},
 				group: [Sequelize.fn("DATE", Sequelize.col("createdAt"))],
 			}),
-			usersMostOrders(empresa, sorteByTime("month")),
+			usersMostOrders(empresa, sorteByTime(empresa, "month")),
 		]);
 		const ratingYearArray = ratingYear.map((res) => ({
 			value: res.get("total"),
@@ -97,7 +97,7 @@ export class AdminApiService {
 	}
 
 	async earning(empresa: Empresas) {
-		const { currentYear } = getTime();
+		const { currentYear } = getTime(empresa);
 		// obtenemos el año desde que la web se subio
 		const yearsEmpresa = new Date(empresa.dateRelease).getFullYear();
 
@@ -175,7 +175,7 @@ export class AdminApiService {
 					status_order_id: STATUSORDER.entregado,
 					empresa_id: empresa.id,
 					//  solo de este mes
-					...sorteByTime("month"),
+					...sorteByTime(empresa, "month"),
 				},
 			}),
 			Orders.unscoped().findOne({
@@ -184,7 +184,7 @@ export class AdminApiService {
 					//  solo pagados correctamente
 					status_order_id: STATUSORDER.entregado,
 					empresa_id: empresa.id,
-					...sorteByTime("year"),
+					...sorteByTime(empresa, "year"),
 				},
 			}),
 			Orders.unscoped().findOne({
@@ -194,7 +194,7 @@ export class AdminApiService {
 					status_order_id: STATUSORDER.entregado,
 					empresa_id: empresa.id,
 					//  solo de este dia
-					...sorteByTime("today"),
+					...sorteByTime(empresa, "today"),
 				},
 			}),
 			Orders.unscoped().findOne({
@@ -210,7 +210,7 @@ export class AdminApiService {
 					status_order_id: STATUSORDER.entregado,
 					empresa_id: empresa.id,
 					//  solo de este mes
-					...sorteByTime("yesterday"),
+					...sorteByTime(empresa, "yesterday"),
 				},
 			}),
 		]);
@@ -242,14 +242,14 @@ export class AdminApiService {
 				where: {
 					isDelivery: true,
 					// hoy
-					...sorteByTime("today"),
+					...sorteByTime(empresa, "today"),
 				},
 			}),
 			Orders.count({
 				where: {
 					isDelivery: true,
 					// hoy
-					...sorteByTime("today"),
+					...sorteByTime(empresa, "today"),
 					status_order_id: STATUSORDER.confirmado,
 					empresa_id: empresa.id,
 				},
@@ -258,7 +258,7 @@ export class AdminApiService {
 				where: {
 					isDelivery: true,
 					// hoy
-					...sorteByTime("today"),
+					...sorteByTime(empresa, "today"),
 					status_order_id: STATUSORDER.entregado,
 					empresa_id: empresa.id,
 				},
@@ -267,7 +267,7 @@ export class AdminApiService {
 				where: {
 					isDelivery: true,
 					// hoy
-					...sorteByTime("today"),
+					...sorteByTime(empresa, "today"),
 					status_order_id: STATUSORDER.problema,
 					empresa_id: empresa.id,
 				},
@@ -283,7 +283,7 @@ export class AdminApiService {
 			Orders.count({
 				where: {
 					// hoy
-					...sorteByTime("today"),
+					...sorteByTime(empresa, "today"),
 					isDelivery: false,
 					empresa_id: empresa.id,
 				},
@@ -291,7 +291,7 @@ export class AdminApiService {
 			Orders.count({
 				where: {
 					// hoy
-					...sorteByTime("today"),
+					...sorteByTime(empresa, "today"),
 					status_order_id: STATUSORDER.confirmado,
 					isDelivery: false,
 					empresa_id: empresa.id,
@@ -300,7 +300,7 @@ export class AdminApiService {
 			Orders.count({
 				where: {
 					// hoy
-					...sorteByTime("today"),
+					...sorteByTime(empresa, "today"),
 					status_order_id: STATUSORDER.entregado,
 					isDelivery: false,
 					empresa_id: empresa.id,
@@ -309,7 +309,7 @@ export class AdminApiService {
 			Orders.count({
 				where: {
 					// hoy
-					...sorteByTime("today"),
+					...sorteByTime(empresa, "today"),
 					status_order_id: STATUSORDER.problema,
 					isDelivery: false,
 					empresa_id: empresa.id,
@@ -327,28 +327,28 @@ export class AdminApiService {
 				where: {
 					kind_invoice_code: "01", //facturas
 					// hoy
-					...sorteByTime("year"),
+					...sorteByTime(empresa, "year"),
 					empresa_id: empresa.id,
 				},
 			}),
 			Invoices.count({
 				where: {
 					kind_invoice_code: "03", //boletas
-					...sorteByTime("year"),
+					...sorteByTime(empresa, "year"),
 					empresa_id: empresa.id,
 				},
 			}),
 			Notes.count({
 				where: {
 					kind_invoice_code: "07", //notas de credito
-					...sorteByTime("year"),
+					...sorteByTime(empresa, "year"),
 					empresa_id: empresa.id,
 				},
 			}),
 			Notes.count({
 				where: {
 					kind_invoice_code: "08", //notas de credito
-					...sorteByTime("year"),
+					...sorteByTime(empresa, "year"),
 					empresa_id: empresa.id,
 				},
 			}),

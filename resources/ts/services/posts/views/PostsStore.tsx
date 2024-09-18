@@ -70,6 +70,7 @@ function PostsStore({ onClose, refetch }: PoststoreProps) {
 					accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
 					title="Imagen"
 					typeFile="image"
+					showButonCopy
 				/>
 				<div class="flex justify-center">
 					<Form.button.submit

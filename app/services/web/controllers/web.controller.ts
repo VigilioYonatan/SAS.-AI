@@ -6,6 +6,7 @@ import {
 	Injectable,
 	Req,
 	Params,
+	BadRequestException,
 } from "@vigilio/express-core";
 import type { Response } from "express";
 import { WebService } from "../services/web.service";
@@ -13,6 +14,8 @@ import { Empresas } from "@/empresas/entities/empresas.entity";
 import { Pipe } from "@vigilio/express-core/valibot";
 import { objectAsync, string } from "@vigilio/valibot";
 import { UrlsService } from "@/urls/services/urls.service";
+import type { RequestVigilio } from "~/config/types";
+import { webEnabledMiddleware } from "../middlewares/webEnabled.middleware";
 
 @Injectable()
 @Controller("/")
@@ -21,12 +24,28 @@ export class WebController {
 		private readonly webService: WebService,
 		private readonly urlsService: UrlsService,
 	) {}
+	@Get("/proxy")
+	async proxy(@Req() req: RequestVigilio, @Res() res: Response) {
+		const { url } = req.query as { url: string };
+		if (!url) throw new BadRequestException("Url necesita");
+		try {
+			const response = await fetch(url);
+			const data = await response.arrayBuffer();
+			res.writeHead(200, {
+				"Content-Type":
+					response.headers.get("Content-Type") || "application/octet-stream",
+			});
+			res.end(Buffer.from(data)); // Enviar los datos de vuelta al cliente
+		} catch (error) {
+			res.status(500).send("Error fetching the URL");
+		}
+	}
 	@Get("/hello-world")
 	async helloworld(@Res() res: Response) {
 		return res.send("<h1>Hello World!!!</h1>"); // no borrar
 	}
 
-	@Get("/")
+	@Get("/", [webEnabledMiddleware])
 	async home(@Res() res: Response, @Req("empresa") empresa: Empresas) {
 		const result = await this.webService.home(empresa);
 		return res.render("web/home", result);
@@ -40,13 +59,13 @@ export class WebController {
 			message: message ?? "No se a encontrado esta página",
 		});
 	}
-	@Get("/shop")
+	@Get("/shop", [webEnabledMiddleware])
 	async shop(@Res() res: Response, @Req("empresa") empresa: Empresas) {
 		const result = await this.webService.shop(empresa);
 		return res.render("web/shop", result);
 	}
 
-	@Get("/shop/:category_slug")
+	@Get("/shop/:category_slug", [webEnabledMiddleware])
 	async categories(
 		@Params("category_slug") category_slug: string,
 		@Res() res: Response,
@@ -55,7 +74,7 @@ export class WebController {
 		const result = await this.webService.categories(category_slug, empresa);
 		return res.render("web/shop/categories", result);
 	}
-	@Get("/nosotros")
+	@Get("/nosotros", [webEnabledMiddleware])
 	async about(@Res() res: Response, @Req("empresa") empresa: Empresas) {
 		const result = await this.webService.about(empresa);
 		return res.render("web/home/about", result);

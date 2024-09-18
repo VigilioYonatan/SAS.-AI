@@ -141,6 +141,13 @@ function UsersStore({ refetch, onClose }: UsersStoreProps) {
 								title="Habilitado"
 								question="Si el usuario no está habilitado no podra acceder al dashboard, no podra realizar compras,etc."
 							/>
+							<Form.control
+								title="Especialidad"
+								name={"speciality" as keyof UsersStoreDto}
+								placeholder=""
+								type="text"
+								ico={<i class="fas fa-user-hard-hat" />}
+							/>
 							<Form.control.select
 								name={"role_id" as keyof UsersStoreDto}
 								title="Rol"
@@ -178,6 +185,7 @@ function UsersStore({ refetch, onClose }: UsersStoreProps) {
 							title="Foto de perfil"
 							accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
 							typeFile="image"
+							showButonCopy
 							typesText="No es obligatorio: JPG, JPEG, WEBP, PNG, GIF"
 						/>
 					</div>

@@ -555,20 +555,24 @@ function ProductCardView({ product }: ProductCardViewProps) {
 		</div>
 	);
 }
-
-export function MetodosDePago() {
+interface MetodosDePagoProps {
+	isEfectivo?: boolean;
+}
+export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
 	const empresaStore = useEmpresastore();
 
 	return (
 		<div class="flex flex-col gap-2">
-			<span class="dark:text-white text-xs font-bold text-black ">
-				Métodos de pago disponible
-			</span>
+			{isEfectivo ? (
+				<span class="dark:text-white text-xs font-bold text-black ">
+					Métodos de pago disponible
+				</span>
+			) : null}
+
 			<div class="flex gap-2 items-center overflow-auto scrollbar-hide">
 				{empresaStore.state?.metodos_pago.mercado_pago.enabled ? (
 					<img src={VisaMastercardImage()} width={80} height={80} alt="visa" />
 				) : null}
-
 				{empresaStore.state?.metodos_pago.qrYape ? (
 					<img src={yapeImage()} width={30} height={30} alt="yape" />
 				) : null}
@@ -578,7 +582,7 @@ export function MetodosDePago() {
 				{empresaStore.state?.metodos_pago.paypal.enabled ? (
 					<img src={paypalICOImage()} width={30} height={30} alt="yape" />
 				) : null}
-				{empresaStore.state?.metodos_pago.enable_efectivo ? (
+				{empresaStore.state?.metodos_pago.enable_efectivo && isEfectivo ? (
 					<p class="text-xs  text-center border p-1 rounded-md border-gray-400 text-black dark:text-white">
 						<i class="far fa-handshake" /> Efectivo
 					</p>
