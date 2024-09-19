@@ -6,6 +6,10 @@ import {
 	object,
 	omit,
 	nullable,
+	string,
+	toTrimmed,
+	minLength,
+	custom,
 } from "@vigilio/valibot";
 import { usersSchema } from "../schemas/users.schema";
 import validFileValibot from "~/libs/valibot";
@@ -19,8 +23,17 @@ export const usersStoreDto = merge([
 		"photo",
 		"subscription",
 		"enabledNotification",
+		"telephone",
 	]),
 	object({
+		telephone: string([
+			toTrimmed(),
+			minLength(6),
+			custom(
+				(value) => /^\d+$/.test(value),
+				"Este campo solo permite números.",
+			),
+		]),
 		photo: nullable(
 			array(instance(File), [
 				validFileValibot({

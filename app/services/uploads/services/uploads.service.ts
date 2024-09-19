@@ -20,7 +20,11 @@ import {
 	categoriesImageQualities,
 	productsImagesQualities,
 } from "@/products/libs";
-import { backgroundQualities, empresasLogoQualities } from "@/empresas/libs";
+import {
+	backgroundQualities,
+	empresasLogoPWAQualities,
+	empresasLogoQualities,
+} from "@/empresas/libs";
 import type { Request } from "express";
 import { UsersApiService } from "@/users/services/users.api.service";
 import { ProductsApiService } from "@/products/services/products.api.service";
@@ -258,6 +262,19 @@ export class UploadsService {
 						empresasLogoQualities,
 					);
 				}
+				if (property === "logo_pwa") {
+					qualities = await this.customUpload(
+						files,
+						{
+							minFiles: 1,
+							maxFiles: 1,
+							required: true,
+						},
+						empresasLogoPWAQualities,
+						undefined,
+						true,
+					);
+				}
 
 				break;
 			default:
@@ -266,7 +283,7 @@ export class UploadsService {
 				);
 		}
 		const responseFile = await uploadFiles({
-			empresa: empresa.slug,
+			empresa,
 			files,
 			entity,
 			name,
@@ -421,6 +438,9 @@ export class UploadsService {
 				if (property === "logo" && empresa.logo) {
 					removeFile(empresa.slug, empresa.logo);
 				}
+				if (property === "logo_pwa" && empresa.logo_pwa) {
+					removeFile(empresa.slug, empresa.logo_pwa);
+				}
 				break;
 			}
 			default:
@@ -455,10 +475,11 @@ export class UploadsService {
 		validation: ValidationProps,
 		qualities: number[] | null,
 		directory = "/images",
+		isPwa?: boolean,
 	) {
 		try {
 			await validateUpload(files, validation);
-			return { qualities, directory };
+			return { qualities, directory, isPwa };
 		} catch (error) {
 			throw new BadRequestException(error as string);
 		}

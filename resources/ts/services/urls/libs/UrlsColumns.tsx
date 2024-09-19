@@ -5,7 +5,7 @@ import { urlsDestroyApi } from "../apis/urls.destroy.api";
 import { reactComponent } from "~/libs/preact";
 import UrlsUpdate from "../views/UrlsUpdate";
 import useCopyToClipboard from "~/hooks/useCopyToClipboard";
-import { BASE_URL } from "@/empresas/stores/empresa.store";
+import { BASE_URL } from "~/config";
 
 export type UrlsIndexSecondaryPaginator = "acciones";
 export const urlsColumns: Columns<

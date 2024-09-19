@@ -7,6 +7,7 @@ import { Op } from "sequelize";
 export async function getFeatures(
 	products: ProductsNormal[],
 	category_id?: number,
+	brand_id?: number,
 ) {
 	const options = await Promise.all(
 		products.map(async (product) => {
@@ -37,6 +38,9 @@ export async function getFeatures(
 		return acc;
 	}, {}) as [{ option_id: number; features: number[] }];
 
+	const where = brand_id
+		? { brand_id: brand_id }
+		: { category_id: category_id };
 	// Step 3: Convert the grouped object to an array with the desired format
 	const optionsFeatures = await Promise.all(
 		Object.values(grouped).map(async (item) => {
@@ -55,7 +59,7 @@ export async function getFeatures(
 						include: [
 							{
 								model: ProductsNormal,
-								where: { category_id: category_id },
+								where,
 								required: true, // Asegura que solo se devuelvan resultados con Product asociado
 							},
 						],

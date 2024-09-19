@@ -20,8 +20,13 @@ import { useSignal } from "@preact/signals";
 interface CategoriesStoreProps {
 	refetch: (clean?: boolean) => Promise<void>;
 	onClose: () => void;
+	onSetValueCategory?: (value: number) => void;
 }
-function CategoriesStore({ refetch, onClose }: CategoriesStoreProps) {
+function CategoriesStore({
+	refetch,
+	onClose,
+	onSetValueCategory,
+}: CategoriesStoreProps) {
 	const { guards } = useAuthStore();
 	if (!guards.permissionAdminGuard()) {
 		onClose();
@@ -54,6 +59,9 @@ function CategoriesStore({ refetch, onClose }: CategoriesStoreProps) {
 						});
 						refetch(false);
 						onClose();
+						if (onSetValueCategory) {
+							onSetValueCategory(data.category.id);
+						}
 					},
 					onError(error) {
 						handlerError(categoriesStoreDtoForm, error);

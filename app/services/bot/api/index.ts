@@ -124,7 +124,8 @@ export async function whatsappGetQrApi(empresa: Empresas) {
 			},
 		},
 	);
-	const result = await response.blob();
+	const result = await response.arrayBuffer();
+
 	return result;
 }
 export async function whatsappLogout(empresa: Empresas) {
@@ -137,7 +138,7 @@ export async function whatsappLogout(empresa: Empresas) {
 			},
 		},
 	);
-	const result = await response.blob();
+	const result = await response.json();
 	return result;
 }
 export async function whatsappRemoveQR(empresa: Empresas) {

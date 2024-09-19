@@ -3,8 +3,10 @@ import {
 	BadRequestException,
 	Body,
 	Controller,
+	Get,
 	Post,
 	Req,
+	Res,
 } from "@vigilio/express-core";
 import type WAWebJS from "whatsapp-web.js";
 import {
@@ -27,6 +29,7 @@ import formidable from "formidable";
 import type { RequestVigilio } from "~/config/types";
 import fs from "node:fs";
 import cron from "node-cron";
+import type { Response } from "express";
 export let chats: Record<
 	string,
 	Record<string, ["assistant" | "user", string][]>
@@ -299,20 +302,25 @@ export class whatsappApiController {
 	}
 	@Post("/restart")
 	async restart(@Req("empresa") empresa: Empresas) {
+		await empresa.update({
+			timeWhatsapp: NOW(empresa).add(5, "minute").toDate(),
+		});
 		await whatsappRemoveQR(empresa);
 		await terminal(`docker container stop ${empresa.slug}`);
+		await delay(3);
 		await terminal(`docker container start ${empresa.slug}`);
-		empresa.update({ timeWhatsapp: NOW(empresa).add(5, "minute") });
+
 		return {
 			success: true,
 			message: "Se reinició correctamente.",
 		};
 	}
 
-	@Post("/qr")
-	async qr(@Req("empresa") empresa: Empresas) {
+	@Get("/qr")
+	async qr(@Req("empresa") empresa: Empresas, @Res() res: Response) {
 		const result = await whatsappGetQrApi(empresa);
-		return result;
+		res.setHeader("Content-Type", "image/png");
+		res.send(Buffer.from(result));
 	}
 
 	@Post("/logout")

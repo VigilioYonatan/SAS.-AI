@@ -1,11 +1,10 @@
 import { subtotalIgv } from "@/cart/libs/helpers";
 import useProduct, { type CouponStore } from "@/products/hooks/useProduct";
 import { formatMoney } from "@vigilio/express-core/helpers";
-import enviroments from "~/config";
+import enviroments, { BASE_URL } from "~/config";
 import { SampleNextArrow, SamplePrevArrow } from "../ArrowsSlider";
 import useThemeStore from "~/stores/theme.store";
 import useEmpresastore, {
-	BASE_URL,
 	storageEmpresa,
 } from "@/empresas/stores/empresa.store";
 import useShowImage from "~/hooks/useShowImage";
@@ -22,6 +21,7 @@ import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_norm
 import { transferencias } from "@/empresas/libs/helpers";
 import { Fragment } from "preact/jsx-runtime";
 import { verifyBank } from "@/cart/views/Niubiz";
+import { printFileWithDimension } from "~/libs/upload";
 
 interface ProductCardViewProps {
 	product: ReturnType<typeof useProduct>;
@@ -174,7 +174,9 @@ function ProductCardView({ product }: ProductCardViewProps) {
             `}</style>
 			<div class="flex flex-col gap-2 md:w-5/12 mt-8 py-2">
 				{product.varianteChoose?.sku ? (
-					<span>{product.varianteChoose?.sku}</span>
+					<span class="text-terciary text-xs">
+						SKU: {product.varianteChoose?.sku}
+					</span>
 				) : null}
 				<div class="flex  text-terciary text-xs flex-col">
 					<div class="flex gap-2">
@@ -194,6 +196,25 @@ function ProductCardView({ product }: ProductCardViewProps) {
 						{product.producto.value.name}
 					</span>
 				</div>
+				{(product.producto.value as ProductsNormalSchemaFromServer).brand
+					?.image ? (
+					<img
+						src={
+							printFileWithDimension(
+								(product.producto.value as ProductsNormalSchemaFromServer).brand
+									.image!,
+								100,
+							)[0]
+						}
+						alt={
+							(product.producto.value as ProductsNormalSchemaFromServer).brand
+								.name
+						}
+						width={40}
+						class="object-contain w-[40px] h-[40px]"
+						height={40}
+					/>
+				) : null}
 				<div class="flex flex-col">
 					<div class="flex gap-2">
 						{product.producto.value.discount > 0 ? (
@@ -240,7 +261,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
 					} ${
 						storageEmpresa!.tipo_empresa.tipo_servicio_id === 1
 							? (!product.varianteChoose!.ilimit &&
-									product.varianteChoose!.stock! < 0) ||
+									product.varianteChoose!.stock! > 0) ||
 								product.varianteChoose!.ilimit
 								? "text-primary"
 								: "text-danger"

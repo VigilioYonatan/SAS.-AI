@@ -11,6 +11,15 @@ import {
 	string,
 	type Input,
 } from "@vigilio/valibot";
+const hamrguers = [
+	"fas fa-pizza-slice",
+	"fas fa-soup",
+	"fas fa-car",
+	"fas fa-utensils-alt",
+	"fas fa-gamepad-alt",
+	"fas fa-hamburger",
+	"fas fa-bars",
+];
 
 export const settingsSchema = objectAsync({
 	id: number(),
@@ -41,7 +50,11 @@ export const settingsSchema = objectAsync({
 	isCoverImage: boolean(),
 	icon: nullable(array(filesSchema([100, 300]))), //obligatorio
 	photo: nullable(array(filesSchema())),
+	isLogoImage: boolean(),
 	isScrolling: boolean(),
+	hamburger: string([
+		custom((val) => hamrguers.includes(val), "Hamburguesa no válida"),
+	]),
 	empresa_id: number(),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;

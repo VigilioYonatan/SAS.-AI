@@ -26,8 +26,10 @@ import {
 import Hr from "@/web/components/Hr";
 import { settingsDominioUpdateApi } from "../apis/settings/dominio.update.api";
 import { Input, pick } from "@vigilio/valibot";
-import { settingsSchema } from "../schemas/settings.schema";
+import { hamburgers, settingsSchema } from "../schemas/settings.schema";
 import useAuthStore from "@/auth/stores/auth.store";
+import { Link } from "wouter-preact";
+import LogoImage from "~/components/LogoImage";
 
 const dominioUpdate = pick(settingsSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
@@ -61,6 +63,8 @@ function SettingsIndex() {
 		const isCoverImage = settingsUpdateform.watch("isCoverImage");
 		const type_border = settingsUpdateform.watch("type_border");
 		const type_cart = settingsUpdateform.watch("type_cart");
+		const hamburger = settingsUpdateform.watch("hamburger");
+		const isLogoImage = settingsUpdateform.watch("isLogoImage");
 
 		const settingsIconUpdateform = useForm<SettingsIconUpdateDto>({
 			resolver: valibotVigilio(settingsIconUpdateDto),
@@ -255,19 +259,26 @@ function SettingsIndex() {
 							</span>
 							<div class="flex gap-4 items-center">
 								<div
-									class={`w-[200px] shadow bg-paper-light dark:bg-admin-terciary overflow-hidden ${
+									class={`w-[200px]  shadow bg-paper-light dark:bg-admin-terciary overflow-hidden ${
 										type_border === "circle" ? "rounded-md" : ""
 									}`}
 								>
-									<img
-										class={`mx-auto w-[300px] h-[200px] ${
-											isCoverImage ? "object-cover" : "object-contain"
-										}`}
-										width={200}
-										height={150}
-										src="https://http2.mlstatic.com/D_NQ_NP_993674-MLA31895860508_082019-O.webp"
-										alt=""
-									/>
+									<div class="relative">
+										<img
+											class={`mx-auto w-[300px] h-[200px] ${
+												isCoverImage ? "object-cover" : "object-contain"
+											}`}
+											width={200}
+											height={150}
+											src="https://http2.mlstatic.com/D_NQ_NP_993674-MLA31895860508_082019-O.webp"
+											alt=""
+										/>
+										{isLogoImage ? (
+											<div class="absolute right-0 bottom-1 z-[9]">
+												<LogoImage width="40" height="40" />
+											</div>
+										) : null}
+									</div>
 								</div>
 								<div>
 									<Form.control.select
@@ -286,6 +297,27 @@ function SettingsIndex() {
 										name={"isCoverImage" as keyof SettingsUpdateDto}
 										title="¿Cover Imagen?"
 									/>
+									<Form.control.toggle
+										name={"isLogoImage" as keyof SettingsUpdateDto}
+										title="¿Ingresar logo?"
+										question={
+											<div class="w-[150px]">
+												{!storageEmpresa?.logo ? (
+													<>
+														<Link
+															href="/empresa"
+															class="text-primary underline font-semibold text-xs"
+														>
+															No ingresaste logo a tu empresa
+														</Link>
+														<br />
+													</>
+												) : null}
+												Cuando subes las imagenes a tus productos se agregará tu
+												logo.
+											</div>
+										}
+									/>
 								</div>
 							</div>
 						</div>
@@ -296,7 +328,7 @@ function SettingsIndex() {
 								</span>
 								<div class="flex gap-2">
 									<button
-										class={`w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+										class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
 											type_cart === "fas fa-shopping-cart"
 												? "bg-paper-light dark:bg-admin-terciary"
 												: ""
@@ -312,7 +344,7 @@ function SettingsIndex() {
 										<i class="fas fa-shopping-cart text-lg dark:text-white" />
 									</button>
 									<button
-										class={`w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+										class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
 											type_cart === "fas fa-shopping-bag"
 												? "bg-paper-light dark:bg-admin-terciary"
 												: ""
@@ -328,7 +360,7 @@ function SettingsIndex() {
 										<i class="fas fa-shopping-bag text-lg dark:text-white" />
 									</button>
 									<button
-										class={`w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+										class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
 											type_cart === "fas fa-shopping-basket"
 												? "bg-paper-light dark:bg-admin-terciary"
 												: ""
@@ -343,6 +375,31 @@ function SettingsIndex() {
 									>
 										<i class="fas fa-shopping-basket text-lg dark:text-white" />
 									</button>
+								</div>
+							</div>
+						</div>
+						<div class="grid grid-cols-1 md:grid-cols-2 md:gap-2 items-center">
+							<div>
+								<span class="text-xs dark:text-white font-semibold">
+									Tipo Bars
+								</span>
+								<div class="flex gap-2 flex-wrap">
+									{hamburgers.map((hbm) => (
+										<button
+											key={hbm}
+											class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+												hamburger === hbm
+													? "bg-paper-light dark:bg-admin-terciary"
+													: ""
+											}`}
+											type="button"
+											onClick={() =>
+												settingsUpdateform.setValue("hamburger", hbm)
+											}
+										>
+											<i class={`${hbm} text-lg dark:text-white`} />
+										</button>
+									))}
 								</div>
 							</div>
 						</div>
@@ -425,9 +482,6 @@ function SettingsIndex() {
 							title="Guardar Cambios"
 						/>
 					</Form>
-					<Hr spacing={13} />
-
-					<br />
 					<Hr spacing={13} />
 					<br />
 					<Form {...settingsPhotoUpdateform} onSubmit={onUpdatePhotoempresa}>

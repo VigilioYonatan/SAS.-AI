@@ -17,8 +17,9 @@ import { getFilesEdit } from "~/libs/upload";
 interface BrandsStoreProps {
 	refetch: (clean?: boolean) => Promise<void>;
 	onClose: () => void;
+	onSetValueBrand?: (value: number) => void;
 }
-function BrandsStore({ refetch, onClose }: BrandsStoreProps) {
+function BrandsStore({ refetch, onClose, onSetValueBrand }: BrandsStoreProps) {
 	const { guards } = useAuthStore();
 	if (!guards.permissionAdminGuard()) {
 		onClose();
@@ -49,6 +50,9 @@ function BrandsStore({ refetch, onClose }: BrandsStoreProps) {
 						});
 						refetch(false);
 						onClose();
+						if (onSetValueBrand) {
+							onSetValueBrand(data.brand.id);
+						}
 					},
 					onError(error) {
 						handlerError(brandsStoreDtoForm, error);

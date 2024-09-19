@@ -13,6 +13,16 @@ import {
 } from "@vigilio/valibot";
 import { filesSchema } from "~/libs/upload";
 
+export const hamburgers = [
+	"fas fa-pizza-slice",
+	"fas fa-soup",
+	"fas fa-car",
+	"fas fa-utensils-alt",
+	"fas fa-gamepad-alt",
+	"fas fa-hamburger",
+	"fas fa-bars",
+];
+
 export const settingsSchema = object({
 	id: number(),
 	host: nullable(
@@ -43,7 +53,11 @@ export const settingsSchema = object({
 	icon: nullable(array(filesSchema())), //obligatorio
 	photo: nullable(array(filesSchema())),
 	isDark: boolean(),
+	isLogoImage: boolean(),
 	empresa_id: number(),
+	hamburger: string([
+		custom((val) => hamburgers.includes(val), "Hamburguesa no válida"),
+	]),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;
 export type SettingsSchemaFromServer = SettingsSchema & {

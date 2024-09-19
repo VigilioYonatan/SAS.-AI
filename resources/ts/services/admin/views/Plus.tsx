@@ -9,8 +9,7 @@ import {
 import enviroments from "~/config";
 import Loading from "../components/Loading";
 import View404 from "./404";
-import { formatDolares } from "@/cart/libs/helpers";
-import { formatMoney } from "@vigilio/express-core/helpers";
+import { formatDolares, formatMoney } from "@/cart/libs/helpers";
 import { payments } from "../libs";
 import { formatDateTwo, NOW, restarDays } from "~/libs/helpers";
 
@@ -244,26 +243,22 @@ function Plus() {
 								</span>
 							</div>
 						</ProductCard>
-						{storageEmpresa!.payments.tokens.tokens < 500000 ? (
-							<ProductCard
-								isMensual={false}
-								title="10 millones de Tokens"
-								priceLocal={price!.local.tokens!}
-								priceDolar={price!.dolar.tokens!}
-								discount={3}
-								imageUrl="/images/settings/others/tokens.jpg"
-								link={`${
-									enviroments.VITE_VIGILIO_WEB
-								}/payment/${storageEmpresa?.slug}?type=${
-									"tokens" as TypePayment
-								}`}
-							>
-								<span class="font-semibold ">
-									¿Necesitas mas tokens para el uso de tu inteligencia
-									Aritificial?.
-								</span>
-							</ProductCard>
-						) : null}
+						<ProductCard
+							isMensual={false}
+							title="10 millones de Tokens"
+							priceLocal={price!.local.tokens!}
+							priceDolar={price!.dolar.tokens!}
+							discount={3}
+							imageUrl="/images/settings/others/tokens.jpg"
+							link={`${enviroments.VITE_VIGILIO_WEB}/payment/${
+								storageEmpresa?.slug
+							}?type=${"tokens" as TypePayment}`}
+						>
+							<span class="font-semibold ">
+								¿Necesitas mas tokens para el uso de tu inteligencia
+								Aritificial?.
+							</span>
+						</ProductCard>
 					</div>
 				</div>
 				<div class="mt-4">

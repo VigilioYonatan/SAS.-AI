@@ -34,7 +34,7 @@ function HeaderMobile({ headerDropdown }: HeaderMobileProps) {
 						<Hamburguer isOpen={headerDropdown.dropdownOpen} />
 					</button>
 
-					<a href={"/"} class="flex  items-center">
+					<a href={"/"} class="flex  items-center ml-12">
 						{empresaStore.state!.logo ? (
 							<img
 								width={100}

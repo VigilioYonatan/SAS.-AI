@@ -144,21 +144,28 @@ export const empresasSchema = objectAsync({
 	name_empresa: string([minLength(2), maxLength(100)]),
 	email: string(),
 	logo: nullable(array(filesSchema(empresasLogoQualities))), //obligatorio
+	logo_pwa: nullable(array(filesSchema(empresasLogoQualities))), //obligatorio
 	telephoneFirst: string([
 		minLength(1),
 		maxLength(30),
-		custom((value) => /^\d+$/.test(value), "Solo numeros."),
+		custom((value) => /^\d+$/.test(value), "Este campo solo permite números."),
 	]), //obligatorio
 	telephoneReclamos: nullable(
 		string([
 			maxLength(30),
-			custom((value) => /^\d+$/.test(value), "Solo numeros."),
+			custom(
+				(value) => /^\d+$/.test(value),
+				"Este campo solo permite números.",
+			),
 		]),
 	),
 	telephoneThird: nullable(
 		string([
 			maxLength(30),
-			custom((value) => /^\d+$/.test(value), "Solo numeros."),
+			custom(
+				(value) => /^\d+$/.test(value),
+				"Este campo solo permite números.",
+			),
 		]),
 	),
 

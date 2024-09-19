@@ -17,6 +17,8 @@ import AboutSection from "./components/AboutSection";
 import UsersSection from "./components/UsersSection";
 import { UsersSchema } from "@/users/schemas/users.schema";
 import CategoriesSection from "./components/CategoriesSection";
+import BrandsSection from "./components/BrandsSection";
+import { BrandsSchemaFromServer } from "@/products/schemas/brands.schema";
 
 export interface HomePageProps {
 	header: HeaderType;
@@ -47,6 +49,7 @@ export interface HomePageProps {
 		UsersSchema,
 		"id" | "name" | "speciality" | "photo" | "birthday"
 	>[];
+	brands: Pick<BrandsSchemaFromServer, "id" | "image">[];
 }
 function HomePage({
 	header,
@@ -59,6 +62,7 @@ function HomePage({
 	getproductsbycategories,
 	productsquantity,
 	users,
+	brands,
 }: HomePageProps) {
 	return (
 		<>
@@ -79,6 +83,7 @@ function HomePage({
 					productlatestmapped={productlatestmapped}
 					productmostdiscountmapped={productmostdiscountmapped}
 				/>
+				<BrandsSection brands={brands} />
 				<PostsSection posts={posts} />
 				<UsersSection users={users} />
 				<FindSection />

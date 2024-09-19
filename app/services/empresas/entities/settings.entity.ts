@@ -50,6 +50,13 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
 	isDark: boolean;
 
 	@Column({
+		type: DataType.BOOLEAN,
+		defaultValue: null,
+		allowNull: false,
+	})
+	isLogoImage: boolean;
+
+	@Column({
 		type: DataType.STRING(60),
 	})
 	bg_color_responsive: string;
@@ -63,6 +70,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
 		type: DataType.STRING(60),
 	})
 	type_cart: string;
+
+	@Column({
+		type: DataType.STRING(60),
+	})
+	hamburger: string;
 
 	@Column({
 		type: DataType.JSON,

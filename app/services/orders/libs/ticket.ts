@@ -6,8 +6,7 @@ import type { Empresas } from "@/empresas/entities/empresas.entity";
 import type { Invoices } from "../entities/invoices.entity";
 import type { Address } from "@/empresas/entities/address.entity";
 import { detailInvoice } from ".";
-import fs from "node:fs";
-import { pathUploads, printFileWithDimension } from "@/uploads/libs/helpers";
+import { printFileWithDimension } from "@/uploads/libs/helpers";
 import { MONEYDOLARES } from "~/libs/helpers";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
 import type { Users } from "@/users/entities/users.entity";
@@ -52,13 +51,6 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
     </tr>`;
 	});
 
-	const image = empresa.logo
-		? fs
-				.readFileSync(
-					`${pathUploads()}/${empresa.slug}/${empresa.logo[0].file}`, // trae a la imagen 100px
-				)
-				.toString("base64")
-		: "";
 	let total =
 		(order.pasarela_comision && order.is_pasarela_client
 			? order.total + pasarelaComision(empresa, order.total)

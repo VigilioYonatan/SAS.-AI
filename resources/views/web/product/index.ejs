@@ -5,6 +5,8 @@
 %>
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="app-url" content="<%= route("/")  %>">
   <meta name="file-base-url" content="<%= route("/public")  %>">
   <meta name="robots" content="index, follow">
@@ -36,7 +38,7 @@
   <meta property="product:retailer_item_id" content="<%= product.slug  %>">
   <meta property="product:price:currency" content="<%= locals.$empresa.money.simbolo  %>">
   <meta property="fb:app_id" content="">
-  <link rel="manifest" href="/dist/manifest.webmanifest">
+  <link rel="manifest" href="/manifest.webmanifest.json">
   <!-- ICONO -->
   <link rel="shortcut icon" href="<%=   locals.$empresa.setting?.icon ? printFileWithDimension(locals.$empresa.setting.icon,100)[0] :'' %>" type="image/x-icon" />
   <%- `<script> 

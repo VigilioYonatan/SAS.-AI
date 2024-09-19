@@ -24,6 +24,12 @@ export class WebController {
 		private readonly webService: WebService,
 		private readonly urlsService: UrlsService,
 	) {}
+
+	@Get("/manifest.webmanifest.json")
+	async manifest(@Req("empresa") empresa: Empresas) {
+		const result = await this.webService.manifest(empresa);
+		return result;
+	}
 	@Get("/proxy")
 	async proxy(@Req() req: RequestVigilio, @Res() res: Response) {
 		const { url } = req.query as { url: string };
@@ -73,6 +79,16 @@ export class WebController {
 	) {
 		const result = await this.webService.categories(category_slug, empresa);
 		return res.render("web/shop/categories", result);
+	}
+
+	@Get("/marcas/:brand", [webEnabledMiddleware])
+	async marcas(
+		@Params("brand") brand: string,
+		@Res() res: Response,
+		@Req("empresa") empresa: Empresas,
+	) {
+		const result = await this.webService.marcas(brand, empresa);
+		return res.render("web/shop/brands", result);
 	}
 	@Get("/nosotros", [webEnabledMiddleware])
 	async about(@Res() res: Response, @Req("empresa") empresa: Empresas) {

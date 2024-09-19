@@ -1,5 +1,6 @@
-import { BASE_URL, storageEmpresa } from "@/empresas/stores/empresa.store";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { type Input, number, object, string, optional } from "@vigilio/valibot";
+import { BASE_URL } from "~/config";
 
 export function filesSchema() {
 	return object({ dimension: number(), file: optional(string()) });

@@ -1,12 +1,11 @@
 import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
 import useEmpresastore, {
-	BASE_URL,
 	storageEmpresa,
 } from "@/empresas/stores/empresa.store";
 import useProduct, { type CouponStore } from "@/products/hooks/useProduct";
 import { useSignal } from "@preact/signals";
 import Slider from "react-slick";
-import enviroments from "~/config";
+import enviroments, { BASE_URL } from "~/config";
 import WebLayout, { type HeaderType } from "@/web/components/WebLayout";
 import Form from "~/components/form";
 import ProductCard from "@/web/components/product";
@@ -72,7 +71,7 @@ function ProductPage({
 
 	return (
 		<WebLayout header={header}>
-			<section class="max-w-6xl gap-6 mx-auto mb-6 mt-20  lg:mt-6 lg:flex-row px-4">
+			<section class="max-w-6xl gap-6 mx-auto mb-6 mt-28  lg:mt-6 lg:flex-row px-4">
 				<div class="my-2 md:my-6 overflow-auto">
 					<WebBreadCrumb
 						current={product.name}
@@ -208,6 +207,11 @@ function ProductPage({
                         }
                     `}</style>
 					<div class="flex flex-col gap-2 md:w-5/12 mt-8 ">
+						{varianteChoose?.sku ? (
+							<span class="text-terciary text-xs">
+								SKU: {varianteChoose?.sku}
+							</span>
+						) : null}
 						<div class="flex gap-2 text-gray-600 dark:text-gray-300 text-xs font-normal">
 							{product.category?.icon ? (
 								<div
@@ -232,7 +236,7 @@ function ProductPage({
 								}
 								alt={(product as ProductsNormalSchemaFromServer).brand.name}
 								width={40}
-								class="object-contain"
+								class="object-contain w-[40px] h-[40px]"
 								height={40}
 							/>
 						) : null}
@@ -276,7 +280,7 @@ function ProductPage({
 									: ""
 							} ${
 								storageEmpresa!.tipo_empresa.tipo_servicio_id === 1
-									? (!varianteChoose!.ilimit && varianteChoose!.stock! < 0) ||
+									? (!varianteChoose!.ilimit && varianteChoose!.stock! > 0) ||
 										varianteChoose!.ilimit
 										? "text-primary"
 										: "text-danger"
@@ -562,7 +566,7 @@ function ProductPage({
 								<a
 									target="_blank"
 									rel="noreferrer"
-									href={`https://wa.me/51${
+									href={`https://wa.me/${empresaStore.state!.dial_code}${
 										empresaStore.state!.telephoneFirst
 									}?text=Hola, estoy interesado en ${product.name}`}
 								>

@@ -81,7 +81,7 @@ function SearchProducts() {
 		<>
 			<button
 				type="button"
-				class=" text-white px-3 py-2 rounded-md text-lg "
+				class=" text-white lg:text-black dark:lg:text-white px-3 py-2 rounded-md text-lg "
 				onClick={() => {
 					setOpenSearch(!openSearch);
 				}}

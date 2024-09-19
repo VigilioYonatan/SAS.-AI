@@ -265,6 +265,11 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 	logo: FilesSchema[] | null;
 
 	@Column({
+		type: DataType.JSON,
+	})
+	logo_pwa: FilesSchema[] | null;
+
+	@Column({
 		type: DataType.BOOLEAN,
 		allowNull: false,
 	})

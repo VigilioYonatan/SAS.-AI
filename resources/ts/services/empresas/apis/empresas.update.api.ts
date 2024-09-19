@@ -28,10 +28,16 @@ export function empresaUpdateLogoApi() {
 		SettingsLogoUpdateDto & { name: string },
 		{ success: false; message: string }
 	>("/uploads/empresas/logo/1", async (url, body) => {
-		const result = await uploadApi(`/api${url}`, {
-			file: body.logo,
-			name: body.name,
-		});
+		const [result] = await Promise.all([
+			uploadApi(`/api${url}`, {
+				file: body.logo,
+				name: body.name,
+			}),
+			uploadApi("/api/uploads/empresas/logo_pwa/1", {
+				file: body.logo,
+				name: body.name,
+			}),
+		]);
 		return result;
 	});
 }

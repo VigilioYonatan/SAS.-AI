@@ -87,7 +87,7 @@ function Footer({ categories }: FooterProps) {
 						</li>
 						{empresaStore.state!.telephoneFirst ? (
 							<li class="dark:text-gray-400  text-gray-600 font-semibold">
-								📞 +51{" "}
+								📞 +{empresaStore.state!.dial_code}{" "}
 								{empresaStore.state!.telephoneFirst.replace(
 									/(\d{3})(\d{3})(\d{3})/,
 									"$1 $2 $3",
@@ -96,7 +96,7 @@ function Footer({ categories }: FooterProps) {
 						) : null}
 						{empresaStore.state!.telephoneReclamos ? (
 							<li class="dark:text-gray-400  text-gray-600 font-semibold">
-								📞 +51{" "}
+								📞 +{empresaStore.state!.dial_code}{" "}
 								{empresaStore.state!.telephoneReclamos.replace(
 									/(\d{3})(\d{3})(\d{3})/,
 									"$1 $2 $3",
@@ -105,7 +105,7 @@ function Footer({ categories }: FooterProps) {
 						) : null}
 						{empresaStore.state!.telephoneThird ? (
 							<li class="dark:text-gray-400  text-gray-600 font-semibold">
-								📞 +51{" "}
+								📞 +{empresaStore.state!.dial_code}{" "}
 								{empresaStore.state!.telephoneThird.replace(
 									/(\d{3})(\d{3})(\d{3})/,
 									"$1 $2 $3",

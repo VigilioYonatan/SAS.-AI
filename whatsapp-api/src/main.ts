@@ -27,7 +27,7 @@ export const NODE_ENV = process.env.NODE_ENV!;
 export const qrImage = path.resolve(__dirname, "..", `${SESSION_NAME}-qr.png`);
 export const BASE_URL =
     NODE_ENV === "production"
-        ? `https://${process.env.SESSION_NAME}.vigilio-services.com`
+        ? `https://www.${process.env.SESSION_NAME}.vigilio-services.com`
         : `http://${process.env.SESSION_NAME}.localhost:4003`;
 
 export let client: WAWebJS.Client;

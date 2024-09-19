@@ -47,6 +47,8 @@ import useEmpresastore, {
 	storageEmpresa,
 } from "@/empresas/stores/empresa.store";
 import useCountDown from "~/hooks/useCountDown";
+import Helper from "~/components/Helper";
+import { whatsappInfoImage } from "~/config/settings";
 
 function Whatsapp() {
 	const authStore = useAuthStore();
@@ -624,20 +626,23 @@ function StoreContact({ refetch }: StoreContactProps) {
 export function QrWhatsapp() {
 	const qrCodeQuery = whatsappGetQrApi();
 	const whatsappRestartMutation = whatsappRestart();
+	const { state } = useEmpresastore();
+
 	return (
 		<div class="flex flex-col gap-4 justify-center items-center">
 			<h3 class="text-xl font-bold text-paper-light flex items-center gap-2 text-primary">
 				<span>Conectar bot de WhatsApp</span>{" "}
 				<i class="fa-duotone fa-message-bot" />
 			</h3>
-			{restarDays(NOW().toDate(), storageEmpresa!.timeWhatsapp, "seconds") >=
-			0 ? (
+			{restarDays(NOW().toDate(), state!.timeWhatsapp, "seconds") <= 0 ? (
 				<>
 					{(() => {
 						const countdown = useCountDown(storageEmpresa!.timeWhatsapp);
 						return (
 							<div class="flex justify-center items-center flex-col gap-2">
-								<span class="dark:text-white">Se está generando Código QR</span>
+								<span class="dark:text-white">
+									Se está generando Whatsapp Código QR
+								</span>
 								<div class="flex gap-2 items-center">
 									<span class="text-3xl font-bold  dark:text-white">
 										{countdown.minutes}
@@ -647,14 +652,31 @@ export function QrWhatsapp() {
 										{countdown.seconds}
 									</span>
 								</div>
+								<AlertInfo>
+									<div class="flex flex-col">
+										<b>Recomendación:</b>
+										No mover la cámara bruscamente a la hora de escanear QR.
+									</div>
+								</AlertInfo>
 							</div>
 						);
 					})()}
 				</>
 			) : (
 				<>
-					<p class="text-md dark:text-white font-bold">
+					<p class="text-md text-center dark:text-white font-bold flex gap-1 items-center">
 						Escanea este codigo Qr en ajustes de tu whatsapp
+						{"  "}
+						<button class="relative block" type="button">
+							<Helper top={10} right={10}>
+								<img
+									src={whatsappInfoImage()}
+									width={300}
+									height={300}
+									alt=""
+								/>
+							</Helper>
+						</button>
 					</p>
 					{qrCodeQuery.isLoading && (
 						<p class="dark:text-white">Cargando QR...</p>
@@ -673,26 +695,30 @@ export function QrWhatsapp() {
 								<button
 									type="button"
 									class="self-end bg-black bg-opacity-60 w-[30px] h-[30px] flex justify-center items-center rounded-md"
-									disabled={qrCodeQuery.isLoading || false}
+									disabled={whatsappRestartMutation.isLoading || false}
 									onClick={() => {
 										whatsappRestartMutation.mutate(null, {
 											onSuccess() {
 												sweetAlert({
 													icon: "success",
 													title: "Reinciado correctamente whatsapp",
+												}).then(() => {
+													window.location.reload();
 												});
 											},
-											onError(err) {
+											onError() {
 												sweetAlert({
 													icon: "success",
-													title: (err as Error).message,
+													title: "Reinciado correctamente whatsapp",
+												}).then(() => {
+													window.location.reload();
 												});
 											},
 										});
 									}}
 								>
-									{qrCodeQuery.isLoading ? (
-										<span class="text-xs dark:text-white">Cargando...</span>
+									{whatsappRestartMutation.isLoading ? (
+										<LoaderSubmit />
 									) : (
 										<i class="fa-solid fa-rotate-right text-white text-xl" />
 									)}
@@ -703,7 +729,7 @@ export function QrWhatsapp() {
 					)}
 					<ul class="list-image-none flex flex-col gap-2">
 						<li class="dark:text-white text-center">
-							*Si no está funcionando el qr. Recarga la pagina y reiniciar{" "}
+							*Si no está funcionando el qr. Intentelo 2 - 3 veces
 							<i class="fa-solid fa-rotate-right text-white text-xs" />
 						</li>
 					</ul>

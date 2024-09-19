@@ -54,6 +54,7 @@ export class UsersApiService {
 	async store(empresa: Empresas, usersStoreDto: UsersStoreDto) {
 		const user = new Users({
 			...usersStoreDto,
+			enabledNotification: true,
 			empresa_id: empresa.id,
 		});
 		user.user_code = await generateCodeEntity(

@@ -30,6 +30,10 @@ render(
 	lazy(() => import("@/web/views/shop/ShopPage")),
 );
 render(
+	"BrandPage",
+	lazy(() => import("@/web/views/shop/BrandPage")),
+);
+render(
 	"PedidosPage",
 	lazy(() => import("@/web/views/pedidos/PedidosPage")),
 );

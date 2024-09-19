@@ -10,6 +10,7 @@ export function BASE_URL(empresa: Empresas) {
 		: `http://${empresa.slug}.localhost:4003`;
 }
 export const empresasLogoQualities = [100, 300];
+export const empresasLogoPWAQualities = [73, 94, 145, 153, 193, 513];
 export const backgroundQualities = [100, 1000];
 // TIPO EMPRESA
 

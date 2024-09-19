@@ -32,7 +32,7 @@
   <meta property="og:description" content="<%=locals.$empresa ? $empresa.name_empresa:''  %> ofrece los mejores productos del mercado a un precio bajo">
   <meta property="og:site_name" content="<%= locals.$empresa ? $empresa.name_empresa:''  %>">
   <meta property="fb:app_id" content="">
-  <link rel="manifest" href="/dist/manifest.webmanifest">
+  <link rel="manifest" href="/manifest.webmanifest.json">
   <!-- ICONO -->
   <link rel="shortcut icon" href="<%=   locals.$empresa.setting?.icon ? printFileWithDimension(locals.$empresa.setting.icon,100)[0] :'' %>" type="image/x-icon" />
   <%- `<script> 
@@ -52,7 +52,7 @@
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
 
-  <home-page :users="<%= JSON.stringify(users)  %>" :noticia="<%= JSON.stringify(noticia) %>" :productsQuantity="<%= JSON.stringify(productsQuantity)  %>" :header="<%= JSON.stringify(header)  %>" :backgrounds="<%= JSON.stringify(backgrounds)  %>" :posts="<%= JSON.stringify(posts)  %>" :productsOffert6Mapped="<%= JSON.stringify(productsOffert6Mapped)  %>" :productsLatest6Mapped="<%= JSON.stringify(productsLatest6Mapped)  %>" :productMostDiscountMapped="<%= JSON.stringify(productMostDiscountMapped)  %>" :productLatestMapped="<%= JSON.stringify(productLatestMapped)  %>" :getProductsByCategories="<%= JSON.stringify(getProductsByCategories)  %>"></home-page>
+  <home-page :users="<%= JSON.stringify(users)  %>" :noticia="<%= JSON.stringify(noticia) %>" :productsQuantity="<%= JSON.stringify(productsQuantity)  %>" :header="<%= JSON.stringify(header)  %>" :backgrounds="<%= JSON.stringify(backgrounds)  %>" :posts="<%= JSON.stringify(posts)  %>" :productsOffert6Mapped="<%= JSON.stringify(productsOffert6Mapped)  %>" :productsLatest6Mapped="<%= JSON.stringify(productsLatest6Mapped)  %>" :productMostDiscountMapped="<%= JSON.stringify(productMostDiscountMapped)  %>" :productLatestMapped="<%= JSON.stringify(productLatestMapped)  %>" :getProductsByCategories="<%= JSON.stringify(getProductsByCategories)  %>" :brands="<%= JSON.stringify(brands)  %>"></home-page>
 </body>
 
 </html>

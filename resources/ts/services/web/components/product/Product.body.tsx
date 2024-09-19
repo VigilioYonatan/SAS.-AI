@@ -69,7 +69,7 @@ function ProductBody({ showDescription }: ProductBodyProps) {
 				</span>{" "}
 				<a
 					href={`/${product.producto.value.slug}`}
-					class="line-clamp-2 text-sm h-[45px]  md:text-base font-semibold dark:text-white hover:text-primary dark:hover:text-primary delay-custom-1  text-center"
+					class="line-clamp-2 text-sm   md:text-base font-semibold dark:text-white hover:text-primary dark:hover:text-primary delay-custom-1  text-center"
 				>
 					{product.producto.value.name}
 				</a>

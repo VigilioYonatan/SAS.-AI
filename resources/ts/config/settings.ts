@@ -15,6 +15,9 @@ export function NoImage() {
 export function logoImage() {
 	return "/images/logo.png";
 }
+export function whatsappInfoImage() {
+	return "/images/settings/others/whatsappinfo.png";
+}
 export function PdfImage() {
 	return "/images/settings/others/pdf.webp";
 }

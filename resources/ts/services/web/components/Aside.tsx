@@ -7,12 +7,14 @@ import useAuthStore from "@/auth/stores/auth.store";
 import { printFileUser } from "@/users/libs/helpers";
 import LogoImage from "~/components/LogoImage";
 import { isActive } from "~/libs/helpers";
+import { BrandsSchema } from "@/products/schemas/brands.schema";
 
 interface AsideProps {
 	headerDropdown: UseDropdown;
 	categories: HeaderType["categories"];
+	brands: Pick<BrandsSchema, "id" | "name" | "image" | "slug">[];
 }
-function Aside({ headerDropdown, categories }: AsideProps) {
+function Aside({ headerDropdown, categories, brands }: AsideProps) {
 	const empresaStore = useEmpresastore();
 	const authStore = useAuthStore();
 	useEffect(() => {
@@ -105,12 +107,78 @@ function Aside({ headerDropdown, categories }: AsideProps) {
 											/>
 										) : null}
 
-										<span>{category.name}</span>
+										<span class="text-sm">{category.name}</span>
 									</a>
 								</div>
 							</button>
 						))}
 					</div>
+					{brands.length ? (
+						<div class="px-4 py-2 flex gap-2 items-center  justify-between">
+							<div
+								class={`text-black dark:text-white text-sm hover:bg-paper-light   flex gap-2 items-center dark:hover:dark:bg-paper-dark tracking-wide   font-semibold ${
+									isActive("/shop", false) ? "bg-white dark:bg-paper-dark" : ""
+								}`}
+							>
+								<i class="fa-solid fa-tag" /> Marcas
+							</div>
+							{(() => {
+								const dropdown = useDropdown();
+								return (
+									<>
+										<button
+											type="button"
+											onClick={(e) => {
+												e.stopPropagation();
+												dropdown.onOpen();
+											}}
+											class=" dark:text-white text-black"
+										>
+											<i class="far fa-chevron-right" />
+											<div
+												class={`${
+													dropdown.dropdownOpen
+														? "visible translate-x-0"
+														: "invisible translate-x-full"
+												} delay-custom-1  absolute inset-0 bg-white  dark:dark:bg-paper-dark`}
+											>
+												<span
+													class="text-2xl dark:text-white text-black px-4 py-2  text-end block"
+													onClick={() => {
+														dropdown.onClose();
+													}}
+												>
+													<i class="far fa-times" />
+												</span>
+												<div class="flex flex-col gap-2">
+													<button
+														type="button"
+														onClick={() => {
+															dropdown.onClose();
+														}}
+														class="self-start px-6 dark:text-white"
+													>
+														<i class="fas fa-long-arrow-left" />
+													</button>
+													<div class="flex flex-col   w-full text-black font-semibold dark:text-white">
+														{brands.map((brand) => (
+															<a
+																key={brand.id}
+																href={`/marcas/${brand.slug}`}
+																class="self-start text-sm  font-semibold py-3   px-6 text-start hover:bg-paper-light w-full   dark:hover:text-primary"
+															>
+																{brand.name}
+															</a>
+														))}
+													</div>
+												</div>
+											</div>
+										</button>
+									</>
+								);
+							})()}
+						</div>
+					) : null}
 				</nav>{" "}
 				<nav class="flex flex-col">
 					{authStore.state! ? (
@@ -203,8 +271,7 @@ function Aside({ headerDropdown, categories }: AsideProps) {
 					class="text-xl font-semibold px-4 gap-2 items-center flex tracking-wider text-black dark:text-white  py-4  absolute bottom-0 right-0 left-0 border-t-[1px] border-primary w-full "
 					href={`https://wa.me/${empresaStore.state!.telephoneFirst}`}
 				>
-					<i class="fab fa-whatsapp" />
-					+51{" "}
+					<i class="fab fa-whatsapp" />+{empresaStore.state!.dial_code}{" "}
 					{empresaStore.state!.telephoneFirst.replace(
 						/(\d{3})(\d{3})(\d{3})/,
 						"$1 $2 $3",

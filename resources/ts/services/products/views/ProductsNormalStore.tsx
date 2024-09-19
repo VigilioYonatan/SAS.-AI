@@ -147,6 +147,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
 				<CategoriesStore
 					onClose={onClose}
 					refetch={categoriesIndexQuery.refetch}
+					onSetValueCategory={onSetValueCategory}
 				/>,
 			),
 			sweetWidth: "700px",
@@ -156,7 +157,11 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
 	function onBrandsStore() {
 		sweetModal((onClose) => ({
 			html: reactComponent(
-				<BrandsStore onClose={onClose} refetch={brandsIndexQuery.refetch} />,
+				<BrandsStore
+					onClose={onClose}
+					refetch={brandsIndexQuery.refetch}
+					onSetValueBrand={onSetValueBrand}
+				/>,
 			),
 			sweetWidth: "700px",
 			showCloseButton: true,
@@ -202,7 +207,12 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
 			},
 		});
 	}
-
+	function onSetValueCategory(value: number) {
+		productsNormalStoreDtoForm.setValue("category_id", value);
+	}
+	function onSetValueBrand(value: number) {
+		productsNormalStoreDtoForm.setValue("brand_id", value);
+	}
 	return (
 		<div class="text-start  mt-6">
 			<Form {...productsNormalStoreDtoForm} onSubmit={onProductStore}>

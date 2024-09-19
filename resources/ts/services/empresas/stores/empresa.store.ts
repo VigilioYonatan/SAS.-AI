@@ -33,9 +33,6 @@ export type empresaStore = Omit<
 export const storageEmpresa: empresaStore | null = JSON.parse(
 	localStorage.getItem("empresa") ?? "null",
 );
-export const BASE_URL = storageEmpresa!.setting.host
-	? `https://www.${storageEmpresa!.setting.host}`
-	: `https://${storageEmpresa!.slug}.vigilio-services.com`;
 
 const empresa = signal<empresaStore | null>(storageEmpresa);
 

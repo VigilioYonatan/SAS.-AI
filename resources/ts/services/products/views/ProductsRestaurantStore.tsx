@@ -120,13 +120,16 @@ function ProductsRestaurantStore({
 				<CategoriesStore
 					onClose={onClose}
 					refetch={categoriesIndexQuery.refetch}
+					onSetValueCategory={onSetValueCategory}
 				/>,
 			),
 			sweetWidth: "700px",
 			showCloseButton: true,
 		}));
 	}
-
+	function onSetValueCategory(value: number) {
+		productsRestaurantStoreDtoForm.setValue("category_id", value);
+	}
 	return (
 		<div class="text-start  mt-6">
 			<Form {...productsRestaurantStoreDtoForm} onSubmit={onProductStore}>

@@ -53,7 +53,7 @@ export function whatsappSendFileApi() {
 			formdata.append("url", rest.url);
 		}
 		if (rest.option) {
-			formdata.append("url", JSON.stringify(rest.option));
+			formdata.append("option", JSON.stringify(rest.option));
 		}
 		const response = await fetch(
 			`${BASE_URL_WHATSAPP}/api${url}?telephone=${telephone}`,
@@ -136,7 +136,7 @@ export function whatsappLogout() {
 }
 export function whatsappRestart() {
 	return useMutation<{ success: true; message: string }, unknown, unknown>(
-		"/bot/whatsapp/restart",
+		"/whatsapp/restart",
 		async (url) => {
 			const response = await fetch(`/api${url}`, {
 				method: "POST",

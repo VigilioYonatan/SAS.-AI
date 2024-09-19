@@ -337,7 +337,7 @@ function OrdersShow({ params: { order_code }, refetch }: OrdersShowProps) {
 											src={
 												printFileWithDimension(
 													order.transferencia_image,
-													500,
+													800,
 												)[0]
 											}
 											width={300}

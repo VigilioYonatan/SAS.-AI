@@ -39,6 +39,7 @@ import { KindInvoiceApiController } from "@/orders/controllers/kind_invoice.api.
 import { FloorsApiController } from "@/orders/controllers/floors.api.controller";
 import { IAApiController } from "@/bot/controllers/ia.api.controller";
 import { whatsappApiController } from "@/bot/controllers/whatsapp.api.controller";
+import { WebApiController } from "@/web/controllers/web.api.controller";
 
 export const apiRouters: Type[] = [
 	EmpresasApiController,
@@ -81,4 +82,5 @@ export const apiRouters: Type[] = [
 	FloorsApiController,
 	IAApiController,
 	whatsappApiController,
+	WebApiController,
 ];

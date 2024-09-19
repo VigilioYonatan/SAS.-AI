@@ -16,6 +16,7 @@ import useCartStore from "@/cart/stores/cart.store";
 import { formatMoney } from "@/cart/libs/helpers";
 import CartAside from "@/cart/views/CartAside";
 import SearchProducts from "@/products/views/ProductsSearch";
+import { printFileWithDimension } from "~/libs/upload";
 
 interface HeaderProps {
 	header: HeaderType;
@@ -35,7 +36,8 @@ function Header({ header }: HeaderProps) {
 						<span class="dark:text-white text-black">
 							Teléfono:{" "}
 							<span class="text-primary font-semibold">
-								(+51) {empresaStore.state!.telephoneFirst}
+								(+{empresaStore.state!.dial_code}){" "}
+								{empresaStore.state!.telephoneFirst}
 							</span>
 						</span>
 						{empresaStore.state!.email ? (
@@ -99,6 +101,7 @@ function Header({ header }: HeaderProps) {
 				<div class="bg-gray-600 h-[1px] max-w-6xl mx-auto" />
 				<div class="max-w-6xl   mx-auto flex gap-4 justify-between items-center px-2 py-4 ">
 					<LogoImage width="60" height="60" />
+
 					<nav class=" gap-6 items-center hidden lg:flex  relative">
 						<a
 							class={` font-bold tracking-widest dark:hover:text-primary text-sm uppercase ${
@@ -170,6 +173,43 @@ function Header({ header }: HeaderProps) {
 										);
 									})}
 								</div>
+								{header.brands.length ? (
+									<button
+										type="button"
+										aria-label="marcas"
+										class="flex gap-2 items-center justify-between p-2 hover:bg-primary hover:text-white group w-full rounded-md  relative group"
+									>
+										<div class="flex gap-3 items-center dark:text-white">
+											<i class="fas fa-tag" />
+											<span class="font-semibold">Marcas</span>
+										</div>
+										<div class="absolute rounded-md right-[-312px] min-w-[300px]  p-2 bg-background-light dark:bg-paper-dark rounded-b-md flex-col hidden group-hover:flex">
+											{header.brands.map((brand) => (
+												<a
+													href={`/marcas/${brand.slug}`}
+													class="flex gap-2 items-center justify-between p-2   w-full rounded-md hover:text-white hover:bg-primary dark:text-white text-black"
+													key={brand.id}
+													aria-label="sho category"
+												>
+													<div class="flex gap-2 items-center ">
+														{brand.image ? (
+															<img
+																class="object-contain w-[30px] h-[30px]"
+																width={100}
+																height={100}
+																alt={brand.name}
+																src={
+																	printFileWithDimension(brand.image, 100)[0]
+																}
+															/>
+														) : null}
+														<span class="font-semibold">{brand.name}</span>
+													</div>
+												</a>
+											))}
+										</div>
+									</button>
+								) : null}
 							</div>
 						</div>
 
@@ -268,7 +308,11 @@ function Header({ header }: HeaderProps) {
 			</header>
 			{/* acá ira el header personalizado */}
 			<HeaderMobile headerDropdown={headerDropdown} />
-			<Aside headerDropdown={headerDropdown} categories={header.categories} />
+			<Aside
+				brands={header.brands}
+				headerDropdown={headerDropdown}
+				categories={header.categories}
+			/>
 		</>
 	);
 }

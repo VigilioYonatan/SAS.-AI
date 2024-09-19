@@ -2,6 +2,7 @@ import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { NOW, restarDays } from "~/libs/helpers";
 
 const enviroments = {
+	VITE_ENV: import.meta.env.VITE_ENV,
 	VITE_VIGILIO_WEB: import.meta.env.VITE_VIGILIO_WEB,
 	VITE_VIGILIO_TOKEN: import.meta.env.VITE_VIGILIO_TOKEN,
 	VITE_VIGILIO_SUNAT: import.meta.env.VITE_VIGILIO_SUNAT,
@@ -61,3 +62,8 @@ export function fechasVencidas() {
 					? "tus tokens IA"
 					: null;
 }
+export const BASE_URL = storageEmpresa!.setting.host
+	? `https://www.${storageEmpresa!.setting.host}`
+	: enviroments.VITE_ENV === "production"
+		? `https://${storageEmpresa!.slug}.vigilio-services.com`
+		: `http://${storageEmpresa!.slug}.localhost:4003`;

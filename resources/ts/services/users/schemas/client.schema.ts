@@ -18,7 +18,7 @@ export const clientsSchema = objectAsync({
 	telephone: string([
 		toTrimmed(),
 		minLength(6),
-		custom((value) => /^\d+$/.test(value), "Solo numeros."),
+		custom((value) => /^\d+$/.test(value), "Este campo solo permite números."),
 	]),
 	address: nullable(string([minLength(10), maxLength(100)])),
 	city_id: nullable(number()),
