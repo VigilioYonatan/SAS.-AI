@@ -76,6 +76,8 @@ export class Server {
                 }
                 subdomain = subdomain?.split(".")[0]; // Obtiene el subdominio
                 if (subdomain === "vigilio-services") {
+                    console.log("aca");
+
                     return null;
                 }
                 if (
