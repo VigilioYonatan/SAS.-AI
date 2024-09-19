@@ -66,25 +66,23 @@ export class Server {
 
         this.app.use(async (req: Request, res, next) => {
             const host = req.headers.host;
-
             let subdomain = null;
-
             if (host?.includes(".")) {
-                // ignoreamos el www.
-                if (host.startsWith("www.")) {
+                if (host?.startsWith("www.")) {
                     subdomain = host.slice(4);
-                }
-                subdomain = subdomain?.split(".")[0]; // Obtiene el subdominio
-                if (subdomain === "vigilio-services") {
-                    console.log("aca");
-
-                    return null;
-                }
-                if (
-                    enviroments.CLIENT.toLowerCase() ===
-                    subdomain?.toLowerCase()
-                ) {
-                    return next();
+                    const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
+                    if (subdomainSplit?.length > 1) {
+                        subdomain = subdomainSplit[0];
+                        if (
+                            enviroments.CLIENT.toLowerCase() ===
+                            subdomain?.toLowerCase()
+                        ) {
+                            return next();
+                        }
+                    }
+                    if (subdomain === "vigilio-services") {
+                        return null;
+                    }
                 }
             }
             const where = subdomain
@@ -171,7 +169,7 @@ export class Server {
             if (enviroments.NODE_ENV !== "production") {
                 return next();
             }
-            return res.redirect("https://vigilio-services.com");
+            return res.redirect("https://www.vigilio-services.com");
         });
         // habilitar carpeta public
         this.app.use(express.static(`${dirMode}/public`));
