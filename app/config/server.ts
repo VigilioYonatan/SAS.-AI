@@ -70,7 +70,9 @@ export class Server {
             let subdomain = null;
 
             if (host?.includes(".")) {
-                subdomain = host?.split(".")[0]; // Obtiene el subdominio
+                // ignoreamos el www.
+                subdomain = host?.split(".")[1]; // Obtiene el subdominio
+                if (subdomain === "www") return;
                 if (
                     enviroments.CLIENT.toLowerCase() === subdomain.toLowerCase()
                 ) {
