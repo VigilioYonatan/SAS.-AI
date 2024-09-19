@@ -117,8 +117,6 @@ export class EmpresasApiService {
 
     async store(body: EmpresasStoreDto) {
         try {
-            console.log({ slug: body.slug });
-
             const { password, fullname, ...rest } = body;
             const existingEmpresa = await Empresas.findOne({
                 where: { slug: body.slug },

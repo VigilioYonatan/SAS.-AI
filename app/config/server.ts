@@ -46,6 +46,9 @@ import { initial } from "@/empresas/services/empresas.api.service";
 import { dirMode } from ".";
 import { NOW, restarDays } from "~/libs/dayjs";
 import { Brands } from "@/products/entities/brands.entitiy";
+import * as i18nextHttpMiddleware from "i18next-http-middleware";
+import i18next, { i18nextMiddleware } from "../libs/i18next";
+
 export class Server {
     public readonly app: express.Application = express();
 
@@ -63,17 +66,30 @@ export class Server {
         // habilitar para consumir json
         this.app.use(express.json({ limit: "100mb" }));
         await connectDB();
+        this.auth();
+        // habilitar carpeta public
+        this.app.use(express.static(`${dirMode}/public`));
 
+        // habilitar para consumir vistas
+        this.app.set("view engine", "ejs");
+        this.app.set("views", `${dirMode}/resources/views`);
+        this.app.use(i18nextHttpMiddleware.handle(i18next));
+        this.app.use(i18nextMiddleware);
+        // vite js configuración
+        this.app.use(client());
+        await initial();
         this.app.use(async (req: Request, res, next) => {
             const host = req.headers.host;
             let subdomain = null;
             if (host?.includes(".")) {
                 if (host?.startsWith("www.")) {
                     subdomain = host.slice(4);
+
                     const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
 
                     if (subdomainSplit?.length > 1) {
                         subdomain = subdomainSplit[0];
+
                         if (
                             enviroments.CLIENT.toLowerCase() ===
                             subdomain?.toLowerCase()
@@ -82,9 +98,9 @@ export class Server {
                         }
                     }
 
-                    if (subdomain === "vigilio-services") {
-                        return null;
-                    }
+                    // if (subdomain === "vigilio-services") {
+                    //     return null;
+                    // }
                 }
             }
             const where = subdomain
@@ -110,6 +126,7 @@ export class Server {
                     ] as (keyof EmpresasSchema)[],
                 },
             });
+            // console.log({ empresa });
 
             if (empresa) {
                 if (
@@ -150,7 +167,6 @@ export class Server {
                     },
                     ...certificado,
                 };
-
                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 (req as any).empresa = empresa;
                 res.locals.$empresa = info;
@@ -164,6 +180,49 @@ export class Server {
                         empresa.money.international_simbolo
                     );
                 res.locals.printImagesProduct = printImagesProduct(empresa);
+                // aca
+                // si no existe req.user que sea nulo
+                const user = (req.user ?? null) as Users;
+                res.locals.$user = user;
+                (req as RequestVigilio).user = user;
+                const host = req.headers.host?.slice(4);
+                // no permitido para endpoints y que no sea el subdominio client
+
+                // LAYOUT
+                const [categories] = await Promise.all([
+                    Categories.findAll({
+                        where: {
+                            empresa_id: empresa.id,
+                        },
+                    }),
+                ]);
+                const categoriasTotal = await Promise.all(
+                    categories.map(async (category) => {
+                        const product = await Product(empresa).findOne({
+                            order: [["createdAt", "DESC"]],
+                            where: {
+                                enabled: true,
+                                category_id: category.id,
+                                empresa_id: empresa.id,
+                            },
+                        });
+                        return {
+                            ...category.toJSON(),
+                            productNew: product,
+                        };
+                    })
+                );
+
+                const brands = await Brands.findAll({
+                    where: {
+                        empresa_id: empresa.id,
+                    },
+                    attributes: ["id", "name", "image", "empresa_id", "slug"],
+                });
+                res.locals.header = {
+                    categories: categoriasTotal,
+                    brands,
+                };
 
                 return next();
             }
@@ -173,21 +232,10 @@ export class Server {
             }
             return res.redirect("https://www.vigilio-services.com");
         });
-        // habilitar carpeta public
-        this.app.use(express.static(`${dirMode}/public`));
-
-        // habilitar para consumir vistas
-        this.app.set("view engine", "ejs");
-        this.app.set("views", `${dirMode}/resources/views`);
-        // vite js configuración
-        this.app.use(client());
-        await initial();
-        await this.auth();
-        await this.routes();
-        // metodos globales
+        this.routes();
     }
 
-    async auth() {
+    auth() {
         this.app.set("trust proxy", 1);
         // cachear session para mejor rendimiento de las sessiones
         const memoryStoreClass = memoryStore(session);
@@ -225,66 +273,6 @@ export class Server {
             if (!findUser) return done({ message: "error authenticated" });
             return done(null, findUser);
         });
-        this.app.use(
-            async (req: Request, res: Response, next: NextFunction) => {
-                // si no existe req.user que sea nulo
-                const user = (req.user ?? null) as Users;
-                res.locals.$user = user;
-                (req as RequestVigilio).user = user;
-                const empresa = (req as RequestVigilio).empresa;
-
-                const host = req.headers.host?.slice(4);
-                // no permitido para endpoints y que no sea el subdominio client
-                if (
-                    !req.path.includes("/api") &&
-                    host?.includes(".") &&
-                    enviroments.CLIENT.toLowerCase() !==
-                        host?.split(".")[0].toLowerCase()
-                ) {
-                    // LAYOUT
-                    const [categories] = await Promise.all([
-                        Categories.findAll({
-                            where: {
-                                empresa_id: empresa.id,
-                            },
-                        }),
-                    ]);
-                    const categoriasTotal = await Promise.all(
-                        categories.map(async (category) => {
-                            const product = await Product(empresa).findOne({
-                                order: [["createdAt", "DESC"]],
-                                where: {
-                                    enabled: true,
-                                    category_id: category.id,
-                                    empresa_id: empresa.id,
-                                },
-                            });
-                            return {
-                                ...category.toJSON(),
-                                productNew: product,
-                            };
-                        })
-                    );
-                    const brands = await Brands.findAll({
-                        where: {
-                            empresa_id: empresa.id,
-                        },
-                        attributes: [
-                            "id",
-                            "name",
-                            "image",
-                            "empresa_id",
-                            "slug",
-                        ],
-                    });
-                    res.locals.header = {
-                        categories: categoriasTotal,
-                        brands,
-                    };
-                }
-                next();
-            }
-        );
     }
 
     routes() {
