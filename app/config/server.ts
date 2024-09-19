@@ -71,6 +71,7 @@ export class Server {
                 if (host?.startsWith("www.")) {
                     subdomain = host.slice(4);
                     const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
+
                     if (subdomainSplit?.length > 1) {
                         subdomain = subdomainSplit[0];
                         if (
@@ -80,6 +81,7 @@ export class Server {
                             return next();
                         }
                     }
+
                     if (subdomain === "vigilio-services") {
                         return null;
                     }
@@ -231,7 +233,7 @@ export class Server {
                 (req as RequestVigilio).user = user;
                 const empresa = (req as RequestVigilio).empresa;
 
-                const host = req.headers.host;
+                const host = req.headers.host?.slice(4);
                 // no permitido para endpoints y que no sea el subdominio client
                 if (
                     !req.path.includes("/api") &&
