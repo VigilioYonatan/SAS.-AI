@@ -74,10 +74,13 @@ export class Server {
                 if (host.startsWith("www.")) {
                     subdomain = host.slice(4);
                 }
-                subdomain = subdomain!.split(".")[0]; // Obtiene el subdominio
-                if (subdomain === "vigilio-services") return null;
+                subdomain = subdomain?.split(".")[0]; // Obtiene el subdominio
+                if (subdomain === "vigilio-services") {
+                    return null;
+                }
                 if (
-                    enviroments.CLIENT.toLowerCase() === subdomain.toLowerCase()
+                    enviroments.CLIENT.toLowerCase() ===
+                    subdomain?.toLowerCase()
                 ) {
                     return next();
                 }
