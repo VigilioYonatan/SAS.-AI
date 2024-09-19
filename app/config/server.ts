@@ -71,8 +71,11 @@ export class Server {
 
             if (host?.includes(".")) {
                 // ignoreamos el www.
-                subdomain = host?.split(".")[1]; // Obtiene el subdominio
-                if (subdomain === "www") return;
+                if (host.startsWith("www.")) {
+                    subdomain = host.slice(4);
+                }
+                subdomain = subdomain!.split(".")[0]; // Obtiene el subdominio
+                if (subdomain === "vigilio-services") return null;
                 if (
                     enviroments.CLIENT.toLowerCase() === subdomain.toLowerCase()
                 ) {
@@ -163,7 +166,7 @@ export class Server {
             if (enviroments.NODE_ENV !== "production") {
                 return next();
             }
-            return res.redirect("https://www.vigilio-services.com");
+            return res.redirect("https://vigilio-services.com");
         });
         // habilitar carpeta public
         this.app.use(express.static(`${dirMode}/public`));
