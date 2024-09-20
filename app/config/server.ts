@@ -78,8 +78,10 @@ export class Server {
             const host = req.headers.host;
             let subdomain = null;
             if (host?.includes(".")) {
-                if (host?.startsWith("www.")) {
-                    subdomain = host.slice(4);
+                subdomain = !host?.startsWith("www.") ? `www.${host}` : host;
+
+                if (subdomain?.startsWith("www.")) {
+                    subdomain = subdomain.slice(4);
 
                     const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
 

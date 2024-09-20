@@ -7,24 +7,39 @@ import fs from "node:fs";
 import WAWebJS from "whatsapp-web.js";
 import {
     getQr,
+    restart,
     sendFile,
     sendLogout,
     sendMessage,
-    removeQR,
     sendSeen,
     sendTyping,
 } from "./endpoints";
 import path from "node:path";
 import { authenticateToken } from "./middleware";
 import morgan from "morgan";
+import util from "node:util";
+import { exec } from "node:child_process";
 dotenv.config({ path: ".env" });
+const execAsync = util.promisify(exec);
 
+export async function terminal(comando: string) {
+    try {
+        const { stdout, stderr } = await execAsync(comando);
+        if (stderr) {
+            throw new Error(`Error en el comando, ${stderr}`);
+        }
+        return stdout; // Devuelve la salida estándar
+    } catch (error) {
+        throw new Error(`Error server, ${(error as Error).message}`);
+    }
+}
 const PORT = Number(process.env.PORT);
 export const SESSION_NAME = process.env.SESSION_NAME;
 export const VITE_TOKEN_VIGILIO_SERVICES =
     process.env.VITE_TOKEN_VIGILIO_SERVICES!;
 export const NODE_ENV = process.env.NODE_ENV!;
 export const qrImage = path.resolve(__dirname, "..", `${SESSION_NAME}-qr.png`);
+
 export const BASE_URL =
     NODE_ENV === "production"
         ? `https://www.${process.env.SESSION_NAME}.vigilio-services.com`
@@ -33,7 +48,7 @@ export const BASE_URL =
 export let client: WAWebJS.Client;
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(morgan("dev"));
 
 export async function initialWhatsapp() {
@@ -42,6 +57,7 @@ export async function initialWhatsapp() {
         puppeteer: {
             headless: true,
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
+            timeout: 60000,
         },
     });
 
@@ -110,7 +126,7 @@ app.post("/api/whatsapp/send-seen", authenticateToken, sendSeen);
 app.post("/api/whatsapp/send-typing", authenticateToken, sendTyping);
 app.get("/api/whatsapp/qr", authenticateToken, getQr);
 app.post("/api/whatsapp/logout", authenticateToken, sendLogout);
-app.post("/api/whatsapp/remove-qr", authenticateToken, removeQR);
+app.post("/api/whatsapp/restart", authenticateToken, restart);
 
 // whatsapp
 initialWhatsapp();

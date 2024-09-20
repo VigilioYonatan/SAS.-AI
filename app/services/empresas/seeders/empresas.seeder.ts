@@ -223,7 +223,8 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         enabled_igv: true,
         igv: 16,
         credentials: {
-            open_ai: "",
+            open_ai:
+                "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",
         },
         inteligenceArtificial: {
             max_length: 600,
@@ -333,7 +334,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
                 enabled: false,
             },
             tienda: { enabled: true },
-            tokens: { tokens: 10000 },
+            tokens: { tokens: 10000000 },
         },
         type_empresa_id: 22,
         bancos: [

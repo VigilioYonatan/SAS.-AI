@@ -129,7 +129,7 @@ export async function sendLogout() {
     await initialWhatsapp();
     return { success: true, message: "logout success" };
 }
-export async function removeQR() {
+export async function restart() {
     if (fs.existsSync(qrImage)) {
         fs.unlinkSync(qrImage);
     }
