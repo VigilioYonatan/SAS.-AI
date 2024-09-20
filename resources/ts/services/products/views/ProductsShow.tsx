@@ -21,6 +21,7 @@ import ProductNotification from "../components/ProductNotification";
 import { variantsDeleteApi } from "../apis/options/variants.delete.api";
 import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schema";
 import ProductsRestaurantUpdate from "./ProductsRestaurantUpdate";
+import { ProductsRestaurantSchema } from "../schemas/products_restaurant.schema";
 
 interface ProductsShowProps {
 	id?: string | number;
@@ -195,6 +196,20 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
 									{formatMoney(product.price)}
 								</span>
 							</div>
+							{storageEmpresa?.tipo_empresa.tipo_servicio_id === 2 ? (
+								<div class="flex gap-1 flex-col mb-3  p-2 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md">
+									<span class="text-primary dark:text-terciary font-bold">
+										Cantidad:
+									</span>
+									<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
+										{(product as ProductsRestaurantSchema).ilimit
+											? "En Stock"
+											: `${
+													(product as ProductsRestaurantSchema).stock
+												} Unidades`}
+									</span>
+								</div>
+							) : null}
 
 							<div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
 								<span class="text-primary dark:text-terciary font-bold">

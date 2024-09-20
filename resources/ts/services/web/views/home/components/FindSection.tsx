@@ -2,6 +2,7 @@ import useEmpresastore, {
 	storageEmpresa,
 } from "@/empresas/stores/empresa.store";
 import MapValue from "~/components/MapValue";
+import useMediaQuery from "~/hooks/useMediaQuery";
 
 function FindSection() {
 	const empresaStore = useEmpresastore();
@@ -14,7 +15,10 @@ function FindSection() {
 				<MapValue
 					zoom={16}
 					value={empresaStore.state!.map_marker}
-					style={{ height: "400px", width: "100%" }}
+					style={{
+						height: useMediaQuery("(min-width:600px)") ? "200px" : "400px",
+						width: "100%",
+					}}
 				/>
 				<div class="flex flex-col absolute bottom-0 m-1 bg-white z-10 p-2 gap-2 max-w-[250px] rounded-md shadow">
 					<span class="font-bold text-black text-sm">
@@ -26,11 +30,11 @@ function FindSection() {
 					</p>
 				</div>
 			</div>
-			<div class="md:w-1/2 py-16 md:py-0  justify-center items-center flex-col flex gap-6">
-				<h3 class="text-3xl font-bold text-primary text-center dark:text-white">
+			<div class="md:w-1/2 py-7 md:py-0  justify-center items-center flex-col flex gap-6">
+				<h3 class="text-xl md:text-3xl font-bold text-primary text-center dark:text-white">
 					Encuentranos cerca de ti!
 				</h3>
-				<i class="far fa-map-marker-alt text-3xl dark:text-white" />
+				<i class="far fa-map-marker-alt text-2xl md:text-3xl dark:text-white" />
 			</div>
 		</section>
 	);

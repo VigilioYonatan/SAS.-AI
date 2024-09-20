@@ -17,15 +17,15 @@ function ProductButtons({ isAbsolute }: ProductsButtonProps) {
 		<div
 			class={`grid grid-cols-3 w-full delay-custom-1 ${
 				isAbsolute
-					? "absolute bottom-0 right-0 left-0 gap-1 md:translate-y-full md:group-hover:translate-y-0 "
+					? "absolute bottom-0 right-0 left-0  md:translate-y-full md:group-hover:translate-y-0 "
 					: ""
 			}`}
 		>
 			<button
-				class={`border border-gray-400  ${
+				class={`border border-gray-200 dark:border-gray-500  ${
 					product.existProductInCart
 						? "bg-primary text-white cursor-not-allowed "
-						: "bg-background-light  dark:bg-paper-dark   dark:text-white hover:text-primary border border-gray-400"
+						: "bg-background-light  dark:bg-paper-dark   dark:text-white hover:text-primary border border-gray-200 dark:border-gray-500"
 				}  p-2 ${
 					(product.producto.value as ProductsRestaurantSchemaFromServer)
 						.ilimit ||
@@ -56,12 +56,12 @@ function ProductButtons({ isAbsolute }: ProductsButtonProps) {
 
 			<a
 				href={`/${product.producto.value.slug}`}
-				class="bg-background-light dark:bg-paper-dark  dark:text-white border border-gray-400 p-2 hover:text-primary  flex justify-center items-center"
+				class="bg-background-light dark:bg-paper-dark  dark:text-white border border-gray-200 dark:border-gray-500 p-2 hover:text-primary  flex justify-center items-center"
 			>
 				<i class="far fa-eye " />
 			</a>
 			<button
-				class="bg-background-light dark:bg-paper-dark  dark:text-white border border-gray-400 p-2 hover:text-primary "
+				class="bg-background-light dark:bg-paper-dark  dark:text-white border border-gray-200 dark:border-gray-500 p-2 hover:text-primary "
 				type="button"
 				aria-label="view"
 				onClick={() => {

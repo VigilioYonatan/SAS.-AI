@@ -189,6 +189,7 @@ function empresaUpdate() {
 									}))}
 									placeholder="Tipo de empresa"
 									title="Tipo de empresa"
+									value={empresa.tipo_empresa.tipo_servicio_id}
 									disabled
 								/>
 								{!empresa.type_empresa_id ? (
@@ -331,7 +332,7 @@ function empresaUpdate() {
 										name={"enabled_booster" as keyof EmpresasUpdateDto}
 										title="Habilitar Velocidad 500% mas rápido a la web"
 										question={
-											<div class="w-[200px]">
+											<div class="w-[120px] md:w-[200px]">
 												<i class="fa-sharp fa-solid fa-rocket-launch" />
 												<br />
 												<b>Vigilio Services</b> tiene las webs más rapidas del
@@ -377,7 +378,7 @@ function empresaUpdate() {
 										name={"enabledClientPayComision" as keyof EmpresasUpdateDto}
 										title="El cliente pagará la comisión de las pasarelas"
 										question={
-											<div class="flex flex-col w-[250px]">
+											<div class="flex flex-col w-[120px] md:w-[250px]">
 												Si está habilitado esta opción tu cliente pagará las
 												comisiones de las pasarelas de pago, eso quiere decir
 												que aumentará el precio a tus productos en las pasarelas
@@ -408,7 +409,7 @@ function empresaUpdate() {
 
 						<div class="flex gap-2 items-center w-full lg:flex-row flex-wrap">
 							<Form.control.map
-								title="ubicación de mapa al cliente"
+								title="ubicación de empresa"
 								name={"map_marker" as keyof EmpresasUpdateDto}
 								question={
 									<div>
@@ -417,6 +418,7 @@ function empresaUpdate() {
 										Recomendable el local de tu negocio/empresa
 									</div>
 								}
+								isLocal
 							/>
 
 							<div class="flex flex-row lg:flex-col  gap-2 flex-wrap">

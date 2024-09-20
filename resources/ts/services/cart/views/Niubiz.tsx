@@ -833,11 +833,10 @@ function TransferenciaPayment({
 		<div class="dark:text-white">
 			<h1 class="text-xl font-bold text-center py-3">Transferencia Bancaria</h1>
 			<p class="text-sm">
-				Realiza tu pago directamente en nuestra cuentas bancaria. Por favor, usa
-				el numero del pedido como referencia de pago. Tu pedido no se procesará
-				hasta que se haya recibido el importe en nuestra cuenta.
+				Realiza tu pago directamente en nuestra cuentas bancaria. Tu pedido no
+				se procesará hasta que se haya recibido el importe en nuestra cuenta.
 			</p>
-			<span class="font-bold">
+			<span class="font-bold mt-2 block">
 				{formatMoney(cartStore.methods.getTotal())} /{" "}
 				{formatDolares(cartStore.methods.getTotal() / dolarNow)}
 			</span>

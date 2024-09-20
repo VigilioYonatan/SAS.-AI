@@ -243,7 +243,6 @@ export const empresasSchema = object({
 	whatsappconfig, // configuracion whatsapp
 	schedule: array(scheduleSchema), // horario de trabajo
 	enabledAnimation: boolean(),
-	enabled_pwa: boolean(),
 	map_marker: object(
 		// mapa de la empresa del cliente ?
 		{ lng: number(), lat: number() },
@@ -252,6 +251,7 @@ export const empresasSchema = object({
 	enable_sell_country: boolean(),
 	enable_map_marker: boolean(), // activar google maps. cliente pagará para activar
 	enabled_booster: boolean(),
+	twilio: object({ account: string(), token: string() }),
 	// pasarela: string(),
 	// auth
 	payments,

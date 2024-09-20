@@ -211,7 +211,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
 								.name
 						}
 						width={40}
-						class="object-contain w-[40px] h-[40px]"
+						class="object-contain w-[40px]"
 						height={40}
 					/>
 				) : null}

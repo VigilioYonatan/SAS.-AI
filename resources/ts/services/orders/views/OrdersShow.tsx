@@ -74,57 +74,44 @@ function OrdersShow({ params: { order_code }, refetch }: OrdersShowProps) {
 										type="button"
 										class="self-start ml-2 text-xs text-white bg-primary px-3 py-2 rounded-md relative"
 										onClick={() => {
-											sweetModal((onClose) => ({
-												html: reactComponent(
-													<>
-														<html lang="es">
-															<head>
-																<meta charset="UTF-8" />
-																<meta
-																	name="viewport"
-																	content="width=device-width, initial-scale=1.0"
-																/>
-																<title>Ticket PDF</title>
-															</head>
-															<body>
-																<div
-																	class="flex justify-center items-center relative flex-col gap-2 dark:text-white text-black "
-																	onClick={() => {
-																		window.print();
-																		onClose();
-																	}}
-																>
-																	<h1 class="text-3xl font-bold">
-																		{order.order_code}
-																	</h1>
-																	<span>
-																		{TimePeru(order.createdAt).format(
-																			"DD/MM/YYYY hh:mm",
-																		)}
-																	</span>
-																	{storageEmpresa?.logo ? (
-																		<img
-																			src={
-																				printFileWithDimension(
-																					storageEmpresa.logo,
-																					100,
-																				)[0]
-																			}
-																			width={60}
-																			height={60}
-																			class="absolute bottom-0 right-0 opacity-20"
-																			alt="logo"
-																		/>
-																	) : null}
-																</div>
-															</body>
-														</html>
-													</>,
-												),
-											}));
+											const printWindow = window.open(
+												"",
+												"",
+												"height=150,width=220",
+											)!;
+											printWindow.document.write('<html lang="es"><head>');
+											printWindow.document.write('<meta charset="UTF-8" />');
+											printWindow.document.write(
+												'<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
+											);
+											printWindow.document.write("<title>Ticket PDF</title>");
+											printWindow.document.write(
+												"<style>.flex{display:flex;}.justify-center{justify-content:center;}.items-center{align-items:center;}.relative{position:relative;}.flex-col{flex-direction:column;}.gap-2{gap:0.5rem;}.dark\\:text-white{color:white;}.text-black{color:black;}.text-3xl{font-size:1.875rem;}.font-bold{font-weight:bold;}.absolute{position:absolute;}.bottom-0{bottom:0;}.right-0{right:0;}.opacity-20{opacity:0.2;}</style>",
+											);
+											printWindow.document.write("</head><body>");
+											printWindow.document.write(`
+											  <div class="flex justify-center items-center relative flex-col gap-2 dark:text-white text-black">
+												<h1 class="text-3xl font-bold">${order.order_code}</h1>
+												<span class="font-bold">${TimePeru(
+													order.createdAt,
+												).format("DD/MM/YYYY hh:mm")}</span>
+												${
+													storageEmpresa?.logo
+														? `
+												  <img src="${
+														printFileWithDimension(storageEmpresa.logo, 100)[0]
+													}" width="60" height="60" class="absolute bottom-0 right-0 opacity-20" alt="logo" />
+												`
+														: ""
+												}
+											  </div>
+											`);
+											printWindow.document.write("</body></html>");
+											printWindow.document.close();
+											printWindow.print();
 										}}
 									>
-										<i class="far fa-ticket" /> <HelperPDF />
+										<i class="far fa-ticket" /> <HelperPDF right={0} top={1} />
 									</button>
 								</div>
 							</div>

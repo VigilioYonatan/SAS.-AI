@@ -23,6 +23,7 @@ export const empresasUpdateDto = omitAsync(empresasSchema, [
 	"token",
 	"timeWhatsapp",
 	"impuestos",
+	"logo_pwa",
 	"tz",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;

@@ -1,5 +1,6 @@
 import { type UseQuery, useQuery } from "@vigilio/preact-fetching";
 import { EmpresasSchemaFromServer } from "../schemas/empresas.schema";
+import { TipoEmpresaSchema } from "../schemas/tipo_empresa.schema";
 
 export function empresaPrivateApi(): UseQuery<
 	empresaPrivateAPI,
@@ -15,7 +16,7 @@ export function empresaPrivateApi(): UseQuery<
 
 export interface empresaPrivateAPI {
 	success: boolean;
-	empresa: EmpresasSchemaFromServer;
+	empresa: EmpresasSchemaFromServer & { tipo_empresa: TipoEmpresaSchema };
 }
 
 export interface empresaPrivateErrorAPI {

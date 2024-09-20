@@ -461,8 +461,8 @@ function SettingsIndex() {
 							<Form.button.submit
 								title="Actualizar"
 								className="py-4"
-								isLoading={empresaUpdateMutation.isLoading || false}
-								disabled={empresaUpdateMutation.isLoading || false}
+								isLoading={settingsDominioUpdateMutation.isLoading || false}
+								disabled={settingsDominioUpdateMutation.isLoading || false}
 							/>
 						</div>
 					</Form>

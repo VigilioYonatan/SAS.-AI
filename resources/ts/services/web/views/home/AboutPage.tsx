@@ -20,7 +20,7 @@ function AboutPage({ header, posts, productsquantity, users }: AboutPageProps) {
 	return (
 		<>
 			<WebLayout header={header}>
-				<div class="mt-20">
+				<div class="mt-28 lg:mt-10">
 					<TitleSection>Nosotros</TitleSection>
 				</div>
 				<AboutSection productsquantity={productsquantity} />

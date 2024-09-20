@@ -224,7 +224,6 @@ export const empresasSchema = objectAsync({
 	enabledBotWeb: boolean(), //obligatorio
 	enabled_booster: boolean(), //obligatorio
 	enabledSendSunat: boolean(), // cuando el cliente pague por las pasarelas se emitira a sunat
-	enabled_pwa: boolean(),
 	enable_sell_country: boolean(),
 	dateRelease: coerce(date(), (value) => new Date(value as string)), // dia que se creo la web
 	inteligenceArtificial, // ia
@@ -272,6 +271,7 @@ export const empresasSchema = objectAsync({
 		url: string(),
 		transaccion: nullable(number()),
 	}),
+	twilio: object({ account: string(), token: string() }),
 	certificado: nullable(array(filesSchema())),
 	token: string(),
 });

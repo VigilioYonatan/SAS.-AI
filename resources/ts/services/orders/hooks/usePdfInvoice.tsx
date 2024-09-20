@@ -205,9 +205,13 @@ function usePdfInvoice({
 		onPdf,
 	};
 }
-export function HelperPDF() {
+interface HelperPDFProps {
+	top?: number;
+	right?: number;
+}
+export function HelperPDF({ right = -155, top = -10 }: HelperPDFProps) {
 	return (
-		<Helper top={-10} right={-155}>
+		<Helper top={top} right={right}>
 			<div class="absolute  -top-24 dark:bg-admin-background-dark bg-white text-black p-2 rounded-sm hidden group-hover:block dark:text-white w-[300px]">
 				<span class="text-primary font-bold dark:text-white">
 					¿Como imprimir en Impresora Termica 80mm?

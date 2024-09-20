@@ -25,5 +25,6 @@ export const empresasUpdateDto = omit(empresasSchema, [
 	"timeWhatsapp",
 	"impuestos",
 	"tz",
+	"twilio",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;

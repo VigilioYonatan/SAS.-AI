@@ -200,9 +200,6 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 	@Column({ type: DataType.BOOLEAN, defaultValue: false })
 	enabled_igv: boolean;
 
-	@Column({ type: DataType.BOOLEAN, defaultValue: false })
-	enabled_pwa: boolean;
-
 	@Column({ type: DataType.STRING(255), defaultValue: false, unique: true })
 	token: string;
 
@@ -308,6 +305,12 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 		allowNull: false,
 	})
 	whatsappconfig: Whatsappconfig;
+
+	@Column({
+		type: DataType.JSON,
+		allowNull: false,
+	})
+	twilio: { account: string; token: string };
 
 	@Column({
 		type: DataType.JSON,

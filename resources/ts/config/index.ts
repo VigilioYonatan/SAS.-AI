@@ -65,5 +65,5 @@ export function fechasVencidas() {
 export const BASE_URL = storageEmpresa!.setting.host
 	? `https://www.${storageEmpresa!.setting.host}`
 	: enviroments.VITE_ENV === "production"
-		? `https://${storageEmpresa!.slug}.vigilio-services.com`
-		: `http://${storageEmpresa!.slug}.localhost:4003`;
+		? `https://www.${storageEmpresa!.slug}.vigilio-services.com`
+		: `http://www.${storageEmpresa!.slug}.localhost:4003`;

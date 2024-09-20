@@ -45,6 +45,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
 	const startTour = () => {
 		if (initalState() === "read") return;
 		driverInitial();
+		isOpen.value = true;
 		localStorage.setItem(`${storageEmpresa!.slug}/tutorial`, "read");
 	};
 

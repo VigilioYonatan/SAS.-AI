@@ -25,6 +25,7 @@ function Header({ header }: HeaderProps) {
 	const empresaStore = useEmpresastore();
 	const themeStore = useThemeStore();
 	const isOpen = useSignal(false);
+	const isOpenCondiciones = useSignal(false);
 	const headerDropdown = useDropdown();
 	const authStore = useAuthStore();
 	const cartStore = useCartStore();
@@ -113,7 +114,7 @@ function Header({ header }: HeaderProps) {
 						>
 							Inicio
 						</a>
-						<div>
+						<div class="relative">
 							<a
 								href="/shop"
 								type="button"
@@ -142,7 +143,7 @@ function Header({ header }: HeaderProps) {
 								onMouseOut={() => {
 									isOpen.value = false;
 								}}
-								class={`flex p-2 bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
+								class={`flex p-2 min-w-[300px]  bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
 									isOpen.value
 										? "max-h-[800px]  opacity-100"
 										: "max-h-0 overflow-hidden opacity-0"
@@ -233,6 +234,71 @@ function Header({ header }: HeaderProps) {
 						>
 							Pedidos
 						</a>
+						{/*  */}
+						<div class="relative">
+							<button
+								type="button"
+								class={`font-bold   tracking-widest text-sm uppercase  delay-custom-1 ${
+									isActive("/terminos-y-condiciones") ||
+									isActive("/politica-de-privacidad") ||
+									isActive("/libro-de-reclamaciones")
+										? "text-primary"
+										: "text-black dark:text-white "
+								}`}
+								onBlur={() => {}}
+								onFocus={() => {}}
+								onMouseOver={() => {
+									isOpenCondiciones.value = !isOpenCondiciones.value;
+								}}
+								onMouseOut={() => {
+									isOpenCondiciones.value = false;
+								}}
+							>
+								Condiciones de Uso
+							</button>
+							<div
+								onFocus={() => {}}
+								onBlur={() => {}}
+								onMouseOver={() => {
+									isOpenCondiciones.value = true;
+								}}
+								onMouseOut={() => {
+									isOpenCondiciones.value = false;
+								}}
+								class={`flex p-2 min-w-[240px] bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
+									isOpenCondiciones.value
+										? "max-h-[800px]  opacity-100"
+										: "max-h-0 overflow-hidden opacity-0"
+								} `}
+							>
+								<div class="">
+									<a
+										href="/terminos-y-condiciones"
+										class="flex gap-2 items-center justify-between p-2 hover:bg-primary hover:text-white group w-full rounded-md"
+									>
+										<div class="flex gap-3 items-center dark:text-white">
+											<span class="font-semibold">Términos y Condiciones</span>
+										</div>
+									</a>
+									<a
+										href="/politica-de-privacidad"
+										class="flex gap-2 items-center justify-between p-2 hover:bg-primary hover:text-white group w-full rounded-md"
+									>
+										<div class="flex gap-3 items-center dark:text-white">
+											<span class="font-semibold">Política y Privacidad</span>
+										</div>
+									</a>
+									<a
+										href="/libro-de-reclamaciones"
+										class="flex gap-2 items-center justify-between p-2 hover:bg-primary hover:text-white group w-full rounded-md"
+									>
+										<div class="flex gap-3 items-center dark:text-white">
+											<span class="font-semibold">Libro de Reclamaciones</span>
+										</div>
+									</a>
+								</div>
+							</div>
+						</div>
 					</nav>
 					<div class="flex items-center gap-3">
 						<SearchProducts />

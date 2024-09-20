@@ -17,7 +17,7 @@ const clientsColumns: Columns<
 	{ key: "fullname", header: "Nombre Completo" },
 	{
 		key: "telephone",
-		header: "Telephono",
+		header: "Teléfono",
 		cell: (props) =>
 			`+${storageEmpresa?.dial_code} ${formatTelephoneNumber(props.telephone)}`,
 	},

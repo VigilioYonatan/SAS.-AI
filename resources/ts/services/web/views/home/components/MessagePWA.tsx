@@ -77,7 +77,7 @@ function MessagePWA() {
 	return (
 		<>
 			{showBanner.value && storageEmpresa?.logo && (
-				<div className="fixed bottom-40 left-10 bg-primary z-[99] p-3 rounded-md shadow w-[200px]">
+				<div className="fixed bottom-40 left-2 bg-primary z-[99] p-2 rounded-md shadow w-[200px]">
 					<p class="text-center font-bold text-white text-sm">
 						¡Nuestra aplicación está disponible como una PWA!
 					</p>

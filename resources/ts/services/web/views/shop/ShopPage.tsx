@@ -39,7 +39,7 @@ function ShopPage({
 }: ShopPageProps) {
 	return (
 		<WebLayout header={header}>
-			<div class="my-16 lg:my-4">
+			<div class="mt-28 lg:mt-10">
 				<CategoriesSection categories={categories} />
 				<OfferSection
 					productlatestmapped={productlatestmapped}

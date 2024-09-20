@@ -10,6 +10,7 @@ import AdminBreadCrumb from "@/admin/components/AdminBreadCrumb";
 import useAuthstore from "@/auth/stores/auth.store";
 import UsersShow from "./UsersShow";
 import UsersStore from "./UsersStore";
+import ClientsIndex from "./ClientsIndex";
 
 function UsersIndex() {
 	const table = useTable({
@@ -46,6 +47,15 @@ function UsersIndex() {
 			hiddeBackground: false,
 		}));
 	}
+	function onClients() {
+		sweetModal(() => ({
+			html: reactComponent(<ClientsIndex />),
+			sweetWidth: "1000px",
+			showCloseButton: true,
+			position: "start",
+			hiddeBackground: false,
+		}));
+	}
 
 	return (
 		<Container className="p-2">
@@ -62,6 +72,14 @@ function UsersIndex() {
 							<i class="fas fa-user" /> Agregar Usuario
 						</button>
 					) : null}
+					<button
+						type="button"
+						class="bg-primary px-6 py-2 text-xs font-bold self-start rounded-md text-white flex justify-center items-center gap-2"
+						aria-label="button to open create new user"
+						onClick={onClients}
+					>
+						<i class="fas fa-users" /> Clientes
+					</button>
 				</div>
 			</div>
 

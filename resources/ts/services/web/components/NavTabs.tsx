@@ -1,12 +1,14 @@
+import useAuthStore from "@/auth/stores/auth.store";
 import useCartStore from "@/cart/stores/cart.store";
 import useEmpresastore from "@/empresas/stores/empresa.store";
+import { printFileUser } from "@/users/libs/helpers";
 import enviroments from "~/config";
 import { isActive } from "~/libs/helpers";
 
 function NavTabs() {
 	const cartStore = useCartStore();
 	const empresaStore = useEmpresastore();
-
+	const authStore = useAuthStore();
 	return (
 		<div
 			style={{
@@ -56,8 +58,24 @@ function NavTabs() {
 					} hover:bg-black hover:bg-opacity-40 delay-custom-1`}
 					href={"/admin/perfil"}
 				>
-					<i class="fas fa-user" />
-					<span class="text-xs font-semibold">Mi Perfil</span>
+					{authStore.state ? (
+						<>
+							{" "}
+							<img
+								src={printFileUser(authStore.state.photo, 100)[0]}
+								width={100}
+								height={100}
+								class="rounded-full w-[35px] h-[35px]"
+								alt={authStore.state.name}
+							/>
+						</>
+					) : (
+						<>
+							{" "}
+							<i class="fas fa-user" />
+							<span class="text-xs font-semibold">Mi Perfil</span>
+						</>
+					)}
 				</a>
 			</div>
 		</div>

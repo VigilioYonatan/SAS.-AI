@@ -634,7 +634,7 @@ export function QrWhatsapp() {
 				<span>Conectar bot de WhatsApp</span>{" "}
 				<i class="fa-duotone fa-message-bot" />
 			</h3>
-			{restarDays(NOW().toDate(), state!.timeWhatsapp, "seconds") <= 0 ? (
+			{restarDays(NOW().toDate(), state!.timeWhatsapp, "seconds") >= 0 ? (
 				<>
 					{(() => {
 						const countdown = useCountDown(storageEmpresa!.timeWhatsapp);
@@ -655,7 +655,7 @@ export function QrWhatsapp() {
 								<AlertInfo>
 									<div class="flex flex-col">
 										<b>Recomendación:</b>
-										No mover la cámara bruscamente a la hora de escanear QR.
+										No mover la cámara bruscamente a la hora de escanear el QR.
 									</div>
 								</AlertInfo>
 							</div>

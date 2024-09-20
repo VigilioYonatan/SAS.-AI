@@ -12,7 +12,7 @@ import { webEnabledMiddleware } from "../middlewares/webEnabled.middleware";
 import { WebApiService } from "../services/web.api.service";
 
 @Injectable()
-@Controller("/")
+@Controller("/web")
 export class WebApiController {
 	constructor(private readonly webApiService: WebApiService) {}
 

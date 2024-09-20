@@ -5,7 +5,7 @@ import View404 from "@/admin/views/404";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import Form from "~/components/form";
 import { newStoreDto, type NewStoreDto } from "../dtos/new.store.dto";
-import { formatDateTwo, handlerError } from "~/libs/helpers";
+import { formatDateTwo, handlerError, NOW } from "~/libs/helpers";
 import { newStoreApi } from "../apis/new/new.store.api";
 import { useForm } from "react-hook-form";
 import { valibotVigilio } from "~/libs/valibot";
@@ -14,6 +14,7 @@ import { webUpdateApi } from "../apis/new/new.update.api";
 import type { NewSchema } from "../schemas/new.schema";
 import AlertInfo from "~/components/Alerts/AlertInfo";
 import useAuthStore from "@/auth/stores/auth.store";
+import { BASE_URL } from "~/config";
 
 function BackgroundIndex() {
 	const authStore = useAuthStore();
@@ -61,6 +62,9 @@ function NewStore({ refetch }: NewStoreProps) {
 	const newStoreMutate = newStoreApi();
 	const newStoreForm = useForm<NewStoreDto>({
 		resolver: valibotVigilio(newStoreDto),
+		defaultValues: {
+			date: formatDateTwo(NOW().toDate(), "YYYY-MM-DD") as Date,
+		},
 	});
 	function onNewStore(body: NewStoreDto) {
 		sweetModal({
@@ -100,7 +104,7 @@ function NewStore({ refetch }: NewStoreProps) {
 			/>
 			<Form.control
 				title="Link"
-				placeholder="http:xxxxxx"
+				placeholder={BASE_URL}
 				name={"link" as keyof NewStoreDto}
 			/>
 			<Form.control
@@ -162,7 +166,7 @@ function NewUpdate({ noticia }: NewUpdateProps) {
 			/>
 			<Form.control
 				title="Link"
-				placeholder="http:xxxxxx"
+				placeholder={BASE_URL}
 				name={"link" as keyof NewStoreDto}
 			/>
 			<Form.control

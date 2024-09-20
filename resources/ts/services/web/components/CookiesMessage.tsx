@@ -7,7 +7,7 @@ function CookiesMessage() {
 	return (
 		<div class="fixed bottom-20  right-0 left-0 flex justify-center items-center z-[99]">
 			<div
-				class={`p-2 rounded-lg shadow-md flex flex-col  items-center justify-center max-w-6xl mb-2 dark:bg-paper-dark bg-background-light mx-2 ${
+				class={`p-2 rounded-lg shadow-md flex flex-col  items-center justify-center max-w-6xl mb-2 dark:bg-background-dark bg-background-light mx-2 ${
 					showCookieMessage.value
 						? "translate-y-0 opacity-1"
 						: "translate-y-full  opacity-0"

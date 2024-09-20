@@ -1314,7 +1314,7 @@ function EmpresaForm({
 					<div class="flex justify-between w-full gap-2">
 						<div class="flex gap-2 items-center">
 							<div class=" absolute opacity-35 md:relative md:flex min-w-[100px] [&>span]:text-3xl  justify-center items-center">
-								<LogoImage />
+								<LogoImage width="80" height="80" />
 							</div>
 							<div class=" flex-col hidden md:flex">
 								<span class="dark:text-white uppercase">
@@ -1419,7 +1419,7 @@ function GuideForm({
 			<div class="flex my-6  justify-between w-full gap-2">
 				<div class="flex gap-2 items-center">
 					<div class=" absolute opacity-35 md:relative md:flex  [&>span]:text-3xl  justify-center items-center">
-						<LogoImage />
+						<LogoImage width="80" height="80" />
 					</div>
 					<div class=" flex-col hidden md:flex">
 						<span class="dark:text-white uppercase">

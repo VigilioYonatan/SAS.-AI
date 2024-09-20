@@ -95,6 +95,7 @@ export class WebController {
 		const result = await this.webService.about(empresa);
 		return res.render("web/home/about", result);
 	}
+
 	@Get("/pedidos")
 	async orders(@Res() res: Response) {
 		const result = await this.webService.orders();

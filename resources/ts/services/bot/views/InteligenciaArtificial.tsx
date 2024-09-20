@@ -393,7 +393,7 @@ function InteligenciaArtificial() {
 					<br />
 					<div class="flex flex-col gap-2">
 						<span class="dark:text-white text-lg font-bold">
-							Más datos para la Inteligencia Artificial
+							Más datos para tu Inteligencia Artificial
 						</span>
 						{datos.fields.map((field, i) => (
 							<div key={field.id} class="flex gap-2 items-center">

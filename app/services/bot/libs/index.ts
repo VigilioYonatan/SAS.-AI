@@ -43,11 +43,6 @@ export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
 }
 
 export async function onDb(empresa: Empresas) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	const Products: any =
-		empresa.tipo_empresa.tipo_servicio_id === 2
-			? ProductsRestaurant
-			: ProductsNormal;
 	const [categorias, brands] = await Promise.all([
 		Categories.unscoped().findAll({
 			attributes: ["id", "name"],
@@ -207,11 +202,13 @@ export async function promptReplace(message: string, empresa: Empresas) {
 	if (!data) {
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		data = (await onDb(empresa)) as any;
-		cache.set(
-			`db-${empresa.slug}`,
-			JSON.stringify(data),
-			empresa.inteligenceArtificial.hour_update * 3600,
-		);
+		if (data.products.length > 100) {
+			cache.set(
+				`db-${empresa.slug}`,
+				JSON.stringify(data),
+				empresa.inteligenceArtificial.hour_update * 3600,
+			);
+		}
 	}
 	let productsData = data.products;
 	// si no es inteligente que busque

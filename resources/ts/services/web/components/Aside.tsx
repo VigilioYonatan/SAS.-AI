@@ -57,7 +57,7 @@ function Aside({ headerDropdown, categories, brands }: AsideProps) {
 						<i class="fas fa-home" /> Inicio
 					</a>
 					<a
-						class={`text-black dark:text-white text-sm hover:bg-paper-light   flex gap-2 items-center dark:hover:dark:bg-paper-dark tracking-wide px-4 py-2  font-semibold ${
+						class={`text-black dark:text-white   text-sm hover:bg-paper-light   flex gap-2 items-center dark:hover:dark:bg-paper-dark tracking-wide px-4 py-2  font-semibold ${
 							isActive("/shop", false) ? "bg-white dark:bg-paper-dark" : ""
 						}`}
 						href={"/shop"}
@@ -65,20 +65,12 @@ function Aside({ headerDropdown, categories, brands }: AsideProps) {
 						<i class="fas fa-store" /> Tienda
 					</a>
 					<a
-						class={`text-black dark:text-white text-sm hover:bg-paper-light py-2  px-4   dark:hover:dark:bg-paper-dark tracking-wide font-semibold ${
+						class={`text-black flex gap-2 items-center dark:text-white text-sm hover:bg-paper-light py-2  px-4   dark:hover:dark:bg-paper-dark tracking-wide font-semibold ${
 							isActive("/nosotros") ? "bg-white dark:bg-paper-dark" : ""
 						}`}
 						href={"/nosotros"}
 					>
 						<i class="fa-solid fa-users" /> Nosotros
-					</a>
-					<a
-						class={`text-black dark:text-white text-sm hover:bg-paper-light  flex gap-2 items-center dark:hover:dark:bg-paper-dark tracking-wide px-4 py-2  font-semibold ${
-							isActive("/contacto") ? "bg-white dark:bg-paper-dark" : ""
-						}`}
-						href={"/contacto"}
-					>
-						<i class="fa-solid fa-phone" /> Contáctanos
 					</a>
 					<div class="">
 						{categories.map((category) => (
@@ -179,8 +171,6 @@ function Aside({ headerDropdown, categories, brands }: AsideProps) {
 							})()}
 						</div>
 					) : null}
-				</nav>{" "}
-				<nav class="flex flex-col">
 					{authStore.state! ? (
 						<div class="px-4 py-2 flex gap-2 items-center  justify-between">
 							<div class="flex gap-2  items-center">
@@ -260,13 +250,13 @@ function Aside({ headerDropdown, categories, brands }: AsideProps) {
 						</div>
 					) : (
 						<a
-							class="text-black dark:text-white text-sm hover:bg-white px-4 py-2  flex gap-2 items-center font-semibold dark:hover:dark:bg-paper-dark tracking-wide"
+							class="text-black dark:text-white text-sm hover:bg-white px-4 py-2  flex gap-3 items-center font-semibold dark:hover:dark:bg-paper-dark tracking-wide"
 							href={"/auth/login"}
 						>
 							<i class="fas fa-user-alt" /> Iniciar Sesión
 						</a>
 					)}
-				</nav>
+				</nav>{" "}
 				<a
 					class="text-xl font-semibold px-4 gap-2 items-center flex tracking-wider text-black dark:text-white  py-4  absolute bottom-0 right-0 left-0 border-t-[1px] border-primary w-full "
 					href={`https://wa.me/${empresaStore.state!.telephoneFirst}`}

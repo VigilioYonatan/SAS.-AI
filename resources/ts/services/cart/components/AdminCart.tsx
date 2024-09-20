@@ -23,6 +23,7 @@ import { floorsIndexApi } from "@/orders/apis/mesas/floors.index.api";
 import { floorMesasIndexApi } from "@/orders/apis/mesas/floors.mesas.index.api";
 import { useSignal } from "@preact/signals";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import useSocketStore from "~/stores/socket.store";
 
 function AdminCart() {
 	const cartStore = useCartStore();
@@ -32,6 +33,7 @@ function AdminCart() {
 	const floorsIndexQuery = floorsIndexApi();
 	const floorMesasQuery = floorMesasIndexApi();
 	const isOpen = useSignal(true);
+	const { io } = useSocketStore();
 
 	const ordersStoreDtoForm = useForm<OrdersStoreDto>({
 		resolver: valibotVigilio(ordersStoreDto),
@@ -136,6 +138,9 @@ function AdminCart() {
 						);
 						cartStore.methods.cleanStorage();
 						ordersStoreDtoForm.reset();
+						if (storageEmpresa?.tipo_empresa.tipo_servicio_id === 2) {
+							io?.emit("floors_mesas:index");
+						}
 					},
 					onError(error) {
 						handlerError(ordersStoreDtoForm, error);

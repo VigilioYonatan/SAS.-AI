@@ -45,6 +45,7 @@ render(
 	"AboutPage",
 	lazy(() => import("@/web/views/home/AboutPage")),
 );
+
 // auth
 render(
 	"LoginPage",
