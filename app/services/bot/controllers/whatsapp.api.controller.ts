@@ -45,7 +45,7 @@ export class whatsappApiController {
     ) {
         const empresa = await Empresas.findOne({
             where: { slug: info.slug },
-            attributes: ["contacts"],
+            attributes: ["contacts", "slug"],
         });
         if (!empresa) throw new BadRequestException("Server error");
         if (!empresa.contacts.length || empresa.contacts.length < 10) {
@@ -60,9 +60,7 @@ export class whatsappApiController {
         }
 
         await empresa?.update({ enabledBot: true });
-        await terminal(
-            `docker stop ${empresa.slug} && docker run --name ${empresa.slug} --cpus="0.14" ${enviroments.DOCKER_IMAGE_WHATSAPP}`
-        );
+        await terminal(`docker update --cpus="0.14"  ${empresa.slug}`);
         return {
             success: true,
             message: "OK",
