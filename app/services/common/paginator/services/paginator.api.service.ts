@@ -605,7 +605,7 @@ export class PaginatorApiServices {
                     isFavorite: string; // is required kind_invoice_code
                 };
                 const emp = await Empresas.findByPk(empresa.id, {
-                    attributes: ["contacts", "empresa_id", "id"],
+                    attributes: ["contacts", "id"],
                 })!;
                 if (!emp) throw new BadRequestException("Hubo un problema");
                 const findByNameContacts = empresa.contacts.filter(
