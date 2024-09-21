@@ -43,6 +43,8 @@ export class whatsappApiController {
         client: { contacts: { name: string; id: { _serialized: string } }[] },
         @Req("empresa") info: Empresas
     ) {
+        console.log({ client });
+
         try {
             const empresa = await Empresas.findOne({
                 where: { slug: info.slug },
