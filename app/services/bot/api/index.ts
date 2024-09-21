@@ -25,6 +25,7 @@ export async function whatsappSendMessageApi(
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
+            verbose: true,
         }
     );
     const result = await response.json();
@@ -66,6 +67,7 @@ export async function whatsappSendFileApi(
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
+            verbose: true,
         }
     );
     const result = await response.json();
@@ -88,6 +90,7 @@ export async function whatsappSendSeenApi(
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
+            verbose: true,
         }
     );
     const result = await response.json();
@@ -105,11 +108,13 @@ export async function whatsappSendTypingApi(
         `${BASE_URL_WHATSAPP(
             empresa
         )}/api/whatsapp/send-typing?telephone=${telephone}&delay=${body.delay}`,
+
         {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
+            verbose: true,
         }
     );
     const result = await response.json();
@@ -122,6 +127,7 @@ export async function whatsappGetQrApi(empresa: Empresas) {
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
+            verbose: true,
         }
     );
     const result = await response.arrayBuffer();
@@ -136,6 +142,7 @@ export async function whatsappLogout(empresa: Empresas) {
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
+            verbose: true,
         }
     );
     const result = await response.json();
@@ -149,6 +156,7 @@ export async function whatsappRemoveQR(empresa: Empresas) {
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
+            verbose: true,
         }
     );
     const result = await response.json();
