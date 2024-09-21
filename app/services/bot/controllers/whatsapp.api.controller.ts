@@ -323,10 +323,9 @@ export class whatsappApiController {
         await empresa.update({
             timeWhatsapp: NOW(empresa).add(5, "minute").toDate(),
         });
-        await whatsappRemoveQR(empresa);
-        await terminal(`docker container stop ${empresa.slug}`);
-        await delay(1);
-        await terminal(`docker container start ${empresa.slug}`);
+        await terminal(
+            `docker exec -it ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png && exit" && docker restart ${empresa.slug}`
+        );
 
         return {
             success: true,

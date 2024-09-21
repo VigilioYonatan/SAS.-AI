@@ -126,8 +126,6 @@ export async function whatsappGetQrApi(empresa: Empresas) {
         }
     );
     const result = await response.arrayBuffer();
-    console.log({ result });
-
     return result;
 }
 export async function whatsappLogout(empresa: Empresas) {
