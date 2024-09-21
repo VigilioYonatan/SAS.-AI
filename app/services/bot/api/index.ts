@@ -3,7 +3,7 @@ import type WAWebJS from "whatsapp-web.js";
 import type { MessageSendOptions } from "whatsapp-web.js";
 import enviroments from "~/config/enviroments.config";
 export function BASE_URL_WHATSAPP(empresa: Empresas) {
-    return `http://localhost:${empresa.port}`;
+    return `https://www.${empresa.slug}.docker.vigilio-services`;
 }
 export async function whatsappSendMessageApi(
     empresa: Empresas,
@@ -25,7 +25,6 @@ export async function whatsappSendMessageApi(
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
-            verbose: false,
         }
     );
     const result = await response.json();
@@ -67,7 +66,6 @@ export async function whatsappSendFileApi(
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
-            verbose: false,
         }
     );
     const result = await response.json();
@@ -90,7 +88,6 @@ export async function whatsappSendSeenApi(
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
-            verbose: false,
         }
     );
     const result = await response.json();
@@ -114,7 +111,6 @@ export async function whatsappSendTypingApi(
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
-            verbose: false,
         }
     );
     const result = await response.json();
@@ -127,7 +123,6 @@ export async function whatsappGetQrApi(empresa: Empresas) {
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
-            verbose: false,
         }
     );
     const result = await response.arrayBuffer();
@@ -142,7 +137,6 @@ export async function whatsappLogout(empresa: Empresas) {
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
-            verbose: false,
         }
     );
     const result = await response.json();
@@ -156,7 +150,6 @@ export async function whatsappRemoveQR(empresa: Empresas) {
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
-            verbose: false,
         }
     );
     const result = await response.json();
