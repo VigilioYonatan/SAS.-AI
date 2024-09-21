@@ -56,7 +56,25 @@ export async function initialWhatsapp() {
         authStrategy: new WAWebJS.LocalAuth(),
         puppeteer: {
             headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+            args: [
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-gpu",
+                "--disable-infobars",
+                "--disable-dev-shm-usage",
+                "--window-size=800,600",
+                "--disable-web-security",
+                "--disable-extensions",
+                "--disable-default-apps",
+                "--disable-plugins",
+                //
+                "--disable-session-crashed-bubble",
+                "--disable-accelerated-2d-canvas",
+                "--no-first-run",
+                "--no-zygote",
+                "--single-process",
+                "--noerrdialogs",
+            ],
             timeout: 60000,
         },
     });
@@ -78,13 +96,16 @@ export async function initialWhatsapp() {
         console.log("******      ready      *********");
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(JSON.stringify((await client.getContacts()).slice(0, 10)));
-        await fetch(`${BASE_URL}/api/whatsapp/ready`, {
+        const response = await fetch(`${BASE_URL}/api/whatsapp/ready`, {
             method: "POST",
             body: JSON.stringify({ contacts: await client.getContacts() }),
             headers: {
                 "Content-Type": "application-json",
             },
         });
+        const resultready = await response.json();
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log({ resultready });
     });
 
     client.on("message", async (message) => {
@@ -94,24 +115,35 @@ export async function initialWhatsapp() {
             const binaryData = Buffer.from(media.data, "base64");
             return binaryData;
         }
-        await fetch(`${BASE_URL}/api/whatsapp/receive-message`, {
-            method: "POST",
-            body: JSON.stringify({
-                isGroup: chat.isGroup,
-                content:
-                    message.type === "chat" ? message.body : await getFile(),
-                from: message.from,
-                props: message,
-            }),
-            headers: {
-                "Content-Type": "application-json",
-            },
-        });
+        const response = await fetch(
+            `${BASE_URL}/api/whatsapp/receive-message`,
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    isGroup: chat.isGroup,
+                    content:
+                        message.type === "chat"
+                            ? message.body
+                            : await getFile(),
+                    from: message.from,
+                    props: message,
+                }),
+                headers: {
+                    "Content-Type": "application-json",
+                },
+            }
+        );
+        const resultMessage = await response.json();
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log({ resultMessage });
     });
     client.on("disconnected", async () => {
-        await fetch(`${BASE_URL}/api/whatsapp/disconnected`, {
+        const response = await fetch(`${BASE_URL}/api/whatsapp/disconnected`, {
             method: "POST",
         });
+        const resultDisconnected = await response.json();
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log({ resultDisconnected });
         // eliminar qrcodee
         if (fs.existsSync(qrImage)) {
             fs.unlinkSync(qrImage);

@@ -60,6 +60,11 @@ export class whatsappApiController {
         }
 
         await empresa?.update({ enabledBot: true });
+        await terminal(`docker container stop ${empresa.slug}`);
+        await delay(1);
+        await terminal(`docker container start ${empresa.slug}`);
+        await delay(1);
+        await terminal(`docker update --cpus=".12" ${empresa.slug}`);
     }
     @Post("/receive-message")
     async receiveMessage(
@@ -313,6 +318,8 @@ export class whatsappApiController {
         });
         await whatsappRemoveQR(empresa);
         await terminal(`docker container stop ${empresa.slug}`);
+        await delay(1);
+        await terminal(`docker update --cpus=".35" ${empresa.slug}`);
         await delay(1);
         await terminal(`docker container start ${empresa.slug}`);
 
