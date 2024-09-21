@@ -29,7 +29,6 @@ import type { RequestVigilio } from "~/config/types";
 import fs from "node:fs";
 import cron from "node-cron";
 import type { Response } from "express";
-import enviroments from "~/config/enviroments.config";
 export let chats: Record<
     string,
     Record<string, ["assistant" | "user", string][]>
@@ -43,32 +42,28 @@ export class whatsappApiController {
         client: { contacts: { name: string; id: { _serialized: string } }[] },
         @Req("empresa") info: Empresas
     ) {
-        try {
-            const empresa = await Empresas.findOne({
-                where: { slug: info.slug },
-                attributes: ["contacts", "slug"],
-            });
-            if (!empresa) throw new BadRequestException("Server error");
-            if (!empresa.contacts.length || empresa.contacts.length < 10) {
-                const contacts = client.contacts;
-                const mappedcontacts = contacts.map((contact) => ({
-                    name: contact.name!,
-                    telephone: contact.id._serialized,
-                    isFavorite: false,
-                    ia: true,
-                }));
-                await empresa.update({ contacts: mappedcontacts });
-            }
-
-            await empresa?.update({ enabledBot: true });
-            await terminal(`docker update --cpus="0.14"  ${empresa.slug}`);
-            return {
-                success: true,
-                message: "OK",
-            };
-        } catch (error) {
-            console.log((error as Error).message);
+        const empresa = await Empresas.findOne({
+            where: { slug: info.slug },
+            attributes: ["id", "contacts", "slug"],
+        });
+        if (!empresa) throw new BadRequestException("Server error");
+        if (!empresa.contacts.length || empresa.contacts.length < 10) {
+            const contacts = client.contacts;
+            const mappedcontacts = contacts.map((contact) => ({
+                name: contact.name!,
+                telephone: contact.id._serialized,
+                isFavorite: false,
+                ia: true,
+            }));
+            await empresa.update({ contacts: mappedcontacts });
         }
+
+        await empresa?.update({ enabledBot: true });
+        await terminal(`docker update --cpus="0.14"  ${empresa.slug}`);
+        return {
+            success: true,
+            message: "OK",
+        };
     }
     @Post("/receive-message")
     async receiveMessage(
@@ -328,7 +323,7 @@ export class whatsappApiController {
         await empresa.update({
             timeWhatsapp: NOW(empresa).add(5, "minute").toDate(),
         });
-        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker stop ${empresa.slug} && docker run --name ${empresa.slug} --cpus="0.3" ${enviroments.DOCKER_IMAGE_WHATSAPP}`;
+        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker update --cpus="0.3`;
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`Ejecutando comando: ${comando}`);
         await terminal(comando);
