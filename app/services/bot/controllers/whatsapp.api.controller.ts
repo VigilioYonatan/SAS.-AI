@@ -43,30 +43,34 @@ export class whatsappApiController {
         client: { contacts: { name: string; id: { _serialized: string } }[] },
         @Req("empresa") info: Empresas
     ) {
-        const empresa = await Empresas.findOne({
-            where: { slug: info.slug },
-            attributes: ["contacts"],
-        });
-        if (!empresa) throw new BadRequestException("Server error");
-        if (!empresa.contacts.length || empresa.contacts.length < 10) {
-            const contacts = client.contacts;
-            const mappedcontacts = contacts.map((contact) => ({
-                name: contact.name!,
-                telephone: contact.id._serialized,
-                isFavorite: false,
-                ia: true,
-            }));
-            await empresa.update({ contacts: mappedcontacts });
-        }
+        try {
+            const empresa = await Empresas.findOne({
+                where: { slug: info.slug },
+                attributes: ["contacts"],
+            });
+            if (!empresa) throw new BadRequestException("Server error");
+            if (!empresa.contacts.length || empresa.contacts.length < 10) {
+                const contacts = client.contacts;
+                const mappedcontacts = contacts.map((contact) => ({
+                    name: contact.name!,
+                    telephone: contact.id._serialized,
+                    isFavorite: false,
+                    ia: true,
+                }));
+                await empresa.update({ contacts: mappedcontacts });
+            }
 
-        await empresa?.update({ enabledBot: true });
-        await terminal(
-            `docker stop ${empresa.slug} && docker run --name ${empresa.slug} --cpus="0.14" ${enviroments.DOCKER_IMAGE_WHATSAPP}`
-        );
-        return {
-            success: true,
-            message: "OK",
-        };
+            await empresa?.update({ enabledBot: true });
+            await terminal(
+                `docker stop ${empresa.slug} && docker run --name ${empresa.slug} --cpus="0.14" ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+            );
+            return {
+                success: true,
+                message: "OK",
+            };
+        } catch (error) {
+            console.log((error as Error).message);
+        }
     }
     @Post("/receive-message")
     async receiveMessage(
