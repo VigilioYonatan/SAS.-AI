@@ -12,7 +12,6 @@ import type WAWebJS from "whatsapp-web.js";
 import {
     whatsappGetQrApi,
     whatsappLogout,
-    whatsappRemoveQR,
     whatsappSendFileApi,
     whatsappSendMessageApi,
     whatsappSendSeenApi,
@@ -323,9 +322,12 @@ export class whatsappApiController {
         await empresa.update({
             timeWhatsapp: NOW(empresa).add(5, "minute").toDate(),
         });
-        await terminal(
-            `docker exec -it ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png && exit" && docker restart ${empresa.slug}`
-        );
+        const comando = `docker exec -it ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png && exit" && docker restart ${empresa.slug}`;
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log(`Ejecutando comando: ${comando}`);
+        await terminal(comando);
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log("Ejecutó correctamente");
 
         return {
             success: true,
