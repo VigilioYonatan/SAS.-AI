@@ -604,8 +604,13 @@ export class PaginatorApiServices {
                 const { isFavorite } = rest as {
                     isFavorite: string; // is required kind_invoice_code
                 };
-                const empresa = await Empresas.findByPk(1)!;
-                if (!empresa) throw new BadRequestException("Hubo un problema");
+                const emp = await Empresas.findOne({
+                    where: {
+                        empresa_id: empresa.id,
+                    },
+                    attributes: ["contacts"],
+                })!;
+                if (!emp) throw new BadRequestException("Hubo un problema");
                 const findByNameContacts = empresa.contacts.filter(
                     (contact) =>
                         (contact.name ?? "")
