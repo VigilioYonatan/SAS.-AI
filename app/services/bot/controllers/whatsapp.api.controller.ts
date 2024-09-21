@@ -43,36 +43,27 @@ export class whatsappApiController {
         client: { contacts: { name: string; id: { _serialized: string } }[] },
         @Req("empresa") info: Empresas
     ) {
-        try {
-            const empresa = await Empresas.findOne({
-                where: { slug: info.slug },
-                attributes: ["contacts"],
-            });
-            if (!empresa) throw new BadRequestException("Server error");
-            if (!empresa.contacts.length || empresa.contacts.length < 10) {
-                const contacts = client.contacts;
-                const mappedcontacts = contacts.map((contact) => ({
-                    name: contact.name!,
-                    telephone: contact.id._serialized,
-                    isFavorite: false,
-                    ia: true,
-                }));
-                await empresa.update({ contacts: mappedcontacts });
-            }
-
-            await empresa?.update({ enabledBot: true });
-            await terminal(`docker container stop ${empresa.slug}`);
-            await delay(1);
-            await terminal(`docker container start ${empresa.slug}`);
-            await delay(1);
-            await terminal(`docker update --cpus=".12" ${empresa.slug}`);
-            return {
-                success: true,
-                message: "OK",
-            };
-        } catch (error) {
-            console.log((error as Error).message);
+        const empresa = await Empresas.findOne({
+            where: { slug: info.slug },
+            attributes: ["contacts"],
+        });
+        if (!empresa) throw new BadRequestException("Server error");
+        if (!empresa.contacts.length || empresa.contacts.length < 10) {
+            const contacts = client.contacts;
+            const mappedcontacts = contacts.map((contact) => ({
+                name: contact.name!,
+                telephone: contact.id._serialized,
+                isFavorite: false,
+                ia: true,
+            }));
+            await empresa.update({ contacts: mappedcontacts });
         }
+
+        await empresa?.update({ enabledBot: true });
+        return {
+            success: true,
+            message: "OK",
+        };
     }
     @Post("/receive-message")
     async receiveMessage(
@@ -334,8 +325,6 @@ export class whatsappApiController {
         });
         await whatsappRemoveQR(empresa);
         await terminal(`docker container stop ${empresa.slug}`);
-        await delay(1);
-        await terminal(`docker update --cpus=".35" ${empresa.slug}`);
         await delay(1);
         await terminal(`docker container start ${empresa.slug}`);
 
