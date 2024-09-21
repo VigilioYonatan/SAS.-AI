@@ -158,7 +158,7 @@ app.post("/api/whatsapp/send-seen", authenticateToken, sendSeen);
 app.post("/api/whatsapp/send-typing", authenticateToken, sendTyping);
 app.get("/api/whatsapp/qr", authenticateToken, getQr);
 app.post("/api/whatsapp/logout", authenticateToken, sendLogout);
-app.post("/api/whatsapp/restart", authenticateToken, restart);
+app.post("/api/whatsapp/remove-qr", authenticateToken, restart);
 
 // whatsapp
 initialWhatsapp();
