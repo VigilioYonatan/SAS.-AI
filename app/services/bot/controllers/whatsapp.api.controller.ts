@@ -29,6 +29,7 @@ import type { RequestVigilio } from "~/config/types";
 import fs from "node:fs";
 import cron from "node-cron";
 import type { Response } from "express";
+import enviroments from "~/config/enviroments.config";
 export let chats: Record<
     string,
     Record<string, ["assistant" | "user", string][]>
@@ -59,6 +60,9 @@ export class whatsappApiController {
         }
 
         await empresa?.update({ enabledBot: true });
+        await terminal(
+            `docker stop ${empresa.slug} && docker run --name ${empresa.slug} --cpus="0.14" ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+        );
         return {
             success: true,
             message: "OK",
@@ -322,7 +326,7 @@ export class whatsappApiController {
         await empresa.update({
             timeWhatsapp: NOW(empresa).add(5, "minute").toDate(),
         });
-        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker restart ${empresa.slug}`;
+        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker stop ${empresa.slug} && docker run --name ${empresa.slug} --cpus="0.3" ${enviroments.DOCKER_IMAGE_WHATSAPP}`;
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`Ejecutando comando: ${comando}`);
         await terminal(comando);
