@@ -3,6 +3,8 @@ import type WAWebJS from "whatsapp-web.js";
 import type { MessageSendOptions } from "whatsapp-web.js";
 import enviroments from "~/config/enviroments.config";
 export function BASE_URL_WHATSAPP(empresa: Empresas) {
+    console.log({ url: `https://www.${empresa.slug}.docker.vigilio-services` });
+
     return `https://www.${empresa.slug}.docker.vigilio-services`;
 }
 export async function whatsappSendMessageApi(
@@ -126,6 +128,7 @@ export async function whatsappGetQrApi(empresa: Empresas) {
         }
     );
     const result = await response.arrayBuffer();
+    console.log({ result });
 
     return result;
 }
