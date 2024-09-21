@@ -608,7 +608,7 @@ export class PaginatorApiServices {
                     attributes: ["contacts"],
                 })!;
                 if (!emp) throw new BadRequestException("Hubo un problema");
-                const findByNameContacts = empresa.contacts.filter(
+                const findByNameContacts = emp.contacts.filter(
                     (contact) =>
                         (contact.name ?? "")
                             .toLowerCase()
