@@ -599,55 +599,51 @@ export class PaginatorApiServices {
                 break;
             }
             case "contacts": {
-                try {
-                    if (!user || !user.enabled || ![1].includes(user.role_id))
-                        throw new UnauthorizedException("No authorizado");
-                    const { isFavorite } = rest as {
-                        isFavorite: string; // is required kind_invoice_code
-                    };
-                    const emp = await Empresas.findByPk(empresa.id, {
-                        attributes: ["contacts"],
-                    })!;
-                    if (!emp) throw new BadRequestException("Hubo un problema");
-                    const findByNameContacts = empresa.contacts.filter(
-                        (contact) =>
-                            (contact.name ?? "")
-                                .toLowerCase()
-                                .startsWith(search.toLowerCase()) ||
-                            (contact.telephone.toLowerCase() ?? "")
-                                .toLowerCase()
-                                .includes(search.toLowerCase())
-                    );
-                    data = [
-                        findByNameContacts
-                            .sort((a, b) => {
-                                if (isFavorite === "ASC") {
-                                    if (a.isFavorite === b.isFavorite) {
-                                        return 0;
-                                    }
-                                    if (a.isFavorite) {
-                                        return 1;
-                                    }
-                                    return -1;
-                                }
-                                // ASC
+                if (!user || !user.enabled || ![1].includes(user.role_id))
+                    throw new UnauthorizedException("No authorizado");
+                const { isFavorite } = rest as {
+                    isFavorite: string; // is required kind_invoice_code
+                };
+                const emp = await Empresas.findByPk(empresa.id, {
+                    attributes: ["contacts"],
+                })!;
+                if (!emp) throw new BadRequestException("Hubo un problema");
+                const findByNameContacts = empresa.contacts.filter(
+                    (contact) =>
+                        (contact.name ?? "")
+                            .toLowerCase()
+                            .startsWith(search.toLowerCase()) ||
+                        (contact.telephone.toLowerCase() ?? "")
+                            .toLowerCase()
+                            .includes(search.toLowerCase())
+                );
+                data = [
+                    findByNameContacts
+                        .sort((a, b) => {
+                            if (isFavorite === "ASC") {
                                 if (a.isFavorite === b.isFavorite) {
                                     return 0;
                                 }
                                 if (a.isFavorite) {
-                                    return -1;
+                                    return 1;
                                 }
-                                return 1;
-                            })
-                            .slice(
-                                offsetConverted,
-                                offsetConverted + limitConverted
-                            ),
-                        findByNameContacts.length,
-                    ];
-                } catch (error) {
-                    console.log((error as Error).message);
-                }
+                                return -1;
+                            }
+                            // ASC
+                            if (a.isFavorite === b.isFavorite) {
+                                return 0;
+                            }
+                            if (a.isFavorite) {
+                                return -1;
+                            }
+                            return 1;
+                        })
+                        .slice(
+                            offsetConverted,
+                            offsetConverted + limitConverted
+                        ),
+                    findByNameContacts.length,
+                ];
 
                 break;
             }
