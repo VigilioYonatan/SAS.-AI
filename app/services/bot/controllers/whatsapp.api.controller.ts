@@ -65,6 +65,10 @@ export class whatsappApiController {
         await terminal(`docker container start ${empresa.slug}`);
         await delay(1);
         await terminal(`docker update --cpus=".12" ${empresa.slug}`);
+        return {
+            success: true,
+            message: "OK",
+        };
     }
     @Post("/receive-message")
     async receiveMessage(
@@ -238,6 +242,10 @@ export class whatsappApiController {
                     }
                 }
             }
+            return {
+                success: true,
+                message: "OK",
+            };
         } catch (error) {
             chats[info.slug][userId] = [];
         }
@@ -310,6 +318,10 @@ export class whatsappApiController {
     @Post("/disconnected")
     async disconnected(@Req("empresa") empresa: Empresas) {
         await empresa.update({ enabledwhatsapp: false });
+        return {
+            success: true,
+            message: "OK",
+        };
     }
     @Post("/restart")
     async restart(@Req("empresa") empresa: Empresas) {
