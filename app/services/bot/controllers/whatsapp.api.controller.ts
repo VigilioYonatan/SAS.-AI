@@ -322,7 +322,7 @@ export class whatsappApiController {
         await empresa.update({
             timeWhatsapp: NOW(empresa).add(5, "minute").toDate(),
         });
-        const comando = `docker exec -it ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png && exit" && docker restart ${empresa.slug}`;
+        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker restart ${empresa.slug}`;
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`Ejecutando comando: ${comando}`);
         await terminal(comando);
