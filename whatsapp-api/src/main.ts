@@ -100,7 +100,7 @@ export async function initialWhatsapp() {
             method: "POST",
             body: JSON.stringify({ contacts: await client.getContacts() }),
             headers: {
-                "Content-Type": "application-json",
+                "Content-Type": "application/json",
             },
         });
         const resultready = await response.json();
@@ -129,7 +129,7 @@ export async function initialWhatsapp() {
                     props: message,
                 }),
                 headers: {
-                    "Content-Type": "application-json",
+                    "Content-Type": "application/json",
                 },
             }
         );
