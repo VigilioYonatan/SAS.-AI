@@ -5,6 +5,7 @@ import {
     Controller,
     Get,
     Post,
+    Query,
     Req,
     Res,
 } from "@vigilio/express-core";
@@ -248,14 +249,17 @@ export class whatsappApiController {
     @Post("/send-message")
     async sendMessage(
         @Req("empresa") empresa: Empresas,
+        @Query("telephone") telephone: string,
         @Body()
         body: {
-            telephone: string;
             message: string;
             options?: WAWebJS.MessageSendOptions;
         }
     ) {
-        const result = await whatsappSendMessageApi(empresa, body);
+        const result = await whatsappSendMessageApi(empresa, {
+            ...body,
+            telephone,
+        });
         return result;
     }
 
@@ -290,12 +294,9 @@ export class whatsappApiController {
     @Post("/send-seen")
     async sendSeen(
         @Req("empresa") empresa: Empresas,
-        @Body()
-        body: {
-            telephone: string;
-        }
+        @Query("telephone") telephone: string
     ) {
-        const result = await whatsappSendSeenApi(empresa, body);
+        const result = await whatsappSendSeenApi(empresa, { telephone });
         return result;
     }
     @Post("/send-typing")
@@ -303,11 +304,14 @@ export class whatsappApiController {
         @Req("empresa") empresa: Empresas,
         @Body()
         body: {
-            telephone: string;
             delay: number;
-        }
+        },
+        @Query("telephone") telephone: string
     ) {
-        const result = await whatsappSendTypingApi(empresa, body);
+        const result = await whatsappSendTypingApi(empresa, {
+            ...body,
+            telephone,
+        });
         return result;
     }
     @Post("/disconnected")
