@@ -48,6 +48,7 @@ export const BASE_URL =
 export let client: WAWebJS.Client;
 
 const app = express();
+app.use(express.json({ limit: "100mb" }));
 app.use(cors({ origin: "*" }));
 app.use(morgan("dev"));
 
