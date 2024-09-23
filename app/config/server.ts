@@ -94,6 +94,8 @@ export class Server {
                         ) {
                             return next();
                         }
+                    } else {
+                        subdomain = null;
                     }
 
                     // if (subdomain === "vigilio-services") {
