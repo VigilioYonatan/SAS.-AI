@@ -61,9 +61,8 @@ export class SeedersApiService {
                     password: "123456",
                     servicio_id: 2,
                 });
+                await Promise.all([Address.bulkCreate(addressSeeder)]);
             }
-
-            await Promise.all([Address.bulkCreate(addressSeeder)]);
 
             // if (enviroments.NODE_ENV === "production") {
 
