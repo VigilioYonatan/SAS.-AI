@@ -85,12 +85,9 @@ export class Server {
                     subdomain = subdomain.slice(4);
 
                     const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
-                    if (subdomainSplit?.length > 1) {
+                    if (subdomainSplit?.length === 2) {
                         subdomain = subdomainSplit[0];
                         // puede ser que el dominio sea vigilio-services.com.net
-                        if (subdomainSplit[1] === "com") {
-                            subdomain = null;
-                        }
 
                         if (
                             enviroments.CLIENT.toLowerCase() ===
@@ -100,6 +97,12 @@ export class Server {
                         }
                     } else {
                         subdomain = null;
+                    }
+
+                    if (subdomainSplit.length > 2) {
+                        if (subdomainSplit[1] === "com") {
+                            subdomain = null;
+                        }
                     }
 
                     // if (subdomain === "vigilio-services") {
