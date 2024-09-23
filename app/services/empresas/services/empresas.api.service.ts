@@ -546,7 +546,7 @@ export class EmpresasApiService {
             `${enviroments.VITE_VIGILIO_WEB}/api/empresas/domain/${empresa.slug}`,
             {
                 method: "POST",
-                body: JSON.stringify(body.host),
+                body: JSON.stringify(body),
                 headers: {
                     "Content-Type": "application/json",
                     "access-token": enviroments.VITE_TOKEN_VIGILIO_SERVICES,
