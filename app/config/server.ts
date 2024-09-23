@@ -117,7 +117,7 @@ export class Server {
                           {
                               model: Settings,
                               //   dominio.com
-                              where: { host: host?.slice(4) },
+                              where: { host: "vigilioservices.com" },
                               required: true,
                           },
                       ],
