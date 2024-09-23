@@ -34,7 +34,7 @@ export async function terminal(comando: string) {
     }
 }
 const PORT = Number(process.env.PORT);
-export const SESSION_NAME = "vigilio-services";
+export const SESSION_NAME = process.env.SESSION_NAME;
 export const VITE_TOKEN_VIGILIO_SERVICES =
     process.env.VITE_TOKEN_VIGILIO_SERVICES!;
 export const NODE_ENV = process.env.NODE_ENV!;
