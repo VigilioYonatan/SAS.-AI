@@ -114,7 +114,7 @@ export class Server {
                   }
                 : {
                       where: {
-                          slug: "vigilioservices",
+                          slug: "vigilio",
                       },
                   };
             const empresa = await Empresas.findOne({
