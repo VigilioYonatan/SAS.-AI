@@ -84,6 +84,7 @@ export class Server {
                     subdomain = subdomain.slice(4);
 
                     const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
+                    console.log({ length: subdomainSplit?.length });
 
                     if (subdomainSplit?.length > 1) {
                         subdomain = subdomainSplit[0];
@@ -98,9 +99,9 @@ export class Server {
                         subdomain = null;
                     }
 
-                    // if (subdomain === "vigilio-services") {
-                    //     return null;
-                    // }
+                    if (subdomain === "vigilio-services") {
+                        return null;
+                    }
                 }
             }
             const where = subdomain
