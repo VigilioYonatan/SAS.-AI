@@ -86,7 +86,7 @@ export class Server {
                     const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
                     console.log({ length: subdomainSplit?.length });
 
-                    if (subdomainSplit?.length > 1) {
+                    if (subdomainSplit?.length > 2) {
                         subdomain = subdomainSplit[0];
 
                         if (
