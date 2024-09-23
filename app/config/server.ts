@@ -88,7 +88,7 @@ export class Server {
                     if (subdomainSplit?.length === 3) {
                         subdomain = subdomainSplit[0];
                         // puede ser que el dominio sea vigilio-services.com.net
-                        if (subdomainSplit[2] === "com") {
+                        if (subdomainSplit[1] === "com") {
                             subdomain = null;
                         }
                         if (
@@ -118,8 +118,8 @@ export class Server {
                               model: Settings,
                               //   dominio.com
                               where: Sequelize.where(
-                                  Sequelize.cast(Sequelize.col("host"), "text"),
-                                  host?.slice(4)
+                                  Sequelize.literal("host->>host"), // Extrae el valor de 'dominio' dentro de 'host'
+                                  host?.slice(4) // Compara con el valor que necesitas
                               ),
                               required: true,
                           },
