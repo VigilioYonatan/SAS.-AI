@@ -565,24 +565,37 @@ function SettingsIndex() {
                             <div>
                                 <div class="  self-center mt-3 flex gap-2 items-center">
                                     {" "}
-                                    {(() => {
-                                        const countdown = useCountDown(
-                                            state!.setting.host.time as Date
-                                        );
+                                    <>
+                                        {restarDays(
+                                            NOW().toDate(),
+                                            state!.setting.host.time as Date,
+                                            "seconds"
+                                        ) >= 0 ? (
+                                            <>
+                                                {(() => {
+                                                    const countdown =
+                                                        useCountDown(
+                                                            state!.setting.host
+                                                                .time as Date
+                                                        );
 
-                                        return (
-                                            <span class="font-bold">
-                                                {countdown.minutes}:
-                                                {countdown.seconds}
-                                            </span>
-                                        );
-                                    })()}
+                                                    return (
+                                                        <span class="font-bold">
+                                                            {countdown.minutes}:
+                                                            {countdown.seconds}
+                                                        </span>
+                                                    );
+                                                })()}
+                                            </>
+                                        ) : null}
+                                    </>
                                     <button
                                         type="button"
                                         disabled={
                                             restarDays(
                                                 NOW().toDate(),
-                                                state!.timeWhatsapp,
+                                                state!.setting.host
+                                                    .time as Date,
                                                 "seconds"
                                             ) <= 0
                                         }
