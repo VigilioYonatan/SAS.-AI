@@ -528,8 +528,8 @@ function SettingsIndex() {
                             />
                         </div>
                     </Form>
-                    {state?.setting.host.nameserver_one &&
-                    state?.setting.host.nameserver_two ? (
+                    {!state?.setting.host.nameserver_one &&
+                    !state?.setting.host.nameserver_two ? (
                         <div className="flex flex-col dark:text-white">
                             <span class="font-bold text-sm">NameServers</span>
                             <div>
@@ -550,7 +550,7 @@ function SettingsIndex() {
                             <span class="text-xs font-semibold">
                                 Debe haber uno o más registros ✔️ en tu dominio,
                                 para activar tu dominio. <br />
-                                Recuerda que puede demorar entre 1 minuto a 24
+                                Recuerda que puede tardar entre 1 minuto a 24
                                 horas.
                                 <br />
                                 <a
@@ -578,7 +578,8 @@ function SettingsIndex() {
                                                             state!.setting.host
                                                                 .time as Date
                                                         );
-
+                                                    if (countdown.minutes <= 0)
+                                                        return null;
                                                     return (
                                                         <span class="font-bold">
                                                             {countdown.minutes}:
@@ -622,13 +623,13 @@ function SettingsIndex() {
                                                 }
                                             );
                                         }}
-                                        class="flex justify-center items-center text-white bg-primary text-xs px-4 py-2 rounded-md shadow"
+                                        class="flex justify-center items-center text-white bg-primary text-xs px-4 py-2 rounded-md shadow font-semibold"
                                     >
                                         {settingsDominioNameServerUpdateMutation.isLoading ? (
                                             <LoaderSubmit />
                                         ) : (
                                             <>
-                                                <i class="fa-solid fa-globe" />{" "}
+                                                <i class="fa-solid fa-globe mr-2 " />{" "}
                                                 Activar Dominio Web
                                             </>
                                         )}

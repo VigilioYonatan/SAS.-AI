@@ -80,11 +80,9 @@ export class Server {
             let subdomain = null;
             if (host?.includes(".")) {
                 subdomain = !host?.startsWith("www.") ? `www.${host}` : host;
-
-                if (subdomain?.startsWith("www.")) {
-                    subdomain = subdomain.slice(4);
-
-                    const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
+                subdomain = subdomain.slice(4);
+                const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
+                if (enviroments.NODE_ENV === "production") {
                     if (subdomainSplit?.length === 3) {
                         subdomain = subdomainSplit[0];
                         // puede ser que el dominio sea vigilio-services.com.net
@@ -100,11 +98,13 @@ export class Server {
                     } else {
                         subdomain = null;
                     }
-
-                    // if (subdomain === "vigilio-services") {
-                    //     return null;
-                    // }
+                } else {
+                    subdomain = subdomainSplit[0];
                 }
+
+                // if (subdomain === "vigilio-services") {
+                //     return null;
+                // }
             }
             const where = subdomain
                 ? {
