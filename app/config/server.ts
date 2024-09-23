@@ -44,6 +44,7 @@ import { NOW, restarDays } from "~/libs/dayjs";
 import { Brands } from "@/products/entities/brands.entitiy";
 import * as i18nextHttpMiddleware from "i18next-http-middleware";
 import i18next, { i18nextMiddleware } from "../libs/i18next";
+import { Sequelize } from "sequelize-typescript";
 
 export class Server {
     public readonly app: express.Application = express();
@@ -117,7 +118,10 @@ export class Server {
                           {
                               model: Settings,
                               //   dominio.com
-                              where: { host: host?.slice(4) },
+                              where: Sequelize.where(
+                                  Sequelize.cast(Sequelize.col("host"), "text"),
+                                  host?.slice(4)
+                              ),
                               required: true,
                           },
                       ],
