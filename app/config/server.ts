@@ -113,14 +113,9 @@ export class Server {
                       },
                   }
                 : {
-                      include: [
-                          {
-                              model: Settings,
-                              //   dominio.com
-                              where: { host: "vigilioservices.com" },
-                              required: true,
-                          },
-                      ],
+                      where: {
+                          slug: "vigilioservices",
+                      },
                   };
             const empresa = await Empresas.findOne({
                 ...where,
