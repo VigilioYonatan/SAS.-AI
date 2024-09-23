@@ -84,10 +84,12 @@ export class Server {
                     subdomain = subdomain.slice(4);
 
                     const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
-                    console.log({ length: subdomainSplit?.length });
-
-                    if (subdomainSplit?.length > 2) {
+                    if (subdomainSplit?.length > 1) {
                         subdomain = subdomainSplit[0];
+                        // puede ser que el dominio sea vigilio-services.com.net
+                        if (subdomainSplit[1] === "com") {
+                            subdomain = null;
+                        }
 
                         if (
                             enviroments.CLIENT.toLowerCase() ===
@@ -99,9 +101,9 @@ export class Server {
                         subdomain = null;
                     }
 
-                    if (subdomain === "vigilio-services") {
-                        return null;
-                    }
+                    // if (subdomain === "vigilio-services") {
+                    //     return null;
+                    // }
                 }
             }
             const where = subdomain
@@ -112,7 +114,12 @@ export class Server {
                   }
                 : {
                       include: [
-                          { model: Settings, where: { host }, required: true },
+                          {
+                              model: Settings,
+                              //   dominio.com
+                              where: { host: host?.slice(4) },
+                              required: true,
+                          },
                       ],
                   };
             const empresa = await Empresas.findOne({

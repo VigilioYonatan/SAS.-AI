@@ -108,7 +108,7 @@ function Whatsapp() {
             </div>
             <div class="flex gap-2 items-center justify-between">
                 <button
-                    className="bg-success px-4 py-2 rounded-md shadow text-white mr-2 self-end"
+                    className="bg-success px-4 py-2 rounded-md shadow text-white mr-2 self-end text-xs font-semibold flex items-center justify-center gap-3"
                     type="button"
                     onClick={() => {
                         sweetModal({
@@ -117,7 +117,7 @@ function Whatsapp() {
                         });
                     }}
                 >
-                    <i class="fab fa-whatsapp" />
+                    <i class="fab fa-whatsapp text-lg" /> Conectar Whatsapp
                 </button>
                 <div class="flex gap-2 items-center">
                     <button
@@ -173,7 +173,9 @@ function Whatsapp() {
                         {whatsappLogoutMutation.isLoading ? (
                             <LoaderSubmit />
                         ) : (
-                            <i class="fas fa-sign-out-alt" />
+                            <>
+                                <i class="fas fa-sign-out-alt" />
+                            </>
                         )}
                     </button>
                 </div>

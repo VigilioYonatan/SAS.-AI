@@ -37,6 +37,7 @@ import enviroments from "~/config/enviroments.config";
 import { Settings } from "../entities/settings.entity";
 import { initializeBot } from "@/bot/libs/ai";
 import type { SettingsSchema } from "../schemas/settings.schema";
+import { NOW } from "~/libs/dayjs";
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
@@ -203,7 +204,12 @@ export class EmpresasApiService {
                 }),
                 await empresa.$create("setting", {
                     web: body.web,
-                    host: null,
+                    host: {
+                        host: null,
+                        nameserver_one: null,
+                        nameserver_two: null,
+                        time: null,
+                    },
                     about: "",
                     bg_color: "rgb(28,141,227)",
                     bg_color_responsive: "#1F2025",
@@ -565,11 +571,41 @@ export class EmpresasApiService {
                 empresa_id: empresa.id,
             },
         });
-        await setting?.update({ host: body.host });
+        const time = NOW(empresa).add(1, "minute");
+        await setting?.update({
+            host: {
+                host: body.host,
+                nameserver_one: result.name_servers[0],
+                nameserver_two: result.name_servers[1],
+                time,
+            },
+        });
         return {
             success: true,
-            message: "Ya tienes su dominio correctamente.",
+            host: {
+                host: body.host,
+                nameserver_one: result.name_servers[0],
+                nameserver_two: result.name_servers[1],
+                time,
+            },
         };
+    }
+    async name_servers(empresa: Empresas) {
+        const response = await fetch(
+            `${enviroments.VITE_VIGILIO_WEB}/api/empresas/name_servers/${empresa.slug}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "appliation/json",
+                    "access-token": enviroments.VITE_TOKEN_VIGILIO_SERVICES,
+                },
+            }
+        );
+        const result = await response.json();
+        if (!result.success) {
+            throw new InternalServerErrorException(result.message);
+        }
+        return result;
     }
     async whatsappGroupIndex(slug: string) {
         const empresa = await Empresas.findOne({

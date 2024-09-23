@@ -4,7 +4,7 @@ import { settingsIndexApi } from "../apis/settings/settings.index.api";
 import Loading from "@/admin/components/Loading";
 import Form from "~/components/form";
 import { useEffect, useMemo } from "preact/hooks";
-import { handlerError } from "~/libs/helpers";
+import { handlerError, NOW, restarDays } from "~/libs/helpers";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import useEmpresastore, { storageEmpresa } from "../stores/empresa.store";
 import { useForm } from "react-hook-form";
@@ -24,14 +24,21 @@ import {
     settingsUpdatePhotoApi,
 } from "../apis/settings/settings.update.api";
 import Hr from "@/web/components/Hr";
-import { settingsDominioUpdateApi } from "../apis/settings/dominio.update.api";
+import {
+    settingsDominioNameServerUpdateApi,
+    settingsDominioUpdateApi,
+} from "../apis/settings/dominio.update.api";
 import { Input, pick } from "@vigilio/valibot";
-import { hamburgers, settingsSchema } from "../schemas/settings.schema";
+import { hamburgers, hostSchema } from "../schemas/settings.schema";
 import useAuthStore from "@/auth/stores/auth.store";
 import { Link } from "wouter-preact";
 import LogoImage from "~/components/LogoImage";
+import AlertInfo from "~/components/Alerts/AlertInfo";
+import { slug } from "@vigilio/express-core/helpers";
+import useCountDown from "~/hooks/useCountDown";
+import LoaderSubmit from "~/components/LoaderSubmit";
 
-const dominioUpdate = pick(settingsSchema, ["host"]);
+const dominioUpdate = pick(hostSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
 function SettingsIndex() {
     const authStore = useAuthStore();
@@ -51,6 +58,9 @@ function SettingsIndex() {
         const empresaUpdateIconMutation = settingsUpdateIconApi();
         const settingsUpdatePhotoMutation = settingsUpdatePhotoApi();
         const settingsDominioUpdateMutation = settingsDominioUpdateApi();
+        const settingsDominioNameServerUpdateMutation =
+            settingsDominioNameServerUpdateApi();
+        const { state, methods } = useEmpresastore();
         const settingsUpdateform = useForm<SettingsUpdateDto>({
             resolver: valibotVigilio(settingsUpdateDto),
             mode: "all",
@@ -78,7 +88,7 @@ function SettingsIndex() {
         const settingsPhotoDominioform = useForm<DominioUpdate>({
             resolver: valibotVigilio(dominioUpdate),
             mode: "all",
-            defaultValues: { host: setting.host },
+            // defaultValues: { host: setting.host.host },
         });
 
         async function initialUpdateIcon() {
@@ -186,13 +196,19 @@ function SettingsIndex() {
         function onUpdateHost(body: DominioUpdate) {
             sweetModal({
                 title: "¿Estas seguro de agregar un dominio?",
-                text: "¿Ya tienes un dominio?",
+                text: "",
                 showCancelButton: true,
                 showCloseButton: true,
             }).then(({ isConfirmed }) => {
                 if (isConfirmed) {
                     settingsDominioUpdateMutation.mutate(body, {
-                        onSuccess() {
+                        onSuccess(data) {
+                            methods.updateempresa({
+                                setting: {
+                                    ...state!.setting,
+                                    host: data.host,
+                                },
+                            });
                             sweetModal({
                                 icon: "success",
                                 title: "Se agregó nuevo dominio.",
@@ -446,8 +462,18 @@ function SettingsIndex() {
                         onSubmit={onUpdateHost}
                     >
                         <span class="font-semibold dark:text-secondary-light">
-                            ¿Quieres tener tu propio dominio.com?
+                            ¿Deseas tu propio Dominio{" "}
+                            {slug(state!.name_empresa)}
+                            .com o similar?
                         </span>
+                        <AlertInfo>
+                            <span class="font-bold">
+                                <b>Obligatorio:</b> tu dominio en 1 minuto{"  "}
+                                <a href="/" class="text-primary underline ">
+                                    Ver video
+                                </a>
+                            </span>
+                        </AlertInfo>
                         <div class="flex gap-2 items-center">
                             <Form.control
                                 type="text"
@@ -457,11 +483,12 @@ function SettingsIndex() {
                                 placeholder="tudominio.com"
                                 question={
                                     <div class="w-[200px]">
-                                        <b>1.</b> Necesitas tener un dominio, En
-                                        internet hay muchos proveedores de
-                                        dominios como Hostinger, GoDaddy, etc.
+                                        <b class="font-bold">1.</b> Necesitas
+                                        tener un dominio, En internet hay muchos
+                                        proveedores de dominios como Hostinger,
+                                        GoDaddy, etc.
                                         <br />
-                                        <span>Recomendamos el siguente </span>
+                                        <span>Recomendamos el siguiente </span>
                                         <a
                                             href="https://www.hosting-ssd.com/hosting/cart.php?a=add&domain=register"
                                             target="_blank"
@@ -471,12 +498,12 @@ function SettingsIndex() {
                                             Ir a dominio recomendado
                                         </a>
                                         <br />
-                                        <b>2.</b> Recomendamos que tu dominio
-                                        debe ser parecido al nombre de tu
-                                        empresa.
+                                        <b class="font-bold">2.</b> Recomendamos
+                                        que tu dominio debe ser parecido al
+                                        nombre de tu empresa.
                                         <br />
-                                        <b>3.</b> Agrega tu dominio en 1 minuto
-                                        -{" "}
+                                        <b class="font-bold">3.</b> Agrega tu
+                                        dominio en 1 minuto -{" "}
                                         <a
                                             href="/"
                                             class="text-primary hover:underline"
@@ -501,6 +528,102 @@ function SettingsIndex() {
                             />
                         </div>
                     </Form>
+                    {!state?.setting.host.nameserver_one &&
+                    !state?.setting.host.nameserver_two ? (
+                        <div className="flex flex-col dark:text-white">
+                            <span class="font-bold text-sm">NameServers</span>
+                            <div>
+                                <span class="font-semibold text-xs">
+                                    NameServer1:{" "}
+                                    <span class="text-sm">
+                                        {setting.host.nameserver_one}
+                                    </span>
+                                </span>
+                                <br />
+                                <span class="font-semibold text-xs">
+                                    NameServer2:{" "}
+                                    <span class="text-sm">
+                                        {setting.host.nameserver_two}
+                                    </span>
+                                </span>
+                            </div>
+                            <span class="text-xs font-semibold">
+                                Debe haber uno o más registros ✔️ en tu dominio,
+                                para activar tu dominio. <br />
+                                Recuerda que puede demorar entre 1 minuto a 24
+                                horas.
+                                <br />
+                                <a
+                                    href="https://www.whatsmydns.net/#A"
+                                    class="text-primary underline mt-2"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    Ver el estado de mi dominio
+                                </a>
+                            </span>
+                            <div>
+                                <div class="  self-center mt-3 flex gap-2 items-center">
+                                    {" "}
+                                    {(() => {
+                                        const countdown = useCountDown(
+                                            state!.setting.host.time as Date
+                                        );
+
+                                        return (
+                                            <span class="font-bold">
+                                                {countdown.minutes}:
+                                                {countdown.seconds}
+                                            </span>
+                                        );
+                                    })()}
+                                    <button
+                                        type="button"
+                                        disabled={
+                                            restarDays(
+                                                NOW().toDate(),
+                                                state!.timeWhatsapp,
+                                                "seconds"
+                                            ) <= 0
+                                        }
+                                        onClick={() => {
+                                            settingsDominioNameServerUpdateMutation.mutate(
+                                                null,
+                                                {
+                                                    onSuccess(data) {
+                                                        sweetAlert({
+                                                            icon: "success",
+                                                            title: `Ya tienes tu propio dominio web. <b>${data.url}</b>`,
+                                                        }).then(() => {
+                                                            window.location.href = `https://www.${data.url}`;
+                                                        });
+                                                    },
+                                                    onError(data) {
+                                                        sweetAlert({
+                                                            icon: "danger",
+                                                            title: (
+                                                                data as Error
+                                                            ).message,
+                                                        });
+                                                    },
+                                                }
+                                            );
+                                        }}
+                                        class="flex justify-center items-center text-white bg-primary text-xs px-4 py-2 rounded-md shadow"
+                                    >
+                                        {settingsDominioNameServerUpdateMutation.isLoading ? (
+                                            <LoaderSubmit />
+                                        ) : (
+                                            <>
+                                                <i class="fa-solid fa-globe" />{" "}
+                                                Activar Dominio Web
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ) : null}
                     <br />
                     <Hr spacing={13} />
                     <Form
