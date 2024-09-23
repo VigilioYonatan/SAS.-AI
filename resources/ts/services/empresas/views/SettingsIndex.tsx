@@ -570,7 +570,7 @@ function SettingsIndex() {
                                             NOW().toDate(),
                                             state!.setting.host.time as Date,
                                             "seconds"
-                                        ) >= 0 ? (
+                                        ) <= 0 ? (
                                             <>
                                                 {(() => {
                                                     const countdown =
@@ -597,7 +597,7 @@ function SettingsIndex() {
                                                 state!.setting.host
                                                     .time as Date,
                                                 "seconds"
-                                            ) <= 0
+                                            ) >= 0
                                         }
                                         onClick={() => {
                                             settingsDominioNameServerUpdateMutation.mutate(
