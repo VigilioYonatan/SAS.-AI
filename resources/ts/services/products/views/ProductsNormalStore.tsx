@@ -35,6 +35,7 @@ import CategoriesStore from "./CategoriesStore";
 import BrandsStore from "./BrandsStore";
 import { aiProductApi } from "@/bot/apis/ai.product.api";
 import { getFilesEdit } from "~/libs/upload";
+import Helper from "~/components/Helper";
 
 interface ProductsNormalStoreProps {
     refetch: (clean?: boolean | undefined) => Promise<void>;
@@ -173,6 +174,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
     }
 
     function onSearchProduct() {
+        if (!name) return;
         aiProductQuery.mutate(name, {
             async onSuccess(data) {
                 isImageLoading.value = true;
@@ -239,7 +241,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                             <button
                                 type="button"
                                 aria-label="add"
-                                class="bg-primary px-3 py-2 rounded-md shadow text-white mt-2"
+                                class="bg-primary relative px-3 py-2 rounded-md shadow text-white mt-2"
                                 disabled={
                                     aiProductQuery.isLoading ||
                                     isImageLoading.value ||
@@ -251,7 +253,13 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                                     <LoaderSubmit />
                                 ) : (
                                     <i class="fas fa-search" />
-                                )}
+                                )}{" "}
+                                <Helper top={0} right={0}>
+                                    <span class="text-black dark:text-white text-xs  block">
+                                        Te sugerimos que revises el contenido
+                                        generado por la inteligencia artificial.
+                                    </span>
+                                </Helper>
                             </button>
                         </div>
                         <Form.control
@@ -414,7 +422,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                                             placeholder="Resistente"
                                         />
                                         <button
-                                            class="mx-auto block bg-danger px-2 py-1 mt-2 rounded-md shadow text-white"
+                                            class="mx-auto block bg-danger px-2 py-1 mt-2 rounded-md shadow text-white relative"
                                             type="button"
                                             aria-label="to add"
                                             onClick={() => {

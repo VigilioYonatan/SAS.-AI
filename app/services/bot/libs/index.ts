@@ -114,6 +114,7 @@ export async function onDb(empresa: Empresas) {
                     category_id: product.category_id ?? null,
                     variantes,
                     url: product.url ?? null,
+                    slug: product.slug,
                 };
             })
         );
@@ -143,6 +144,7 @@ export async function onDb(empresa: Empresas) {
                     disponible: product.enabled,
                     category_id: product.category_id ?? null,
                     url: product.url ?? null,
+                    slug: product.slug,
                 };
             })
         );
@@ -170,6 +172,7 @@ export async function onDb(empresa: Empresas) {
                     price: subtotalIgv(empresa!, product),
                     disponible: product.enabled,
                     category_id: product.category_id ?? null,
+                    slug: product.slug,
                     url: product.url ?? null,
                 };
             })

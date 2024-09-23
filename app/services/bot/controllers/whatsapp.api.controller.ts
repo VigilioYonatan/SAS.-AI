@@ -21,7 +21,7 @@ import {
 } from "../api";
 import { delay, randomNumber, terminal } from "~/libs/helpers";
 import { buenosDias, featuresIA, gracias, isWhatsappIA } from "../libs/ai";
-import { formatTime, NOW } from "~/libs/dayjs";
+import { NOW } from "~/libs/dayjs";
 import { promptReplace, transcribeAudio } from "../libs";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import { BASE_URL } from "@/empresas/libs";
@@ -30,10 +30,7 @@ import type { RequestVigilio } from "~/config/types";
 import fs from "node:fs";
 import cron from "node-cron";
 import type { Response } from "express";
-export let chats: Record<
-    string,
-    Record<string, ["assistant" | "user", string][]>
-> = {};
+export let chats: Record<string, ["assistant" | "user", string][]> = {};
 
 @Controller("/whatsapp")
 export class whatsappApiController {
@@ -60,7 +57,7 @@ export class whatsappApiController {
         }
 
         await empresa?.update({ enabledBot: true });
-        await terminal(`docker update --cpus="0.14"  ${empresa.slug}`);
+        !(await terminal(`docker update --cpus="0.14"  ${empresa.slug}`));
         return {
             success: true,
             message: "OK",
@@ -79,14 +76,18 @@ export class whatsappApiController {
         }
     ) {
         let content = body.content;
+
         const userId = body.from;
         const { props } = body;
         try {
             const whatsapp = await isWhatsappIA(info.slug, userId);
-            if (!whatsapp) return;
+
+            if (!whatsapp)
+                throw new BadRequestException("whatsapp no permited");
             const { clientVigilio, latestEmpresaUsage, empresa } = whatsapp;
 
-            if (body.isGroup) return; //no se admite grupos
+            if (body.isGroup)
+                throw new BadRequestException("whatsapp no permited"); //no se admite grupos
             // message.type: chat,sticker,ptt,image,document
             if (!["ptt", "chat"].includes(body.type)) return;
 
@@ -102,16 +103,16 @@ export class whatsappApiController {
             });
 
             //  cuando cierra el restaurante
-            const findDay = empresa.schedule.find(
-                (day) => day.id === NOW(empresa).day()
-            );
-            if (
-                NOW(empresa).isAfter(formatTime(empresa, findDay!.openTime)) &&
-                NOW(empresa).isBefore(formatTime(empresa, findDay!.closeTime))
-            ) {
-            } else {
-                return;
-            }
+            // const findDay = empresa.schedule.find(
+            //     (day) => day.id === NOW(empresa).day()
+            // );
+            // if (
+            //     NOW(empresa).isAfter(formatTime(empresa, findDay!.openTime)) &&
+            //     NOW(empresa).isBefore(formatTime(empresa, findDay!.closeTime))
+            // ) {
+            // } else {
+            //     throw new BadRequestException("cerrado");
+            // }
 
             if (body.type === "ptt") {
                 const media = body.content as Buffer;
@@ -125,32 +126,44 @@ export class whatsappApiController {
                 empresa
             );
             const thanks = gracias(content as string);
+            const opt =
+                Math.random() < 0.5
+                    ? { options: { quotedMessageId: props.id._serialized } }
+                    : { options: {} };
             if (buenas) {
+                // aveces que responda reply
+
                 await whatsappSendMessageApi(empresa, {
                     message: buenas,
                     telephone: userId,
-                    options: { quotedMessageId: props.id.id }, // id del mensaje
+                    ...opt,
                 });
-                return;
+                return {
+                    success: true,
+                    message: "OK",
+                };
             }
             if (thanks) {
                 await whatsappSendMessageApi(empresa, {
                     message: thanks,
                     telephone: userId,
-                    options: { quotedMessageId: props.id.id }, // id del mensaje
+                    ...opt, // id del mensaje
                 });
 
-                return;
+                return {
+                    success: true,
+                    message: "OK",
+                };
             }
 
             // imporante que esto este acá
-            (chats[info.slug] ?? [])[userId] = [
-                ...((chats[info.slug] ?? [])[userId] ?? []),
+            chats[`${info.slug}:${userId}`] = [
+                ...(chats[`${info.slug}:${userId}`] ?? []),
                 ["user", content as string],
             ];
 
-            if (chats[info.slug][userId]) {
-                const messages = chats[info.slug][userId].map(
+            if (chats[`${info.slug}:${userId}`]) {
+                const messages = chats[`${info.slug}:${userId}`].map(
                     ([role, content]) => ({
                         role,
                         content,
@@ -213,17 +226,18 @@ export class whatsappApiController {
                 const completionText = completion.choices[0].message.content!;
                 const [removeNote, urlExtraidas] = await featuresIA(
                     empresa,
-                    completionText
+                    completionText,
+                    true
                 );
 
-                chats[info.slug][userId] = [
-                    ...(chats[info.slug][userId] || []),
+                chats[`${info.slug}:${userId}`] = [
+                    ...(chats[`${info.slug}:${userId}`] || []),
                     ["assistant", removeNote],
                 ];
                 await whatsappSendMessageApi(empresa, {
                     message: removeNote,
                     telephone: userId,
-                    options: { quotedMessageId: props.id.id }, // id del mensaje
+                    ...opt, // id del mensaje
                 });
                 // enviar imagen
                 if (urlExtraidas.length) {
@@ -231,7 +245,7 @@ export class whatsappApiController {
                     for (const url of urlExtraidas) {
                         await whatsappSendFileApi(empresa, {
                             telephone: userId,
-                            url: url,
+                            url,
                             option: { sendMediaAsSticker: true },
                         });
                         await delay(3);
@@ -243,7 +257,7 @@ export class whatsappApiController {
                 message: "OK",
             };
         } catch (error) {
-            chats[info.slug][userId] = [];
+            chats[`${info.slug}:${userId}`] = [];
         }
     }
     @Post("/send-message")
@@ -265,9 +279,8 @@ export class whatsappApiController {
 
     @Post("/send-file")
     async sendFile(@Req() req: RequestVigilio) {
-        const form = formidable({});
+        const form = formidable();
         const [fields, files] = await form.parse(req);
-
         const empresa = req.empresa;
         const file = files.file
             ? new File(
@@ -280,7 +293,7 @@ export class whatsappApiController {
             : null;
         const data: WhatsappSendFileApi = {
             file,
-            telephone: fields.telephone![0],
+            telephone: (req.query as { telephone: string }).telephone,
             name: fields.name ? fields.name![0] : null,
             option: fields.option ? JSON.parse(fields.option![0]) : null,
             url: fields.url ? JSON.parse(fields.url[0]) : null,

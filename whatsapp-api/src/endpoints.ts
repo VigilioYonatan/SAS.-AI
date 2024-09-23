@@ -11,12 +11,14 @@ export async function sendMessage(req: Request, res: Response) {
             message: string;
             options?: WAWebJS.MessageSendOptions;
         };
+
         const query = req.query as { telephone: string };
         if (!body.message || !query.telephone)
             return res.status(400).json({
                 success: false,
                 message: "required message or telephone body",
             });
+       
         await client.sendMessage(
             query.telephone,
             body.message,

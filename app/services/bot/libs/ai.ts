@@ -253,7 +253,8 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
             const completionText = completion.choices[0].message.content!;
             const [removeNote, urlExtraida] = await featuresIA(
                 emp,
-                completionText
+                completionText,
+                true
             );
             await clientsTelegram[empresa.slug].sendMessage(userId, removeNote);
             // enviar imagen
@@ -373,31 +374,35 @@ cron.schedule("0 0 * * *", async () => {
 });
 export async function featuresIA(
     empresa: Empresas,
-    completionText: string
+    completionText: string,
+    hiddeImage: boolean
 ): Promise<[string, string[]]> {
-    let removeNote = completionText;
-    // quitar las imagenes para enviar imagen
-    const baseURL = `${BASE_URL(empresa)}/${empresa.slug}/images/products`;
+    let textoNormal = completionText;
+
+    const baseURL = `${BASE_URL(empresa)}/empresas/${
+        empresa.slug
+    }/images/products`;
     const urlPattern = new RegExp(`${baseURL}[^\\s]*`, "g");
-    const match = removeNote.match(urlPattern);
+    const match = completionText.match(urlPattern);
 
     const urlExtraidas = [];
     if (match?.length) {
         for (const m of match) {
-            removeNote = removeNote.replace(m, "").trim();
-            urlExtraidas.push(m);
+            if (hiddeImage) {
+                textoNormal = completionText.replace(m, "").trim();
+                urlExtraidas.push(m);
+            }
         }
     }
     // carrito
-    const expresionRegular = /\(\(cart\?items=[^\)]+\)\)/g;
+    const expresionRegular = /\{\{cart\?items=[^}]+\}\}/g;
     const coincidencias = completionText.match(expresionRegular);
-
     if (coincidencias?.length) {
         for (const c of coincidencias) {
             const hash = Math.random().toString(32).slice(4, 8);
             const urlGet = `${BASE_URL(empresa)}/${c
-                .replace(/^\(\(/, "")
-                .replace(/\)\)$/, "")}`;
+                .replace(/^\{\{/, "")
+                .replace(/\}\}$/, "")}`;
             const date = NOW(empresa).add(1, "days");
             const findHash = await UrlsPayment.findOne({
                 where: { hash, empresa_id: empresa.id },
@@ -413,14 +418,14 @@ export async function featuresIA(
                 });
             }
 
-            removeNote = removeNote.replace(
+            textoNormal = textoNormal.replace(
                 c,
                 `${BASE_URL(empresa)}/cart/${hash}`
             );
         }
     }
-
-    return [removeNote, urlExtraidas];
+    // eliminar espacios innecesarios
+    return [textoNormal.replace(/\s+/g, " "), urlExtraidas];
 }
 cron.schedule("0 0 * * *", () => {
     chatsTelegram = {};

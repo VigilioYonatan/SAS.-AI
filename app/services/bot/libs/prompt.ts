@@ -20,10 +20,10 @@ export function prompt(
               "Evita reescribir los nombres de los productos ![example] ó [example] omite esos, no hagas imitaciones. y no encierres [] a las palabras.",
               `Si te pido información más detallada de un  producto que no está en la BASE_DE_DATOS enviar ${
                   empresa.web
-                      ? `${empresa.web}/productourl_o_serviciourl,`
-                      : `https://www.${url}/slug-de-producto-o-servicio`
+                      ? `${empresa.web}/url-producto-o-servicio-de-db`
+                      : `https://www.${url}/aca-pones-el-slug-del-producto-de-db`
               }`,
-              "enviamen la imagen ( mandarme la url de la imagen)  si te pido una imagen de un producto",
+              "enviamen la imagen ( mandarme la url de la imagen) . no lo pongas como link solo texto  si te pido una imagen de un producto",
               empresa.telephoneReclamos
                   ? `Recuerda eres un ${empresa.inteligenceArtificial.type}, das informacion de pedidos y productos de la empresa. Reclamos o otra consultas ahi dejé numero ${empresa.telephoneReclamos}`
                   : "",
@@ -42,16 +42,16 @@ export function prompt(
     if (empresa.inteligenceArtificial.settings.enabled_cart) {
         instrucctions = [
             ...instrucctions,
-            `Siempre preguntame si quiero llevar algo más, antes de enviarme ((cart?=)),  será como en el siguiente ejemplo   ((cart?items=${
+            `Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?=}},  será como en el siguiente ejemplo   ((cart?items=${
                 empresa.tipo_empresa.tipo_servicio_id === 1
                     ? "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%2C%20%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%5D"
                     : "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%7D%2C%20%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%7D%5D"
-            })) que es un formato URL percent-encoding,. Solo enviame ((cart?=)),  en ((cart?=URL percent-encoding)) de productos o servicios de base de datos. SOLO ENVIAME ASÍ`,
+            }}} que es un formato URL percent-encoding,. Solo enviame {{cart?=}},  en {{cart?=URL percent-encoding}} de productos o servicios de base de datos. SOLO ENVIAME ASÍ`,
         ];
         directrices = [
             "No menciones 'carrito' ni 'BASE_DE_DATOS'. no seas muy tecnico!!! y SOLO response las preguntas que te diga y NO sobrecargues mucho tu respuesta. NO me des feedback ni recomendaciones, sin que me lo pidas",
             "NO ENVIES EL LINK si no confirmo el pedido!!! y no sugieras links cuando no haya confirmado el pedido.  SOLO CUANDO  CONFIRME PEDIDO.",
-            "No Menciones de que te entregaremos un ((cart?=)). Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el ((cart?=)). CUANDO te pida LINK enviame eso ((cart?=))",
+            "No Menciones de que te entregaremos un {{cart?=}}. Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el {{cart?=}}. CUANDO te pida LINK enviame eso {{cart?=}}",
             ...directrices,
         ];
     }
@@ -88,7 +88,8 @@ export function prompt(
         empresa.schedule
     )}
     HORA Y FECHA_ACTUAL: ${NOW(empresa).format("DD-MM-YYYY hh:mm")}
-	MAXIMO_DE_PALABRAS_QUE_DIRAS: ${empresa.inteligenceArtificial.max_length}
+	MAXIMO_DE_PALABRAS_QUE_DIRAS: ${empresa.inteligenceArtificial.max_length}.
+    RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS.
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
     ${JSON.stringify(instrucctions)}

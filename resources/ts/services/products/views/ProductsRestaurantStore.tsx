@@ -26,6 +26,7 @@ import { aiProductApi } from "@/bot/apis/ai.product.api";
 import { useSignal } from "@preact/signals";
 import { getFilesEdit } from "~/libs/upload";
 import LoaderSubmit from "~/components/LoaderSubmit";
+import Helper from "~/components/Helper";
 
 interface ProductsRestaurantStoreProps {
     refetch: (clean?: boolean | undefined) => Promise<void>;
@@ -198,7 +199,7 @@ function ProductsRestaurantStore({
                             <button
                                 type="button"
                                 aria-label="add"
-                                class="bg-primary px-3 py-2 rounded-md shadow text-white mt-2"
+                                class="bg-primary px-3 py-2 rounded-md shadow text-white mt-2 relative"
                                 disabled={
                                     aiProductQuery.isLoading ||
                                     isImageLoading.value ||
@@ -210,7 +211,13 @@ function ProductsRestaurantStore({
                                     <LoaderSubmit />
                                 ) : (
                                     <i class="fas fa-search" />
-                                )}
+                                )}{" "}
+                                <Helper top={0} right={0}>
+                                    <span class="text-black dark:text-white text-xs  block">
+                                        Te sugerimos que revises el contenido
+                                        generado por la inteligencia artificial.
+                                    </span>
+                                </Helper>
                             </button>
                         </div>
                         <Form.control

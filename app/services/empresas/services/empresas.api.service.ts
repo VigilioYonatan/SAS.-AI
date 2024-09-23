@@ -205,8 +205,8 @@ export class EmpresasApiService {
                     web: body.web,
                     host: null,
                     about: "",
-                    bg_color: "#117ACD",
-                    bg_color_responsive: "#117ACD",
+                    bg_color: "rgb(28,141,227)",
+                    bg_color_responsive: "#1F2025",
                     type_border: "square",
                     type_cart: "fas fa-shopping-cart",
                     icon: null,
@@ -220,7 +220,7 @@ export class EmpresasApiService {
                         },
                     ],
                     isCoverImage: true,
-                    isDark: true,
+                    isDark: false,
                     isScrolling: true,
                     hamburger: "fas fa-bars",
                     isLogoImage: false,
@@ -277,7 +277,7 @@ export class EmpresasApiService {
             // if (enviroments.NODE_ENV === "production") {
             // crear whatsapp contenedor
             await terminal(
-                `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --memory="400m" --cpus="0.3" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+                `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --restart on-failure:5 --memory="400m" --cpus="0.3" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
             );
             // }
 
