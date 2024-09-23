@@ -118,7 +118,7 @@ export class Server {
                               model: Settings,
                               //   dominio.com
                               where: Sequelize.where(
-                                  Sequelize.literal("host->>host"), // Extrae el valor de 'dominio' dentro de 'host'
+                                  Sequelize.literal(`host->>'dominio'`), // Extrae el valor de 'dominio' dentro de 'host'
                                   host?.slice(4) // Compara con el valor que necesitas
                               ),
                               required: true,
