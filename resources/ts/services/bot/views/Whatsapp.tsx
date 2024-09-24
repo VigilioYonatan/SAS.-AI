@@ -145,8 +145,16 @@ function Whatsapp() {
                         onClick={() => {
                             sweetModal({
                                 icon: "danger",
-                                title: "¿Estas seguro de cerrar sesión whatsapp?",
-                                text: "Se cerrará sesión whatsapp y se reiniciará tu web por unos segundos. Se creará otro qr para iniciar sesión nuevamente.",
+                                title: `¿Estas seguro de ${
+                                    empresaStore.state?.enabledBot
+                                        ? "detener"
+                                        : "iniciar"
+                                }  sesión whatsapp?`,
+                                text: `Se  ${
+                                    empresaStore.state?.enabledBot
+                                        ? "detenendrá"
+                                        : "iniciará"
+                                } sesión whatsapp.`,
                                 isCloseInBackground: false,
                                 showCancelButton: true,
                             }).then(({ isConfirmed }) => {

@@ -339,7 +339,7 @@ export class whatsappApiController {
         await empresa.update({
             timeWhatsapp: NOW(empresa).add(5, "minute").toDate(),
         });
-        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker update --cpus="0.3`;
+        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker update --cpus="0.3" ${empresa.slug}`;
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`Ejecutando comando: ${comando}`);
         await terminal(comando);
@@ -365,9 +365,11 @@ export class whatsappApiController {
         if (empresa.enabledBot) {
             comando = `docker stop ${empresa.slug}`;
             await terminal(comando);
+            await empresa.update({ enabledBot: false });
         } else {
             comando = `docker start ${empresa.slug}`;
             await terminal(comando);
+            await empresa.update({ enabledBot: true });
         }
 
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
