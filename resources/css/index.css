@@ -17,11 +17,7 @@
 /* .vigilio-modal .modal > div {
     width: 100%;
 } */
-.vigilio-modal .modal {
-    padding: 0.5rem !important;
-    overflow: auto;
-    border-radius: 0 !important;
-}
+
 @media (min-width: 650px) {
     .vigilio-modal .modal {
         padding: 2rem !important;
@@ -39,7 +35,6 @@
     @apply dark:bg-admin-terciary bg-paper-light;
 }
 .admin .vigilio-modal .modal {
-    border-radius: 10px !important;
     @apply dark:bg-admin-paper-dark bg-background-light;
 }
 .admin .vigilio-modal .modal .vigilio-success-circular-line-right {

@@ -50,6 +50,12 @@
     :root {
       --primary: <%=$empresa.setting?.bg_color%>
     }
+
+    .vigilio-modal .modal {
+      padding: 0.5rem !important;
+      overflow: auto;
+      <%=$empresa.setting?.type_border==="circle"? 'border-radius: 0.6rem !important;': 'border-radius: 0rem !important;'%>
+    }
   </style>
   <!-- initial base -->
   <initial></initial>
