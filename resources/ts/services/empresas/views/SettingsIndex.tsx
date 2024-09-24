@@ -564,13 +564,12 @@ function SettingsIndex() {
                             </span>
                             <div>
                                 <div class="  self-center mt-3 flex gap-2 items-center">
-                                    {" "}
                                     <>
                                         {restarDays(
                                             NOW().toDate(),
                                             state!.setting.host.time as Date,
                                             "seconds"
-                                        ) <= 0 ? (
+                                        ) >= 0 ? (
                                             <>
                                                 {(() => {
                                                     const countdown =
@@ -578,8 +577,7 @@ function SettingsIndex() {
                                                             state!.setting.host
                                                                 .time as Date
                                                         );
-                                                    if (countdown.minutes <= 0)
-                                                        return null;
+
                                                     return (
                                                         <span class="font-bold">
                                                             {countdown.minutes}:

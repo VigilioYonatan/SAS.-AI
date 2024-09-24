@@ -654,6 +654,7 @@ export function QrWhatsapp() {
     const qrCodeQuery = whatsappGetQrApi();
     const whatsappRestartMutation = whatsappRestart();
     const { state } = useEmpresastore();
+
     return (
         <div class="flex flex-col gap-4 justify-center items-center">
             <h3 class="text-xl font-bold text-paper-light flex items-center gap-2 text-primary">
@@ -661,7 +662,7 @@ export function QrWhatsapp() {
                 <i class="fa-duotone fa-message-bot" />
             </h3>
             <br />
-            {restarDays(NOW().toDate(), state!.timeWhatsapp, "seconds") <= 0 ? (
+            {restarDays(NOW().toDate(), state!.timeWhatsapp, "seconds") >= 0 ? (
                 <>
                     {(() => {
                         const countdown = useCountDown(

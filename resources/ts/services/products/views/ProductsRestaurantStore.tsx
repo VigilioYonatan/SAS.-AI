@@ -180,7 +180,11 @@ function ProductsRestaurantStore({
             <Form {...productsRestaurantStoreDtoForm} onSubmit={onProductStore}>
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="dark:text-white text-xl font-bold uppercase text-center flex gap-2">
-                        <i class="fas fa-phone-laptop" />
+                        {storageEmpresa!.tipo_empresa.tipo_servicio_id === 1 ? (
+                            <i class="fas fa-phone-laptop" />
+                        ) : (
+                            <i class="fas fa-utensils" />
+                        )}
                         Agregar Producto
                     </h3>
                     <Form.button.reset />

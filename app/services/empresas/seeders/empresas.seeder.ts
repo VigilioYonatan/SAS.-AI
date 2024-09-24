@@ -1,6 +1,6 @@
 import enviroments from "~/config/enviroments.config";
 import type { EmpresasSchema } from "../schemas/empresas.schema";
-import dayjs from "~/libs/dayjs";
+import dayjs, { NOW } from "~/libs/dayjs";
 
 export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
     const am8 = "08:00";
@@ -217,7 +217,10 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         facebook: null,
         instagram: null,
         impuestos: [18, 10],
-        timeWhatsapp: dayjs().add(5, "minutes").toDate(),
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        timeWhatsapp: NOW({ tz: "America/Mexico_City" } as any)
+            .add(5, "minutes")
+            .toDate(),
         telephoneReclamos: null,
         telephoneThird: null,
         enabled_igv: true,

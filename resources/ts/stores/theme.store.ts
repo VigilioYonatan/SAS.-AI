@@ -36,7 +36,11 @@ export function useThemeStore() {
     }
 
     useEffect(() => {
-        if (!storageEmpresa?.setting.isDark) return;
+        if (
+            !storageEmpresa?.setting.isDark &&
+            !window.location.pathname.startsWith("/admin")
+        )
+            return;
         if (theme.value === "light") {
             lightModeElement();
             return;
