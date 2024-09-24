@@ -56,7 +56,7 @@ export class Server {
     }
     async middlewares() {
         // comprimir paginas webs para mejor rendimiento - NO TOCAR si no es necesario
-        this.app.use(cors({ origin: "*" }));
+        this.app.use(cors());
         this.app.use(compression());
         // habilitar cookies
         this.app.use(cookieParser());
