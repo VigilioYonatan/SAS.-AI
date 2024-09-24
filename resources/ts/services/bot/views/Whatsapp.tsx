@@ -57,6 +57,7 @@ function Whatsapp() {
         window.history.back();
         return null;
     }
+    const empresaStore = useEmpresastore();
     const empresaContactsUpdateMutation = empresaContactsUpdateApi();
     const table = useTable({
         columns: contactsColumns,
@@ -152,6 +153,17 @@ function Whatsapp() {
                                 if (isConfirmed) {
                                     whatsappLogoutMutation.mutate(null, {
                                         onSuccess() {
+                                            if (
+                                                empresaStore.state?.enabledBot
+                                            ) {
+                                                empresaStore.methods.updateempresa(
+                                                    { enabledBot: false }
+                                                );
+                                            } else {
+                                                empresaStore.methods.updateempresa(
+                                                    { enabledBot: true }
+                                                );
+                                            }
                                             sweetAlert({
                                                 icon: "success",
                                                 title: "Se cerro sessión correctamente. Espero unos segundos para el reinicio",
@@ -174,7 +186,11 @@ function Whatsapp() {
                             <LoaderSubmit />
                         ) : (
                             <>
-                                <i class="fas fa-sign-out-alt" />
+                                {empresaStore.state!.enabledBot ? (
+                                    <i class="fas fa-play" />
+                                ) : (
+                                    <i class="fas fa-stop" />
+                                )}
                             </>
                         )}
                     </button>

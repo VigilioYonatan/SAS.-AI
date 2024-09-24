@@ -12,7 +12,6 @@ import {
 import type WAWebJS from "whatsapp-web.js";
 import {
     whatsappGetQrApi,
-    whatsappLogout,
     whatsappSendFileApi,
     whatsappSendMessageApi,
     whatsappSendSeenApi,
@@ -362,8 +361,21 @@ export class whatsappApiController {
 
     @Post("/logout")
     async logout(@Req("empresa") empresa: Empresas) {
-        const result = await whatsappLogout(empresa);
-        return result;
+        let comando = "";
+        if (empresa.enabledBot) {
+            comando = `docker stop ${empresa.slug}`;
+            await terminal(comando);
+        } else {
+            comando = `docker start ${empresa.slug}`;
+            await terminal(comando);
+        }
+
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log(`Ejecutando comando: ${comando}`);
+        return {
+            success: true,
+            message: "Se reinició correctamente.",
+        };
     }
 }
 // cada 24 horas

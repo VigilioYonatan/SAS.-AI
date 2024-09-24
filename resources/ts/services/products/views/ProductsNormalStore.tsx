@@ -231,7 +231,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                 </div>
 
                 <div class="">
-                    <div class="w-full flex flex-row gap-2">
+                    <div class="w-full flex flex-col md:flex-row gap-2">
                         <div class="w-full flex gap-1 items-center">
                             <Form.control
                                 name={"name" as keyof ProductsNormalStoreDto}

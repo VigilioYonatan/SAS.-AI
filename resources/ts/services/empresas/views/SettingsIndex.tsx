@@ -515,7 +515,7 @@ function SettingsIndex() {
                                 }
                             />
                             <Form.button.submit
-                                title="Actualizar"
+                                title="Agregar Dominio"
                                 className="py-4"
                                 isLoading={
                                     settingsDominioUpdateMutation.isLoading ||
@@ -528,8 +528,8 @@ function SettingsIndex() {
                             />
                         </div>
                     </Form>
-                    {!state?.setting.host.nameserver_one &&
-                    !state?.setting.host.nameserver_two ? (
+                    {state?.setting.host.nameserver_one &&
+                    state?.setting.host.nameserver_two ? (
                         <div className="flex flex-col dark:text-white">
                             <span class="font-bold text-sm">NameServers</span>
                             <div>

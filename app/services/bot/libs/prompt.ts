@@ -8,8 +8,8 @@ export function prompt(
         name: string;
     }[]
 ) {
-    const url = (empresa.setting as Settings).host
-        ? (empresa.setting as Settings).host
+    const url = (empresa.setting as Settings).host.host
+        ? (empresa.setting as Settings).host.host
         : `${empresa.slug}.vigilio-services.com`;
     let instrucctions = empresa.enabled_catalogo
         ? [
