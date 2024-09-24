@@ -3,10 +3,10 @@ import { type Input, omit, pick } from "@vigilio/valibot";
 import { categoriesStoreDto } from "./categories.store.dto";
 
 export const categoriesUpdateDto = omit(categoriesSchema, [
-    "id",
-    "category_code",
-    "empresa_id",
-    "image",
+	"id",
+	"category_code",
+	"empresa_id",
+	"image",
 ]);
 
 export const categoriesUpdateImageDto = pick(categoriesStoreDto, ["image"]);
