@@ -567,7 +567,7 @@ function SettingsIndex() {
                                                 });
                                             });
                                         }}
-                                        class="dark:text-white"
+                                        class="dark:text-white ml-2"
                                     >
                                         <i class="fa-solid fa-copy" />
                                     </button>
@@ -591,7 +591,7 @@ function SettingsIndex() {
                                                 });
                                             });
                                         }}
-                                        class="dark:text-white"
+                                        class="dark:text-white ml-2"
                                     >
                                         <i class="fa-solid fa-copy" />
                                     </button>

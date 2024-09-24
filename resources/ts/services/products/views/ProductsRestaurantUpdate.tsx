@@ -202,7 +202,7 @@ function ProductsRestaurantUpdate({
 
         async function initialUpdateImages() {
             if (product.images) {
-                const images = await getFilesEdit(product.images, 800);
+                const images = await getFilesEdit(product.images, 500);
                 formProductsRestaurantUpdateImages.setValue("images", images);
             }
         }
