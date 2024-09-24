@@ -20,6 +20,7 @@ import {
     maxValue,
     custom,
     nullableAsync,
+    email,
 } from "@vigilio/valibot";
 import type { AddressSchemaEntity } from "./address.schema";
 import type { SettingsSchema } from "./settings.schema";
@@ -113,6 +114,7 @@ export const inteligenceArtificial = object({
     enabledBotInteligence: boolean(), // usará toda la base de datos. sino filtará los productos que el cliente busca , pero no es muy precioso por que el cliente puede escribir mal
     instructions: array(string([minLength(3)])),
     didactrices: array(string([minLength(3)])),
+    isChunk: boolean(),
     otros: array(string()),
     settings: object({
         enabled_cart: boolean(),
@@ -144,7 +146,7 @@ export const empresasSchema = objectAsync({
     web: nullable(string([startsWith("https://", "Web no válida. https://")])),
     dial_code: string(),
     name_empresa: string([minLength(2), maxLength(100)]),
-    email: string(),
+    email: nullable(string([email()])),
     logo: nullable(array(filesSchema(empresasLogoQualities))), //obligatorio
     logo_pwa: nullable(array(filesSchema(empresasLogoQualities))), //obligatorio
     telephoneFirst: string([

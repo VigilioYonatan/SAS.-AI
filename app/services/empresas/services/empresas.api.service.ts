@@ -35,9 +35,9 @@ import { Floors } from "@/orders/entities/floors.entity";
 import { terminal } from "~/libs/helpers";
 import enviroments from "~/config/enviroments.config";
 import { Settings } from "../entities/settings.entity";
-import { initializeBot } from "@/bot/libs/ai";
 import type { SettingsSchema } from "../schemas/settings.schema";
-import { NOW } from "~/libs/dayjs";
+import { NOW, restarDays } from "~/libs/dayjs";
+import { initializeBot } from "@/bot/libs/ai";
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
@@ -48,7 +48,10 @@ export async function initial() {
         const openAiClient = new openai.OpenAI({
             apiKey: empresa.credentials.open_ai,
         });
-        await initializeBot(empresa);
+        if (empresa.telegram_token) {
+            await initializeBot(empresa, empresa.telegram_token);
+        }
+
         openAis = { ...openAis, [empresa.slug]: openAiClient };
     }
 }
@@ -352,16 +355,25 @@ export class EmpresasApiService {
     }
     async update(empresa: Empresas, empresasUpdateDto: EmpresasUpdateDto) {
         try {
+            if (
+                empresasUpdateDto.telegram_token &&
+                empresasUpdateDto.telegram_token !== empresa.telegram_token &&
+                empresa.payments.telegram.enabled &&
+                restarDays(
+                    NOW(empresa).toDate(),
+                    empresa.payments.telegram.date as Date
+                ) > 0
+            ) {
+                await initializeBot(empresa, empresasUpdateDto.telegram_token);
+            }
+
             await empresa.update(empresasUpdateDto);
-            await initializeBot(empresa);
             return {
                 success: true,
                 empresa,
             };
         } catch (error) {
-            throw new InternalServerErrorException(
-                "hubo un error al detener contenedor"
-            );
+            throw new InternalServerErrorException((error as Error).message);
         }
     }
     async whatsappConfigUpdate(slug: string, whatsappconfig: Whatsappconfig) {

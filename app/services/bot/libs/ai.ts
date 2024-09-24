@@ -45,26 +45,24 @@ export function gracias(query: string) {
     return null;
 }
 
-let clientsTelegram: Record<string, TelegramBot>;
-export async function initializeBot(empresa: Empresas) {
-    try {
-        if (
-            !empresa.telegram_token ||
-            (empresa.payments.telegram.enabled &&
-                restarDays(
-                    NOW(empresa).toDate(),
-                    empresa.payments.telegram.date as Date
-                ) <= 0)
-        )
-            return;
-        const bot = new TelegramBot(empresa.telegram_token, { polling: true });
-        bot.on("message", async (msg) => {
-            await AiTelegram(empresa, msg);
-        });
-        clientsTelegram = { ...clientsTelegram, [empresa.slug]: bot };
-    } catch (error) {
+export let clientsTelegram: Record<string, TelegramBot>;
+export async function initializeBot(empresa: Empresas, token: string) {
+    const bot = new TelegramBot(token);
+    if (clientsTelegram?.[empresa.slug]) {
         delete clientsTelegram[empresa.slug];
     }
+    clientsTelegram = { ...clientsTelegram, [empresa.slug]: bot };
+
+    clientsTelegram[empresa.slug].setWebHook(
+        `https://vigilioservices2.loca.lt/api/telegram/${token}`
+    );
+
+    clientsTelegram[empresa.slug].on("message", async (msg) => {
+        await AiTelegram(empresa, msg);
+    });
+
+    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+    console.log(`Conectado TELEGRAM BOT ${token}`);
 }
 
 export async function isWhatsappIA(empresa: string, telephone?: string) {
@@ -150,20 +148,17 @@ export async function isTelegramIA(empresa: string) {
     };
 }
 
-export let chatsTelegram: Record<
-    string,
-    Record<string, ["assistant" | "user", string][]>
-> = {};
+export let chatsTelegram: Record<string, ["assistant" | "user", string][]> = {};
 export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
     const userId = message.chat.id;
     let body = message.text ?? null;
     const voice = message.voice ?? null;
-
     if (!voice && !body) return;
-
     try {
         const telegram = await isTelegramIA(emp.slug);
+
         if (!telegram) return;
+
         const { clientVigilio, empresa, latestEmpresaUsage } = telegram;
 
         const random = randomNumber(
@@ -174,7 +169,7 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
         await delay(random);
         //  cuando cierra el restaurante
         if (voice) {
-            const fileLink = await clientsTelegram[empresa.slug].getFileLink(
+            const fileLink = await clientsTelegram[emp.slug].getFileLink(
                 voice.file_id
             );
             const getVoice = await fetch(fileLink, { method: "GET" });
@@ -183,28 +178,23 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
             const audioToTxt = await transcribeAudio(empresa.slug, binaryData);
             body = audioToTxt.text;
         }
-        const buenas = buenosDias(
-            body!,
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            (message as any)._data.notifyName,
-            empresa
-        );
+        const buenas = buenosDias(body!, "", empresa);
         const thanks = gracias(body!);
         if (buenas) {
-            await clientsTelegram[empresa.slug].sendMessage(userId, buenas);
+            await clientsTelegram[emp.slug].sendMessage(userId, buenas);
             return;
         }
         if (thanks) {
-            await clientsTelegram[empresa.slug].sendMessage(userId, thanks);
+            await clientsTelegram[emp.slug].sendMessage(userId, thanks);
             return;
         }
         // imporante que esto este acá
-        chatsTelegram[empresa.slug][userId] = [
-            ...(chatsTelegram[empresa.slug][userId] ?? []),
+        chatsTelegram[`${empresa.slug}:${userId}`] = [
+            ...(chatsTelegram[`${empresa.slug}:${userId}`] ?? []),
             ["user", body!],
         ];
-        if (chatsTelegram[empresa.slug][userId]) {
-            const messages = chatsTelegram[empresa.slug][userId].map(
+        if (chatsTelegram[`${empresa.slug}:${userId}`]) {
+            const messages = chatsTelegram[`${empresa.slug}:${userId}`].map(
                 ([role, content]) => ({
                     role,
                     content,
@@ -256,18 +246,29 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
                 completionText,
                 true
             );
-            await clientsTelegram[empresa.slug].sendMessage(userId, removeNote);
+            if (emp.inteligenceArtificial.isChunk) {
+                const chunks = removeNote.split(/(?<!\d)\.\s+/g);
+                for (const chunk of chunks) {
+                    await clientsTelegram[emp.slug].sendMessage(userId, chunk);
+                    await delay(3);
+                }
+            } else {
+                await clientsTelegram[emp.slug].sendMessage(userId, removeNote);
+            }
+
             // enviar imagen
             if (urlExtraida) {
                 for (const url of urlExtraida) {
-                    await clientsTelegram[empresa.slug].sendPhoto(userId, url, {
+                    await clientsTelegram[emp.slug].sendPhoto(userId, url, {
                         caption: "",
                     });
                 }
             }
         }
     } catch (error) {
-        chatsTelegram[emp.slug][userId] = [];
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log((error as Error).message);
+        chatsTelegram[`${emp.slug}:${userId}`] = [];
     }
 }
 /**** bot to admin  *****/

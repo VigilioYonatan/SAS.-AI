@@ -19,7 +19,7 @@ import { TipoServicio } from "@/empresas/entities/tipo_servicio.entity";
 import { servicios } from "@/empresas/seeders/tipo_empresa.seeder";
 import { ubigeoSeeder } from "@/ubigeo/seeders/countries.seeder";
 import { Information } from "@/empresas/entities/information.entity";
-import { empresasSeeder2 } from "@/empresas/seeders/empresas.seeder";
+import { empresasSeeder } from "@/empresas/seeders/empresas.seeder";
 import { EmpresasApiService } from "@/empresas/services/empresas.api.service";
 import { Address } from "@/empresas/entities/address.entity";
 import { addressSeeder } from "@/empresas/seeders/address.seeder";
@@ -54,7 +54,7 @@ export class SeedersApiService {
             );
             await ubigeoSeeder();
             if (enviroments.NODE_ENV === "development") {
-                const empresa = await empresasSeeder2();
+                const empresa = await empresasSeeder();
                 await this.empresasApiService.store({
                     ...empresa,
                     fullname: "Yonatan Vigilio",

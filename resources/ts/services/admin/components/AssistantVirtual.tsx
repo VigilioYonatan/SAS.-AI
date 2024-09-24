@@ -19,6 +19,7 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
     const isLoading = useSignal(false);
 
     async function onSendMessage(data: { message: string }) {
+        if (isLoading.value) return;
         isLoading.value = true;
         messageForm.reset();
         chats.value = [...chats.value, ["user", data.message]];

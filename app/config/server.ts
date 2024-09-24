@@ -72,9 +72,10 @@ export class Server {
         this.app.set("views", `${dirMode}/resources/views`);
         this.app.use(i18nextHttpMiddleware.handle(i18next));
         this.app.use(i18nextMiddleware);
+        await initial();
+
         // vite js configuración
         this.app.use(client());
-        await initial();
         this.app.use(async (req: Request, res, next) => {
             const host = req.headers.host;
             let subdomain = null;

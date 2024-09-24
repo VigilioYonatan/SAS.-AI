@@ -233,11 +233,24 @@ export class whatsappApiController {
                     ...(chats[`${info.slug}:${userId}`] || []),
                     ["assistant", removeNote],
                 ];
-                await whatsappSendMessageApi(empresa, {
-                    message: removeNote,
-                    telephone: userId,
-                    ...opt, // id del mensaje
-                });
+                if (empresa.inteligenceArtificial.isChunk) {
+                    const chunks = removeNote.split(/(?<!\d)\.\s+/g);
+                    for (const chunk of chunks) {
+                        await whatsappSendMessageApi(empresa, {
+                            message: chunk,
+                            telephone: userId,
+                            ...opt, // id del mensaje
+                        });
+                        await delay(3);
+                    }
+                } else {
+                    await whatsappSendMessageApi(empresa, {
+                        message: removeNote,
+                        telephone: userId,
+                        ...opt, // id del mensaje
+                    });
+                }
+
                 // enviar imagen
                 if (urlExtraidas.length) {
                     await delay(3);

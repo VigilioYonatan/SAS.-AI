@@ -26,7 +26,7 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         enabled_booster: true,
         email: "yonatanvigilio@vigilio-services.com",
         telephoneFirst: "959884398",
-        tz: "ca/LAmeriima",
+        tz: "America/Lima",
         isOpen: true,
         enabledBotWeb: true,
         company: {
@@ -49,7 +49,8 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         enabled_igv: true,
         igv: 18,
         credentials: {
-            open_ai: "",
+            open_ai:
+                "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",
         },
         inteligenceArtificial: {
             max_length: 10000,
@@ -153,13 +154,16 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
                 date: dayjs().add(7, "day").toDate(),
                 enabled: true,
             },
-            facturacion: { date: new Date(), enabled: true },
+            facturacion: {
+                date: dayjs().add(7, "day").toDate(),
+                enabled: true,
+            },
             telegram: {
-                date: new Date(),
-                enabled: false,
+                date: dayjs().add(7, "day").toDate(),
+                enabled: true,
             },
             tienda: { enabled: true },
-            tokens: { tokens: 10000 },
+            tokens: { tokens: 100000 },
         },
         type_empresa_id: 1,
         bancos: [
