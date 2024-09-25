@@ -57,7 +57,11 @@ export class PaypalController {
 
     @Get("/cancel")
     async cancel(@Req("empresa") empresa: Empresas, @Res() res: Response) {
-        return res.render("web/payment/paypal/cancel", { empresa });
+        return res.render("web/payment/paypal/cancel", {
+            empresa,
+            title: "Cancelado",
+            description: "Pago Cancelado.",
+        });
     }
 
     @Get("/failed")

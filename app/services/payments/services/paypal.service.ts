@@ -164,8 +164,14 @@ export class PaypalService {
         return {
             title: "Pago realizado correctamente.",
             order,
+            description: "Pago Realizado correctamente",
         };
     }
 
-    async failed() {}
+    async failed() {
+        return {
+            title: "Pago realizado correctamente.",
+            description: "Pago Realizado correctamente",
+        };
+    }
 }
