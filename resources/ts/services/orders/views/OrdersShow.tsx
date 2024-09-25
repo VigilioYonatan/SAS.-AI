@@ -98,7 +98,7 @@ function OrdersShow({ params: { order_code }, refetch }: OrdersShowProps) {
                                                 "<title>Ticket PDF</title>"
                                             );
                                             printWindow.document.write(
-                                                "<style>.flex{display:flex;}.justify-center{justify-content:center;}.items-center{align-items:center;}.relative{position:relative;}.flex-col{flex-direction:column;}.gap-2{gap:0.3rem;}.dark\\:text-white{color:white;}.text-black{color:black;}.text-3xl{font-size:1.875rem;}.font-bold{font-weight:bold;}.absolute{position:absolute;}.bottom-0{bottom:0;}.right-0{right:0;}.opacity-20{opacity:0.2;}</style>"
+                                                "<style>*{margin:0;}.flex{display:flex;}.justify-center{justify-content:center;}.items-center{align-items:center;}.relative{position:relative;}.flex-col{flex-direction:column;}.gap-2{gap:0.3rem;}.dark\\:text-white{color:white;}.text-black{color:black;}.text-3xl{font-size:1.875rem;}.font-bold{font-weight:bold;}.absolute{position:absolute;}.bottom-0{bottom:0;}.right-0{right:0;}.opacity-20{opacity:0.2;}</style>"
                                             );
                                             printWindow.document.write(
                                                 "</head><body>"
@@ -106,19 +106,15 @@ function OrdersShow({ params: { order_code }, refetch }: OrdersShowProps) {
                                             printWindow.document.write(`
 											  <div class="flex justify-center items-center relative flex-col gap-2 dark:text-white text-black">
 												<h1 class="text-3xl font-bold">${order.order_code}</h1>
-												<h2 class="text-xl font-bold"> ${
-                                                    order.moneyChange === 1 ? (
-                                                        <>
-                                                            {formatMoney(
-                                                                order.total
-                                                            )}
-                                                        </>
-                                                    ) : (
-                                                        formatDolares(
-                                                            order.total /
-                                                                order.moneyChange
-                                                        )
-                                                    )
+												<h2 class="text-xl font-bold">${
+                                                    order.moneyChange === 1
+                                                        ? formatMoney(
+                                                              order.total
+                                                          )
+                                                        : formatDolares(
+                                                              order.total /
+                                                                  order.moneyChange
+                                                          )
                                                 }</h2>
 												<span class="font-bold">${TimePeru(order.createdAt).format(
                                                     "DD/MM/YYYY hh:mm"
