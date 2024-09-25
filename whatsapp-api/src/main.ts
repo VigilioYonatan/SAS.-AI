@@ -80,8 +80,6 @@ export async function initialWhatsapp() {
     });
 
     client.on("qr", (qr) => {
-        console.log({ qr });
-
         if (!fs.existsSync(qrImage))
             qrcodeTerminal.generate(qr, { small: true }, () => {
                 qrcode.toFile(qrImage, qr, (err) => {

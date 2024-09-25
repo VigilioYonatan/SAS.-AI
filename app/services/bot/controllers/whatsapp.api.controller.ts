@@ -56,7 +56,7 @@ export class whatsappApiController {
         }
 
         await empresa?.update({ enabledBot: true });
-        await terminal(`docker update --cpus=0.5 ${empresa.slug}`);
+        await terminal(`docker update --cpus="0.14" ${empresa.slug}`);
         return {
             success: true,
             message: "OK",
