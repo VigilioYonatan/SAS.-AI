@@ -7,7 +7,7 @@ interface AdminEditProps {
 function AdminEdit({ uri, isLeft = true }: AdminEditProps) {
     const useAuth = useAuthStore();
 
-    if (useAuth.state!.role_id !== 1) {
+    if (!useAuth.state || useAuth.state?.role_id !== 1) {
         return null;
     }
     return (
