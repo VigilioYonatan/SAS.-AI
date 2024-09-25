@@ -2,7 +2,6 @@ import {
     Body,
     Controller,
     Get,
-    Params,
     Post,
     Query,
     Req,
@@ -17,21 +16,17 @@ import {
     type OrdersStoreDto,
 } from "@/orders/dtos/orders.store.dto";
 import type { RequestVigilio } from "~/config/types";
-import { EmpresasApiService } from "@/empresas/services/empresas.api.service";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 
 @Injectable()
 @Controller("/paypal")
 export class PaypalController {
-    constructor(
-        private readonly paypalService: PaypalService,
-        private readonly empresasApiService: EmpresasApiService
-    ) {}
+    constructor(private readonly paypalService: PaypalService) {}
 
     @Validator(ordersStoreDto)
     @Post("/api/order")
     async order(
-        @Params("empresa") empresa: Empresas,
+        @Req("empresa") empresa: Empresas,
         @Body() body: OrdersStoreDto
     ) {
         const result = await this.paypalService.order(empresa, body);
@@ -40,7 +35,7 @@ export class PaypalController {
 
     @Get("/success")
     async success(
-        @Params("empresa") empresa: Empresas,
+        @Req("empresa") empresa: Empresas,
         @Query("token") token: string,
         @Res() res: Response,
         @Req() req: RequestVigilio
@@ -61,13 +56,13 @@ export class PaypalController {
     }
 
     @Get("/cancel")
-    async cancel(@Params("empresa") empresa: Empresas, @Res() res: Response) {
+    async cancel(@Req("empresa") empresa: Empresas, @Res() res: Response) {
         return res.render("web/payment/paypal/cancel", { empresa });
     }
 
     @Get("/failed")
     async failed(
-        @Params("empresa") empresa: Empresas,
+        @Req("empresa") empresa: Empresas,
         @Res() res: Response,
         @Query("message") message: string
     ) {
