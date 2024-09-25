@@ -36,6 +36,8 @@ export class PaypalService {
             !metodo.paypal.paypal_secret_key
         )
             throw new BadRequestException("No disponible en este momento");
+        console.log({ url: `${BASE_URL(empresa)}/paypal/success` });
+
         const total = empresa.enabledClientPayComision
             ? paypalComision(body.total, value).toFixed(2)
             : (body.total / value).toFixed(2);

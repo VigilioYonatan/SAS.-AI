@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <%- include('../../webHead.ejs') %>
+  <%- include('../../components/webHead.ejs') %>
 </head>
 
 <body class="dark:bg-background-dark bg-background-light">
@@ -10,7 +10,7 @@
     <i class="fab fa-paypal text-3xl dark:text-white"></i>
     <h2 class="text-2xl font-bold text-red-600">EL PAGO NO SE HA REALIZADO</h2>
     <p class="mt-4 dark:text-white text-terciary-light"><%= message    %></p>
-    <a href="<%= route('/')  %>" class="underline mt-4 block dark:text-white">Ir a inicio</a>
+    <a href="/" class="underline mt-4 block dark:text-white">Ir a inicio</a>
   </div>
  
 </body>
