@@ -56,7 +56,6 @@ export class whatsappApiController {
         }
 
         await empresa?.update({ enabledBot: true });
-        await terminal(`docker update --cpus="0.14"  ${empresa.slug}`);
         return {
             success: true,
             message: "OK",
@@ -352,7 +351,7 @@ export class whatsappApiController {
         await empresa.update({
             timeWhatsapp: NOW(empresa).add(5, "minute").toDate(),
         });
-        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker update --cpus="0.3" ${empresa.slug}`;
+        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker restart ${empresa.slug}`;
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`Ejecutando comando: ${comando}`);
         await terminal(comando);

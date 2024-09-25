@@ -56,7 +56,25 @@ export async function initialWhatsapp() {
         authStrategy: new WAWebJS.LocalAuth(),
         puppeteer: {
             headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+            args: [
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-gpu",
+                "--disable-infobars",
+                "--disable-dev-shm-usage",
+                "--window-size=800,600",
+                "--disable-web-security",
+                "--disable-extensions",
+                "--disable-default-apps",
+                "--disable-plugins",
+                //
+                "--disable-session-crashed-bubble",
+                "--disable-accelerated-2d-canvas",
+                "--no-first-run",
+                "--no-zygote",
+                "--single-process",
+                "--noerrdialogs",
+            ],
             timeout: 60000,
         },
     });

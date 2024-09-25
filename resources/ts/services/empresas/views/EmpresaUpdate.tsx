@@ -553,7 +553,8 @@ function empresaUpdate() {
                                             5. Copiar Token. ejemplo:
                                             7504180864:AAG70K8Xy...
                                             <br />
-                                            6. Enviar mensaje a tu Bot IA
+                                            6. Enviar mensaje a tu Bot de
+                                            telegram
                                         </div>
                                     }
                                 />

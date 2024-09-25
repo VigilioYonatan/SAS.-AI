@@ -265,7 +265,7 @@ function InteligenciaArtificial() {
 							title="Habilitar IA - super inteligente"
 							question={
 								<div class="w-[200px]">
-									Cuando está habilitado esta opción la IA es mas inteligente,
+									Cuando está habilitado esta opción la Inteligencia Artificial es mas inteligente,
 									por que tiene toda la información de los productos e
 									información de la empresa. Si esto no está habilitado solo
 									responderá lo que el cliente está buscando.

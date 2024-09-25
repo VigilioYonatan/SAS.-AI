@@ -798,6 +798,10 @@ export function QrWhatsapp() {
                         <li class="dark:text-white text-center">
                             *Si no está funcionando el qr. Intentelo 2 - 3 veces{" "}
                             <i class="fa-solid fa-rotate-right text-white text-xs" />
+                        </li>{" "}
+                        <li class="dark:text-white text-center">
+                            *Si se conectó correctamente, esperar unos minutos
+                            para añadir tus contactos automaticamente.{" "}
                         </li>
                     </ul>
                 </>
