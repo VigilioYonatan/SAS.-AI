@@ -36,7 +36,6 @@ export class PaypalService {
             !metodo.paypal.paypal_secret_key
         )
             throw new BadRequestException("No disponible en este momento");
-        console.log({ url: `${BASE_URL(empresa)}/paypal/success` });
 
         const total = empresa.enabledClientPayComision
             ? paypalComision(body.total, value).toFixed(2)
@@ -117,7 +116,10 @@ export class PaypalService {
             const { captureOrder } = paypal({
                 client_id: metodoPago.paypal.paypal_client_id,
                 secret_key: metodoPago.paypal.paypal_secret_key,
-                sandbox: enviroments.PAYPAL_SANDBOX,
+                sandbox:
+                    enviroments.NODE_ENV === "production"
+                        ? "https://api-m.paypal.com"
+                        : enviroments.PAYPAL_SANDBOX,
             });
             result = await captureOrder(token);
             if (!result.status || result.status !== "COMPLETED") {
