@@ -109,6 +109,7 @@ export class PaymentApiService {
 		}
 	}
 	async success() {}
+	
 	async failed(req: RequestVigilio, preference_id: string) {
 		try {
 			const order = await Orders.findOne({

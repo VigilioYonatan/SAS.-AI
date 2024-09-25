@@ -649,27 +649,35 @@ function SettingsIndex() {
                                             ) >= 0
                                         }
                                         onClick={() => {
-                                            settingsDominioNameServerUpdateMutation.mutate(
-                                                null,
-                                                {
-                                                    onSuccess(data) {
-                                                        sweetAlert({
-                                                            icon: "success",
-                                                            title: `Ya tienes tu propio dominio web. <b>${data.url}</b>`,
-                                                        }).then(() => {
-                                                            window.location.href = `https://www.${data.url}`;
-                                                        });
-                                                    },
-                                                    onError(data) {
-                                                        sweetAlert({
-                                                            icon: "danger",
-                                                            title: (
-                                                                data as Error
-                                                            ).message,
-                                                        });
-                                                    },
-                                                }
-                                            );
+                                            sweetModal({
+                                                icon: "info",
+                                                title: "¿Ya tienes un registro ✔️ en tu dominio?",
+                                                text: "",
+                                                showCloseButton: true,
+                                                showCancelButton: true,
+                                            }).then(() => {
+                                                settingsDominioNameServerUpdateMutation.mutate(
+                                                    null,
+                                                    {
+                                                        onSuccess(data) {
+                                                            sweetAlert({
+                                                                icon: "success",
+                                                                title: `Ya tienes tu propio dominio web. <b>${data.url}</b>`,
+                                                            }).then(() => {
+                                                                window.location.href = `https://www.${data.url}`;
+                                                            });
+                                                        },
+                                                        onError(data) {
+                                                            sweetAlert({
+                                                                icon: "danger",
+                                                                title: (
+                                                                    data as Error
+                                                                ).message,
+                                                            });
+                                                        },
+                                                    }
+                                                );
+                                            });
                                         }}
                                         class="flex justify-center items-center text-white bg-primary text-xs px-4 py-2 rounded-md shadow font-semibold"
                                     >

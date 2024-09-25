@@ -11,6 +11,7 @@ import TitleSectionTwo from "./TitleSectionTwo";
 import { transferencias } from "@/empresas/libs/helpers";
 import { Fragment } from "preact/jsx-runtime";
 import { verifyBank } from "@/cart/views/Niubiz";
+import AdminEdit from "./AdminEdit";
 
 interface FooterProps {
     categories: HeaderType["categories"];
@@ -204,7 +205,8 @@ function MetodosDePago() {
     const empresaStore = useEmpresastore();
 
     return (
-        <div class="flex gap-2 items-center overflow-auto ">
+        <div class="flex gap-2 items-center overflow-auto  relative">
+            <AdminEdit uri="/admin/payment" isLeft={false} />
             {empresaStore.state?.metodos_pago.mercado_pago.enabled ? (
                 <img
                     src={VisaMastercardImage()}
