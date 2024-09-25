@@ -4,14 +4,12 @@ import {
     Controller,
     Get,
     Injectable,
-    Params,
     Post,
     Query,
     Req,
     Res,
 } from "@vigilio/express-core";
 import { PaymentApiService } from "../services/payment.api.service";
-import { EmpresasApiService } from "@/empresas/services/empresas.api.service";
 import {
     ordersStoreDto,
     type OrdersStoreDto,
@@ -24,10 +22,7 @@ import type { Empresas } from "@/empresas/entities/empresas.entity";
 @Injectable()
 @Controller("/payment")
 export class PaymentApiController {
-    constructor(
-        private readonly paymentApiService: PaymentApiService,
-        private readonly empresasApiService: EmpresasApiService
-    ) {}
+    constructor(private readonly paymentApiService: PaymentApiService) {}
 
     @Validator(ordersStoreDto)
     @Post("/api/order")
@@ -41,24 +36,19 @@ export class PaymentApiController {
 
     @Get("/success")
     async success(
-        @Req("empresa") _empresa: Empresas,
+        @Req("empresa") empresa: Empresas,
         @Query("token") token: string,
-        @Res() res: Response,
-        @Req() _req: RequestVigilio
+        @Res() res: Response
     ) {
         if (!token) return res.redirect("/");
-        // try {
-        //     const result = await this.paymentApiService.success(
-        //         empresa,
-        //         token,
-        //         req
-        //     );
-        //     return res.render("web/payment/paypal/success", result);
-        // } catch (error) {
-        //     return res.redirect(
-        //         `/paypal/${slug}/failed?message=${(error as Error).message}`
-        //     );
-        // }
+        try {
+            const result = await this.paymentApiService.success(empresa, token);
+            return res.render("web/payment/paypal/success", result);
+        } catch (error) {
+            return res.redirect(
+                `/paypal/failed?message=${(error as Error).message}`
+            );
+        }
     }
     @Post("/webhook")
     async webhook(
@@ -70,8 +60,7 @@ export class PaymentApiController {
     }
 
     @Get("/cancel")
-    async cancel(@Params("slug") slug: string, @Res() res: Response) {
-        const { empresa } = await this.empresasApiService.show(slug);
+    async cancel(@Req("empresa") empresa: Empresas, @Res() res: Response) {
         return res.render("web/payment/mercado_pago/cancel", {
             empresa,
             title: "Este pago ha sido cancelado.",

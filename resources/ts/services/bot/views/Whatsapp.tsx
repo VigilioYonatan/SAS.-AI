@@ -799,7 +799,7 @@ export function QrWhatsapp() {
                             *Si no está funcionando el qr. Intentelo 2 - 3 veces{" "}
                             <i class="fa-solid fa-rotate-right text-white text-xs" />
                         </li>{" "}
-                        <li class="dark:text-white text-center">
+                        <li class="dark:text-white text-center text-sm">
                             *Si se conectó correctamente, esperar unos minutos
                             para añadir tus contactos automaticamente.{" "}
                         </li>
