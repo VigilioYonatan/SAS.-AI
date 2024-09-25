@@ -5,7 +5,7 @@
     "description": "create web apps with @vigilio/express now",
     "scripts": {
         "build:serve": "rimraf dist && tsc  --project tsconfig.json ",
-        "dev": "node  ./ar/main.js",
+        "dev": "node  ./src/main.js",
         "start": "NODE_ENV=production node dist/app/main.js"
     },
     "keywords": [
@@ -24,7 +24,7 @@
         "puppeteer": "22.12.1",
         "qrcode": "^1.5.4",
         "qrcode-terminal": "^0.12.0",
-        "whatsapp-web.js": "github:pedroslopez/whatsapp-web.js#webpack-exodus"
+        "whatsapp-web.js": "1.26.0"
     },
     "devDependencies": {
         "@types/bun": "^1.1.6",
