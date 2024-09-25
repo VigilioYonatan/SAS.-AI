@@ -37,11 +37,11 @@ const PORT = Number(process.env.PORT);
 export const SESSION_NAME = process.env.SESSION_NAME;
 export const VITE_TOKEN_VIGILIO_SERVICES =
     process.env.VITE_TOKEN_VIGILIO_SERVICES!;
-export const NODE_ENV = process.env.NODE_ENV!;
+export const NODE_ENV = "production";
 export const qrImage = path.resolve(__dirname, "..", `${SESSION_NAME}-qr.png`);
 export const BASE_URL =
     NODE_ENV === "production"
-        ? `https://www.${process.env.SESSION_NAME}.vigilio-services.com`
+        ? "https://vigilioservices2.loca.lt"
         : `http://${process.env.SESSION_NAME}.localhost:4003`;
 
 export let client: WAWebJS.Client;
@@ -115,19 +115,22 @@ export async function initialWhatsapp() {
             const binaryData = Buffer.from(media.data, "base64");
             return binaryData;
         }
+        const content =
+            message.type === "chat" ? message.body : await getFile();
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const notifyName = (message as any)._data.notifyName;
+        const quotedMessageId = message.id._serialized;
         const response = await fetch(
             `${BASE_URL}/api/whatsapp/receive-message`,
             {
                 method: "POST",
                 body: JSON.stringify({
                     isGroup: chat.isGroup,
-                    content:
-                        message.type === "chat"
-                            ? message.body
-                            : await getFile(),
+                    content,
                     from: message.from,
-                    props: message,
                     type: message.type,
+                    notifyName,
+                    quotedMessageId,
                 }),
                 headers: {
                     "Content-Type": "application/json",

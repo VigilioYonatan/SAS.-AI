@@ -18,7 +18,7 @@ export async function sendMessage(req: Request, res: Response) {
                 success: false,
                 message: "required message or telephone body",
             });
-       
+
         await client.sendMessage(
             query.telephone,
             body.message,
@@ -104,8 +104,8 @@ export async function sendSeen(req: Request, res: Response) {
 
 /** SEND MESSAGE - TYPING */
 export async function sendTyping(req: Request, res: Response) {
-    const query = req.query as { telephone: string; delay: string };
-    if (!query.telephone || query.delay)
+    const query = req.query as { telephone: string };
+    if (!query.telephone)
         return res.status(400).json({
             success: false,
             message: "required telephone o delay body",
@@ -113,7 +113,6 @@ export async function sendTyping(req: Request, res: Response) {
     const chat = await client.getChatById(query.telephone);
     await chat.sendSeen();
     await chat.sendStateTyping();
-    await new Promise((res) => setTimeout(res, Number(query.delay) * 1000));
     return { success: true, message: "typing success" };
 }
 
