@@ -6,7 +6,6 @@ import { STATUSORDER } from "@/orders/libs";
 import enviroments from "~/config/enviroments.config";
 import { paypal } from "@vigilio/payments";
 import { paypalComision } from "../libs";
-import { EmpresasApiService } from "@/empresas/services/empresas.api.service";
 import { converterMoneyApi } from "~/libs/apis";
 import type { OrdersStoreDto } from "@/orders/dtos/orders.store.dto";
 import type { OrdersUpdateDto } from "@/orders/dtos/orders.update.dto";
@@ -17,10 +16,7 @@ import type { Empresas } from "@/empresas/entities/empresas.entity";
 
 @Injectable()
 export class PaypalService {
-    constructor(
-        private readonly ordersApiService: OrdersApiService,
-        private readonly empresasApiService: EmpresasApiService
-    ) {}
+    constructor(private readonly ordersApiService: OrdersApiService) {}
     async order(empresa: Empresas, body: OrdersStoreDto) {
         const from = empresa.money.simbolo;
         const response = await converterMoneyApi({
