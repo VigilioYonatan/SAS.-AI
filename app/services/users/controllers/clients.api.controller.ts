@@ -18,6 +18,7 @@ import { objectAsync, string } from "@vigilio/valibot";
 import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { ClientsApiService } from "../services/clients.api.service";
+import { clientsUpdateDto, type ClientsUpdateDto } from "../dtos/clients.update.dto";
 
 @Injectable()
 @Controller("/clients")
@@ -60,13 +61,13 @@ export class ClientsApiController {
 			id: string(),
 		}),
 	)
-	@Validator(clientsStoreDto)
+	@Validator(clientsUpdateDto)
 	@Status(200)
 	@Put("/:id")
 	async update(
 		@Req("empresa") empresa: Empresas,
 		@Params("id") id: string,
-		@Body() body: ClientsStoreDto,
+		@Body() body: ClientsUpdateDto,
 	) {
 		const result = await this.clientsApiService.update(empresa, id, body);
 		return result;
