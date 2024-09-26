@@ -100,6 +100,7 @@ export async function sendSeen(req: Request, res: Response) {
         });
     const chat = await client.getChatById(query.telephone);
     await chat.sendSeen();
+    return { success: true, message: "OK" };
 }
 
 /** SEND MESSAGE - TYPING */
@@ -108,7 +109,7 @@ export async function sendTyping(req: Request, res: Response) {
     if (!query.telephone)
         return res.status(400).json({
             success: false,
-            message: "required telephone o delay body",
+            message: "required telephone",
         });
     const chat = await client.getChatById(query.telephone);
     await chat.sendSeen();

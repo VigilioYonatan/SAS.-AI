@@ -41,7 +41,7 @@ export const NODE_ENV = "production";
 export const qrImage = path.resolve(__dirname, "..", `${SESSION_NAME}-qr.png`);
 export const BASE_URL =
     NODE_ENV === "production"
-        ? "https://vigilioservices2.loca.lt"
+        ? `https://www.${SESSION_NAME}.vigilio-services.com`
         : `http://${process.env.SESSION_NAME}.localhost:4003`;
 
 export let client: WAWebJS.Client;
@@ -120,7 +120,7 @@ export async function initialWhatsapp() {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const notifyName = (message as any)._data.notifyName;
         const quotedMessageId = message.id._serialized;
-        const response = await fetch(
+        const response = await fetchWithTimeout(
             `${BASE_URL}/api/whatsapp/receive-message`,
             {
                 method: "POST",
@@ -171,3 +171,18 @@ app.listen(PORT, () => {
     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
     console.log(`Running ${process.env.PORT} - ${SESSION_NAME}`);
 });
+function fetchWithTimeout(
+    url: string,
+    options: RequestInit,
+    timeout = 60000
+): Promise<Response> {
+    return Promise.race([
+        fetch(url, options),
+        new Promise<Response>((_, reject) =>
+            setTimeout(
+                () => reject(new Error("Tiempo de espera agotado")),
+                timeout
+            )
+        ),
+    ]);
+}
