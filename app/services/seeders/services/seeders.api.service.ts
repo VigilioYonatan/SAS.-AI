@@ -32,6 +32,7 @@ export class SeedersApiService {
             if (enviroments.NODE_ENV !== "production") {
                 await sequelize.sync({ force: true });
             }
+
             await Promise.all([
                 Information.create({ token: enviroments.VITE_VIGILIO_TOKEN }),
                 StatusOrders.bulkCreate(statusOrdersSeeder),

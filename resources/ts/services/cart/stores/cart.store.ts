@@ -17,6 +17,7 @@ import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 import { productEntityId, productOBJ } from "@/products/libs/helpers";
+import { cartStoreApi } from "../apis/cart.store.api";
 
 interface CartState {
     cart: CartProductSchema[] | null;
@@ -32,6 +33,7 @@ export function useCartStore() {
     const auth = useAuthStore();
     const cartUpdateMutation = cartUpdateApi();
     const cartDestroyMutation = cartDestroyApi();
+    const cartStoreMutation = cartStoreApi();
     const productCouponMutation = productCouponApi();
     /** INSERTAR PRODUCTO AL CARRITO */
     function onInsertProduct(product: CartProductSchema) {
@@ -490,15 +492,26 @@ export function useCartStore() {
             quantity: number;
         }[]
     ) {
+        const cartMapped: CartStoreDto[] = cart.map((cart) => ({
+            coupon: null,
+            quantity: cart.quantity,
+            ...productOBJ(cart.id),
+            variant_id: cart.variant_id,
+        }));
         if (!auth.state) {
-            const cartMapped: CartStoreDto[] = cart.map((cart) => ({
-                coupon: null,
-                quantity: cart.quantity,
-                ...productOBJ(cart.id),
-                variant_id: cart.variant_id,
-            }));
             localStorage.setItem(keyCartStorage, JSON.stringify(cartMapped));
             await formatedProductCart(cartMapped);
+        } else {
+            await Promise.all(
+                cart.map(async (prod) => {
+                    await cartStoreMutation.mutate({
+                        coupon: null,
+                        quantity: prod.quantity,
+                        ...productOBJ(prod.id),
+                        variant_id: prod.variant_id,
+                    });
+                })
+            );
         }
     }
 

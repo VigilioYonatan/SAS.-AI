@@ -22,19 +22,19 @@
   <meta name="twitter:title" content="Los mejores productos en un solo lugar">
   <meta name="twitter:description" content="<%= locals.$empresa ? $empresa.name:''   %> ofrece los mejores productos del mercado a un precio bajo">
   <meta name="twitter:creator" content="@author_handle">
-  <meta name="twitter:image" content="<%=   locals.$empresa.logo ? printFileWithDimension(locals.$empresa.logo,100)[0] :'' %>"> <!-- puedes poner una imagen de oferta -->
+  <meta name="twitter:image" content="<%=   locals.$empresa.logo ? printFileWithDimension(locals.$empresa.logo,100)[0] :'/images/settings/others/vigilio-services-ico.webp' %>"> <!-- puedes poner una imagen de oferta -->
 
   <!-- Open Graph data -->
   <meta property="og:title" content="Los mejores productos en un solo lugar">
   <meta property="og:type" content="website">
   <meta property="og:url" content="">
-  <meta property="og:image" content="<%=   locals.$empresa.logo ? printFileWithDimension(locals.$empresa.logo,100)[0] :'' %>"> <!-- puedes poner una imagen de oferta -->
+  <meta property="og:image" content="<%=   locals.$empresa.logo ? printFileWithDimension(locals.$empresa.logo,100)[0] :'/images/settings/others/vigilio-services-ico.webp' %>"> <!-- puedes poner una imagen de oferta -->
   <meta property="og:description" content="<%=locals.$empresa ? $empresa.name_empresa:''  %> ofrece los mejores productos del mercado a un precio bajo">
   <meta property="og:site_name" content="<%= locals.$empresa ? $empresa.name_empresa:''  %>">
   <meta property="fb:app_id" content="">
   <link rel="manifest" href="/manifest.webmanifest.json">
   <!-- ICONO -->
-  <link rel="shortcut icon" href="<%=   locals.$empresa.setting?.icon ? printFileWithDimension(locals.$empresa.setting.icon,100)[0] :'' %>" type="image/x-icon" />
+  <link rel="shortcut icon" href="<%=   locals.$empresa.setting?.icon ? printFileWithDimension(locals.$empresa.setting.icon,100)[0] :'/images/settings/others/vigilio-services-ico.webp' %>" type="image/x-icon" />
   <%- `<script> 
       localStorage.setItem("empresa", ${JSON.stringify(JSON.stringify(typeof $empresa !== "undefined" ? $empresa  : null))});
       localStorage.setItem("user", ${JSON.stringify(JSON.stringify(typeof $user !== "undefined" ? $user  : null))});

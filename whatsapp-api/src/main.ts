@@ -37,7 +37,7 @@ const PORT = Number(process.env.PORT);
 export const SESSION_NAME = process.env.SESSION_NAME;
 export const VITE_TOKEN_VIGILIO_SERVICES =
     process.env.VITE_TOKEN_VIGILIO_SERVICES!;
-export const NODE_ENV = "production";
+export const NODE_ENV = process.env.NODE_ENV;
 export const qrImage = path.resolve(__dirname, "..", `${SESSION_NAME}-qr.png`);
 export const BASE_URL =
     NODE_ENV === "production"

@@ -15,3 +15,4 @@ docker volume create whatsapp-data3 && docker run -d --name slug_web -v /usr/src
 ```
 
 lt --port 3000 --subdomain mi-subdominio
+docker tag vigilio/whatsapp-api:0.0.1 vigilio/whatsapp-api:latest 
