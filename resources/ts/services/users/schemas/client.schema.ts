@@ -1,41 +1,38 @@
 import {
-    type Input,
-    number,
-    minLength,
-    maxLength,
-    string,
-    boolean,
-    custom,
-    nullable,
-    toTrimmed,
-    object,
+	type Input,
+	number,
+	minLength,
+	maxLength,
+	string,
+	boolean,
+	custom,
+	nullable,
+	toTrimmed,
+	object,
 } from "@vigilio/valibot";
 
 export const clientsSchema = object({
-    id: number(),
-    fullname: nullable(string([toTrimmed(), minLength(3), maxLength(60)])),
-    telephone: string([
-        toTrimmed(),
-        minLength(6),
-        custom(
-            (value) => /^\d+$/.test(value),
-            "Este campo solo permite números."
-        ),
-    ]),
-    address: nullable(string([minLength(10), maxLength(100)])),
-    city_id: nullable(number()),
-    map_marker: nullable(
-        object({ lng: number(), lat: number() }, "Coordenadas no válida.")
-    ),
-    enabled: boolean(),
-    empresa_id: number(),
+	id: number(),
+	fullname: nullable(string([toTrimmed(), minLength(3), maxLength(60)])),
+	telephone: string([
+		toTrimmed(),
+		minLength(6),
+		custom((value) => /^\d+$/.test(value), "Este campo solo permite números."),
+	]),
+	address: nullable(string([minLength(10), maxLength(100)])),
+	city_id: nullable(number()),
+	map_marker: nullable(
+		object({ lng: number(), lat: number() }, "Coordenadas no válida."),
+	),
+	enabled: boolean(),
+	empresa_id: number(),
 });
 
 export type ClientsSchema = Input<typeof clientsSchema> & {
-    updatedAt?: Date;
-    createdAt?: Date;
+	updatedAt?: Date;
+	createdAt?: Date;
 };
 export type ClientsSchemaFromServer = ClientsSchema & {
-    updatedAt?: Date;
-    createdAt?: Date;
+	updatedAt?: Date;
+	createdAt?: Date;
 };

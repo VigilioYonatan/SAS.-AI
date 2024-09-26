@@ -18,7 +18,10 @@ import { objectAsync, string } from "@vigilio/valibot";
 import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { ClientsApiService } from "../services/clients.api.service";
-import { clientsUpdateDto, type ClientsUpdateDto } from "../dtos/clients.update.dto";
+import {
+	clientsUpdateDto,
+	type ClientsUpdateDto,
+} from "../dtos/clients.update.dto";
 
 @Injectable()
 @Controller("/clients")
