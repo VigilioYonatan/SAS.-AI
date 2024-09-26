@@ -3,7 +3,7 @@ import { pathUploads } from "@/uploads/libs/helpers";
 import enviroments from "~/config/enviroments.config";
 import fs from "node:fs";
 import dayjs from "~/libs/dayjs";
-import type { Empresas } from "../entities/empresas.entity";
+import { Empresas } from "../entities/empresas.entity";
 import { Clients } from "@/users/entities/clients.entity";
 import { Users } from "@/users/entities/users.entity";
 import XLSXSTYLE from "xlsx-style";
@@ -12,6 +12,29 @@ import { terminal } from "~/libs/helpers";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
+
+export async function vpsShowApi(): Promise<{
+    success: true;
+    vps: {
+        ip_principal: string;
+        name_vps: string;
+        enabled: boolean;
+        cpu: number;
+        max: number;
+        port: number;
+        disk: number;
+        whatsapp_cpu_max: number | null;
+        whatsapp_cpu_low: number | null;
+        whatsapp_ram: number | null;
+    };
+}> {
+    const response = await fetch(
+        `${enviroments.VITE_VIGILIO_WEB}/api/vps/${enviroments.CLIENT}`
+    );
+    if (!response.ok) throw new BadRequestException("Error: VPS SHOW ");
+    const result = await response.json();
+    return result;
+}
 
 @Injectable()
 export class BackupApiService {
@@ -42,6 +65,53 @@ export class BackupApiService {
             message: "backup finalizado correctamente",
             file: `backup/${nameFile}`,
         };
+    }
+
+    async restartWhatsappVersion() {
+        try {
+            const emp = await Empresas.findAll({
+                attributes: ["slug", "port"],
+            });
+            const slugs = emp.map((container) => container.slug);
+            const command1 = `docker rm -f ${slugs.join(" ")}`;
+            const command2 = slugs
+                .map((slug) => `docker volume rm ${slug}`)
+                .join(" && ");
+
+            await terminal(command1);
+            await terminal(command2);
+            const result = await vpsShowApi();
+            await terminal(`docker rmi ${enviroments.DOCKER_IMAGE_WHATSAPP}`);
+            await Promise.all(
+                emp.map(async (emp) => {
+                    await terminal(
+                        `docker volume create ${
+                            emp.slug
+                        } && docker run -d --name ${
+                            emp.slug
+                        } -e PORT=5000 -e NODE_ENV=${
+                            enviroments.NODE_ENV
+                        } -e SESSION_NAME=${
+                            emp.slug
+                        } -e VITE_TOKEN_VIGILIO_SERVICES=${
+                            enviroments.VITE_TOKEN_VIGILIO_SERVICES
+                        } --restart on-failure:5 --memory="${
+                            result.vps.whatsapp_cpu_max || "500"
+                        }m" --cpus="${
+                            result.vps.whatsapp_cpu_max || "0.4"
+                        }" -p ${emp.port}:5000 -v ${emp.slug}:/app/data ${
+                            enviroments.DOCKER_IMAGE_WHATSAPP
+                        }`
+                    );
+                })
+            );
+            return {
+                success: true,
+                message: "OK",
+            };
+        } catch (error) {
+            throw new BadRequestException((error as Error).message);
+        }
     }
 
     async restart() {

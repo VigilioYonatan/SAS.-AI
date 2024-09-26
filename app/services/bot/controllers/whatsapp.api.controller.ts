@@ -29,6 +29,8 @@ import type { RequestVigilio } from "~/config/types";
 import fs from "node:fs";
 import cron from "node-cron";
 import type { Response } from "express";
+import enviroments from "~/config/enviroments.config";
+import { vpsShowApi } from "@/empresas/services/backup.api.service";
 export let chats: Record<string, ["assistant" | "user", string][]> = {};
 
 @Controller("/whatsapp")
@@ -54,9 +56,16 @@ export class whatsappApiController {
             }));
             await empresa.update({ contacts: mappedcontacts });
         }
+        const result = await vpsShowApi();
 
         await empresa?.update({ enabledBot: true });
-        await terminal(`docker update --cpus="0.14" ${empresa.slug}`);
+        if (enviroments.NODE_ENV === "production") {
+            await terminal(
+                `docker update --cpus="${
+                    result.vps.whatsapp_cpu_max || "0.14"
+                }" ${empresa.slug}`
+            );
+        }
         return {
             success: true,
             message: "OK",
@@ -71,13 +80,13 @@ export class whatsappApiController {
             isGroup: boolean;
             content: string | Buffer;
             from: string;
-            props: WAWebJS.Message;
+            notifyName: string;
+            quotedMessageId: string;
         }
     ) {
         let content = body.content;
 
         const userId = body.from;
-        const { props } = body;
         try {
             const whatsapp = await isWhatsappIA(info.slug, userId);
 
@@ -94,13 +103,12 @@ export class whatsappApiController {
                 empresa.inteligenceArtificial.timer.start,
                 empresa.inteligenceArtificial.timer.finish
             );
-
+            await delay(random);
             // delay en 5 - 15 segundos
             await whatsappSendTypingApi(empresa, {
                 telephone: userId,
-                delay: random,
             });
-
+            await delay(3);
             //  cuando cierra el restaurante
             // const findDay = empresa.schedule.find(
             //     (day) => day.id === NOW(empresa).day()
@@ -120,14 +128,13 @@ export class whatsappApiController {
             }
             const buenas = buenosDias(
                 content as string,
-                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                (props as any)._data.notifyName,
+                body.notifyName,
                 empresa
             );
             const thanks = gracias(content as string);
             const opt =
                 Math.random() < 0.5
-                    ? { options: { quotedMessageId: props.id._serialized } }
+                    ? { options: { quotedMessageId: body.quotedMessageId } }
                     : { options: {} };
             if (buenas) {
                 // aveces que responda reply
@@ -282,11 +289,15 @@ export class whatsappApiController {
             options?: WAWebJS.MessageSendOptions;
         }
     ) {
-        const result = await whatsappSendMessageApi(empresa, {
-            ...body,
-            telephone,
-        });
-        return result;
+        try {
+            const result = await whatsappSendMessageApi(empresa, {
+                ...body,
+                telephone,
+            });
+            return result;
+        } catch (error) {
+            throw new BadRequestException("POSIBLE ERROR: conectar a Whatsapp");
+        }
     }
 
     @Post("/send-file")
@@ -352,7 +363,7 @@ export class whatsappApiController {
         await empresa.update({
             timeWhatsapp: NOW(empresa).add(5, "minute").toDate(),
         });
-        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker update --cpus="0.5" ${empresa.slug} && docker restart ${empresa.slug} `;
+        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker update --cpus="0.35" ${empresa.slug} && docker restart ${empresa.slug} `;
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`Ejecutando comando: ${comando}`);
         await terminal(comando);

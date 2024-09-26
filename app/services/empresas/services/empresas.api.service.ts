@@ -38,6 +38,7 @@ import { Settings } from "../entities/settings.entity";
 import type { SettingsSchema } from "../schemas/settings.schema";
 import { NOW, restarDays } from "~/libs/dayjs";
 import { initializeBot } from "@/bot/libs/ai";
+import { vpsShowApi } from "./backup.api.service";
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
@@ -284,9 +285,26 @@ export class EmpresasApiService {
             );
 
             if (enviroments.NODE_ENV === "production") {
+                const result = await vpsShowApi();
                 // crear whatsapp contenedor
                 await terminal(
-                    `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --restart on-failure:5 --memory="500m" --cpus="0.5" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+                    `docker volume create ${
+                        empresa.slug
+                    } && docker run -d --name ${
+                        empresa.slug
+                    } -e PORT=5000 -e NODE_ENV=${
+                        enviroments.NODE_ENV
+                    } -e SESSION_NAME=${
+                        empresa.slug
+                    } -e VITE_TOKEN_VIGILIO_SERVICES=${
+                        enviroments.VITE_TOKEN_VIGILIO_SERVICES
+                    } --restart on-failure:5 --memory="${
+                        result.vps.whatsapp_ram ?? "500"
+                    }m" --cpus="0.${
+                        result.vps.whatsapp_cpu_max ?? "0.4"
+                    }" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${
+                        enviroments.DOCKER_IMAGE_WHATSAPP
+                    }`
                 );
             }
 

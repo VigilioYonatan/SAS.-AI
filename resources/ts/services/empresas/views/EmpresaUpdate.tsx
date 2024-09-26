@@ -19,7 +19,6 @@ import { formatDateTwo, handlerError } from "~/libs/helpers";
 import Loading from "@/admin/components/Loading";
 import View404 from "@/admin/views/404";
 import { empresaPrivateApi } from "../apis/empresas.private.api";
-import { servicios } from "../libs/helpers";
 import {
     settingsLogoUpdateDto,
     SettingsLogoUpdateDto,
@@ -191,32 +190,14 @@ function empresaUpdate() {
                                 />
                             </div>
                             <div class="w-full flex flex-col md:flex-row gap-2">
-                                <Form.control.select
-                                    name={
-                                        "type_empresa_id" as keyof EmpresasUpdateDto
-                                    }
-                                    array={servicios.map((ser, i) => ({
-                                        key: i + 1,
-                                        value: ser.tipo,
-                                    }))}
+                                <Form.control
+                                    name={"negocio" as keyof EmpresasUpdateDto}
                                     placeholder="Tipo de empresa"
                                     title="Tipo de empresa"
-                                    value={
-                                        empresa.tipo_empresa.tipo_servicio_id
-                                    }
+                                    value={empresa.tipo_empresa.value}
                                     disabled
                                 />
-                                {!empresa.type_empresa_id ? (
-                                    <Form.control
-                                        name={
-                                            "type_empresa_other" as keyof EmpresasUpdateDto
-                                        }
-                                        title="Empresa/negocio"
-                                        type="text"
-                                        placeholder=""
-                                        disabled
-                                    />
-                                ) : null}
+
                                 {empresa.web ? (
                                     <Form.control
                                         name={"web" as keyof EmpresasUpdateDto}
@@ -406,7 +387,7 @@ function empresaUpdate() {
                                         name={
                                             "enabledBot" as keyof EmpresasUpdateDto
                                         }
-                                        title="Habilitar Vendedor IA de de whatsapp"
+                                        title="Habilitar IA de de whatsapp"
                                         question="Ya no estará habilitado el bot de whatsapp IA si no está habilitado"
                                     />{" "}
                                     <Form.control.toggle
