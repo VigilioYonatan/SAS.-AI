@@ -106,7 +106,8 @@ export class Server {
 
                 if (
                     subdomain === "vigilio-services" ||
-                    subdomain?.includes(".docker")
+                    subdomain?.includes(".docker") ||
+                    subdomain === "facturacion"
                 ) {
                     return null;
                 }
