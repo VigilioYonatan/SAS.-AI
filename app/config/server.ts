@@ -45,7 +45,7 @@ import { Brands } from "@/products/entities/brands.entitiy";
 import * as i18nextHttpMiddleware from "i18next-http-middleware";
 import i18next, { i18nextMiddleware } from "../libs/i18next";
 import { Sequelize } from "sequelize-typescript";
-import { Op } from "sequelize";
+import { corsOptions } from ".";
 
 export class Server {
     public readonly app: express.Application = express();
@@ -57,51 +57,7 @@ export class Server {
     }
     async middlewares() {
         // comprimir paginas webs para mejor rendimiento - NO TOCAR si no es necesario
-        this.app.use(
-            cors({
-                origin: async (origin, callback) => {
-                    const empresas = await Empresas.unscoped().findAll({
-                        include: [
-                            {
-                                model: Settings,
-                                //   dominio.com
-                                where: Sequelize.where(
-                                    Sequelize.literal(`host->>'host'`), // Extrae el valor de 'dominio' dentro de 'host'
-                                    {
-                                        [Op.ne]: null,
-                                    } // Compara con el valor que necesitas
-                                ),
-                                required: true,
-                            },
-                        ],
-                        attributes: ["id"],
-                    });
-
-                    // Aquí puedes agregar lógica para permitir subdominios
-                    const allowedOrigins = [
-                        "https://*.vigilio-services.com",
-                        `https://${enviroments.CLIENT.toLowerCase()}.vigilio-services.com`,
-                        ...empresas.map(
-                            (emp) => `https://www.${emp.setting.host.host}`
-                        ),
-                    ];
-                    // Agrega los dominios y subdominios permitidos
-                    if (
-                        !origin ||
-                        allowedOrigins.some((allowedOrigin) =>
-                            new RegExp(allowedOrigin.replace(/\*/g, ".*")).test(
-                                origin
-                            )
-                        )
-                    ) {
-                        callback(null, true); // Permitir origen
-                    } else {
-                        callback(new Error("Not allowed by CORS")); // No permitir origen
-                    }
-                },
-                credentials: true,
-            })
-        );
+        this.app.use(cors(corsOptions));
         this.app.use(compression());
         // habilitar cookies
         this.app.use(cookieParser());
