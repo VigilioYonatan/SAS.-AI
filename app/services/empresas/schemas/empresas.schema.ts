@@ -250,6 +250,7 @@ export const empresasSchema = objectAsync({
 	slug: string(),
 	credentials,
 	enabled_catalogo: boolean(),
+	enabledSound: boolean(),
 	type_empresa_id: number(),
 	type_empresa_other: nullable(string()),
 	telegram_token: nullable(string([maxLength(100)])),
@@ -266,6 +267,7 @@ export const empresasSchema = objectAsync({
 		simbolo: string(),
 	}),
 	port: number(),
+	header_cart: nullable(string([minLength(10)])),
 	tz: string(),
 	tipo_impuesto: string(),
 	mercado_pago_comision: object({

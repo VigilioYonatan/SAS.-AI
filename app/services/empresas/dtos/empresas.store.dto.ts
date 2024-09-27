@@ -14,7 +14,22 @@ import { Empresas } from "../entities/empresas.entity";
 export const empresasStoreDto = mergeAsync([
 	omitAsync(
 		empresasSchema,
-		["id", "token", "certificado", "logo", "logo_pwa"],
+		[
+			"id",
+			"token",
+			"certificado",
+			"logo",
+			"logo_pwa",
+			"enabledSound",
+			"enabledClientPayComision",
+			"enabled_igv",
+			"enabledSound",
+			"isOpen",
+			"enabledAnimation",
+			"enabled_catalogo",
+			"enable_sell_country",
+			"header_cart",
+		],
 		[
 			async (input) => {
 				const [slug] = await Promise.all([

@@ -273,6 +273,12 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 	enabled_catalogo: boolean;
 
 	@Column({
+		type: DataType.BOOLEAN,
+		allowNull: false,
+	})
+	enabledSound: boolean;
+
+	@Column({
 		type: DataType.JSON,
 		defaultValue: [],
 	})
@@ -329,6 +335,11 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 		type: DataType.STRING,
 	})
 	tipo_impuesto: string;
+
+	@Column({
+		type: DataType.TEXT,
+	})
+	header_cart: string;
 
 	@ForeignKey(() => TipoEmpresa)
 	@Column({

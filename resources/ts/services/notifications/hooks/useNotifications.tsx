@@ -20,7 +20,9 @@ import { NoProfileImage } from "~/config/settings";
 import { sweetAlert } from "@vigilio/sweet";
 import useAuthStore from "@/auth/stores/auth.store";
 import { reactComponent } from "~/libs/preact";
-import useEmpresastore from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+	storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import useSocketStore from "~/stores/socket.store";
 import { notificationsCleanApi } from "../api/notifications.clean.api";
 import { Fragment } from "preact/jsx-runtime";
@@ -52,8 +54,7 @@ export function useNotifications() {
 			}) => {
 				if (!authStore.state?.enabledNotification) return;
 				// roles permitidos
-				if (!authStore.state || !data.roles.includes(authStore.state!.role_id))
-					return;
+				if (!authStore.state) return;
 				const notification = data.notification;
 
 				if (notification.user_id === authStore.state!.id) return;
@@ -73,7 +74,11 @@ export function useNotifications() {
 					},
 					...notifications.value,
 				];
-
+				if (storageEmpresa?.enabledSound) {
+					const audio = new Audio("/sounds/tin.mp3");
+					audio.load();
+					audio.play();
+				}
 				// solo mostrar notificaiones push a ordens y tienes que estar activado notifaciones
 				// await showNotification({
 				//     title: `Nueva notificación: ${notification.type}`,

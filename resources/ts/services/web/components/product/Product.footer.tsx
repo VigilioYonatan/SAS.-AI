@@ -41,7 +41,7 @@ function ProductFooter({ showButtonCart = false }: ProductFooterProps) {
 							aria-label="cart"
 							className={`${
 								product.existProductInCart ? "bg-black" : "bg-primary"
-							} text-white font-bold uppercase py-3 px-4 tracking-widest text-sm text-center w-full`}
+							} text-white font-bold uppercase py-3 px-4 tracking-widest text-sm text-center w-full flex justify-center items-center`}
 							disabled={product.cartStoreMutation.isLoading || false}
 							onClick={async () => {
 								await product.handleInsertProduct(false);

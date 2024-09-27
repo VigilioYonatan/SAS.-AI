@@ -278,11 +278,13 @@ export const empresasSchema = object({
 	}),
 	port: number(),
 	tipo_impuesto: string(),
+	header_cart: nullable(string([minLength(10)])),
 	mercado_pago_comision: object({
 		comision: number(),
 		url: string(),
 		transaccion: nullable(number()),
 	}),
+	enabledSound: boolean(),
 	timeWhatsapp: coerce(date(), (value) => new Date(value as string)),
 	tz: string(),
 	impuestos: array(number()),

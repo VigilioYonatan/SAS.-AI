@@ -17,6 +17,7 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
 		// twilio: { account: "", token: "" },
 		web: null,
 		logo: null,
+		header_cart: null,
 		name_empresa: "vigilio services",
 		dial_code: "51",
 		enable_sell_country: false,
@@ -47,6 +48,7 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
 		telephoneReclamos: null,
 		telephoneThird: null,
 		enabled_igv: true,
+		enabledSound: true,
 		igv: 18,
 		credentials: {
 			open_ai:
@@ -202,6 +204,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
 			money: "Pesos Mexicanos",
 			simbolo: "MXN",
 		},
+		header_cart: null,
 		// twilio: { account: "", token: "" },
 		logo_pwa: null,
 		name_empresa: "Tacos A",
@@ -219,6 +222,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
 		company: null,
 		slug: "vigilio-services",
 		enabledBot: true,
+		enabledSound: true,
 		facebook: null,
 		instagram: null,
 		impuestos: [18, 10],

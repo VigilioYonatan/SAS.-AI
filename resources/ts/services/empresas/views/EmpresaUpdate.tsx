@@ -417,7 +417,7 @@ function empresaUpdate() {
 								isLocal
 							/>
 
-							<div class="flex flex-row lg:flex-col  gap-2 flex-wrap">
+							<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-2 flex-wrap w-full">
 								<Form.control.toggle
 									name={"enable_map_marker" as keyof EmpresasUpdateDto}
 									title="Habilitar ubicación a la hora de pagar"
@@ -435,7 +435,11 @@ function empresaUpdate() {
 									title="Habilitar Animaciones"
 									question="Ya no estará habilitado las animaciones que tendrás tus webs"
 								/>
-
+								<Form.control.toggle
+									name={"enabledSound" as keyof EmpresasUpdateDto}
+									title="Habilitar Sonido Alerta"
+									question="Ya no emitirá sonido a las ordenes de los clientes"
+								/>
 								<Form.control
 									type="text"
 									ico={<i class="fab fa-telegram" />}
@@ -466,6 +470,20 @@ function empresaUpdate() {
 											5. Copiar Token. ejemplo: 7504180864:AAG70K8Xy...
 											<br />
 											6. Enviar mensaje a tu Bot de telegram
+										</div>
+									}
+								/>
+								<Form.control.area
+									name={"header_cart" as keyof EmpresasUpdateDto}
+									title="Titulo Carrito Link"
+									question={
+										<div class="w-[250px]">
+											Perzonaliza el texto del link de tu carrito de compra.
+											<br />
+											Por defecto es{" "}
+											<b class="font-semibold">
+												Los mejores productos en un solo lugar
+											</b>
 										</div>
 									}
 								/>

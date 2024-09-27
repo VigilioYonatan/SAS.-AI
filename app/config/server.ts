@@ -56,7 +56,18 @@ export class Server {
 	}
 	async middlewares() {
 		// comprimir paginas webs para mejor rendimiento - NO TOCAR si no es necesario
-		this.app.use(cors());
+		this.app.use(
+			cors({
+				origin: (origin, callback) => {
+					if (!origin || /\vigilio-services\.com$/.test(origin)) {
+						callback(null, true);
+					} else {
+						callback(new Error("Not allowed by CORS"));
+					}
+				},
+				credentials: true,
+			}),
+		);
 		this.app.use(compression());
 		// habilitar cookies
 		this.app.use(cookieParser());
@@ -100,9 +111,12 @@ export class Server {
 					subdomain = subdomainSplit[0];
 				}
 
-				// if (subdomain === "vigilio-services") {
-				//     return null;
-				// }
+				if (
+					subdomain === "vigilio-services" ||
+					subdomain?.includes(".docker")
+				) {
+					return null;
+				}
 			}
 			const where = subdomain
 				? {
@@ -135,7 +149,6 @@ export class Server {
 					] as (keyof EmpresasSchema)[],
 				},
 			});
-			// console.log({ empresa });
 
 			if (empresa) {
 				if (
