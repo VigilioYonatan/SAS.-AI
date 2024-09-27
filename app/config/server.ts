@@ -58,7 +58,7 @@ export class Server {
         // comprimir paginas webs para mejor rendimiento - NO TOCAR si no es necesario
         this.app.use(
             cors({
-                origin: "*",
+                origin: enviroments.VITE_VIGILIO_WEB,
                 credentials: true,
             })
         );
