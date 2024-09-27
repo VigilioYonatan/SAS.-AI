@@ -80,6 +80,7 @@ export class Server {
                     // Aquí puedes agregar lógica para permitir subdominios
                     const allowedOrigins = [
                         "https://*.vigilio-services.com",
+                        `https://${enviroments.CLIENT.toLowerCase()}.vigilio-services.com`,
                         ...empresas.map(
                             (emp) => `https://www.${emp.setting.host.host}`
                         ),
