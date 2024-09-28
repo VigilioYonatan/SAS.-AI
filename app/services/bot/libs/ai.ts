@@ -407,6 +407,8 @@ export async function featuresIA(
     // carrito
     const expresionRegular = /\{\{cart\?items=[^}]+\}\}/g;
     const coincidencias = completionText.match(expresionRegular);
+    console.log({ coincidencias });
+
     if (coincidencias?.length) {
         for (const c of coincidencias) {
             const hash = Math.random().toString(32).slice(4, 8);
