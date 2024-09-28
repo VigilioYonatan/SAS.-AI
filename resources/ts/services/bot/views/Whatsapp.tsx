@@ -755,7 +755,7 @@ export function QrWhatsapp() {
 						</li>{" "}
 						<li class="dark:text-white text-center text-sm">
 							*Si se conectó correctamente, esperar unos minutos para añadir tus
-							contactos automaticamente.{" "}
+							contactos automáticamente.{" "}
 						</li>
 					</ul>
 				</>
