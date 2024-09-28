@@ -121,9 +121,12 @@ export async function isTelegramIA(empresa: string) {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("Error al hacer fetch a la empresa");
     }
+    const where = !Number.isNaN(Number(empresa))
+        ? { id: empresa }
+        : { slug: empresa };
     const [emp] = await Promise.all([
         Empresas.findOne({
-            where: { slug: empresa },
+            where,
             attributes: {
                 exclude: ["certificado", "groupWhatsapp"],
             },
@@ -233,6 +236,14 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
                             completion.usage!.prompt_tokens,
                         output_tokens:
                             latestEmpresaUsage.output_tokens +
+                            completion.usage!.completion_tokens,
+                    },
+                },
+                payments: {
+                    ...empresa.payments,
+                    tokens: {
+                        tokens:
+                            empresa.payments.tokens.tokens -
                             completion.usage!.completion_tokens,
                     },
                 },

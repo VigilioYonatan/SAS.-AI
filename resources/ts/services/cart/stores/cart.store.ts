@@ -509,7 +509,7 @@ export function useCartStore() {
                         ...prod,
                         coupon: null,
                         quantity: prod.quantity,
-                        variant_id: prod.variant_id,
+                        variant_id: prod.variant_id ?? null,
                     });
                 })
             );
