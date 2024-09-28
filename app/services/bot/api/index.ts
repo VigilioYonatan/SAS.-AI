@@ -14,6 +14,7 @@ export async function whatsappSendMessageApi(
         telephone: string;
         message: string;
         options?: WAWebJS.MessageSendOptions;
+        delay: number;
     }
 ): Promise<{ success: boolean; message: string }> {
     const { telephone, ...rest } = body;
@@ -40,6 +41,7 @@ export interface WhatsappSendFileApi {
     file?: File | null;
     name?: string | null;
     options?: MessageSendOptions | null;
+    delay: number;
 }
 export async function whatsappSendFileApi(
     empresa: Empresas,
@@ -56,6 +58,9 @@ export async function whatsappSendFileApi(
     }
     if (rest.url) {
         formdata.append("url", rest.url);
+    }
+    if (rest.delay) {
+        formdata.append("delay", String(rest.delay));
     }
     if (rest.options) {
         formdata.append("options", JSON.stringify(rest.options));
@@ -101,6 +106,7 @@ export async function whatsappSendTypingApi(
     empresa: Empresas,
     body: {
         telephone: string;
+        delay: number;
     }
 ): Promise<{ success: boolean; message: string }> {
     const { telephone } = body;
@@ -111,7 +117,9 @@ export async function whatsappSendTypingApi(
 
         {
             method: "POST",
+            body: JSON.stringify({ delay: body.delay }),
             headers: {
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
             },
         }

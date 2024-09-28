@@ -10,6 +10,7 @@ export async function sendMessage(req: Request, res: Response) {
         const body = req.body as {
             message: string;
             options?: WAWebJS.MessageSendOptions;
+            delay: number;
         };
 
         const query = req.query as { telephone: string };
@@ -18,7 +19,12 @@ export async function sendMessage(req: Request, res: Response) {
                 success: false,
                 message: "required message or telephone body",
             });
-
+        const chat = await client.getChatById(query.telephone);
+        await chat.sendSeen();
+        await chat.sendStateTyping();
+        await new Promise((resolve) =>
+            setTimeout(resolve, Number(body.delay) * 1000)
+        );
         await client.sendMessage(
             query.telephone,
             body.message,
@@ -42,7 +48,15 @@ export async function sendFile(req: Request, res: Response) {
         const query = req.query as { telephone: string };
         const form = formidable();
         const [field, files] = await form.parse(req);
-
+        const chat = await client.getChatById(query.telephone);
+        await chat.sendSeen();
+        await chat.sendStateTyping();
+        await new Promise((resolve) =>
+            setTimeout(
+                resolve,
+                Number(field.delay ? Number(field.delay[0]) : 1) * 1000
+            )
+        );
         const options: WAWebJS.MessageSendOptions = field.options
             ? JSON.parse(field.options[0])
             : {};
@@ -112,8 +126,12 @@ export async function sendTyping(req: Request, res: Response) {
             message: "required telephone",
         });
     const chat = await client.getChatById(query.telephone);
+    await new Promise((resolve) =>
+        setTimeout(resolve, Number(req.body.delay) * 1000)
+    );
     await chat.sendSeen();
     await chat.sendStateTyping();
+
     return { success: true, message: "typing success" };
 }
 

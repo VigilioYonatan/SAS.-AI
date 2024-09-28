@@ -1,7 +1,7 @@
 import { Injectable } from "@vigilio/express-core";
 import { Orders } from "../entities/orders.entity";
 import { BadRequestException, NotFoundException } from "@vigilio/express-core";
-import { delay, generateCodeEntity } from "~/libs/helpers";
+import { generateCodeEntity } from "~/libs/helpers";
 import type { OrdersUpdateDto } from "../dtos/orders.update.dto";
 import { InvoicesApiService } from "./invoices.api.service";
 import {
@@ -47,11 +47,7 @@ import type { Variants } from "@/products/entities/options/variants.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ClientsApiService } from "@/users/services/clients.api.service";
-import {
-    whatsappSendFileApi,
-    whatsappSendMessageApi,
-    whatsappSendTypingApi,
-} from "@/bot/api";
+import { whatsappSendFileApi, whatsappSendMessageApi } from "@/bot/api";
 import { BASE_URL } from "@/empresas/libs";
 import { Product, productEntityId } from "@/products/libs";
 import { ticketHTML } from "../libs/ticket";
@@ -658,16 +654,14 @@ export class OrdersApiService {
         try {
             if (empresa.enabledSendMessage && ordersStoreDto.telephone) {
                 const telephone = `${empresa.dial_code}${ordersStoreDto.telephone}@c.us`;
-                await whatsappSendTypingApi(empresa, {
-                    telephone,
-                });
-                await delay(4);
+
                 await whatsappSendMessageApi(empresa, {
                     telephone,
                     message:
                         empresa.dial_code === "55"
                             ? `Olá 😊, aqui está o código do seu pedido ${order.order_code}.\n Não se esqueça de nos perguntar o status do seu pedido, digitando o código do pedido.`
                             : `Hola 😊, Aquí está el código de su orden *${order.order_code}*.\n. No olvides preguntarnos el estado de tu orden, digitando el *código* del orden.`,
+                    delay: 4,
                 });
             }
         } catch (error) {}
@@ -944,11 +938,8 @@ export class OrdersApiService {
                             "{COMPROBANTE}",
                             type
                         ),
+                        delay: 3,
                     });
-                    await whatsappSendTypingApi(empresa, {
-                        telephone,
-                    });
-                    await delay(4);
 
                     const { pdfBuffer, file } = await pdfGenerate({
                         empresa,
@@ -961,17 +952,14 @@ export class OrdersApiService {
                                 : "recibo",
                     });
 
-                    whatsappSendFileApi(empresa, {
+                    await whatsappSendFileApi(empresa, {
                         telephone,
                         file: new File([pdfBuffer], file, {
                             type: "application/pdf",
                         }),
                         options: { sendMediaAsDocument: true },
+                        delay: 1,
                     });
-                    await whatsappSendTypingApi(empresa, {
-                        telephone,
-                    });
-                    await delay(4);
 
                     await whatsappSendMessageApi(empresa, {
                         telephone,
@@ -979,6 +967,7 @@ export class OrdersApiService {
                             "{URL}",
                             BASE_URL(empresa)
                         ),
+                        delay: 3,
                     });
                 } catch (error) {}
             }
@@ -1124,12 +1113,9 @@ export class OrdersApiService {
                                 "{COMPROBANTE}",
                                 type
                             ),
+                            delay: 3,
                         });
 
-                        await whatsappSendTypingApi(empresa, {
-                            telephone,
-                        });
-                        await delay(4);
                         const { pdfBuffer, file } = await pdfGenerate({
                             empresa,
                             sunat,
@@ -1143,11 +1129,8 @@ export class OrdersApiService {
                             telephone,
                             file: media,
                             options: { sendMediaAsDocument: true },
+                            delay: 4,
                         });
-                        await whatsappSendTypingApi(empresa, {
-                            telephone,
-                        });
-                        await delay(4);
 
                         await whatsappSendMessageApi(empresa, {
                             telephone,
@@ -1155,6 +1138,7 @@ export class OrdersApiService {
                                 "{URL}",
                                 BASE_URL(empresa)
                             ),
+                            delay: 4,
                         });
                     } catch (error) {}
                 }
@@ -1332,6 +1316,7 @@ export class OrdersApiService {
                         empresa.dial_code === "55"
                             ? `Olá 😊, somos ${empresa.name_empresa}. \n Seu pedido ${order.order_code}:\n Está sendo enviado para o seu endereço ${order.address}.\n${products}                          `
                             : `Hola 😊, Somos ${empresa.name_empresa}. \n Su orden *${order.order_code}*:\n Se está enviando su pedido a su domicilio ${order.address}.\n${products}`,
+                    delay: 3,
                 });
             } catch (error) {}
         }

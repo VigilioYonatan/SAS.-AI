@@ -18,7 +18,7 @@ import {
     whatsappSendTypingApi,
     type WhatsappSendFileApi,
 } from "../api";
-import { delay, randomNumber, terminal } from "~/libs/helpers";
+import { randomNumber, terminal } from "~/libs/helpers";
 import { buenosDias, featuresIA, gracias, isWhatsappIA } from "../libs/ai";
 import { NOW } from "~/libs/dayjs";
 import { promptReplace, transcribeAudio } from "../libs";
@@ -103,12 +103,11 @@ export class whatsappApiController {
                 empresa.inteligenceArtificial.timer.start,
                 empresa.inteligenceArtificial.timer.finish
             );
-            await delay(random);
             // delay en 5 - 15 segundos
             await whatsappSendTypingApi(empresa, {
                 telephone: userId,
+                delay: random,
             });
-            await delay(3);
             //  cuando cierra el restaurante
             // const findDay = empresa.schedule.find(
             //     (day) => day.id === NOW(empresa).day()
@@ -143,6 +142,7 @@ export class whatsappApiController {
                     message: buenas,
                     telephone: userId,
                     options: opt,
+                    delay: 3,
                 });
                 return {
                     success: true,
@@ -154,6 +154,7 @@ export class whatsappApiController {
                     message: thanks,
                     telephone: userId,
                     options: opt,
+                    delay: 3,
                 });
 
                 return {
@@ -247,27 +248,27 @@ export class whatsappApiController {
                             message: chunk,
                             telephone: userId,
                             options: opt,
+                            delay: 3,
                         });
-                        await delay(3);
                     }
                 } else {
                     await whatsappSendMessageApi(empresa, {
                         message: removeNote,
                         telephone: userId,
                         options: opt,
+                        delay: 3,
                     });
                 }
 
                 // enviar imagen
                 if (urlExtraidas.length) {
-                    await delay(3);
                     for (const url of urlExtraidas) {
                         await whatsappSendFileApi(empresa, {
                             telephone: userId,
                             url,
                             options: { sendMediaAsSticker: true },
+                            delay: 3,
                         });
-                        await delay(3);
                     }
                 }
             }
@@ -276,8 +277,6 @@ export class whatsappApiController {
                 message: "OK",
             };
         } catch (error) {
-            console.log((error as Error).message);
-
             chats[`${info.slug}:${userId}`] = [];
         }
     }
@@ -295,6 +294,7 @@ export class whatsappApiController {
             const result = await whatsappSendMessageApi(empresa, {
                 ...body,
                 telephone,
+                delay: 0,
             });
             return result;
         } catch (error) {
@@ -322,6 +322,7 @@ export class whatsappApiController {
             name: fields.name ? fields.name![0] : null,
             options: fields.option ? JSON.parse(fields.option![0]) : null,
             url: fields.url ? JSON.parse(fields.url[0]) : null,
+            delay: 0,
         };
         const result = await whatsappSendFileApi(empresa, data);
         return result;
