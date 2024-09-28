@@ -313,6 +313,8 @@ export class Server {
     sockets() {
         // socket io
         const server = new http.Server(this.app);
+        server.setTimeout(600000); // 10 minutos
+
         const io = new socket.Server(server);
         Container.provide([
             { provide: IO_MIDDLEWARE, useClass: GlobalMiddleware },
