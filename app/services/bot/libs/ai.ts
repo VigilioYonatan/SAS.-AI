@@ -80,7 +80,7 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
     const where = !Number.isNaN(Number(empresa))
         ? { id: empresa }
         : { slug: empresa };
-    const emp = await Empresas.unscoped().findOne({
+    const emp = await Empresas.findOne({
         where,
         attributes: {
             exclude: ["certificado", "groupWhatsapp"],
