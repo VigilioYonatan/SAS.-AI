@@ -103,6 +103,8 @@ export class whatsappApiController {
                 empresa.inteligenceArtificial.timer.start,
                 empresa.inteligenceArtificial.timer.finish
             );
+            console.log({ from: body.from });
+
             await delay(random);
             // delay en 5 - 15 segundos
             await whatsappSendTypingApi(empresa, {
