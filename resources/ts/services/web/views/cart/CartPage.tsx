@@ -29,7 +29,7 @@ import { citiesIndexApi } from "@/ubigeo/apis/citites.api.index";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import { MetodosDePago } from "@/web/components/product/ProductView";
 interface CartProps {
-	cart: { id: number; quantity: number; variant_id: number }[] | null;
+	cart: { id: number; quantity: number; variant?: number }[] | null;
 	header: HeaderType;
 }
 

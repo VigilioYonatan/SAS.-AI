@@ -488,7 +488,7 @@ export function useCartStore() {
     async function initialCart(
         cart: {
             id: number;
-            variant_id: number | null;
+            variant: number | null;
             quantity: number;
         }[]
     ) {
@@ -496,7 +496,7 @@ export function useCartStore() {
             coupon: null,
             quantity: cart.quantity,
             ...productOBJ(cart.id),
-            variant_id: cart.variant_id,
+            variant_id: cart.variant,
         }));
         await formatedProductCart(cartMapped);
 
