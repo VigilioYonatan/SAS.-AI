@@ -104,10 +104,10 @@ export class whatsappApiController {
                 empresa.inteligenceArtificial.timer.finish
             );
             // delay en 5 - 15 segundos
-            await whatsappSendTypingApi(empresa, {
-                telephone: userId,
-                delay: random,
-            });
+            // await whatsappSendTypingApi(empresa, {
+            //     telephone: userId,
+            //     delay: random,
+            // });
             //  cuando cierra el restaurante
             // const findDay = empresa.schedule.find(
             //     (day) => day.id === NOW(empresa).day()
