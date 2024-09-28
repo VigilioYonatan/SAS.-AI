@@ -62,7 +62,7 @@ export class whatsappApiController {
         if (enviroments.NODE_ENV === "production") {
             await terminal(
                 `docker update --cpus="${
-                    result.vps.whatsapp_cpu_max || "0.14"
+                    result.vps.whatsapp_cpu_low || "0.14"
                 }" ${empresa.slug}`
             );
         }
@@ -363,7 +363,12 @@ export class whatsappApiController {
         await empresa.update({
             timeWhatsapp: NOW(empresa).add(5, "minute").toDate(),
         });
-        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png" && docker update --cpus="0.7" ${empresa.slug} && docker restart ${empresa.slug} `;
+        const result = await vpsShowApi();
+        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${
+            empresa.slug
+        }-qr.png" && docker update --cpus="${
+            result.vps.whatsapp_cpu_max ?? "0.7"
+        }" ${empresa.slug} && docker restart ${empresa.slug} `;
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`Ejecutando comando: ${comando}`);
         await terminal(comando);
