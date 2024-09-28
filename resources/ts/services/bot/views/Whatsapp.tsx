@@ -115,6 +115,7 @@ function Whatsapp() {
                         sweetModal({
                             html: reactComponent(<QrWhatsapp />),
                             showCloseButton: true,
+                            isCloseInBackground: false,
                         });
                     }}
                 >

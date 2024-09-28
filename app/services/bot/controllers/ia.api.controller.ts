@@ -27,7 +27,7 @@ export class IAApiController {
 			const whatsapp = await isWhatsappIA(empresa.slug);
 			if (!whatsapp)
 				throw new NotFoundException(
-					"Hubo un problema al usar la ia, Recomiendo fijarse en los limites token",
+					"Hubo un problema al usar la IA, Recomiendo fijarse en los limites token",
 				);
 			const esMalaPalabra = await this.prompt(
 				whatsapp,
@@ -80,7 +80,7 @@ export class IAApiController {
 			const whatsapp = await isWhatsappIA(empresa.slug);
 			if (!whatsapp)
 				throw new NotFoundException(
-					"Hubo un problema al usar la ia, Recomiendo fijarse en los limites token",
+					"Hubo un problema al usar la IA, Recomiendo fijarse en los limites token",
 				);
 			const esMalaPalabra = await this.prompt(
 				whatsapp,
@@ -205,7 +205,7 @@ export class IAApiController {
 			const whatsapp = await isWhatsappIA(empresa.slug);
 			if (!whatsapp)
 				throw new NotFoundException(
-					"Hubo un problema al usar la ia, Recomiendo fijarse en los limites token",
+					"Hubo un problema al usar la IA, Recomiendo fijarse en los limites token",
 				);
 			const esMalaPalabra = await this.prompt(
 				whatsapp,

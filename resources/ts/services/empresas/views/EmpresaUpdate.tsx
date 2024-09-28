@@ -476,7 +476,6 @@ function empresaUpdate() {
                                 }
                                 isLocal
                             />
-
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-2 flex-wrap w-full">
                                 <Form.control.toggle
                                     name={
@@ -545,27 +544,23 @@ function empresaUpdate() {
                                         </div>
                                     }
                                 />
-                                <Form.control.area
-                                    name={
-                                        "header_cart" as keyof EmpresasUpdateDto
-                                    }
-                                    title="Titulo Carrito Link"
-                                    question={
-                                        <div class="w-[250px]">
-                                            Perzonaliza el texto del link de tu
-                                            carrito de compra.
-                                            <br />
-                                            Por defecto es{" "}
-                                            <b class="font-semibold">
-                                                Los mejores productos en un solo
-                                                lugar
-                                            </b>
-                                        </div>
-                                    }
-                                />
-                            </div>
+                            </div>{" "}
                         </div>
-
+                        <Form.control.area
+                            name={"header_cart" as keyof EmpresasUpdateDto}
+                            title="Titulo Carrito Link"
+                            question={
+                                <div class="w-[250px]">
+                                    Perzonaliza el texto del link de tu carrito
+                                    de compra.
+                                    <br />
+                                    Por defecto es{" "}
+                                    <b class="font-semibold">
+                                        Los mejores productos en un solo lugar
+                                    </b>
+                                </div>
+                            }
+                        />
                         <Form.button.submit
                             disabled={empresaUpdateMutation.isLoading || false}
                             isLoading={empresaUpdateMutation.isLoading || false}

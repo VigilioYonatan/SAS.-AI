@@ -102,8 +102,8 @@ const contactsColumns: Columns<
                         aria-label="enabled ia"
                         onClick={() => {
                             sweetModal({
-                                title: "Estas seguro de quitar la ia a  este usuario?",
-                                text: "Este usuario ya no le responderá la ia si lo desactivas.",
+                                title: "Estas seguro de quitar la IA a  este usuario?",
+                                text: "Este usuario ya no le responderá la IA si lo desactivas.",
                                 icon: "info",
                                 showCancelButton: true,
                                 showCloseButton: true,
