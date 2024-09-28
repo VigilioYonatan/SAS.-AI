@@ -102,7 +102,7 @@ export async function initialWhatsapp() {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const notifyName = (message as any)._data.notifyName;
         const quotedMessageId = message.id._serialized;
-        const response = await fetchWithTimeout(
+        const response = await fetch(
             `${BASE_URL}/api/whatsapp/receive-message`,
             {
                 method: "POST",

@@ -9,10 +9,14 @@ export function authenticateToken(
     const authHeader = req.headers.authorization;
     const token = authHeader?.split(" ")[1];
     if (!authHeader?.startsWith("Bearer"))
-        return res.status(401).json({ success: false, message: "error" });
+        return res
+            .status(401)
+            .json({ success: false, message: "error bearer required" });
 
     if (!token)
-        return res.status(401).json({ success: false, message: "error" });
+        return res
+            .status(401)
+            .json({ success: false, message: "error bad bearer" });
     if (VITE_TOKEN_VIGILIO_SERVICES !== token) {
         return res
             .status(403)
