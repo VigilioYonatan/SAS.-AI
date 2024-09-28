@@ -255,7 +255,7 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
                 completionText,
                 true
             );
-            if (emp.inteligenceArtificial.isChunk) {
+            if (empresa.inteligenceArtificial.isChunk) {
                 const chunks = removeNote.split(/(?<!\d)\.\s+/g);
                 for (const chunk of chunks) {
                     await clientsTelegram[emp.slug].sendMessage(userId, chunk);

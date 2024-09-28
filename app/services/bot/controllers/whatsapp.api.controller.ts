@@ -276,6 +276,8 @@ export class whatsappApiController {
                 message: "OK",
             };
         } catch (error) {
+            console.log((error as Error).message);
+
             chats[`${info.slug}:${userId}`] = [];
         }
     }
