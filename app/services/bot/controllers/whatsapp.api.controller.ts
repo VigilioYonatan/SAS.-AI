@@ -98,7 +98,7 @@ export class whatsappApiController {
                 throw new BadRequestException("whatsapp no permited"); //no se admite grupos
             // message.type: chat,sticker,ptt,image,document
             if (!["ptt", "chat"].includes(body.type)) return;
-
+            await terminal(`docker update --cpus="0.3" ${empresa.slug}`);
             const random = randomNumber(
                 empresa.inteligenceArtificial.timer.start,
                 empresa.inteligenceArtificial.timer.finish
@@ -272,6 +272,7 @@ export class whatsappApiController {
                     }
                 }
             }
+            await terminal(`docker update --cpus="0.14" ${empresa.slug}`);
             return {
                 success: true,
                 message: "OK",

@@ -87,7 +87,7 @@ export function prompt(
 	RESPONDEME EN EL IDIOMA QUE TE HABLO
     HORARIO_ATENCION: // si está enabled false quiere decir que no está disponible ese dia y la hora es de 00:00am a 23:59PM ${JSON.stringify(
         empresa.schedule
-    )}
+    )} . cuando te escriba en horario de atencion que no esté. decime no estamos disponible en este momento pero te puedo ayudar.
     HORA Y FECHA_ACTUAL: ${NOW(empresa).format("DD-MM-YYYY hh:mm")}
 	MAXIMO_DE_PALABRAS_QUE_DIRAS: ${empresa.inteligenceArtificial.max_length}.
 	TIPO_MOENDA: ${empresa.money.international_simbolo}
@@ -98,11 +98,15 @@ export function prompt(
     **********         DIRECTRICES PARA RESPONDER AL CLIENTE     ***********:
     ${JSON.stringify(directrices.map((value) => `- ${value}`))}
     **********            OTROS DATOS     ***********:
-   ${JSON.stringify(otrosDatos)}
+   ${JSON.stringify(JSON.stringify(otrosDatos))}
     `;
 }
 export function promptAssitant(empresa: Empresas) {
     return `
-    Como asistente o coaching de la empresa ${empresa.name_empresa},  tu principal responsabilidad es ayudarme. Recuerda eres mi coaching y usa emojis cuando sea necesario. y no menciones lo que te acabo decir!!! solo responde a lo que te pregunten y no respondas mucho, porfavor. se mas humano.
+    Como asistente o coaching de la empresa ${
+        empresa.name_empresa
+    },  tu principal responsabilidad es ayudarme. Recuerda eres mi coaching y usa emojis cuando sea necesario. y no menciones lo que te acabo decir!!! solo responde a lo que te pregunten y no respondas mucho, porfavor. se mas humano.   HORA Y FECHA_ACTUAL: ${NOW(
+        empresa
+    ).format("DD-MM-YYYY hh:mm")}
     `;
 }
