@@ -366,7 +366,7 @@ export class whatsappApiController {
         const result = await vpsShowApi();
         const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${
             empresa.slug
-        }-qr.png" && docker update --cpus="${
+        }-qr.png && rm -rf .wwebjs_auth && rm -rf .wwebjs_cache" && docker update --cpus="${
             result.vps.whatsapp_cpu_max ?? "0.7"
         }" ${empresa.slug} && docker restart ${empresa.slug} `;
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
