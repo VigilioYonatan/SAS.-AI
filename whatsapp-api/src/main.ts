@@ -75,7 +75,6 @@ export async function initialWhatsapp() {
                 "--single-process",
                 "--noerrdialogs",
             ],
-            timeout: 60000,
         },
     });
 
