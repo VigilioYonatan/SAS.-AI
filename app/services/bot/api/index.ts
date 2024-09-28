@@ -1,4 +1,5 @@
 import type { Empresas } from "@/empresas/entities/empresas.entity";
+import { InternalServerErrorException } from "@vigilio/express-core";
 import type WAWebJS from "whatsapp-web.js";
 import type { MessageSendOptions } from "whatsapp-web.js";
 import enviroments from "~/config/enviroments.config";
@@ -30,6 +31,7 @@ export async function whatsappSendMessageApi(
         }
     );
     const result = await response.json();
+    if (!response.ok) throw new InternalServerErrorException(result.message);
     return result;
 }
 export interface WhatsappSendFileApi {
