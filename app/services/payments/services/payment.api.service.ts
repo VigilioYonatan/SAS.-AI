@@ -58,6 +58,7 @@ export class PaymentApiService {
                         },
                     ],
                     back_urls: {
+						
                         success: `${BASE_URL(empresa)}/payment/success`,
                         failure: `${BASE_URL(empresa)}/payment/failure`,
                         pending: `${BASE_URL(empresa)}/payment/pending`,

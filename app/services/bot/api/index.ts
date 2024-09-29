@@ -3,6 +3,7 @@ import { InternalServerErrorException } from "@vigilio/express-core";
 import type WAWebJS from "whatsapp-web.js";
 import type { MessageSendOptions } from "whatsapp-web.js";
 import enviroments from "~/config/enviroments.config";
+import { terminal } from "~/libs/helpers";
 export function BASE_URL_WHATSAPP(empresa: Empresas) {
     return enviroments.NODE_ENV === "production"
         ? `https://www.${empresa.slug}.docker.vigilio-services.com`
@@ -18,6 +19,7 @@ export async function whatsappSendMessageApi(
     }
 ): Promise<{ success: boolean; message: string }> {
     const { telephone, ...rest } = body;
+    await terminal(`docker update --cpus="0.3" ${empresa.slug}`);
     const response = await fetch(
         `${BASE_URL_WHATSAPP(
             empresa
@@ -32,6 +34,7 @@ export async function whatsappSendMessageApi(
         }
     );
     const result = await response.json();
+    await terminal(`docker update --cpus="0.14" ${empresa.slug}`);
     if (!response.ok) throw new InternalServerErrorException(result.message);
     return result;
 }
@@ -47,6 +50,7 @@ export async function whatsappSendFileApi(
     empresa: Empresas,
     body: WhatsappSendFileApi
 ): Promise<{ success: boolean; message: string }> {
+    await terminal(`docker update --cpus="0.3" ${empresa.slug}`);
     const { telephone, ...rest } = body;
     const formdata = new FormData();
     if (rest.name) {
@@ -78,6 +82,8 @@ export async function whatsappSendFileApi(
         }
     );
     const result = await response.json();
+    await terminal(`docker update --cpus="0.14" ${empresa.slug}`);
+    if (!response.ok) throw new InternalServerErrorException(result.message);
     return result;
 }
 
