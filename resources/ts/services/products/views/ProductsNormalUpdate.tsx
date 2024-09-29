@@ -26,7 +26,6 @@ import { optionsFeaturesApi } from "../apis/options/options.features.api";
 import { ProductOptions } from "./ProductsNormalStore";
 import VariantsShow from "./options/VariantsShow";
 import { printImagesProduct } from "../libs/helpers";
-import { variantsDeleteApi } from "../apis/options/variants.delete.api";
 import {
 	productsNormalUpdateDto,
 	ProductsNormalUpdateDto,
@@ -87,7 +86,6 @@ function ProductsNormalUpdate({
 			empresa_id,
 			...rest
 		} = product;
-		const variantsDeleteMutation = variantsDeleteApi(id);
 		const formProductsNormalUpdate = useForm<ProductsNormalUpdateDto>({
 			resolver: valibotVigilio(productsNormalUpdateDto),
 			mode: "all",
@@ -643,36 +641,6 @@ function ProductsNormalUpdate({
 																class="text-white bg-orange-600 px-2 py-1 rounded-md text-xs"
 															>
 																<i class="fas fa-pen" />
-															</button>
-															<button
-																class="text-white bg-danger px-2 py-1 rounded-md text-xs"
-																type="button"
-																aria-label="delete variant"
-																onClick={() => {
-																	variantsDeleteMutation.mutate(variant.id, {
-																		onSuccess() {
-																			if (refetchProduct) {
-																				refetchProduct(false);
-																			}
-																			if (refetch) {
-																				refetch(false);
-																			}
-																			productQuery.refetch(false);
-																			sweetAlert({
-																				title: "Eliminado correctamente.",
-																				icon: "success",
-																			});
-																		},
-																		onError() {
-																			sweetAlert({
-																				title: "No se eliminó.",
-																				icon: "danger",
-																			});
-																		},
-																	});
-																}}
-															>
-																<i class="fas fa-trash text-white" />
 															</button>
 														</div>
 													</td>

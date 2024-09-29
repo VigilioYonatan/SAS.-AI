@@ -139,7 +139,7 @@ export class IAApiController {
 				},
 			};
 		} catch (error) {
-			throw new InternalServerErrorException("Error server");
+			throw new InternalServerErrorException((error as Error).message);
 		}
 	}
 
@@ -191,7 +191,7 @@ export class IAApiController {
 				},
 			};
 		} catch (error) {
-			throw new InternalServerErrorException("Error server");
+			throw new InternalServerErrorException((error as Error).message);
 		}
 	}
 	@PermissionAdmin()

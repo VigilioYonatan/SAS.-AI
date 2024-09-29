@@ -3,6 +3,8 @@ import { removeTextHTML } from "~/libs/helpers";
 import { productContext } from "./Product";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
+import { printProductVariant } from "@/products/libs/helpers";
+import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 
 interface ProductBodyProps {
 	showDescription: boolean;
@@ -40,7 +42,7 @@ function ProductBody({ showDescription }: ProductBodyProps) {
 								? "text-primary"
 								: "text-danger"
 							: ""
-					}  font-bold  py-1 rounded-md uppercase text-xs flex items-center gap-2`}
+					}  font-bold  py-1 rounded-md uppercase text-xs flex  items-center gap-2`}
 				>
 					{storageEmpresa!.tipo_empresa.tipo_servicio_id === 2 ? (
 						<>
@@ -62,7 +64,7 @@ function ProductBody({ showDescription }: ProductBodyProps) {
 								: `${
 										product.varianteChoose!.stock! > 0
 											? `${product.varianteChoose!.stock} unidades`
-											: ""
+											: "No disponible"
 									} `}
 						</>
 					) : null}
@@ -71,7 +73,21 @@ function ProductBody({ showDescription }: ProductBodyProps) {
 					href={`/${product.producto.value.slug}`}
 					class="line-clamp-2 text-sm   md:text-base font-semibold dark:text-white hover:text-primary dark:hover:text-primary delay-custom-1  text-center"
 				>
-					{product.producto.value.name}
+					{product.producto.value.name}{" "}
+					{product.varianteChoose &&
+					storageEmpresa?.tipo_empresa.tipo_servicio_id === 1
+						? printProductVariant(
+								product.producto.value as ProductsNormalSchemaFromServer,
+								product.varianteChoose,
+							)
+								.map((variant) => {
+									// si es color que muestre el color, sino solo el valor
+									return variant?.features.map(
+										(feature) => feature?.description,
+									);
+								})
+								.join(" ")
+						: null}
 				</a>
 			</div>
 			{showDescription && product.producto.value.description ? (

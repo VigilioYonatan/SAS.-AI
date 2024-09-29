@@ -39,8 +39,8 @@ export const settingsSchema = object({
 	id: number(),
 	host: hostSchema,
 	about: nullable(string()), //  acerca de la empresa
-	bg_color: string([minLength(2), maxLength(10)]),
-	bg_color_responsive: string([minLength(2), maxLength(10)]),
+	bg_color: string([minLength(2), maxLength(20)]),
+	bg_color_responsive: string([minLength(2), maxLength(20)]),
 	type_border: string([
 		custom((val) => ["circle", "square"].includes(val), "Border no válido"),
 	]),

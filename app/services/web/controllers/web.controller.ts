@@ -16,7 +16,6 @@ import { objectAsync, string } from "@vigilio/valibot";
 import { UrlsService } from "@/urls/services/urls.service";
 import type { RequestVigilio } from "~/config/types";
 import { webEnabledMiddleware } from "../middlewares/webEnabled.middleware";
-import { Readable } from "node:stream";
 
 @Injectable()
 @Controller("/")
@@ -42,18 +41,12 @@ export class WebController {
 				throw new Error("Error al obtener la URL remota");
 			}
 
-			res.writeHead(200, {
-				"Content-Type":
-					response.headers.get("Content-Type") || "application/octet-stream",
-				"Content-Length": response.headers.get("Content-Length") || "0",
-			});
-			if (response.body) {
-				const nodeReadableStream = Readable.fromWeb(
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-					response.body as any,
-				);
-				nodeReadableStream.pipe(res);
-			}
+			// Configurar los headers para reenviar la imagen
+			res.set(
+				"Content-Type",
+				response.headers.get("content-type") || "image/jpeg",
+			);
+			res.send(Buffer.from(await response.arrayBuffer()));
 		} catch (error) {
 			res.status(500).send("Error fetching the URL");
 		}

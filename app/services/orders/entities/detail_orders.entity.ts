@@ -79,6 +79,6 @@ export class DetailOrders
 	@Column({ type: DataType.INTEGER })
 	variant_id: number | null;
 
-	@BelongsTo(() => Variants)
-	variant: unknown;
+	@BelongsTo(() => Variants, { onDelete: "SET NULL", onUpdate: "CASCADE" })
+	variant: unknown | null;
 }

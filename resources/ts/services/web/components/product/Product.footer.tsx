@@ -14,11 +14,11 @@ function ProductFooter({ showButtonCart = false }: ProductFooterProps) {
 	return (
 		<div class="flex gap-2 items-center  w-full pt-2 flex-col">
 			<div class="flex gap-1  text-sm  items-center flex-col justify-center w-full">
-				{product.producto.value.discount > 0 ? (
-					<span class="text-gray-400 line-through   font-semibold   text-xs  text-center  h-[15px]">
-						{formatMoney(subtotalIgv(product.producto.value, false))}
-					</span>
-				) : null}
+				<span class="text-gray-400 line-through   font-semibold   text-xs  text-center  h-[15px] h-[10px]">
+					{product.producto.value.discount > 0
+						? formatMoney(subtotalIgv(product.producto.value, false))
+						: null}
+				</span>
 				<p class="text-primary dark:text-white text-lg font-bold   leading-tight">
 					{formatMoney(subtotalIgv(product.producto.value))}
 				</p>
@@ -49,7 +49,12 @@ function ProductFooter({ showButtonCart = false }: ProductFooterProps) {
 						>
 							<>
 								{product.existProductInCart ? (
-									"Añadido"
+									<span>
+										<i
+											className={`${storageEmpresa?.setting.type_cart} mr-2 text-md`}
+										/>
+										Añadido
+									</span>
 								) : (
 									<>
 										{product.cartStoreMutation.isLoading ? (
