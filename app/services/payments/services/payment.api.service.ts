@@ -75,7 +75,7 @@ export class PaymentApiService {
     }
 
     async webhook(req: RequestVigilio, id: string, type: string) {
-        console.log({ a: "webhook", type });
+        console.log({ type });
 
         if (type === "payment") {
             const empresa = req.empresa;
@@ -95,6 +95,7 @@ export class PaymentApiService {
                             : "APP_USR-292981138862703-092822-84632d11bca71d4ca5683f29034b2412-1591003666",
                 });
                 const pago = await payment.get({ id });
+                console.log({ pago });
 
                 if (pago.status === "") {
                     const code = pago.additional_info!.items![0].id;
@@ -128,7 +129,6 @@ export class PaymentApiService {
         }
     }
     async success(empresa: Empresas, token: string) {
-
         const order = await Orders.findOne({
             where: {
                 empresa_id: empresa.id,

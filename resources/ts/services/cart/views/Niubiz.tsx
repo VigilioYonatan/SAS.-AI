@@ -787,7 +787,7 @@ function NiubizCardForm({
             </span>
             <button
                 type="button"
-                class="bg-primary px-4 py-1 rounded-md border-2 border-primary hover:bg-transparent text-white delay-custom-1 hover:text-primary flex gap-2 items-center justify-center"
+                class="bg-primary px-4 py-1 rounded-md border-2 border-primary hover:bg-transparent text-white delay-custom-1 hover:text-primary flex gap-2 items-center justify-center "
                 onClick={() => {
                     mercadoPagoPaymentMutate.mutate(
                         {
@@ -814,7 +814,10 @@ function NiubizCardForm({
                     alt=""
                 />{" "}
                 {mercadoPagoPaymentMutate.isLoading ? (
-                    <LoaderSubmit />
+                    <div class="flex gap-2 items-center font-semibold">
+                        <span class="text-xs">Espere un momento ....</span>
+                        <LoaderSubmit />
+                    </div>
                 ) : (
                     "Pagar"
                 )}

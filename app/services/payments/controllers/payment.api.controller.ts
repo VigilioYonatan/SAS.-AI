@@ -40,8 +40,6 @@ export class PaymentApiController {
         @Query("token") token: string,
         @Res() res: Response
     ) {
-        console.log({ success: token });
-
         if (!token) return res.redirect("/");
         try {
             const result = await this.paymentApiService.success(empresa, token);
@@ -54,13 +52,12 @@ export class PaymentApiController {
     }
     @Post("/webhook")
     async webhook(
-        // @Query("data.id") id: string,
-        @Query() query: string,
-        @Req() _req: RequestVigilio
+        @Query() query: { id: string; topic: string },
+        @Req() req: RequestVigilio
     ) {
-        console.log({ query });
-        return;
-        // await this.paymentApiService.webhook(req, id, type);
+        const id = query.id;
+        const type = query.topic;
+        await this.paymentApiService.webhook(req, id, type);
     }
 
     @Get("/cancel")
