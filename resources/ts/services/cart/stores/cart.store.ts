@@ -254,8 +254,6 @@ export function useCartStore() {
         product_id: number,
         variant_id: number | null = null
     ) {
-        console.log({ product_id, variant_id });
-
         if (!isAlreadyExistProductToCart(product_id, variant_id)) return;
         const removeProductToCart =
             storageEmpresa!.tipo_empresa.tipo_servicio_id === 1

@@ -194,12 +194,22 @@ function CartPage({ cart, header }: CartProps) {
                                                 product.subtotal /
                                                     product.quantity
                                             );
-                                        const images300 = printImagesProduct(
-                                            product.images,
-                                            500
-                                        );
-                                        const isImagesLength = images300.length
-                                            ? images300
+                                        const images500 = product.variant
+                                            ? printImagesProduct(
+                                                  product.images,
+                                                  500
+                                              ).filter((_, i) => {
+                                                  return product.variant?.images.some(
+                                                      (img) => img === i + 1
+                                                  );
+                                              })
+                                            : printImagesProduct(
+                                                  product.images,
+                                                  500
+                                              );
+
+                                        const isImagesLength = images500.length
+                                            ? images500
                                             : [NoImage()];
                                         return (
                                             <tr

@@ -58,7 +58,6 @@ export class PaymentApiService {
                         },
                     ],
                     back_urls: {
-						
                         success: `${BASE_URL(empresa)}/payment/success`,
                         failure: `${BASE_URL(empresa)}/payment/failure`,
                         pending: `${BASE_URL(empresa)}/payment/pending`,
@@ -76,8 +75,6 @@ export class PaymentApiService {
     }
 
     async webhook(req: RequestVigilio, id: string, type: string) {
-        console.log({ type });
-
         if (type === "payment") {
             const empresa = req.empresa;
             const metodosPago = (await req.empresa.$get(
@@ -96,14 +93,13 @@ export class PaymentApiService {
                             : "APP_USR-292981138862703-092822-84632d11bca71d4ca5683f29034b2412-1591003666",
                 });
                 const pago = await payment.get({ id });
-                console.log({ pago });
+                const code = pago.additional_info!.items![0].id;
+                const { order } = await this.ordersApiService.show(
+                    empresa,
+                    code
+                );
 
-                if (pago.status === "") {
-                    const code = pago.additional_info!.items![0].id;
-                    const { order } = await this.ordersApiService.show(
-                        empresa,
-                        code
-                    );
+                if (pago.status === "accepted") {
                     await this.ordersApiService.update({
                         order_code: order.order_code,
                         ordersUpdateDto: {
@@ -122,6 +118,15 @@ export class PaymentApiService {
                         req,
                     });
                 }
+                // porseacazo
+                await this.ordersApiService.update({
+                    order_code: order.order_code,
+                    ordersUpdateDto: {
+                        ...order.toJSON(),
+                        paypal_response: pago,
+                    } as OrdersUpdateDto,
+                    req,
+                });
             } catch (error) {
                 throw new InternalServerErrorException(
                     "Error de capturar pago"
