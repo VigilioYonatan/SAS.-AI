@@ -32,7 +32,7 @@ export class PaymentApiService {
                     ? metodosPago.mercado_pago.token
                     : "APP_USR-292981138862703-092822-84632d11bca71d4ca5683f29034b2412-1591003666",
             options: {
-                timeout: 1000, // Puedes configurar opciones adicionales como el tiempo de espera
+                timeout: 5000, // Puedes configurar opciones adicionales como el tiempo de espera
             },
         });
         const payment = new Preference(client);
