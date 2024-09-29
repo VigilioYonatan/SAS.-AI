@@ -54,11 +54,13 @@ export class PaymentApiController {
     }
     @Post("/webhook")
     async webhook(
-        @Query("data.id") id: string,
-        @Query("type") type: string,
-        @Req() req: RequestVigilio
+        // @Query("data.id") id: string,
+        @Query() query: string,
+        @Req() _req: RequestVigilio
     ) {
-        await this.paymentApiService.webhook(req, id, type);
+        console.log({ query });
+        return;
+        // await this.paymentApiService.webhook(req, id, type);
     }
 
     @Get("/cancel")
