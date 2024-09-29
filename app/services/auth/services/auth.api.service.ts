@@ -32,15 +32,21 @@ export class AuthApiService {
         }
         const token = crypto.randomUUID();
         await user.update({ token });
-        await whatsappSendMessageApi(empresa, {
-            telephone: `${empresa.dial_code}${user.telephone}@c.us`,
-            message: `Hola *${
-                user.username
-            }*.\nRecupera tu contraseña aquí: ${BASE_URL(
-                empresa
-            )}/auth/forgot-password?token=${token}`,
-            delay: 3,
-        });
+        try {
+            await whatsappSendMessageApi(empresa, {
+                telephone: `${empresa.dial_code}${user.telephone}@c.us`,
+                message: `Hola *${
+                    user.username
+                }*.\nRecupera tu contraseña aquí: ${BASE_URL(
+                    empresa
+                )}/auth/forgot-password?token=${token}`,
+                delay: 3,
+            });
+        } catch (error) {
+            throw new BadRequestException(
+                "La empresa no se conectó con whatsapp"
+            );
+        }
 
         return {
             success: true,

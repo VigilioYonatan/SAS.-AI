@@ -343,7 +343,12 @@ function CartPage({ cart, header }: CartProps) {
                                                                     class="w-[30px]"
                                                                     onClick={() =>
                                                                         cartStore.methods.onRemoveProductToCart(
-                                                                            product.id
+                                                                            product.id,
+                                                                            product.variant
+                                                                                ? product
+                                                                                      .variant
+                                                                                      .id
+                                                                                : null
                                                                         )
                                                                     }
                                                                     type="button"

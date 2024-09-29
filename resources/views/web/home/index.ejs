@@ -13,7 +13,7 @@
   <!-- Schema.org markup for Google+ -->
   <meta itemprop="name" content="<%= locals.$empresa ? $empresa.name_empresa:''   %> <%= locals.$empresa ? $empresa.header_cart:'Los mejores productos en un solo lugar'   %> ">
   <meta itemprop="description" content="<%= locals.$empresa ? $empresa.name_empresa:''   %> ofrece los mejores productos del mercado a un precio accesible">
-  <meta itemprop="image" content=""> <!-- puedes poner una imagen de oferta -->
+  <meta itemprop="image" content="<%=   locals.$empresa.setting?.icon ? printFileWithDimension(locals.$empresa.setting.icon,100)[0] :'/images/settings/others/vigilio-services-ico.webp' %>"> <!-- puedes poner una imagen de oferta -->
 
 
   <!-- Twitter Card data -->
