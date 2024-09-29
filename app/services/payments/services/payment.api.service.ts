@@ -85,7 +85,7 @@ export class PaymentApiService {
 				const code = pago.additional_info!.items![0].id;
 				const { order } = await this.ordersApiService.show(empresa, code);
 
-				if (pago.status === "accepted") {
+				if (pago.status === "approved") {
 					await this.ordersApiService.update({
 						order_code: order.order_code,
 						ordersUpdateDto: {
