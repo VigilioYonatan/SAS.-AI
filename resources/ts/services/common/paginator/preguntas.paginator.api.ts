@@ -14,7 +14,8 @@ export function preguntasIndexApi(): UseQuery<
             const result = await response.json();
             if (!result.success) throw result;
             return result;
-        }
+        },
+        { isCaching: 3600 * 24 }
     );
 }
 

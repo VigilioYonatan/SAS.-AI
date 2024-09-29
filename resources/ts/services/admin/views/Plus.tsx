@@ -564,6 +564,8 @@ function Preguntas() {
                     Estamos aquí para ayudarte. Si tienes alguna consulta, no
                     dudes en enviarnos un mensaje a
                     soporte@vigilio-services.com.
+                    <br />
+                    Se estará actualizando las preguntas frecuentes.
                 </span>
                 <Redes vigilioServices={vigilioServices} />
             </div>
