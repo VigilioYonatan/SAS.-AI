@@ -39,7 +39,7 @@ import { printFileWithDimension } from "@/uploads/libs/helpers";
 import { formatMoney, subtotal } from "@/cart/libs/helpers";
 import { Settings } from "@/empresas/entities/settings.entity";
 import { initial } from "@/empresas/services/empresas.api.service";
-import { dirMode } from ".";
+import { corsOptions, dirMode } from ".";
 import { NOW, restarDays } from "~/libs/dayjs";
 import { Brands } from "@/products/entities/brands.entitiy";
 import * as i18nextHttpMiddleware from "i18next-http-middleware";
@@ -56,7 +56,7 @@ export class Server {
 	}
 	async middlewares() {
 		// comprimir paginas webs para mejor rendimiento - NO TOCAR si no es necesario
-		this.app.use(cors());
+		this.app.use(cors(corsOptions));
 		this.app.use(compression());
 		// habilitar cookies
 		this.app.use(cookieParser());
