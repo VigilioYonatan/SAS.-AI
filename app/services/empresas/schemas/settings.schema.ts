@@ -33,6 +33,7 @@ export const hostSchema = object({
 	nameserver_one: nullable(string()),
 	nameserver_two: nullable(string()),
 	time: nullable(coerce(date(), (value) => new Date(value as string))),
+	enabled: boolean(),
 });
 export const settingsSchema = objectAsync({
 	id: number(),

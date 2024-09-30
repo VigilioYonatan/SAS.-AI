@@ -4,7 +4,8 @@ import type { Settings } from "../entities/settings.entity";
 
 export function BASE_URL(empresa: Empresas) {
 	return enviroments.NODE_ENV === "production"
-		? (empresa.setting as Settings)?.host.host
+		? (empresa.setting as Settings)?.host.host &&
+			(empresa.setting as Settings)?.host.enabled
 			? `https://www.${(empresa.setting as Settings)?.host.host}`
 			: `https://www.${empresa.slug}.vigilio-services.com`
 		: `http://${empresa.slug}.localhost:4003`;

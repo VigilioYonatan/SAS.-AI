@@ -62,8 +62,9 @@ export function fechasVencidas() {
 					? "tus tokens IA"
 					: null;
 }
-export const BASE_URL = storageEmpresa!.setting.host.host
-	? `https://www.${storageEmpresa!.setting.host.host}`
-	: enviroments.VITE_ENV === "production"
-		? `https://www.${storageEmpresa!.slug}.vigilio-services.com`
-		: `http://www.${storageEmpresa!.slug}.localhost:4003`;
+export const BASE_URL =
+	storageEmpresa!.setting.host.host && storageEmpresa!.setting.host.enabled
+		? `https://www.${storageEmpresa!.setting.host.host}`
+		: enviroments.VITE_ENV === "production"
+			? `https://www.${storageEmpresa!.slug}.vigilio-services.com`
+			: `http://www.${storageEmpresa!.slug}.localhost:4003`;

@@ -386,7 +386,7 @@ export class UploadsService {
 					throw new UnauthorizedException(
 						"No tiene permiso para realizar esta acción",
 					);
-				const { metodo } = await this.empresasApiService.metodos_pago(empresa);
+				const { metodo } = await this.empresasApiService.metodos_pago(empresa.slug);
 				entidad = metodo;
 				if (property === "qrPlin") {
 					if (metodo.qrPlin) {

@@ -22,269 +22,253 @@ import { getProductAll, printVariantFeatures } from "@/products/libs";
 import type { VariantsSchema } from "@/products/schemas/options/variants.schema";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
-    const dirTemp = path.resolve(__dirname, "tmp");
-    if (!fs.existsSync(dirTemp)) {
-        fs.mkdirSync(dirTemp);
-    }
-    const filePath = `${dirTemp}/${crypto.randomUUID()}.wav`;
+	const dirTemp = path.resolve(__dirname, "tmp");
+	if (!fs.existsSync(dirTemp)) {
+		fs.mkdirSync(dirTemp);
+	}
+	const filePath = `${dirTemp}/${crypto.randomUUID()}.wav`;
 
-    fs.writeFileSync(filePath, fileBuffer);
-    const file = fs.createReadStream(filePath);
-    // Send the audio file for transcription using the specified model.
-    const transcription = await openAis[empresa].audio.transcriptions.create({
-        file,
-        model: "whisper-1",
-    });
-    if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-    }
-    // Return the transcription result.
-    return transcription;
+	fs.writeFileSync(filePath, fileBuffer);
+	const file = fs.createReadStream(filePath);
+	// Send the audio file for transcription using the specified model.
+	const transcription = await openAis[empresa].audio.transcriptions.create({
+		file,
+		model: "whisper-1",
+	});
+	if (fs.existsSync(filePath)) {
+		fs.unlinkSync(filePath);
+	}
+	// Return the transcription result.
+	return transcription;
 }
 
 export async function onDb(empresa: Empresas) {
-    const [categorias, brands] = await Promise.all([
-        Categories.unscoped().findAll({
-            attributes: ["id", "name"],
-            raw: true,
-            where: {
-                empresa_id: empresa.id,
-            },
-        }),
-        Brands.unscoped().findAll({
-            attributes: ["id", "name"],
-            raw: true,
-            where: {
-                empresa_id: empresa.id,
-            },
-        }),
-    ]);
+	const [categorias, brands] = await Promise.all([
+		Categories.unscoped().findAll({
+			attributes: ["id", "name"],
+			raw: true,
+			where: {
+				empresa_id: empresa.id,
+			},
+		}),
+		Brands.unscoped().findAll({
+			attributes: ["id", "name"],
+			raw: true,
+			where: {
+				empresa_id: empresa.id,
+			},
+		}),
+	]);
 
-    let products = null;
-    let servicios = null;
-    if (empresa.tipo_empresa.tipo_servicio_id === 1) {
-        const pr = await ProductsNormal.findAll({
-            where: {
-                empresa_id: empresa.id,
-            },
-        });
-        products = await Promise.all(
-            (pr as ProductsNormal[]).map(async (product) => {
-                const producto = await getProductAll(empresa, product);
-                const variantes = await Promise.all(
-                    (producto.dataValues.variants as Variants[]).map(
-                        async (variant) => {
-                            const {
-                                createdAt,
-                                updatedAt,
-                                id,
-                                stock,
-                                ilimit,
-                                images,
-                                product_normal_id,
-                                ...rest
-                            } = variant as Variants;
-                            return {
-                                ...rest,
-                                features: printVariantFeatures(
-                                    product,
-                                    variant as VariantsSchema & {
-                                        features: {
-                                            option_id: number;
-                                            feature_id: number;
-                                        }[];
-                                    }
-                                ),
-                                cantidad: ilimit ? "en stock" : `${stock} UND`,
-                            };
-                        }
-                    )
-                );
-                return {
-                    id: product.id,
-                    name: product.name.toLowerCase(),
-                    imagen: product.images
-                        ? printFileWithDimension(empresa)(
-                              product.images,
-                              500
-                          )[0]
-                        : "",
-                    price: subtotalIgv(empresa!, product),
-                    disponible: product.enabled,
-                    category_id: product.category_id ?? null,
-                    variantes,
-                    url: product.url ?? null,
-                    slug: product.slug,
-                };
-            })
-        );
-    }
-    if (empresa.tipo_empresa.tipo_servicio_id === 2) {
-        const pr = await ProductsRestaurant.findAll({
-            where: {
-                empresa_id: empresa.id,
-            },
-        });
-        products = await Promise.all(
-            (pr as ProductsRestaurant[]).map(async (product) => {
-                return {
-                    id: product.id,
-                    name: product.name.toLowerCase(),
-                    imagen: product.images
-                        ? printFileWithDimension(empresa)(
-                              product.images,
-                              500
-                          )[0]
-                        : "",
-                    characteristics: JSON.stringify(product.characteristics),
-                    price: subtotalIgv(empresa!, product),
-                    cantidad: product.ilimit
-                        ? "Ilimitado"
-                        : `${product.stock} unidades`,
-                    disponible: product.enabled,
-                    category_id: product.category_id ?? null,
-                    url: product.url ?? null,
-                    slug: product.slug,
-                };
-            })
-        );
-    }
-    if (empresa.tipo_empresa.tipo_servicio_id === 3) {
-        const ser = await ProductsServicio.findAll({
-            where: {
-                empresa_id: empresa.id,
-            },
-        });
-        servicios = await Promise.all(
-            (ser as ProductsServicio[]).map(async (product) => {
-                return {
-                    id: product.id,
-                    name: product.name.toLowerCase(),
-                    imagen: product.images
-                        ? printFileWithDimension(empresa)(
-                              product.images,
-                              500
-                          )[0]
-                        : "",
-                    days: product.days,
-                    description: product.description,
-                    characteristics: JSON.stringify(product.characteristics),
-                    price: subtotalIgv(empresa!, product),
-                    disponible: product.enabled,
-                    category_id: product.category_id ?? null,
-                    slug: product.slug,
-                    url: product.url ?? null,
-                };
-            })
-        );
-    }
+	let products = null;
+	let servicios = null;
+	if (empresa.tipo_empresa.tipo_servicio_id === 1) {
+		const pr = await ProductsNormal.findAll({
+			where: {
+				empresa_id: empresa.id,
+			},
+		});
+		products = await Promise.all(
+			(pr as ProductsNormal[]).map(async (product) => {
+				const producto = await getProductAll(empresa, product);
+				const variantes = await Promise.all(
+					(producto.dataValues.variants as Variants[]).map(async (variant) => {
+						const {
+							createdAt,
+							updatedAt,
+							id,
+							stock,
+							ilimit,
+							images,
+							product_normal_id,
+							...rest
+						} = variant as Variants;
+						return {
+							...rest,
+							features: printVariantFeatures(
+								product,
+								variant as VariantsSchema & {
+									features: {
+										option_id: number;
+										feature_id: number;
+									}[];
+								},
+							),
+							cantidad: ilimit ? "en stock" : `${stock} UND`,
+						};
+					}),
+				);
+				return {
+					id: product.id,
+					name: product.name.toLowerCase(),
+					imagen: product.images
+						? printFileWithDimension(empresa)(product.images, 500)[0]
+						: "",
+					price: subtotalIgv(empresa!, product),
+					disponible: product.enabled,
+					category_id: product.category_id ?? null,
+					variantes,
+					url: product.url ?? null,
+					slug: product.slug,
+				};
+			}),
+		);
+	}
+	if (empresa.tipo_empresa.tipo_servicio_id === 2) {
+		const pr = await ProductsRestaurant.findAll({
+			where: {
+				empresa_id: empresa.id,
+			},
+		});
+		products = await Promise.all(
+			(pr as ProductsRestaurant[]).map(async (product) => {
+				return {
+					id: product.id,
+					name: product.name.toLowerCase(),
+					imagen: product.images
+						? printFileWithDimension(empresa)(product.images, 500)[0]
+						: "",
+					characteristics: JSON.stringify(product.characteristics),
+					price: subtotalIgv(empresa!, product),
+					cantidad: product.ilimit ? "Ilimitado" : `${product.stock} unidades`,
+					disponible: product.enabled,
+					category_id: product.category_id ?? null,
+					url: product.url ?? null,
+					slug: product.slug,
+				};
+			}),
+		);
+	}
+	if (empresa.tipo_empresa.tipo_servicio_id === 3) {
+		const ser = await ProductsServicio.findAll({
+			where: {
+				empresa_id: empresa.id,
+			},
+		});
+		servicios = await Promise.all(
+			(ser as ProductsServicio[]).map(async (product) => {
+				return {
+					id: product.id,
+					name: product.name.toLowerCase(),
+					imagen: product.images
+						? printFileWithDimension(empresa)(product.images, 500)[0]
+						: "",
+					days: product.days,
+					description: product.description,
+					characteristics: JSON.stringify(product.characteristics),
+					price: subtotalIgv(empresa!, product),
+					disponible: product.enabled,
+					category_id: product.category_id ?? null,
+					slug: product.slug,
+					url: product.url ?? null,
+				};
+			}),
+		);
+	}
 
-    return {
-        categorias,
-        brands,
-        products,
-        servicios,
-    };
+	return {
+		categorias,
+		brands,
+		products,
+		servicios,
+	};
 }
 
 function encontrarPalabrasSimilares(texto: string, array: string[]) {
-    const palabrasEncontradas = [];
-    const palabrasTexto = texto.toLowerCase().trim().split(/\s+/);
+	const palabrasEncontradas = [];
+	const palabrasTexto = texto.toLowerCase().trim().split(/\s+/);
 
-    for (const palabra of array) {
-        const palabraMin = palabra.toLowerCase().trim();
-        for (const palabraTexto of palabrasTexto) {
-            const umbral = Math.floor(palabraTexto.length * 0.2);
-            if (
-                palabraMin.includes(palabraTexto) ||
-                distanciaDeLevenshtein(palabraMin, palabraTexto) <= umbral
-            ) {
-                // Agregamos solo si hay una coincidencia exacta o muy cercana con alguna palabra en el texto
-                if (palabraMin.includes(palabraTexto)) {
-                    palabrasEncontradas.push(palabra);
-                    break; // Rompemos el bucle interno si encontramos una coincidencia para evitar duplicados
-                }
-            }
-        }
-    }
+	for (const palabra of array) {
+		const palabraMin = palabra.toLowerCase().trim();
+		for (const palabraTexto of palabrasTexto) {
+			const umbral = Math.floor(palabraTexto.length * 0.2);
+			if (
+				palabraMin.includes(palabraTexto) ||
+				distanciaDeLevenshtein(palabraMin, palabraTexto) <= umbral
+			) {
+				// Agregamos solo si hay una coincidencia exacta o muy cercana con alguna palabra en el texto
+				if (palabraMin.includes(palabraTexto)) {
+					palabrasEncontradas.push(palabra);
+					break; // Rompemos el bucle interno si encontramos una coincidencia para evitar duplicados
+				}
+			}
+		}
+	}
 
-    return palabrasEncontradas;
+	return palabrasEncontradas;
 }
 
 export async function promptReplace(message: string, empresa: Empresas) {
-    let data: { products: { name: string }[] } = JSON.parse(
-        cache.get(`db-${empresa.slug}`) ?? "null"
-    );
+	let data: { products: { name: string }[] } = JSON.parse(
+		cache.get(`db-${empresa.slug}`) ?? "null",
+	);
 
-    if (!data) {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        data = (await onDb(empresa)) as any;
-        if (data.products.length > 20) {
-            cache.set(
-                `db-${empresa.slug}`,
-                JSON.stringify(data),
-                empresa.inteligenceArtificial.hour_update * 3600
-            );
-        }
-    }
-    let productsData = data.products;
-    // si no es inteligente que busque
-    if (!empresa.inteligenceArtificial.enabledBotInteligence) {
-        const palabrasEncontradas2 = encontrarPalabrasSimilares(
-            message,
-            data.products.map((prod) => prod.name)
-        );
-        productsData = data.products.filter((prod) =>
-            palabrasEncontradas2.includes(prod.name)
-        );
-    }
-    const regex = /ord-[A-Za-z0-9]+/g;
-    const coincidencias = message.toLowerCase().match(regex);
-    let ordenes = "";
-    if (empresa.inteligenceArtificial.settings.enabled_order) {
-        ordenes =
-            "ó Si te pido informacion de pedido: decime que los codigo empiezan en ORD- \n Ordenes:\n";
-        if (coincidencias?.length) {
-            const orden = await Promise.all(
-                coincidencias?.map(async (code) => {
-                    const order = await Orders.findOne({
-                        where: { order_code: code.toUpperCase() },
-                        attributes: [
-                            "order_code",
-                            "address",
-                            "telephone",
-                            "total",
-                            "pay_method_id",
-                            "status_order_id",
-                        ],
-                    });
-                    if (!order)
-                        return `${code.toUpperCase()} - no se encontró.\n`;
+	if (!data) {
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		data = (await onDb(empresa)) as any;
+		if (data.products.length > 20) {
+			cache.set(
+				`db-${empresa.slug}`,
+				JSON.stringify(data),
+				empresa.inteligenceArtificial.hour_update * 3600,
+			);
+		}
+	}
+	let productsData = data.products;
+	// si no es inteligente que busque
+	if (!empresa.inteligenceArtificial.enabledBotInteligence) {
+		const palabrasEncontradas2 = encontrarPalabrasSimilares(
+			message,
+			data.products.map((prod) => prod.name),
+		);
+		productsData = data.products.filter((prod) =>
+			palabrasEncontradas2.includes(prod.name),
+		);
+	}
+	const regex = /ord-[A-Za-z0-9]+/g;
+	const coincidencias = message.toLowerCase().match(regex);
+	let ordenes = "";
+	if (empresa.inteligenceArtificial.settings.enabled_order) {
+		ordenes =
+			"ó Si te pido informacion de pedido: decime que los codigo empiezan en ORD- \n Ordenes:\n";
+		if (coincidencias?.length) {
+			const orden = await Promise.all(
+				coincidencias?.map(async (code) => {
+					const order = await Orders.findOne({
+						where: { order_code: code.toUpperCase() },
+						attributes: [
+							"order_code",
+							"address",
+							"telephone",
+							"total",
+							"pay_method_id",
+							"status_order_id",
+						],
+					});
+					if (!order) return `${code.toUpperCase()} - no se encontró.\n`;
 
-                    return `Codigo: ${code.toUpperCase()}, Total:  ${formatMoney(
-                        empresa,
-                        order.total,
-                        empresa.money.money
-                    )}, vendedor:${
-                        order.user ? (order.user as Users)?.username : "-"
-                    },Metododepago:${
-                        order.pay_method_id
-                            ? (order.pay_method as PayMethods).name
-                            : null
-                    }, direccion:${order.address}, estado: *${
-                        (order.status_order as StatusOrders).name
-                    }* \n`;
-                })
-            );
-            ordenes += `${orden.join(".")}\n`;
-            productsData = [];
-        } else {
-            ordenes += "no hay pedidos aun";
-        }
-    }
+					return `Codigo: ${code.toUpperCase()}, Total:  ${formatMoney(
+						empresa,
+						order.total,
+						empresa.money.money,
+					)}, vendedor:${
+						order.user ? (order.user as Users)?.username : "-"
+					},Metododepago:${
+						order.pay_method_id ? (order.pay_method as PayMethods).name : null
+					}, direccion:${order.address}, estado: *${
+						(order.status_order as StatusOrders).name
+					}* \n`;
+				}),
+			);
+			ordenes += `${orden.join(".")}\n`;
+			productsData = [];
+		} else {
+			ordenes += "no hay pedidos aun";
+		}
+	}
 
-    return `${prompt(
-        empresa,
-        productsData
-    )}. ${ordenes}. ERES UNA IA POR OPEN AI, pero fuiste entrenado por https://vigilio-services.com`;
+	return `${prompt(
+		empresa,
+		productsData,
+	)}. ${ordenes}. ERES UNA IA POR OPEN AI, pero fuiste entrenado por https://vigilio-services.com`;
 }

@@ -8,9 +8,11 @@ export function prompt(
 		name: string;
 	}[],
 ) {
-	const url = (empresa.setting as Settings).host.host
-		? (empresa.setting as Settings).host.host
-		: `${empresa.slug}.vigilio-services.com`;
+	const url =
+		(empresa.setting as Settings).host.host &&
+		(empresa.setting as Settings).host.enabled
+			? (empresa.setting as Settings).host.host
+			: `${empresa.slug}.vigilio-services.com`;
 	let instrucctions = empresa.enabled_catalogo
 		? [
 				"No especules ni inventes respuestas si la BASE DE DATOS no proporciona la información necesaria.",

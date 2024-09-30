@@ -3,7 +3,9 @@ import {
 	SettingsPhotoUpdateDto,
 	SettingsUpdateDto,
 } from "@/empresas/dtos/settings.update.dto";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { useMutation } from "@vigilio/preact-fetching";
+import enviroments from "~/config";
 import { ResultApiImages, uploadApi } from "~/libs/upload";
 
 export function settingsUpdateApi() {
@@ -11,12 +13,13 @@ export function settingsUpdateApi() {
 		SettingsUpdateAPI,
 		SettingsUpdateDto,
 		SettingsUpdateApiError
-	>("/settings", async (url, body) => {
+	>(`/${storageEmpresa!.slug}/settings`, async (url, body) => {
 		const response = await fetch(`/api${url}`, {
 			method: "PUT",
 			body: JSON.stringify(body),
 			headers: {
 				"content-type": "application/json",
+				"access-token": enviroments.VITE_TOKEN_VIGILIO_SERVICES,
 			},
 		});
 		const result = await response.json();

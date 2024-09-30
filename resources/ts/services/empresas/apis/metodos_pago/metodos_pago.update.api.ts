@@ -4,7 +4,9 @@ import {
 	empresaQrYapeUpdateDto,
 	MetodosPagoUpdateDto,
 } from "@/empresas/dtos/metodosPago.update.dto";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { useMutation } from "@vigilio/preact-fetching";
+import enviroments from "~/config";
 import { ResultApiImages, uploadApi } from "~/libs/upload";
 
 export function metodosUpdateApi() {
@@ -12,12 +14,13 @@ export function metodosUpdateApi() {
 		MetodosUpdateAPI,
 		MetodosPagoUpdateDto,
 		MetodosUpdateErrorAPI
-	>("/empresas/metodos_pago", async (url, body) => {
+	>(`/empresas/${storageEmpresa?.slug}/metodos_pago`, async (url, body) => {
 		const response = await fetch(`/api${url}`, {
 			method: "PUT",
 			body: JSON.stringify(body),
 			headers: {
 				"content-type": "application/json",
+				"access-token": enviroments.VITE_TOKEN_VIGILIO_SERVICES,
 			},
 		});
 		const result = await response.json();

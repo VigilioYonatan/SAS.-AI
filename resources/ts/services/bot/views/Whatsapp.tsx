@@ -279,6 +279,7 @@ function Whatsapp() {
 			) : (
 				<></>
 			)}
+			<AlertInfo>Seleccione a un(a)s usuario para enviar mensajes</AlertInfo>
 			<div class="overflow-auto ">
 				<VigilioTable query={query} table={table}>
 					<VigilioTable.header>
@@ -645,7 +646,6 @@ function StoreContact({ refetch }: StoreContactProps) {
 }
 
 export function QrWhatsapp() {
-	const qrCodeQuery = whatsappGetQrApi();
 	const whatsappRestartMutation = whatsappRestart();
 	const { state } = useEmpresastore();
 
@@ -686,79 +686,86 @@ export function QrWhatsapp() {
 				</>
 			) : (
 				<>
-					<p class="text-md text-center dark:text-white font-bold flex gap-1 items-center">
-						Escanea este codigo Qr en ajustes de tu whatsapp
-						{"  "}
-						<button class="relative block" type="button">
-							<Helper top={10} right={10}>
-								<img
-									src={whatsappInfoImage()}
-									width={300}
-									height={300}
-									alt=""
-								/>
-							</Helper>
-						</button>
-					</p>
-					{qrCodeQuery.isLoading && (
-						<p class="dark:text-white">Cargando QR...</p>
-					)}
-					{qrCodeQuery.data && (
-						<div class="relative flex flex-col  gap-2">
-							<img
-								width={300}
-								height={300}
-								src={URL.createObjectURL(qrCodeQuery.data)}
-								class="rounded-lg"
-								alt="bot whatsapp"
-							/>
-							<div class="flex justify-between gap-2">
-								<div />
-								<button
-									type="button"
-									class="self-end bg-black bg-opacity-60 w-[30px] h-[30px] flex justify-center items-center rounded-md"
-									disabled={whatsappRestartMutation.isLoading || false}
-									onClick={() => {
-										whatsappRestartMutation.mutate(null, {
-											onSuccess() {
-												sweetAlert({
-													icon: "success",
-													title: "Reinciado correctamente whatsapp",
-												}).then(() => {
-													window.location.reload();
-												});
-											},
-											onError() {
-												sweetAlert({
-													icon: "success",
-													title: "Reinciado correctamente whatsapp",
-												}).then(() => {
-													window.location.reload();
-												});
-											},
-										});
-									}}
-								>
-									{whatsappRestartMutation.isLoading ? (
-										<LoaderSubmit />
-									) : (
-										<i class="fa-solid fa-rotate-right text-white text-xl" />
-									)}
-								</button>
-								<div />
-							</div>
-						</div>
-					)}
-					<ul class="list-image-none flex flex-col gap-2">
-						<li class="dark:text-white text-center">
-							*Si no está funcionando el qr. Intentelo 2 - 3 veces{" "}
-							<i class="fa-solid fa-rotate-right text-white text-xs" />
-						</li>{" "}
-						<li class="dark:text-white text-center text-sm">
-							*Si se conectó correctamente, esperar unos minutos para añadir tus
-							contactos automáticamente.{" "}
-						</li>
-					</ul>
+					{() => {
+						const qrCodeQuery = whatsappGetQrApi();
+						return (
+							<>
+								<p class="text-md text-center dark:text-white font-bold flex gap-1 items-center">
+									Escanea este codigo Qr en ajustes de tu whatsapp
+									{"  "}
+									<button class="relative block" type="button">
+										<Helper top={10} right={10}>
+											<img
+												src={whatsappInfoImage()}
+												width={300}
+												height={300}
+												alt=""
+											/>
+										</Helper>
+									</button>
+								</p>
+								{qrCodeQuery.isLoading && (
+									<p class="dark:text-white">Cargando QR...</p>
+								)}
+								{qrCodeQuery.data && (
+									<div class="relative flex flex-col  gap-2">
+										<img
+											width={300}
+											height={300}
+											src={URL.createObjectURL(qrCodeQuery.data)}
+											class="rounded-lg"
+											alt="bot whatsapp"
+										/>
+										<div class="flex justify-between gap-2">
+											<div />
+											<button
+												type="button"
+												class="self-end bg-black bg-opacity-60 w-[30px] h-[30px] flex justify-center items-center rounded-md"
+												disabled={whatsappRestartMutation.isLoading || false}
+												onClick={() => {
+													whatsappRestartMutation.mutate(null, {
+														onSuccess() {
+															sweetAlert({
+																icon: "success",
+																title: "Reinciado correctamente whatsapp",
+															}).then(() => {
+																window.location.reload();
+															});
+														},
+														onError() {
+															sweetAlert({
+																icon: "success",
+																title: "Reinciado correctamente whatsapp",
+															}).then(() => {
+																window.location.reload();
+															});
+														},
+													});
+												}}
+											>
+												{whatsappRestartMutation.isLoading ? (
+													<LoaderSubmit />
+												) : (
+													<i class="fa-solid fa-rotate-right text-white text-xl" />
+												)}
+											</button>
+											<div />
+										</div>
+									</div>
+								)}
+								<ul class="list-image-none flex flex-col gap-2">
+									<li class="dark:text-white text-center">
+										*Si no está funcionando el qr. Intentelo 2 - 3 veces{" "}
+										<i class="fa-solid fa-rotate-right text-white text-xs" />
+									</li>{" "}
+									<li class="dark:text-white text-center text-sm">
+										*Si se conectó correctamente, esperar unos minutos para
+										añadir tus contactos automáticamente.{" "}
+									</li>
+								</ul>
+							</>
+						);
+					}}
 				</>
 			)}
 		</div>

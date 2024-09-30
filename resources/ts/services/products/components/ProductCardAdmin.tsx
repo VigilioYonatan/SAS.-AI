@@ -1,5 +1,5 @@
 import { useSignal } from "@preact/signals";
-import { printImagesProduct, productOBJ } from "@/products/libs/helpers";
+import { productOBJ } from "@/products/libs/helpers";
 import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
 import useCartStore from "@/cart/stores/cart.store";
 import { cartStoreApi } from "@/cart/apis/cart.store.api";
@@ -10,6 +10,8 @@ import LoaderSubmit from "~/components/LoaderSubmit";
 import { deepEqual } from "~/libs/helpers";
 import ProductNotification from "./ProductNotification";
 import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schema";
+import useProduct from "../hooks/useProduct";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 interface ProductCardAdminProps {
 	product: ProductsNormalSchemaFromServer;
 	refetch: (clean?: boolean) => void;
@@ -92,19 +94,32 @@ function ProductCardAdmin({ product, refetch }: ProductCardAdminProps) {
 		product.id,
 		varianteChoose!.id,
 	);
+
+	const producto = useProduct({ product });
 	return (
 		<div
 			class="shadow rounded-md overflow-hidden dark:bg-admin-terciary"
 			key={product.id}
 		>
 			<div class="w-full relative">
-				<img
-					class="w-full h-[250px] object-contain"
-					src={printImagesProduct(product.images, 500)[0]}
-					width={100}
-					height={100}
-					alt=""
-				/>
+				{producto.images500Variant.length &&
+				storageEmpresa?.tipo_empresa.tipo_servicio_id === 1 ? (
+					<img
+						class="w-full h-[250px] object-contain"
+						width={100}
+						height={100}
+						src={producto.images500Variant[0]}
+						alt={producto.producto.value.name}
+					/>
+				) : (
+					<img
+						class="w-full h-[250px] object-contain"
+						width={100}
+						height={100}
+						src={producto.images500[0]}
+						alt={producto.producto.value.name}
+					/>
+				)}
 			</div>
 			<div class=" justify-center items-center mt-2 flex flex-col gap-2">
 				<button

@@ -61,8 +61,10 @@ import {
 	type EmpresasIAUpdateDto,
 } from "../dtos/empresas.ia.update.dto";
 import { hostSchema } from "../schemas/settings.schema";
-import cors from "cors";
-import { corsOptions } from "~/config";
+import {
+	settingsUpdateDto,
+	type SettingsUpdateDto,
+} from "../dtos/settings.update.dto";
 
 @Injectable()
 @Controller("/empresas")
@@ -71,11 +73,32 @@ export class EmpresasApiController {
 
 	@VigilioServicesGuard()
 	@Pipe(objectAsync({ slug: string() }))
-	@Get("/:slug/payment", [cors(corsOptions)])
+	@Get("/:slug/payment")
 	async payment(@Params("slug") slug: string) {
 		const result = await this.empresaApiService.payment(slug);
 		return result;
 	}
+	@VigilioServicesGuard()
+	@Pipe(objectAsync({ slug: string() }))
+	@Get("/:slug/settings")
+	async settings(@Params("slug") slug: string) {
+		const result = await this.empresaApiService.settings(slug);
+		return result;
+	}
+
+	@Validator(settingsUpdateDto)
+	@VigilioServicesGuard()
+	@Pipe(objectAsync({ slug: string() }))
+	@Status(201)
+	@Put("/")
+	async updateSettings(
+		@Body() body: SettingsUpdateDto,
+		@Params("slug") slug: string,
+	) {
+		const result = await this.empresaApiService.updateSettings(slug, body);
+		return result;
+	}
+
 	@VigilioServicesGuard()
 	@Validator(mergeAsync([payments, object({ token: string() })]))
 	@Pipe(objectAsync({ slug: string() }))
@@ -103,20 +126,22 @@ export class EmpresasApiController {
 		return result;
 	}
 
-	@PermissionAdmin()
-	@Get("/metodos_pago")
-	async metodos_pago(@Req("empresa") empresa: Empresas) {
-		const result = await this.empresaApiService.metodos_pago(empresa);
+	@VigilioServicesGuard()
+	@Pipe(objectAsync({ slug: string() }))
+	@Get("/:slug/metodos_pago")
+	async metodos_pago(@Params("slug") slug: string) {
+		const result = await this.empresaApiService.metodos_pago(slug);
 		return result;
 	}
 	@PermissionAdmin()
 	@Validator(metodosPagoUpdateDto)
-	@Put("/metodos_pago")
+	@Pipe(objectAsync({ slug: string() }))
+	@Put("/:slug/metodos_pago")
 	async metodospago(
-		@Req("empresa") empresa: Empresas,
+		@Params("slug") slug: string,
 		@Body() body: MetodosPagoUpdateDto,
 	) {
-		const result = await this.empresaApiService.metodospago(empresa, body);
+		const result = await this.empresaApiService.metodospago(slug, body);
 		return result;
 	}
 	@PermissionAdmin()
@@ -175,22 +200,24 @@ export class EmpresasApiController {
 		);
 		return result;
 	}
-	@PermissionAdmin()
+	@VigilioServicesGuard()
+	@Pipe(objectAsync({ slug: string() }))
 	@Validator(pickAsync(hostSchema, ["host"]))
 	@Status(201)
-	@Put("/dominio")
+	@Put("/dominio/:slug")
 	async dominio(
 		@Body() body: { host: string | null },
-		@Req("empresa") empresa: Empresas,
+		@Params("slug") slug: string,
 	) {
-		const result = await this.empresaApiService.dominio(empresa, body);
+		const result = await this.empresaApiService.dominio(slug, body);
 		return result;
 	}
-	@PermissionAdmin()
+	@VigilioServicesGuard()
+	@Pipe(objectAsync({ slug: string() }))
 	@Status(201)
-	@Put("/name_servers")
-	async name_servers(@Req("empresa") empresa: Empresas) {
-		const result = await this.empresaApiService.name_servers(empresa);
+	@Put("/name_servers/:slug")
+	async name_servers(@Params("slug") slug: string) {
+		const result = await this.empresaApiService.name_servers(slug);
 		return result;
 	}
 	@PermissionAdmin()

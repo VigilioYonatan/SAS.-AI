@@ -90,7 +90,7 @@ function SettingsIndex() {
 		const settingsPhotoDominioform = useForm<DominioUpdate>({
 			resolver: valibotVigilio(dominioUpdate),
 			mode: "all",
-			// defaultValues: { host: setting.host.host },
+			defaultValues: { host: setting.host.host },
 		});
 
 		async function initialUpdateIcon() {
@@ -220,7 +220,10 @@ function SettingsIndex() {
 							});
 						},
 						onError(data) {
-							handlerError(settingsIconUpdateform, data);
+							sweetAlert({
+								icon: "danger",
+								title: `Error ${data.message}`,
+							});
 						},
 					});
 				}
@@ -444,12 +447,39 @@ function SettingsIndex() {
 						onSubmit={onUpdateHost}
 					>
 						<span class="font-semibold dark:text-secondary-light">
-							¿Deseas tu propio Dominio {slug(state!.name_empresa)}
-							.com o similar?
+							¿Deseas tu propio Dominio{" "}
+							<b class="font-semibold">
+								{slug(state!.name_empresa)}
+								.com{" "}
+							</b>{" "}
+							o similar?
 						</span>
 						<AlertInfo>
 							<span class="font-bold">
-								<b>Obligatorio:</b> tu dominio en 1 minuto{"  "}
+								<b>Obligatorio:</b>
+								<br />
+								1. Registrar y Comprar dominio{" "}
+								<em>(en Internet hay muchos proveedores)</em> - Recomendamos:{" "}
+								{storageEmpresa?.dial_code === "51"
+									? "HostingSSD"
+									: "Hostinger"}{" "}
+								{storageEmpresa?.dial_code === "51" ? (
+									<a
+										href="https://www.hosting-ssd.com/hosting/cart.php?a=add&domain=register"
+										class="underline font-semibold "
+									>
+										Ir a proveedor
+									</a>
+								) : (
+									<a
+										href="https://www.hostinger.es/comprar-dominio"
+										class="underline font-semibold "
+									>
+										Ir a proveedor
+									</a>
+								)}
+								<br />
+								2. Si deseas hacerlo tu mismo en 1 minuto
 								<a
 									href="https://youtu.be/S8uOVMGOleA"
 									target="_blank"
@@ -457,7 +487,11 @@ function SettingsIndex() {
 									class="text-primary underline "
 								>
 									Ver video
-								</a>
+								</a>{" "}
+								y si no, podemos hacerlo por ti <b>Totalmente Gratis</b>.
+								Envianos un mensaje a <b>soporte@vigilio-services.com</b>, tu
+								dominio.com y tu cuenta de dominio del proveedor comprado para
+								acceder a ello.
 							</span>
 						</AlertInfo>
 						<div class="flex gap-2 items-center">
@@ -474,14 +508,25 @@ function SettingsIndex() {
 										GoDaddy, etc.
 										<br />
 										<span>Recomendamos el siguiente </span>
-										<a
-											href="https://www.hosting-ssd.com/hosting/cart.php?a=add&domain=register"
-											target="_blank"
-											class="font-bold text-primary"
-											rel="noreferrer"
-										>
-											Ir a dominio recomendado
-										</a>
+										{storageEmpresa?.dial_code === "51" ? (
+											<a
+												href="https://www.hosting-ssd.com/hosting/cart.php?a=add&domain=register"
+												target="_blank"
+												class="font-bold text-primary"
+												rel="noreferrer"
+											>
+												Ir a dominio recomendado
+											</a>
+										) : (
+											<a
+												href="https://www.hostinger.es/comprar-dominio"
+												target="_blank"
+												class="font-bold text-primary"
+												rel="noreferrer"
+											>
+												Ir a dominio recomendado
+											</a>
+										)}
 										<br />
 										<b class="font-bold">2.</b> Recomendamos que tu dominio debe
 										ser parecido al nombre de tu empresa.
