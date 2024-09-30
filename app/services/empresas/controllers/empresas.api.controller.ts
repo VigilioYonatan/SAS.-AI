@@ -136,7 +136,6 @@ export class EmpresasApiController {
         const result = await this.empresaApiService.metodos_pago(slug);
         return result;
     }
-    @PermissionAdmin()
     @Validator(metodosPagoUpdateDto)
     @Pipe(objectAsync({ slug: string() }))
     @Put("/:slug/metodos_pago")
