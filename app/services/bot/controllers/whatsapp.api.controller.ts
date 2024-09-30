@@ -29,7 +29,6 @@ import type { RequestVigilio } from "~/config/types";
 import fs from "node:fs";
 import cron from "node-cron";
 import type { Response } from "express";
-import enviroments from "~/config/enviroments.config";
 import { vpsShowApi } from "@/empresas/services/backup.api.service";
 export let chats: Record<string, ["assistant" | "user", string][]> = {};
 
@@ -59,13 +58,7 @@ export class whatsappApiController {
         const result = await vpsShowApi();
 
         await empresa?.update({ enabledBot: true });
-        if (enviroments.NODE_ENV === "production") {
-            await terminal(
-                `docker update --cpus="${
-                    result.vps.whatsapp_cpu_low || "0.14"
-                }" ${empresa.slug}`
-            );
-        }
+
         return {
             success: true,
             message: "OK",
@@ -369,11 +362,7 @@ export class whatsappApiController {
             timeWhatsapp: NOW(empresa).add(3, "minute").toDate(),
         });
         const result = await vpsShowApi();
-        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${
-            empresa.slug
-        }-qr.png && rm -rf .wwebjs_auth && rm -rf .wwebjs_cache" && docker update --cpus="${
-            result.vps.whatsapp_cpu_max ?? "0.7"
-        }" ${empresa.slug} && docker restart ${empresa.slug} `;
+        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png && rm -rf .wwebjs_auth && rm -rf .wwebjs_cache" && docker restart ${empresa.slug} `;
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`Ejecutando comando: ${comando}`);
         await terminal(comando);
