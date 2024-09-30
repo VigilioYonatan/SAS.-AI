@@ -90,7 +90,7 @@ export class EmpresasApiController {
     @VigilioServicesGuard()
     @Pipe(objectAsync({ slug: string() }))
     @Status(201)
-    @Put("/")
+    @Put("/:slug/settings")
     async updateSettings(
         @Body() body: SettingsUpdateDto,
         @Params("slug") slug: string
