@@ -1,2 +1,2 @@
 // image dimension
-export const postsImageQualities = [100, 500];
+export const postsImageQualities = [100, 800];
