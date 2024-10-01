@@ -57,16 +57,14 @@ export class whatsappApiController {
                 await empresa.update({ contacts: mappedcontacts });
             }
             await empresa?.update({ enabledBot: true });
-    
+
             return {
                 success: true,
                 message: "OK",
             };
         } catch (error) {
-            console.log((error as ).message);
-            
+            console.log((error as Error).message);
         }
-       
     }
     @Post("/receive-message")
     async receiveMessage(
