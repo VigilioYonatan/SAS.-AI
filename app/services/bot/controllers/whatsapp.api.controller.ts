@@ -23,7 +23,6 @@ import { buenosDias, featuresIA, gracias, isWhatsappIA } from "../libs/ai";
 import { NOW } from "~/libs/dayjs";
 import { promptReplace, transcribeAudio } from "../libs";
 import { openAis } from "@/empresas/services/empresas.api.service";
-import { BASE_URL } from "@/empresas/libs";
 import formidable from "formidable";
 import type { RequestVigilio } from "~/config/types";
 import fs from "node:fs";
@@ -183,11 +182,7 @@ export class whatsappApiController {
                     messages: [
                         {
                             role: "user",
-                            content: `${prompt} -  Solo enviamen la imagen ( mandarme la url de la imagen) ${BASE_URL(
-                                empresa
-                            )}/${
-                                empresa.slug
-                            }/images/products/... , si te pido información de un producto o si te pido una imagen de un producto, por ultimo responde bonito en formato whatsapp`,
+                            content: `${prompt} por ultimo responde bonito en formato whatsapp`,
                         },
                         { role: "assistant", content: "Entendido, Empezemos." }, // getting start
                         ...messages.slice(

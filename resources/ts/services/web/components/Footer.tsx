@@ -239,14 +239,27 @@ function MetodosDePago() {
                     width={80}
                     height={80}
                     alt="visa"
+                    class="w-[60px] md:w-[80px]"
                 />
             ) : null}
             {empresaStore.state?.metodos_pago.qrYape ? (
-                <img src={yapeImage()} width={30} height={30} alt="yape" />
+                <img
+                    src={yapeImage()}
+                    class="w-[20px] md:w-[30px]"
+                    width={30}
+                    height={30}
+                    alt="yape"
+                />
             ) : null}
 
             {empresaStore.state?.metodos_pago.paypal.enabled ? (
-                <img src={paypalICOImage()} width={30} height={30} alt="yape" />
+                <img
+                    src={paypalICOImage()}
+                    class="w-[20px] md:w-[30px]"
+                    width={30}
+                    height={30}
+                    alt="yape"
+                />
             ) : null}
             {empresaStore.state?.metodos_pago.enable_efectivo ? (
                 <p class="text-xs  text-center border p-1 rounded-md border-gray-400 text-black dark:text-white">
