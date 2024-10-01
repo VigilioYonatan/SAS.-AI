@@ -153,7 +153,7 @@ export async function initialWhatsapp() {
     });
     client.initialize();
 }
-
+initialWhatsapp();
 app.post("/api/whatsapp/send-message", authenticateToken, sendMessage);
 app.post("/api/whatsapp/send-file", authenticateToken, sendFile);
 app.post("/api/whatsapp/send-seen", authenticateToken, sendSeen);
@@ -161,9 +161,6 @@ app.post("/api/whatsapp/send-typing", authenticateToken, sendTyping);
 app.get("/api/whatsapp/qr", authenticateToken, getQr);
 app.post("/api/whatsapp/logout", authenticateToken, sendLogout);
 app.post("/api/whatsapp/remove-qr", authenticateToken, restart);
-
-// whatsapp
-initialWhatsapp();
 
 app.listen(PORT, () => {
     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
