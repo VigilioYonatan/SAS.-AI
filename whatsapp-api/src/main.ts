@@ -57,7 +57,6 @@ export async function initialWhatsapp() {
         puppeteer: {
             headless: true,
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
-            timeout: 20000,
         },
     });
 
