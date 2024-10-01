@@ -55,7 +55,7 @@ export class Server {
         // Llama a la función para inicializar las instancias
     }
     async middlewares() {
-        this.app.set("trust proxy", true);
+        this.app.set("trust proxy", 1);
 
         this.app.use(cors(corsOptions));
         const limiter = rateLimit({
