@@ -89,6 +89,13 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
             "slug",
             "id",
             "contacts",
+            "name_empresa",
+            "money",
+            "tipo_impuesto",
+            "email",
+            "type_empresa_id",
+            "type_empresa_other",
+            "schedule",
         ],
     });
     if (!empresa) return null;
@@ -138,6 +145,14 @@ export async function isTelegramIA(empresa: string) {
                 "enabledBot",
                 "slug",
                 "id",
+                "contacts",
+                "name_empresa",
+                "money",
+                "tipo_impuesto",
+                "email",
+                "type_empresa_id",
+                "type_empresa_other",
+                "schedule",
             ],
         }),
     ]);
