@@ -687,7 +687,6 @@ function StoreContact({ refetch }: StoreContactProps) {
 export function QrWhatsapp() {
     const whatsappRestartMutation = whatsappRestart();
     const { state } = useEmpresastore();
-    const qrCodeQuery = whatsappGetQrApi();
 
     return (
         <div class="flex flex-col gap-4 justify-center items-center">
@@ -732,7 +731,8 @@ export function QrWhatsapp() {
                 </>
             ) : (
                 <>
-                    {() => {
+                    {(() => {
+                        const qrCodeQuery = whatsappGetQrApi();
                         return (
                             <>
                                 <p class="text-md text-center dark:text-white font-bold flex gap-1 items-center">
@@ -826,7 +826,7 @@ export function QrWhatsapp() {
                                 </ul>
                             </>
                         );
-                    }}
+                    })()}
                 </>
             )}
         </div>

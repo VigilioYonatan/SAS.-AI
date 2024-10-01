@@ -50,7 +50,8 @@ const app = express();
 app.use(express.json({ limit: "100mb" }));
 app.use(cors());
 app.use(morgan("dev"));
-
+// whatsapp
+initialWhatsapp();
 export async function initialWhatsapp() {
     client = new WAWebJS.Client({
         authStrategy: new WAWebJS.LocalAuth(),
@@ -151,9 +152,9 @@ export async function initialWhatsapp() {
             fs.unlinkSync(qrImage);
         }
     });
-    client.initialize();
+    await client.initialize();
 }
-initialWhatsapp();
+
 app.post("/api/whatsapp/send-message", authenticateToken, sendMessage);
 app.post("/api/whatsapp/send-file", authenticateToken, sendFile);
 app.post("/api/whatsapp/send-seen", authenticateToken, sendSeen);

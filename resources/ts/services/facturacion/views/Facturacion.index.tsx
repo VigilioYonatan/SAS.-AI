@@ -77,6 +77,7 @@ function FacturacionIndex() {
                 isCloseInBackground: false,
                 showCloseButton: true,
                 sweetWidth: "700px",
+                position: "start",
             }));
         }
 
