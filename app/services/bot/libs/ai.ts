@@ -152,7 +152,7 @@ export async function isTelegramIA(empresa: string) {
                 "email",
                 "type_empresa_id",
                 "type_empresa_other",
-                "schedule",
+                "schedule", 
             ],
         }),
     ]);

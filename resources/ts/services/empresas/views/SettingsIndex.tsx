@@ -769,7 +769,7 @@ function SettingsIndex() {
                         />
                     </Form>
                     <Hr spacing={13} />
-                    <br />
+                    <br id="foto_empresa" />
                     <Form
                         {...settingsPhotoUpdateform}
                         onSubmit={onUpdatePhotoempresa}

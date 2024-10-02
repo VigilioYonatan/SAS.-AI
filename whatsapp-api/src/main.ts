@@ -57,7 +57,24 @@ export async function initialWhatsapp() {
         authStrategy: new WAWebJS.LocalAuth(),
         puppeteer: {
             headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+            args: [
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-gpu",
+                "--disable-infobars",
+                "--disable-dev-shm-usage",
+                "--window-size=800,600",
+                "--disable-web-security",
+                "--disable-extensions",
+                "--disable-default-apps",
+                "--disable-plugins",
+                "--disable-session-crashed-bubble",
+                "--disable-accelerated-2d-canvas",
+                "--no-first-run",
+                "--no-zygote",
+                "--single-process",
+                "--noerrdialogs",
+            ],
         },
     });
 
@@ -94,11 +111,15 @@ export async function initialWhatsapp() {
         const chat = await message.getChat();
         async function getFile() {
             const media = await message.downloadMedia();
-            const binaryData = Buffer.from(media.data, "base64");
-            return binaryData;
+            if (media.data) {
+                const binaryData = Buffer.from(media.data, "base64");
+                return binaryData;
+            }
+            return null;
         }
         const content =
             message.type === "chat" ? message.body : await getFile();
+        if (!content) return null;
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const notifyName = (message as any)._data.notifyName;
         const quotedMessageId = message.id._serialized;
@@ -150,18 +171,3 @@ app.listen(PORT, () => {
     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
     console.log(`Running ${process.env.PORT} - ${SESSION_NAME}`);
 });
-function fetchWithTimeout(
-    url: string,
-    options: RequestInit,
-    timeout = 60000
-): Promise<Response> {
-    return Promise.race([
-        fetch(url, options),
-        new Promise<Response>((_, reject) =>
-            setTimeout(
-                () => reject(new Error("Tiempo de espera agotado")),
-                timeout
-            )
-        ),
-    ]);
-}
