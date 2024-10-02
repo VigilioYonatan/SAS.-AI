@@ -283,7 +283,7 @@ function CompaniesStore({ onClose }: CompaniesStoreProps) {
                             "production" as keyof EmpresasFacturacionUpdateDto
                         }
                         question={
-                            <div class="w-[130px]">
+                            <div class="w-[120px]">
                                 Si está habilitado se emitirá en los servidores
                                 de sunat. Si está desabilitado no se enviará en
                                 los servidores de sunat, será modo de prueba

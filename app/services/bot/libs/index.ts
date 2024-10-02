@@ -268,7 +268,7 @@ export async function promptReplace(message: string, empresa: Empresas) {
                         empresa.money.money
                     )}\n*vendedor*:${
                         order.user ? (order.user as Users)?.username : "-"
-                    }\n*Metododepago*:${
+                    }\n*Metodo de Pago*:${
                         order.pay_method_id
                             ? (order.pay_method as PayMethods).name
                             : null

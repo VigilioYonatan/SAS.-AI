@@ -232,7 +232,6 @@ export class BackupApiService {
                         "NOMBRE",
                         "PRECIO",
                         "DESCUENTO",
-                        "VARIANTES",
                         "URL",
                         "DISPONIBLE",
                         "CATEGORIA",
@@ -245,14 +244,6 @@ export class BackupApiService {
                         prod.name,
                         prod.price.toFixed(2),
                         prod.discount.toString(),
-                        `${prod.options.map(
-                            (opt) =>
-                                `Opcion:${
-                                    prod.name
-                                }, Features: ${JSON.stringify(
-                                    opt.ProductsOptions.features.map((fe) => fe)
-                                )}`
-                        )}`,
                         prod.url,
                         prod.enabled ? "✔" : "❌",
                         prod.category_id.toString(),

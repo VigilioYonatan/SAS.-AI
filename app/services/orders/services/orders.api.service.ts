@@ -648,7 +648,13 @@ export class OrdersApiService {
                         }
                     }
                 }
-                return `*${product.name}* - ${detail_order.quantity} unidades - ${detail_order.price}`;
+                return `*${product.name}${
+                    ` ${detail_order.variante}` || ""
+                }* - ${detail_order.quantity} UND - *${formatMoney(
+                    empresa,
+                    ordersStoreDto.total,
+                    empresa.money.money
+                )}*`;
             })
         );
         try {
@@ -660,7 +666,26 @@ export class OrdersApiService {
                     message:
                         empresa.dial_code === "55"
                             ? `Olá 😊, aqui está o código do seu pedido ${order.order_code}.\n Não se esqueça de nos perguntar o status do seu pedido, digitando o código do pedido.`
-                            : `Hola 😊, Su orden *${order.order_code}*.\n${detailsOrders.join("\n")}.\nTotal: *${formatMoney(empresa,ordersStoreDto.total,empresa.money.money) }  ${moneyConverter !== 1 ? `- ${formatMoney(empresa,ordersStoreDto.total*moneyConverter,"DOLARES")}`:''}*\nNo olvides preguntar el estado de tu orden, digitando el *código* del orden ó en ${BASE_URL(empresa)}/pedidos`,
+                            : `Hola 😊, Su orden *${
+                                  order.order_code
+                              }*.\n${detailsOrders.join(
+                                  "\n"
+                              )}.\nTotal: *${formatMoney(
+                                  empresa,
+                                  ordersStoreDto.total,
+                                  empresa.money.money
+                              )}*  ${
+                                  moneyConverter !== 1
+                                      ? `- *${formatMoney(
+                                            empresa,
+                                            ordersStoreDto.total *
+                                                moneyConverter,
+                                            "DOLARES"
+                                        )}*`
+                                      : ""
+                              }\nNo olvides preguntar el estado de tu orden, digitando el *código* del orden ó en ${BASE_URL(
+                                  empresa
+                              )}/pedidos`,
                     delay: 4,
                 });
             }
@@ -929,7 +954,7 @@ export class OrdersApiService {
                         ? "FACTURA"
                         : invoice?.kind_invoice_code === "03"
                         ? "BOLETA"
-                        : "";
+                        : "COMPROBANTE";
                 try {
                     const telephone = `${empresa.dial_code}${ordersUpdateDto.telephone}@c.us`;
                     await whatsappSendMessageApi(empresa, {
