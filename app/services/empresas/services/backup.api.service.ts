@@ -100,7 +100,7 @@ export class BackupApiService {
                         }m" --memory-swap="${
                             result.vps.whatsapp_ram || "500"
                         }m" --cpus="${
-                            result.vps.whatsapp_cpu_max || "0.7"
+                            result.vps.whatsapp_cpu_max || "0.9"
                         }" -p ${emp.port}:5000 -v ${emp.slug}:/app/data ${
                             enviroments.DOCKER_IMAGE_WHATSAPP
                         }`

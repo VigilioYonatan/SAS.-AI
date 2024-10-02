@@ -32,7 +32,7 @@
     "@vigilio/express-core": "1.9.23",
     "@vigilio/numeros-a-letras": "^0.0.7",
     "@vigilio/payments": "^0.0.1",
-    "@vigilio/preact-fetching": "2.1.1",
+    "@vigilio/preact-fetching": "^2.1.2",
     "@vigilio/preact-paginator": "^0.0.10",
     "@vigilio/preact-table": "^1.0.19",
     "@vigilio/sweet": "^1.1.2",
