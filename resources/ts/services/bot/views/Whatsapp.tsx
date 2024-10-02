@@ -294,7 +294,9 @@ function Whatsapp() {
                 <></>
             )}
             <AlertInfo>
-                Seleccione a un(a)s usuario para enviar mensajes
+                <span class="font-semibold">
+                    Seleccione a un(a)s usuario para enviar mensajes
+                </span>
             </AlertInfo>
             <div class="overflow-auto ">
                 <VigilioTable query={query} table={table}>

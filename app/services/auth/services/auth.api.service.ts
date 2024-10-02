@@ -11,66 +11,68 @@ import { BASE_URL } from "@/empresas/libs";
 
 @Injectable()
 export class AuthApiService {
-	async forgotPassword(
-		empresa: Empresas,
-		authForgotPassword: AuthForgotPasswordDto,
-	) {
-		const user = await Users.findOne({
-			where: {
-				telephone: authForgotPassword.telephone,
-				empresa_id: empresa.id,
-			},
-		});
-		if (!user)
-			throw new BadRequestException(
-				"No se encontró este telefono en nuestro sistema",
-				{ body: "telephone" as keyof AuthForgotPasswordDto },
-			);
+    async forgotPassword(
+        empresa: Empresas,
+        authForgotPassword: AuthForgotPasswordDto
+    ) {
+        const user = await Users.findOne({
+            where: {
+                telephone: authForgotPassword.telephone,
+                empresa_id: empresa.id,
+            },
+        });
+        if (!user)
+            throw new BadRequestException(
+                "No se encontró este telefono en nuestro sistema",
+                { body: "telephone" as keyof AuthForgotPasswordDto }
+            );
 
-		if (!user.enabled) {
-			throw new BadRequestException("Tu cuenta no está habilitado");
-		}
-		const token = crypto.randomUUID();
-		await user.update({ token });
-		try {
-			await whatsappSendMessageApi(empresa, {
-				telephone: `${empresa.dial_code}${user.telephone}@c.us`,
-				message: `Hola *${
-					user.username
-				}*.\nRecupera tu contraseña aquí: ${BASE_URL(
-					empresa,
-				)}/auth/forgot-password?token=${token}`,
-				delay: 3,
-			});
-		} catch (error) {
-			throw new BadRequestException("La empresa no se conectó con whatsapp");
-		}
+        if (!user.enabled) {
+            throw new BadRequestException("Tu cuenta no está habilitado");
+        }
+        const token = crypto.randomUUID();
+        await user.update({ token });
+        try {
+            await whatsappSendMessageApi(empresa, {
+                telephone: `${empresa.dial_code}${user.telephone}@c.us`,
+                message: `Hola *${
+                    user.username
+                }*.\nRecupera tu contraseña aquí: ${BASE_URL(
+                    empresa
+                )}/auth/forgot-password?token=${token}`,
+                delay: 3,
+            });
+        } catch (error) {
+            throw new BadRequestException(
+                "La empresa no se conectó con whatsapp"
+            );
+        }
 
-		return {
-			success: true,
-			message: "Se envió un mensaje a tu numero de celular",
-		};
-	}
+        return {
+            success: true,
+            message: "Se envió un mensaje a tu numero de celular",
+        };
+    }
 
-	async confirmPassword(
-		empresa: Empresas,
-		authConfirmPasswordDto: AuthConfirmPasswordDto,
-	) {
-		const user = await Users.findOne({
-			where: {
-				id: authConfirmPasswordDto.user_id,
-				empresa_id: empresa.id,
-			},
-		});
-		if (!user) throw new NotFoundException("Usuario no válido");
-		const hashPassword = bcryptjs.hashSync(
-			authConfirmPasswordDto.password,
-			bcryptjs.genSaltSync(10),
-		);
-		await user.update({ password: hashPassword });
-		return {
-			success: true,
-			message: `Cambiaste tu contraseña correctamente <b>${user.username}</b>`,
-		};
-	}
+    async confirmPassword(
+        empresa: Empresas,
+        authConfirmPasswordDto: AuthConfirmPasswordDto
+    ) {
+        const user = await Users.findOne({
+            where: {
+                id: authConfirmPasswordDto.user_id,
+                empresa_id: empresa.id,
+            },
+        });
+        if (!user) throw new NotFoundException("Usuario no válido");
+        const hashPassword = bcryptjs.hashSync(
+            authConfirmPasswordDto.password,
+            bcryptjs.genSaltSync(10)
+        );
+        await user.update({ password: hashPassword });
+        return {
+            success: true,
+            message: `Cambiaste tu contraseña correctamente <b>${user.username}</b>`,
+        };
+    }
 }

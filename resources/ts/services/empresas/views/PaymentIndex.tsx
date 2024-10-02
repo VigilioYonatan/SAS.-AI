@@ -155,7 +155,7 @@ function PaymentIndex() {
         component = (
             <div class="px-4">
                 <AlertInfo>
-                    <b>
+                    <b class="font-semibold">
                         - Para usar pasarelas de pago de{" "}
                         <span class="font-bold">Mercado pago o Paypal</span>, es
                         necesario obtener algunos credenciales, ya que los
@@ -174,7 +174,7 @@ function PaymentIndex() {
                         </span>
                         <br />
                         <AlertInfo>
-                            <span>
+                            <span class="font-semibold">
                                 Registrarse en Mercado Pago y obtener tu
                                 credenciales rápidamente.{" "}
                                 <a
@@ -195,8 +195,8 @@ function PaymentIndex() {
                                 pasos". Se le enviará un mensaje en su numero de
                                 Whatsapp cuando se culmine.
                                 <br />
-                                Le recomendamos cambiar la contraseña de de
-                                Mercado pago.
+                                Le recomendamos, despues cambiar la contraseña
+                                de Mercado pago.
                             </span>
                         </AlertInfo>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -222,7 +222,7 @@ function PaymentIndex() {
                         </span>
                         <br />
                         <AlertInfo>
-                            <span>
+                            <span class="font-semibold">
                                 Registrarse en Paypal y obtener tu credenciales
                                 en 1 minuto{" "}
                                 <a
