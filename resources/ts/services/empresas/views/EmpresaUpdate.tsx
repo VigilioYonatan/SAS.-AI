@@ -27,6 +27,7 @@ import { getFilesEdit } from "~/libs/upload";
 import Hr from "@/web/components/Hr";
 import useEmpresastore, { storageEmpresa } from "../stores/empresa.store";
 import { formSelectNumber } from "~/components/form/FormSelect";
+import AlertInfo from "~/components/Alerts/AlertInfo";
 
 function empresaUpdate() {
     const { guards } = useAuthstore();
@@ -573,6 +574,23 @@ function empresaUpdate() {
                         {...settingsLogoUpdateform}
                         onSubmit={onUpdateLogoSetting}
                     >
+                        <AlertInfo>
+                            <span class="font-semibold dark:text-white">
+                                ¿No tienes un logo?
+                                <br />
+                                Digite como quiere que sea su logo en esta
+                                Inteligencia Artificial{" "}
+                                <a
+                                    href="https://www.bing.com/images/create"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    class="text-primary underline"
+                                >
+                                    aquí
+                                </a>{" "}
+                                - GRATIS
+                            </span>
+                        </AlertInfo>
                         <Form.control.file
                             name={"logo" as keyof SettingsLogoUpdateDto}
                             title="Logo de la empresa"
