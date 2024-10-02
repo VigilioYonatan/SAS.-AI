@@ -5,7 +5,8 @@ import {
     EmpresasFacturacionUpdateDto,
 } from "../dtos/empresas.facturacion.update.dto";
 import { EmpresasSchema } from "../schemas/empresas.schema";
-export const uploadempresaFacturacionUpdateApi = "/uploads/empresa/certificado";
+export const uploadempresaFacturacionUpdateApi =
+    "/uploads/empresas/certificado";
 
 export function empresaFacturacionUpdateApi(): UseMutation<
     empresaFacturacionUpdateApi,
