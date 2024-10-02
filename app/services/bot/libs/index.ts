@@ -256,24 +256,25 @@ export async function promptReplace(message: string, empresa: Empresas) {
                             "total",
                             "pay_method_id",
                             "status_order_id",
+                            "description",
                         ],
                     });
                     if (!order)
                         return `${code.toUpperCase()} - no se encontró.\n`;
 
-                    return `Codigo: ${code.toUpperCase()}, Total:  ${formatMoney(
+                    return `*Codigo: ${code.toUpperCase()}*\n*Total*:  ${formatMoney(
                         empresa,
                         order.total,
                         empresa.money.money
-                    )}, vendedor:${
+                    )}\n*vendedor*:${
                         order.user ? (order.user as Users)?.username : "-"
-                    },Metododepago:${
+                    }\n*Metododepago*:${
                         order.pay_method_id
                             ? (order.pay_method as PayMethods).name
                             : null
-                    }, direccion:${order.address}, estado: *${
+                    }\n*Direccion*:${order.address}, estado: *${
                         (order.status_order as StatusOrders).name
-                    }* \n`;
+                    }*\n*Descripcion*:${order.description}\n`;
                 })
             );
             ordenes += `${orden.join(".")}\n`;

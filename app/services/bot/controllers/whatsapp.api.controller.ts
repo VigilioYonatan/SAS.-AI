@@ -182,7 +182,7 @@ export class whatsappApiController {
                     messages: [
                         {
                             role: "user",
-                            content: `${prompt} por ultimo responde bonito en formato whatsapp`,
+                            content: `${prompt} por ultimo responde bonito en formato whatsapp.`,
                         },
                         { role: "assistant", content: "Entendido, Empezemos." }, // getting start
                         ...messages.slice(

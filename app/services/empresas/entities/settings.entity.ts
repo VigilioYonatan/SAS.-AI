@@ -58,6 +58,7 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     @Column({
         type: DataType.BOOLEAN,
         defaultValue: false,
+        allowNull: true,
     })
     position_header: boolean;
 
