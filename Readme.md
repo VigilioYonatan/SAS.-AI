@@ -118,6 +118,7 @@ Activar Ssl
 ```bash
 sudo apt install certbot python3-certbot-nginx
 sudo certbot --nginx -d www.eccomerce.vigilio-services.com -d eccomerce.vigilio-services.com
+
 # solo ceritificado
 sudo certbot certonly --nginx -d www.eccomerce.vigilio-services.com -d eccomerce.vigilio-services.com
 ```
@@ -147,10 +148,8 @@ ls /etc/letsencrypt/live
 
 scp -r root@161.132.47.141:/home/vigilio/temp C:/Users/Vigilio/Documents/backup
 
-
-
-
 # SUBDOMINIOS DINAMICOS
+
 ```nginx
 server {
     listen 80;
@@ -175,3 +174,8 @@ server {
 
 
 ```
+
+# ver cuanto de ram y cpu
+
+free -h
+top
