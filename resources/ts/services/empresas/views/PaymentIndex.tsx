@@ -178,7 +178,7 @@ function PaymentIndex() {
                                 Registrarse en Mercado Pago y obtener tu
                                 credenciales rápidamente.{" "}
                                 <a
-                                    class="font-bold underline"
+                                    class="font-bold underline text-primary"
                                     target="_blank"
                                     rel="noreferrer"
                                     href="https://youtu.be/z8x-X4iKYiI"
@@ -189,14 +189,14 @@ function PaymentIndex() {
                                 Recuerda Registrate en mercado Pago y obtener
                                 tus credenciales de producción de Mercado Pago.
                                 <br />
-                                Si no deseas hacerlo usted mismo, Enviar su
-                                cuenta de Mercado pago al correo
+                                Si no deseas hacerlo usted mismo, Enviar "Nombre
+                                de empresa, su cuenta de Mercado pago al correo
                                 soporte@vigilio-services.com para realizar los
-                                pasos. Se le enviará un mensaje en su numero de
+                                pasos". Se le enviará un mensaje en su numero de
                                 Whatsapp cuando se culmine.
                                 <br />
-                                Le recomendamos que cambie la contraseña de su
-                                cuenta de Mercado pago.
+                                Le recomendamos cambiar la contraseña de de
+                                Mercado pago.
                             </span>
                         </AlertInfo>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -226,7 +226,7 @@ function PaymentIndex() {
                                 Registrarse en Paypal y obtener tu credenciales
                                 en 1 minuto{" "}
                                 <a
-                                    class="font-bold underline"
+                                    class="font-bold underline text-primary"
                                     target="_blank"
                                     rel="noreferrer"
                                     href="https://www.youtube.com/watch?v=FM0eVMfvn9M"
@@ -237,14 +237,14 @@ function PaymentIndex() {
                                 Recuerda Registrate en PayPal y obtener tus
                                 credenciales de producción de PayPal.
                                 <br />
-                                Si no deseas hacerlo usted mismo, Enviar su
-                                cuenta de Paypal al correo
+                                Si no deseas hacerlo usted mismo, Enviar Nombre
+                                de empresa, su cuenta de Paypal al correo
                                 soporte@vigilio-services.com para realizar los
                                 pasos. Se le enviará un mensaje en su numero de
                                 Whatsapp cuando se culmine.
                                 <br />
-                                Le recomendamos que cambie la contraseña de su
-                                cuenta de Paypal.
+                                Le recomendamos, despues cambiar la contraseña
+                                de su cuenta de Paypal.
                             </span>
                         </AlertInfo>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2">

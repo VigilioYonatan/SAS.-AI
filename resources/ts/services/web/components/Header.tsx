@@ -107,7 +107,6 @@ function Header({ header }: HeaderProps) {
                 <div class="bg-gray-600 h-[1px] max-w-6xl mx-auto" />
                 <div class="max-w-6xl   mx-auto flex gap-4 justify-between items-center px-2 py-4 ">
                     <LogoImage width="60" height="60" />
-
                     <nav class=" gap-6 items-center hidden lg:flex  relative">
                         <a
                             class={` font-bold tracking-widest dark:hover:text-primary text-sm uppercase ${

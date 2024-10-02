@@ -17,7 +17,7 @@ import {
     settingsPhotoUpdateDto,
 } from "../dtos/settings.update.dto";
 import { valibotVigilio } from "~/libs/valibot";
-import { getFilesEdit } from "~/libs/upload";
+import { getFilesEdit, printFileWithDimension } from "~/libs/upload";
 import {
     settingsUpdateApi,
     settingsUpdateIconApi,
@@ -38,6 +38,12 @@ import { slug } from "@vigilio/express-core/helpers";
 import useCountDown from "~/hooks/useCountDown";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import useCopyToClipboard from "~/hooks/useCopyToClipboard";
+import Hamburguer from "@/web/components/Hamburguer";
+import useCartStore from "@/cart/stores/cart.store";
+import useDropdown from "~/hooks/useDropdown";
+import useThemeStore from "~/stores/theme.store";
+import CartAside from "@/cart/views/CartAside";
+import SearchProducts from "@/products/views/ProductsSearch";
 
 const dominioUpdate = pick(hostSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
@@ -70,12 +76,19 @@ function SettingsIndex() {
                 return rest;
             }, []),
         });
-
+        const position_header = settingsUpdateform.watch("position_header");
+        const isDark = settingsUpdateform.watch("isDark");
         const isCoverImage = settingsUpdateform.watch("isCoverImage");
         const type_border = settingsUpdateform.watch("type_border");
         const type_cart = settingsUpdateform.watch("type_cart");
         const hamburger = settingsUpdateform.watch("hamburger");
         const isLogoImage = settingsUpdateform.watch("isLogoImage");
+        const bg_color_responsive = settingsUpdateform.watch(
+            "bg_color_responsive"
+        );
+        const themeStore = useThemeStore();
+        const cartStore = useCartStore();
+        const headerDropdown = useDropdown();
         const [cp1] = useCopyToClipboard();
         const [cp2] = useCopyToClipboard();
         const settingsIconUpdateform = useForm<SettingsIconUpdateDto>({
@@ -278,6 +291,216 @@ function SettingsIndex() {
                                 question="Animación cuando tus clientes bajan con el mouse o dedo a tu web"
                             />
                         </div>
+                        <div class="flex gap-2 items-center w-full">
+                            <div class="w-full">
+                                <Form.control.toggle
+                                    name="position_header"
+                                    title="Header Mobile"
+                                />
+                                <div class="flex gap-2 flex-wrap w-full">
+                                    <header
+                                        class={
+                                            " w-full px-4    py-4 shadow    delay-custom-1 "
+                                        }
+                                        style={{
+                                            background: bg_color_responsive,
+                                        }}
+                                    >
+                                        <div class=" max-w-6xl mx-auto">
+                                            <div class="flex justify-between gap-2 items-center">
+                                                {!position_header ? (
+                                                    <div class="flex items-center gap-2">
+                                                        <button
+                                                            type="button"
+                                                            aria-label="open aside"
+                                                            onClick={
+                                                                headerDropdown.onOpen
+                                                            }
+                                                        >
+                                                            <Hamburguer
+                                                                isOpen={
+                                                                    headerDropdown.dropdownOpen
+                                                                }
+                                                            />
+                                                        </button>
+                                                        <a
+                                                            href={"/"}
+                                                            class="flex  items-center "
+                                                        >
+                                                            {empresaStore.state!
+                                                                .logo ? (
+                                                                <img
+                                                                    width={100}
+                                                                    height={100}
+                                                                    src={
+                                                                        printFileWithDimension(
+                                                                            empresaStore.state!
+                                                                                .logo!,
+                                                                            100
+                                                                        )[0]
+                                                                    }
+                                                                    class="w-[50px] h-[50px] object-contain"
+                                                                    alt={
+                                                                        empresaStore.state!
+                                                                            .name_empresa
+                                                                    }
+                                                                />
+                                                            ) : (
+                                                                <h2 class="text-2xl font-bold text-white uppercase">
+                                                                    {
+                                                                        empresaStore.state!
+                                                                            .name_empresa[0]
+                                                                    }
+                                                                </h2>
+                                                            )}
+                                                        </a>
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <button
+                                                            type="button"
+                                                            aria-label="open aside"
+                                                            onClick={
+                                                                headerDropdown.onOpen
+                                                            }
+                                                        >
+                                                            <div
+                                                                class={
+                                                                    "hamburger hamburger--collapse"
+                                                                }
+                                                                type="button"
+                                                            >
+                                                                <i
+                                                                    class={`${hamburger} ${
+                                                                        hamburger ===
+                                                                        "fas pizza-slice"
+                                                                            ? "rotate-[250deg]"
+                                                                            : ""
+                                                                    } text-3xl text-white`}
+                                                                />
+                                                            </div>
+                                                        </button>
+
+                                                        <a
+                                                            href={"/"}
+                                                            class="flex  items-center ml-12"
+                                                        >
+                                                            {empresaStore.state!
+                                                                .logo ? (
+                                                                <img
+                                                                    width={100}
+                                                                    height={100}
+                                                                    src={
+                                                                        printFileWithDimension(
+                                                                            empresaStore.state!
+                                                                                .logo!,
+                                                                            100
+                                                                        )[0]
+                                                                    }
+                                                                    class="w-[60px] h-[60px] object-contain"
+                                                                    alt={
+                                                                        empresaStore.state!
+                                                                            .name_empresa
+                                                                    }
+                                                                />
+                                                            ) : (
+                                                                <h2 class="text-2xl font-bold text-white uppercase">
+                                                                    {
+                                                                        empresaStore.state!
+                                                                            .name_empresa[0]
+                                                                    }
+                                                                </h2>
+                                                            )}
+                                                        </a>
+                                                    </>
+                                                )}
+                                                {/* cartaside */}
+                                                <div
+                                                    class={`fixed inset-0 bg-opacity-70 bg-black z-[999] flex justify-end h-full ${
+                                                        cartStore.dropdown.value
+                                                            ? "visible"
+                                                            : "invisible"
+                                                    } delay-custom-1`}
+                                                    onClick={
+                                                        cartStore.dropdown
+                                                            .onClose
+                                                    }
+                                                >
+                                                    <div
+                                                        class={`w-full delay-custom-1 md:w-[350px] bg-white dark:bg-paper-dark relative p-2 ${
+                                                            cartStore.dropdown
+                                                                .value
+                                                                ? "translate-x-0"
+                                                                : "translate-x-full"
+                                                        }`}
+                                                        onClick={(e) =>
+                                                            e.stopPropagation()
+                                                        }
+                                                    >
+                                                        <button
+                                                            class="text-end block dark:text-white text-primary absolute top-0 right-0 m-2"
+                                                            type="button"
+                                                            aria-label="close cart"
+                                                            onClick={
+                                                                cartStore
+                                                                    .dropdown
+                                                                    .onClose
+                                                            }
+                                                        >
+                                                            <i class="fa-solid fa-x" />
+                                                        </button>
+                                                        <CartAside />
+                                                    </div>
+                                                </div>
+                                                {/* endcartaside */}
+                                                <div class="flex gap-3 items-center   text-xl  text-white">
+                                                    <SearchProducts />
+                                                    {isDark ? (
+                                                        <button
+                                                            type="button"
+                                                            aria-label="change theme"
+                                                            onClick={() => {
+                                                                themeStore.methods.changeThemeMode(
+                                                                    themeStore.state ===
+                                                                        "dark"
+                                                                        ? "light"
+                                                                        : "dark"
+                                                                );
+                                                            }}
+                                                        >
+                                                            {themeStore.state! ===
+                                                            "dark" ? (
+                                                                <i class="fas fa-moon" />
+                                                            ) : (
+                                                                <i class="far fa-sun" />
+                                                            )}
+                                                        </button>
+                                                    ) : null}
+
+                                                    <button
+                                                        type="button"
+                                                        class=" text-xl  text-white relative"
+                                                        onClick={
+                                                            cartStore.dropdown
+                                                                .onOpen
+                                                        }
+                                                    >
+                                                        <i class={type_cart} />
+                                                        <span class="absolute -top-1 -right-2 bg-white text-xs font-bold flex justify-center items-center text-primary w-[20px] h-[20px] rounded-full">
+                                                            {
+                                                                cartStore
+                                                                    .computed
+                                                                    .showCartLength
+                                                            }
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </header>
+                                </div>
+                            </div>
+                        </div>
                         <div class="flex flex-col gap-2">
                             <span class="text-xs font-semibold dark:text-white">
                                 Producto
@@ -453,7 +676,6 @@ function SettingsIndex() {
                             title="Acerca de la empresa"
                             placeholder={`Somos  ${storageEmpresa?.name_empresa} ...`}
                         />
-
                         <Form.button.submit
                             title="Actualizar"
                             className="self-start"
@@ -489,20 +711,20 @@ function SettingsIndex() {
                                 {storageEmpresa?.dial_code === "51" ? (
                                     <a
                                         href="https://www.hosting-ssd.com/hosting/cart.php?a=add&domain=register"
-                                        class="underline font-semibold "
+                                        class="underline font-semibold text-primary"
                                     >
                                         Ir a proveedor
                                     </a>
                                 ) : (
                                     <a
                                         href="https://www.hostinger.es/comprar-dominio"
-                                        class="underline font-semibold "
+                                        class="underline font-semibold  text-primary"
                                     >
                                         Ir a proveedor
                                     </a>
                                 )}
                                 <br />
-                                2. Si deseas hacerlo tu mismo en 1 minuto
+                                2. Si deseas hacerlo tu mismo en 1 minuto{" "}
                                 <a
                                     href="https://youtu.be/S8uOVMGOleA"
                                     target="_blank"
@@ -513,14 +735,11 @@ function SettingsIndex() {
                                 </a>{" "}
                                 y si no deseas hacerlo usted mismo, podemos
                                 hacerlo por ti. Envianos un mensaje a{" "}
-                                <b>soporte@vigilio-services.com</b>, tu
-                                dominio.com y tu cuenta de dominio del proveedor
-                                comprado para acceder a ello. Se le enviará un
-                                mensaje en su numero de Whatsapp cuando se
-                                culmine.
-                                <br />
-                                Le recomendamos que cambie la contraseña de su
-                                cuenta de Mercado pago.
+                                <b>soporte@vigilio-services.com</b>, "Nombre de
+                                tu empresa, tu dominio.com y tu cuenta de
+                                dominio del proveedor comprado para acceder a
+                                ello ". Se le enviará un mensaje en su numero de
+                                Whatsapp cuando se culmine.
                             </span>
                         </AlertInfo>
                         <div class="flex gap-2 items-center">

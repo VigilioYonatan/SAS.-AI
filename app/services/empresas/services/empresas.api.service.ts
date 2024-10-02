@@ -263,6 +263,7 @@ export class EmpresasApiService {
                     isScrolling: true,
                     hamburger: "fas fa-bars",
                     isLogoImage: false,
+                    position_header: true,
                 } as Omit<SettingsSchema, "id" | "empresa_id">),
             ]);
             const username = `${fullname}${Math.random()

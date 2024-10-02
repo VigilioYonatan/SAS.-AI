@@ -16,7 +16,7 @@ function FindSection() {
             } `}
             class="max-w-6xl mx-auto flex flex-col md:flex-row gap-3 px-2 bg-background-light  dark:bg-background-dark rounded-md  mb-4"
         >
-            <div class="md:w-1/2 w-full ">
+            <div class="md:w-1/2 w-full relative">
                 <MapValue
                     zoom={16}
                     value={empresaStore.state!.map_marker}

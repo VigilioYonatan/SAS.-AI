@@ -97,7 +97,7 @@ export function prompt(
     )} . cuando te escriba en horario de atencion que no esté. decime no estamos disponible en este momento pero te puedo ayudar.
     HORA Y FECHA_ACTUAL: ${NOW(empresa).format("DD-MM-YYYY hh:mm")}
 	MAXIMO_DE_PALABRAS_QUE_DIRAS: ${empresa.inteligenceArtificial.max_length}.
-	TIPO_MOENDA: ${empresa.money.international_simbolo}
+	TIPO_MONEDA: ${empresa.money.international_simbolo}
     RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN.
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
