@@ -166,7 +166,12 @@ export class Server {
                 const certificado =
                     req.path.startsWith("/admin") && empresa?.company
                         ? { certificado: empresa?.certificado }
-                        : {};
+                        : {
+                              whatsapp_mode: {
+                                  ...empresa.whatsapp_mode,
+                                  password: null,
+                              },
+                          };
 
                 const info = {
                     ...empresa?.toJSON(),
