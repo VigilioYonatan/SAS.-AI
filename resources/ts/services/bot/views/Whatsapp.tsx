@@ -52,6 +52,7 @@ import Helper from "~/components/Helper";
 import { whatsappInfoImage } from "~/config/settings";
 import { type Input, pick } from "@vigilio/valibot";
 import { useMutation } from "@vigilio/preact-fetching";
+import AlertSuccess from "~/components/Alerts/AlertSuccess";
 
 function Whatsapp() {
     const authStore = useAuthStore();
@@ -1462,7 +1463,15 @@ function WhatsappFREE() {
         }
     );
     function onWhatsappMode(body: WhatsappmodeDto) {
-        whatsappModeMutation;
+        whatsappModeMutation.mutate(body, {
+            onSuccess(data) {
+                sweetAlert({ icon: "success", title: data.message });
+            },
+            onError(error) {
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                handlerError(whatsappmodeForm, error as any);
+            },
+        });
     }
     return (
         <Form
@@ -1642,6 +1651,13 @@ function WhatsappFREE() {
                     </p>
                 </div>
             </div>
+            {whatsappModeMutation.isSuccess ? (
+                <AlertSuccess>
+                    Esperar unos segundos para escanear obtener Código QR.
+                </AlertSuccess>
+            ) : (
+                <></>
+            )}
             <Form.button.submit
                 title="Guardar"
                 className="mx-auto py-4 px-2 rounded-md block"

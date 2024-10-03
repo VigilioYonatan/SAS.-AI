@@ -475,6 +475,9 @@ export class EmpresasApiService {
         }
 
         await empresa.update(body);
+        await empresa.update({
+            timeWhatsapp: NOW(empresa).add(3, "minute").toDate(),
+        });
         return {
             success: true,
             message: "whatsapp mode cambiado correctamente",
