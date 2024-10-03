@@ -328,7 +328,7 @@ export class EmpresasApiService {
                         empresa.slug
                     } -e VITE_TOKEN_VIGILIO_SERVICES=${
                         enviroments.VITE_TOKEN_VIGILIO_SERVICES
-                    } --restart on-failure:5 --memory="${
+                    } --restart always --memory="${
                         result.vps.whatsapp_ram ?? "1000"
                     }m" --memory-swap="${
                         result.vps.whatsapp_ram ?? "1000"

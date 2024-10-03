@@ -95,12 +95,12 @@ export class BackupApiService {
                             emp.slug
                         } -e VITE_TOKEN_VIGILIO_SERVICES=${
                             enviroments.VITE_TOKEN_VIGILIO_SERVICES
-                        } --restart on-failure:5 --memory="${
-                            result.vps.whatsapp_ram || "500"
+                        } --restart always --memory="${
+                            result.vps.whatsapp_ram || "1000"
                         }m" --memory-swap="${
-                            result.vps.whatsapp_ram || "500"
+                            result.vps.whatsapp_ram || "1000"
                         }m" --cpus="${
-                            result.vps.whatsapp_cpu_max || "0.9"
+                            result.vps.whatsapp_cpu_max || "1"
                         }" -p ${emp.port}:5000 -v ${emp.slug}:/app/data ${
                             enviroments.DOCKER_IMAGE_WHATSAPP
                         }`

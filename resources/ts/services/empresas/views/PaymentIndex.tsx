@@ -26,8 +26,9 @@ import { handlerError } from "~/libs/helpers";
 import Hr from "@/web/components/Hr";
 import { useEffect } from "preact/hooks";
 import { getFilesEdit } from "~/libs/upload";
-import useEmpresastore from "../stores/empresa.store";
+import useEmpresastore, { storageEmpresa } from "../stores/empresa.store";
 import useAuthStore from "@/auth/stores/auth.store";
+import enviroments from "~/config";
 
 function PaymentIndex() {
     const authStore = useAuthStore();
@@ -197,6 +198,17 @@ function PaymentIndex() {
                                 <br />
                                 Le recomendamos, despues cambiar la contraseña
                                 de Mercado pago.
+                                <br />
+                                Comisión de Mercado Pago:
+                                {storageEmpresa?.mercado_pago_comision.comision}
+                                %
+                                {storageEmpresa!.mercado_pago_comision
+                                    .transaccion
+                                    ? ` + ${formatMoney(
+                                          storageEmpresa!.mercado_pago_comision
+                                              .transaccion
+                                      )}`
+                                    : null}
                             </span>
                         </AlertInfo>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -245,6 +257,11 @@ function PaymentIndex() {
                                 <br />
                                 Le recomendamos, despues cambiar la contraseña
                                 de su cuenta de Paypal.
+                                <br />
+                                Comisión de Mercado Pago:{" "}
+                                {enviroments.VITE_PAYPAL_COMISION}% +{" "}
+                                {enviroments.VITE_PASARELA_COMISION_TRANSACCION}
+                                USD
                             </span>
                         </AlertInfo>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
