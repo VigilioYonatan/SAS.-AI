@@ -359,7 +359,15 @@ export class EmpresasApiService {
         body: Pick<EmpresasSchema, "whatsapp_mode">
     ) {
         const response = await fetch(
-            `${enviroments.VITE_VIGILIO_WEB}/api/empresas/whatsapp/${empresa.slug}`
+            `${enviroments.VITE_VIGILIO_WEB}/api/empresas/whatsapp/${empresa.slug}`,
+            {
+                method: "POST",
+                body: JSON.stringify(body),
+                headers: {
+                    "Content-Type": "application/json",
+                    "access-token": enviroments.VITE_TOKEN_VIGILIO_SERVICES,
+                },
+            }
         );
         const result = await response.json();
         if (!result.success) throw new BadRequestException(result.message);

@@ -179,3 +179,13 @@ server {
 
 free -h
 top
+
+# entrar dentro de sql postgres
+psql -U postgres -d saas
+\dt  // ver tablas
+
+// actualizar
+UPDATE "public"."Empresas"
+SET whatsapp_mode = '{"type": "FREE", "ip": null, "password": null, "memory": null, "cpu": null}'
+WHERE whatsapp_mode IS NULL;
+UPDATE 0
