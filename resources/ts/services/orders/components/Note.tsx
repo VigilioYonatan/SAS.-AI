@@ -56,7 +56,7 @@ function Note({ order, refetch }: NoteProps) {
 							if (!order.note?.xml_path) return;
 							onDownload(
 								`/${order.note!.xml_path}`,
-								`${order.order_code}-note-xml`,
+								`${order.order_code}-note.xml`,
 							);
 						}}
 						disabled={!order.note!.xml_path}
@@ -77,7 +77,7 @@ function Note({ order, refetch }: NoteProps) {
 							if (!order.note?.cdr_path) return;
 							onDownload(
 								`/${order.note!.cdr_path}`,
-								`${order.order_code}-note-cdr`,
+								`${order.order_code}-note.cdr`,
 							);
 						}}
 						disabled={!order.note!.cdr_path}
