@@ -4,7 +4,6 @@ import { PdfImage, SunatImage, XmlImage, cdrImage } from "~/config/settings";
 import type { OrdersSchemaFromServer } from "../schemas/orders.schema";
 import useSendSunat from "../hooks/useSendSunat";
 import usePdfInvoice from "../hooks/usePdfInvoice";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 interface InvoiceProps {
     order: OrdersSchemaFromServer;
@@ -74,9 +73,7 @@ function Invoice({ order, refetch }: InvoiceProps) {
                         onClick={() => {
                             if (!order.invoice?.xml_path) return;
                             onDownload(
-                                `/empresas/${storageEmpresa?.slug}/sunat/${
-                                    order.invoice!.xml_path
-                                }`,
+                                `/empresas/${order.invoice!.xml_path}`,
                                 `${order.order_code}.xml`
                             );
                         }}
@@ -97,9 +94,7 @@ function Invoice({ order, refetch }: InvoiceProps) {
                         onClick={() => {
                             if (!order.invoice?.cdr_path) return;
                             onDownload(
-                                `/empresas/${storageEmpresa?.slug}/sunat/${
-                                    order.invoice!.cdr_path
-                                }`,
+                                `/empresas/${order.invoice!.cdr_path}`,
                                 `${order.order_code}.cdr`
                             );
                         }}

@@ -687,6 +687,7 @@ export class OrdersApiService {
                                   empresa
                               )}/pedidos`,
                     delay: 4,
+                    options: { linkPreview: false },
                 });
             }
         } catch (error) {}
@@ -993,6 +994,7 @@ export class OrdersApiService {
                             BASE_URL(empresa)
                         ),
                         delay: 3,
+                        options: { linkPreview: false },
                     });
                 } catch (error) {}
             }
@@ -1139,6 +1141,7 @@ export class OrdersApiService {
                                 type
                             ),
                             delay: 3,
+                            options: { linkPreview: false },
                         });
 
                         const { pdfBuffer, file } = await pdfGenerate({
@@ -1164,6 +1167,7 @@ export class OrdersApiService {
                                 BASE_URL(empresa)
                             ),
                             delay: 4,
+                            options: { linkPreview: false },
                         });
                     } catch (error) {}
                 }
@@ -1342,6 +1346,7 @@ export class OrdersApiService {
                             ? `Olá 😊, somos ${empresa.name_empresa}. \n Seu pedido ${order.order_code}:\n Está sendo enviado para o seu endereço ${order.address}.\n${products}                          `
                             : `Hola 😊, Somos ${empresa.name_empresa}. \n Su orden *${order.order_code}*:\n Se está enviando su pedido a su domicilio ${order.address}.\n${products}`,
                     delay: 3,
+                    options: { linkPreview: false },
                 });
             } catch (error) {}
         }

@@ -3,7 +3,6 @@ import { PdfImage, SunatImage, XmlImage, cdrImage } from "~/config/settings";
 import type { OrdersSchemaFromServer } from "../schemas/orders.schema";
 import useSendSunat from "../hooks/useSendSunat";
 import usePdfInvoice from "../hooks/usePdfInvoice";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 interface NoteProps {
     refetch: (clean?: boolean) => void;
@@ -58,9 +57,7 @@ function Note({ order, refetch }: NoteProps) {
                         onClick={() => {
                             if (!order.note?.xml_path) return;
                             onDownload(
-                                `/empresas/${storageEmpresa?.slug}/sunat/${
-                                    order.note!.xml_path
-                                }`,
+                                `/empresas/${order.note!.xml_path}`,
                                 `${order.order_code}-note.xml`
                             );
                         }}
@@ -81,9 +78,7 @@ function Note({ order, refetch }: NoteProps) {
                         onClick={() => {
                             if (!order.note?.cdr_path) return;
                             onDownload(
-                                `/empresas/${storageEmpresa?.slug}/sunat/${
-                                    order.note!.cdr_path
-                                }`,
+                                `/empresas/${order.note!.cdr_path}`,
                                 `${order.order_code}-note.cdr`
                             );
                         }}

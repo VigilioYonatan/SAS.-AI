@@ -3,7 +3,6 @@ import usePdfInvoice from "../hooks/usePdfInvoice";
 import useSendSunat from "../hooks/useSendSunat";
 import type { OrdersSchemaFromServer } from "../schemas/orders.schema";
 import { cdrImage, PdfImage, SunatImage, XmlImage } from "~/config/settings";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
 interface GuideProps {
     order: OrdersSchemaFromServer;
     refetch: (clean?: boolean) => void;
@@ -59,9 +58,7 @@ function Guide({ order, refetch }: GuideProps) {
                         onClick={() => {
                             if (!order.guide?.xml_path) return;
                             onDownload(
-                                `/empresas/${storageEmpresa?.slug}/sunat/${
-                                    order.guide!.xml_path
-                                }`,
+                                `/empresas/${order.guide!.xml_path}`,
                                 `${order.order_code}.xml`
                             );
                         }}
@@ -82,9 +79,7 @@ function Guide({ order, refetch }: GuideProps) {
                         onClick={() => {
                             if (!order.guide?.cdr_path) return;
                             onDownload(
-                                `/empresas/${storageEmpresa?.slug}/sunat/${
-                                    order.guide!.cdr_path
-                                }`,
+                                `/empresas/${order.guide!.cdr_path}`,
                                 `${order.order_code}.cdr`
                             );
                         }}

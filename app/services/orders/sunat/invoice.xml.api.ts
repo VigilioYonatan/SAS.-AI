@@ -3,6 +3,8 @@ import type { SunatInvoiceDto } from "./dtos/sunat.invoice.dto";
 import { BadRequestException } from "@vigilio/express-core";
 
 export async function invoiceXMLSunatApi(body: SunatInvoiceDto) {
+    console.log({ body });
+
 	const response = await fetch(
 		`${enviroments.VITE_VIGILIO_SUNAT}/api/invoices/xml`,
 		{
