@@ -107,8 +107,8 @@ export async function pdfGenerate(props: PdfGenerateProps, save = false) {
         });
         const nameFile = `/${props.empresa.slug}-${props.order.order_code}-${props.type}.pdf`;
         const file = `${props.empresa.slug}/sunat`;
-        if (!fs.existsSync(file)) {
-            fs.mkdirSync(file);
+        if (!fs.existsSync(`${pathUploads()}/${file}`)) {
+            fs.mkdirSync(`${pathUploads()}/${file}`);
         }
         if (save) {
             if (fs.existsSync(`${pathUploads()}/${file}${nameFile}`)) {
@@ -138,8 +138,8 @@ export async function xmlGenerate(props: PdfGenerateProps) {
     }
     const nameFile = `/${props.empresa.slug}-${props.order.order_code}-${props.type}.xml`;
     const file = `${props.empresa.slug}/sunat`;
-    if (!fs.existsSync(file)) {
-        fs.mkdirSync(file);
+    if (!fs.existsSync(`${pathUploads()}/${file}`)) {
+        fs.mkdirSync(`${pathUploads()}/${file}`);
     }
     if (fs.existsSync(`${pathUploads()}/${file}${nameFile}`)) {
         fs.unlinkSync(`${pathUploads()}/${file}${nameFile}`);
