@@ -4,8 +4,6 @@ import { BadRequestException } from "@vigilio/express-core";
 import type { InvoiceResponseSunat } from "../schemas/invoices.schema";
 
 export async function invoiceSendSunatApi(body: SunatInvoiceDto) {
-    console.log({ body });
-
     const response = await fetch(
         `${enviroments.VITE_VIGILIO_SUNAT}/api/invoices/send`,
         {

@@ -145,7 +145,7 @@ export async function xmlGenerate(props: PdfGenerateProps) {
         fs.unlinkSync(`${pathUploads()}/${file}${nameFile}`);
     }
     fs.writeFileSync(`${pathUploads()}/${file}${nameFile}`, xml!);
-    return file;
+    return `${file}${nameFile}`;
 }
 
 export function generatePdfBuffer(

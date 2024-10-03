@@ -1370,7 +1370,7 @@ function EmpresaForm({
                                         facturación{" "}
                                         <a
                                             href="/admin/facturacion"
-                                            class="font-semibold text-primary underline"
+                                            class="font-semibold text-primary underline ml-2"
                                         >
                                             Mas información
                                         </a>
