@@ -18,6 +18,7 @@ import {
 import { delay, handlerError, NOW, restarDays } from "~/libs/helpers";
 import {
     contactsSchema,
+    empresasSchema,
     groupWhatsapp,
     type ContactsSchema,
     type GroupWhatsapp,
@@ -49,6 +50,8 @@ import useEmpresastore, {
 import useCountDown from "~/hooks/useCountDown";
 import Helper from "~/components/Helper";
 import { whatsappInfoImage } from "~/config/settings";
+import { type Input, pick } from "@vigilio/valibot";
+import { useMutation } from "@vigilio/preact-fetching";
 
 function Whatsapp() {
     const authStore = useAuthStore();
@@ -108,22 +111,43 @@ function Whatsapp() {
                 <AdminBreadCrumb current="Whatsapp" />
             </div>
             <div class="flex gap-2 items-center justify-between">
-                <button
-                    className="bg-success px-4 py-2 rounded-md shadow text-white mr-2 self-end text-xs font-semibold flex items-center justify-center gap-3"
-                    type="button"
-                    onClick={() => {
-                        sweetModal({
-                            html: reactComponent(<QrWhatsapp />),
-                            showCloseButton: true,
-                            isCloseInBackground: false,
-                        });
-                    }}
-                >
-                    <i class="fab fa-whatsapp text-lg" /> Conectar Whatsapp
-                </button>
                 <div class="flex gap-2 items-center">
                     <button
-                        class="flex gap-2 items-center text-xs dark:bg-admin-terciary bg-paper-light dark:text-white  rounded-md px-4 py-2 shadow"
+                        className="bg-success px-4 py-2 rounded-md shadow text-white mr-2 self-end  font-semibold flex items-center justify-center gap-3 text-xs"
+                        type="button"
+                        onClick={() => {
+                            sweetModal({
+                                html: reactComponent(<QrWhatsapp />),
+                                showCloseButton: true,
+                                isCloseInBackground: false,
+                            });
+                        }}
+                    >
+                        <i class="fab fa-whatsapp text-lg" /> Conectar Whatsapp
+                    </button>
+                    <button
+                        className=" px-4 py-3.5 relative rounded-md bg-black shadow text-white mr-2 self-end  font-bold flex items-center justify-center gap-3 text-xs"
+                        type="button"
+                        onClick={() => {
+                            sweetModal({
+                                html: reactComponent(<WhatsappFREE />),
+                                showCloseButton: true,
+                                isCloseInBackground: false,
+                                sweetWidth: "800px",
+                                position: "start",
+                            });
+                        }}
+                    >
+                        WHATSAPP
+                        <span class="absolute rotate-[45deg] -top-2 -right-5 text-[10px] bg-primary py-1 px-2 rounded-md">
+                            GRATIS
+                        </span>
+                    </button>
+                </div>
+
+                <div class="flex gap-2 items-center">
+                    <button
+                        class="flex gap-2 items-center  dark:bg-admin-terciary bg-paper-light dark:text-white  rounded-md px-4 py-2 shadow"
                         type="button"
                         onClick={() => {
                             sweetModal({
@@ -499,7 +523,7 @@ function ChatWhatsapp({ contacts, type, onClose }: ChatWhatsappProps) {
                 )}
             </div>
             {messageSuccess.value ? (
-                <h3 class="text-white py-2 px-1 bg-success  mb-8 text-xs">
+                <h3 class="text-white py-2 px-1 bg-success  mb-8 ">
                     <i class="fa-solid fa-check" /> {messageSuccess.value}
                 </h3>
             ) : null}
@@ -519,7 +543,7 @@ function ChatWhatsapp({ contacts, type, onClose }: ChatWhatsappProps) {
                     placeholder="Escribir mensaje"
                 />
                 <button
-                    class="px-4 py-2 flex justify-center items-center dark:text-white  text-xs font-light bg-primary"
+                    class="px-4 py-2 flex justify-center items-center dark:text-white   font-light bg-primary"
                     type="submit"
                     aria-label="send message"
                 >
@@ -586,7 +610,7 @@ function ChatWhatsapp({ contacts, type, onClose }: ChatWhatsappProps) {
                 </label>
                 {messages.value.length ? (
                     <button
-                        class="px-4 py-2 flex justify-center relative items-center text-white font-light bg-green-600 ml-2 rounded-md  text-xs"
+                        class="px-4 py-2 flex justify-center relative items-center text-white font-light bg-green-600 ml-2 rounded-md  "
                         type="submit"
                         aria-label="send message"
                         onClick={() => sendMessage()}
@@ -818,7 +842,7 @@ export function QrWhatsapp() {
                                     <li class="dark:text-white text-center">
                                         *Si no está funcionando el qr. Intentelo
                                         2 - 3 veces{" "}
-                                        <i class="fa-solid fa-rotate-right text-white text-xs" />
+                                        <i class="fa-solid fa-rotate-right text-white " />
                                     </li>{" "}
                                     <li class="dark:text-white text-center text-sm">
                                         *Si se conectó correctamente, esperar
@@ -878,10 +902,10 @@ function GroupWhatsappStore({ contacts, onClose, clear }: GroupStoreProps) {
                     title="Nombre"
                 />
                 <div class="break-words">
-                    <span class="text-primary text-xs">
+                    <span class="text-primary ">
                         Numeros de telefonos <b>{contacts.length}</b>
                     </span>
-                    <div class="dark:text-white h-[100px]  break-words overflow-auto text-xs text-wrap">
+                    <div class="dark:text-white h-[100px]  break-words overflow-auto  text-wrap">
                         <pre class="break-words text-wrap">
                             {JSON.stringify(contacts)}
                         </pre>
@@ -1063,7 +1087,7 @@ function GroupWhatsappShow({ name, refetch }: GroupWhatsappShowProps) {
                                 />
                                 <button
                                     type="submit"
-                                    class="bg-primary px-3 py-2 rounded-md text-white text-xs"
+                                    class="bg-primary px-3 py-2 rounded-md text-white "
                                 >
                                     Buscar
                                 </button>
@@ -1171,7 +1195,7 @@ function GroupWhatsappShow({ name, refetch }: GroupWhatsappShowProps) {
                         {newContacts.value.map((contact) => (
                             <div
                                 key={contact.telephone}
-                                class="text-xs dark:text-white flex justify-between"
+                                class=" dark:text-white flex justify-between"
                             >
                                 <span class="py-1">
                                     {contact.name} - {contact.telephone}{" "}
@@ -1193,7 +1217,7 @@ function GroupWhatsappShow({ name, refetch }: GroupWhatsappShowProps) {
                         ))}
                         <button
                             type="button"
-                            class="dark:text-white text-xs mt-2"
+                            class="dark:text-white  mt-2"
                             onClick={() => {
                                 empresaGroupWhatsappUpdateMutation.mutate(
                                     {
@@ -1276,7 +1300,7 @@ function GroupWhatsappShow({ name, refetch }: GroupWhatsappShowProps) {
                                         });
                                     }}
                                     type="button"
-                                    class=" text-white bg-danger px-2 py-1 rounded-md text-xs"
+                                    class=" text-white bg-danger px-2 py-1 rounded-md "
                                 >
                                     <i class="fas fa-trash" />
                                 </button>
@@ -1287,7 +1311,7 @@ function GroupWhatsappShow({ name, refetch }: GroupWhatsappShowProps) {
                 {groupWhatsappShowQuery.data?.group.members.length ? (
                     <button
                         type="button"
-                        class="px-3 py-2 rounded-md text-white bg-primary text-xs mt-3"
+                        class="px-3 py-2 rounded-md text-white bg-primary  mt-3"
                         aria-label="send message group"
                         onClick={() => {
                             sweetModal((onClose) => ({
@@ -1359,7 +1383,7 @@ function MessagesWhatsappSettings() {
                         <span>No borrar las variables {"{}"}</span>
                     </AlertInfo>
                     <button
-                        class="justify-end text-xs dark:bg-admin-terciary px-4 py-2 rounded-md shadow dark:text-white bg-paper-lights"
+                        class="justify-end  dark:bg-admin-terciary px-4 py-2 rounded-md shadow dark:text-white bg-paper-lights"
                         type="button"
                         aria-label="reset"
                         onClick={() => {
@@ -1410,6 +1434,221 @@ function MessagesWhatsappSettings() {
                 />
             </Form>
         </div>
+    );
+}
+const whatsappmodeDto = pick(empresasSchema, ["whatsapp_mode"]);
+type WhatsappmodeDto = Input<typeof whatsappmodeDto>;
+function WhatsappFREE() {
+    const whatsappmodeForm = useForm<WhatsappmodeDto>({
+        resolver: valibotVigilio(whatsappmodeDto),
+        defaultValues: { whatsapp_mode: storageEmpresa?.whatsapp_mode },
+    });
+    const chooseVPS = useSignal(false);
+    const type = whatsappmodeForm.watch("whatsapp_mode.type");
+
+    const whatsappModeMutation = useMutation(
+        "/empresas/whatsapp_mode",
+        async (url, body: WhatsappmodeDto) => {
+            const response = await fetch(`/api${url}`, {
+                method: "POST",
+                body: JSON.stringify(body),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const result = await response.json();
+            if (!result.success) throw result;
+            return result;
+        }
+    );
+    function onWhatsappMode(body: WhatsappmodeDto) {
+        whatsappModeMutation;
+    }
+    return (
+        <Form
+            {...whatsappmodeForm}
+            onSubmit={onWhatsappMode}
+            className="flex flex-col gap-6 "
+        >
+            <h3 class="font-semibold text-center dark:text-white">
+                CAMBIAR WHATSAPP
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="flex justify-center flex-col items-center ">
+                    <img
+                        src="/images/settings/others/vigilio-services-ico.webp"
+                        width={100}
+                        alt=""
+                    />
+                    <span class=" font-semibold text-lg  dark:text-white">
+                        GRATIS
+                    </span>
+                    <p class=" text-center text-sm  dark:text-white">
+                        <b>Mensajes Ilimitados</b>
+                        <br />
+                        Si experimentas lentitud al usar WhatsApp, te sugerimos
+                        considerar la opción de migrar a un VPS (Servidor
+                        Privado Virtual). Esto puede mejorar significativamente
+                        el rendimiento y la eficiencia de tu servicio.
+                        <br /> 0.5 vCPU - 1GB RAM
+                    </p>
+                    <button
+                        type="button"
+                        class="bg-primary px-4 py-2 rounded-md text-white mt-2 text-xs font-bold"
+                        onClick={() => {
+                            whatsappmodeForm.setValue("whatsapp_mode", {
+                                cpu: null,
+                                ip: null,
+                                memory: null,
+                                password: null,
+                                type: "FREE",
+                            });
+                            chooseVPS.value = false;
+                        }}
+                    >
+                        {type === "FREE" ? (
+                            <>
+                                <i class="fas fa-check-circle" /> Elegido
+                            </>
+                        ) : (
+                            "Elegir"
+                        )}
+                    </button>
+                </div>{" "}
+                <div class="flex justify-center flex-col items-center    dark:text-white">
+                    <img
+                        src="/images/settings/others/vps.png"
+                        width={100}
+                        alt=""
+                    />
+                    <b class="text-lg">VPS</b>
+                    <span class=" font-semibold">USD $35 - $60 / anual</span>
+                    <p class=" text-center text-sm ">
+                        {" "}
+                        <b>Mensajes Ilimitados</b>
+                        <br />
+                        Acelera WhatsApp - Entre mejor sea el vps, más rapido
+                        irá WhatsApp. <br /> Mínimo 2 vCPU - 2GB RAM
+                        <br />
+                    </p>
+                    <button
+                        type="button"
+                        class="bg-primary px-4 py-2 rounded-md text-white mt-2 text-xs font-bold"
+                        onClick={() => {
+                            chooseVPS.value = !chooseVPS.value;
+                            if (!chooseVPS.value) {
+                                whatsappmodeForm.setValue("whatsapp_mode", {
+                                    ...storageEmpresa!.whatsapp_mode,
+                                    type: "FREE",
+                                });
+                            } else {
+                                whatsappmodeForm.setValue("whatsapp_mode", {
+                                    ...storageEmpresa!.whatsapp_mode,
+                                    type: "VPS",
+                                });
+                            }
+                        }}
+                    >
+                        {type === "VPS" ? (
+                            <>
+                                <i class="fas fa-check-circle" /> Elegido
+                            </>
+                        ) : (
+                            "Elegir"
+                        )}
+                    </button>
+                    <div
+                        class={`${
+                            chooseVPS.value
+                                ? "max-h-[200px] overflow-auto"
+                                : "max-h-0 overflow-hidden"
+                        } delay-custom-1 mt-2`}
+                    >
+                        <span class="dark:text-white text-xs">
+                            - Ir a Proveedor{" "}
+                            <a
+                                href="/"
+                                target="_blank"
+                                rel="noreferrer"
+                                class="text-primary underline"
+                            >
+                                Recomendado
+                            </a>
+                            , como comprar y completar formulario en 45 segundos{" "}
+                            <a
+                                href="/"
+                                target="_blank"
+                                rel="noreferrer"
+                                class="text-primary underline"
+                            >
+                                Ver tutorial
+                            </a>
+                        </span>
+                        <div class="grid grid-cols-2 md:grid-cols-1 gap-2">
+                            <Form.control
+                                title="IP de VPS"
+                                placeholder="1XX.X.X.X"
+                                name={
+                                    "whatsapp_mode.ip" as keyof WhatsappmodeDto
+                                }
+                                type="number"
+                            />
+                            <Form.control
+                                title="Contraseña de VPS"
+                                placeholder=""
+                                name={
+                                    "whatsapp_mode.password" as keyof WhatsappmodeDto
+                                }
+                            />
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-1 gap-2">
+                            <Form.control
+                                title="vCPU"
+                                placeholder="2"
+                                name={
+                                    "whatsapp_mode.cpu" as keyof WhatsappmodeDto
+                                }
+                                type="number"
+                                question="Mínimo 2 de vCPU"
+                            />
+                            <Form.control
+                                title="Memoria RAM"
+                                placeholder="2"
+                                name={
+                                    "whatsapp_mode.memory" as keyof WhatsappmodeDto
+                                }
+                                type="number"
+                                question="Mínimo 2 de MEMORIA RAM"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center flex-col items-center  md:h-[300px]  dark:text-white">
+                    <img
+                        src="/images/settings/others/whatsapp_business.webp"
+                        width={100}
+                        alt=""
+                    />
+                    <b class="text-lg text-center">WhatsApp Business API</b>
+                    <span class=" font-semibold  text-center">
+                        USD $1500 - $3000 / anual
+                    </span>
+                    <p class="text-sm text-center">
+                        <b>Mensajes Ilimitados</b>
+                        <br />
+                        En estos momentos no estamos disponible con la API de
+                        Whatsapp, debido a su alto precio, Más adelante
+                        estaremos habilitando esta opción.
+                    </p>
+                </div>
+            </div>
+            <Form.button.submit
+                title="Guardar"
+                className="mx-auto py-4 px-2 rounded-md block"
+                isLoading={false}
+                disabled={false}
+            />
+        </Form>
     );
 }
 export default Whatsapp;

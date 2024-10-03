@@ -333,6 +333,20 @@ function CompaniesStore({ onClose }: CompaniesStoreProps) {
                         ico={null}
                     />
                 </Form>
+                <br />
+                <AlertInfo>
+                    <>
+                        Enterate sobre las novedades de Facturación Electrónica{" "}
+                        <a
+                            class="ml-2 underline text-primary"
+                            target="_blank"
+                            rel="noreferrer"
+                            href="https://www.facebook.com/groups/101304433781752"
+                        >
+                            Ir a grupo
+                        </a>
+                    </>
+                </AlertInfo>
             </div>
         );
     }

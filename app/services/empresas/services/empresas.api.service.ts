@@ -9,6 +9,7 @@ import type { EmpresasFacturacionUpdateDto } from "../dtos/empresas.facturacion.
 import type { EmpresasIAUpdateDto } from "../dtos/empresas.ia.update.dto";
 import type {
     ContactsSchema,
+    EmpresasSchema,
     GroupWhatsapp,
     Payments,
     ScheduleSchema,
@@ -40,6 +41,7 @@ import { NOW, restarDays } from "~/libs/dayjs";
 import { initializeBot } from "@/bot/libs/ai";
 import { vpsShowApi } from "./backup.api.service";
 import type { SettingsUpdateDto } from "../dtos/settings.update.dto";
+import { NodeSSH } from "node-ssh";
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
@@ -170,6 +172,7 @@ export class EmpresasApiService {
                 enabled_catalogo: true,
                 enable_sell_country: false,
                 token: `${body.slug}-${generateId().slice(4, 12)}`,
+                whatsapp_mode: "FREE",
             });
             await empresa.save();
             if (body.servicio_id === 2) {
@@ -349,6 +352,133 @@ export class EmpresasApiService {
             console.log((error as Error).message);
             throw new InternalServerErrorException("Error al agregar empresa");
         }
+    }
+
+    async whatsapp_mode(
+        empresa: Empresas,
+        body: Pick<EmpresasSchema, "whatsapp_mode">
+    ) {
+        const response = await fetch(
+            `${enviroments.VITE_VIGILIO_WEB}/api/empresas/whatsapp/${empresa.slug}`
+        );
+        const result = await response.json();
+        if (!result.success) throw new BadRequestException(result.message);
+        if (body.whatsapp_mode.type === "FREE") {
+            const result = await vpsShowApi();
+            await terminal(
+                `docker volume create ${empresa.slug} && docker run -d --name ${
+                    empresa.slug
+                } -e PORT=5000 -e NODE_ENV=${
+                    enviroments.NODE_ENV
+                } -e SESSION_NAME=${
+                    empresa.slug
+                } -e VITE_TOKEN_VIGILIO_SERVICES=${
+                    enviroments.VITE_TOKEN_VIGILIO_SERVICES
+                } --restart always --memory="${
+                    result.vps.whatsapp_ram || "1000"
+                }m" --memory-swap="${
+                    result.vps.whatsapp_ram || "1000"
+                }m" --cpus="${result.vps.whatsapp_cpu_max || "1"}" -p ${
+                    empresa.port
+                }:5000 -v ${empresa.slug}:/app/data ${
+                    enviroments.DOCKER_IMAGE_WHATSAPP
+                }`
+            );
+        }
+        if (body.whatsapp_mode.type === "VPS") {
+            const command1 = `docker rm -f ${empresa.slug}`;
+            const command2 = `docker volume rm ${empresa.slug}`;
+            await terminal(command1);
+            await terminal(command2);
+            // instalar whatsapp en nginx
+            function onSSH() {
+                return new Promise((res, _) => {
+                    const ssh = new NodeSSH();
+                    // Función para conectar por SSH
+                    ssh.connect({
+                        host: body.whatsapp_mode.ip!,
+                        username: "root",
+                        password: body.whatsapp_mode.password!,
+                    })
+                        .then(() => {
+                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                            console.log("Conectado correctamente a vps");
+                            const commands = `
+                # Asegúrate de que dpkg no esté interrumpido
+                sudo dpkg --configure -a || true; \
+                # Configurar debconf para la instalación de GRUB
+                echo 'grub-pc grub-pc/bootdev select /dev/sda' | sudo debconf-set-selections; \
+                echo 'grub-pc grub-pc/install_devices multiselect /dev/sda' | sudo debconf-set-selections; \
+                # Actualizar el sistema
+                sudo apt update -y; \
+                sudo apt upgrade -y; \
+                # Instalar dependencias necesarias
+                sudo apt install -y apt-transport-https ca-certificates curl software-properties-common; \
+                # Agregar la clave GPG de Docker
+                curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -; \
+                # Agregar el repositorio de Docker
+                echo "deb [arch=amd64] https://download.docker.com/linux/debian \$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list; \
+                # Instalar Docker
+                sudo apt update -y; \
+                sudo apt install -y docker-ce; \
+                # Verificar si existe un contenedor y eliminarlo
+                if sudo docker ps -a -q --filter "name=${empresa.slug}"; then \
+                    sudo docker stop ${empresa.slug} || true; \
+                    sudo docker rm ${empresa.slug} || true; \
+                    sudo docker volume rm ${empresa.slug} || true; \
+                fi; \
+                # Borrar imagen si existe
+                if sudo docker images -q "${
+                    enviroments.DOCKER_IMAGE_WHATSAPP
+                }"; then \
+                    sudo docker rmi "${
+                        enviroments.DOCKER_IMAGE_WHATSAPP
+                    }" || true; \
+                fi; \
+                # Crear un volumen para el contenedor
+                sudo docker volume create ${empresa.slug}; \
+                # Ejecutar el contenedor
+                sudo docker run -d --name ${empresa.slug} \
+                    -e PORT=5000 \
+                    -e NODE_ENV=production \
+                    -e SESSION_NAME=${empresa.slug} \
+                    -e VITE_TOKEN_VIGILIO_SERVICES=${
+                        enviroments.VITE_TOKEN_VIGILIO_SERVICES
+                    } \
+                    --restart always \
+                    --memory="${Number(body.whatsapp_mode.memory!) - 0.2}g" \
+                    --memory-swap="${
+                        Number(body.whatsapp_mode.memory!) - 0.2
+                    }g" \
+                    --cpus="${Number(body.whatsapp_mode.cpu!) - 0.1}" \
+                    -p ${empresa.port}:5000 \
+                    -v ${empresa.slug}:/app/data \
+                    ${enviroments.DOCKER_IMAGE_WHATSAPP}
+            `;
+                            return ssh.execCommand(commands);
+                        })
+                        .then((result) => {
+                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                            console.log(`STDOUT: ${result.stdout}`);
+                            console.error(`STDERR: ${result.stderr}`);
+                            res(true);
+                        })
+                        .catch(() => {
+                            res(true);
+                        })
+                        .finally(() => {
+                            ssh.dispose();
+                        });
+                });
+            }
+            await onSSH();
+        }
+
+        await empresa.update(body);
+        return {
+            success: true,
+            message: "whatsapp mode cambiado correctamente",
+        };
     }
     async private(slug: string) {
         const empresa = await Empresas.findOne({

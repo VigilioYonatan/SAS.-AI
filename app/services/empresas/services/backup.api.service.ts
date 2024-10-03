@@ -70,9 +70,12 @@ export class BackupApiService {
     async restartWhatsappVersion() {
         try {
             const emp = await Empresas.findAll({
-                attributes: ["slug", "port"],
+                attributes: ["slug", "port", "whatsapp_mode"],
             });
-            const slugs = emp.map((container) => container.slug);
+            // solo a las empresas que tiene gratis
+            const slugs = emp
+                .filter((container) => container.whatsapp_mode.type === "FREE")
+                .map((container) => container.slug);
             const command1 = `docker rm -f ${slugs.join(" ")}`;
             const command2 = slugs
                 .map((slug) => `docker volume rm ${slug}`)
@@ -99,9 +102,9 @@ export class BackupApiService {
                             result.vps.whatsapp_ram || "1000"
                         }m" --memory-swap="${
                             result.vps.whatsapp_ram || "1000"
-                        }m" --cpus="${
-                            result.vps.whatsapp_cpu_max || "1"
-                        }" -p ${emp.port}:5000 -v ${emp.slug}:/app/data ${
+                        }m" --cpus="${result.vps.whatsapp_cpu_max || "1"}" -p ${
+                            emp.port
+                        }:5000 -v ${emp.slug}:/app/data ${
                             enviroments.DOCKER_IMAGE_WHATSAPP
                         }`
                     );

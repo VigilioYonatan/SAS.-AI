@@ -343,7 +343,7 @@ export class whatsappApiController {
     }
     @Post("/disconnected")
     async disconnected(@Req("empresa") empresa: Empresas) {
-        await empresa.update({ enabledwhatsapp: false });
+        await empresa.update({ enabledBot: false });
         return {
             success: true,
             message: "OK",

@@ -294,6 +294,25 @@ export const empresasSchema = object({
     timeWhatsapp: coerce(date(), (value) => new Date(value as string)),
     tz: string(),
     impuestos: array(number()),
+    whatsapp_mode: object({
+        type: string(),
+        ip: nullable(
+            string([
+                custom(
+                    (val) =>
+                        /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                            val
+                        ),
+                    "Ip no valido"
+                ),
+            ])
+        ),
+        password: nullable(string([minLength(4), maxLength(30)])),
+        memory: nullable(
+            string([custom((val) => Number(val) >= 2, "Mínimo 2.")])
+        ),
+        cpu: nullable(string([custom((val) => Number(val) >= 2, "Mínimo 2.")])),
+    }),
     token: string(),
 });
 

@@ -95,9 +95,15 @@ export async function initialWhatsapp() {
         console.log("******      ready      *********");
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(JSON.stringify((await client.getContacts()).slice(0, 10)));
+        const contacts = await client.getContacts();
         const response = await fetch(`${BASE_URL}/api/whatsapp/ready`, {
             method: "POST",
-            body: JSON.stringify({ contacts: await client.getContacts() }),
+            body: JSON.stringify({
+                contacts: contacts.map((c) => ({
+                    name: c.name,
+                    id: { _serialized: c.id._serialized },
+                })),
+            }),
             headers: {
                 "Content-Type": "application/json",
             },

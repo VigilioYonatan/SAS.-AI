@@ -29,11 +29,13 @@ import {
 import { EmpresasApiService } from "../services/empresas.api.service";
 import {
     contactsSchema,
+    empresasSchema,
     groupWhatsapp,
     payments,
     scheduleSchema,
     whatsappconfig,
     type ContactsSchema,
+    type EmpresasSchema,
     type GroupWhatsapp,
     type Payments,
     type ScheduleSchema,
@@ -119,6 +121,19 @@ export class EmpresasApiController {
     @Post("/")
     async store(@Body() body: EmpresasStoreDto) {
         const result = await this.empresaApiService.store(body);
+        return result;
+    }
+    @PermissionAdmin()
+    @Validator(pickAsync(empresasSchema, ["whatsapp_mode"]))
+    @Post("/whatsapp_mode")
+    async whatsapp_mode(
+        @Req("empresa") empresa: Empresas,
+        @Body() body: Pick<EmpresasSchema, "whatsapp_mode">
+    ) {
+        const result = await this.empresaApiService.whatsapp_mode(
+            empresa,
+            body
+        );
         return result;
     }
 
