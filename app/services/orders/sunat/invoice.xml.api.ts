@@ -5,18 +5,24 @@ import { BadRequestException } from "@vigilio/express-core";
 export async function invoiceXMLSunatApi(body: SunatInvoiceDto) {
     console.log({ body });
 
-	const response = await fetch(
-		`${enviroments.VITE_VIGILIO_SUNAT}/api/invoices/xml`,
-		{
-			body: JSON.stringify(body),
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		},
-	);
-	if (!response.ok)
-		throw new BadRequestException("Hubo un error, comunicarte con la empresa");
-	const result = await response.text();
-	return result;
+    const response = await fetch(
+        `${enviroments.VITE_VIGILIO_SUNAT}/api/invoices/xml`,
+        {
+            body: JSON.stringify(body),
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+    );
+
+    const result = await response.text();
+
+    if (!response.ok)
+        throw new BadRequestException(
+            `Hubo un error, comunicarte con la empresa,${JSON.stringify(
+                result
+            )}`
+        );
+    return result;
 }

@@ -15,10 +15,12 @@ export async function invoicePDFSunatApi(body: SunatInvoiceDto) {
         }
     );
 
+    const result = await response.text();
     if (!response.ok)
         throw new BadRequestException(
-            "Hubo un error, comunicarte con la empresa"
+            `Hubo un error, comunicarte con la empresa,${JSON.stringify(
+                result
+            )}`
         );
-    const result = await response.text();
     return result;
 }

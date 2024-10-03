@@ -16,11 +16,14 @@ export async function invoiceSendSunatApi(body: SunatInvoiceDto) {
             },
         }
     );
+
+    const result: InvoiceSunatAPI = await response.json();
     if (!response.ok)
         throw new BadRequestException(
-            "Hubo un error, comunicarte con la empresa"
+            `Hubo un error, comunicarte con la empresa,${JSON.stringify(
+                result
+            )}`
         );
-    const result: InvoiceSunatAPI = await response.json();
     return result;
 }
 
