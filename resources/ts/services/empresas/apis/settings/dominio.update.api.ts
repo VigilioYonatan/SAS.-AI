@@ -38,6 +38,7 @@ export function settingsDominioNameServerUpdateApi() {
                 method: "PUT",
                 headers: {
                     "content-type": "application/json",
+                    "access-token": enviroments.VITE_TOKEN_VIGILIO_SERVICES,
                 },
             });
             const result = await response.json();

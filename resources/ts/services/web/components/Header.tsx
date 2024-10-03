@@ -32,7 +32,7 @@ function Header({ header }: HeaderProps) {
     return (
         <>
             <div class="    text-white text-sm px-2 bg-white dark:bg-background-dark hidden lg:block">
-                <div class="max-w-6xl  mx-auto justify-between py-2 flex">
+                <div class="max-w-6xl  mx-auto justify-between py-2 flex font-semibold">
                     <div class="flex gap-3 items-center font-semibold">
                         <span class="dark:text-white text-black">
                             Teléfono:{" "}
