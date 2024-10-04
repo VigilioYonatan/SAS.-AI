@@ -952,7 +952,7 @@ function OrderFormUpdate({
                             <>
                                 <Form.control.select
                                     name="guide.kind_guide_code"
-                                    title="Tipo de guía de Remisión"
+                                    title="Tipo de guía de Remisión (opcional)"
                                     placeholder="Escoja el tipo de GuÍa de Remisión"
                                     array={[
                                         {

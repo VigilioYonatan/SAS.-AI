@@ -656,7 +656,7 @@ export function FacturacionClient() {
                 key: "pedido",
                 cell: (props) =>
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    (props as any).details_orders_saas[0].detail_order.type,
+                    (props as any).details_orders_saas[0].type,
             },
             {
                 key: "status_order_id",
@@ -675,8 +675,12 @@ export function FacturacionClient() {
             {
                 key: "pay_method_id",
                 header: "Metódo de pago",
-                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                cell: (props) => <span>{(props as any).pay_method.name}</span>,
+                cell: (props) => (
+                    <span class="mx-auto">
+                        {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                        {(props as any).pay_method.name}
+                    </span>
+                ),
             },
             {
                 key: "total",
