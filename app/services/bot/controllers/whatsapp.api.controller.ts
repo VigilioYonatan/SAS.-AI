@@ -28,7 +28,7 @@ import type { RequestVigilio } from "~/config/types";
 import fs from "node:fs";
 import cron from "node-cron";
 import type { Response } from "express";
-import { vpsShowApi } from "@/empresas/services/backup.api.service";
+import { NodeSSH } from "node-ssh";
 export let chats: Record<string, ["assistant" | "user", string][]> = {};
 
 @Controller("/whatsapp")
@@ -354,13 +354,45 @@ export class whatsappApiController {
         await empresa.update({
             timeWhatsapp: NOW(empresa).add(3, "minute").toDate(),
         });
-        const result = await vpsShowApi();
-        const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png && rm -rf .wwebjs_auth && rm -rf .wwebjs_cache" && docker restart ${empresa.slug} `;
-        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-        console.log(`Ejecutando comando: ${comando}`);
-        await terminal(comando);
-        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-        console.log("Ejecutó correctamente");
+        if (empresa.whatsapp_mode.type === "VPS") {
+            function onSSH() {
+                return new Promise((res, _) => {
+                    const ssh = new NodeSSH();
+                    // Función para conectar por SSH
+                    ssh.connect({
+                        host: empresa.whatsapp_mode.ip!,
+                        username: "root",
+                        password: empresa.whatsapp_mode.password!,
+                    })
+                        .then(() => {
+                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                            console.log("Conectado correctamente a vps");
+                            const commands = `docker restart ${empresa.slug}`;
+                            return ssh.execCommand(commands);
+                        })
+                        .then((result) => {
+                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                            console.log(`STDOUT: ${result.stdout}`);
+                            console.error(`STDERR: ${result.stderr}`);
+                            res(true);
+                        })
+                        .catch(() => {
+                            res(true);
+                        })
+                        .finally(() => {
+                            ssh.dispose();
+                        });
+                });
+            }
+            await onSSH();
+        } else {
+            const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png && rm -rf .wwebjs_auth && rm -rf .wwebjs_cache" && docker restart ${empresa.slug} `;
+            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+            console.log(`Ejecutando comando: ${comando}`);
+            await terminal(comando);
+            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+            console.log("Ejecutó correctamente");
+        }
 
         return {
             success: true,
