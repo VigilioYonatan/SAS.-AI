@@ -1600,6 +1600,7 @@ function WhatsappFREE() {
                                 name={
                                     "whatsapp_mode.ip" as keyof WhatsappmodeDto
                                 }
+                                autoComplete="off"
                             />
                             <Form.control
                                 title="Contraseña de VPS"
@@ -1608,6 +1609,7 @@ function WhatsappFREE() {
                                 name={
                                     "whatsapp_mode.password" as keyof WhatsappmodeDto
                                 }
+                                autoComplete="off"
                             />
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-1 gap-2">
