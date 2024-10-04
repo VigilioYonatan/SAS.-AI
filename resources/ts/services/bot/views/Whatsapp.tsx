@@ -1659,10 +1659,14 @@ function WhatsappFREE() {
                 <></>
             )}
             <Form.button.submit
-                title="Guardar"
+                title={`${
+                    whatsappModeMutation.isLoading
+                        ? "Cargando... Esto puede tomar entre 5 - 15 minutos"
+                        : "Guardar"
+                }`}
                 className="mx-auto py-4 px-2 rounded-md block"
-                isLoading={false}
-                disabled={false}
+                isLoading={whatsappModeMutation.isLoading || false}
+                disabled={whatsappModeMutation.isLoading || false}
             />
         </Form>
     );
