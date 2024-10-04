@@ -1600,11 +1600,11 @@ function WhatsappFREE() {
                                 name={
                                     "whatsapp_mode.ip" as keyof WhatsappmodeDto
                                 }
-                                type="number"
                             />
                             <Form.control
                                 title="Contraseña de VPS"
                                 placeholder=""
+                                type="password"
                                 name={
                                     "whatsapp_mode.password" as keyof WhatsappmodeDto
                                 }
