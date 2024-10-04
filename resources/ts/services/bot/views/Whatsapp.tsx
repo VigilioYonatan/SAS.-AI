@@ -1582,16 +1582,25 @@ function WhatsappFREE() {
                         <span class="dark:text-white text-xs">
                             - Ir a Proveedor{" "}
                             <a
-                                href="/"
+                                href={
+                                    storageEmpresa?.dial_code === "51"
+                                        ? "https://elastika.pe/store/vps"
+                                        : "https://contabo.com/en/"
+                                }
                                 target="_blank"
                                 rel="noreferrer"
                                 class="text-primary underline"
                             >
                                 Recomendado
                             </a>
-                            , como comprar y completar formulario en 45 segundos{" "}
+                            ,Registrarse, obtener obtener el servicio VPS y
+                            completar formulario en 2 minutos{" "}
                             <a
-                                href="/"
+                                href={
+                                    storageEmpresa?.dial_code === "51"
+                                        ? "https://www.youtube.com/watch?v=ONt_DRgEhAg"
+                                        : "https://youtu.be/48obPqnhQe8"
+                                }
                                 target="_blank"
                                 rel="noreferrer"
                                 class="text-primary underline"
