@@ -134,7 +134,7 @@ function Whatsapp() {
                                 html: reactComponent(<WhatsappFREE />),
                                 showCloseButton: true,
                                 isCloseInBackground: false,
-                                sweetWidth: "800px",
+                                sweetWidth: "1200px",
                                 position: "start",
                             });
                         }}
