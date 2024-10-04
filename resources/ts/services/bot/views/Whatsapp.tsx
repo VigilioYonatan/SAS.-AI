@@ -1653,7 +1653,7 @@ function WhatsappFREE() {
             </div>
             {whatsappModeMutation.isSuccess ? (
                 <AlertSuccess>
-                    Esperar unos segundos para escanear obtener Código QR.
+                    Esperar unos segundos para escanear Código QR WhatsApp.
                 </AlertSuccess>
             ) : (
                 <></>
