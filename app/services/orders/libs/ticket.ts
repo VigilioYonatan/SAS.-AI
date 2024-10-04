@@ -10,28 +10,30 @@ import { printFileWithDimension } from "@/uploads/libs/helpers";
 import { MONEYDOLARES } from "~/libs/helpers";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
 import type { Users } from "@/users/entities/users.entity";
+import type { PayMethods } from "../entities/pay_methods.entity";
+import type { Clients } from "@/users/entities/clients.entity";
 
 export async function ticketHTML(order: Orders, empresa: Empresas) {
-	const mapped = await detailInvoice(
-		empresa,
-		order.dataValues.details_orders,
-		order,
-	);
+    const mapped = await detailInvoice(
+        empresa,
+        order.dataValues.details_orders,
+        order
+    );
 
-	const igv = mapped.reduce(
-		(total, i) => total + Number(i.totalImpuestos.toFixed(2)),
-		0,
-	);
-	const region = order.city_id ? order.dataValues.city.region : null;
-	const ig = region
-		? order.igv
-			? subtotal(region.priceShipping, empresa.igv, true)
-			: region.priceShipping
-		: 0;
-	const money = order.moneyChange === 1 ? empresa.money.money : MONEYDOLARES;
+    const igv = mapped.reduce(
+        (total, i) => total + Number(i.totalImpuestos.toFixed(2)),
+        0
+    );
+    const region = order.city_id ? order.dataValues.city.region : null;
+    const ig = region
+        ? order.igv
+            ? subtotal(region.priceShipping, empresa.igv, true)
+            : region.priceShipping
+        : 0;
+    const money = order.moneyChange === 1 ? empresa.money.money : MONEYDOLARES;
 
-	const mappedDetails = mapped.map((prod) => {
-		return `<tr class="border_top">
+    const mappedDetails = mapped.map((prod) => {
+        return `<tr class="border_top">
         <td align="center">
            ${prod.cantidad}
             NIU
@@ -49,33 +51,35 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
             ${formatMoney(empresa, prod.mtoValorVenta, money)}
         </td>
     </tr>`;
-	});
+    });
 
-	let total =
-		(order.pasarela_comision && order.is_pasarela_client
-			? order.total + pasarelaComision(empresa, order.total)
-			: order.total) / order.moneyChange;
-	if (order.paypal_token) {
-		total = order.is_pasarela_client
-			? paypalComision(order.total, order.moneyChange)
-			: order.total / order.moneyChange;
-	}
-	const moneyLetter =
-		order.moneyChange === 1
-			? numeroALetras(
-					total,
-					true,
-					MONEDASIMBOLO[empresa.money.simbolo as keyof typeof MONEDASIMBOLO],
-				)
-			: numeroALetras(total, true, {
-					isInvoice: true,
-					Monedasingular: "DOLAR",
-					centPlural: "CENTAVOS",
-					centSingular: "CENTAVO",
-					Monedaplural: "DOLARES",
-				});
+    let total =
+        (order.pasarela_comision && order.is_pasarela_client
+            ? order.total + pasarelaComision(empresa, order.total)
+            : order.total) / order.moneyChange;
+    if (order.paypal_token) {
+        total = order.is_pasarela_client
+            ? paypalComision(order.total, order.moneyChange)
+            : order.total / order.moneyChange;
+    }
+    const moneyLetter =
+        order.moneyChange === 1
+            ? numeroALetras(
+                  total,
+                  true,
+                  MONEDASIMBOLO[
+                      empresa.money.simbolo as keyof typeof MONEDASIMBOLO
+                  ]
+              )
+            : numeroALetras(total, true, {
+                  isInvoice: true,
+                  Monedasingular: "DOLAR",
+                  centPlural: "CENTAVOS",
+                  centSingular: "CENTAVO",
+                  Monedaplural: "DOLARES",
+              });
 
-	return /*html*/ `
+    return /*html*/ `
                 <!DOCTYPE html>
                     <html lang="es">
                     <head>
@@ -94,19 +98,23 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                         <td width="100%" height="90" align="center">
                                             <span>
                                             ${
-																							empresa.logo
-																								? `<img src="${
-																										printFileWithDimension(
-																											empresa,
-																										)(empresa.logo, 100)[0]
-																									}" height="80" style="text-align:center;" border="0">`
-																								: `<span style="font-size:4rem;font-weight:bolder;">${
-																										empresa.company
-																											? empresa.company
-																													.nombreComercial[0]
-																											: empresa.name_empresa[0]
-																									}</span>`
-																						}
+                                                empresa.logo
+                                                    ? `<img src="${
+                                                          printFileWithDimension(
+                                                              empresa
+                                                          )(
+                                                              empresa.logo,
+                                                              100
+                                                          )[0]
+                                                      }" height="80" style="text-align:center;" border="0">`
+                                                    : `<span style="font-size:4rem;font-weight:bolder;">${
+                                                          empresa.company
+                                                              ? empresa.company
+                                                                    .nombreComercial[0]
+                                                              : empresa
+                                                                    .name_empresa[0]
+                                                      }</span>`
+                                            }
                                           </span>
                                         </td>                
                                     </tr>
@@ -122,26 +130,24 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                                    <tr>
                                                         <td align="center">
                                                             <span style="font-size:15px" text-align="center"> ${
-																															empresa.company
-																																? `R.U.C.:${empresa.company.ruc}`
-																																: empresa.name_empresa
-																														}</span>
+                                                                empresa.company
+                                                                    ? `R.U.C.:${empresa.company.ruc}`
+                                                                    : empresa.name_empresa
+                                                            }</span>
                                                         </td>
                                                     </tr>
                                                     
                                                     <tr>
                                                         <td align="center">
                                                             <span style="font-size:24px">${
-																															(
-																																order.dataValues
-																																	.invoice as Invoices
-																															).serie
-																														}-${
-																															(
-																																order.dataValues
-																																	.invoice as Invoices
-																															).correlativo
-																														}</span>
+                                                                (
+                                                                    order
+                                                                        .dataValues
+                                                                        .invoice as Invoices
+                                                                ).serie
+                                                            }-${
+        (order.dataValues.invoice as Invoices).correlativo
+    }</span>
                                                         </td>
                                                     </tr>
                                                     </tbody></table>
@@ -156,39 +162,39 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                                     <tbody><tr>
                                                         <td align="center">
                                                             <strong><span style="font-size:15px">${
-																															empresa.company
-																																? empresa
-																																		.company
-																																		.razonSocial
-																																: empresa.name_empresa
-																														}</span></strong>
+                                                                empresa.company
+                                                                    ? empresa
+                                                                          .company
+                                                                          .razonSocial
+                                                                    : empresa.name_empresa
+                                                            }</span></strong>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td align="left">
                                                             <strong>Dirección: </strong>${
-																															(
-																																empresa.address as Address
-																															).direccion
-																														}
+                                                                (
+                                                                    empresa.address as Address
+                                                                ).direccion
+                                                            }
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td align="left">
                                                         <strong>Telf: </strong>${
-																													empresa.telephoneFirst
-																												}
+                                                            empresa.telephoneFirst
+                                                        }
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td align="left">
                                                         <strong>Fecha: </strong>${formatDateTwo(
-																													empresa,
-																													(
-																														order.dataValues
-																															.invoice as Invoices
-																													).createdAt,
-																												)}
+                                                            empresa,
+                                                            (
+                                                                order.dataValues
+                                                                    .invoice as Invoices
+                                                            ).createdAt
+                                                        )}
                                                         </td>
                                                     </tr>
                                                     </tbody></table>
@@ -236,11 +242,31 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                                 </tr>                 
                                                 <tr class="border_top">
                                                     <td width="30%" style="font-size: 10px;">
+                                                       CLIENTE:
+                                                    </td>
+                                                    <td width="70%" style="font-size: 10px;">
+                                                        <p>
+                                                        ${
+                                                            order.client_id
+                                                                ? (
+                                                                      order.client as Clients
+                                                                  ).fullname
+                                                                : "Publico General"
+                                                        }
+                                                        </p>
+                                                    </td>
+                                                </tr>                 
+                                                <tr class="border_top">
+                                                    <td width="30%" style="font-size: 10px;">
                                                         CONDICION DE PAGO:
                                                     </td>
                                                     <td width="70%" style="font-size: 10px;">
                                                         <p>
-                                                         Efectivo
+                                                        ${
+                                                            (
+                                                                order.pay_method as PayMethods
+                                                            ).name
+                                                        }
                                                         </p>
                                                     </td>
                                                 </tr>                 
@@ -251,14 +277,12 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                                     <td width="70%" style="font-size: 10px;">
                                                         <p>
                                                          ${
-																														(
-																															order.user as Users
-																														)?.name ?? ""
-																													}  ${
-																														(
-																															order.user as Users
-																														)?.lastname ?? ""
-																													}
+                                                             (
+                                                                 order.user as Users
+                                                             )?.name ?? ""
+                                                         }  ${
+        (order.user as Users)?.lastname ?? ""
+    }
                                                         </p>
                                                     </td>
                                                 </tr>                 
@@ -274,33 +298,36 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                                 <tr>
                                                     <td align="right"><strong>Op. Gravadas:</strong></td>
                                                     <td width="120" align="right"><span id="ride-importeTotal" class="ride-importeTotal">${formatMoney(
-																											empresa,
-																											mapped.reduce(
-																												(total, obj) =>
-																													total +
-																													obj.mtoBaseIgv,
-																												0,
-																											),
-																											money,
-																										)}</span></td>
+                                                        empresa,
+                                                        mapped.reduce(
+                                                            (total, obj) =>
+                                                                total +
+                                                                obj.mtoBaseIgv,
+                                                            0
+                                                        ),
+                                                        money
+                                                    )}</span></td>
                                                 </tr>
                                                 <tr>
                                                     <td align="right"><strong>${empresa.tipo_impuesto
-																											.toUpperCase()
-																											.replaceAll("", ".")}:</strong></td>
+                                                        .toUpperCase()
+                                                        .replaceAll(
+                                                            "",
+                                                            "."
+                                                        )}:</strong></td>
                                                     <td width="120" align="right"><span id="ride-importeTotal" class="ride-importeTotal">${formatMoney(
-																											empresa,
-																											igv,
-																											money,
-																										)}</span></td>
+                                                        empresa,
+                                                        igv,
+                                                        money
+                                                    )}</span></td>
                                                 </tr>
                                                 <tr>
                                                     <td align="right"><strong>Precio Venta:</strong></td>
                                                     <td width="120" align="right"><span id="ride-importeTotal" class="ride-importeTotal">${formatMoney(
-																											empresa,
-																											total,
-																											money,
-																										)}</span></td>
+                                                        empresa,
+                                                        total,
+                                                        money
+                                                    )}</span></td>
                                                 </tr>
                                              
                                                 </tbody>
@@ -316,53 +343,53 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
 }
 
 export const MONEDASIMBOLO = {
-	PEN: {
-		isInvoice: true,
-		Monedasingular: "SOL",
-		centPlural: "CÉNTIMOS",
-		centSingular: "CÉNTIMO",
-		Monedaplural: "SOLES",
-	},
-	ARS: {
-		isInvoice: true,
-		Monedasingular: "PESO",
-		centPlural: "CENTAVOS",
-		centSingular: "CENTAVO",
-		Monedaplural: "PESOS",
-	},
-	BRL: {
-		isInvoice: true,
-		Monedasingular: "REAL",
-		centPlural: "CENTAVOS",
-		centSingular: "CENTAVO",
-		Monedaplural: "REAIS",
-	},
-	USD: {
-		isInvoice: true,
-		Monedasingular: "DÓLAR",
-		centPlural: "CENTAVOS",
-		centSingular: "CENTAVO",
-		Monedaplural: "DÓLARES",
-	},
-	CLP: {
-		isInvoice: true,
-		Monedasingular: "PESO",
-		centPlural: "CENTAVOS",
-		centSingular: "CENTAVO",
-		Monedaplural: "PESOS",
-	},
-	MXN: {
-		isInvoice: true,
-		Monedasingular: "PESO",
-		centPlural: "CENTAVOS",
-		centSingular: "CENTAVO",
-		Monedaplural: "PESOS",
-	},
-	COP: {
-		isInvoice: true,
-		Monedasingular: "PESO",
-		centPlural: "CENTAVOS",
-		centSingular: "CENTAVO",
-		Monedaplural: "PESOS",
-	},
+    PEN: {
+        isInvoice: true,
+        Monedasingular: "SOL",
+        centPlural: "CÉNTIMOS",
+        centSingular: "CÉNTIMO",
+        Monedaplural: "SOLES",
+    },
+    ARS: {
+        isInvoice: true,
+        Monedasingular: "PESO",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "PESOS",
+    },
+    BRL: {
+        isInvoice: true,
+        Monedasingular: "REAL",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "REAIS",
+    },
+    USD: {
+        isInvoice: true,
+        Monedasingular: "DÓLAR",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "DÓLARES",
+    },
+    CLP: {
+        isInvoice: true,
+        Monedasingular: "PESO",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "PESOS",
+    },
+    MXN: {
+        isInvoice: true,
+        Monedasingular: "PESO",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "PESOS",
+    },
+    COP: {
+        isInvoice: true,
+        Monedasingular: "PESO",
+        centPlural: "CENTAVOS",
+        centSingular: "CENTAVO",
+        Monedaplural: "PESOS",
+    },
 };

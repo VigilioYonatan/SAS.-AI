@@ -11,11 +11,24 @@ import Loading from "../components/Loading";
 import View404 from "./404";
 import { formatDolares, formatMoney } from "@/cart/libs/helpers";
 import { payments } from "../libs";
-import { formatDateTwo, NOW, restarDays } from "~/libs/helpers";
+import {
+    formatDateTwo,
+    NOW,
+    onDownload,
+    restarDays,
+    showTime,
+} from "~/libs/helpers";
 import { sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import useDropdown from "~/hooks/useDropdown";
 import { preguntasIndexApi } from "@/common/paginator/preguntas.paginator.api";
+import VigilioTable from "~/components/table";
+import { useEffect } from "preact/hooks";
+import usePaginatorTimer, { TimeTable } from "~/hooks/usePaginatorTimer";
+import { UseTable, useTable } from "@vigilio/preact-table";
+import { useQuery } from "@vigilio/preact-fetching";
+import { colorByOrdersId } from "@/orders/libs";
+import { PdfImage } from "~/config/settings";
 
 export type TypePayment =
     | "mensual"
@@ -42,20 +55,38 @@ function Plus() {
                 <div className="p-4 flex flex-col gap-4">
                     <div class="flex gap-2 justify-between">
                         <div />
-                        <button
-                            type="button"
-                            onClick={() => {
-                                sweetModal({
-                                    html: reactComponent(<Preguntas />),
-                                    showCloseButton: true,
-                                    isCloseInBackground: false,
-                                    sweetWidth: "700px",
-                                });
-                            }}
-                            class=" text-white bg-black font-semibold px-4 py-2 rounded-md shadow text-sm"
-                        >
-                            Preguntas Frecuentes ¿?
-                        </button>
+                        <div class="flex gap-2 items-center">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    sweetModal({
+                                        html: reactComponent(
+                                            <FacturacionClient />
+                                        ),
+                                        showCloseButton: true,
+                                        isCloseInBackground: false,
+                                        sweetWidth: "700px",
+                                    });
+                                }}
+                                class=" text-white bg-black font-semibold px-4 py-2 rounded-md shadow text-sm"
+                            >
+                                Facturación
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    sweetModal({
+                                        html: reactComponent(<Preguntas />),
+                                        showCloseButton: true,
+                                        isCloseInBackground: false,
+                                        sweetWidth: "700px",
+                                    });
+                                }}
+                                class=" text-white bg-black font-semibold px-4 py-2 rounded-md shadow text-sm"
+                            >
+                                Preguntas Frecuentes ¿?
+                            </button>
+                        </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Tarjeta Grande */}
@@ -573,5 +604,202 @@ function Preguntas() {
     }
 
     return component;
+}
+export function ordersPaginatorApi(
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    table: UseTable<any, "actions">,
+    time: TimeTable
+) {
+    const result = useQuery(
+        "/paginator/facturación_saas",
+        async (url) => {
+            const data = new URLSearchParams();
+            data.append("empresa_id", String(storageEmpresa!.id));
+            data.append("offset", String(table.pagination.value.offset));
+            data.append("limit", String(table.pagination.value.limit));
+            data.append("search", String(table.search.value));
+            data.append("time", time);
+            if (!Object.keys(table.sort.value).length) {
+                data.append("id", "DESC");
+            }
+            for (const [key, value] of Object.entries(table.sort.value)) {
+                data.append(key, value as string);
+            }
+            const response = await fetch(
+                `${enviroments.VITE_VIGILIO_WEB}/api${url}?${data}`
+            );
+            const result = await response.json();
+            if (!result.success) throw result;
+            return result;
+        },
+        {
+            onSuccess(data) {
+                table.updateData({
+                    count: data.count,
+                    methods: { refetch: result.refetch },
+                    result: data.results,
+                });
+            },
+            refetchOnReconnect: true,
+            clean: false,
+        }
+    );
+    return result;
+}
+export function FacturacionClient() {
+    const { time, SelectTimer } = usePaginatorTimer();
+    const tableLocal = useTable({
+        columns: [
+            { key: "id", isSort: true },
+            { key: "order_code", header: "código" },
+            {
+                key: "pedido",
+                cell: (props) =>
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                    (props as any).details_orders_saas[0].detail_order.type,
+            },
+            {
+                key: "status_order_id",
+                header: "estado",
+                cell: (props) => {
+                    return (
+                        <span
+                            class={`${colorByOrdersId(
+                                props.status_order_id
+                            )} py-1 px-2 rounded-md text-white font-semibold`}
+                        />
+                    );
+                },
+                isSort: true,
+            },
+            {
+                key: "pay_method_id",
+                header: "Metódo de pago",
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                cell: (props) => <span>{(props as any).pay_method.name}</span>,
+            },
+            {
+                key: "total",
+                cell: (props) => {
+                    return (
+                        <div class="relative">
+                            <span class="font-bold">
+                                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                                {(props as any).moneyChange === 1 ? (
+                                    formatMoney(props.total)
+                                ) : (
+                                    <>
+                                        {formatMoney(props.total)} -{" "}
+                                        <span class="text-xs">
+                                            {formatDolares(
+                                                props.total /
+                                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                                    (props as any).moneyChange
+                                            )}
+                                        </span>
+                                    </>
+                                )}
+                            </span>
+                        </div>
+                    );
+                },
+                isSort: true,
+            },
+            {
+                key: "createdAt",
+                header: "Fecha",
+                cell: (props) => <div>{showTime(props.createdAt)}</div>,
+                isSort: true,
+            },
+            {
+                key: "actions",
+                header: "Facturación",
+                cell: (props) => (
+                    <div
+                        class="flex gap-2 items-center justify-center z-10"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            type="button"
+                            aria-label="btn to pdf"
+                            onClick={() => {
+                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                if (!(props as any).invoice?.pdf_path) return;
+                                onDownload(
+                                    `${enviroments.VITE_VIGILIO_WEB}/${
+                                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                        (props as any).invoice?.pdf_path
+                                    }`,
+                                    `${props.order_code}-invoice.pdf`
+                                );
+                            }}
+                        >
+                            <img
+                                src={PdfImage()}
+                                class={`object-cover ${
+                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                    !(props as any).invoice ? "grayscale" : ""
+                                }`}
+                                width={40}
+                                height={100}
+                                alt="pdf"
+                            />
+                        </button>
+                    </div>
+                ),
+            },
+        ],
+        pagination: { limit: 20 },
+    });
+
+    const ordersLocalsPaginatorQuery = ordersPaginatorApi(
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        tableLocal as any,
+        time
+    );
+
+    useEffect(() => {
+        // cuando cambie el time en el select. hacer peticion
+        ordersLocalsPaginatorQuery.refetch(false);
+    }, [time]);
+
+    return (
+        <Container className="p-2 ">
+            <div class="overflow-auto">
+                <VigilioTable
+                    query={ordersLocalsPaginatorQuery}
+                    table={tableLocal}
+                >
+                    <VigilioTable.header className="flex justify-center md:justify-between items-center mb-3  flex-wrap gap-2">
+                        <SelectTimer />
+                        <div className="flex items-center gap-1">
+                            <VigilioTable.header.limit />
+                            <VigilioTable.header.refetch />
+                        </div>
+                    </VigilioTable.header>
+                    <VigilioTable.table>
+                        <VigilioTable.thead>
+                            <VigilioTable.thead.row>
+                                <VigilioTable.thead.th />
+                            </VigilioTable.thead.row>
+                        </VigilioTable.thead>
+                        <VigilioTable.tbody>
+                            <VigilioTable.tbody.row>
+                                {(data) => (
+                                    <VigilioTable.tbody.td data={data} />
+                                )}
+                            </VigilioTable.tbody.row>
+                        </VigilioTable.tbody>
+                    </VigilioTable.table>
+                    <VigilioTable.footer>
+                        <div className="flex justify-center flex-col items-center gap-2">
+                            <VigilioTable.footer.paginator />
+                            <VigilioTable.footer.show />
+                        </div>
+                    </VigilioTable.footer>
+                </VigilioTable>
+            </div>
+        </Container>
+    );
 }
 export default Plus;

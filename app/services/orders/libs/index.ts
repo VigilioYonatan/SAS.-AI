@@ -114,10 +114,7 @@ export async function pdfGenerate(props: PdfGenerateProps, save = false) {
             if (fs.existsSync(`${pathUploads()}/${file}${nameFile}`)) {
                 fs.unlinkSync(`${pathUploads()}/${file}${nameFile}`);
             }
-            fs.writeFileSync(
-                `${pathUploads()}/${file}${nameFile}`,
-                buffer as Buffer
-            );
+            fs.writeFileSync(`${pathUploads()}/${file}${nameFile}`, buffer);
         }
         return { file: `${file}${nameFile}`, pdfBuffer: buffer as Buffer };
     } catch (error) {
@@ -151,7 +148,8 @@ export async function xmlGenerate(props: PdfGenerateProps) {
 export function generatePdfBuffer(
     html: string,
     options: { pageWidth: string; pageHeight: string }
-): Promise<Buffer> {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+): Promise<any> {
     return new Promise((resolve, reject) => {
         const output = new PassThrough();
         const chunks: Uint8Array[] = [];

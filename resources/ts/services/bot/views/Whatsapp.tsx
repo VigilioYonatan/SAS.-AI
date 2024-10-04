@@ -53,6 +53,7 @@ import { whatsappInfoImage } from "~/config/settings";
 import { type Input, pick } from "@vigilio/valibot";
 import { useMutation } from "@vigilio/preact-fetching";
 import AlertSuccess from "~/components/Alerts/AlertSuccess";
+import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
 
 function Whatsapp() {
     const authStore = useAuthStore();
@@ -135,7 +136,11 @@ function Whatsapp() {
                                 showCloseButton: true,
                                 isCloseInBackground: false,
                                 sweetWidth: "1200px",
-                                position: "start",
+                                position: useMediaQueryNoReactive(
+                                    "(min-width:700px)"
+                                )
+                                    ? "center"
+                                    : "start",
                             });
                         }}
                     >
@@ -1479,7 +1484,7 @@ function WhatsappFREE() {
             onSubmit={onWhatsappMode}
             className="flex flex-col gap-6 "
         >
-            <h3 class="font-semibold text-center dark:text-white">
+            <h3 class="font-semibold text-center dark:text-white text-xl lg:text-2xl">
                 CAMBIAR WHATSAPP
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -1537,7 +1542,8 @@ function WhatsappFREE() {
                         <b>Mensajes Ilimitados</b>
                         <br />
                         Acelera WhatsApp - Entre mejor sea el vps, más rapido
-                        irá WhatsApp. <br /> Mínimo 2 vCPU - 2GB RAM
+                        irá WhatsApp. Activalo en 45 segundos <br /> Mínimo 2
+                        vCPU - 2GB RAM
                         <br />
                     </p>
                     <button

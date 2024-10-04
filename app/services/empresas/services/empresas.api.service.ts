@@ -394,8 +394,8 @@ export class EmpresasApiService {
             );
         }
         if (body.whatsapp_mode.type === "VPS") {
-            const command1 = `docker rm -f ${empresa.slug}`;
-            const command2 = `docker volume rm ${empresa.slug}`;
+            const command1 = `docker rm -f ${empresa.slug} || true`;
+            const command2 = `docker volume rm ${empresa.slug} || true`;
             await terminal(command1);
             await terminal(command2);
             // instalar whatsapp en nginx
