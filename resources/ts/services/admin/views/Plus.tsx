@@ -11,13 +11,7 @@ import Loading from "../components/Loading";
 import View404 from "./404";
 import { formatDolares, formatMoney } from "@/cart/libs/helpers";
 import { payments } from "../libs";
-import {
-    formatDateTwo,
-    NOW,
-    onDownload,
-    restarDays,
-    showTime,
-} from "~/libs/helpers";
+import { formatDateTwo, NOW, restarDays, showTime } from "~/libs/helpers";
 import { sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import useDropdown from "~/hooks/useDropdown";
@@ -29,6 +23,7 @@ import { UseTable, useTable } from "@vigilio/preact-table";
 import { useQuery } from "@vigilio/preact-fetching";
 import { colorByOrdersId } from "@/orders/libs";
 import { PdfImage } from "~/config/settings";
+import LoaderSubmit from "~/components/LoaderSubmit";
 
 export type TypePayment =
     | "mensual"
@@ -663,11 +658,14 @@ export function FacturacionClient() {
                 header: "estado",
                 cell: (props) => {
                     return (
-                        <span
+                        <div
                             class={`${colorByOrdersId(
                                 props.status_order_id
-                            )} py-1 px-2 rounded-md text-white font-semibold`}
-                        />
+                            )} py-1 px-2 rounded-md text-white text-xs font-semibold`}
+                        >
+                            {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                            {(props as any).status_order.name}
+                        </div>
                     );
                 },
                 isSort: true,
@@ -696,7 +694,7 @@ export function FacturacionClient() {
                                         {formatMoney(props.total)} -{" "}
                                         <span class="text-xs">
                                             {formatDolares(
-                                                props.total /
+                                                props.total *
                                                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                                     (props as any).moneyChange
                                             )}
@@ -718,42 +716,69 @@ export function FacturacionClient() {
             {
                 key: "actions",
                 header: "Facturación",
-                cell: (props) => (
-                    <div
-                        class="flex gap-2 items-center justify-center z-10"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <button
-                            type="button"
-                            aria-label="btn to pdf"
-                            onClick={() => {
-                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                                if (!(props as any).invoice?.pdf_path) return;
-                                onDownload(
-                                    `${enviroments.VITE_VIGILIO_WEB}/${
-                                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                                        (props as any).invoice?.pdf_path
-                                    }`,
-                                    `${props.order_code}-invoice.pdf`
-                                );
-                            }}
-                        >
-                            <img
-                                src={PdfImage()}
-                                class={`object-cover ${
-                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                                    !(props as any).invoice ? "grayscale" : ""
-                                }`}
-                                width={40}
-                                height={100}
-                                alt="pdf"
-                            />
-                        </button>
-                    </div>
-                ),
+                cell: (props) => {
+                    const ordersPDFQuery = useQuery<Blob, OrdersPDFErrorAPI>(
+                        `/orders/${props.order_code}/pdf?type=${
+                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                            (props as any).note ? "note" : "invoice"
+                        }`,
+                        async (url) => {
+                            const response = await fetch(
+                                `${enviroments.VITE_VIGILIO_WEB}/api${url}`
+                            );
+                            const result = await response.blob();
+                            return result;
+                        }
+                    );
+
+                    interface OrdersPDFErrorAPI {
+                        success: boolean;
+                        message: string;
+                    }
+                    let component = null;
+                    if (ordersPDFQuery.isLoading) {
+                        component = <LoaderSubmit />;
+                    }
+                    if (ordersPDFQuery.isSuccess) {
+                        const pdf = URL.createObjectURL(ordersPDFQuery.data!);
+                        const nameFile = `${props.order_code}-${
+                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                            (props as any).note
+                                ? "note"
+                                : // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                (props as any).invoice?.kind_invoice_code ===
+                                  "01"
+                                ? "Factura"
+                                : "Boleta"
+                        }`;
+                        component = (
+                            <div
+                                class="flex gap-2 items-center justify-center z-10"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <a href={pdf} download={nameFile}>
+                                    <img
+                                        src={PdfImage()}
+                                        class={`object-cover ${
+                                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                            !(props as any).invoice
+                                                ? "grayscale"
+                                                : ""
+                                        }`}
+                                        width={40}
+                                        height={100}
+                                        alt="pdf"
+                                    />
+                                </a>
+                            </div>
+                        );
+                    }
+
+                    return component;
+                },
             },
         ],
-        pagination: { limit: 20 },
+        pagination: { limit: 10 },
     });
 
     const ordersLocalsPaginatorQuery = ordersPaginatorApi(
