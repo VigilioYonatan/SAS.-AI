@@ -367,7 +367,7 @@ export class whatsappApiController {
                         .then(() => {
                             // biome-ignore lint/suspicious/noConsoleLog: <explanation>
                             console.log("Conectado correctamente a vps");
-                            const commands = `docker restart ${empresa.slug}`;
+                            const commands = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png && rm -rf .wwebjs_auth && rm -rf .wwebjs_cache" && docker restart ${empresa.slug} `;
                             return ssh.execCommand(commands);
                         })
                         .then((result) => {
