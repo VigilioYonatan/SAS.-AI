@@ -410,14 +410,54 @@ export class whatsappApiController {
     @Post("/logout")
     async logout(@Req("empresa") empresa: Empresas) {
         let comando = "";
-        if (empresa.enabledBot) {
-            comando = `docker stop ${empresa.slug}`;
-            await terminal(comando);
-            await empresa.update({ enabledBot: false });
+        if (empresa.whatsapp_mode.type === "VPS") {
+            function onSSH() {
+                return new Promise((res, _) => {
+                    const ssh = new NodeSSH();
+                    // Función para conectar por SSH
+                    ssh.connect({
+                        host: empresa.whatsapp_mode.ip!,
+                        username: "root",
+                        password: empresa.whatsapp_mode.password!,
+                    })
+                        .then(async () => {
+                            let command = "";
+                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                            console.log("Conectado correctamente a vps");
+                            if (empresa.enabledBot) {
+                                command = `docker stop ${empresa.slug}`;
+                                await empresa.update({ enabledBot: false });
+                            } else {
+                                comando = `docker start ${empresa.slug}`;
+                                await empresa.update({ enabledBot: true });
+                            }
+                            return ssh.execCommand(command);
+                        })
+                        .then((result) => {
+                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                            console.log(`STDOUT: ${result.stdout}`);
+                            console.error(`STDERR: ${result.stderr}`);
+                            res(true);
+                        })
+                        .catch(() => {
+                            res(true);
+                        })
+                        .finally(() => {
+                            ssh.dispose();
+                        });
+                });
+            }
+            await onSSH();
         } else {
-            comando = `docker start ${empresa.slug}`;
-            await terminal(comando);
-            await empresa.update({ enabledBot: true });
+            if (empresa.enabledBot) {
+                comando = `docker stop ${empresa.slug}`;
+                await terminal(comando);
+                await empresa.update({ enabledBot: false });
+            } else {
+                comando = `docker start ${empresa.slug}`;
+                await terminal(comando);
+                await empresa.update({ enabledBot: true });
+            }
         }
 
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
