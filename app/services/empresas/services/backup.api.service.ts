@@ -76,15 +76,17 @@ export class BackupApiService {
             const slugs = emp
                 .filter((container) => container.whatsapp_mode.type === "FREE")
                 .map((container) => container.slug);
-            const command1 = `docker rm -f ${slugs.join(" ")}`;
+            const command1 = `docker rm -f ${slugs.join(" ")} || true`;
             const command2 = slugs
-                .map((slug) => `docker volume rm ${slug}`)
+                .map((slug) => `docker volume rm ${slug} || true`)
                 .join(" && ");
 
             await terminal(command1);
             await terminal(command2);
             const result = await vpsShowApi();
-            await terminal(`docker rmi ${enviroments.DOCKER_IMAGE_WHATSAPP}`);
+            await terminal(
+                `docker rmi ${enviroments.DOCKER_IMAGE_WHATSAPP} || true`
+            );
             await Promise.all(
                 emp.map(async (emp) => {
                     await terminal(

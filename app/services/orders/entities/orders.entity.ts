@@ -68,7 +68,7 @@ export class Orders extends Model implements Omit<OrdersSchema, "id"> {
     order_code: string;
 
     @Column({
-        type: DataType.STRING(100),
+        type: DataType.STRING(200),
     })
     address: string;
 

@@ -29,6 +29,8 @@ import fs from "node:fs";
 import cron from "node-cron";
 import type { Response } from "express";
 import { NodeSSH } from "node-ssh";
+import { vpsShowApi } from "@/empresas/services/backup.api.service";
+import enviroments from "~/config/enviroments.config";
 export let chats: Record<string, ["assistant" | "user", string][]> = {};
 
 @Controller("/whatsapp")
@@ -394,6 +396,118 @@ export class whatsappApiController {
             console.log("Ejecutó correctamente");
         }
 
+        return {
+            success: true,
+            message: "Se reinició correctamente.",
+        };
+    }
+    @Post("/update")
+    async update(@Req("empresa") empresa: Empresas) {
+        if (empresa.whatsapp_mode.type === "VPS") {
+            function onSSH() {
+                return new Promise((res, _) => {
+                    const ssh = new NodeSSH();
+                    // Función para conectar por SSH
+                    ssh.connect({
+                        host: empresa.whatsapp_mode.ip!,
+                        username: "root",
+                        password: empresa.whatsapp_mode.password!,
+                    })
+                        .then(async () => {
+                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                            console.log("Conectado correctamente a vps");
+                            const command1 = `docker rm -f ${empresa.slug} || true`;
+                            const command2 = `docker volume rm ${empresa.slug} || true`;
+
+                            // Ejecutar los comandos en el servidor SSH
+                            await ssh.execCommand(command1);
+                            await ssh.execCommand(command2);
+
+                            // Obtener información de la API
+                            const result = await vpsShowApi();
+
+                            // Eliminar la imagen de Docker
+                            await ssh.execCommand(
+                                `docker rmi ${enviroments.DOCKER_IMAGE_WHATSAPP} || true`
+                            );
+
+                            // Crear el volumen y ejecutar el contenedor Docker
+                            await ssh.execCommand(
+                                `docker volume create ${
+                                    empresa.slug
+                                } && docker run -d --name ${
+                                    empresa.slug
+                                } -e PORT=5000 -e NODE_ENV=${
+                                    enviroments.NODE_ENV
+                                } -e SESSION_NAME=${
+                                    empresa.slug
+                                } -e VITE_TOKEN_VIGILIO_SERVICES=${
+                                    enviroments.VITE_TOKEN_VIGILIO_SERVICES
+                                } --restart always --memory="${
+                                    result.vps.whatsapp_ram || "1000"
+                                }m" --memory-swap="${
+                                    result.vps.whatsapp_ram || "1000"
+                                }m" --cpus="${
+                                    result.vps.whatsapp_cpu_max || "1"
+                                }" -p ${empresa.port}:5000 -v ${
+                                    empresa.slug
+                                }:/app/data ${
+                                    enviroments.DOCKER_IMAGE_WHATSAPP
+                                }`
+                            );
+                        })
+                        .then(() => {
+                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                            console.log(
+                                "STDOUT:error bash a la hora de reiniciar"
+                            );
+                            console.error(
+                                "STDERR: error bash a la hora de reiniciar"
+                            );
+                            res(true);
+                        })
+                        .catch(() => {
+                            res(true);
+                        })
+                        .finally(() => {
+                            ssh.dispose();
+                        });
+                });
+            }
+            await onSSH();
+        } else {
+            const command1 = `docker rm -f ${empresa.slug} || true`;
+            const command2 = `docker volume rm ${empresa.slug}  || true`;
+
+            await terminal(command1);
+            await terminal(command2);
+            const result = await vpsShowApi();
+            await terminal(
+                `docker rmi ${enviroments.DOCKER_IMAGE_WHATSAPP} || true`
+            );
+            await terminal(
+                `docker volume create ${empresa.slug} && docker run -d --name ${
+                    empresa.slug
+                } -e PORT=5000 -e NODE_ENV=${
+                    enviroments.NODE_ENV
+                } -e SESSION_NAME=${
+                    empresa.slug
+                } -e VITE_TOKEN_VIGILIO_SERVICES=${
+                    enviroments.VITE_TOKEN_VIGILIO_SERVICES
+                } --restart always --memory="${
+                    result.vps.whatsapp_ram || "1000"
+                }m" --memory-swap="${
+                    result.vps.whatsapp_ram || "1000"
+                }m" --cpus="${result.vps.whatsapp_cpu_max || "1"}" -p ${
+                    empresa.port
+                }:5000 -v ${empresa.slug}:/app/data ${
+                    enviroments.DOCKER_IMAGE_WHATSAPP
+                }`
+            );
+        }
+        await empresa.update({
+            timeWhatsapp: NOW(empresa).add(3, "minute").toDate(),
+        });
         return {
             success: true,
             message: "Se reinició correctamente.",

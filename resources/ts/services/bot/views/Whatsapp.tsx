@@ -54,6 +54,7 @@ import { type Input, pick } from "@vigilio/valibot";
 import { useMutation } from "@vigilio/preact-fetching";
 import AlertSuccess from "~/components/Alerts/AlertSuccess";
 import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
+import { whatsappUpdateApi } from "../apis/whatsapp.update.api";
 
 function Whatsapp() {
     const authStore = useAuthStore();
@@ -63,6 +64,7 @@ function Whatsapp() {
         return null;
     }
     const empresaStore = useEmpresastore();
+    const whatsappUpdateMutate = whatsappUpdateApi();
     const empresaContactsUpdateMutation = empresaContactsUpdateApi();
     const table = useTable({
         columns: contactsColumns,
@@ -238,6 +240,51 @@ function Whatsapp() {
                                 )}
                             </>
                         )}
+                    </button>
+                    <button
+                        disabled={whatsappUpdateMutate.isLoading || false}
+                        type="button"
+                        aria-label="update"
+                        class="relative bg-blue-600 text-white px-2 py-1 rounded-md shadow text-xs"
+                        onClick={() => {
+                            sweetModal({
+                                title: "¿Estas seguro que quieres actualizar WhatsApp?",
+                                showCancelButton: true,
+                                showCloseButton: true,
+                            }).then(({ isConfirmed }) => {
+                                if (isConfirmed) {
+                                    whatsappUpdateMutate.mutate(null, {
+                                        onSuccess() {
+                                            sweetAlert({
+                                                icon: "success",
+                                                title: "WhatsApp Actualizado Correctamente.",
+                                            });
+                                        },
+                                        onError() {
+                                            sweetAlert({
+                                                icon: "danger",
+                                                title: "Hubo un problema al actualizar whatsApp.",
+                                            });
+                                        },
+                                    });
+                                }
+                            });
+                        }}
+                    >
+                        {whatsappUpdateMutate.isLoading ? (
+                            <LoaderSubmit />
+                        ) : (
+                            <>
+                                <i class="fas fa-sync-alt" /> Actualizar
+                            </>
+                        )}
+
+                        <Helper top={1} right={1}>
+                            <b>
+                                Actualizar a Whatsapp la ultima versión <br />
+                                Usar cuando WhatsApp no esté funcionando.
+                            </b>
+                        </Helper>
                     </button>
                 </div>
             </div>
@@ -1468,14 +1515,23 @@ function WhatsappFREE() {
         }
     );
     function onWhatsappMode(body: WhatsappmodeDto) {
-        whatsappModeMutation.mutate(body, {
-            onSuccess(data) {
-                sweetAlert({ icon: "success", title: data.message });
-            },
-            onError(error) {
-                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                handlerError(whatsappmodeForm, error as any);
-            },
+        sweetModal({
+            icon: "success",
+            title: `¿Estas seguro de cambiar el modo a <b>${body.whatsapp_mode.type}</b>`,
+            showCancelButton: true,
+            showCloseButton: true,
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                whatsappModeMutation.mutate(body, {
+                    onSuccess(data) {
+                        sweetAlert({ icon: "success", title: data.message });
+                    },
+                    onError(error) {
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                        handlerError(whatsappmodeForm, error as any);
+                    },
+                });
+            }
         });
     }
     return (

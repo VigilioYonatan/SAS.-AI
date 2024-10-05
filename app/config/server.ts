@@ -87,6 +87,12 @@ export class Server {
         this.app.use(client());
         this.app.use(async (req: Request, res, next) => {
             const host = req.headers.host;
+
+            if (
+                host?.includes("client-vps1.loca.lt") &&
+                enviroments.NODE_ENV !== "production"
+            )
+                return next();
             let subdomain = null;
             if (host?.includes(".")) {
                 subdomain = !host?.startsWith("www.") ? `www.${host}` : host;

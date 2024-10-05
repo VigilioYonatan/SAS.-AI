@@ -474,7 +474,7 @@ function CartPage({ cart, header }: CartProps) {
                                             "city_id" as keyof OrdersCartStoreDto
                                         }
                                         disabled={
-                                            clientsShowQuery.isLoading || false
+                                            citysIndexQuery.isLoading || false
                                         }
                                         isLoading={
                                             citysIndexQuery.isLoading || false
