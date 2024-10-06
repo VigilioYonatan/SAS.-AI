@@ -28,7 +28,8 @@ export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     }
     const filePath = `${dirTemp}/${crypto.randomUUID()}.wav`;
 
-    fs.writeFileSync(filePath, fileBuffer);
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    fs.writeFileSync(filePath, fileBuffer as any);
     const file = fs.createReadStream(filePath);
     // Send the audio file for transcription using the specified model.
     const transcription = await openAis[empresa].audio.transcriptions.create({

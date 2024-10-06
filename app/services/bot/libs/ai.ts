@@ -100,7 +100,7 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
     });
     if (!empresa) return null;
     const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
-    if (!emp?.enabledBot) return null;
+    if (!emp) return null;
     const isDateNow = restarDays(
         NOW(emp).toDate(),
         emp.payments.mensual.date!,
