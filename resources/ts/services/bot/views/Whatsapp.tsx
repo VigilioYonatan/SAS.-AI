@@ -114,7 +114,7 @@ function Whatsapp() {
             <div className=" flex flex-col gap-4">
                 <AdminBreadCrumb current="Whatsapp" />
             </div>
-            <div class="flex gap-2 items-center justify-between">
+            <div class="flex gap-2 items-center justify-between flex-wrap">
                 <div class="flex gap-2 items-center">
                     <button
                         className="bg-success px-4 py-2 rounded-md shadow text-white mr-2 self-end  font-semibold flex items-center justify-center gap-3 text-xs"
@@ -171,7 +171,7 @@ function Whatsapp() {
                     </button>
                     <button
                         type="button"
-                        class="text-white bg-danger px-2 py-2 rounded-md shadow mr-2"
+                        class="text-white bg-danger px-2 py-1 rounded-md shadow mr-2"
                         disabled={whatsappLogoutMutation.isLoading || false}
                         aria-label="close whatsapp"
                         onClick={() => {
@@ -244,7 +244,7 @@ function Whatsapp() {
                         disabled={whatsappUpdateMutate.isLoading || false}
                         type="button"
                         aria-label="update"
-                        class="relative bg-blue-600 text-white px-2 py-1 rounded-md shadow text-xs"
+                        class="relative bg-blue-600 text-white px-2 py-2 rounded-md shadow text-xs"
                         onClick={() => {
                             sweetModal({
                                 title: "¿Estas seguro que quieres actualizar WhatsApp?",
@@ -279,7 +279,7 @@ function Whatsapp() {
                         )}
 
                         <Helper top={1} right={1}>
-                            <b>
+                            <b class="w-[100px]">
                                 Actualizar a Whatsapp la ultima versión <br />
                                 Usar cuando WhatsApp no esté funcionando.
                             </b>
@@ -891,10 +891,14 @@ export function QrWhatsapp() {
                                     </div>
                                 )}
                                 <ul class="list-image-none flex flex-col gap-2">
-                                    <li class="dark:text-white text-center">
+                                    <li class="dark:text-white text-center text-sm">
                                         *Si no está funcionando el qr. Intentelo
                                         2 - 3 veces{" "}
                                         <i class="fa-solid fa-rotate-right text-white " />
+                                    </li>{" "}
+                                    <li class="dark:text-white text-center text-sm">
+                                        *Es recomendable pasarse a un VPS
+                                        Whatsapp, más velocidad. (2 minutos)
                                     </li>{" "}
                                     <li class="dark:text-white text-center text-sm">
                                         *Si se conectó correctamente, esperar
@@ -1594,11 +1598,11 @@ function WhatsappFREE() {
                     <span class=" font-semibold">USD $35 - $60 / anual</span>
                     <p class=" text-center text-sm ">
                         {" "}
-                        <b>Mensajes Ilimitados</b>
+                        <b>Mejor Opción - Mensajes Ilimitados</b>
                         <br />
                         Acelera WhatsApp - Entre mejor sea el vps, más rapido
-                        irá WhatsApp. Activalo en 45 segundos <br /> Mínimo 2
-                        vCPU - 2GB RAM
+                        irá WhatsApp. Activalo en 2 minutos <br /> Mínimo 2 vCPU
+                        - 2GB RAM
                         <br />
                     </p>
                     <button

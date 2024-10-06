@@ -28,6 +28,7 @@ export const hostSchema = object({
     host: nullable(
         string([
             custom((val) => !val.startsWith("https://www"), "URL: empresa.com"),
+            custom((val) => !val.startsWith("www."), "URL: empresa.com"),
             custom((val) => !val.endsWith("/"), "URL: empresa.com"),
         ])
     ),

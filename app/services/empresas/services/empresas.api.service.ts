@@ -782,7 +782,7 @@ export class EmpresasApiService {
                 empresa_id: empresa.id,
             },
         });
-        const time = NOW(empresa).add(1, "minute");
+        const time = NOW(empresa).add(4, "minute");
         await setting?.update({
             host: {
                 host: body.host,
