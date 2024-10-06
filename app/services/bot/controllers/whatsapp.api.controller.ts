@@ -391,7 +391,7 @@ export class whatsappApiController {
             const comando = `docker exec ${empresa.slug} sh -c "rm -rf ${empresa.slug}-qr.png && rm -rf .wwebjs_auth && rm -rf .wwebjs_cache" && docker restart ${empresa.slug} `;
             // biome-ignore lint/suspicious/noConsoleLog: <explanation>
             console.log(`Ejecutando comando: ${comando}`);
-            await terminal(comando);
+            await terminal(comando, true);
             // biome-ignore lint/suspicious/noConsoleLog: <explanation>
             console.log("Ejecutó correctamente");
         }
@@ -479,11 +479,12 @@ export class whatsappApiController {
             const command1 = `docker rm -f ${empresa.slug} || true`;
             const command2 = `docker volume rm ${empresa.slug}  || true`;
 
-            await terminal(command1);
-            await terminal(command2);
+            await terminal(command1, true);
+            await terminal(command2, true);
             const result = await vpsShowApi();
             await terminal(
-                `docker rmi ${enviroments.DOCKER_IMAGE_WHATSAPP} || true`
+                `docker rmi ${enviroments.DOCKER_IMAGE_WHATSAPP} || true`,
+                true
             );
             await terminal(
                 `docker volume create ${empresa.slug} && docker run -d --name ${

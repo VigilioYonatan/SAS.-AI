@@ -168,7 +168,6 @@ function Whatsapp() {
                         }}
                     >
                         <i class="fas fa-cogs" />
-                        Configuración
                     </button>
                     <button
                         type="button"
@@ -1556,10 +1555,10 @@ function WhatsappFREE() {
                     <p class=" text-center text-sm  dark:text-white">
                         <b>Mensajes Ilimitados</b>
                         <br />
-                        Si experimentas lentitud al usar WhatsApp, te sugerimos
-                        considerar la opción de migrar a un VPS (Servidor
-                        Privado Virtual). Esto puede mejorar significativamente
-                        el rendimiento y la eficiencia de tu servicio.
+                        Usa WhatsApp Gratis. Si experimentas lentitud al usar
+                        WhatsApp, te sugerimos considerar la opción de migrar a
+                        un VPS. Esto puede mejorar significativamente el
+                        rendimiento y la eficiencia de tu servicio.
                         <br /> 0.5 vCPU - 1GB RAM
                     </p>
                     <button
@@ -1649,8 +1648,8 @@ function WhatsappFREE() {
                             >
                                 Recomendado
                             </a>
-                            ,Registrarse, obtener obtener el servicio VPS y
-                            completar formulario en 2 minutos{" "}
+                            , Registrarse, obtener el servicio VPS y completar
+                            formulario en 2 minutos{" "}
                             <a
                                 href={
                                     storageEmpresa?.dial_code === "51"
