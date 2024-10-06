@@ -172,7 +172,13 @@ export class EmpresasApiService {
                 enabled_catalogo: true,
                 enable_sell_country: false,
                 token: `${body.slug}-${generateId().slice(4, 12)}`,
-                whatsapp_mode: "FREE",
+                whatsapp_mode: {
+                    type: "FREE",
+                    ip: null,
+                    password: null,
+                    memory: null,
+                    cpu: null,
+                },
             });
             await empresa.save();
             if (body.servicio_id === 2) {
