@@ -39,6 +39,8 @@ import { BackgroundApiService } from "@/empresas/services/background.api.service
 import { CategoriesApiService } from "@/products/services/categories.api.service";
 import { BrandsApiService } from "@/products/services/brands.api.service";
 import { SettingsApiService } from "@/empresas/services/settings.api.service";
+import { suppliersLogoQualities } from "@/suppliers/libs";
+import { SuppliersApiService } from "@/suppliers/services/suppliers.api.service";
 
 @Injectable()
 export class UploadsService {
@@ -50,7 +52,8 @@ export class UploadsService {
         private readonly backgroundApiService: BackgroundApiService,
         private readonly categoriesApiService: CategoriesApiService,
         private readonly brandsApiService: BrandsApiService,
-        private readonly settingsApiService: SettingsApiService
+        private readonly settingsApiService: SettingsApiService,
+        private readonly suppliersApiService: SuppliersApiService
     ) {}
     async store(props: {
         req: Request;
@@ -103,7 +106,27 @@ export class UploadsService {
                     );
                 }
                 break;
-
+            case "suppliers":
+                if (
+                    !userAuth ||
+                    !userAuth.enabled ||
+                    ![1].includes(userAuth.role_id)
+                )
+                    throw new UnauthorizedException(
+                        "No tiene permiso para realizar esta acción"
+                    );
+                if (property === "logo") {
+                    qualities = await this.customUpload(
+                        files,
+                        {
+                            minFiles: 1,
+                            maxFiles: 1,
+                            required: true,
+                        },
+                        suppliersLogoQualities
+                    );
+                }
+                break;
             case "settings":
                 if (
                     !userAuth ||
@@ -486,6 +509,27 @@ export class UploadsService {
                 entidad = background;
                 if (property === "image") {
                     removeFile(empresa.slug, background.image);
+                }
+                break;
+            }
+            case "suppliers": {
+                if (
+                    !userAuth ||
+                    !userAuth.enabled ||
+                    ![1].includes(userAuth.role_id)
+                )
+                    throw new UnauthorizedException(
+                        "No tiene permiso para realizar esta acción"
+                    );
+                const { supplier } = await this.suppliersApiService.show(
+                    empresa,
+                    id
+                );
+                entidad = supplier;
+                if (property === "logo") {
+                    if (supplier.logo) {
+                        removeFile(empresa.slug, supplier.logo);
+                    }
                 }
                 break;
             }

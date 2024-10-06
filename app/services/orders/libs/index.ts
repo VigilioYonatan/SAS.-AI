@@ -38,6 +38,7 @@ import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import wkhtmltopdf from "wkhtmltopdf";
 import { PassThrough } from "node:stream";
+import { NOW } from "~/libs/dayjs";
 
 export const ordersTransferenciaImage = [800];
 
@@ -244,8 +245,8 @@ export async function onInvoiceSunat({
         // paypal solo permite dolares
         tipoMoneda: order.moneyChange === 1 ? "PEN" : "USD", // aca si deseas cambiar a dolar
         fechaEmision: invoice.createdAt
-            ? new Date(invoice.createdAt!)
-            : new Date(),
+            ? invoice.createdAt
+            : NOW(empresa).toDate(),
         formaPago: {
             moneda: order.moneyChange === 1 ? "PEN" : "USD", // aca si deseas cambiar a dolar
             tipo: "Contado",

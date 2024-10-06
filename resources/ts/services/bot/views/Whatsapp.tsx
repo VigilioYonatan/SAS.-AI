@@ -114,7 +114,7 @@ function Whatsapp() {
             <div className=" flex flex-col gap-4">
                 <AdminBreadCrumb current="Whatsapp" />
             </div>
-            <div class="flex gap-2 items-center justify-between flex-wrap">
+            <div class="flex gap-2 items-center md:justify-between flex-wrap justify-center">
                 <div class="flex gap-2 items-center">
                     <button
                         className="bg-success px-4 py-2 rounded-md shadow text-white mr-2 self-end  font-semibold flex items-center justify-center gap-3 text-xs"
@@ -898,7 +898,7 @@ export function QrWhatsapp() {
                                     </li>{" "}
                                     <li class="dark:text-white text-center text-sm">
                                         *Es recomendable pasarse a un VPS
-                                        Whatsapp, más velocidad. (2 minutos)
+                                        Whatsapp para más velocidad. (2 minutos)
                                     </li>{" "}
                                     <li class="dark:text-white text-center text-sm">
                                         *Si se conectó correctamente, esperar

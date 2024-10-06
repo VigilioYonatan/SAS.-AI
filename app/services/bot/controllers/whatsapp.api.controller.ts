@@ -56,6 +56,15 @@ export class whatsappApiController {
             }));
             await empresa.update({ contacts: mappedcontacts });
         }
+        const result = await vpsShowApi();
+
+        // Eliminar la imagen de Docker
+        await terminal(
+            `docker update --memory="${result.vps.whatsapp_cpu_low ?? "0.4"}" ${
+                empresa.slug
+            } || true`
+        );
+
         await empresa?.update({ enabledBot: true });
 
         return {

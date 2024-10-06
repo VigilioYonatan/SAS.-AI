@@ -953,9 +953,12 @@ function SettingsIndex() {
                                                             onError(data) {
                                                                 sweetAlert({
                                                                     icon: "danger",
-                                                                    title: (
-                                                                        data as Error
-                                                                    ).message,
+                                                                    title: `${
+                                                                        (
+                                                                            data as Error
+                                                                        )
+                                                                            .message
+                                                                    } o intentálo de nuevo más tarde.`,
                                                                 });
                                                             },
                                                         }
