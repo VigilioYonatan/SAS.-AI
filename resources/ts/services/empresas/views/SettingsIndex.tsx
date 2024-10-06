@@ -83,6 +83,7 @@ function SettingsIndex() {
         const type_cart = settingsUpdateform.watch("type_cart");
         const hamburger = settingsUpdateform.watch("hamburger");
         const isLogoImage = settingsUpdateform.watch("isLogoImage");
+        const bg_color = settingsUpdateform.watch("bg_color");
         const bg_color_responsive = settingsUpdateform.watch(
             "bg_color_responsive"
         );
@@ -455,6 +456,17 @@ function SettingsIndex() {
                                                 {/* endcartaside */}
                                                 <div class="flex gap-3 items-center   text-xl  text-white">
                                                     <SearchProducts />
+                                                    <button
+                                                        type="button"
+                                                        aria-label="btn"
+                                                        class="text-white px-4 py-2 rounded-md text-xs"
+                                                        style={{
+                                                            backgroundColor:
+                                                                bg_color,
+                                                        }}
+                                                    >
+                                                        Sign In
+                                                    </button>
                                                     {isDark ? (
                                                         <button
                                                             type="button"
