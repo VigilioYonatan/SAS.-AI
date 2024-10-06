@@ -540,7 +540,6 @@ export class OrdersApiService {
 
         const order = new Orders({
             ...rest,
-            createdAt: NOW(empresa).toDate(),
             igv: empresa!.enabled_igv,
             pasarela_comision,
             moneyChange: moneyConverter,

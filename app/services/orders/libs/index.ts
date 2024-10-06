@@ -38,7 +38,7 @@ import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import wkhtmltopdf from "wkhtmltopdf";
 import { PassThrough } from "node:stream";
-import { NOW } from "~/libs/dayjs";
+import { NOW, TimePeru } from "~/libs/dayjs";
 
 export const ordersTransferenciaImage = [800];
 
@@ -245,7 +245,7 @@ export async function onInvoiceSunat({
         // paypal solo permite dolares
         tipoMoneda: order.moneyChange === 1 ? "PEN" : "USD", // aca si deseas cambiar a dolar
         fechaEmision: invoice.createdAt
-            ? invoice.createdAt
+            ? TimePeru(empresa, invoice.createdAt).toDate()
             : NOW(empresa).toDate(),
         formaPago: {
             moneda: order.moneyChange === 1 ? "PEN" : "USD", // aca si deseas cambiar a dolar
@@ -352,7 +352,9 @@ export async function onNoteSunat({
         numDocfectado: `${invoice.serie}-${invoice.correlativo}`,
         tipDocAfectado: invoice.kind_invoice_code,
         tipoMoneda: order.moneyChange === 1 ? "PEN" : "USD", // aca si deseas cambiar a dolar
-        fechaEmision: note.createdAt ? new Date(note.createdAt!) : new Date(),
+        fechaEmision: note.createdAt
+            ? TimePeru(empresa, note.createdAt).toDate()
+            : NOW(empresa).toDate(),
         formaPago: {
             moneda: order.moneyChange === 1 ? "PEN" : "USD", // aca si deseas cambiar a dolar
             tipo: "Contado",
