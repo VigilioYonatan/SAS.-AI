@@ -105,8 +105,9 @@ export class EmpresasApiService {
     }
     async paymentUpdate(
         slug: string,
-        paymentDto: Payments & { token: string }
+        paymentDto: Payments & { token: string; secure: string }
     ) {
+        if (paymentDto.secure !== "dokixd123") throw new BadRequestException("Error");
         const { data } = await this.payment(slug);
         await data.update({
             payments: paymentDto,

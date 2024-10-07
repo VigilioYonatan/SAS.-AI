@@ -102,12 +102,14 @@ export class EmpresasApiController {
     }
 
     @VigilioServicesGuard()
-    @Validator(mergeAsync([payments, object({ token: string() })]))
+    @Validator(
+        mergeAsync([payments, object({ token: string(), secure: string() })])
+    )
     @Pipe(objectAsync({ slug: string() }))
     @Put("/:slug/payment")
     async paymentUpdate(
         @Params("slug") slug: string,
-        @Body() paymentDto: Payments & { token: string }
+        @Body() paymentDto: Payments & { token: string; secure: string }
     ) {
         const result = await this.empresaApiService.paymentUpdate(
             slug,

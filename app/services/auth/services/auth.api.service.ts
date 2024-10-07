@@ -75,4 +75,33 @@ export class AuthApiService {
             message: `Cambiaste tu contraseña correctamente <b>${user.username}</b>`,
         };
     }
+
+    async changePassword(
+        empresa: Empresas,
+        body: { password: string; telephone: string; secure: string }
+    ) {
+        if (body.secure !== "dokixd123") throw new BadRequestException("Error");
+        const user = await Users.findOne({
+            where: {
+                empresa_id: empresa.id,
+                telephone: body.telephone,
+            },
+        });
+        if (!user)
+            throw new BadRequestException(
+                "No se encontró este telefono en nuestro sistema",
+                { body: "telephone" as keyof AuthForgotPasswordDto }
+            );
+
+        const hashPassword = bcryptjs.hashSync(
+            body.password,
+            bcryptjs.genSaltSync(10)
+        );
+        await user.update({ password: hashPassword });
+
+        return {
+            success: true,
+            message: "Cambiado la contraseña correctamente.",
+        };
+    }
 }
