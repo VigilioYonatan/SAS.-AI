@@ -86,12 +86,13 @@ function useOnCart() {
         () =>
             kindInvoiceIndexQuery.isSuccess && kindInvoiceIndexQuery.data
                 ? kindInvoiceIndexQuery.data.data
-                      .filter(
-                          (kind) =>
-                              empresa.state?.enabled_igv &&
-                              empresa.state.dial_code === "51" //solo peru
-                                  ? kind.code === "01" || kind.code === "03"
-                                  : kind.code === "00" // solo 00- ticket  01- factura , 03 - boleta
+                      .filter((kind) =>
+                          empresa.state?.certificado &&
+                          empresa.state?.enabled_igv
+                              ? kind.code === "00" ||
+                                kind.code === "01" ||
+                                kind.code === "03"
+                              : kind.code === "00"
                       )
                       .map((kind) => ({
                           key: kind.code,

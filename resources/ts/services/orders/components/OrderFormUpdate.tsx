@@ -1350,8 +1350,8 @@ function EmpresaForm({
                                         >
                                             Ver cuenta sunat.
                                         </a>
-                                        <br />- Recuerda tener tu suscripción de
-                                        sistema de facturación al día.{" "}
+                                        <br />- Solo recibos disponible si no se
+                                        activa IGV .{" "}
                                         <a
                                             href="/admin/plus"
                                             class="text-primary hover:underline"
