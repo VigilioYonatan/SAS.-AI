@@ -99,6 +99,7 @@ export function prompt(
 	MAXIMO_DE_PALABRAS_QUE_DIRAS: ${empresa.inteligenceArtificial.max_length}.
 	TIPO_MONEDA: ${empresa.money.international_simbolo}
     RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN.
+    SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR.
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
     ${JSON.stringify(instrucctions)}

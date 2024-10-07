@@ -20,7 +20,7 @@ import {
 } from "../api";
 import { delay, randomNumber, terminal } from "~/libs/helpers";
 import { buenosDias, featuresIA, gracias, isWhatsappIA } from "../libs/ai";
-import { NOW } from "~/libs/dayjs";
+import { NOW, restarDays, TimePeru } from "~/libs/dayjs";
 import { promptReplace, transcribeAudio } from "../libs";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import formidable from "formidable";
@@ -57,12 +57,6 @@ export class whatsappApiController {
             await empresa.update({ contacts: mappedcontacts });
         }
         const result = await vpsShowApi();
-
-        await terminal(
-            `docker update --cpus="${result.vps.whatsapp_cpu_low ?? "0.4"}" ${
-                empresa.slug
-            } || true`
-        );
 
         await empresa?.update({ enabledBot: true });
 
@@ -271,6 +265,17 @@ export class whatsappApiController {
                         });
                     }
                 }
+            }
+            if (
+                restarDays(
+                    NOW(info).toDate(),
+                    TimePeru(info, info.createdAt).add(3, "day").toDate(),
+                    "seconds"
+                ) < 1
+            ) {
+                await terminal(
+                    `docker update --cpus="0.4" ${info.slug} || true`
+                );
             }
 
             return {
