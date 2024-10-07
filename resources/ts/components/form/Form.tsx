@@ -24,7 +24,7 @@ function Form<T extends object>({
                 noValidate
                 onSubmit={rest.handleSubmit(onSubmit)}
                 class={`w-full ${className}`}
-                autocomplete="off"
+                autoComplete="off"
             >
                 {children}
             </form>
