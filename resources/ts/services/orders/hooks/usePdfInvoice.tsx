@@ -225,7 +225,7 @@ export function HelperPDF({ right = -155, top = -10 }: HelperPDFProps) {
                     <li>
                         1. Descargar y Instalar{" "}
                         <a
-                            href="https://www.vigilio-services.com/sh/7ivt"
+                            href="https://www.mediafire.com/file/dy47axlpgdajhz9/ESCPOSPrintServicev3.1.2_edbyyouarefinished_src_A2ZAPK.COM.apk"
                             target="_blank"
                             rel="noreferrer"
                             class="text-primary underline"
@@ -246,7 +246,7 @@ export function HelperPDF({ right = -155, top = -10 }: HelperPDFProps) {
                     </li>
                     <li>
                         3. Recuerda que debes tener una impresora térmica con
-                        bluetooh.
+                        bluetooth.
                     </li>
                 </ul>
             </div>
