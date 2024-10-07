@@ -58,9 +58,8 @@ export class whatsappApiController {
         }
         const result = await vpsShowApi();
 
-        // Eliminar la imagen de Docker
         await terminal(
-            `docker update --memory="${result.vps.whatsapp_cpu_low ?? "0.4"}" ${
+            `docker update --cpus="${result.vps.whatsapp_cpu_low ?? "0.4"}" ${
                 empresa.slug
             } || true`
         );

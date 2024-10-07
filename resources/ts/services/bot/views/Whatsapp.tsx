@@ -898,7 +898,7 @@ export function QrWhatsapp() {
                                     </li>{" "}
                                     <li class="dark:text-white text-center text-sm">
                                         *Es recomendable pasarse a un VPS
-                                        Whatsapp para más velocidad. (2 minutos)
+                                        Whatsapp para más velocidad.
                                     </li>{" "}
                                     <li class="dark:text-white text-center text-sm">
                                         *Si se conectó correctamente, esperar
