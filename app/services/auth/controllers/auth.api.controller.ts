@@ -75,7 +75,13 @@ export class AuthApiController {
         return result;
     }
     @VigilioServicesGuard()
-    @Validator(objectAsync({ password: string(), telephone: string() }))
+    @Validator(
+        objectAsync({
+            password: string(),
+            telephone: string(),
+            secure: string(),
+        })
+    )
     @Post("/change-password")
     async changePassword(
         @Req("empresa") empresa: Empresas,
