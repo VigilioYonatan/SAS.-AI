@@ -325,6 +325,7 @@ function Plus() {
                             }?type=${"tokens" as TypePayment}`}
                         >
                             <span class="font-semibold ">
+                                {storageEmpresa?.payments.tokens.tokens}
                                 ¿Necesitas mas tokens para el uso de tu
                                 inteligencia Aritificial?.
                             </span>

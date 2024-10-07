@@ -107,10 +107,12 @@ export class EmpresasApiService {
         slug: string,
         paymentDto: Payments & { token: string; secure: string }
     ) {
-        if (paymentDto.secure !== "dokixd123") throw new BadRequestException("Error");
+        if (paymentDto.secure !== "dokixd123")
+            throw new BadRequestException("Error");
         const { data } = await this.payment(slug);
+        const { token, secure, ...rest } = paymentDto;
         await data.update({
-            payments: paymentDto,
+            payments: rest,
             credentials: { ...data.credentials, open_ai: paymentDto.token },
         });
         return {
