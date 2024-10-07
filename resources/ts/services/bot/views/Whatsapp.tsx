@@ -148,7 +148,9 @@ function Whatsapp() {
                     >
                         WHATSAPP
                         <span class="absolute rotate-[45deg] -top-2 -right-5 text-[10px] bg-primary py-1 px-2 rounded-md">
-                            GRATIS
+                            {storageEmpresa?.whatsapp_mode.type === "FREE"
+                                ? "GRATIS"
+                                : "VPS"}
                         </span>
                     </button>
                 </div>
@@ -1519,7 +1521,7 @@ function WhatsappFREE() {
     );
     function onWhatsappMode(body: WhatsappmodeDto) {
         sweetModal({
-            icon: "success",
+            icon: "info",
             title: `¿Estas seguro de cambiar el modo a <b>${body.whatsapp_mode.type}</b>`,
             showCancelButton: true,
             showCloseButton: true,
@@ -1737,12 +1739,13 @@ function WhatsappFREE() {
             ) : (
                 <></>
             )}
+            {whatsappModeMutation.isLoading ? (
+                <AlertInfo>Cargando... Esto puede tomar unos minutos</AlertInfo>
+            ) : (
+                <></>
+            )}
             <Form.button.submit
-                title={`${
-                    whatsappModeMutation.isLoading
-                        ? "Cargando... Esto puede tomar entre 5 - 15 minutos"
-                        : "Guardar"
-                }`}
+                title="Guardar"
                 className="mx-auto py-4 px-2 rounded-md block"
                 isLoading={whatsappModeMutation.isLoading || false}
                 disabled={whatsappModeMutation.isLoading || false}

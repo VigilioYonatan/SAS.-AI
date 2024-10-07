@@ -182,6 +182,7 @@ export class EmpresasApiService {
                     memory: null,
                     cpu: null,
                 },
+                enable_map_marker: false,
             });
             await empresa.save();
             if (body.servicio_id === 2) {
