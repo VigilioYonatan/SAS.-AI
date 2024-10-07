@@ -1366,14 +1366,16 @@ function EmpresaForm({
                             {!empresa.state?.company.production ? (
                                 <AlertDanger>
                                     <>
-                                        Estás en modo de prueba en el sistema de
-                                        facturación{" "}
+                                        Estás en "modo de prueba" en el sistema
+                                        de facturación{" "}
                                         <a
                                             href="/admin/facturacion"
                                             class="font-semibold text-primary underline ml-2"
                                         >
                                             Mas información
-                                        </a>
+                                        </a>{" "}
+                                        - Activar para emitir a los servidores
+                                        de sunat
                                     </>
                                 </AlertDanger>
                             ) : null}

@@ -218,7 +218,7 @@ function CompaniesStore({ onClose }: CompaniesStoreProps) {
                     </div>
                     <AlertInfo>
                         <div class="font-semibold">
-                            Para obtener cuenta sol para emitir boletas ,
+                            Para obtener cuenta sol, para emitir boletas ,
                             facturas, notas, etc.{" "}
                             <a
                                 href="https://youtu.be/_bBRw7-IgO0"
@@ -335,7 +335,7 @@ function CompaniesStore({ onClose }: CompaniesStoreProps) {
                 </Form>
                 <br />
                 <AlertInfo>
-                    <>
+                    <span class="font-semibold">
                         Enterate sobre las novedades de Facturación Electrónica{" "}
                         <a
                             class="ml-2 underline text-primary"
@@ -345,7 +345,7 @@ function CompaniesStore({ onClose }: CompaniesStoreProps) {
                         >
                             Ir a grupo
                         </a>
-                    </>
+                    </span>
                 </AlertInfo>
             </div>
         );

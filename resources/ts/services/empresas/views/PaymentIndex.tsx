@@ -199,7 +199,7 @@ function PaymentIndex() {
                                 Le recomendamos, despues cambiar la contraseña
                                 de Mercado pago.
                                 <br />
-                                Comisión de Mercado Pago:
+                                Comisión de Mercado Pago:{" "}
                                 {storageEmpresa?.mercado_pago_comision.comision}
                                 %
                                 {storageEmpresa!.mercado_pago_comision

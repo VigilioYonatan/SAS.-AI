@@ -578,8 +578,7 @@ function empresaUpdate() {
                             <span class="font-semibold dark:text-white">
                                 ¿No tienes un logo?
                                 <br />
-                                Digite como quiere que sea su logo en esta
-                                Inteligencia Artificial{" "}
+                                Digite su logo en esta Inteligencia Artificial{" "}
                                 <a
                                     href="https://www.bing.com/images/create"
                                     target="_blank"
