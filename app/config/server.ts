@@ -45,6 +45,7 @@ import * as i18nextHttpMiddleware from "i18next-http-middleware";
 import i18next, { i18nextMiddleware } from "../libs/i18next";
 import { Sequelize } from "sequelize-typescript";
 import rateLimit from "express-rate-limit";
+import cors from "cors";
 export class Server {
     public readonly app: express.Application = express();
 
@@ -56,7 +57,7 @@ export class Server {
     async middlewares() {
         this.app.set("trust proxy", 1);
 
-        // this.app.use();
+        this.app.use(cors());
         const limiter = rateLimit({
             windowMs: 1 * 60 * 1000, // 1 minutos
             max: 1000, // Límite de 100 solicitudes por IP
