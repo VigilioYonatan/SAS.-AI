@@ -325,7 +325,19 @@ function Plus() {
                             }?type=${"tokens" as TypePayment}`}
                         >
                             <span class="font-semibold ">
-                                {storageEmpresa?.payments.tokens.tokens}
+                                <span
+                                    class={`${
+                                        storageEmpresa!.payments.tokens.tokens <
+                                        100000
+                                            ? "text-danger"
+                                            : ""
+                                    } font-semibold`}
+                                >
+                                    Quedan{" "}
+                                    {storageEmpresa?.payments.tokens.tokens}{" "}
+                                    tokens
+                                </span>
+                                <br />
                                 ¿Necesitas mas tokens para el uso de tu
                                 inteligencia Aritificial?.
                             </span>

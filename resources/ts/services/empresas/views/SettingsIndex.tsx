@@ -1031,7 +1031,7 @@ function SettingsIndex() {
                 <AlertInfo>
                     <span class="font-semibold">
                         <b class="font-bold">¿Sabias que?</b> El 90% de los
-                        usuarios, usan un dispositivo movil para realizar
+                        usuarios, usan un dispositivo móvil para realizar
                         compras por internet.
                     </span>
                 </AlertInfo>
