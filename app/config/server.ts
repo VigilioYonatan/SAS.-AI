@@ -28,7 +28,6 @@ import { Empresas } from "@/empresas/entities/empresas.entity";
 import { Users } from "@/users/entities/users.entity";
 import type { RequestVigilio } from "./types";
 import type { EmpresasSchema } from "@/empresas/schemas/empresas.schema";
-import cors from "cors";
 import { adminRouters } from "~/routers/admin.router";
 import { GlobalMiddleware } from "~/libs/websocket";
 import { socketsRouters } from "~/routers/sockets.router";
@@ -39,7 +38,7 @@ import { printFileWithDimension } from "@/uploads/libs/helpers";
 import { formatMoney, subtotal } from "@/cart/libs/helpers";
 import { Settings } from "@/empresas/entities/settings.entity";
 import { initial } from "@/empresas/services/empresas.api.service";
-import { corsOptions, dirMode } from ".";
+import { dirMode } from ".";
 import { NOW, restarDays } from "~/libs/dayjs";
 import { Brands } from "@/products/entities/brands.entitiy";
 import * as i18nextHttpMiddleware from "i18next-http-middleware";
@@ -57,7 +56,7 @@ export class Server {
     async middlewares() {
         this.app.set("trust proxy", 1);
 
-        this.app.use(cors(corsOptions));
+        this.app.use();
         const limiter = rateLimit({
             windowMs: 1 * 60 * 1000, // 1 minutos
             max: 1000, // Límite de 100 solicitudes por IP
@@ -265,7 +264,7 @@ export class Server {
             if (enviroments.NODE_ENV !== "production") {
                 return next();
             }
-            return res.redirect("https://www.vigilio-services.com");
+            // return res.redirect("https://www.vigilio-services.com");
         });
         this.routes();
     }
