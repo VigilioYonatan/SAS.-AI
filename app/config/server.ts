@@ -56,7 +56,7 @@ export class Server {
     async middlewares() {
         this.app.set("trust proxy", 1);
 
-        this.app.use();
+        // this.app.use();
         const limiter = rateLimit({
             windowMs: 1 * 60 * 1000, // 1 minutos
             max: 1000, // Límite de 100 solicitudes por IP
