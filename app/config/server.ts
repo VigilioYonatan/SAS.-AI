@@ -265,7 +265,7 @@ export class Server {
             if (enviroments.NODE_ENV !== "production") {
                 return next();
             }
-            // return res.redirect("https://www.vigilio-services.com");
+            return res.redirect("https://www.vigilio-services.com");
         });
         this.routes();
     }
