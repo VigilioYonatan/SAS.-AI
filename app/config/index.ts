@@ -6,47 +6,47 @@ import { Empresas } from "@/empresas/entities/empresas.entity";
 import { Op, Sequelize } from "sequelize";
 
 export const dirMode =
-    enviroments.NODE_ENV === "production"
-        ? path.resolve(__dirname, "..", "..")
-        : path.resolve(__dirname, "..", "..");
+	enviroments.NODE_ENV === "production"
+		? path.resolve(__dirname, "..", "..")
+		: path.resolve(__dirname, "..", "..");
 
 export const corsOptions: cors.CorsOptions = {
-    origin: async (origin, callback) => {
-        const empresas = await Empresas.unscoped().findAll({
-            include: [
-                {
-                    model: Settings,
-                    //   dominio.com
-                    where: Sequelize.where(
-                        Sequelize.literal(`host->>'host'`), // Extrae el valor de 'dominio' dentro de 'host'
-                        {
-                            [Op.ne]: null,
-                        } // Compara con el valor que necesitas
-                    ),
-                    required: true,
-                },
-            ],
-            attributes: ["id"],
-        });
+	origin: async (origin, callback) => {
+		const empresas = await Empresas.unscoped().findAll({
+			include: [
+				{
+					model: Settings,
+					//   dominio.com
+					where: Sequelize.where(
+						Sequelize.literal(`host->>'host'`), // Extrae el valor de 'dominio' dentro de 'host'
+						{
+							[Op.ne]: null,
+						}, // Compara con el valor que necesitas
+					),
+					required: true,
+				},
+			],
+			attributes: ["id"],
+		});
 
-        // Aquí puedes agregar lógica para permitir subdominios
-        const allowedOrigins = [
-            "https://*.vigilio-services.com",
-            `http://*.localhost:${enviroments.PORT}`,
-            `https://${enviroments.CLIENT.toLowerCase()}.vigilio-services.com`,
-            ...empresas.map((emp) => `https://www.${emp.setting.host.host}`),
-        ];
-        // Agrega los dominios y subdominios permitidos
-        if (
-            !origin ||
-            allowedOrigins.some((allowedOrigin) =>
-                new RegExp(allowedOrigin.replace(/\*/g, ".*")).test(origin)
-            )
-        ) {
-            callback(null, true); // Permitir origen
-        } else {
-            callback(new Error("Not allowed by CORS")); // No permitir origen
-        }
-    },
-    credentials: true,
+		// Aquí puedes agregar lógica para permitir subdominios
+		const allowedOrigins = [
+			"https://*.vigilio-services.com",
+			`http://*.localhost:${enviroments.PORT}`,
+			`https://${enviroments.CLIENT.toLowerCase()}.vigilio-services.com`,
+			...empresas.map((emp) => `https://www.${emp.setting.host.host}`),
+		];
+		// Agrega los dominios y subdominios permitidos
+		if (
+			!origin ||
+			allowedOrigins.some((allowedOrigin) =>
+				new RegExp(allowedOrigin.replace(/\*/g, ".*")).test(origin),
+			)
+		) {
+			callback(null, true); // Permitir origen
+		} else {
+			callback(new Error("Not allowed by CORS")); // No permitir origen
+		}
+	},
+	credentials: true,
 };

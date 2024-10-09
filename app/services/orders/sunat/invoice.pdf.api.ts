@@ -3,21 +3,21 @@ import type { SunatInvoiceDto } from "./dtos/sunat.invoice.dto";
 import { BadRequestException } from "@vigilio/express-core";
 
 export async function invoicePDFSunatApi(body: SunatInvoiceDto) {
-    const response = await fetch(
-        `${enviroments.VITE_VIGILIO_SUNAT}/api/invoices/pdf?type=ticket`,
-        {
-            body: JSON.stringify(body),
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }
-    );
+	const response = await fetch(
+		`${enviroments.VITE_VIGILIO_SUNAT}/api/invoices/pdf?type=ticket`,
+		{
+			body: JSON.stringify(body),
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		},
+	);
 
-    const result = await response.text();
-    if (!response.ok)
-        throw new BadRequestException(
-            "Hubo un error, Posible Error: certificado digital o contraseña de certificado digital, sino comunicarte con la empresa,"
-        );
-    return result;
+	const result = await response.text();
+	if (!response.ok)
+		throw new BadRequestException(
+			"Hubo un error, Posible Error: certificado digital o contraseña de certificado digital, sino comunicarte con la empresa,",
+		);
+	return result;
 }

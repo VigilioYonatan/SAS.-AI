@@ -48,7 +48,6 @@ function FormSelectInput<T extends object>({
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const valueArray = useSignal<{ value: string; key: any }[]>([]);
 	const value = getValues(name as Path<T>);
-
 	useEffect(() => {
 		if (array.length) {
 			if (!input.value || !input.value?.length) {
@@ -68,6 +67,15 @@ function FormSelectInput<T extends object>({
 			}
 		}
 	}, [input.value, array]);
+	useEffect(() => {
+		if (value) {
+			const data = array.find((val) => val.key === value) ?? null;
+			if (data) {
+				input.value = data.value;
+				setValue(name as Path<T>, data?.key as PathValue<T, Path<T>>);
+			}
+		}
+	}, [value]);
 
 	useEffect(() => {
 		if (value) {
@@ -78,7 +86,6 @@ function FormSelectInput<T extends object>({
 			}
 		}
 	}, [array]);
-
 	return (
 		<div class="w-full mb-2 relative">
 			<label

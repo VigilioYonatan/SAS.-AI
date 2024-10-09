@@ -2,13 +2,13 @@ import { CitiesSchemaFromServer } from "@/ubigeo/schemas/cities.schema";
 import {
 	minLength,
 	number,
-	objectAsync,
+	object,
 	string,
 	toTrimmed,
 	type Input,
 } from "@vigilio/valibot";
 
-export const addressSchema = objectAsync({
+export const addressSchema = object({
 	id: number(),
 	city_id: number(),
 	urbanizacion: string([toTrimmed(), minLength(1)]),

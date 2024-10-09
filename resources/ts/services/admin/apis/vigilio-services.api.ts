@@ -64,7 +64,7 @@ export function vigilioServicesPricingQuery() {
 					};
 				};
 			} = await response.json();
-			
+
 			if (!result.success) throw result;
 			return result;
 		},

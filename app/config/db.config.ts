@@ -50,84 +50,84 @@ import { Information } from "@/empresas/entities/information.entity";
 import { UrlsPayment } from "@/urls/entities/urls.payment.entity";
 
 const sequelize = new Sequelize({
-    dialect: "postgres",
-    host: enviroments.DB_HOST,
-    username: enviroments.DB_USER,
-    password: enviroments.DB_PASS,
-    database: enviroments.DB_NAME,
-    port: enviroments.DB_PORT,
-    pool: {
-        max: 30,
-        min: 10,
-        acquire: 60000,
-        idle: 20000,
-    },
+	dialect: "postgres",
+	host: enviroments.DB_HOST,
+	username: enviroments.DB_USER,
+	password: enviroments.DB_PASS,
+	database: enviroments.DB_NAME,
+	port: enviroments.DB_PORT,
+	pool: {
+		max: 30,
+		min: 10,
+		acquire: 60000,
+		idle: 20000,
+	},
 });
 
 sequelize.addModels([
-    // here entities
-    ProductsServicio,
-    ProductsNormal,
-    ProductsRestaurant,
-    Empresas,
-    Users,
-    Cart,
-    Address,
-    Orders,
-    DetailOrders,
-    Guides,
-    Invoices,
-    KindCreditNotes,
-    KindDebitNotes,
-    KindInvoice,
-    Notes,
-    PayMethods,
-    StatusOrders,
-    Brands,
-    Categories,
-    Coupons,
-    Notifications,
-    NotificationsUser,
-    Documents,
-    ProductsOptions,
-    Options,
-    Features,
-    Variants,
-    VariantsFeatures,
-    Clients,
-    TipoEmpresa,
-    TipoServicio,
-    New,
-    MetodosPago,
-    Urls,
-    Background,
-    Posts,
-    Suppliers,
-    Regions,
-    Cities,
-    Countries,
-    RegionsEmpresa,
-    Mesas,
-    Complaints,
-    Floors,
-    Settings,
-    Information,
-    UrlsPayment,
+	// here entities
+	ProductsServicio,
+	ProductsNormal,
+	ProductsRestaurant,
+	Empresas,
+	Users,
+	Cart,
+	Address,
+	Orders,
+	DetailOrders,
+	Guides,
+	Invoices,
+	KindCreditNotes,
+	KindDebitNotes,
+	KindInvoice,
+	Notes,
+	PayMethods,
+	StatusOrders,
+	Brands,
+	Categories,
+	Coupons,
+	Notifications,
+	NotificationsUser,
+	Documents,
+	ProductsOptions,
+	Options,
+	Features,
+	Variants,
+	VariantsFeatures,
+	Clients,
+	TipoEmpresa,
+	TipoServicio,
+	New,
+	MetodosPago,
+	Urls,
+	Background,
+	Posts,
+	Suppliers,
+	Regions,
+	Cities,
+	Countries,
+	RegionsEmpresa,
+	Mesas,
+	Complaints,
+	Floors,
+	Settings,
+	Information,
+	UrlsPayment,
 ]);
 
 export async function connectDB() {
-    try {
-        await sequelize.authenticate();
-        logger.success("conectado a base de datos correctamente");
-        if (enviroments.NODE_ENV === "production") {
-            await sequelize.sync();
+	try {
+		await sequelize.authenticate();
+		logger.success("conectado a base de datos correctamente");
+		if (enviroments.NODE_ENV === "production") {
+			await sequelize.sync();
 
-            return;
-        }
-        await sequelize.sync();
-    } catch (error) {
-        logger.error(`Error al conectar base de datos: ${error}`);
-    }
+			return;
+		}
+		await sequelize.sync();
+	} catch (error) {
+		logger.error(`Error al conectar base de datos: ${error}`);
+	}
 }
 
 export { sequelize };

@@ -118,20 +118,20 @@ function TableDetailsOrder({
 								? formatMoney(
 										order.igv
 											? subtotal(
-													order.city.region.priceShipping,
+													order.city.priceShipping,
 													storageEmpresa!.igv,
 													true,
 												)
-											: order.city.region.priceShipping,
+											: order.city.priceShipping,
 									)
 								: formatDolares(
 										order.igv
 											? subtotal(
-													order.city.region.priceShipping,
+													order.city.priceShipping,
 													storageEmpresa!.igv,
 													true,
 												) / order.moneyChange
-											: order.city.region.priceShipping / order.moneyChange,
+											: order.city.priceShipping / order.moneyChange,
 									)}
 						</td>
 						<td class="text-center text-xs lg:text-sm">
@@ -139,20 +139,20 @@ function TableDetailsOrder({
 								? formatMoney(
 										order.igv
 											? subtotal(
-													order.city.region.priceShipping,
+													order.city.priceShipping,
 													storageEmpresa!.igv,
 													true,
 												)
-											: order.city.region.priceShipping / order.moneyChange,
+											: order.city.priceShipping / order.moneyChange,
 									)
 								: formatDolares(
 										order.igv
 											? subtotal(
-													order.city.region.priceShipping,
+													order.city.priceShipping,
 													storageEmpresa!.igv,
 													true,
 												) / order.moneyChange
-											: order.city.region.priceShipping / order.moneyChange,
+											: order.city.priceShipping / order.moneyChange,
 									)}
 						</td>
 					</tr>

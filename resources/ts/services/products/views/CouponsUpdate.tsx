@@ -81,7 +81,7 @@ function CouponsUpdate({ id, refetch }: CouponUpdateProps) {
 		function generateCoupon() {
 			couponsUpdateDtoForm.setValue(
 				"coupon",
-				`COUPON-${dayjs().format("MMMM").toUpperCase()}-${Math.random()
+				`C-${dayjs().format("MMMM").toUpperCase()}-${Math.random()
 					.toString(32)
 					.slice(7)
 					.toUpperCase()}`,

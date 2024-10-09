@@ -17,162 +17,160 @@ import cache from "@vigilio/express-core/cache";
 
 @Injectable()
 export class PaypalService {
-    constructor(private readonly ordersApiService: OrdersApiService) {}
-    async order(empresa: Empresas, body: OrdersStoreDto) {
-        const from = empresa.money.simbolo;
-        let value = Number(cache.get(`money:${from}`));
-        if (!value) {
-            const response = await converterMoneyApi({
-                amount: "1",
-                from,
-                to: "USD",
-            });
-            value = Number.parseFloat(response.result.todayNumber); // its necesary to fix
-            cache.set(`money:${from}`, response.result.todayNumber, 3600 * 24);
-        }
-        const metodo = (await empresa.$get("metodos_pago")) as MetodosPago;
-        if (
-            !metodo.paypal.enabled ||
-            !metodo.paypal.paypal_client_id ||
-            !metodo.paypal.paypal_secret_key
-        )
-            throw new BadRequestException("No disponible en este momento");
+	constructor(private readonly ordersApiService: OrdersApiService) {}
+	async order(empresa: Empresas, body: OrdersStoreDto) {
+		const from = empresa.money.simbolo;
+		let value = Number(cache.get(`money:${from}`));
+		if (!value) {
+			const response = await converterMoneyApi({
+				amount: "1",
+				from,
+				to: "USD",
+			});
+			value = Number.parseFloat(response.result.todayNumber); // its necesary to fix
+			cache.set(`money:${from}`, response.result.todayNumber, 3600 * 24);
+		}
+		const metodo = (await empresa.$get("metodos_pago")) as MetodosPago;
+		if (
+			!metodo.paypal.enabled ||
+			!metodo.paypal.paypal_client_id ||
+			!metodo.paypal.paypal_secret_key
+		)
+			throw new BadRequestException("No disponible en este momento");
 
-        const total = empresa.enabledClientPayComision
-            ? paypalComision(body.total, value).toFixed(2)
-            : (body.total / value).toFixed(2);
-        const { createOrder } = paypal({
-            client_id:
-                enviroments.NODE_ENV === "production"
-                    ? metodo.paypal.paypal_client_id
-                    : "AdAUJtqTTHeXqxRvut3TvNlCMSbUfWNoS_Xkq1mXmQaP1jvzUEtvdktdewxGaWXkjkP7N8BzaUu4j4ay",
-            secret_key:
-                enviroments.NODE_ENV === "production"
-                    ? metodo.paypal.paypal_secret_key
-                    : "EEqnW3MIBx9rKvmKmOrmX3SWOvFC3hUVKzdEPBq7HQ78jdigXLun14wEIizoaZcbD13E1xO8NQfdx7Ba",
-            sandbox:
-                enviroments.NODE_ENV === "production"
-                    ? "https://api-m.paypal.com"
-                    : enviroments.PAYPAL_SANDBOX,
-        });
+		const total = empresa.enabledClientPayComision
+			? paypalComision(body.total, value).toFixed(2)
+			: (body.total / value).toFixed(2);
+		const { createOrder } = paypal({
+			client_id:
+				enviroments.NODE_ENV === "production"
+					? metodo.paypal.paypal_client_id
+					: "AdAUJtqTTHeXqxRvut3TvNlCMSbUfWNoS_Xkq1mXmQaP1jvzUEtvdktdewxGaWXkjkP7N8BzaUu4j4ay",
+			secret_key:
+				enviroments.NODE_ENV === "production"
+					? metodo.paypal.paypal_secret_key
+					: "EEqnW3MIBx9rKvmKmOrmX3SWOvFC3hUVKzdEPBq7HQ78jdigXLun14wEIizoaZcbD13E1xO8NQfdx7Ba",
+			sandbox:
+				enviroments.NODE_ENV === "production"
+					? "https://api-m.paypal.com"
+					: enviroments.PAYPAL_SANDBOX,
+		});
 
-        const result = await createOrder({
-            intent: "CAPTURE",
-            purchase_units: [
-                {
-                    amount: {
-                        currency_code: "USD",
-                        value: total,
-                    },
-                },
-            ],
-            application_context: {
-                brand_name: empresa!.name_empresa,
-                // payment_method: "IMMEDIATE_PAYMENT_REQUIRED",
-                // locale: "en-US",
-                landing_page: "NO_PREFERENCE",
-                // shipping_preference: "SET_PROVIDED_ADDRESS",
-                user_action: "PAY_NOW",
-                //!
-                return_url: `${BASE_URL(empresa)}/paypal/success`,
-                cancel_url: `${BASE_URL(empresa)}/paypal/cancel`,
-            },
-        });
+		const result = await createOrder({
+			intent: "CAPTURE",
+			purchase_units: [
+				{
+					amount: {
+						currency_code: "USD",
+						value: total,
+					},
+				},
+			],
+			application_context: {
+				brand_name: empresa!.name_empresa,
+				// payment_method: "IMMEDIATE_PAYMENT_REQUIRED",
+				// locale: "en-US",
+				landing_page: "NO_PREFERENCE",
+				// shipping_preference: "SET_PROVIDED_ADDRESS",
+				user_action: "PAY_NOW",
+				//!
+				return_url: `${BASE_URL(empresa)}/paypal/success`,
+				cancel_url: `${BASE_URL(empresa)}/paypal/cancel`,
+			},
+		});
 
-        if (result.status !== "CREATED")
-            throw new BadRequestException(
-                "Hubo un problema al realizar esta orden. Intentalo de nuevo más tarde."
-            );
+		if (result.status !== "CREATED")
+			throw new BadRequestException(
+				"Hubo un problema al realizar esta orden. Intentalo de nuevo más tarde.",
+			);
 
-        await this.ordersApiService.store(
-            {
-                ...body,
-                paypal_token: result.id,
-                status_order_id: STATUSORDER.pendiente,
-            } as OrdersStoreDto,
-            empresa,
-            value
-        );
+		await this.ordersApiService.store(
+			{
+				...body,
+				paypal_token: result.id,
+				status_order_id: STATUSORDER.pendiente,
+			} as OrdersStoreDto,
+			empresa,
+			value,
+		);
 
-        return { success: true, result };
-    }
-    async success(empresa: Empresas, token: string, req: RequestVigilio) {
-        const order = await Orders.findOne({
-            where: {
-                paypal_token: token,
-            },
-        });
-        if (!order) throw new NotFoundException("Orden no encontrado.");
-        let result = null;
-        try {
-            const metodoPago = (await empresa.$get(
-                "metodos_pago"
-            )) as MetodosPago;
-            if (
-                !metodoPago.paypal.enabled ||
-                !metodoPago.paypal.paypal_client_id ||
-                !metodoPago.paypal.paypal_secret_key
-            )
-                throw new BadRequestException("No disponible en este momento");
-            const { captureOrder } = paypal({
-                client_id: metodoPago.paypal.paypal_client_id,
-                secret_key: metodoPago.paypal.paypal_secret_key,
-                sandbox:
-                    enviroments.NODE_ENV === "production"
-                        ? "https://api-m.paypal.com"
-                        : enviroments.PAYPAL_SANDBOX,
-            });
-            result = await captureOrder(token);
-            if (!result.status || result.status !== "COMPLETED") {
-                throw new Error(
-                    result.details[0].description ??
-                        "No se realizó el pago correctamente."
-                );
-            }
-        } catch (error) {
-            if (order.status_order_id !== STATUSORDER.pagado) {
-                await order.update({
-                    status_order_id: STATUSORDER.problema,
-                    paypal_response: (error as Error).message,
-                    description: (error as Error).message,
-                });
-            }
-            throw new Error((error as Error).message);
-        }
-        const { order: orderShow } = await this.ordersApiService.show(
-            empresa,
-            order.order_code
-        );
-        await this.ordersApiService.update({
-            order_code: order.order_code,
-            ordersUpdateDto: {
-                ...orderShow.toJSON(),
-                status_order_id: STATUSORDER.pagado,
-                note: null,
-                send_message: empresa.enabledSendMessage, // enviar mensaje a whatsapp
-                invoice: {
-                    ...orderShow.dataValues.invoice.toJSON(),
-                    sendMessage: true,
-                    send_sunat: empresa.enabledSendSunat, // enviar a sunat
-                },
-                paypal_response: result,
-                description: "Pago realizado correctamente",
-            } as OrdersUpdateDto,
-            req,
-        });
+		return { success: true, result };
+	}
+	async success(empresa: Empresas, token: string, req: RequestVigilio) {
+		const order = await Orders.findOne({
+			where: {
+				paypal_token: token,
+			},
+		});
+		if (!order) throw new NotFoundException("Orden no encontrado.");
+		let result = null;
+		try {
+			const metodoPago = (await empresa.$get("metodos_pago")) as MetodosPago;
+			if (
+				!metodoPago.paypal.enabled ||
+				!metodoPago.paypal.paypal_client_id ||
+				!metodoPago.paypal.paypal_secret_key
+			)
+				throw new BadRequestException("No disponible en este momento");
+			const { captureOrder } = paypal({
+				client_id: metodoPago.paypal.paypal_client_id,
+				secret_key: metodoPago.paypal.paypal_secret_key,
+				sandbox:
+					enviroments.NODE_ENV === "production"
+						? "https://api-m.paypal.com"
+						: enviroments.PAYPAL_SANDBOX,
+			});
+			result = await captureOrder(token);
+			if (!result.status || result.status !== "COMPLETED") {
+				throw new Error(
+					result.details[0].description ??
+						"No se realizó el pago correctamente.",
+				);
+			}
+		} catch (error) {
+			if (order.status_order_id !== STATUSORDER.pagado) {
+				await order.update({
+					status_order_id: STATUSORDER.problema,
+					paypal_response: (error as Error).message,
+					description: (error as Error).message,
+				});
+			}
+			throw new Error((error as Error).message);
+		}
+		const { order: orderShow } = await this.ordersApiService.show(
+			empresa,
+			order.order_code,
+		);
+		await this.ordersApiService.update({
+			order_code: order.order_code,
+			ordersUpdateDto: {
+				...orderShow.toJSON(),
+				status_order_id: STATUSORDER.pagado,
+				note: null,
+				send_message: empresa.enabledSendMessage, // enviar mensaje a whatsapp
+				invoice: {
+					...orderShow.dataValues.invoice.toJSON(),
+					sendMessage: true,
+					send_sunat: empresa.enabledSendSunat, // enviar a sunat
+				},
+				paypal_response: result,
+				description: "Pago realizado correctamente",
+			} as OrdersUpdateDto,
+			req,
+		});
 
-        // aca el pago realizado
-        return {
-            title: "Pago realizado correctamente.",
-            order,
-            description: "Pago Realizado correctamente",
-        };
-    }
+		// aca el pago realizado
+		return {
+			title: "Pago realizado correctamente.",
+			order,
+			description: "Pago Realizado correctamente",
+		};
+	}
 
-    async failed() {
-        return {
-            title: "Pago realizado correctamente.",
-            description: "Pago Realizado correctamente",
-        };
-    }
+	async failed() {
+		return {
+			title: "Pago realizado correctamente.",
+			description: "Pago Realizado correctamente",
+		};
+	}
 }

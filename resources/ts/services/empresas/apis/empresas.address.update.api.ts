@@ -14,6 +14,7 @@ export function EmpresaAddressUpdateApi(): UseMutation<
 			},
 		});
 		const result = await response.json();
+
 		if (!result.success) throw result;
 		return result;
 	});

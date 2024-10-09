@@ -212,7 +212,7 @@ function ProductPage({
 								SKU: {varianteChoose?.sku}
 							</span>
 						) : null}
-						<div class="flex gap-2 text-gray-600 dark:text-gray-300 text-xs font-normal">
+						<div class="flex gap-2 text-gray-600 dark:text-gray-300 text-xs font-semibold">
 							{product.category?.icon ? (
 								<div
 									dangerouslySetInnerHTML={{
@@ -414,21 +414,19 @@ function ProductPage({
 							) : null}
 						</div>
 						{/* coupon form  si  esta en el carrito que no se vea el formulario de cupon */}
-						{!existProductInCart &&
-						storageEmpresa!.tipo_empresa.tipo_servicio_id === 1 ? (
-							varianteChoose!.ilimit ||
-							(!varianteChoose!.ilimit && varianteChoose!.stock! > 0)
-						) : (producto.value as ProductsRestaurantSchemaFromServer).ilimit ||
-							(!(producto.value as ProductsRestaurantSchemaFromServer).ilimit &&
-								(producto.value! as ProductsRestaurantSchemaFromServer).stock! >
-									0) ||
-							(producto.value as ProductsRestaurantSchemaFromServer).ilimit ? (
+						{(!existProductInCart &&
+							(varianteChoose?.ilimit ||
+								(!varianteChoose?.ilimit && varianteChoose?.stock! > 0))) ||
+						(producto.value as ProductsRestaurantSchemaFromServer)?.ilimit ||
+						(!(producto.value as ProductsRestaurantSchemaFromServer)?.ilimit &&
+							(producto.value! as ProductsRestaurantSchemaFromServer).stock! >
+								0) ? (
 							<Form
 								{...couponForm}
 								onSubmit={onCoupon}
 								className="flex gap-2 items-center"
 							>
-								<div class="w-full flex-col">
+								<div class="w-full flex-col [&>div>div>div>input]:bg-white dark:[&>div>div>div>input]:bg-background-dark">
 									{discount.value ? (
 										<p class="text-xs text-primary">
 											Se agregó {discount.value}% de descuento

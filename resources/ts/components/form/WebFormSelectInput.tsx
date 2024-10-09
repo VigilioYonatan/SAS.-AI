@@ -82,6 +82,15 @@ function WebFormSelectInput<T extends object>({
 			}
 		}
 	}, [input.value, array]);
+	useEffect(() => {
+		if (value) {
+			const data = array.find((val) => val.key === value) ?? null;
+			if (data) {
+				input.value = data.value;
+				setValue(name as Path<T>, data?.key as PathValue<T, Path<T>>);
+			}
+		}
+	}, [value]);
 
 	useEffect(() => {
 		if (value) {

@@ -5,13 +5,13 @@ import {
 	minLength,
 	nullable,
 	number,
-	objectAsync,
+	object,
 	startsWith,
 	string,
 	type Input,
 } from "@vigilio/valibot";
 
-export const newSchema = objectAsync({
+export const newSchema = object({
 	id: number(),
 	title: string([minLength(1)]),
 	subtitle: string([minLength(1)]),

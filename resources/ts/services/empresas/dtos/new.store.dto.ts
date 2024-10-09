@@ -1,5 +1,5 @@
-import { omitAsync, type Input } from "@vigilio/valibot";
+import { omit, type Input } from "@vigilio/valibot";
 import { newSchema } from "../schemas/new.schema";
 
-export const newStoreDto = omitAsync(newSchema, ["id", "empresa_id"]);
+export const newStoreDto = omit(newSchema, ["id", "empresa_id"]);
 export type NewStoreDto = Input<typeof newStoreDto>;

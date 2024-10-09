@@ -9,9 +9,9 @@ export const citiesSchema = object({
 });
 export type CitiesSchema = Input<typeof citiesSchema>;
 export type CitiesSchemaFromServer = CitiesSchema & {
-	region: RegionsSchema & {
-		priceShipping: number;
-		days: number;
-		enabled: boolean;
-	};
+	region: RegionsSchema;
+} & {
+	priceShipping: number;
+	days: number;
+	enabled: boolean;
 };

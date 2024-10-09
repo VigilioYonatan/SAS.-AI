@@ -1,11 +1,11 @@
 import {
-    Controller,
-    Get,
-    Params,
-    Req,
-    NotFoundException,
-    InternalServerErrorException,
-    BadRequestException,
+	Controller,
+	Get,
+	Params,
+	Req,
+	NotFoundException,
+	InternalServerErrorException,
+	BadRequestException,
 } from "@vigilio/express-core";
 import { Pipe } from "@vigilio/express-core/valibot";
 import { objectAsync, string } from "@vigilio/valibot";
@@ -18,296 +18,287 @@ import { DIALCODE } from "@/empresas/libs";
 
 @Controller("/ia")
 export class IAApiController {
-    @PermissionAdmin()
-    @Get("/images/:name")
-    async images(
-        @Params("name") name: string,
-        @Req("empresa") empresa: Empresas
-    ) {
-        try {
-            const whatsapp = await isWhatsappIA(empresa.slug);
-            if (!whatsapp)
-                throw new NotFoundException(
-                    "Hubo un problema al usar la IA, Recomiendo fijarse en los limites token"
-                );
-            const esMalaPalabra = await this.prompt(
-                whatsapp,
-                `'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'`
-            );
+	@PermissionAdmin()
+	@Get("/images/:name")
+	async images(
+		@Params("name") name: string,
+		@Req("empresa") empresa: Empresas,
+	) {
+		try {
+			const whatsapp = await isWhatsappIA(empresa.slug);
+			if (!whatsapp)
+				throw new NotFoundException(
+					"Hubo un problema al usar la IA, Recomiendo fijarse en los limites token",
+				);
+			const esMalaPalabra = await this.prompt(
+				whatsapp,
+				`'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'`,
+			);
 
-            if (esMalaPalabra?.includes("1"))
-                throw new BadRequestException("No válido");
+			if (esMalaPalabra?.includes("1"))
+				throw new BadRequestException("No válido");
 
-            const response = await fetch(
-                `https://www.bing.com/images/search?q=${`${name}`.replaceAll(
-                    " ",
-                    "+"
-                )}&form=HDRSC3&first=1&cw=1202&ch=935`
-            );
-            const result = await response.text();
-            const $ = cheerio.load(result);
+			const response = await fetch(
+				`https://www.bing.com/images/search?q=${`${name}`.replaceAll(
+					" ",
+					"+",
+				)}&form=HDRSC3&first=1&cw=1202&ch=935`,
+			);
+			const result = await response.text();
+			const $ = cheerio.load(result);
 
-            const fathers = $(".iusc");
-            const images = fathers
-                .map((_, el) => {
-                    const element = $(el);
-                    const json = JSON.parse(element.attr("m")!);
-                    const preview = element.find("img").attr("src");
-                    const image = json.murl;
-                    return {
-                        image,
-                        preview: preview ? preview : image,
-                    };
-                })
-                .get();
-            return {
-                success: true,
-                data: {
-                    images,
-                },
-            };
-        } catch (error) {
-            throw new InternalServerErrorException("Error server");
-        }
-    }
-    @PermissionAdmin()
-    @Pipe(objectAsync({ name: string() }))
-    @Get("/product/:name")
-    async description(
-        @Params("name") name: string,
-        @Req("empresa") empresa: Empresas
-    ) {
-        try {
-            const whatsapp = await isWhatsappIA(empresa.slug);
-            if (!whatsapp)
-                throw new NotFoundException(
-                    "Hubo un problema al usar la IA, Recomiendo fijarse en los limites token"
-                );
-            const esMalaPalabra = await this.prompt(
-                whatsapp,
-                `'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'`
-            );
+			const fathers = $(".iusc");
+			const images = fathers
+				.map((_, el) => {
+					const element = $(el);
+					const json = JSON.parse(element.attr("m")!);
+					const preview = element.find("img").attr("src");
+					const image = json.murl;
+					return {
+						image,
+						preview: preview ? preview : image,
+					};
+				})
+				.get();
+			return {
+				success: true,
+				data: {
+					images,
+				},
+			};
+		} catch (error) {
+			throw new InternalServerErrorException("Error server");
+		}
+	}
+	@PermissionAdmin()
+	@Pipe(objectAsync({ name: string() }))
+	@Get("/product/:name")
+	async description(
+		@Params("name") name: string,
+		@Req("empresa") empresa: Empresas,
+	) {
+		try {
+			const whatsapp = await isWhatsappIA(empresa.slug);
+			if (!whatsapp)
+				throw new NotFoundException(
+					"Hubo un problema al usar la IA, Recomiendo fijarse en los limites token",
+				);
+			const esMalaPalabra = await this.prompt(
+				whatsapp,
+				`'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'`,
+			);
 
-            if (esMalaPalabra?.includes("1"))
-                throw new BadRequestException("No válido");
+			if (esMalaPalabra?.includes("1"))
+				throw new BadRequestException("No válido");
 
-            const response = await fetch(
-                `https://www.bing.com/images/search?q=${`${name} fondo blanco`.replaceAll(
-                    " ",
-                    "+"
-                )}&form=HDRSC3&first=1&cw=1202&ch=935`
-            );
-            const result = await response.text();
-            const $ = cheerio.load(result);
+			const response = await fetch(
+				`https://www.bing.com/images/search?q=${`${name} fondo blanco`.replaceAll(
+					" ",
+					"+",
+				)}&form=HDRSC3&first=1&cw=1202&ch=935`,
+			);
+			const result = await response.text();
+			const $ = cheerio.load(result);
 
-            const fathers = $(".iusc");
-            const images = fathers
-                .map((_, el) => {
-                    const element = $(el);
-                    const json = JSON.parse(element.attr("m")!);
-                    const preview = element.find("img").attr("src");
-                    const image = json.murl;
-                    return {
-                        image,
-                        preview: preview ? preview : image,
-                    };
-                })
-                .get()
-                .filter((a) => a)
-                .slice(0, 8);
+			const fathers = $(".iusc");
+			const images = fathers
+				.map((_, el) => {
+					const element = $(el);
+					const json = JSON.parse(element.attr("m")!);
+					const preview = element.find("img").attr("src");
+					const image = json.murl;
+					return {
+						image,
+						preview: preview ? preview : image,
+					};
+				})
+				.get()
+				.filter((a) => a)
+				.slice(0, 8);
 
-            const desc = `Dame solo la "descripcion" y no otro en formato de tienda virtual de producto de ${name} en español  y no traer fuentes y no menciones otra cosa que no sea la descripción, y sin comillas "" por favor`;
-            const caract = `traeme las caracterisiticas del ${name}, valor y descripcion en un json [{key:"",value:""}] minimo 10 maximo 25,. solo traemw el json, no digas nada mas`;
-            const claveSat = `rame la clave catalog producto sat del "${name}", solo di la clave!! , no digas nada mas. ejemplo 292929292
+			const desc = `Dame solo la "descripcion" y no otro en formato de tienda virtual de producto de ${name} en español  y no traer fuentes y no menciones otra cosa que no sea la descripción, y sin comillas "" por favor`;
+			const caract = `traeme las caracterisiticas del ${name}, valor y descripcion en un json [{key:"",value:""}] minimo 10 maximo 25,. solo traemw el json, no digas nada mas`;
+			const claveSat = `rame la clave catalog producto sat del "${name}", solo di la clave!! , no digas nada mas. ejemplo 292929292
 `;
-            const [description, caracterisiticas, product_key] =
-                await Promise.all([
-                    this.prompt(whatsapp, desc),
-                    this.prompt(whatsapp, caract),
-                    this.prompt(whatsapp, claveSat),
-                ]);
+			const [description, caracterisiticas, product_key] = await Promise.all([
+				this.prompt(whatsapp, desc),
+				this.prompt(whatsapp, caract),
+				this.prompt(whatsapp, claveSat),
+			]);
 
-            const cleanCharacterisitcas = caracterisiticas!
-                .split("\n")
-                .slice(1)
-                .join("\n")
-                .replace(/\\n/g, "")
-                .replace(/^\s*json\s*\n/, "")
-                .slice(0, -4);
+			const cleanCharacterisitcas = caracterisiticas!
+				.split("\n")
+				.slice(1)
+				.join("\n")
+				.replace(/\\n/g, "")
+				.replace(/^\s*json\s*\n/, "")
+				.slice(0, -4);
 
-            return {
-                success: true,
-                data: {
-                    images,
-                    description,
-                    caracterisiticas: JSON.parse(cleanCharacterisitcas),
-                    product_key: [DIALCODE.mexico].includes(
-                        empresa.dial_code as DIALCODE
-                    )
-                        ? product_key === "null"
-                            ? null
-                            : product_key
-                        : null,
-                },
-            };
-        } catch (error) {
-            throw new InternalServerErrorException((error as Error).message);
-        }
-    }
+			return {
+				success: true,
+				data: {
+					images,
+					description,
+					caracterisiticas: JSON.parse(cleanCharacterisitcas),
+					product_key: [DIALCODE.mexico].includes(empresa.dial_code as DIALCODE)
+						? product_key === "null"
+							? null
+							: product_key
+						: null,
+				},
+			};
+		} catch (error) {
+			throw new InternalServerErrorException((error as Error).message);
+		}
+	}
 
-    @PermissionAdmin()
-    @Pipe(objectAsync({ name: string() }))
-    @Get("/brand/:name")
-    async brand(
-        @Params("name") name: string,
-        @Req("empresa") empresa: Empresas
-    ) {
-        try {
-            const whatsapp = await isWhatsappIA(empresa.slug);
-            const esMalaPalabra = await this.prompt(
-                whatsapp,
-                `'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'`
-            );
-            if (esMalaPalabra?.includes("1"))
-                throw new BadRequestException("No válido");
-            if (!whatsapp)
-                throw new NotFoundException(
-                    "Hubo un problema al usar la ia, Recomiendo fijarse en los limites token"
-                );
-            const response = await fetch(
-                `https://www.bing.com/images/search?q=${`${name} png`.replaceAll(
-                    " ",
-                    "+"
-                )}&form=HDRSC3&first=1&cw=1202&ch=935`
-            );
-            const result: string | null = await response.text();
-            const $ = cheerio.load(result);
+	@PermissionAdmin()
+	@Pipe(objectAsync({ name: string() }))
+	@Get("/brand/:name")
+	async brand(@Params("name") name: string, @Req("empresa") empresa: Empresas) {
+		try {
+			const whatsapp = await isWhatsappIA(empresa.slug);
+			const esMalaPalabra = await this.prompt(
+				whatsapp,
+				`'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'`,
+			);
+			if (esMalaPalabra?.includes("1"))
+				throw new BadRequestException("No válido");
+			if (!whatsapp)
+				throw new NotFoundException(
+					"Hubo un problema al usar la ia, Recomiendo fijarse en los limites token",
+				);
+			const response = await fetch(
+				`https://www.bing.com/images/search?q=${`${name} png`.replaceAll(
+					" ",
+					"+",
+				)}&form=HDRSC3&first=1&cw=1202&ch=935`,
+			);
+			const result: string | null = await response.text();
+			const $ = cheerio.load(result);
 
-            const fathers = $(".iusc");
-            const images = fathers
-                .map((_, el) => {
-                    const element = $(el);
-                    const json = JSON.parse(element.attr("m")!);
-                    const preview = element.find("img").attr("src");
-                    const image = json.murl;
-                    return {
-                        image,
-                        preview: preview ? preview : image,
-                    };
-                })
-                .get()
-                .filter((a) => a)
-                .slice(0, 8);
+			const fathers = $(".iusc");
+			const images = fathers
+				.map((_, el) => {
+					const element = $(el);
+					const json = JSON.parse(element.attr("m")!);
+					const preview = element.find("img").attr("src");
+					const image = json.murl;
+					return {
+						image,
+						preview: preview ? preview : image,
+					};
+				})
+				.get()
+				.filter((a) => a)
+				.slice(0, 8);
 
-            return {
-                success: true,
-                data: {
-                    images,
-                },
-            };
-        } catch (error) {
-            throw new InternalServerErrorException((error as Error).message);
-        }
-    }
-    @PermissionAdmin()
-    @Pipe(objectAsync({ name: string() }))
-    @Get("/category/:name")
-    async category(
-        @Params("name") name: string,
-        @Req("empresa") empresa: Empresas
-    ) {
-        try {
-            const whatsapp = await isWhatsappIA(empresa.slug);
-            if (!whatsapp)
-                throw new NotFoundException(
-                    "Hubo un problema al usar la IA, Recomiendo fijarse en los limites token"
-                );
-            const esMalaPalabra = await this.prompt(
-                whatsapp,
-                `'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'`
-            );
-            if (esMalaPalabra?.includes("1"))
-                throw new BadRequestException("No válido");
-            const response = await fetch(
-                `https://www.bing.com/images/search?q=${`${name} category`.replaceAll(
-                    " ",
-                    "+"
-                )}&form=HDRSC3&first=1&cw=1202&ch=935`
-            );
-            const result = await response.text();
-            const $ = cheerio.load(result);
+			return {
+				success: true,
+				data: {
+					images,
+				},
+			};
+		} catch (error) {
+			throw new InternalServerErrorException((error as Error).message);
+		}
+	}
+	@PermissionAdmin()
+	@Pipe(objectAsync({ name: string() }))
+	@Get("/category/:name")
+	async category(
+		@Params("name") name: string,
+		@Req("empresa") empresa: Empresas,
+	) {
+		try {
+			const whatsapp = await isWhatsappIA(empresa.slug);
+			if (!whatsapp)
+				throw new NotFoundException(
+					"Hubo un problema al usar la IA, Recomiendo fijarse en los limites token",
+				);
+			const esMalaPalabra = await this.prompt(
+				whatsapp,
+				`'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'`,
+			);
+			if (esMalaPalabra?.includes("1"))
+				throw new BadRequestException("No válido");
+			const response = await fetch(
+				`https://www.bing.com/images/search?q=${`${name} category`.replaceAll(
+					" ",
+					"+",
+				)}&form=HDRSC3&first=1&cw=1202&ch=935`,
+			);
+			const result = await response.text();
+			const $ = cheerio.load(result);
 
-            const fathers = $(".iusc");
-            const images = fathers
-                .map((_, el) => {
-                    const element = $(el);
-                    const json = JSON.parse(element.attr("m")!);
-                    const preview = element.find("img").attr("src");
-                    const image = json.murl;
-                    return {
-                        image,
-                        preview: preview ? preview : image,
-                    };
-                })
-                .get()
-                .filter((a) => a)
-                .slice(0, 8);
-            const prompt = `conoces fontawesome? tienes un icon en html <i class='fa' de ${name}? solo traime el html y en string y no en formato y no digas nada. solo traime el ico sin '' al principio ni al final`;
-            const ico = await this.prompt(whatsapp, prompt);
-            return {
-                success: true,
-                data: {
-                    images,
-                    ico,
-                },
-            };
-        } catch (error) {
-            throw new InternalServerErrorException("Error server");
-        }
-    }
-    async prompt(
-        whatsapp: Awaited<ReturnType<typeof isWhatsappIA>>,
-        content: string
-    ) {
-        const completion = await openAis[
-            whatsapp!.empresa.slug
-        ].chat.completions.create({
-            model:
-                whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
-            max_tokens: 5000,
-            messages: [
-                {
-                    role: "user",
-                    // insert custom prompt
-                    content,
-                },
-            ],
-        });
-        const completionText = completion.choices[0].message.content;
-        const latestEmpresaUsage =
-            whatsapp!.empresa!.inteligenceArtificial.usage;
-        await whatsapp!.empresa.update({
-            ...whatsapp!.empresa.inteligenceArtificial,
-            usage: {
-                ...latestEmpresaUsage,
-                input_tokens:
-                    latestEmpresaUsage.input_tokens +
-                    (completion.usage!.prompt_tokens +
-                        completion.usage!.completion_tokens),
-                output_tokens:
-                    latestEmpresaUsage.input_tokens +
-                    completion.usage!.completion_tokens,
-            },
-            payments: {
-                ...whatsapp!.empresa.payments,
-                tokens: {
-                    tokens:
-                        whatsapp!.empresa.payments.tokens.tokens -
-                        (completion.usage!.prompt_tokens +
-                            completion.usage!.completion_tokens),
-                },
-            },
-        });
-        return completionText;
-    }
+			const fathers = $(".iusc");
+			const images = fathers
+				.map((_, el) => {
+					const element = $(el);
+					const json = JSON.parse(element.attr("m")!);
+					const preview = element.find("img").attr("src");
+					const image = json.murl;
+					return {
+						image,
+						preview: preview ? preview : image,
+					};
+				})
+				.get()
+				.filter((a) => a)
+				.slice(0, 8);
+			const prompt = `conoces fontawesome? tienes un icon en html <i class='fa' de ${name}? solo traime el html y en string y no en formato y no digas nada. solo traime el ico sin '' al principio ni al final`;
+			const ico = await this.prompt(whatsapp, prompt);
+			return {
+				success: true,
+				data: {
+					images,
+					ico,
+				},
+			};
+		} catch (error) {
+			throw new InternalServerErrorException("Error server");
+		}
+	}
+	async prompt(
+		whatsapp: Awaited<ReturnType<typeof isWhatsappIA>>,
+		content: string,
+	) {
+		const completion = await openAis[
+			whatsapp!.empresa.slug
+		].chat.completions.create({
+			model: whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
+			max_tokens: 5000,
+			messages: [
+				{
+					role: "user",
+					// insert custom prompt
+					content,
+				},
+			],
+		});
+		const completionText = completion.choices[0].message.content;
+		const latestEmpresaUsage = whatsapp!.empresa!.inteligenceArtificial.usage;
+		await whatsapp!.empresa.update({
+			...whatsapp!.empresa.inteligenceArtificial,
+			usage: {
+				...latestEmpresaUsage,
+				input_tokens:
+					latestEmpresaUsage.input_tokens +
+					(completion.usage!.prompt_tokens +
+						completion.usage!.completion_tokens),
+				output_tokens:
+					latestEmpresaUsage.input_tokens + completion.usage!.completion_tokens,
+			},
+			payments: {
+				...whatsapp!.empresa.payments,
+				tokens: {
+					tokens:
+						whatsapp!.empresa.payments.tokens.tokens -
+						(completion.usage!.prompt_tokens +
+							completion.usage!.completion_tokens),
+				},
+			},
+		});
+		return completionText;
+	}
 }
