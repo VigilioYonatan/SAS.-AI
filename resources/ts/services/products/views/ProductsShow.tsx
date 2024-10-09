@@ -22,7 +22,6 @@ import { variantsDeleteApi } from "../apis/options/variants.delete.api";
 import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schema";
 import ProductsRestaurantUpdate from "./ProductsRestaurantUpdate";
 import { ProductsRestaurantSchema } from "../schemas/products_restaurant.schema";
-import { DIALCODE } from "@/empresas/libs/helpers";
 
 interface ProductsShowProps {
     id?: string | number;
@@ -176,18 +175,6 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
                                     {product.slug}
                                 </span>
                             </div>
-                            {[DIALCODE.mexico].includes(
-                                storageEmpresa!.dial_code as DIALCODE
-                            ) ? (
-                                <div class="flex gap-1 flex-col mb-3 p-2 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md">
-                                    <span class="text-primary dark:text-terciary font-bold break-words text-wrap">
-                                        SAT Clave:
-                                    </span>
-                                    <span class="dark:text-secondary-light text-secondary-dark tracking-wide break-words">
-                                        {product.product_key}
-                                    </span>
-                                </div>
-                            ) : null}
 
                             <div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
                                 <span class="text-primary dark:text-terciary font-bold">

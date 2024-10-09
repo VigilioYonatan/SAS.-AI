@@ -252,7 +252,11 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                                                       order.client as Clients
                                                                   ).fullname
                                                                 : "Publico General"
-                                                        }
+                                                        } ${
+        (order.invoice as Invoices)?.identification_number
+            ? `- ${(order.invoice as Invoices)?.identification_number}`
+            : ""
+    }
                                                         </p>
                                                     </td>
                                                 </tr>                 

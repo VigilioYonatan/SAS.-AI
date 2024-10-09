@@ -114,3 +114,34 @@ export function transferencias(transferencias: any) {
         ? transferencias
         : null;
 }
+
+export const typeFiscal = {
+    "52": {
+        type_fiscal: "RFC",
+        type_dni: "CURP",
+    },
+    "57": {
+        type_fiscal: "NIT",
+        type_dni: "Cédula de Ciudadanía",
+    },
+    "56": {
+        type_fiscal: "RUT",
+        type_dni: "RUN",
+    },
+    "598": {
+        type_fiscal: "RUC",
+        type_dni: "Cédula de Identidad",
+    },
+    "55": {
+        type_fiscal: "CNPJ/CPF",
+        type_dni: "RG",
+    },
+    "51": {
+        type_fiscal: "RUC",
+        type_dni: "DNI",
+    },
+    "593": {
+        type_fiscal: "RUC",
+        type_dni: "Cédula de Ciudadanía",
+    },
+};

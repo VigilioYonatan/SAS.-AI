@@ -269,7 +269,6 @@ export const empresasSchema = object({
     certificado: nullable(array(filesSchema())),
     type_empresa_id: number(),
     telegram_token: nullable(string()),
-    mex_api_key: nullable(string([minLength(3)])),
     type_empresa_other: nullable(string()),
     bancos: array(
         object({

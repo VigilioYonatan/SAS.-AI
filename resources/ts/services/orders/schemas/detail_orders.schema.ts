@@ -1,15 +1,7 @@
 import { ProductsNormalSchema } from "@/products/schemas/products_normal.schema";
 import { ProductsRestaurantSchema } from "@/products/schemas/products_restaurant.schema";
 import { ProductsServicioSchema } from "@/products/schemas/products_servicio.schema";
-import {
-    number,
-    type Input,
-    object,
-    nullable,
-    string,
-    minLength,
-    maxLength,
-} from "@vigilio/valibot";
+import { number, type Input, object, nullable, string } from "@vigilio/valibot";
 
 export const detailOrdersSchema = object({
     id: number(),
@@ -22,7 +14,6 @@ export const detailOrdersSchema = object({
     product_servicio_id: nullable(number()),
     variant_id: nullable(number()),
     empresa_id: number(),
-    product_key: nullable(string([minLength(3), maxLength(30)])),
     coupon: nullable(string()),
 });
 

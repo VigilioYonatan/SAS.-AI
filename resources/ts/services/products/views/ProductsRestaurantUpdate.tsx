@@ -32,7 +32,6 @@ import {
     ProductsRestaurantUpdateDto,
 } from "../dtos/products_restaurant.dto";
 import { productsRestaurantUpdateApi } from "../apis/products/products_restaurant.update.api";
-import { DIALCODE } from "@/empresas/libs/helpers";
 
 interface ProductsRestaurantUpdateProps {
     id?: string | number;
@@ -113,18 +112,6 @@ function ProductsRestaurantUpdate({
             product.id
         );
         function onUpdateProduct(data: ProductsRestaurantUpdateDto) {
-            if (
-                [DIALCODE.mexico].includes(
-                    storageEmpresa!.dial_code as DIALCODE
-                ) &&
-                storageEmpresa?.enabled_igv &&
-                !data.product_key?.length
-            ) {
-                formProductsRestaurantUpdate.setError("product_key", {
-                    message: "Este campo es obligatorio.",
-                });
-                return;
-            }
             sweetModal({
                 title: "¿Estás seguro de editar este producto?",
                 customIcon:
@@ -272,37 +259,6 @@ function ProductsRestaurantUpdate({
                                 options={{ setValueAs: transformSlug }}
                                 disabled
                             />
-                            {/* solo mexico */}
-                            {[DIALCODE.mexico].includes(
-                                storageEmpresa!.dial_code as DIALCODE
-                            ) ? (
-                                <Form.control
-                                    name={
-                                        "product_key" as keyof ProductsRestaurantUpdateDto
-                                    }
-                                    title="Clave SAT"
-                                    placeholder="4319XXXX114"
-                                    options={{ setValueAs: transformSlug }}
-                                    question={
-                                        <span class="font-semibold">
-                                            Clave de producto/servicio{" "}
-                                            <a
-                                                class="text-primary underline"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                href="https://www.sat.gob.mx/consultas/53693/catalogo-de-productos-y-servicios"
-                                            >
-                                                SAT
-                                            </a>{" "}
-                                            <br />
-                                            ejemplo: 4319XXXX114
-                                        </span>
-                                    }
-                                    disabled
-                                />
-                            ) : (
-                                <></>
-                            )}
                         </div>
                         <div class="w-full flex flex-col md:flex-row gap-2">
                             <Form.control

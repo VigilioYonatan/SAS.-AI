@@ -49,6 +49,7 @@ const clientsColumns: Columns<
             );
         },
     },
+    { key: "address", cell: (props) => `${props.address}-${props.reference}` },
     { key: "email", isSort: true, cell: (props) => props.email || "-" },
     {
         key: "enabled",

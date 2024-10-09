@@ -26,11 +26,13 @@ export const clientsSchema = objectAsync({
     ]),
     email: nullable(string([email()])),
     address: nullable(string([minLength(10), maxLength(100)])),
+    reference: nullable(string([minLength(10), maxLength(100)])),
     city_id: nullable(number()),
     map_marker: nullable(
         object({ lng: number(), lat: number() }, "Coordenadas no válida.")
     ),
     enabled: boolean(),
+    identification_number: nullable(string("Documento de identidad no válido")),
     empresa_id: number(),
 });
 

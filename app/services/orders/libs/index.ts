@@ -553,7 +553,7 @@ export async function getOrder(
             },
         });
         city = {
-            ...(order.city as Cities),
+            ...(order.city as Cities).toJSON(),
             days: regionsEmpresa?.days,
             enabled: regionsEmpresa?.enabled,
             priceShipping: regionsEmpresa?.priceShipping,

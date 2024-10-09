@@ -28,7 +28,7 @@ import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_norm
 import { citiesIndexApi } from "@/ubigeo/apis/citites.api.index";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import { MetodosDePago } from "@/web/components/product/ProductView";
-import { DIALCODE } from "@/empresas/libs/helpers";
+import { DIALCODE, typeFiscal } from "@/empresas/libs/helpers";
 interface CartProps {
     cart: { id: number; quantity: number; variant?: number }[] | null;
     header: HeaderType;
@@ -78,17 +78,15 @@ function CartPage({ cart, header }: CartProps) {
             );
             return;
         }
-        if (
-            storageEmpresa?.dial_code === DIALCODE.mexico &&
-            !body.email?.length
-        ) {
+        if (!body.city_id && storageEmpresa?.enable_sell_country) {
             ordersCartStoreDtoForm.setError(
-                "email",
+                "city_id",
                 { message: "Este campo es obligatorio." },
                 { shouldFocus: true }
             );
             return;
         }
+
         if (body.invoice && body.invoice.kind_invoice_code !== "00") {
             if (!body.invoice.identification_number) {
                 ordersCartStoreDtoForm.setError(
@@ -451,22 +449,6 @@ function CartPage({ cart, header }: CartProps) {
                                 {...ordersCartStoreDtoForm}
                                 onSubmit={onCartOrderStore}
                             >
-                                {/* mexico */}
-                                {[DIALCODE.mexico].includes(
-                                    storageEmpresa!.dial_code as DIALCODE
-                                ) ? (
-                                    <Form.control.web
-                                        ico={<i class="fas fa-at" />}
-                                        name={
-                                            "email" as keyof OrdersCartStoreDto
-                                        }
-                                        title="Correo Electrónico"
-                                        type="email"
-                                    />
-                                ) : (
-                                    <></>
-                                )}
-
                                 <div class="w-full flex gap-2 items-center">
                                     <Form.control.web
                                         name={
@@ -489,7 +471,7 @@ function CartPage({ cart, header }: CartProps) {
                                         }
                                     />
                                     {clientsShowQuery.isLoading ? (
-                                        <LoaderSubmit />
+                                        <LoaderSubmit color="var(--primary)" />
                                     ) : null}
                                 </div>
                                 {empresa.state!.enable_sell_country ? (
@@ -511,6 +493,12 @@ function CartPage({ cart, header }: CartProps) {
                                 ) : (
                                     <></>
                                 )}
+                                <Form.control.web
+                                    ico={<i class="fas fa-at" />}
+                                    name={"email" as keyof OrdersCartStoreDto}
+                                    title="Correo Electrónico"
+                                    type="email"
+                                />
                                 <Form.control.web
                                     ico={<i class="fas fa-map-marker-alt" />}
                                     name={"address" as keyof OrdersCartStoreDto}
@@ -547,7 +535,6 @@ function CartPage({ cart, header }: CartProps) {
                                 ) : (
                                     <></>
                                 )}
-
                                 <Form.control.web
                                     ico={
                                         <i class="fa-solid fa-location-plus" />
@@ -582,45 +569,80 @@ function CartPage({ cart, header }: CartProps) {
                                     <></>
                                 )}
                                 <>
-                                    {documentCode === "1" ||
-                                    documentCode === "6" ? (
+                                    {storageEmpresa?.dial_code ===
+                                    DIALCODE.peru ? (
                                         <>
-                                            <Form.control.web
-                                                title={
-                                                    documentCode === "1"
-                                                        ? "Documento Nacional de Identidad (DNI)"
-                                                        : "Registro Único de Contribuyentes (RUC)"
-                                                }
-                                                name={
-                                                    "invoice.identification_number"
-                                                }
-                                                placeholder="Digite su identificación"
-                                            />
-                                            {dniMutation.isLoading ||
-                                            rucMUtation.isLoading ? (
-                                                <span>cargando...</span>
-                                            ) : null}
-                                            {storageEmpresa?.dial_code ===
-                                            DIALCODE.peru ? (
-                                                <Form.control.web
-                                                    title={
-                                                        documentCode === "1"
-                                                            ? "Nombre"
-                                                            : "Razon Social"
-                                                    }
-                                                    disabled
-                                                    name={
-                                                        "invoice.razon_social"
-                                                    }
-                                                    placeholder={
-                                                        "Digite su Razon social"
-                                                    }
-                                                />
-                                            ) : null}
+                                            {documentCode === "1" ||
+                                            documentCode === "6" ? (
+                                                <>
+                                                    <Form.control.web
+                                                        title={
+                                                            documentCode === "1"
+                                                                ? "Documento Nacional de Identidad (DNI)"
+                                                                : "Registro Único de Contribuyentes (RUC)"
+                                                        }
+                                                        name={
+                                                            "invoice.identification_number"
+                                                        }
+                                                        placeholder="Digite su identificación"
+                                                    />
+                                                    {dniMutation.isLoading ||
+                                                    rucMUtation.isLoading ? (
+                                                        <span>cargando...</span>
+                                                    ) : (
+                                                        <></>
+                                                    )}
+                                                    {storageEmpresa?.dial_code ===
+                                                    DIALCODE.peru ? (
+                                                        <Form.control.web
+                                                            title={
+                                                                documentCode ===
+                                                                "1"
+                                                                    ? "Nombre"
+                                                                    : "Razon Social"
+                                                            }
+                                                            disabled
+                                                            name={
+                                                                "invoice.razon_social"
+                                                            }
+                                                            placeholder={
+                                                                "Digite su Razon social"
+                                                            }
+                                                        />
+                                                    ) : (
+                                                        <></>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <></>
+                                            )}
                                         </>
-                                    ) : null}
+                                    ) : (
+                                        <></>
+                                    )}
                                 </>
-
+                                <>
+                                    {" "}
+                                    {storageEmpresa?.dial_code !==
+                                    DIALCODE.peru ? (
+                                        <Form.control.web
+                                            title={`${
+                                                typeFiscal[
+                                                    storageEmpresa?.dial_code as keyof typeof typeFiscal
+                                                ].type_dni
+                                            }/${
+                                                typeFiscal[
+                                                    storageEmpresa?.dial_code as keyof typeof typeFiscal
+                                                ].type_fiscal
+                                            }`}
+                                            name={
+                                                "invoice.identification_number"
+                                            }
+                                        />
+                                    ) : (
+                                        <></>
+                                    )}
+                                </>
                                 <Form.control.web
                                     name={
                                         "fullName" as keyof OrdersCartStoreDto
@@ -645,7 +667,6 @@ function CartPage({ cart, header }: CartProps) {
                                     </a>
                                     .
                                 </span>
-
                                 <Form.button.submit
                                     ico={null}
                                     className="flex justify-center w-full px-5 py-3 text-center"

@@ -251,53 +251,6 @@ function empresaUpdate() {
                                         </div>
                                     }
                                 />{" "}
-                                {storageEmpresa?.dial_code ===
-                                DIALCODE.mexico ? (
-                                    <Form.control
-                                        name={
-                                            "mex_api_key" as keyof EmpresasUpdateDto
-                                        }
-                                        placeholder="SKXXXXXXXXXXXX"
-                                        title="FacturaApi API-KEY - Facturación SAT"
-                                        question={
-                                            <span class="font-semibold">
-                                                Registrate en{" "}
-                                                <a
-                                                    href="https://www.facturapi.io/"
-                                                    class="text-primary underline"
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    Factura Api{" "}
-                                                </a>
-                                                , habilita en modo "LIVE" y
-                                                obtén tu API KEY en
-                                                Integración/API Keys
-                                                <br />
-                                                Ver precios{" "}
-                                                <a
-                                                    href="https://www.facturapi.io/pricing"
-                                                    class="text-primary  underline"
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    Pricing
-                                                </a>
-                                                <br />
-                                                Emite facturas, boletas, etc en{" "}
-                                                <a
-                                                    href="https://dashboard.facturapi.io/"
-                                                    class="text-primary  underline"
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    Dashboard
-                                                </a>{" "}
-                                                fácilmente.
-                                            </span>
-                                        }
-                                    />
-                                ) : null}
                             </div>
                             <div class="w-full flex flex-col md:flex-row gap-2">
                                 <Form.control

@@ -27,7 +27,6 @@ import { useSignal } from "@preact/signals";
 import { getFilesEdit } from "~/libs/upload";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import Helper from "~/components/Helper";
-import { DIALCODE } from "@/empresas/libs/helpers";
 
 interface ProductsRestaurantStoreProps {
     refetch: (clean?: boolean | undefined) => Promise<void>;
@@ -78,10 +77,7 @@ function ProductsRestaurantStore({
                     "description",
                     data.data.description
                 );
-                productsRestaurantStoreDtoForm.setValue(
-                    "product_key",
-                    data.data.product_key
-                );
+
                 if (images.length) {
                     productsRestaurantStoreDtoForm.setValue("images", images);
                 }
@@ -138,16 +134,6 @@ function ProductsRestaurantStore({
         name: "characteristics",
     });
     function onProductStore(body: ProductsRestaurantStoreDto) {
-        if (
-            [DIALCODE.mexico].includes(storageEmpresa!.dial_code as DIALCODE) &&
-            storageEmpresa?.enabled_igv &&
-            !body.product_key?.length
-        ) {
-            productsRestaurantStoreDtoForm.setError("product_key", {
-                message: "Este campo es obligatorio.",
-            });
-            return;
-        }
         sweetModal({
             icon: "info",
             title: "¿Estas seguro de agregar este producto?",
@@ -246,37 +232,6 @@ function ProductsRestaurantStore({
                             options={{ setValueAs: transformSlug }}
                             disabled
                         />{" "}
-                        {/* solo mexico */}
-                        {[DIALCODE.mexico].includes(
-                            storageEmpresa!.dial_code as DIALCODE
-                        ) ? (
-                            <Form.control
-                                name={
-                                    "product_key" as keyof ProductsRestaurantStoreDto
-                                }
-                                title="Clave SAT"
-                                placeholder="4319XXXX114"
-                                options={{ setValueAs: transformSlug }}
-                                question={
-                                    <span class="font-semibold">
-                                        Clave de producto/servicio{" "}
-                                        <a
-                                            class="text-primary underline"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            href="https://www.sat.gob.mx/consultas/53693/catalogo-de-productos-y-servicios"
-                                        >
-                                            SAT
-                                        </a>{" "}
-                                        <br />
-                                        ejemplo: 4319XXXX114
-                                    </span>
-                                }
-                                disabled
-                            />
-                        ) : (
-                            <></>
-                        )}
                     </div>
                     <div class="w-full flex flex-row gap-2">
                         <Form.control

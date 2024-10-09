@@ -29,6 +29,7 @@ export const ordersSchema = objectAsync({
     id: number(),
     order_code: string(),
     address: nullable(string([minLength(10), maxLength(100)])),
+    reference: nullable(string([minLength(10), maxLength(100)])),
     email: nullable(string([email()])),
     telephone: nullable(
         string([

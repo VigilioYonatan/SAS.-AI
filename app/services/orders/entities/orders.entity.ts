@@ -73,6 +73,16 @@ export class Orders extends Model implements Omit<OrdersSchema, "id"> {
     address: string;
 
     @Column({
+        type: DataType.STRING(200),
+    })
+    email: string | null;
+
+    @Column({
+        type: DataType.STRING(200),
+    })
+    reference: string | null;
+
+    @Column({
         type: DataType.STRING(20),
     })
     telephone: string;

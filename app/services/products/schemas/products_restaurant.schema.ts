@@ -19,7 +19,6 @@ import type { CategoriesSchema } from "./categories.schema";
 
 export const productsRestaurantSchema = objectAsync({
     id: number(),
-    product_key: nullable(string([minLength(3), maxLength(30)])), //codigo de producto IMPUESTO
     product_code: string([toTrimmed(), minLength(1), maxLength(30)]),
     name: string([toTrimmed(), minLength(1), minLength(3), maxLength(255)]),
     description: nullable(string([toTrimmed()])), // descripcion del producto

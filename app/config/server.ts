@@ -283,7 +283,7 @@ export class Server {
                 proxy: enviroments.NODE_ENV === "production", // NODE_ENV === 'production'
                 cookie: {
                     secure: enviroments.NODE_ENV === "production", //true in production
-                    httpOnly: true,
+                    httpOnly: enviroments.NODE_ENV === "production",
                     maxAge: closeSession, // 15 dia
                 },
                 store: new memoryStoreClass({

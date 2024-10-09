@@ -38,7 +38,17 @@ export class Clients extends Model implements Omit<ClientSchema, "id"> {
     @Column({
         type: DataType.STRING(100),
     })
+    reference: string | null;
+
+    @Column({
+        type: DataType.STRING(100),
+    })
     email: string | null;
+
+    @Column({
+        type: DataType.STRING(100),
+    })
+    identification_number: string | null;
 
     @Column({
         type: DataType.STRING(30),

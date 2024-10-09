@@ -37,9 +37,7 @@ import type { VariantsUpdateDto } from "../dtos/options/variants.update.dto";
 import { Variants } from "../entities/options/variants.entity";
 import type { Features } from "../entities/options/features.entity";
 import type { Options } from "../entities/options/options.entity";
-import { DIALCODE } from "@/empresas/libs";
-import { createProductMexico } from "@/orders/apis/invoices/mexico";
-import { subtotal } from "@/cart/libs/helpers";
+
 
 @Injectable()
 export class ProductsApiService {
@@ -463,20 +461,6 @@ export class ProductsApiService {
             );
         }
 
-        // agregar producto
-        if (
-            empresa.dial_code === DIALCODE.mexico &&
-            empresa.enabled_igv &&
-            empresa.mex_api_key &&
-            productsStoreDto.product_key
-        ) {
-            await createProductMexico(empresa.mex_api_key, {
-                description: productsStoreDto.name,
-                price: subtotal(productsStoreDto.price, empresa.igv, true),
-                product_key: productsStoreDto.product_key,
-                tax_included: true,
-            });
-        }
         return {
             success: true,
             product,

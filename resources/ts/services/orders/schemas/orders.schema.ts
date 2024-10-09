@@ -29,6 +29,7 @@ export const ordersSchema = object({
     order_code: string(),
     email: nullable(string([email()])),
     address: nullable(string([minLength(10), maxLength(100)])),
+    reference: nullable(string([minLength(10), maxLength(100)])),
     telephone: nullable(
         string([
             minLength(6),

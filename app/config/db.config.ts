@@ -120,7 +120,7 @@ export async function connectDB() {
         await sequelize.authenticate();
         logger.success("conectado a base de datos correctamente");
         if (enviroments.NODE_ENV === "production") {
-            await sequelize.sync({ alter: true });
+            await sequelize.sync();
 
             return;
         }

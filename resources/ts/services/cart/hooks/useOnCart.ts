@@ -235,7 +235,6 @@ function useOnCart() {
                         : null,
                     ...productOBJ(cart.id),
                     variant_id: cart.variant ? cart.variant.id : null,
-                    product_key: cart.product_key,
                 }))
             );
         }
@@ -259,11 +258,13 @@ function useOnCart() {
         const region = citiesIndexQuery.data?.data.find(
             (ct) => ct.id === city_id
         );
+
         if (region) {
             const result = await regionsShowQuery.mutateAsync(region.region_id);
             city.value = result?.data as RegionsShowAPI["data"];
         }
     }
+
     useEffect(() => {
         if (city_id) {
             citySelect(city_id);
@@ -271,7 +272,7 @@ function useOnCart() {
     }, [city_id]);
 
     useEffect(() => {
-        if (!ordersCartStoreDtoForm.formState.errors.telephone && telephone) {
+        if (telephone?.length) {
             clientsShowQuery.mutate(telephone, {
                 onSuccess(data) {
                     ordersCartStoreDtoForm.setValue(
@@ -291,10 +292,28 @@ function useOnCart() {
                             data.client.address
                         );
                     }
+                    if (data.client.email) {
+                        ordersCartStoreDtoForm.setValue(
+                            "email",
+                            data.client.email
+                        );
+                    }
                     if (data.client.map_marker) {
                         ordersCartStoreDtoForm.setValue(
                             "map_marker",
                             data.client.map_marker
+                        );
+                    }
+                    if (data.client.reference) {
+                        ordersCartStoreDtoForm.setValue(
+                            "reference",
+                            data.client.reference
+                        );
+                    }
+                    if (data.client.identification_number) {
+                        ordersCartStoreDtoForm.setValue(
+                            "invoice.identification_number",
+                            data.client.identification_number
                         );
                     }
                 },

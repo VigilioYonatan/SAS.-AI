@@ -38,7 +38,6 @@ import {
 } from "../apis/products/products_normal.update.api";
 import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schema";
 import { categoriesIndexApi } from "../apis/categories/categories.index.api";
-import { DIALCODE } from "@/empresas/libs/helpers";
 
 interface ProductsNormalUpdateProps {
     id?: string | number;
@@ -130,18 +129,6 @@ function ProductsNormalUpdate({
         );
 
         function onUpdateProduct(data: ProductsNormalUpdateDto) {
-            if (
-                [DIALCODE.mexico].includes(
-                    storageEmpresa!.dial_code as DIALCODE
-                ) &&
-                storageEmpresa?.enabled_igv &&
-                !data.product_key?.length
-            ) {
-                formProductsNormalUpdate.setError("product_key", {
-                    message: "Este campo es obligatorio.",
-                });
-                return;
-            }
             sweetModal({
                 title: "¿Estás seguro de editar este producto?",
                 customIcon:
@@ -285,36 +272,6 @@ function ProductsNormalUpdate({
                                 options={{ setValueAs: transformSlug }}
                                 disabled
                             />{" "}
-                            {[DIALCODE.mexico].includes(
-                                storageEmpresa!.dial_code as DIALCODE
-                            ) ? (
-                                <Form.control
-                                    name={
-                                        "product_key" as keyof ProductsNormalUpdateDto
-                                    }
-                                    title="Clave SAT"
-                                    placeholder="4319XXXX114"
-                                    options={{ setValueAs: transformSlug }}
-                                    question={
-                                        <span class="font-semibold">
-                                            Clave de producto/servicio{" "}
-                                            <a
-                                                class="text-primary underline"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                href="https://www.sat.gob.mx/consultas/53693/catalogo-de-productos-y-servicios"
-                                            >
-                                                SAT
-                                            </a>{" "}
-                                            <br />
-                                            ejemplo: 4319XXXX114
-                                        </span>
-                                    }
-                                    disabled
-                                />
-                            ) : (
-                                <></>
-                            )}
                         </div>
                         <div class="w-full flex flex-col md:flex-row gap-2">
                             <Form.control

@@ -53,6 +53,7 @@ function AdminCart() {
             mesa_id: null,
             fullName: null,
             email: null,
+            reference: null,
         },
         mode: "all",
     });
@@ -180,7 +181,6 @@ function AdminCart() {
                         : null,
                     ...productOBJ(cart.id),
                     variant_id: cart.variant ? cart.variant.id : null,
-                    product_key: cart.product_key,
                 }))
             );
         }

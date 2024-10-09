@@ -1,7 +1,5 @@
 import type { Products } from "@/products/libs";
 import {
-	maxLength,
-    minLength,
     nullable,
     number,
     objectAsync,
@@ -19,7 +17,6 @@ export const detailOrdersSchema = objectAsync({
     product_restaurant_id: nullable(number()),
     product_servicio_id: nullable(number()),
     variant_id: nullable(number()),
-    product_key: nullable(string([minLength(3), maxLength(30)])),
     coupon: nullable(string()),
     empresa_id: number(),
 });

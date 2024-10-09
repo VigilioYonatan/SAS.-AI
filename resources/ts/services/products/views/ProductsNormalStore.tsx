@@ -36,7 +36,6 @@ import BrandsStore from "./BrandsStore";
 import { aiProductApi } from "@/bot/apis/ai.product.api";
 import { getFilesEdit } from "~/libs/upload";
 import Helper from "~/components/Helper";
-import { DIALCODE } from "@/empresas/libs/helpers";
 
 interface ProductsNormalStoreProps {
     refetch: (clean?: boolean | undefined) => Promise<void>;
@@ -59,7 +58,6 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
             enabled: true,
             url: null,
             empresa_id: empresa.state!.id,
-            product_key: null,
         },
     });
 
@@ -122,16 +120,6 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
         name: "characteristics",
     });
     function onProductStore(body: ProductsNormalStoreDto) {
-        if (
-            [DIALCODE.mexico].includes(storageEmpresa!.dial_code as DIALCODE) &&
-            storageEmpresa?.enabled_igv &&
-            !body.product_key?.length
-        ) {
-            productsNormalStoreDtoForm.setError("product_key", {
-                message: "Este campo es obligatorio.",
-            });
-            return;
-        }
         sweetModal({
             icon: "info",
             title: "¿Estas seguro de agregar este producto?",
@@ -208,10 +196,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                     "description",
                     data.data.description
                 );
-                productsNormalStoreDtoForm.setValue(
-                    "product_key",
-                    data.data.product_key
-                );
+
                 if (images.length) {
                     productsNormalStoreDtoForm.setValue("images", images);
                 }
@@ -279,37 +264,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                                 </Helper>
                             </button>
                         </div>
-                        {/* solo mexico */}
-                        {[DIALCODE.mexico].includes(
-                            storageEmpresa!.dial_code as DIALCODE
-                        ) ? (
-                            <Form.control
-                                name={
-                                    "product_key" as keyof ProductsNormalStoreDto
-                                }
-                                title="Clave SAT"
-                                placeholder="4319XXXX114"
-                                options={{ setValueAs: transformSlug }}
-                                question={
-                                    <span class="font-semibold">
-                                        Clave de producto/servicio{" "}
-                                        <a
-                                            class="text-primary underline"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            href="https://www.sat.gob.mx/consultas/53693/catalogo-de-productos-y-servicios"
-                                        >
-                                            SAT
-                                        </a>{" "}
-                                        <br />
-                                        ejemplo: 4319XXXX114
-                                    </span>
-                                }
-                                disabled
-                            />
-                        ) : (
-                            <></>
-                        )}
+
                         <Form.control
                             name={"slug" as keyof ProductsNormalStoreDto}
                             title="Slug"

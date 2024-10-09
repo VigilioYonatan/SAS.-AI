@@ -384,6 +384,7 @@ export class OrdersApiService {
                     empresa_id: empresa.id,
                 },
             });
+
             if (!client) {
                 await this.clientsApiService.store(empresa, {
                     telephone: ordersStoreDto.telephone,
@@ -394,6 +395,9 @@ export class OrdersApiService {
                     map_marker: ordersStoreDto.map_marker || null,
                     empresa_id: empresa.id,
                     email: ordersStoreDto.email || null,
+                    identification_number:
+                        ordersStoreDto.invoice?.identification_number || null,
+                    reference: ordersStoreDto.reference || null,
                 });
             } else {
                 if (!client.enabled)
@@ -406,6 +410,9 @@ export class OrdersApiService {
                     city_id: ordersStoreDto.city_id || null,
                     map_marker: ordersStoreDto.map_marker || null,
                     email: ordersStoreDto.email || null,
+                    identification_number:
+                        ordersStoreDto.invoice?.identification_number || null,
+                    reference: ordersStoreDto.reference || null,
                 });
             }
         }
@@ -525,12 +532,8 @@ export class OrdersApiService {
                 ordersStoreDto.city_id
             );
             const priceShip = empresa.enabled_igv
-                ? subtotal(
-                      data.dataValues.region.priceShipping,
-                      empresa.igv,
-                      true
-                  )
-                : data.dataValues.region.priceShipping;
+                ? subtotal(data.dataValues.priceShipping, empresa.igv, true)
+                : data.dataValues.priceShipping;
             totalWithDistrict = totalWithDistrict + priceShip;
         }
 
