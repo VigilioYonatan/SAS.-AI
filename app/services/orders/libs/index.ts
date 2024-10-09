@@ -647,6 +647,7 @@ export async function detailInvoice(
                 porcentajeIgv: IGV,
                 factorIcbper: null,
                 icbper: null,
+                product_key: product.product_key,
             };
         })
     );
@@ -668,6 +669,7 @@ export async function detailInvoice(
             porcentajeIgv: IGV,
             factorIcbper: null,
             icbper: null,
+            product_key: "78101800",
         });
     }
 

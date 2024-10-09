@@ -48,7 +48,7 @@ import { ProductsRestaurant } from "@/products/entities/products_restaurant.enti
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ClientsApiService } from "@/users/services/clients.api.service";
 import { whatsappSendFileApi, whatsappSendMessageApi } from "@/bot/api";
-import { BASE_URL } from "@/empresas/libs";
+import { BASE_URL, DIALCODE } from "@/empresas/libs";
 import { Product, productEntityId } from "@/products/libs";
 import { ticketHTML } from "../libs/ticket";
 import { Clients } from "@/users/entities/clients.entity";
@@ -393,6 +393,7 @@ export class OrdersApiService {
                     city_id: ordersStoreDto.city_id || null,
                     map_marker: ordersStoreDto.map_marker || null,
                     empresa_id: empresa.id,
+                    email: ordersStoreDto.email || null,
                 });
             } else {
                 if (!client.enabled)
@@ -404,6 +405,7 @@ export class OrdersApiService {
                     address: ordersStoreDto.address || null,
                     city_id: ordersStoreDto.city_id || null,
                     map_marker: ordersStoreDto.map_marker || null,
+                    email: ordersStoreDto.email || null,
                 });
             }
         }
@@ -889,7 +891,7 @@ export class OrdersApiService {
                 vendedor,
             });
             // solo peru
-            if (empresa.dial_code === "51") {
+            if (empresa.dial_code === DIALCODE.peru) {
                 // si no existe pdf path que cree y guarda y si tiene subfacturacion
                 if (
                     !files.xml_path &&

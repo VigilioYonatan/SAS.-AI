@@ -259,6 +259,7 @@ export const empresasSchema = objectAsync({
     enabledSound: boolean(),
     type_empresa_id: number(),
     type_empresa_other: nullable(string()),
+    mex_api_key: nullable(string([minLength(3)])),
     telegram_token: nullable(string([maxLength(100)])),
     bancos: array(
         object({

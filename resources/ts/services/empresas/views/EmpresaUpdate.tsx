@@ -28,6 +28,7 @@ import Hr from "@/web/components/Hr";
 import useEmpresastore, { storageEmpresa } from "../stores/empresa.store";
 import { formSelectNumber } from "~/components/form/FormSelect";
 import AlertInfo from "~/components/Alerts/AlertInfo";
+import { DIALCODE } from "../libs/helpers";
 
 function empresaUpdate() {
     const { guards } = useAuthstore();
@@ -66,6 +67,7 @@ function empresaUpdate() {
                         yearFounded,
                         "YYYY-MM-DD"
                     ) as Date,
+                    mex_api_key: null,
                 };
             }, []),
         });
@@ -248,7 +250,54 @@ function empresaUpdate() {
                                             ) : null}
                                         </div>
                                     }
-                                />
+                                />{" "}
+                                {storageEmpresa?.dial_code ===
+                                DIALCODE.mexico ? (
+                                    <Form.control
+                                        name={
+                                            "mex_api_key" as keyof EmpresasUpdateDto
+                                        }
+                                        placeholder="SKXXXXXXXXXXXX"
+                                        title="FacturaApi API-KEY - Facturación SAT"
+                                        question={
+                                            <span class="font-semibold">
+                                                Registrate en{" "}
+                                                <a
+                                                    href="https://www.facturapi.io/"
+                                                    class="text-primary underline"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    Factura Api{" "}
+                                                </a>
+                                                , habilita en modo "LIVE" y
+                                                obtén tu API KEY en
+                                                Integración/API Keys
+                                                <br />
+                                                Ver precios{" "}
+                                                <a
+                                                    href="https://www.facturapi.io/pricing"
+                                                    class="text-primary  underline"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    Pricing
+                                                </a>
+                                                <br />
+                                                Emite facturas, boletas, etc en{" "}
+                                                <a
+                                                    href="https://dashboard.facturapi.io/"
+                                                    class="text-primary  underline"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    Dashboard
+                                                </a>{" "}
+                                                fácilmente.
+                                            </span>
+                                        }
+                                    />
+                                ) : null}
                             </div>
                             <div class="w-full flex flex-col md:flex-row gap-2">
                                 <Form.control
@@ -398,7 +447,10 @@ function empresaUpdate() {
                                         title="Habilitar Vendedor IA de web"
                                         question="Ya no estará habilitado el bot de web si no está habilitado"
                                     />
-                                    {empresaStore.state!.dial_code === "51" ? (
+                                    {[DIALCODE.mexico, DIALCODE.peru].includes(
+                                        empresaStore.state!
+                                            .dial_code as DIALCODE
+                                    ) ? (
                                         <Form.control.toggle
                                             name={
                                                 "enabledSendSunat" as keyof EmpresasUpdateDto
@@ -409,11 +461,10 @@ function empresaUpdate() {
                                                     Cuanto está habilitado esta
                                                     opción, cuando tu cliente
                                                     pague por pasarela o paypal,
-                                                    se creará la boleta o
-                                                    factura y se emitirá a sunat
-                                                    automáticamente. Si no esta
-                                                    habilitado, usted mismo
-                                                    tendrá que emitir.
+                                                    se creará factura y se
+                                                    emitirá automáticamente. Si
+                                                    no esta habilitado, usted
+                                                    mismo tendrá que emitir.
                                                 </div>
                                             }
                                         />

@@ -183,6 +183,7 @@ export class EmpresasApiService {
                     cpu: null,
                 },
                 enable_map_marker: false,
+                mex_api_key: null,
             });
             await empresa.save();
             if (body.servicio_id === 2) {

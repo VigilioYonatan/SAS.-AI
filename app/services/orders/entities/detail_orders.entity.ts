@@ -33,6 +33,9 @@ export class DetailOrders
 	coupon: string | null;
 
 	@Column({ type: DataType.STRING(100) })
+	product_key: string | null;
+
+	@Column({ type: DataType.STRING(100) })
 	variante: string | null;
 
 	@ForeignKey(() => Orders)

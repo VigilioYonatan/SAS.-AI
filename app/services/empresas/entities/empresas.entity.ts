@@ -325,6 +325,12 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     })
     whatsappconfig: Whatsappconfig;
 
+    // API KEY MEX
+    @Column({
+        type: DataType.STRING,
+    })
+    mex_api_key: string | null;
+
     // @Column({
     //     type: DataType.JSON,
     // })

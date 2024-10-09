@@ -11,7 +11,9 @@ import { useForm } from "react-hook-form";
 import { valibotVigilio } from "~/libs/valibot";
 import useCartStore from "../stores/cart.store";
 import { PAYMETHOD, STATUSORDER, isValidDni, isValidRUC } from "@/orders/libs";
-import useEmpresastore from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import { printProductVariant, productOBJ } from "@/products/libs/helpers";
 import { igv } from "../libs/helpers";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
@@ -23,6 +25,7 @@ import { useSignal } from "@preact/signals";
 import { clientsShowApi } from "@/users/apis/clients.show.api";
 import { citiesIndexApi } from "@/ubigeo/apis/citites.api.index";
 import { useDebounce } from "@vigilio/preact-paginator";
+import { DIALCODE } from "@/empresas/libs/helpers";
 
 function useOnCart() {
     const authStore = useAuthStore();
@@ -56,6 +59,7 @@ function useOnCart() {
             mesa_id: null,
             floor_id: null,
             fullName: null,
+            email: null,
         },
         mode: "all",
     });
@@ -130,7 +134,10 @@ function useOnCart() {
     }, [kindInvoice]);
 
     useEffect(() => {
-        if (identificationNumber) {
+        if (
+            identificationNumber &&
+            storageEmpresa?.dial_code === DIALCODE.peru
+        ) {
             ordersCartStoreDtoForm.clearErrors("invoice.razon_social");
 
             if (documentCode === "1") {
@@ -228,6 +235,7 @@ function useOnCart() {
                         : null,
                     ...productOBJ(cart.id),
                     variant_id: cart.variant ? cart.variant.id : null,
+                    product_key: cart.product_key,
                 }))
             );
         }
