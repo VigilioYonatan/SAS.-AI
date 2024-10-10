@@ -179,7 +179,7 @@ export async function onDb(empresa: Empresas) {
             })
         );
     }
-    console.log({ products: products[0].price });
+    console.log({ products: products![0].price });
 
     return {
         categorias,
