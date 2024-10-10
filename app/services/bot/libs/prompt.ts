@@ -46,7 +46,7 @@ export function prompt(
             ...instrucctions,
             `Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?=}},  será como en el siguiente ejemplo   ((cart?items=${
                 empresa.tipo_empresa.tipo_servicio_id === 1
-                    ? "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%2C%20%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%5D"
+                    ? "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%2C%20%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%5D , recuerda el id del producto, cantidad, y id de variante"
                     : "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%7D%2C%20%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%7D%5D"
             }}} que es un formato URL percent-encoding,. Solo enviame {{cart?=}},  en {{cart?=URL percent-encoding}} de productos o servicios de base de datos. SOLO ENVIAME ASÍ`,
         ];
