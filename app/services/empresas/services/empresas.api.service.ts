@@ -789,18 +789,22 @@ export class EmpresasApiService {
 	async name_servers(slug: string) {
 		const { empresa } = await this.show(slug);
 		await terminal(
-			`rm -rf /etc/nginx/sites-available/${empresa.setting.host.host}  || true`,
+			`rm -rf /etc/nginx/sites-available/${empresa.setting.host.host}  || true`,true
 		);
 		await terminal(
-			`rm -rf /etc/nginx/sites-enabled/${empresa.setting.host.host} || true`,
+			`rm -rf /etc/nginx/sites-enabled/${empresa.setting.host.host} || true`,true
 		);
 		await terminal(
-			`certbot delete --cert-name www.${empresa.setting.host.host} --non-interactive --quiet || true`,
+			`certbot delete --cert-name www.${empresa.setting.host.host} --non-interactive --quiet || true`,true
 		);
 		const setting = await Settings.findOne({
 			where: {
 				empresa_id: empresa.id,
 			},
+		});await onNginx({
+			port: Number(enviroments.PORT),
+			sub_domain: "",
+			domain: empresa.setting.host.host!,
 		});
 		await setting?.update({
 			host: {
@@ -808,11 +812,7 @@ export class EmpresasApiService {
 				enabled: true,
 			},
 		});
-		await onNginx({
-			port: Number(enviroments.PORT),
-			sub_domain: "",
-			domain: empresa.setting.host.host!,
-		});
+		
 		return {
 			success: true,
 			url: empresa.setting.host.host!,
@@ -821,13 +821,13 @@ export class EmpresasApiService {
 	async deleteDominio(slug: string) {
 		const { empresa } = await this.show(slug);
 		await terminal(
-			`rm -rf /etc/nginx/sites-available/${empresa.setting.host.host}  || true`,
+			`rm -rf /etc/nginx/sites-available/${empresa.setting.host.host}  || true`,true
 		);
 		await terminal(
-			`rm -rf /etc/nginx/sites-enabled/${empresa.setting.host.host} || true`,
+			`rm -rf /etc/nginx/sites-enabled/${empresa.setting.host.host} || true`,true
 		);
 		await terminal(
-			`certbot delete --cert-name www.${empresa.setting.host.host} --non-interactive --quiet || true`,
+			`certbot delete --cert-name www.${empresa.setting.host.host} --non-interactive --quiet || true`,true
 		);
 		const setting = await Settings.findOne({
 			where: {
