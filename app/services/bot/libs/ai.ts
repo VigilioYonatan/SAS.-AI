@@ -446,7 +446,7 @@ export async function searchProducts(empresa: Empresas, word: string) {
     });
     // get message ai
     const completionText = completion.choices[0].message.content!;
-    return completionText === "si";
+    return completionText.includes("si");
 }
 cron.schedule("0 0 * * *", () => {
     chatsTelegram = {};

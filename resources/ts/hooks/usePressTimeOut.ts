@@ -6,7 +6,7 @@ import { useSignal } from "@preact/signals";
  * @returns
  * seconds 1,2
  */
-function usePressTimeOut(time = 2) {
+function usePressTimeOut(time = 1.5) {
     const touchTimer = useSignal<NodeJS.Timeout | null>(null);
 
     function handleTouchStart(cb: () => void) {
