@@ -47,6 +47,23 @@ export function settingsDominioNameServerUpdateApi() {
 		},
 	);
 }
+export function settingsDominioDeleteServerUpdateApi() {
+	return useMutation<{ success: true; url: string }, unknown, unknown>(
+		`/empresas/${storageEmpresa!.slug}/name_servers`,
+		async (url) => {
+			const response = await fetch(`/api${url}`, {
+				method: "DELETE",
+				headers: {
+					"content-type": "application/json",
+					"access-token": enviroments.VITE_TOKEN_VIGILIO_SERVICES,
+				},
+			});
+			const result = await response.json();
+			if (!result.success) throw result;
+			return result;
+		},
+	);
+}
 
 interface SettingsDominioUpdateApiError {
 	success: true;

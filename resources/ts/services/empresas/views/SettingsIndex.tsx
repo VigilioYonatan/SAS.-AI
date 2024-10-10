@@ -25,6 +25,7 @@ import {
 } from "../apis/settings/settings.update.api";
 import Hr from "@/web/components/Hr";
 import {
+	settingsDominioDeleteServerUpdateApi,
 	settingsDominioNameServerUpdateApi,
 	settingsDominioUpdateApi,
 } from "../apis/settings/dominio.update.api";
@@ -67,6 +68,8 @@ function SettingsIndex() {
 		const settingsDominioUpdateMutation = settingsDominioUpdateApi();
 		const settingsDominioNameServerUpdateMutation =
 			settingsDominioNameServerUpdateApi();
+		const settingsDominioDeleteServerUpdateMutation =
+			settingsDominioDeleteServerUpdateApi();
 		const { state, methods } = useEmpresastore();
 		const settingsUpdateform = useForm<SettingsUpdateDto>({
 			resolver: valibotVigilio(settingsUpdateDto),
@@ -795,6 +798,7 @@ function SettingsIndex() {
 									Ver el estado de mi dominio
 								</a>
 							</span>
+							<br />
 							<div>
 								<div class="  self-center mt-3 flex gap-2 items-center">
 									<>
@@ -818,56 +822,111 @@ function SettingsIndex() {
 											</>
 										) : null}
 									</>
-									<button
-										type="button"
-										disabled={
-											restarDays(
-												NOW().toDate(),
-												state!.setting.host.time as Date,
-												"seconds",
-											) >= 0
-										}
-										onClick={() => {
-											sweetModal({
-												icon: "info",
-												title: "¿Ya tienes un registro ✔️ en tu dominio?",
-												text: "",
-												showCloseButton: true,
-												showCancelButton: true,
-											}).then(({ isConfirmed }) => {
-												if (isConfirmed) {
-													settingsDominioNameServerUpdateMutation.mutate(null, {
-														onSuccess(data) {
-															sweetAlert({
-																icon: "success",
-																title: `Ya tienes tu propio dominio web. <b>${data.url}</b>`,
-															}).then(() => {
-																window.location.href = `https://www.${data.url}`;
-															});
-														},
-														onError(data) {
-															sweetAlert({
-																icon: "danger",
-																title: `${
-																	(data as Error).message
-																} o intentálo de nuevo más tarde.`,
-															});
-														},
-													});
-												}
-											});
-										}}
-										class="flex justify-center items-center text-white bg-primary text-xs px-4 py-2 rounded-md shadow font-semibold"
-									>
-										{settingsDominioNameServerUpdateMutation.isLoading ? (
-											<LoaderSubmit />
-										) : (
-											<>
-												<i class="fa-solid fa-globe mr-2 " /> Activar Dominio
-												Web
-											</>
-										)}
-									</button>
+									{storageEmpresa?.setting.host.enabled ? (
+										<button
+											type="button"
+											onClick={() => {
+												sweetModal({
+													icon: "info",
+													title: "¿Estas seguro eliminar tu dominio?",
+													text: "",
+													showCloseButton: true,
+													showCancelButton: true,
+												}).then(({ isConfirmed }) => {
+													if (isConfirmed) {
+														settingsDominioDeleteServerUpdateMutation.mutate(
+															null,
+															{
+																onSuccess(data) {
+																	sweetAlert({
+																		icon: "success",
+																		title: `Ya tienes tu propio dominio web. <b>${data.url}</b>`,
+																	}).then(() => {
+																		window.location.href = `https://www.${storageEmpresa?.slug}.vigilio-services.com`;
+																	});
+																},
+																onError(data) {
+																	sweetAlert({
+																		icon: "danger",
+																		title: `${
+																			(data as Error).message
+																		} o intentálo de nuevo más tarde.`,
+																	});
+																},
+															},
+														);
+													}
+												});
+											}}
+											disabled={
+												settingsDominioDeleteServerUpdateMutation.isLoading ||
+												false
+											}
+											class="flex justify-center items-center text-white bg-primary text-xs px-4 py-2 rounded-md shadow font-semibold"
+										>
+											{settingsDominioNameServerUpdateMutation.isLoading ? (
+												<LoaderSubmit />
+											) : (
+												<>
+													<i class="fa-solid fa-globe mr-2 " /> Eliminar Dominio
+												</>
+											)}
+										</button>
+									) : (
+										<button
+											type="button"
+											disabled={
+												restarDays(
+													NOW().toDate(),
+													state!.setting.host.time as Date,
+													"seconds",
+												) >= 0
+											}
+											onClick={() => {
+												sweetModal({
+													icon: "info",
+													title: "¿Ya tienes un registro ✔️ en tu dominio?",
+													text: "",
+													showCloseButton: true,
+													showCancelButton: true,
+												}).then(({ isConfirmed }) => {
+													if (isConfirmed) {
+														settingsDominioNameServerUpdateMutation.mutate(
+															null,
+															{
+																onSuccess(data) {
+																	sweetAlert({
+																		icon: "success",
+																		title: `Ya tienes tu propio dominio web. <b>${data.url}</b>`,
+																	}).then(() => {
+																		window.location.href = `https://www.${data.url}`;
+																	});
+																},
+																onError(data) {
+																	sweetAlert({
+																		icon: "danger",
+																		title: `${
+																			(data as Error).message
+																		} o intentálo de nuevo más tarde.`,
+																	});
+																},
+															},
+														);
+													}
+												});
+											}}
+											class="flex justify-center items-center text-white bg-primary text-xs px-4 py-2 rounded-md shadow font-semibold"
+										>
+											{settingsDominioNameServerUpdateMutation.isLoading ? (
+												<LoaderSubmit />
+											) : (
+												<>
+													<i class="fa-solid fa-globe mr-2 " /> Activar Dominio
+													Web
+												</>
+											)}
+										</button>
+									)}
 								</div>
 							</div>
 						</div>

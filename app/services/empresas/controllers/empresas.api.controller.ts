@@ -233,6 +233,14 @@ export class EmpresasApiController {
 		const result = await this.empresaApiService.name_servers(slug);
 		return result;
 	}
+	@VigilioServicesGuard()
+	@Pipe(objectAsync({ slug: string() }))
+	@Status(201)
+	@Delete("/:slug/dominio")
+	async deleteDominio(@Params("slug") slug: string) {
+		const result = await this.empresaApiService.deleteDominio(slug);
+		return result;
+	}
 	@PermissionAdmin()
 	@Validator(groupWhatsapp)
 	@Status(201)

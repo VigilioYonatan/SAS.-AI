@@ -42,6 +42,7 @@ import { initializeBot } from "@/bot/libs/ai";
 import { vpsShowApi } from "./backup.api.service";
 import type { SettingsUpdateDto } from "../dtos/settings.update.dto";
 import { NodeSSH } from "node-ssh";
+import { onNginx } from "../libs/subdominio";
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
@@ -787,20 +788,15 @@ export class EmpresasApiService {
 	}
 	async name_servers(slug: string) {
 		const { empresa } = await this.show(slug);
-		const response = await fetch(
-			`${enviroments.VITE_VIGILIO_WEB}/api/empresas/name_servers/${empresa.slug}`,
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "appliation/json",
-					"access-token": enviroments.VITE_TOKEN_VIGILIO_SERVICES,
-				},
-			},
+		await terminal(
+			`rm -rf /etc/nginx/sites-available/${empresa.setting.host.host}  || true`,
 		);
-		const result = await response.json();
-		if (!result.success) {
-			throw new InternalServerErrorException(result.message);
-		}
+		await terminal(
+			`rm -rf /etc/nginx/sites-enabled/${empresa.setting.host.host} || true`,
+		);
+		await terminal(
+			`certbot delete --cert-name www.${empresa.setting.host.host} --non-interactive --quiet || true`,
+		);
 		const setting = await Settings.findOne({
 			where: {
 				empresa_id: empresa.id,
@@ -812,7 +808,51 @@ export class EmpresasApiService {
 				enabled: true,
 			},
 		});
-		return result;
+		await onNginx({
+			port: Number(enviroments.PORT),
+			sub_domain: "",
+			domain: empresa.setting.host.host!,
+		});
+		return {
+			success: true,
+			url: empresa.setting.host.host!,
+		};
+	}
+	async deleteDominio(slug: string) {
+		const { empresa } = await this.show(slug);
+		await terminal(
+			`rm -rf /etc/nginx/sites-available/${empresa.setting.host.host}  || true`,
+		);
+		await terminal(
+			`rm -rf /etc/nginx/sites-enabled/${empresa.setting.host.host} || true`,
+		);
+		await terminal(
+			`certbot delete --cert-name www.${empresa.setting.host.host} --non-interactive --quiet || true`,
+		);
+		const setting = await Settings.findOne({
+			where: {
+				empresa_id: empresa.id,
+			},
+		});
+		const time = NOW(empresa).add(4, "minute");
+		await setting?.update({
+			host: {
+				host: null,
+				nameserver_one: null,
+				nameserver_two: null,
+				enabled: false,
+				time,
+			},
+		});
+		await onNginx({
+			port: Number(enviroments.PORT),
+			sub_domain: "",
+			domain: empresa.setting.host.host!,
+		});
+		return {
+			success: true,
+			message: "Eliminado correctamente.",
+		};
 	}
 	async whatsappGroupIndex(slug: string) {
 		const empresa = await Empresas.findOne({
