@@ -1028,9 +1028,12 @@ export class EmpresasApiService {
             }
 
             await empresa.destroy();
-            await terminal(`docker container stop ${empresa.slug}`);
-            await terminal(`docker container rm -f ${empresa.slug}`);
-            delete openAis[empresa.slug];
+            await terminal(`docker container stop ${empresa.slug} || true`);
+            await terminal(`docker container rm -f ${empresa.slug} || true`);
+            await terminal(`docker volume  rm  ${empresa.slug} || true`);
+            if (openAis[empresa.slug]) {
+                delete openAis[empresa.slug];
+            }
             return { success: true, message: "Eliminado correctamente" };
         } catch (error) {
             throw new InternalServerErrorException("Error al eliminar");
