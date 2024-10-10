@@ -844,11 +844,7 @@ export class EmpresasApiService {
 				time,
 			},
 		});
-		await onNginx({
-			port: Number(enviroments.PORT),
-			sub_domain: "",
-			domain: empresa.setting.host.host!,
-		});
+		
 		return {
 			success: true,
 			message: "Eliminado correctamente.",
