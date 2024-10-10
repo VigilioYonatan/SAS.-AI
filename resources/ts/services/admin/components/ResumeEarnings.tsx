@@ -204,7 +204,6 @@ function ShowByYearMonth(props: ShowByYearMonthProps) {
     }
     if (ordersEarningsDateQuery.isSuccess) {
         const result = ordersEarningsDateQuery.data?.results;
-        console.log(result);
 
         component = (
             <div class="flex flex-col gap-3">

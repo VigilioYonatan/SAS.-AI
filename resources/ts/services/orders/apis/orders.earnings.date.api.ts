@@ -1,4 +1,4 @@
-import type { UsersSchemaFromServer } from "@/users/schemas/users.schema";
+import { ClientsSchema } from "@/users/schemas/client.schema";
 import { useQuery, type UseQuery } from "@vigilio/preact-fetching";
 import type { FilesSchema } from "~/libs/upload";
 
@@ -40,10 +40,7 @@ export interface OrdersEarningsDateApi {
         }[];
         usersMostOrders: {
             cantidad: number;
-            user: Pick<
-                UsersSchemaFromServer,
-                "id" | "photo" | "username" | "slug"
-            >;
+            client: ClientsSchema;
         }[];
     };
 }
