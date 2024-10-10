@@ -609,7 +609,7 @@ export class EmpresasApiService {
         slug: string,
         empresasIAUpdateDto: EmpresasIAUpdateDto
     ) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["inteligenceArtificial", "id"],
         });
@@ -625,7 +625,7 @@ export class EmpresasApiService {
         };
     }
     async all(slug: string) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["id", "contacts", "groupWhatsapp"],
         });
@@ -633,7 +633,7 @@ export class EmpresasApiService {
         return { success: true, data: empresa.contacts };
     }
     async favorites(slug: string) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["id", "contacts", "groupWhatsapp"],
         });
@@ -661,7 +661,7 @@ export class EmpresasApiService {
         telephone: string,
         body: { ia: boolean; isFavorite: boolean }
     ) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["id", "contacts", "groupWhatsapp"],
         });
@@ -684,7 +684,7 @@ export class EmpresasApiService {
         };
     }
     async searchContact(slug: string, name: string) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["id", "contacts", "groupWhatsapp"],
         });
@@ -703,7 +703,7 @@ export class EmpresasApiService {
     }
 
     async contactStore(slug: string, contactsSchema: ContactsSchema) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["id", "contacts", "groupWhatsapp", "dial_code"],
         });
@@ -733,7 +733,7 @@ export class EmpresasApiService {
         };
     }
     async contactDestroy(slug: string, telephone: string) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["id", "contacts", "groupWhatsapp"],
         });
@@ -888,7 +888,7 @@ export class EmpresasApiService {
         };
     }
     async whatsappGroupIndex(slug: string) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["contacts", "groupWhatsapp", "id"],
         });
@@ -896,7 +896,7 @@ export class EmpresasApiService {
         return { success: true, data: empresa.groupWhatsapp };
     }
     async whatsappGroupShow(slug: string, name: string) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["contacts", "groupWhatsapp", "id"],
         });
@@ -957,8 +957,21 @@ export class EmpresasApiService {
             message: "Se edito los miembros de whatsapp whatsapp",
         };
     }
+
+    async deleteContact(empresas: Empresas) {
+        const empresa = await Empresas.unscoped().findOne({
+            where: { slug: empresas.slug },
+            attributes: ["id", "contacts", "groupWhatsapp"],
+        });
+        if (!empresa) throw new NotFoundException("Error empresas.");
+        await empresa.update({ contacts: [], groupWhatsapp: [] });
+        return {
+            success: true,
+            message: "Formateado Correctamente",
+        };
+    }
     async whatsappGroupDestroy(slug: string, group: string) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["id", "contacts", "groupWhatsapp"],
         });
@@ -978,7 +991,7 @@ export class EmpresasApiService {
         name: string,
         telephone: string
     ) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["contacts", "groupWhatsapp", "id", "slug"],
         });

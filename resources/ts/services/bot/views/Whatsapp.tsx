@@ -55,6 +55,7 @@ import { useMutation } from "@vigilio/preact-fetching";
 import AlertSuccess from "~/components/Alerts/AlertSuccess";
 import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
 import { whatsappUpdateApi } from "../apis/whatsapp.update.api";
+import { empresaContactsDestroyAllApi } from "@/empresas/apis/empresas.contacts.delete.api";
 
 function Whatsapp() {
     const authStore = useAuthStore();
@@ -65,6 +66,7 @@ function Whatsapp() {
     }
     const empresaStore = useEmpresastore();
     const whatsappUpdateMutate = whatsappUpdateApi();
+    const empresaContactsDestroyAllMutation = empresaContactsDestroyAllApi();
     const empresaContactsUpdateMutation = empresaContactsUpdateApi();
     const table = useTable({
         columns: contactsColumns,
@@ -383,7 +385,53 @@ function Whatsapp() {
                             hiddenDelete
                             placeholderSearch="Buscar por nombre"
                         />
-                        <VigilioTable.header.limit />
+                        <div class="flex gap-1 items-center">
+                            <VigilioTable.header.limit />
+                            <button
+                                type="button"
+                                class="text-xs text-white bg-danger font-semibold px-4 py-2 rounded-md shadow"
+                                disabled={
+                                    empresaContactsDestroyAllMutation.isLoading ||
+                                    false
+                                }
+                                onClick={() => {
+                                    sweetModal({
+                                        icon: "info",
+                                        showCloseButton: true,
+                                        showCancelButton: true,
+                                        title: "¿Estas seguro de formatear la lista, grupos, etc de Whatsapp?",
+                                    }).then(({ isConfirmed }) => {
+                                        if (isConfirmed) {
+                                            empresaContactsDestroyAllMutation.mutate(
+                                                null,
+                                                {
+                                                    onSuccess(data) {
+                                                        sweetAlert({
+                                                            icon: "success",
+                                                            title: data.message,
+                                                        });
+                                                    },
+                                                    onError() {
+                                                        sweetAlert({
+                                                            icon: "danger",
+                                                            title: "Hubo un error al formatear whatsapp",
+                                                        });
+                                                    },
+                                                }
+                                            );
+                                        }
+                                    });
+                                }}
+                            >
+                                {empresaContactsDestroyAllMutation.isLoading ? (
+                                    <LoaderSubmit />
+                                ) : (
+                                    <>
+                                        <i class="fas fa-trash" /> Formatear
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </VigilioTable.header>
                     <VigilioTable.table>
                         <VigilioTable.thead>
