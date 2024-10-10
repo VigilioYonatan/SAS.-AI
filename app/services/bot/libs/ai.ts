@@ -82,24 +82,6 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
         : { slug: empresa };
     const emp = await Empresas.findOne({
         where,
-        attributes: [
-            "inteligenceArtificial",
-            "payments",
-            "enabledBot",
-            "slug",
-            "id",
-            "contacts",
-            "name_empresa",
-            "money",
-            "tipo_impuesto",
-            "email",
-            "type_empresa_id",
-            "type_empresa_other",
-            "schedule",
-            "enabled_igv",
-            "igv",
-            "tz",
-        ],
     });
     if (!empresa) return null;
     const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
@@ -142,24 +124,6 @@ export async function isTelegramIA(empresa: string) {
     const [emp] = await Promise.all([
         Empresas.findOne({
             where,
-            attributes: [
-                "inteligenceArtificial",
-                "payments",
-                "enabledBot",
-                "slug",
-                "id",
-                "contacts",
-                "name_empresa",
-                "money",
-                "tipo_impuesto",
-                "email",
-                "type_empresa_id",
-                "type_empresa_other",
-                "schedule",
-                "enabled_igv",
-                "igv",
-                "tz",
-            ],
         }),
     ]);
     if (!emp) return null;
