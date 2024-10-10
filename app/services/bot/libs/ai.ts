@@ -432,6 +432,22 @@ export async function featuresIA(
     // eliminar espacios innecesarios
     return [textoNormal.replace(/\s+/g, " "), urlExtraidas];
 }
+
+export async function searchProducts(empresa: Empresas, word: string) {
+    const completion = await openAis[empresa.slug].chat.completions.create({
+        model: "gpt-4o-mini",
+        max_tokens: 20,
+        messages: [
+            {
+                role: "user",
+                content: `Si el mensaje "${word}" es una pregunta o busca informacion de un producto,marca,categorias, si escribe un producto. no preguntas cualquiera.  di "si", sino di "no". solo di "si" y "no" nada mas, sin comillas.`,
+            },
+        ],
+    });
+    // get message ai
+    const completionText = completion.choices[0].message.content!;
+    return completionText === "si";
+}
 cron.schedule("0 0 * * *", () => {
     chatsTelegram = {};
 });
