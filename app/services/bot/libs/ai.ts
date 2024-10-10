@@ -99,7 +99,6 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
             "enabled_igv",
             "igv",
             "tz",
-            "setting_id",
         ],
     });
     if (!empresa) return null;
@@ -160,7 +159,6 @@ export async function isTelegramIA(empresa: string) {
                 "enabled_igv",
                 "igv",
                 "tz",
-                "setting_id",
             ],
         }),
     ]);
