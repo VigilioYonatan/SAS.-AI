@@ -400,7 +400,7 @@ function empresaUpdate() {
                                         title="Habilitar Vendedor IA de web"
                                         question="Ya no estará habilitado el bot de web si no está habilitado"
                                     />
-                                    {[DIALCODE.mexico, DIALCODE.peru].includes(
+                                    {[DIALCODE.peru].includes(
                                         empresaStore.state!
                                             .dial_code as DIALCODE
                                     ) ? (
