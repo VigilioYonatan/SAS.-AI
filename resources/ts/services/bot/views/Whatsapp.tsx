@@ -1712,7 +1712,7 @@ function WhatsappFREE() {
                             <a
                                 href={
                                     storageEmpresa?.dial_code === "51"
-                                        ? "https://www.youtube.com/watch?v=ONt_DRgEhAg"
+                                        ? "https://youtu.be/msYxTrbVLNY"
                                         : "https://youtu.be/48obPqnhQe8"
                                 }
                                 target="_blank"
