@@ -20,7 +20,6 @@ import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import type { Variants } from "@/products/entities/options/variants.entity";
 import { getProductAll, printVariantFeatures } from "@/products/libs";
 import type { VariantsSchema } from "@/products/schemas/options/variants.schema";
-import { searchProducts } from "./ai";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
@@ -218,7 +217,6 @@ export async function promptReplace(message: string, empresa: Empresas) {
         cache.get(`db-${empresa.slug}`) ?? "null"
     );
     // verifica si el mensaje es un texto o pregunta de base de datos
-    const isPalabra = await searchProducts(empresa, message);
 
     if (!data) {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -231,7 +229,7 @@ export async function promptReplace(message: string, empresa: Empresas) {
             );
         }
     }
-    let productsData = isPalabra ? data.products : [];
+    let productsData = data.products;
     // si no es inteligente que busque
     if (!empresa.inteligenceArtificial.enabledBotInteligence) {
         const palabrasEncontradas2 = encontrarPalabrasSimilares(
