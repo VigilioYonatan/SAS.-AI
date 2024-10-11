@@ -220,7 +220,7 @@ export async function promptReplace(message: string, empresa: Empresas) {
     // verifica si el mensaje es un texto o pregunta de base de datos
     const isPalabra = await searchProducts(empresa, message);
 
-    if (!data && isPalabra) {
+    if (!data) {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         data = (await onDb(empresa)) as any;
         if (data.products.length > 20) {
