@@ -433,7 +433,7 @@ export class EmpresasApiController {
         );
         return result;
     }
-	
+
     @PermissionAdmin()
     @Delete("/contacts")
     async deleteContact(@Req("empresa") empresa: Empresas) {
@@ -441,6 +441,8 @@ export class EmpresasApiController {
         return result;
     }
 
+    
+    @PermissionAdmin()
     @Pipe(
         objectAsync({
             telephone: string(),
@@ -459,6 +461,7 @@ export class EmpresasApiController {
         return result;
     }
 
+    @PermissionAdmin()
     @Status(201)
     @Validator(objectAsync({ schedule: arrayAsync(scheduleSchema) }))
     @Put("/schedule")
@@ -473,6 +476,7 @@ export class EmpresasApiController {
         return result;
     }
 
+    @Status(201)
     @VigilioServicesGuard()
     @Pipe(
         objectAsync({
