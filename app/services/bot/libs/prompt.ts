@@ -93,7 +93,7 @@ export function prompt(
             ? "URGENTE: Se más humano, y los humanos tienes aveces errores ortograficos. trata de ser así y se más humano."
             : ""
     }
-	RESPONDEME EN EL IDIOMA QUE TE HABLO
+	RESPONDEME EN EL IDIOMA QUE TE ESCRIBA.
     HORARIO_ATENCION: // si está enabled false quiere decir que no está disponible ese dia y la hora es de 00:00am a 23:59PM ${JSON.stringify(
         empresa.schedule
     )} . cuando te escriba en horario de atencion que no esté. decime no estamos disponible en este momento pero te puedo ayudar.
@@ -102,6 +102,7 @@ export function prompt(
 	TIPO_MONEDA: ${empresa.money.money}
     RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN, NO TRAIGAS NI CONTESTES ERRONEAMENTE, LA CANTIDAD,ETC..
     SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR.
+    ACTUALIZA SIEMPRE LO QUE VAS A DECIR SI CAMBIA LA BASE DE DATOS.
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
     ${JSON.stringify(instrucctions)}
