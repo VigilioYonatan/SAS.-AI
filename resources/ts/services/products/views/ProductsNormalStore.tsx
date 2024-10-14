@@ -597,7 +597,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                     typeFile="image"
                     multiple
                     showButonCopy
-					showButtonClean
+                    showButtonClean
                 />
                 <div class="flex justify-center">
                     <Form.button.submit

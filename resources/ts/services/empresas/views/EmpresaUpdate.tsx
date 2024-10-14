@@ -67,7 +67,6 @@ function empresaUpdate() {
                         yearFounded,
                         "YYYY-MM-DD"
                     ) as Date,
-                    mex_api_key: null,
                 };
             }, []),
         });

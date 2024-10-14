@@ -43,6 +43,9 @@ import { vpsShowApi } from "./backup.api.service";
 import type { SettingsUpdateDto } from "../dtos/settings.update.dto";
 import { NodeSSH } from "node-ssh";
 import { onNginx } from "../libs/subdominio";
+import { TipoFinanza } from "@/finanzas/entities/tipo.entity";
+import { finanzasSeeder } from "@/finanzas/seeders/finanzas.seeder";
+import { CategoriesFinanzas } from "@/finanzas/entities/categories.entity";
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
@@ -56,6 +59,9 @@ export async function initial() {
         if (empresa.telegram_token) {
             await initializeBot(empresa, empresa.telegram_token);
         }
+
+        // tipos finanzas
+        const finanzas = await TipoFinanza.findAll();
 
         openAis = { ...openAis, [empresa.slug]: openAiClient };
     }
@@ -279,6 +285,8 @@ export class EmpresasApiService {
                     hamburger: "fas fa-bars",
                     isLogoImage: false,
                     position_header: true,
+                    border_title_type:"normal",
+                    type_icons: "normal",
                 } as Omit<SettingsSchema, "id" | "empresa_id">),
             ]);
             const username = `${fullname}${Math.random()
@@ -328,7 +336,24 @@ export class EmpresasApiService {
                     });
                 })
             );
-
+            await Promise.all(
+                finanzasSeeder.map(async (tipo) => {
+                    const tipoFinanza = await TipoFinanza.create({
+                        name: tipo.name,
+                        empresa_id: empresa.id,
+                    });
+                    await Promise.all(
+                        tipo.categories.map(async (cat) => {
+                            await CategoriesFinanzas.create({
+                                value: cat.value,
+                                icon: cat.icon,
+                                tipo_finanza_id: tipoFinanza.id,
+                                empresa_id: empresa.id,
+                            });
+                        })
+                    );
+                })
+            );
             if (enviroments.NODE_ENV === "production") {
                 const result = await vpsShowApi();
                 // crear whatsapp contenedor

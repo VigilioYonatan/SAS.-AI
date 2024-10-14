@@ -56,8 +56,9 @@ function BrandsUpdate({ id, onClose, refetch }: BrandsUpdateProps) {
         });
         function onUpdateBrand(body: BrandsUpdateDto) {
             sweetModal({
-                icon: "success",
                 title: "Estas seguro de agregar Marca?",
+                showCancelButton: true,
+                showCloseButton: true,
             }).then(({ isConfirmed }) => {
                 if (isConfirmed) {
                     brandsUpdateMutation.mutate(body, {

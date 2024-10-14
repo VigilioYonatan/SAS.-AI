@@ -1568,6 +1568,33 @@ function WhatsappFREE() {
         }
     );
     function onWhatsappMode(body: WhatsappmodeDto) {
+        if (body.whatsapp_mode.type === "VPS") {
+            if (!body.whatsapp_mode.ip?.length) {
+                whatsappmodeForm.setError("whatsapp_mode.ip", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+            if (!body.whatsapp_mode.password?.length) {
+                whatsappmodeForm.setError("whatsapp_mode.password", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+            if (!body.whatsapp_mode.cpu?.length) {
+                whatsappmodeForm.setError("whatsapp_mode.cpu", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+
+            if (!body.whatsapp_mode.memory?.length) {
+                whatsappmodeForm.setError("whatsapp_mode.memory", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+        }
         sweetModal({
             icon: "info",
             title: `¿Estas seguro de cambiar el modo a <b>${body.whatsapp_mode.type}</b>`,

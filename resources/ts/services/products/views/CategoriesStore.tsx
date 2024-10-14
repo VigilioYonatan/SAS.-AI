@@ -53,9 +53,9 @@ function CategoriesStore({
                 categoriesStoreMutation.mutate(data, {
                     onSuccess(data) {
                         categoriesStoreDtoForm.reset();
-                        sweetModal({
+                        sweetAlert({
                             icon: "success",
-                            text: `<p class="text-center">Nueva categoría insertado correctamente <b>${data.category.name}</b></p>`,
+                            title: `<p class="text-center">Nueva categoría insertado correctamente <b>${data.category.name}</b></p>`,
                         });
                         refetch(false);
                         onClose();

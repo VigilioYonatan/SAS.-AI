@@ -37,16 +37,17 @@ function BrandsStore({ refetch, onClose, onSetValueBrand }: BrandsStoreProps) {
     const aiBrandsMutation = aiBrandsApi();
     function onAddCategory(data: BrandsStoreDto) {
         sweetModal({
-            icon: "success",
             title: "Estas seguro de agregar Marca?",
+            showCancelButton: true,
+            showCloseButton: true,
         }).then(({ isConfirmed }) => {
             if (isConfirmed) {
                 brandsStoreMutation.mutate(data, {
                     onSuccess(data) {
                         brandsStoreDtoForm.reset();
-                        sweetModal({
+                        sweetAlert({
                             icon: "success",
-                            text: `<p class="text-center">Nueva marca insertado correctamente <b>${data.brand.name}</b></p>`,
+                            title: `<p class="text-center">Nueva marca insertado correctamente <b>${data.brand.name}</b></p>`,
                         });
                         refetch(false);
                         onClose();

@@ -45,6 +45,8 @@ import useDropdown from "~/hooks/useDropdown";
 import useThemeStore from "~/stores/theme.store";
 import CartAside from "@/cart/views/CartAside";
 import SearchProducts from "@/products/views/ProductsSearch";
+import TitleSection from "@/web/components/TitleSection";
+import { icons } from "@/web/views/home/components/BackgroundSection";
 
 const dominioUpdate = pick(hostSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
@@ -90,6 +92,8 @@ function SettingsIndex() {
         const bg_color_responsive = settingsUpdateform.watch(
             "bg_color_responsive"
         );
+        const border_title_type = settingsUpdateform.watch("border_title_type");
+        const type_icons = settingsUpdateform.watch("type_icons");
         const themeStore = useThemeStore();
         const cartStore = useCartStore();
         const headerDropdown = useDropdown();
@@ -683,6 +687,210 @@ function SettingsIndex() {
                                             />
                                         </button>
                                     ))}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 md:gap-2 items-center">
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Border de los titulos
+                                </span>
+                                <div class="flex gap-2 flex-wrap">
+                                    <div class="flex flex-col gap-1">
+                                        <TitleSection
+                                            titleExample={border_title_type}
+                                        >
+                                            Esto es un titulo
+                                        </TitleSection>{" "}
+                                        <div class="flex gap-1">
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    border_title_type ===
+                                                    "normal"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "border_title_type",
+                                                        "normal"
+                                                    );
+                                                }}
+                                            >
+                                                Normal
+                                            </button>
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    border_title_type ===
+                                                    "circle"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "border_title_type",
+                                                        "circle"
+                                                    );
+                                                }}
+                                            >
+                                                Circulares
+                                            </button>
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    border_title_type ===
+                                                    "ninguno"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "border_title_type",
+                                                        "ninguno"
+                                                    );
+                                                }}
+                                            >
+                                                Ninguno
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Iconos
+                                </span>
+                                <div class="flex gap-2 flex-wrap">
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex gap-1">
+                                            <button
+                                                class={`min-w-[120px] h-[120px] grid grid-cols-2 justify-center items-center rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    type_icons === "normal"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white relative  p-2`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "type_icons",
+                                                        "normal"
+                                                    );
+                                                }}
+                                            >
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons.normal[0],
+                                                    }}
+                                                    class=" flex justify-center items-center"
+                                                />
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons.normal[1],
+                                                    }}
+                                                    class=" flex justify-center items-center"
+                                                />
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons.normal[2],
+                                                    }}
+                                                    class=" flex justify-center items-center"
+                                                />
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons.normal[3],
+                                                    }}
+                                                    class=" flex justify-center items-center"
+                                                />
+                                                <span class="absolute top-[40%] px-2 py-1 rounded-md right-[25%] bg-black bg-opacity-60">
+                                                    Pack 1
+                                                </span>
+                                            </button>
+                                            <button
+                                                class={`min-w-[120px] h-[120px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary  grid grid-cols-2  border border-gray-300 ${
+                                                    type_icons === "circle"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white relative p-2`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "type_icons",
+                                                        "icons"
+                                                    );
+                                                }}
+                                            >
+                                                {" "}
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons.icons[0],
+                                                    }}
+                                                />
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons.icons[1],
+                                                    }}
+                                                />
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons.icons[2],
+                                                    }}
+                                                />
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons.icons[3],
+                                                    }}
+                                                />
+                                                <span class="absolute top-[40%] right-[25%] px-2 py-1 rounded-md  bg-black bg-opacity-60">
+                                                    Pack 2
+                                                </span>
+                                            </button>
+                                            <button
+                                                class={`min-w-[120px] h-[120px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary  grid grid-cols-2  border border-gray-300 ${
+                                                    type_icons === "premium"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white relative p-2`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "type_icons",
+                                                        "premium"
+                                                    );
+                                                }}
+                                            >
+                                                {" "}
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons
+                                                            .premium[0],
+                                                    }}
+                                                />
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons
+                                                            .premium[1],
+                                                    }}
+                                                />
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons
+                                                            .premium[2],
+                                                    }}
+                                                />
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: icons
+                                                            .premium[3],
+                                                    }}
+                                                />
+                                                <span class="absolute top-[40%] right-[25%] px-2 py-1 rounded-md  bg-black bg-opacity-60">
+                                                    Pack 3
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
