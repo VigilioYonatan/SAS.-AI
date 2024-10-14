@@ -285,7 +285,7 @@ export class EmpresasApiService {
                     hamburger: "fas fa-bars",
                     isLogoImage: false,
                     position_header: true,
-                    border_title_type:"normal",
+                    border_title_type: "normal",
                     type_icons: "normal",
                 } as Omit<SettingsSchema, "id" | "empresa_id">),
             ]);
@@ -1052,7 +1052,7 @@ export class EmpresasApiService {
                 fs.rmdirSync(dir, { recursive: true });
             }
 
-            await empresa.destroy();
+            await empresa.destroy({ force: true });
             await terminal(`docker container stop ${empresa.slug} || true`);
             await terminal(`docker container rm -f ${empresa.slug} || true`);
             await terminal(`docker volume  rm  ${empresa.slug} || true`);
