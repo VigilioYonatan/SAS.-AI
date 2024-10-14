@@ -158,7 +158,7 @@ export class IAApiController {
             const whatsapp = await isWhatsappIA(empresa.slug);
             const esMalaPalabra = await this.prompt(
                 whatsapp,
-                `'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'`
+                `'${name}'  si es mala palabra dime solo '1' y si no solo dime '2', recuerda solo 1 y 2 me dices`
             );
             if (esMalaPalabra?.includes("1"))
                 throw new BadRequestException("No válido");
@@ -167,12 +167,14 @@ export class IAApiController {
                     "Hubo un problema al usar la ia, Recomiendo fijarse en los limites token"
                 );
             const response = await fetch(
-                `https://www.bing.com/images/search?q=${`${name} png`.replaceAll(
+                `https://www.bing.com/images/search?q=${`${name} logo png`.replaceAll(
                     " ",
                     "+"
                 )}&form=HDRSC3&first=1&cw=1202&ch=935`
             );
             const result: string | null = await response.text();
+            console.log({ result });
+
             const $ = cheerio.load(result);
 
             const fathers = $(".iusc");
