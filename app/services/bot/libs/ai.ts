@@ -440,7 +440,7 @@ export async function searchProducts(empresa: Empresas, word: string) {
         messages: [
             {
                 role: "user",
-                content: `Si el mensaje "${word}" es una pregunta o busca informacion de un producto,marca,categorias, si escribe un producto. no preguntas cualquiera.  di "si", sino di "no". solo di "si" y "no" nada mas, sin comillas.`,
+                content: `Si el mensaje "${word}" es una pregunta o busca informacion de un producto,marca,categorias,ordenes,pedidos si escribe un producto. no preguntas cualquiera.  di "si", sino di "no". solo di "si" y "no" nada mas, sin comillas.`,
             },
         ],
     });

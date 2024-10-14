@@ -20,6 +20,7 @@ import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import type { Variants } from "@/products/entities/options/variants.entity";
 import { getProductAll, printVariantFeatures } from "@/products/libs";
 import type { VariantsSchema } from "@/products/schemas/options/variants.schema";
+import { searchProducts } from "./ai";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
@@ -217,8 +218,8 @@ export async function promptReplace(message: string, empresa: Empresas) {
         cache.get(`db-${empresa.slug}`) ?? "null"
     );
     // verifica si el mensaje es un texto o pregunta de base de datos
-
-    if (!data) {
+    const verifyMessage = await searchProducts(empresa, message);
+    if (!data && verifyMessage) {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         data = (await onDb(empresa)) as any;
         if (data.products.length > 20) {
@@ -229,7 +230,7 @@ export async function promptReplace(message: string, empresa: Empresas) {
             );
         }
     }
-    let productsData = data.products;
+    let productsData = verifyMessage ? data.products : [];
     // si no es inteligente que busque
     if (!empresa.inteligenceArtificial.enabledBotInteligence) {
         const palabrasEncontradas2 = encontrarPalabrasSimilares(
@@ -242,8 +243,6 @@ export async function promptReplace(message: string, empresa: Empresas) {
     }
     const regex = /ord-[0-9]+/g;
     const coincidencias = message.toLowerCase().match(regex);
-    console.log({ message });
-
     let ordenes = "";
     if (empresa.inteligenceArtificial.settings.enabled_order) {
         ordenes =
@@ -251,8 +250,6 @@ export async function promptReplace(message: string, empresa: Empresas) {
         if (coincidencias?.length) {
             const orden = await Promise.all(
                 coincidencias?.map(async (code) => {
-                    console.log(code);
-
                     const order = await Orders.findOne({
                         where: {
                             order_code: code.toUpperCase(),
@@ -292,7 +289,6 @@ export async function promptReplace(message: string, empresa: Empresas) {
             ordenes += "no hay pedidos aun";
         }
     }
-    console.log({ ordenes });
 
     return `${prompt(
         empresa,
