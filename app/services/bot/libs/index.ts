@@ -92,7 +92,7 @@ export async function onDb(empresa: Empresas) {
                                     variant as VariantsSchema & {
                                         features: {
                                             option_id: number;
-                                            feature_id: number;
+                                            id: number;
                                         }[];
                                     }
                                 ),

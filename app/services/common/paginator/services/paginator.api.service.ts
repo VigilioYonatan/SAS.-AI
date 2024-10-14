@@ -335,6 +335,7 @@ export class PaginatorApiServices {
                         },
                     }),
                 ]);
+
                 data[0] = await Promise.all(
                     data[0].map(async (ord) => {
                         const order = await getOrder(
@@ -410,6 +411,7 @@ export class PaginatorApiServices {
                         },
                     }),
                 ]);
+
                 data[0] = await Promise.all(
                     data[0].map(async (ord) => {
                         const order = await getOrder(

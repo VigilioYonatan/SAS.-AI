@@ -583,7 +583,7 @@ function ProductsNormalUpdate({
                                                                     .map(
                                                                         ({
                                                                             option_id,
-                                                                            feature_id,
+                                                                            id,
                                                                         }) => {
                                                                             return (
                                                                                 // biome-ignore lint/correctness/useJsxKeyInIterable: <explanation>
@@ -598,7 +598,7 @@ function ProductsNormalUpdate({
                                                                                                         feat
                                                                                                     ) =>
                                                                                                         feat.id ===
-                                                                                                            feature_id &&
+                                                                                                            id &&
                                                                                                         feat.option_id ===
                                                                                                             option_id
                                                                                                 );

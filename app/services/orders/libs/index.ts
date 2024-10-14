@@ -623,7 +623,9 @@ export async function detailInvoice(
             return {
                 tipAfeIgv: 10, // catalogo 7
                 codProducto: product.product_code,
-                descripcion: product.name,
+                descripcion: `${product.name}${
+                    prod.variant_id ? ` / ${prod.variante}` : ""
+                }`,
                 unidad: "NIU",
                 cantidad: prod.quantity, // cantidad de producto
                 mtoValorUnitario:
