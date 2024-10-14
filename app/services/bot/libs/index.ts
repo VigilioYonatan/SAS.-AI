@@ -242,6 +242,8 @@ export async function promptReplace(message: string, empresa: Empresas) {
     }
     const regex = /ord-[0-9]+/g;
     const coincidencias = message.toLowerCase().match(regex);
+    console.log({ message });
+
     let ordenes = "";
     if (empresa.inteligenceArtificial.settings.enabled_order) {
         ordenes =
