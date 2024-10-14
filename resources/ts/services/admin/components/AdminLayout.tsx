@@ -367,7 +367,8 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                 </div>
                             </>
                         ) : null}
-                        {storageEmpresa?.payments.finanza.enabled ? (
+                        {storageEmpresa?.payments.finanza.enabled &&
+                        authStore.guards.permissionAdminGuard() ? (
                             <NavLink
                                 onClick={onCloseAside}
                                 to="/finanzas"

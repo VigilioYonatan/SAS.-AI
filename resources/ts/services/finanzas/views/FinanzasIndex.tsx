@@ -22,9 +22,14 @@ import usePaginatorTimer from "~/hooks/usePaginatorTimer";
 import Hr from "@/web/components/Hr";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import ChartPercentajeFinanzas from "../components/ChartPercentajeFinanzas";
+import useAuthStore from "@/auth/stores/auth.store";
 
 function FinanzasIndex() {
-    if (!storageEmpresa?.payments.finanza.enabled) {
+    const authStore = useAuthStore();
+    if (
+        !storageEmpresa?.payments.finanza.enabled ||
+        !authStore.guards.permissionAdminGuard()
+    ) {
         window.history.back();
         return;
     }
