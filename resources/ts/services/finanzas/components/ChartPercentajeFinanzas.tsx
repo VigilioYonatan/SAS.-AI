@@ -1,4 +1,5 @@
 import ContainerBox from "@/admin/components/ContainerBox";
+import { formatMoney } from "@/cart/libs/helpers";
 import { Chart } from "chart.js/auto";
 import { useEffect, useRef } from "preact/hooks";
 import AdminHr from "~/components/AdminHr";
@@ -15,32 +16,27 @@ function ChartPercentajeFinanzas({
 }: ChartPercentajeFinanzasProps) {
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const theme = useThemeStore();
+    const labels = percentajes.map((p) => p.value);
     async function init() {
         const ctx = chartRef.current?.getContext("2d")!;
-
         const myChart = new Chart(ctx, {
             type: "doughnut",
             data: {
+                labels,
                 datasets: [
                     {
-                        label: "Distribución de Gastos",
-                        data: [22, 31, 14, 33], // Porcentajes correspondientes
+                        data: percentajes.map((c) => c.numeric), // Porcentajes correspondientes
                         backgroundColor: [
-                            "rgba(75, 192, 192, 0.6)", // Color para "Gastos"
-                            "rgba(54, 162, 235, 0.6)", // Color para "Servicios"
-                            "rgba(153, 102, 255, 0.6)", // Color para "Ahorro"
-                            "rgba(255, 99, 132, 0.6)", // Color para "Deudas"
+                            "rgba(75, 192, 192, 0.6)",
+                            "rgba(54, 162, 235, 0.6)",
                         ],
                         borderColor: [
                             "rgba(75, 192, 192, 1)",
                             "rgba(54, 162, 235, 1)",
-                            "rgba(153, 102, 255, 1)",
-                            "rgba(255, 99, 132, 1)",
                         ],
                         borderWidth: 1,
                     },
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation> images error type
-                ] as any,
+                ],
             },
             options: {
                 responsive: true, // Hace que el gráfico sea responsive
@@ -61,12 +57,23 @@ function ChartPercentajeFinanzas({
         <ContainerBox>
             <div class="flex items-center justify-between">
                 <span class="dark:text-secondary-light text-secondary-dark font-bold text-sm mt-2 ">
-                    Clientes top
+                    Grafico de Ingresos
                 </span>
             </div>
             <AdminHr />
             <div class="h-[300px] w-full flex justify-center items-center">
                 <canvas ref={chartRef} height={200} width={200} />
+            </div>
+            <div class="flex justify-center gap-2 mt-4">
+                {percentajes.map((p) => (
+                    <div
+                        class="flex flex-col gap-1 justify-center items-center dark:text-white font-semibold"
+                        key={p.value}
+                    >
+                        <span class="text-center block">{p.value}</span>
+                        <span>{formatMoney(p.numeric)}</span>
+                    </div>
+                ))}
             </div>
         </ContainerBox>
     );

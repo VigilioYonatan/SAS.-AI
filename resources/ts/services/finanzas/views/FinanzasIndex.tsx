@@ -20,6 +20,8 @@ import ContainerBox from "@/admin/components/ContainerBox";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import usePaginatorTimer from "~/hooks/usePaginatorTimer";
 import Hr from "@/web/components/Hr";
+import LoaderSubmit from "~/components/LoaderSubmit";
+import ChartPercentajeFinanzas from "../components/ChartPercentajeFinanzas";
 
 function FinanzasIndex() {
     if (!storageEmpresa?.payments.finanza.enabled) {
@@ -58,7 +60,25 @@ function FinanzasIndex() {
                                 <ContainerBox>
                                     <div class="w-full relative">
                                         <div class="w-full flex justify-between items-center text-3xl font-bold dark:text-white py-1">
-                                            <div />
+                                            <button
+                                                type="button"
+                                                class="bg-primary text-white text-xs px-3 mb-2 py-2 rounded-md"
+                                                disabled={
+                                                    finanzasAllQuery.isFetching ||
+                                                    false
+                                                }
+                                                onClick={() => {
+                                                    finanzasAllQuery.refetch(
+                                                        false
+                                                    );
+                                                }}
+                                            >
+                                                {finanzasAllQuery.isFetching ? (
+                                                    <LoaderSubmit />
+                                                ) : (
+                                                    <i class="fa-solid fa-rotate-right" />
+                                                )}
+                                            </button>
                                             {year.value.year}
                                             <div class="flex flex-col justify-center items-center gap-2">
                                                 {year.value.year <
@@ -480,6 +500,12 @@ function FinanzasIndex() {
                                     </table>
                                 </div>
                             </ContainerBox>{" "}
+                            <ChartPercentajeFinanzas
+                                percentajes={result.resumeIngresos.map((v) => ({
+                                    numeric: v.monto,
+                                    value: v.name,
+                                }))}
+                            />
                         </div>
                     </div>
                 </div>

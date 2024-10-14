@@ -3,6 +3,7 @@ import {
     date,
     maxLength,
     minValue,
+    nullable,
     number,
     objectAsync,
     string,
@@ -14,7 +15,7 @@ export const finanzasSchema = objectAsync({
     date: coerce(date(), (value) => new Date(value as string)),
     presupuesto: number([minValue(0)]),
     monto: number([minValue(0)]),
-    description: string([maxLength(20)]),
+    description: nullable(string([maxLength(20)])),
     category_finanza_id: number(), //sueldo
     tipo_finanza_id: number(), //ingreso -egreso
     empresa_id: number(),

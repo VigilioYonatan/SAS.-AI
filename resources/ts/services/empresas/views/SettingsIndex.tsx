@@ -803,7 +803,7 @@ function SettingsIndex() {
                                                     }}
                                                     class=" flex justify-center items-center"
                                                 />
-                                                <span class="absolute top-[40%] px-2 py-1 rounded-md right-[25%] bg-black bg-opacity-60">
+                                                <span class="absolute top-[40%] px-2 py-1 rounded-md right-[25%] bg-black bg-opacity-60 text-white">
                                                     Pack 1
                                                 </span>
                                             </button>
@@ -842,7 +842,7 @@ function SettingsIndex() {
                                                         __html: icons.icons[3],
                                                     }}
                                                 />
-                                                <span class="absolute top-[40%] right-[25%] px-2 py-1 rounded-md  bg-black bg-opacity-60">
+                                                <span class="absolute top-[40%] right-[25%] px-2 py-1 rounded-md  bg-black bg-opacity-60  text-white">
                                                     Pack 2
                                                 </span>
                                             </button>
@@ -885,7 +885,7 @@ function SettingsIndex() {
                                                             .premium[3],
                                                     }}
                                                 />
-                                                <span class="absolute top-[40%] right-[25%] px-2 py-1 rounded-md  bg-black bg-opacity-60">
+                                                <span class="absolute top-[40%] right-[25%] px-2 py-1 rounded-md  bg-black bg-opacity-60  text-white">
                                                     Pack 3
                                                 </span>
                                             </button>
