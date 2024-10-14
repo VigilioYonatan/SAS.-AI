@@ -31,7 +31,7 @@ function FinanzasIndex() {
         !authStore.guards.permissionAdminGuard()
     ) {
         window.history.back();
-        return;
+        return null;
     }
     const dropdown = useDropdown();
     const year = useSignal({
