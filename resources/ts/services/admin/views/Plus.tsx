@@ -350,7 +350,7 @@ function Plus() {
                             title="Sistema de Finanzas"
                             priceLocal={0}
                             priceDolar={0}
-                            imageUrl="/images/settings/others/tokens.jpg"
+                            imageUrl="/images/settings/others/finanzas.jpg"
                             link={`${enviroments.VITE_VIGILIO_WEB}/payment/${
                                 storageEmpresa?.slug
                             }?type=${"finanza" as TypePayment}`}
