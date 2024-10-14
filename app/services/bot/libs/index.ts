@@ -240,7 +240,7 @@ export async function promptReplace(message: string, empresa: Empresas) {
             palabrasEncontradas2.includes(prod.name)
         );
     }
-    const regex = /ord-[A-Za-z0-9]+/g;
+    const regex = /ord-[0-9]+/g;
     const coincidencias = message.toLowerCase().match(regex);
     let ordenes = "";
     if (empresa.inteligenceArtificial.settings.enabled_order) {
