@@ -173,7 +173,6 @@ export class IAApiController {
                 )}&form=HDRSC3&first=1&cw=1202&ch=935`
             );
             const result: string | null = await response.text();
-            console.log({ result });
 
             const $ = cheerio.load(result);
 
