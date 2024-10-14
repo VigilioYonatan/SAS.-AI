@@ -285,6 +285,7 @@ export async function promptReplace(message: string, empresa: Empresas) {
             ordenes += "no hay pedidos aun";
         }
     }
+    console.log({ ordenes });
 
     return `${prompt(
         empresa,
