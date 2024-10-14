@@ -249,8 +249,13 @@ export async function promptReplace(message: string, empresa: Empresas) {
         if (coincidencias?.length) {
             const orden = await Promise.all(
                 coincidencias?.map(async (code) => {
+                    console.log(code);
+
                     const order = await Orders.findOne({
-                        where: { order_code: code.toUpperCase() },
+                        where: {
+                            order_code: code.toUpperCase(),
+                            empresa_id: empresa.id,
+                        },
                         attributes: [
                             "order_code",
                             "address",

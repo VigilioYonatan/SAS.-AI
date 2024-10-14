@@ -55,7 +55,7 @@ export function prompt(
         directrices = [
             "No menciones 'carrito' ni 'BASE_DE_DATOS'. no seas muy tecnico!!! y SOLO response las preguntas que te diga y NO sobrecargues mucho tu respuesta. NO me des feedback ni recomendaciones, sin que me lo pidas",
             "NO ENVIES EL LINK si no confirmo el pedido!!! y no sugieras links cuando no haya confirmado el pedido.  SOLO CUANDO  CONFIRME PEDIDO.",
-            "No Menciones de que te entregaremos un {{cart?=}}. Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el {{cart?=}}. CUANDO te pida LINK enviame eso {{cart?=}}",
+            "No Menciones de que te entregaremos un {{cart?=}}. Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el {{cart?=}} en  formato URL percent-encoding. CUANDO te pida LINK enviame eso {{cart?=}} en  formato URL percent-encoding",
             ...directrices,
         ];
     }
@@ -100,7 +100,7 @@ export function prompt(
     HORA Y FECHA_ACTUAL: ${NOW(empresa).format("DD-MM-YYYY hh:mm")}
 	MAXIMO_DE_PALABRAS_QUE_DIRAS: ${empresa.inteligenceArtificial.max_length}.
 	TIPO_MONEDA: ${empresa.money.money}
-    RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN, NO TRAIGAS NI CONTESTES ERRONEAMENTE, LA CANTIDAD,ETC..
+    RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN,ORDENES, NO TRAIGAS NI CONTESTES ERRONEAMENTE, LA CANTIDAD,ETC..
     SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR.
     ACTUALIZA SIEMPRE LO QUE VAS A DECIR SI CAMBIA LA BASE DE DATOS.
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
