@@ -84,7 +84,7 @@ export async function onDb(empresa: Empresas) {
                                 images,
                                 product_normal_id,
                                 ...rest
-                            } = variant as Variants;
+                            } = variant.toJSON() as Variants;
                             return {
                                 ...rest,
                                 features: printVariantFeatures(
