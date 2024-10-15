@@ -76,8 +76,7 @@ export async function onDb(empresa: Empresas) {
                 const variantes = await Promise.all(
                     (producto.dataValues.variants as Variants[]).map(
                         async (variant) => {
-                            const { stock, ilimit, id } =
-                                variant.toJSON() as Variants;
+                            const { stock, ilimit, id } = variant as Variants;
                             return {
                                 id,
                                 features: printVariantFeatures(
