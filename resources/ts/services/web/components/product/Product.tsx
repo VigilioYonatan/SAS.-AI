@@ -27,7 +27,7 @@ function Product({ children, product, className = "" }: ProductProps) {
                     enviroments.TYPE_BORDER === "square"
                         ? ""
                         : "rounded-md overflow-hidden"
-                }   shadow-md ${className} w-full h-[500px]`}
+                }   shadow-md ${className} w-full h-[428px]`}
             >
                 {children}
             </div>
