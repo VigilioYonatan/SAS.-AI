@@ -307,7 +307,9 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
             messages: [
                 {
                     role: "user",
-                    content: promptAssitant(empresa!),
+                    content: `${promptAssitant(
+                        empresa!
+                    )}. - Por ultimo, cada vez que te pida informacion de un producto  trate de responder con una imagen o link. si envias imagen , que sea en etiqueta image <img width="100" height="100" class="w-[100px] h-[150px] rounded-md object-contain"/>   y si  envias cualquier tipo de link  SIEMPRE por favor etiqueta html <a href="http...link"  class="text-primary font-semibold"corto_mensaje_sobre_el_llink_que_envias</a> , no preguntes porque, responde como si fuera html con espacios usando br en productos o pedidos. para que lea bien.  y no uses ** mejor utiliza la etiqueta <b></b>, y si envias caracterisiticas o algo aso por favor que sea en table, como el carrito de lo que pide el cliente y la letra 13px . si dices una lista por traelas con etqueta li y  la letra 13px, y cuando use ** traela con etiqueta b class="font-bold", POR ULTIMO. siempre cuando me respondas lista, hacelo con una tabla html porfav`,
                 },
                 ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
             ],
