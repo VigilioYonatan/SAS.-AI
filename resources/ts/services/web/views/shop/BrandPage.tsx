@@ -217,7 +217,7 @@ function BrandPage({
                                                 className={`${
                                                     typeSection.value === "cols"
                                                         ? "[&>img]:h-[300px] [&>img]:w-[300px]"
-                                                        : "[&>img]:h-[200px] [&>img]:w-[200px]"
+                                                        : " [&>img]:w-[200px]"
                                                 }`}
                                             >
                                                 <ProductCard.buttons
