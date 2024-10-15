@@ -219,7 +219,7 @@ function CategoriesPage({
                             <div
                                 class={`    min-h-[500px] gap-4 grid ${
                                     typeSection.value === "rows"
-                                        ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                                        ? "grid-cols-2 md:grid-cols-3 "
                                         : ""
                                 }`}
                             >
