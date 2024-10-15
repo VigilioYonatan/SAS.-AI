@@ -34,39 +34,43 @@ export async function getFilesEdit(
     dimension: number | null,
     type = "image/webp"
 ) {
-    const filterImages = dimension
-        ? files.filter(
-              (pro) =>
-                  pro.file!.startsWith("https://") ||
-                  pro.dimension === dimension
-          )
-        : files;
+    try {
+        const filterImages = dimension
+            ? files.filter(
+                  (pro) =>
+                      pro.file!.startsWith("https://") ||
+                      pro.dimension === dimension
+              )
+            : files;
 
-    const response = await Promise.all(
-        filterImages.map(async (file) => {
-            try {
-                return await fetch(
-                    file.file?.startsWith("https://") ||
-                        file.file?.startsWith("http://")
-                        ? `/proxy?url=${file.file!}`
-                        : `${BASE_URL}/empresas/${storageEmpresa?.slug}/${file.file}`
-                );
-            } catch (error) {
-                return null;
-            }
-        })
-    );
-    const result = await Promise.all(
-        response.filter((val) => val).map(async (req) => await req!.blob())
-    );
-
-    const images = result.map(
-        (res, i) =>
-            new File([res], filterImages[i].file!, {
-                type,
+        const response = await Promise.all(
+            filterImages.map(async (file) => {
+                try {
+                    return await fetch(
+                        file.file?.startsWith("https://") ||
+                            file.file?.startsWith("http://")
+                            ? `/proxy?url=${file.file!}`
+                            : `${BASE_URL}/empresas/${storageEmpresa?.slug}/${file.file}`
+                    );
+                } catch (error) {
+                    return null;
+                }
             })
-    );
-    return images;
+        );
+        const result = await Promise.all(
+            response.filter((val) => val).map(async (req) => await req!.blob())
+        );
+
+        const images = result.map(
+            (res, i) =>
+                new File([res], filterImages[i].file!, {
+                    type,
+                })
+        );
+        return images;
+    } catch (error) {
+        return [];
+    }
 }
 
 /****  METHOD to consume api files  *****/
