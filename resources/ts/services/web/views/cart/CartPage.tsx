@@ -300,12 +300,34 @@ function CartPage({ cart, header }: CartProps) {
                                                         (
                                                             product as ProductsRestaurantSchemaFromServer
                                                         )?.stock! < 1) ? (
-                                                        <td>
-                                                            <span class="dark:text-secondary-light text-sm text-center">
-                                                                Este producto
-                                                                está agotado
-                                                            </span>
-                                                        </td>
+                                                        <>
+                                                            <td>
+                                                                <span class="dark:text-secondary-light text-sm text-center">
+                                                                    Este
+                                                                    producto
+                                                                    está agotado
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <button
+                                                                    class="w-[30px]"
+                                                                    onClick={() =>
+                                                                        cartStore.methods.onRemoveProductToCart(
+                                                                            product.id,
+                                                                            product.variant
+                                                                                ? product
+                                                                                      .variant
+                                                                                      .id
+                                                                                : null
+                                                                        )
+                                                                    }
+                                                                    type="button"
+                                                                    aria-label="delete poduct to cart"
+                                                                >
+                                                                    <i class="fa-regular fa-trash text-primary text-lg" />
+                                                                </button>
+                                                            </td>
+                                                        </>
                                                     ) : (
                                                         <>
                                                             <td class="py-3 mx-2 w-[100px]">

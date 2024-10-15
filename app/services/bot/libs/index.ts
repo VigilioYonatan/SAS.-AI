@@ -79,7 +79,6 @@ export async function onDb(empresa: Empresas) {
                             const {
                                 createdAt,
                                 updatedAt,
-                                id,
                                 stock,
                                 ilimit,
                                 images,
