@@ -231,7 +231,12 @@ function BrandPage({
                                                         "cols"
                                                     }
                                                 />
-                                                <ProductCard.footer />
+                                                <ProductCard.footer
+                                                    showButtonCart={
+                                                        typeSection.value ===
+                                                        "rows"
+                                                    }
+                                                />
                                             </div>
                                         </ProductCard>
                                     )
