@@ -21,6 +21,7 @@ import { printFileWithDimension } from "~/libs/upload";
 import { MetodosDePago } from "@/web/components/product/ProductView";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
+import { printProductVariant } from "@/products/libs/helpers";
 
 export interface VariantFeature {
     option_id: number;
@@ -224,7 +225,21 @@ function ProductPage({
                             <span>{product.category.name}</span>
                         </div>
                         <h3 class="text-primary font-bold dark:text-white line-clamp-2 text-lg">
-                            {product.name}
+                            {product.name}{" "}
+                            {varianteChoose &&
+                            storageEmpresa?.tipo_empresa.tipo_servicio_id === 1
+                                ? printProductVariant(
+                                      producto.value as ProductsNormalSchemaFromServer,
+                                      varianteChoose
+                                  )
+                                      .map((variant) => {
+                                          // si es color que muestre el color, sino solo el valor
+                                          return variant?.features.map(
+                                              (feature) => feature?.description
+                                          );
+                                      })
+                                      .join(" ")
+                                : null}
                         </h3>
                         {(product as ProductsNormalSchemaFromServer).brand
                             ?.image ? (

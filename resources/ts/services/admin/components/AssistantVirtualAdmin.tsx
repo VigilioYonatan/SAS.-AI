@@ -24,9 +24,8 @@ function AssistantVirtualAdmin() {
         isLoading.value = true;
         messageForm.reset();
         chats.value = [...chats.value, ["user", data.message, Date.now()]];
-        const between = Math.floor(Math.random() * (6 - 3 + 1)) + 3;
         io?.emit("chat-assistant:send-message", data);
-        await delay(between);
+        await delay(3);
     }
     useEffect(() => {
         onScrolling();

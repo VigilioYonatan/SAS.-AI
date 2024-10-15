@@ -28,9 +28,8 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
         isLoading.value = true;
         messageForm.reset();
         chats.value = [...chats.value, ["user", data.message]];
-        const between = Math.floor(Math.random() * (6 - 3 + 1)) + 3;
         io?.emit("chat:send-message", data);
-        await delay(between);
+        await delay(3);
     }
     function onScrolling() {
         const chatContainer = chatBox.current;

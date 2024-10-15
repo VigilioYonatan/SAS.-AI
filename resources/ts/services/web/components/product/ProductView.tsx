@@ -22,6 +22,7 @@ import { transferencias } from "@/empresas/libs/helpers";
 import { Fragment } from "preact/jsx-runtime";
 import { verifyBank } from "@/cart/views/Niubiz";
 import { printFileWithDimension } from "~/libs/upload";
+import { printProductVariant } from "@/products/libs/helpers";
 
 interface ProductCardViewProps {
     product: ReturnType<typeof useProduct>;
@@ -195,6 +196,22 @@ function ProductCardView({ product }: ProductCardViewProps) {
 
                     <span class="dark:text-white text-black font-bold text-lg">
                         {product.producto.value.name}
+
+                        {product.varianteChoose &&
+                        storageEmpresa?.tipo_empresa.tipo_servicio_id === 1
+                            ? printProductVariant(
+                                  product.producto
+                                      .value as ProductsNormalSchemaFromServer,
+                                  product.varianteChoose
+                              )
+                                  .map((variant) => {
+                                      // si es color que muestre el color, sino solo el valor
+                                      return variant?.features.map(
+                                          (feature) => feature?.description
+                                      );
+                                  })
+                                  .join(" ")
+                            : null}
                     </span>
                 </div>
                 {(product.producto.value as ProductsNormalSchemaFromServer)
