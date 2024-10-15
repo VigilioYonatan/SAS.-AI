@@ -14,7 +14,7 @@ function ProductFooter({ showButtonCart = false }: ProductFooterProps) {
 	return (
 		<div class="flex gap-2 items-center  w-full pt-2 flex-col">
 			<div class="flex gap-1  text-sm  items-center flex-col justify-center w-full">
-				<span class="text-gray-400 line-through   font-semibold   text-xs  text-center  h-[15px] h-[10px]">
+				<span class="text-gray-400 line-through   font-semibold   text-xs  text-center  h-[15px]">
 					{product.producto.value.discount > 0
 						? formatMoney(subtotalIgv(product.producto.value, false))
 						: null}
