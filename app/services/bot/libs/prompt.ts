@@ -54,6 +54,7 @@ export function prompt(
         ];
         directrices = [
             "No menciones 'carrito' ni 'BASE_DE_DATOS'. no seas muy tecnico!!! y SOLO response las preguntas que te diga y NO sobrecargues mucho tu respuesta. NO me des feedback ni recomendaciones, sin que me lo pidas",
+            "No Menciones de que te entregaremos un {{cart?items=}}. Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el {{cart?items=}} en  formato URL percent-encoding. CUANDO te pida LINK enviame eso {{cart?items=}} en  formato URL percent-encoding",
             "NO ENVIES EL LINK si no confirmo el pedido!!! y no sugieras links cuando no haya confirmado el pedido.  SOLO CUANDO  CONFIRME PEDIDO.",
             ...directrices,
         ];
