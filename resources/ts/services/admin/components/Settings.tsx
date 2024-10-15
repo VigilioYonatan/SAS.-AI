@@ -21,9 +21,12 @@ import { Input, maxLength, minLength, object, string } from "@vigilio/valibot";
 import { valibotVigilio } from "~/libs/valibot";
 import useCopyToClipboard from "~/hooks/useCopyToClipboard";
 import { onDownloadImage } from "~/libs/helpers";
+import Youtube from "./Youtube";
 
 function Settings() {
     const showBottom = useSignal(false);
+    const showYoutube = useSignal(false);
+
     function toggleMostrarBotones() {
         showBottom.value = !showBottom.value;
     }
@@ -154,6 +157,30 @@ function Settings() {
                 >
                     <i class="fas fa-images" />
                 </button>
+                <button
+                    className={`${
+                        showBottom.value ? "block" : "hidden"
+                    } relative dark:bg-admin-terciary bg-opacity-60 group w-[30px] h-[30px] bg-white shadow flex justify-center items-center dark:text-white font-bold  rounded my-2`}
+                    type="button"
+                    aria-label="change button"
+                    style={{
+                        position: "absolute",
+                        left: "-0px",
+                        transform: "translateY(44px)",
+                    }}
+                    onClick={() => {
+                        showYoutube.value = !showYoutube.value;
+                    }}
+                >
+                    <i class="fab fa-youtube" />
+                </button>
+                <div
+                    class={`fixed top-[48px] right-[40px] w-[300px] ${
+                        showYoutube.value ? "visible" : "invisible"
+                    }`}
+                >
+                    <Youtube />
+                </div>
             </div>
         </div>
     );

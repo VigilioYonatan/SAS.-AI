@@ -1740,7 +1740,7 @@ function WhatsappFREE() {
                                 href={
                                     storageEmpresa?.dial_code === "51"
                                         ? "https://youtu.be/msYxTrbVLNY"
-                                        : "https://youtu.be/48obPqnhQe8"
+                                        : "https://www.youtube.com/watch?v=msYxTrbVLNY&feature=youtu.be"
                                 }
                                 target="_blank"
                                 rel="noreferrer"
