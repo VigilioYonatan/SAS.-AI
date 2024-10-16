@@ -48,13 +48,13 @@ export function prompt(
                 empresa.tipo_empresa.tipo_servicio_id === 1
                     ? "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%2C%20%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%5D"
                     : "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%7D%2C%20%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%7D%5D"
-            }}} que es un formato URL percent-encoding,. Solo enviame {{cart?items=}},  en {{cart?items=URL percent-encoding}} de productos (id producto, cantidad, ${
+            }}} que es un formato URL percent-encoding,. Solo enviame {{cart?items=URL percent-encoding}} ,  en {{cart?items=URL percent-encoding}} de productos (id producto, cantidad, ${
                 empresa.tipo_empresa.tipo_servicio_id === 1 ? "variant_id" : ""
-            } ) o servicios de base de datos. SOLO ENVIAME ASÍ`,
+            } ) o servicios de la base de datos. SOLO ENVIAME ASÍ. NUNCA TE OLVIDES LEER DE LA BASE DE DATOS PARA CREAR el {{cart?items=URL percent-encoding}}`,
         ];
         directrices = [
             "No menciones 'carrito' ni 'BASE_DE_DATOS'. no seas muy tecnico!!! y SOLO response las preguntas que te diga y NO sobrecargues mucho tu respuesta. NO me des feedback ni recomendaciones, sin que me lo pidas",
-            "No Menciones de que te entregaremos un {{cart?items=}}. Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el {{cart?items=}} en  formato URL percent-encoding. CUANDO te pida LINK enviame eso {{cart?items=}} en  formato URL percent-encoding",
+            "No Menciones de que te entregaremos un {{cart?items=URL percent-encoding}}. Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el {{cart?items=URL percent-encoding}}. CUANDO te pida LINK enviame eso {{cart?items=URL percent-encoding}}",
             "NO ENVIES EL LINK si no confirmo el pedido!!! y no sugieras links cuando no haya confirmado el pedido.  SOLO CUANDO  CONFIRME PEDIDO.",
             ...directrices,
         ];
