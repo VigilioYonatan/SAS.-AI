@@ -57,8 +57,10 @@ export async function sendFile(req: Request, res: Response) {
                 Number(field.delay ? Number(field.delay[0]) : 1) * 1000
             )
         );
-        const options: WAWebJS.MessageSendOptions = field.options
-            ? JSON.parse(field.options[0])
+
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const options: any = field.options
+            ? JSON.parse(JSON.parse(field.options[0]))
             : {};
         if (!query.telephone)
             return res.status(400).json({
@@ -66,11 +68,12 @@ export async function sendFile(req: Request, res: Response) {
                 message: "required telephone body or file",
             });
         if (field.url) {
-            await client.sendMessage(
-                query.telephone,
-                await WAWebJS.MessageMedia.fromUrl(field.url[0]),
-                options
-            );
+            const image = await WAWebJS.MessageMedia.fromUrl(field.url[0]);
+            await client.sendMessage(query.telephone, image, options);
+            return res.json({
+                success: true,
+                message: "Mensaje enviado correctamente",
+            });
         }
 
         if (files.file) {
