@@ -118,14 +118,12 @@ export class whatsappApiController {
             // }
 
             if (body.type === "ptt") {
-                console.log({ content });
-
                 const audioToTxt = await transcribeAudio(
                     empresa.slug,
-                    content as Buffer
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                    (content as any).data as Buffer
                 );
                 content = audioToTxt.text;
-                console.log({ content });
             }
             const buenas = buenosDias(
                 content as string,
@@ -193,7 +191,7 @@ export class whatsappApiController {
                     messages: [
                         {
                             role: "user",
-                            content: `${prompt} por ultimo responde bonito en formato whatsapp y cuando mandes listas separalos en \ format whatsapp para que se vea bien y separados y no se vea todo junto el texto. gracias.`,
+                            content: `${prompt} por ultimo responde bonito en formato whatsapp y cuando mandes listas separalos en \n format whatsapp para que se vea bien y separados y no se vea todo junto el texto. gracias.`,
                         },
                         { role: "assistant", content: "Entendido, Empezemos." }, // getting start
                         ...messages.slice(

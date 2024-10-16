@@ -432,7 +432,7 @@ export async function featuresIA(
         }
     }
     // eliminar espacios innecesarios
-    return [textoNormal.replace(/\s+/g, " "), urlExtraidas];
+    return [textoNormal, urlExtraidas];
 }
 
 export async function searchProducts(empresa: Empresas, word: string) {
