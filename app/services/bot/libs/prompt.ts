@@ -46,8 +46,8 @@ export function prompt(
             ...instrucctions,
             `Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?items=}},  será como en el siguiente ejemplo   {{(cart?items=${
                 empresa.tipo_empresa.tipo_servicio_id === 1
-                    ? "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%2C%20%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%2C%20%22variant%22%3A%202%7D%5D"
-                    : "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%7D%2C%20%7B%22id%22%3A%201%2C%20%22quantity%22%3A%202%7D%5D"
+                    ? "%5B%7B%22id%22%3A%20id_de_producto%2C%20%22quantity%22%3A%20cantidad%2C%20%22variant%22%3A%20id_de_variante%7D%2C%20%7B%22id%22%3A%20id_de_producto%2C%20%22quantity%22%3A%20cantidad%2C%20%22variant%22%3A%20id_de_variante%7D%5D"
+                    : "%5B%7B%22id%22%3A%20id_de_producto%2C%20%22quantity%22%3A%20cantidad%7D%2C%20%7B%22id%22%3A%20id_de_producto%2C%20%22quantity%22%3A%20cantidad%7D%5D"
             }}} que es un formato URL percent-encoding,. Solo enviame {{cart?items=URL percent-encoding}} ,  en {{cart?items=URL percent-encoding}} de productos (id producto, cantidad, ${
                 empresa.tipo_empresa.tipo_servicio_id === 1 ? "variant_id" : ""
             } ) o servicios de la base de datos. SOLO ENVIAME ASÍ. NUNCA TE OLVIDES LEER DE LA BASE DE DATOS PARA CREAR el {{cart?items=URL percent-encoding}}`,
@@ -103,7 +103,7 @@ export function prompt(
     RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN,ORDENES, NO TRAIGAS NI CONTESTES ERRONEAMENTE, LA CANTIDAD,ETC..
     SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR.
     ACTUALIZA SIEMPRE LO QUE VAS A DECIR SI CAMBIA LA BASE DE DATOS.
-    NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en []
+    NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en 
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
     ${JSON.stringify(instrucctions)}
