@@ -188,7 +188,7 @@ export class whatsappApiController {
                     messages: [
                         {
                             role: "user",
-                            content: `${prompt} por ultimo responde bonito en formato whatsapp.`,
+                            content: `${prompt} por ultimo responde bonito en formato whatsapp y cuando mandes listas separalos en \ format whatsapp para que se vea bien y no todo junto. gracias.`,
                         },
                         { role: "assistant", content: "Entendido, Empezemos." }, // getting start
                         ...messages.slice(
