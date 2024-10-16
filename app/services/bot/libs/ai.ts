@@ -417,16 +417,12 @@ export async function featuresIA(
             if (findHash) {
                 await findHash.update({ url: urlGet, time: date });
             } else {
-                try {
-                    await UrlsPayment.create({
-                        hash,
-                        url: urlGet,
-                        empresa_id: empresa.id,
-                        time: date,
-                    });
-                } catch (error) {
-                    console.log((error as Error).message);
-                }
+                await UrlsPayment.create({
+                    hash,
+                    url: urlGet,
+                    empresa_id: empresa.id,
+                    time: date,
+                });
             }
 
             textoNormal = textoNormal.replace(
@@ -435,7 +431,6 @@ export async function featuresIA(
             );
         }
     }
-    console.log({ textoNormal });
 
     // eliminar espacios innecesarios
     return [textoNormal, urlExtraidas];

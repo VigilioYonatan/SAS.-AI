@@ -237,7 +237,6 @@ export class whatsappApiController {
                     ...(chats[`${info.slug}:${userId}`] || []),
                     ["assistant", removeNote],
                 ];
-                console.log({ removeNote });
 
                 if (empresa.inteligenceArtificial.isChunk) {
                     const chunks = removeNote.split(/(?<!\d)\.\s+/g);
