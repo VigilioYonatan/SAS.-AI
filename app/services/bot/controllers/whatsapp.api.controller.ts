@@ -118,9 +118,14 @@ export class whatsappApiController {
             // }
 
             if (body.type === "ptt") {
-                const media = body.content as Buffer;
-                const audioToTxt = await transcribeAudio(empresa.slug, media);
+                console.log({ content });
+
+                const audioToTxt = await transcribeAudio(
+                    empresa.slug,
+                    content as Buffer
+                );
                 content = audioToTxt.text;
+                console.log({ content });
             }
             const buenas = buenosDias(
                 content as string,
