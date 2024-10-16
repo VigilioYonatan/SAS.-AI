@@ -425,7 +425,7 @@ export async function featuresIA(
                         time: date,
                     });
                 } catch (error) {
-                    console.log(error.message);
+                    console.log((error as Error).message);
                 }
             }
 
