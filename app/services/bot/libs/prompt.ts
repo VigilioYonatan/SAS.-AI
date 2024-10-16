@@ -44,10 +44,10 @@ export function prompt(
     if (empresa.inteligenceArtificial.settings.enabled_cart) {
         instrucctions = [
             ...instrucctions,
-            `Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?items=}},  será como en el siguiente ejemplo   {{(cart?items=${
+            `Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?items=}},  será como en el siguiente ejemplo . OJO ES SOLO UN EJEMPLO, tu lo traeras dinamicamente segundo de que te pida el id ,variant_id y cantidad.   {{(cart?items=${
                 empresa.tipo_empresa.tipo_servicio_id === 1
                     ? "%5B%7B%22id%22%3A1%2C%22quantity%22%3A2%2C%22variant%22%3A3%7D%2C%7B%22id%22%3A4%2C%22quantity%22%3A5%2C%22variant%22%3A6%7D%5D"
-                    : "%5B%7B%22id%22%3A%20product_id%2C%20%22quantity%22%3A%20cantidad%7D%2C%20%7B%22id%22%3A%20product_id%2C%20%22quantity%22%3A%20cantidad%7D%5D"
+                    : "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%2%7D%2C%20%7B%22id%22%3A%4%2C%20%22quantity%22%3A%3%7D%5D"
             }}} que es un formato URL percent-encoding,. Solo enviame {{cart?items=URL percent-encoding}} ,  en {{cart?items=URL percent-encoding}} de productos (id producto, cantidad, ${
                 empresa.tipo_empresa.tipo_servicio_id === 1 ? "variant_id" : ""
             } ) o servicios de la base de datos. SOLO ENVIAME ASÍ. NUNCA TE OLVIDES LEER DE LA BASE DE DATOS PARA CREAR el {{cart?items=URL percent-encoding}} con su respectivo id de variant, product id y cantidad de que te pida.`,
