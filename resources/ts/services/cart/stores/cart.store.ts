@@ -366,6 +366,8 @@ export function useCartStore() {
 
     /* ACTUALIZA EL CARRITO DE COMPRAS EN INFORMACION REAL */
     async function formatedProductCart(cart: CartStoreDto[]) {
+        console.log({ cart });
+
         const cartMapped = await Promise.all(
             cart.map(async (cart) => {
                 try {
@@ -493,15 +495,12 @@ export function useCartStore() {
             quantity: number;
         }[]
     ) {
-        console.log({ cart });
-
         const cartMapped: CartStoreDto[] = cart.map((cart) => ({
             coupon: null,
             quantity: cart.quantity,
             ...productOBJ(cart.id),
             variant_id: cart.variant ?? null,
         }));
-        console.log({ cartMapped });
 
         await formatedProductCart(cartMapped);
 
