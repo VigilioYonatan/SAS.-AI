@@ -366,8 +366,6 @@ export function useCartStore() {
 
     /* ACTUALIZA EL CARRITO DE COMPRAS EN INFORMACION REAL */
     async function formatedProductCart(cart: CartStoreDto[]) {
-        console.log({ cart });
-
         const cartMapped = await Promise.all(
             cart.map(async (cart) => {
                 try {
@@ -393,13 +391,8 @@ export function useCartStore() {
                         variant = (
                             product as ProductsNormalSchemaFromServer
                         ).variants.find((vari) => {
-                            console.log({ vari });
-                            console.log({ vari2: cart.variant_id });
-
                             return vari.id === cart.variant_id;
                         });
-                        console.log(variant);
-
                         if (!variant) {
                             onRemoveProductToCart(
                                 (cart.product_normal_id ||
@@ -454,7 +447,6 @@ export function useCartStore() {
                 }
             })
         );
-        console.log({ cartMapped2: cartMapped });
 
         if (cartMapped) {
             state.value = {
