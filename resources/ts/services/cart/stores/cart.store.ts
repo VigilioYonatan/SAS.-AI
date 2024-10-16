@@ -390,10 +390,11 @@ export function useCartStore() {
                     if (storageEmpresa!.tipo_empresa.tipo_servicio_id === 1) {
                         variant = (
                             product as ProductsNormalSchemaFromServer
-                        ).variants.find(
-                            (variant) => variant.id === cart.variant_id
-                        );
-                        console.log({ variant });
+                        ).variants.find((variant) => {
+                            console.log({ variant });
+
+                            return variant.id === cart.variant_id;
+                        });
 
                         if (!variant) {
                             onRemoveProductToCart(
