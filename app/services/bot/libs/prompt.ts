@@ -46,8 +46,8 @@ export function prompt(
             ...instrucctions,
             `Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?items=}},  será como en el siguiente ejemplo   {{(cart?items=${
                 empresa.tipo_empresa.tipo_servicio_id === 1
-                    ? "%5B%7B%22id%22%3A%20id_de_producto%2C%20%22quantity%22%3A%20cantidad%2C%20%22variant%22%3A%20id_de_variante%7D%2C%20%7B%22id%22%3A%20id_de_producto%2C%20%22quantity%22%3A%20cantidad%2C%20%22variant%22%3A%20id_de_variante%7D%5D"
-                    : "%5B%7B%22id%22%3A%20id_de_producto%2C%20%22quantity%22%3A%20cantidad%7D%2C%20%7B%22id%22%3A%20id_de_producto%2C%20%22quantity%22%3A%20cantidad%7D%5D"
+                    ? "%5B%7B%22id%22%3A%20product_id%2C%20%22quantity%22%3A%20cantidad%2C%20%22variant%22%3A%20ivariant_id%7D%2C%20%7B%22id%22%3A%20product_id%2C%20%22quantity%22%3A%20cantidad%2C%20%22variant%22%3A%20variant_id%7D%5D"
+                    : "%5B%7B%22id%22%3A%20product_id%2C%20%22quantity%22%3A%20cantidad%7D%2C%20%7B%22id%22%3A%20product_id%2C%20%22quantity%22%3A%20cantidad%7D%5D"
             }}} que es un formato URL percent-encoding,. Solo enviame {{cart?items=URL percent-encoding}} ,  en {{cart?items=URL percent-encoding}} de productos (id producto, cantidad, ${
                 empresa.tipo_empresa.tipo_servicio_id === 1 ? "variant_id" : ""
             } ) o servicios de la base de datos. SOLO ENVIAME ASÍ. NUNCA TE OLVIDES LEER DE LA BASE DE DATOS PARA CREAR el {{cart?items=URL percent-encoding}}`,
