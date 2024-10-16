@@ -44,7 +44,7 @@ export function prompt(
     if (empresa.inteligenceArtificial.settings.enabled_cart) {
         instrucctions = [
             ...instrucctions,
-            `Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?items=}},  será como en el siguiente ejemplo . OJO ES SOLO UN EJEMPLO, tu lo traeras dinamicamente segundo de que te pida el id ,variant_id y cantidad.   {{(cart?items=${
+            `Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?items=}},  será como en el siguiente ejemplo . OJO ES SOLO UN EJEMPLO, tu lo harás  segun de que te pida el id ,variant_id y cantidad dinamicamente.   {{cart?items=${
                 empresa.tipo_empresa.tipo_servicio_id === 1
                     ? "%5B%7B%22id%22%3A1%2C%22quantity%22%3A2%2C%22variant%22%3A3%7D%2C%7B%22id%22%3A4%2C%22quantity%22%3A5%2C%22variant%22%3A6%7D%5D"
                     : "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%2%7D%2C%20%7B%22id%22%3A%4%2C%20%22quantity%22%3A%3%7D%5D"
