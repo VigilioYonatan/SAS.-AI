@@ -406,8 +406,6 @@ export async function featuresIA(
 
     if (coincidencias?.length) {
         for (const c of coincidencias) {
-            console.log({ c });
-
             const hash = Math.random().toString(32).slice(4, 8);
             const urlGet = `${BASE_URL(empresa)}/${c
                 .replace(/^\{\{/, "")
@@ -433,7 +431,6 @@ export async function featuresIA(
             );
         }
     }
-    console.log({ textoNormal });
 
     // eliminar espacios innecesarios
     return [textoNormal, urlExtraidas];
