@@ -393,6 +393,8 @@ export function useCartStore() {
                         ).variants.find(
                             (variant) => variant.id === cart.variant_id
                         );
+                        console.log({ variant });
+
                         if (!variant) {
                             onRemoveProductToCart(
                                 (cart.product_normal_id ||
