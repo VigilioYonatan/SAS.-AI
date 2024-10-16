@@ -407,9 +407,7 @@ export async function featuresIA(
     if (coincidencias?.length) {
         for (const c of coincidencias) {
             const hash = Math.random().toString(32).slice(4, 8);
-            const urlGet = `${BASE_URL(empresa)}/${c
-                .replace(/^\{\{/, "")
-                .replace(/\}\}$/, "")}`;
+            const urlGet = `${BASE_URL(empresa)}/${c.slice(2, -2)}`;
             const date = NOW(empresa).add(1, "days").toDate();
             const findHash = await UrlsPayment.findOne({
                 where: { hash, empresa_id: empresa.id },
