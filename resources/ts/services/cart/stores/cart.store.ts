@@ -394,6 +394,7 @@ export function useCartStore() {
                             product as ProductsNormalSchemaFromServer
                         ).variants.find((vari) => {
                             console.log({ vari });
+                            console.log({ vari2: cart.variant_id });
 
                             return vari.id === cart.variant_id;
                         });
