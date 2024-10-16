@@ -447,6 +447,8 @@ export function useCartStore() {
                 }
             })
         );
+        console.log({ cartMapped2: cartMapped });
+
         if (cartMapped) {
             state.value = {
                 ...state.value,
@@ -488,12 +490,16 @@ export function useCartStore() {
             quantity: number;
         }[]
     ) {
+        console.log({ cart });
+
         const cartMapped: CartStoreDto[] = cart.map((cart) => ({
             coupon: null,
             quantity: cart.quantity,
             ...productOBJ(cart.id),
             variant_id: cart.variant ?? null,
         }));
+        console.log({ cartMapped });
+
         await formatedProductCart(cartMapped);
 
         if (!auth.state) {
