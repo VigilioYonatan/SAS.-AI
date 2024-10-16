@@ -403,6 +403,7 @@ export async function featuresIA(
     // carrito
     const expresionRegular = /\{\{cart\?items=[^}]+\}\}/g;
     const coincidencias = completionText.match(expresionRegular);
+    console.log({ coincidencias });
 
     if (coincidencias?.length) {
         for (const c of coincidencias) {
