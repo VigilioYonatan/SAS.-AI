@@ -118,8 +118,6 @@ export class whatsappApiController {
             // }
 
             if (body.type === "ptt") {
-                console.log({ content });
-
                 const audioToTxt = await transcribeAudio(
                     empresa.slug,
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>

@@ -387,11 +387,7 @@ export function useCartStore() {
                     let sub = subtotalIgv(product);
                     let variant = null;
                     let quantity = cart.quantity < 1 ? 1 : cart.quantity;
-                    if (
-                        [1, 3].includes(
-                            storageEmpresa!.tipo_empresa.tipo_servicio_id
-                        )
-                    ) {
+                    if (storageEmpresa!.tipo_empresa.tipo_servicio_id === 1) {
                         variant = (
                             product as ProductsNormalSchemaFromServer
                         ).variants.find(
@@ -399,8 +395,8 @@ export function useCartStore() {
                         );
                         if (!variant) {
                             onRemoveProductToCart(
-                                (cart.product_normal_id ??
-                                    cart.product_restaurant_id ??
+                                (cart.product_normal_id ||
+                                    cart.product_restaurant_id ||
                                     cart.product_servicio_id) as number,
                                 cart.variant_id
                             );
@@ -429,8 +425,8 @@ export function useCartStore() {
                             const { discount } =
                                 (await productCouponMutation.mutateAsync({
                                     coupon: cart.coupon,
-                                    product_id: (cart.product_normal_id ??
-                                        cart.product_restaurant_id ??
+                                    product_id: (cart.product_normal_id ||
+                                        cart.product_restaurant_id ||
                                         cart.product_servicio_id) as number,
                                 }))!;
                             sub = subtotal(sub, discount);
