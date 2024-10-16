@@ -410,19 +410,23 @@ export async function featuresIA(
             const urlGet = `${BASE_URL(empresa)}/${c
                 .replace(/^\{\{/, "")
                 .replace(/\}\}$/, "")}`;
-            const date = NOW(empresa).add(1, "days");
+            const date = NOW(empresa).add(1, "days").toDate();
             const findHash = await UrlsPayment.findOne({
                 where: { hash, empresa_id: empresa.id },
             });
             if (findHash) {
                 await findHash.update({ url: urlGet, time: date });
             } else {
-                await UrlsPayment.create({
-                    hash,
-                    url: urlGet,
-                    empresa_id: empresa.id,
-                    time: date,
-                });
+                try {
+                    await UrlsPayment.create({
+                        hash,
+                        url: urlGet,
+                        empresa_id: empresa.id,
+                        time: date,
+                    });
+                } catch (error) {
+                    console.log(error.message);
+                }
             }
 
             textoNormal = textoNormal.replace(
@@ -431,6 +435,8 @@ export async function featuresIA(
             );
         }
     }
+    console.log({ textoNormal });
+
     // eliminar espacios innecesarios
     return [textoNormal, urlExtraidas];
 }
