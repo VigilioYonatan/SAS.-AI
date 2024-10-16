@@ -211,8 +211,8 @@ export async function promptReplace(message: string, empresa: Empresas) {
         cache.get(`db-${empresa.slug}`) ?? "null"
     );
     // verifica si el mensaje es un texto o pregunta de base de datos
-    const verifyMessage = await searchProducts(empresa, message);
-    if (!data && verifyMessage) {
+    // const verifyMessage = await searchProducts(empresa, message);
+    if (!data) {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         data = (await onDb(empresa)) as any;
         if (data.products.length > 20) {
@@ -223,7 +223,7 @@ export async function promptReplace(message: string, empresa: Empresas) {
             );
         }
     }
-    let productsData = verifyMessage ? data.products : [];
+    let productsData = data.products;
     // si no es inteligente que busque
     if (!empresa.inteligenceArtificial.enabledBotInteligence) {
         const palabrasEncontradas2 = encontrarPalabrasSimilares(
