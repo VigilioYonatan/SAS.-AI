@@ -256,10 +256,11 @@ export class whatsappApiController {
                 // enviar imagen
                 if (urlExtraidas.length) {
                     for (const url of urlExtraidas) {
+                        const options = { sendMediaAsSticker: true };
                         await whatsappSendFileApi(empresa, {
                             telephone: userId,
                             url,
-                            options: { sendMediaAsSticker: true },
+                            options,
                             delay: 3,
                         });
                     }
