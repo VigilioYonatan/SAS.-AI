@@ -941,13 +941,15 @@ export function QrWhatsapp() {
                                     </div>
                                 )}
                                 <ul class="list-image-none flex flex-col gap-2">
-                                    <a
+                                    {/* <a
+                                        target="_blank"
+                                        rel="noreferrer"
                                         href="/api/whatsapp/qr"
-                                        class="text-xs text-primary font-semibold hover:underline"
+                                        class="text-xs text-primary font-semibold hover:underline text-center"
                                     >
                                         Click aquí para obtener el QR sin
                                         esperar
-                                    </a>
+                                    </a> */}
                                     <li class="dark:text-white text-center text-sm">
                                         *Si no está funcionando el qr. Intentelo
                                         2 - 3 veces{" "}

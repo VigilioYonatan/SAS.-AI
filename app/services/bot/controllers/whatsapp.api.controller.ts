@@ -370,7 +370,7 @@ export class whatsappApiController {
     @Post("/restart")
     async restart(@Req("empresa") empresa: Empresas) {
         await empresa.update({
-            timeWhatsapp: NOW(empresa).add(3, "minute").toDate(),
+            timeWhatsapp: NOW(empresa).add(1, "minute").toDate(),
         });
         if (empresa.whatsapp_mode.type === "VPS") {
             function onSSH() {
