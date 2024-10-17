@@ -39,8 +39,8 @@ export const payments = objectAsync({
     tokens: object({
         tokens: number("Solo numeros"),
     }),
-    telegram: object({coerce
-        date: nullable((date(), (value) => new Date(value as string))),
+    telegram: object({
+        date: nullable(coerce(date(), (value) => new Date(value as string))),
         enabled: boolean("Este campo es obligatorio"),
     }),
     facturacion: nullable(
