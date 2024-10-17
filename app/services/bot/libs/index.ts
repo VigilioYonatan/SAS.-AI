@@ -20,7 +20,6 @@ import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import type { Variants } from "@/products/entities/options/variants.entity";
 import { getProductAll, printVariantFeatures } from "@/products/libs";
 import type { VariantsSchema } from "@/products/schemas/options/variants.schema";
-import { searchProducts } from "./ai";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
