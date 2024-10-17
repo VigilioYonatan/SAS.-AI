@@ -95,14 +95,14 @@ export class whatsappApiController {
             // message.type: chat,sticker,ptt,image,document
             if (!["ptt", "chat"].includes(body.type)) return;
             const existNumber = empresa.contacts.find(
-                (contact) => contact.telephone === body.quotedMessageId
+                (contact) => contact.telephone === userId
             );
             if (!existNumber) {
                 const mappedcontacts = [
                     ...empresa.contacts,
                     {
                         name: body.notifyName,
-                        telephone: body.quotedMessageId,
+                        telephone: userId,
                         isFavorite: false,
                         ia: true,
                     },
