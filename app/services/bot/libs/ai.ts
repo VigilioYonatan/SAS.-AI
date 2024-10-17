@@ -422,7 +422,10 @@ export async function featuresIA(
                 });
             }
 
-            textoNormal = textoNormal.replace(c, urlGet);
+            textoNormal = textoNormal.replace(
+                c,
+                `${BASE_URL(empresa)}/cart/${hash}`
+            );
         }
     }
 

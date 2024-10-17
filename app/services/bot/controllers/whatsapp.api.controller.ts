@@ -94,7 +94,21 @@ export class whatsappApiController {
                 throw new BadRequestException("whatsapp no permited"); //no se admite grupos
             // message.type: chat,sticker,ptt,image,document
             if (!["ptt", "chat"].includes(body.type)) return;
-
+            const existNumber = empresa.contacts.find(
+                (contact) => contact.telephone === body.quotedMessageId
+            );
+            if (!existNumber) {
+                const mappedcontacts = [
+                    ...empresa.contacts,
+                    {
+                        name: body.notifyName,
+                        telephone: body.quotedMessageId,
+                        isFavorite: false,
+                        ia: true,
+                    },
+                ];
+                await empresa.update({ contacts: mappedcontacts });
+            }
             const random = randomNumber(
                 empresa.inteligenceArtificial.timer.start,
                 empresa.inteligenceArtificial.timer.finish
