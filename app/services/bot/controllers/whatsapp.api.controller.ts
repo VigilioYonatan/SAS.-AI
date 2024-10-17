@@ -287,13 +287,15 @@ export class whatsappApiController {
             if (
                 restarDays(
                     NOW(info).toDate(),
-                    TimePeru(info, info.createdAt).add(3, "day").toDate(),
+                    TimePeru(info, info.createdAt).add(6, "day").toDate(),
                     "seconds"
                 ) < 1
             ) {
-                await terminal(
-                    `docker update --cpus="0.4" ${info.slug} || true`
-                );
+                if (!info.slug.includes("demo")) {
+                    await terminal(
+                        `docker update --cpus="0.4" ${info.slug} || true`
+                    );
+                }
             }
 
             return {
