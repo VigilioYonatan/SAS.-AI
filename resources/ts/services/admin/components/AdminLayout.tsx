@@ -21,7 +21,7 @@ import { printFileUser } from "@/users/libs/helpers";
 import { printLogoempresa } from "@/empresas/libs/helpers";
 import { Link, useRoute } from "wouter-preact";
 import { sweetAlert } from "@vigilio/sweet";
-import { subFacturacion } from "~/config/guards";
+import { mensual, subFacturacion } from "~/config/guards";
 import { useEffect } from "preact/hooks";
 import { driverInitial } from "../libs";
 import { BASE_URL, fechasVencidas } from "~/config";
@@ -359,10 +359,25 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                         Icon={<i class="fas fa-user-robot" />}
                                     />
                                     {/* solo que aparesca  nuevo solo este año */}
-                                    {new Date().getFullYear() <= 2025 ? (
-                                        <span class="absolute font-semibold -right-2 text-[8px] md:-right-2  top-0 md:top-0 bg-orange-600 text-white px-1 py-1 rounded-md md:text-xs">
-                                            Nuevo
-                                        </span>
+                                    <span class="absolute font-semibold -right-2 text-[8px] md:-right-2  top-0 md:top-0 bg-orange-600 text-white px-1 py-1 rounded-md md:text-xs">
+                                        Nuevo
+                                    </span>
+                                    {!mensual() ? (
+                                        <button
+                                            class="absolute -top-3 right-0 bg-primary w-[30px] h-[30px] rounded-full flex justify-center items-center text-white"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                sweetAlert({
+                                                    icon: "danger",
+                                                    html: `<span class='p-2 text-sm dark:text-white'>Necesitas tener plan de inteligencia Artificial <a href='${BASE_URL}/admin/plus' class='text-blue-600'>Más información</a></span>`,
+                                                    showCloseButton: true,
+                                                });
+                                            }}
+                                            type="button"
+                                            aria-label="block"
+                                        >
+                                            <i class="fas fa-lock-alt" />
+                                        </button>
                                     ) : null}
                                 </div>
                             </>

@@ -15,7 +15,7 @@ import {
     whatsappSendMessageApi,
     whatsappSendFileApi,
 } from "../apis/whatsapp.api";
-import { delay, handlerError, NOW, restarDays } from "~/libs/helpers";
+import { delay, handlerError, NOW, restarDays, TimePeru } from "~/libs/helpers";
 import {
     contactsSchema,
     empresasSchema,
@@ -56,6 +56,7 @@ import AlertSuccess from "~/components/Alerts/AlertSuccess";
 import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
 import { whatsappUpdateApi } from "../apis/whatsapp.update.api";
 import { empresaContactsDestroyAllApi } from "@/empresas/apis/empresas.contacts.delete.api";
+import AlertDanger from "~/components/Alerts/AlertDanger";
 
 function Whatsapp() {
     const authStore = useAuthStore();
@@ -1645,17 +1646,40 @@ function WhatsappFREE() {
                     <p class=" text-center text-sm  dark:text-white">
                         <b>Mensajes Ilimitados</b>
                         <br />
-                        Usa WhatsApp Gratis. Si experimentas lentitud al usar
-                        WhatsApp, te sugerimos considerar la opción de migrar a
-                        un VPS. Esto puede mejorar significativamente el
-                        rendimiento y la eficiencia de tu servicio.
+                        Si experimentas lentitud al usar WhatsApp, te sugerimos
+                        considerar la opción de migrar a un VPS. Esto puede
+                        mejorar significativamente el rendimiento y la
+                        eficiencia de tu servicio.
                         <br /> 0.5 vCPU - 1GB RAM
                     </p>
-                    {storageEmpresa?.whatsapp_mode.type === "VPS" ? (
-                        <span class="text-success font-semibold text-xs">
-                            Recuerde estar al dia en su pago de VPS.
+                    <br />
+                    <AlertDanger>
+                        <span class="text-sm font-bold text-center">
+                            Lastimosamente WhatsApp ya no ofrece una opción
+                            gratuita hasta nuevo aviso, Recomendamos migrarse a
+                            un VPS.
+                            {restarDays(
+                                NOW().toDate(),
+                                TimePeru(
+                                    storageEmpresa!.createdAt as Date
+                                ).toDate(),
+                                "day"
+                            ) > 0 ? (
+                                <>
+                                    <br />
+                                    Estas probando gratis por{" "}
+                                    {restarDays(
+                                        NOW().toDate(),
+                                        TimePeru(
+                                            storageEmpresa!.createdAt as Date
+                                        ).toDate(),
+                                        "day"
+                                    )}{" "}
+                                    días
+                                </>
+                            ) : null}
                         </span>
-                    ) : null}
+                    </AlertDanger>
                     <button
                         type="button"
                         class="bg-primary px-4 py-2 rounded-md text-white mt-2 text-xs font-bold"
@@ -1686,7 +1710,7 @@ function WhatsappFREE() {
                         alt=""
                     />
                     <b class="text-lg">VPS</b>
-                    <span class=" font-semibold">USD $35 - $60 / anual</span>
+                    <span class=" font-semibold">USD $29 / Anual</span>
                     <p class=" text-center text-sm ">
                         {" "}
                         <b>Mejor Opción - Mensajes Ilimitados</b>
@@ -1695,7 +1719,12 @@ function WhatsappFREE() {
                         irá WhatsApp. Activalo en 2 minutos <br /> Mínimo 2 vCPU
                         - 2GB RAM
                         <br />
-                    </p>
+                    </p>{" "}
+                    {storageEmpresa?.whatsapp_mode.type === "VPS" ? (
+                        <span class="text-success font-semibold text-xs">
+                            Recuerde estar al dia en su pago de VPS.
+                        </span>
+                    ) : null}
                     <button
                         type="button"
                         class="bg-primary px-4 py-2 rounded-md text-white mt-2 text-xs font-bold"

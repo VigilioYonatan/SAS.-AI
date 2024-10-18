@@ -27,7 +27,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
     try {
         const whatsapp = await isWhatsappIA(emp);
         if (!whatsapp)
-            return "En estos momentos no estoy disponible. Tokens requerido";
+            return "En estos momentos no estoy disponible. Inteligencia Artificial o Token es requerido";
         const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
 
         chatAssistantWeb = {

@@ -63,6 +63,7 @@ function empresaUpdate() {
 
                 return {
                     ...rest,
+                    enabledBotWeb: true,
                     yearFounded: formatDateTwo(
                         yearFounded,
                         "YYYY-MM-DD"
@@ -392,13 +393,13 @@ function empresaUpdate() {
                                         title="Habilitar IA de de whatsapp"
                                         question="Ya no estará habilitado el bot de whatsapp IA si no está habilitado"
                                     />{" "}
-                                    <Form.control.toggle
+                                    {/* <Form.control.toggle
                                         name={
-                                            "enabledBotWeb" as keyof EmpresasUpdateDto
+                                            "" as keyof EmpresasUpdateDto
                                         }
                                         title="Habilitar Vendedor IA de web"
                                         question="Ya no estará habilitado el bot de web si no está habilitado"
-                                    />
+                                    /> */}
                                     {[DIALCODE.peru].includes(
                                         empresaStore.state!
                                             .dial_code as DIALCODE

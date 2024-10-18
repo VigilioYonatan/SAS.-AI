@@ -39,7 +39,6 @@ import { formatMoney, subtotal } from "@/cart/libs/helpers";
 import { Settings } from "@/empresas/entities/settings.entity";
 import { initial } from "@/empresas/services/empresas.api.service";
 import { corsOptions, dirMode } from ".";
-import { NOW, restarDays } from "~/libs/dayjs";
 import { Brands } from "@/products/entities/brands.entitiy";
 import * as i18nextHttpMiddleware from "i18next-http-middleware";
 import i18next, { i18nextMiddleware } from "../libs/i18next";
@@ -159,16 +158,6 @@ export class Server {
             });
 
             if (empresa) {
-                if (
-                    !empresa.payments.mensual.enabled ||
-                    restarDays(
-                        NOW(empresa).toDate(),
-                        empresa.payments.mensual.date!,
-                        "day"
-                    ) < -2
-                ) {
-                    return res.redirect("/auth/login");
-                }
                 const certificado =
                     req.path.startsWith("/admin") && empresa?.company
                         ? { certificado: empresa?.certificado }

@@ -15,6 +15,15 @@ export interface Technologies {
 }
 const payments = storageEmpresa?.payments!;
 
+export function mensual() {
+	return (
+		payments.mensual?.enabled &&
+		restarDays(
+			NOW().toDate(),
+			TimePeru(payments.mensual?.date!).toDate(),
+		) >= 0
+	);
+}
 export function subFacturacion() {
 	return (
 		payments.facturacion?.enabled &&
