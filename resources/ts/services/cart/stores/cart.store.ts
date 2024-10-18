@@ -502,9 +502,11 @@ export function useCartStore() {
             localStorage.setItem(keyCartStorage, JSON.stringify(cartMapped));
         } else {
             await Promise.all(
-                cartMapped.map(
-                    async (cart) => await cartDestroyMutation.mutateAsync(cart)
-                )
+                cartMapped.map(async (cart) => {
+                    try {
+                        await cartDestroyMutation.mutateAsync(cart);
+                    } catch (error) {}
+                })
             );
             await Promise.all(
                 cartMapped.map(async (prod) => {
