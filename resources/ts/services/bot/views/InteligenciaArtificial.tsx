@@ -288,6 +288,23 @@ function InteligenciaArtificial() {
                                 </div>
                             }
                         />
+                        <Form.control.toggle
+                            name={
+                                "inteligenceArtificial.showAllProductsInformation" as keyof EmpresasIAUpdateDto
+                            }
+                            title="Habilitar Información detallada de productos"
+                            question={
+                                <div class="w-[200px]">
+                                    La inteligencia Artificial tendrá más
+                                    información de los productos, como las
+                                    características y descripción.
+                                    <br />
+                                    Recuerda a más información que le des a tu
+                                    Inteligencia Artificial, podría consumir más
+                                    tokens.
+                                </div>
+                            }
+                        />
                     </div>
                     <div class="flex gap-2 items-center">
                         <Form.control
