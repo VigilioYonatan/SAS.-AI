@@ -126,6 +126,13 @@ export class EmpresasApiController {
         return result;
     }
 
+    @Get("/whatsapp_mode")
+    async whatsapp_mode_get(@Req("empresa") empresa: Empresas) {
+        return {
+            success: true,
+            whatsapp_mode: empresa.whatsapp_mode,
+        };
+    }
     @Validator(pickAsync(empresasSchema, ["whatsapp_mode"]))
     @Post("/whatsapp_mode")
     async whatsapp_mode(

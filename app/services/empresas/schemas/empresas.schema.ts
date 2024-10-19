@@ -304,6 +304,7 @@ export const empresasSchema = objectAsync({
             string([custom((val) => Number(val) >= 2, "Mínimo 2.")])
         ),
         cpu: nullable(string([custom((val) => Number(val) >= 2, "Mínimo 2.")])),
+        date: nullable(coerce(date(), (value) => new Date(value as string))),
     }),
     token: string(),
 });

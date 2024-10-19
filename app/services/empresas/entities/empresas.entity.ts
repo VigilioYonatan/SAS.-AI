@@ -298,6 +298,7 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
         password: string | null;
         memory: string | null;
         cpu: string | null;
+        date: Date | null;
     };
 
     @Column({
@@ -424,7 +425,7 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
     @HasMany(() => CategoriesFinanzas)
     categoriesFinanzas: unknown[];
-	
+
     @HasMany(() => TipoFinanza)
     tipoFinanza: unknown[];
 
