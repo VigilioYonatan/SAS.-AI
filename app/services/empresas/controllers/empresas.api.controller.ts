@@ -125,7 +125,7 @@ export class EmpresasApiController {
         const result = await this.empresaApiService.store(body);
         return result;
     }
-    @PermissionAdmin()
+
     @Validator(pickAsync(empresasSchema, ["whatsapp_mode"]))
     @Post("/whatsapp_mode")
     async whatsapp_mode(
@@ -441,7 +441,6 @@ export class EmpresasApiController {
         return result;
     }
 
-    
     @PermissionAdmin()
     @Pipe(
         objectAsync({
