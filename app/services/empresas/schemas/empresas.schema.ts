@@ -125,6 +125,7 @@ export const inteligenceArtificial = object({
     }),
     max_length: number([minValue(100), maxValue(1000)]),
     enabledHuman: boolean(),
+    showAllProductsInformation: boolean(),
 });
 
 export type ScheduleSchema = Input<typeof scheduleSchema>;

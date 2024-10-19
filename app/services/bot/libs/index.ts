@@ -109,6 +109,10 @@ export async function onDb(empresa: Empresas) {
                     variantes,
                     url: product.url ?? null,
                     slug: product.slug,
+                    caracterisiticas: empresa.inteligenceArtificial
+                        .showAllProductsInformation
+                        ? product.characteristics
+                        : [],
                 };
             })
         );
@@ -130,7 +134,6 @@ export async function onDb(empresa: Empresas) {
                               500
                           )[0]
                         : "",
-                    characteristics: JSON.stringify(product.characteristics),
                     price: subtotalIgv(empresa!, product),
                     cantidad: product.ilimit
                         ? "en stock"
@@ -139,6 +142,10 @@ export async function onDb(empresa: Empresas) {
                     category_id: product.category_id ?? null,
                     url: product.url ?? null,
                     slug: product.slug,
+                    caracterisiticas: empresa.inteligenceArtificial
+                        .showAllProductsInformation
+                        ? product.characteristics
+                        : [],
                 };
             })
         );

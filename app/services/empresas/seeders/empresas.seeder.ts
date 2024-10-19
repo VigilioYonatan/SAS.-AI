@@ -86,6 +86,7 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
             memory: 9,
             enabledHuman: true,
             settings: { enabled_cart: true, enabled_order: true },
+            showAllProductsInformation: false,
         },
         dateRelease: new Date(),
         yearFounded: new Date(2012),
@@ -272,6 +273,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
             enabledBotInteligence: true,
             memory: 9,
             settings: { enabled_cart: true, enabled_order: true },
+            showAllProductsInformation: false,
         },
         dateRelease: new Date(),
         whatsapp_mode: {
