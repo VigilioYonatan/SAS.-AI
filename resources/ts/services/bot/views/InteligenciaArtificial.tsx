@@ -274,6 +274,8 @@ function InteligenciaArtificial() {
                             )}`}
                             placeholder="Luna"
                         />
+                    </div>
+                    <div class="flex  gap-2 items-center">
                         <Form.control.toggle
                             name={
                                 "inteligenceArtificial.enabledHuman" as keyof EmpresasIAUpdateDto

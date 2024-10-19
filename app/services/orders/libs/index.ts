@@ -694,7 +694,7 @@ export async function usersMostOrders(
             ...date,
         },
         attributes: ["id", "client_id"],
-        include: [Clients],
+        include: [Clients.unscoped()],
     });
 
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
