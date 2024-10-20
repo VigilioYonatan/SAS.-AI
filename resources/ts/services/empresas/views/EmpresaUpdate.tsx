@@ -616,6 +616,15 @@ function empresaUpdate() {
                         <b>Token:</b> {empresa.token}
                     </span>
                 </div>
+                <AlertInfo>
+                    <span class="font-semibold">
+                        <b class="font-bold">¿Sabias que?</b> El 96% de los
+                        usuarios no permanece más de 5 minutos en los negocios
+                        digitales. Por esta razón, es crucial que tu negocio
+                        digital sea directo y conciso, evitando la sobrecarga de
+                        información innecesaria.
+                    </span>
+                </AlertInfo>
             </Container>
         );
     }

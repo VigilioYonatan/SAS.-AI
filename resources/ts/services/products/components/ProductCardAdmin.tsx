@@ -293,7 +293,7 @@ function ProductCardAdmin({ product, refetch }: ProductCardAdminProps) {
                         {!product.enabled ||
                         (!varianteChoose!.ilimit &&
                             varianteChoose!.stock! < 1) ? (
-                            <span class="text-white flex gap-2 items-center justify-center w-full bg-danger border-r border-primary py-1 font-bold">
+                            <span class="text-white flex gap-2 items-center justify-center w-full   border-r border-primary py-1 font-bold">
                                 <span>
                                     {!product.enabled
                                         ? "Desabilitado"

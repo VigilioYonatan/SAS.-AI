@@ -701,7 +701,7 @@ export class OrdersApiService {
                                       : ""
                               }\nNo olvides preguntar el estado de tu orden, digitando el *código* del orden ó en ${BASE_URL(
                                   empresa
-                              )}/pedidos`,
+                              )}/pedidos?code=${order.order_code}`,
                     delay: 4,
                     options: { linkPreview: false },
                 });
