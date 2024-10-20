@@ -668,7 +668,7 @@ export class OrdersApiService {
                     ` ${detail_order.variante}` || ""
                 }* - ${detail_order.quantity} UND - *${formatMoney(
                     empresa,
-                    ordersStoreDto.total,
+                    detail_order.price,
                     empresa.money.money
                 )}*`;
             })
@@ -686,7 +686,7 @@ export class OrdersApiService {
                                   order.order_code
                               }*.\n${detailsOrders.join(
                                   "\n"
-                              )}.\nTotal: *${formatMoney(
+                              )}.\n\nTotal: *${formatMoney(
                                   empresa,
                                   ordersStoreDto.total,
                                   empresa.money.money
@@ -699,7 +699,7 @@ export class OrdersApiService {
                                             "DOLARES"
                                         )}*`
                                       : ""
-                              }\nNo olvides preguntar el estado de tu orden, digitando el *código* del orden ó en ${BASE_URL(
+                              }\n\nNo olvides preguntar el estado de tu orden, digitando el *código* del orden ó en ${BASE_URL(
                                   empresa
                               )}/pedidos?code=${order.order_code}`,
                     delay: 4,
