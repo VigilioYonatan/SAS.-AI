@@ -91,7 +91,7 @@ function ProductFooter({ showButtonCart = false }: ProductFooterProps) {
                             </>
                         </button>
                     ) : (
-                        <span class="text-white font-bold uppercase py-3 px-4 tracking-widest text-sm text-center w-full ">
+                        <span class=" font-bold uppercase py-3 px-4 tracking-widest text-sm text-center w-full text-black dark:text-white">
                             Agotado
                         </span>
                     )}
