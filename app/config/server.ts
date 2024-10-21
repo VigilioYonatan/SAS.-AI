@@ -188,6 +188,17 @@ export class Server {
                             enabled: (empresa.metodos_pago as MetodosPago)
                                 .mercado_pago.enabled,
                         },
+                        izipay: {
+                            enabled: (empresa.metodos_pago as MetodosPago)
+                                .izipay.enabled,
+                            izipay_public_key: (
+                                empresa.metodos_pago as MetodosPago
+                            ).izipay.izipay_public_key,
+                        },
+                        stripe: {
+                            enabled: (empresa.metodos_pago as MetodosPago)
+                                .stripe.enabled,
+                        },
                     },
                     ...certificado,
                 };

@@ -605,7 +605,12 @@ export async function detailInvoice(
                 if (order.pasarela_comision) {
                     const totalw = total / ((100 + IGV) / 100);
                     priceWithPasarelaCommission =
-                        (totalw + pasarelaComision(empresa, totalw)) /
+                        (totalw +
+                            pasarelaComision(
+                                empresa,
+                                totalw,
+                                order.type_pasarela ?? "normal"
+                            )) /
                         lengthDetails;
                 }
 

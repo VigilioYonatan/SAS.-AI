@@ -43,6 +43,7 @@ import { WebApiController } from "@/web/controllers/web.api.controller";
 import { TelegramApiController } from "@/bot/controllers/telegram.api.controller";
 import { CategoriesFinanzasApiController } from "@/finanzas/controllers/categories.api.controller";
 import { FinanzasApiController } from "@/finanzas/controllers/finanzas.api.controller";
+import { IzipayApiController } from "@/payments/controllers/izipay.api.controller";
 
 export const apiRouters: Type[] = [
     EmpresasApiController,
@@ -89,4 +90,5 @@ export const apiRouters: Type[] = [
     TelegramApiController,
     CategoriesFinanzasApiController,
     FinanzasApiController,
+    IzipayApiController,
 ];

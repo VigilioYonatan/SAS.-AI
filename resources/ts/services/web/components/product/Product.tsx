@@ -5,34 +5,32 @@ import { createContext } from "preact";
 import enviroments from "~/config";
 
 export const productContext = createContext(
-    {} as {
-        product: ReturnType<typeof useProduct>;
-    }
+	{} as {
+		product: ReturnType<typeof useProduct>;
+	},
 );
 
 interface ProductProps {
-    children: JSX.Element | JSX.Element[];
-    product:
-        | ProductsNormalSchemaFromServer
-        | ProductsRestaurantSchemaFromServer;
-    className?: string;
+	children: JSX.Element | JSX.Element[];
+	product: ProductsNormalSchemaFromServer | ProductsRestaurantSchemaFromServer;
+	className?: string;
 }
 function Product({ children, product, className = "" }: ProductProps) {
-    const producto = useProduct({ product });
+	const producto = useProduct({ product });
 
-    return (
-        <productContext.Provider value={{ product: producto }}>
-            <div
-                class={`dark:bg-background-dark bg-background-light ${
-                    enviroments.TYPE_BORDER === "square"
-                        ? ""
-                        : "rounded-md overflow-hidden"
-                }   shadow-md ${className} w-full lg:h-[428px]`}
-            >
-                {children}
-            </div>
-        </productContext.Provider>
-    );
+	return (
+		<productContext.Provider value={{ product: producto }}>
+			<div
+				class={`dark:bg-background-dark bg-background-light ${
+					enviroments.TYPE_BORDER === "square"
+						? ""
+						: "rounded-md overflow-hidden"
+				}   shadow-md ${className} w-full lg:h-[428px]`}
+			>
+				{children}
+			</div>
+		</productContext.Provider>
+	);
 }
 
 export default Product;

@@ -27,6 +27,22 @@ export const metodosPagoSchema = object({
 	transferencias: nullable(
 		record(string(), nullable(record(string(), nullable(string())))),
 	),
+	izipay: nullable(
+		object({
+			izipay_public_key: nullable(string()),
+			izipay_client_id: nullable(string()),
+			izipay_client_secret: nullable(string()),
+			izipay_hash_key: nullable(string()),
+			enabled: boolean(),
+		}),
+	),
+	stripe: nullable(
+		object({
+			stripe_secret_key: nullable(string()),
+			stripe_client_secret: nullable(string()),
+			enabled: boolean(),
+		}),
+	),
 	empresa_id: number(),
 });
 

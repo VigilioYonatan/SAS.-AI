@@ -248,6 +248,19 @@ export class EmpresasApiService {
                         paypal_client_id: null,
                         paypal_secret_key: null,
                     },
+                    izipay: {
+                        enabled: false,
+                        izipay_client_id: null,
+                        izipay_client_secret: null,
+                        izipay_hash_key: null,
+                        izipay_public_key: null,
+                        izipay_url: null,
+                    },
+                    stripe: {
+                        enabled: false,
+                        stripe_client_secret: null,
+                        stripe_secret_key: null,
+                    },
                 } as Omit<MetodosPagoSchema, "empresa_id">),
                 await empresa.$create("address", {
                     city_id: 1,

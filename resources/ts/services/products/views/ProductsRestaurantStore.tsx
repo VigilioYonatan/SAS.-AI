@@ -235,7 +235,7 @@ function ProductsRestaurantStore({
 							step={0.01}
 							type="number"
 							title="Precio Normal"
-                            placeholder={`${formatMoney(10)}`}
+							placeholder={`${formatMoney(10)}`}
 							options={{
 								setValueAs(value) {
 									return Number(value) > 0 ? Number(value) : null;
@@ -411,7 +411,8 @@ function ProductsRestaurantStore({
 					title="Imagenes"
 					typeFile="image"
 					multiple
-					showButonCopy showButtonClean
+					showButonCopy
+					showButtonClean
 				/>
 				<div class="flex justify-center">
 					<Form.button.submit

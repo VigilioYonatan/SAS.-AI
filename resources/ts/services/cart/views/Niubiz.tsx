@@ -40,7 +40,9 @@ import { printFileWithDimension } from "~/libs/upload";
 import { Fragment } from "preact/jsx-runtime";
 import { productOBJ } from "@/products/libs/helpers";
 import { mercadoPagoPaymentApi } from "@/payments/apis/mercadopago.api";
-import { transferencias } from "@/empresas/libs/helpers";
+import { DIALCODE, transferencias } from "@/empresas/libs/helpers";
+import IzipayForm from "../components/IzipayForm";
+import { stripeOrderApi } from "@/payments/apis/stripe.payment.api";
 
 export function verifyBank(transferencia: Record<string, string | null>) {
     return Object.values(transferencia).filter((val) => val).length;
@@ -65,6 +67,8 @@ function Niubiz({
         | "transferencias"
         | "paypal"
         | "qrYape|qrPlin"
+        | "izipay"
+        | "stripe"
     >("efectivo");
     const dolarNow = useSignal<number | null>(null);
     const websConverterMutation = websConverterApi();
@@ -203,8 +207,8 @@ function Niubiz({
                                     </div>
                                 </label>
                             ) : null}
-                            {empresa.state!.metodos_pago.mercado_pago
-                                .enabled ? (
+                            {empresa.state!.metodos_pago.mercado_pago.enabled &&
+                            storageEmpresa?.dial_code !== DIALCODE.españa ? (
                                 <>
                                     <label class="flex items-start cursor-pointer px-3 py-2 space-x-3 bg-white dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-gray-50 border-neutral-200/70 relative">
                                         <input
@@ -252,6 +256,116 @@ function Niubiz({
                                                           enviroments.VITE_PASARELA_COMISION_TRANSACCION
                                                       )}`
                                                     : null}
+                                                <br />
+                                                comisión pasarela
+                                            </span>
+                                        ) : null}
+                                    </label>
+                                </>
+                            ) : null}
+                            {empresa.state!.metodos_pago.stripe.enabled &&
+                            storageEmpresa?.dial_code === DIALCODE.españa ? (
+                                <>
+                                    <label class="flex items-start cursor-pointer px-3 py-2 space-x-3 bg-white dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-gray-50 border-neutral-200/70 relative">
+                                        <input
+                                            type="radio"
+                                            name="radio-group"
+                                            value="stripe"
+                                            class="text-gray-900 translate-y-px focus:ring-gray-700"
+                                            checked={paymentMethod === "stripe"}
+                                            onChange={() =>
+                                                setPaymentMethod("stripe")
+                                            }
+                                        />
+                                        <span class="relative flex flex-col text-left space-y-1.5 leading-none">
+                                            <span class="font-semibold text-sm">
+                                                Tarjeta de credito o debito
+                                            </span>
+                                            <span class="text-sm opacity-50 flex gap-2 items-center">
+                                                <img
+                                                    class="h-6 w-[40px] object-contain"
+                                                    src={
+                                                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGZVxQZ2UYa4aZMO1u_hgQPt-OVvqLq5MnoA&s"
+                                                    }
+                                                    alt="stripe"
+                                                    width={100}
+                                                    height={100}
+                                                />
+                                                <img
+                                                    class="h-6 w-[40px] object-contain"
+                                                    src={VisaMastercardImage()}
+                                                    alt="visa"
+                                                    width={100}
+                                                    height={100}
+                                                />
+                                            </span>
+                                        </span>
+                                        {empresa.state!
+                                            .enabledClientPayComision ? (
+                                            <span class="absolute bottom-0 text-xs right-1  font-bold flex-col flex items-end m-1 dark:text-white  text-center ">
+                                                +%
+                                                {
+                                                    enviroments.VITE_STRIPE_COMISION
+                                                }{" "}
+                                                +
+                                                {enviroments.VITE_STRIPE_COMISION_TRANSACCION >
+                                                0
+                                                    ? ` ${formatMoney(
+                                                          enviroments.VITE_STRIPE_COMISION_TRANSACCION
+                                                      )}`
+                                                    : null}
+                                                <br />
+                                                comisión pasarela
+                                            </span>
+                                        ) : null}
+                                    </label>
+                                </>
+                            ) : null}
+                            {empresa.state!.metodos_pago.izipay.enabled &&
+                            storageEmpresa?.dial_code === DIALCODE.peru ? (
+                                <>
+                                    <label class="flex items-start cursor-pointer px-3 py-2 space-x-3 bg-[#F72C46] dark:bg-background-dark text-white dark:border-paper-dark border rounded-md shadow-sm  border-neutral-200/70 relative">
+                                        <input
+                                            type="radio"
+                                            name="radio-group"
+                                            value="card"
+                                            class="text-gray-900 translate-y-px focus:ring-gray-700"
+                                            checked={paymentMethod === "izipay"}
+                                            onChange={() =>
+                                                setPaymentMethod("izipay")
+                                            }
+                                        />
+                                        <span class="relative flex flex-col text-left space-y-1.5 leading-none">
+                                            <span class="font-semibold text-sm">
+                                                Tarjeta de credito o debito
+                                            </span>
+                                            <span class="text-sm  flex gap-2 items-center">
+                                                <img
+                                                    class="h-6 w-[40px] object-contain"
+                                                    src="https://iziweb001b.s3.amazonaws.com/webresources/img/logo.png"
+                                                    alt="izipay"
+                                                    width={100}
+                                                    height={100}
+                                                />
+                                                <img
+                                                    class="h-6 w-[40px] object-contain"
+                                                    src={VisaMastercardImage()}
+                                                    alt="visa"
+                                                    width={100}
+                                                    height={100}
+                                                />
+                                            </span>
+                                        </span>
+                                        {empresa.state!
+                                            .enabledClientPayComision ? (
+                                            <span class="absolute bottom-0 text-xs right-1  font-bold flex-col flex items-end m-1 dark:text-white  text-center ">
+                                                {
+                                                    enviroments.VITE_IZIPAY_COMISION
+                                                }
+                                                % + S/.
+                                                {
+                                                    enviroments.VITE_IZIPAY_COMISION_TRANSACCION
+                                                }
                                                 <br />
                                                 comisión pasarela
                                             </span>
@@ -395,6 +509,17 @@ function Niubiz({
                                 ordersCartStoreDto={ordersCartStoreDto}
                                 onClose={onClose}
                                 ordersCartStoreDtoForm={ordersCartStoreDtoForm}
+                            />
+                        ) : paymentMethod === "izipay" ? (
+                            <IzipayForm
+                                onClose={onClose}
+                                ordersCartStoreDtoForm={ordersCartStoreDtoForm}
+                                order={ordersCartStoreDtoForm.getValues()}
+                            />
+                        ) : paymentMethod === "stripe" ? (
+                            <StripePayment
+                                onClose={onClose}
+                                ordersCartStoreDto={ordersCartStoreDto}
                             />
                         ) : (
                             <Efectivo
@@ -1018,7 +1143,7 @@ function PaypalPayment({
         resolver: valibotVigilio(ordersStoreDto),
         defaultValues: {
             ...ordersCartStoreDto,
-            pay_method_id: PAYMETHOD.transferencia,
+            pay_method_id: PAYMETHOD.paypal,
             status_order_id: STATUSORDER.pendiente,
         },
     });
@@ -1102,5 +1227,72 @@ function PaypalPayment({
         </div>
     );
 }
+interface StripePaymentProps {
+    ordersCartStoreDto: OrdersCartStoreDto;
+    onClose: () => void;
+}
+function StripePayment({ onClose, ordersCartStoreDto }: StripePaymentProps) {
+    const empresa = useEmpresastore();
+    const transferenciaForm = useForm<OrdersCartStoreDto>({
+        resolver: valibotVigilio(ordersStoreDto),
+        defaultValues: {
+            ...ordersCartStoreDto,
+            pay_method_id: PAYMETHOD.tarjeta,
+            status_order_id: STATUSORDER.pendiente,
+        },
+    });
+    const stripeMutation = stripeOrderApi();
 
+    function onPaymentPaypal() {
+        stripeMutation.mutate(
+            { ...ordersCartStoreDto, pay_method_id: PAYMETHOD.tarjeta },
+            {
+                onSuccess(data) {
+                    window.location.href = data.url;
+                    onClose();
+                },
+                onError(error) {
+                    handlerError(transferenciaForm, error);
+                },
+            }
+        );
+    }
+
+    return (
+        <div>
+            <h1 class="text-xl font-bold text-center py-3 dark:text-white ">
+                <i class="fa-brands fa-paypal" /> STRIPE
+            </h1>
+            <span class="text-2xl font-bold text-center block dark:text-white">
+                {formatMoney(ordersCartStoreDto.total)}
+            </span>
+            {empresa.state?.enabledClientPayComision ? (
+                <>
+                    <p class="text-sm dark:text-white">
+                        + Comision Stripe {enviroments.VITE_PAYPAL_COMISION}% +
+                        {formatMoney(enviroments.VITE_PAYPAL_TRANSACTION)}
+                    </p>
+                    <a
+                        class="text-primary hover:underline text-xs"
+                        target="_blank"
+                        rel="noreferrer"
+                        href="https://stripe.com/es/pricing"
+                    >
+                        Más información
+                    </a>
+                </>
+            ) : null}
+
+            <button
+                class="bg-primary px-4 py-2 rounded-md text-white block mx-auto mt-4"
+                type="button"
+                aria-label="pay to paypal"
+                onClick={onPaymentPaypal}
+                disabled={stripeMutation.isLoading || false}
+            >
+                {stripeMutation.isLoading ? <LoaderSubmit /> : "Realizar pago"}
+            </button>
+        </div>
+    );
+}
 export default Niubiz;

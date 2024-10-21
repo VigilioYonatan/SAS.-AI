@@ -53,6 +53,7 @@ import { BASE_URL, DIALCODE } from "@/empresas/libs";
 import { Product, productEntityId } from "@/products/libs";
 import { ticketHTML } from "../libs/ticket";
 import { Clients } from "@/users/entities/clients.entity";
+import type { PASARELA } from "@/payments/libs";
 
 @Injectable()
 export class OrdersApiService {
@@ -372,6 +373,7 @@ export class OrdersApiService {
     async store(
         ordersStoreDto: OrdersStoreDto,
         empresa: Empresas,
+        type: PASARELA="normal",
         moneyConverter = 1,
         comision?: {
             pasarela_comision?: boolean;
@@ -557,6 +559,7 @@ export class OrdersApiService {
             is_pasarela_client: empresa!.enabledClientPayComision,
             empresa_id: empresa.id,
             client_id: client ? client.id : null,
+            type_pasarela: type,
         });
         order.order_code = await generateCodeEntity(
             Orders,
