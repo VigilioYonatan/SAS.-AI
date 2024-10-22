@@ -20,7 +20,7 @@ const enviroments = {
         import.meta.env.VITE_IZIPAY_COMISION_IMPUESTO
     ),
     VITE_IZIPAY_COMISION_TRANSACCION: Number(
-        import.meta.env.VITE_PASARELA_COMISION_TRANSACCION
+        import.meta.env.VITE_IZIPAY_COMISION_TRANSACCION
     ),
     VITE_NIUBIZ_WEB: import.meta.env.VITE_NIUBIZ_WEB,
     VITE_TOKEN_VIGILIO_SERVICES: import.meta.env.VITE_TOKEN_VIGILIO_SERVICES,
