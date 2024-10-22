@@ -3,19 +3,19 @@ import fs from "node:fs";
 import { InternalServerErrorException } from "@vigilio/express-core";
 
 interface OnNginx {
-    sub_domain: string;
-    port: number;
-    domain?: string;
+	sub_domain: string;
+	port: number;
+	domain?: string;
 }
 export async function onNginx({ sub_domain, port, domain }: OnNginx) {
-    try {
-        const CONFIG_FILE = `/etc/nginx/sites-available/${
-            domain ? domain : sub_domain
-        }`;
-        const configContent = `server {
+	try {
+		const CONFIG_FILE = `/etc/nginx/sites-available/${
+			domain ? domain : sub_domain
+		}`;
+		const configContent = `server {
 			server_name ${domain ? domain : `${sub_domain}.vigilio-services.com`} www.${
-            domain ? domain : `${sub_domain}.vigilio-services.com`
-        };
+				domain ? domain : `${sub_domain}.vigilio-services.com`
+			};
 			client_max_body_size 100M; # permite subir archivos mas de 100mb
 
 			location / {
@@ -35,62 +35,62 @@ export async function onNginx({ sub_domain, port, domain }: OnNginx) {
 		# Redirige www a la versión
 		if ($host = ${domain ? domain : `${sub_domain}.vigilio-services.com`}) {
 			return 301 $scheme://www.${
-                domain ? domain : `${sub_domain}.vigilio-services.com`
-            }$request_uri;
+				domain ? domain : `${sub_domain}.vigilio-services.com`
+			}$request_uri;
 		}
 	}
 
 `;
-        fs.writeFileSync(CONFIG_FILE, configContent);
-        await terminal(`ln -s ${CONFIG_FILE} /etc/nginx/sites-enabled/`, true);
+		fs.writeFileSync(CONFIG_FILE, configContent);
+		await terminal(`ln -s ${CONFIG_FILE} /etc/nginx/sites-enabled/`, true);
 
-        await terminal("nginx -t", true);
-        await terminal("systemctl reload nginx", true);
-        await terminal(
-            `certbot  --nginx  -d ${
-                domain
-                    ? `${domain}  -d www.${domain}`
-                    : `${sub_domain}.vigilio-services.com -d www.${sub_domain}.vigilio-services.com`
-            }  --non-interactive --agree-tos --email yonatanvigiliolavado09@gmail.com --quiet`,
-            true
-        );
-    } catch (error) {
-        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-        console.log((error as Error).message);
-        throw new InternalServerErrorException((error as Error).message);
-    }
+		await terminal("nginx -t", true);
+		await terminal("systemctl reload nginx", true);
+		await terminal(
+			`certbot  --nginx  -d ${
+				domain
+					? `${domain}  -d www.${domain}`
+					: `${sub_domain}.vigilio-services.com -d www.${sub_domain}.vigilio-services.com`
+			}  --non-interactive --agree-tos --email yonatanvigiliolavado09@gmail.com --quiet`,
+			true,
+		);
+	} catch (error) {
+		// biome-ignore lint/suspicious/noConsoleLog: <explanation>
+		console.log((error as Error).message);
+		throw new InternalServerErrorException((error as Error).message);
+	}
 }
 
 export async function onDeleteNginx({
-    sub_domain,
-    domain,
+	sub_domain,
+	domain,
 }: {
-    sub_domain?: string;
-    domain?: string;
+	sub_domain?: string;
+	domain?: string;
 }) {
-    try {
-        await terminal(
-            `sudo rm -rf /etc/nginx/sites-available/${
-                domain ? domain : sub_domain
-            } || true`,
-            true
-        );
+	try {
+		await terminal(
+			`sudo rm -rf /etc/nginx/sites-available/${
+				domain ? domain : sub_domain
+			} || true`,
+			true,
+		);
 
-        await terminal(
-            `sudo rm -rf /etc/nginx/sites-enabled/${
-                domain ? domain : sub_domain
-            }  || true`,
-            true
-        );
-        await terminal("nginx -t");
-        await terminal("systemctl reload nginx  || true");
-        await terminal(
-            `sudo certbot delete --cert-name www.${
-                domain ? domain : `${sub_domain}.vigilio-services.com`
-            } --non-interactive --quiet --agree-tos  || true`,
-            true
-        );
-    } catch (error) {
-        throw new InternalServerErrorException((error as Error).message);
-    }
+		await terminal(
+			`sudo rm -rf /etc/nginx/sites-enabled/${
+				domain ? domain : sub_domain
+			}  || true`,
+			true,
+		);
+		await terminal("nginx -t");
+		await terminal("systemctl reload nginx  || true");
+		await terminal(
+			`sudo certbot delete --cert-name www.${
+				domain ? domain : `${sub_domain}.vigilio-services.com`
+			} --non-interactive --quiet --agree-tos  || true`,
+			true,
+		);
+	} catch (error) {
+		throw new InternalServerErrorException((error as Error).message);
+	}
 }
