@@ -1,5 +1,4 @@
 import { OrdersApiService } from "@/orders/services/orders.api.service";
-import enviroments from "~/config/enviroments.config";
 import { STATUSORDER } from "@/orders/libs";
 import type { Request } from "express";
 import Hex from "crypto-js/enc-hex";
@@ -14,6 +13,7 @@ import {
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import type { MetodosPago } from "@/empresas/entities/metodosPago.entity";
 import type { KRIzipayResponse } from "../controllers/izipay.api.controller";
+import { pasarelaComision } from "../libs";
 
 @Injectable()
 export class IzipayApiService {
@@ -42,8 +42,10 @@ export class IzipayApiService {
                     pasarela_comision: true,
                 }
             );
-            // monto
-            const amount = body.total;
+            const amount = empresa.enabledClientPayComision
+                ? orderStore.total +
+                  pasarelaComision(empresa, orderStore.total, "izipay")
+                : orderStore.total;
 
             const auth = btoa(
                 `${metodosPago.izipay.izipay_client_id}:${metodosPago.izipay.izipay_client_secret}`
@@ -56,10 +58,7 @@ export class IzipayApiService {
                     method: "POST",
                     body: JSON.stringify({
                         amount: Number.parseInt(amount.toFixed(2)) * 100, // izipay necesita 00
-                        currency:
-                            enviroments.NODE_ENV !== "production"
-                                ? "USD"
-                                : currency,
+                        currency: currency,
                         orderId: orderStore.order_code,
                         ...customer,
                     }), //LAS CREDENCIALES A DOLARES

@@ -904,7 +904,10 @@ function NiubizCardForm({
                 {storageEmpresa?.enabledClientPayComision
                     ? formatMoney(
                           cartStore.methods.getTotal() +
-                              pasarelaComision(cartStore.methods.getTotal())
+                              pasarelaComision(
+                                  cartStore.methods.getTotal(),
+                                  "mercado_pago"
+                              )
                       )
                     : formatMoney(cartStore.methods.getTotal())}
             </span>

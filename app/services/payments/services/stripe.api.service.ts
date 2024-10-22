@@ -12,7 +12,7 @@ import Stripe from "stripe";
 @Injectable()
 export class StripeApiService {
     constructor(private readonly ordersApiService: OrdersApiService) {}
-
+    //! https://github.com/fazt/nodejs-stripe-checkout/blob/master/src/controllers/payment.controller.js
     // validar crear orden
     async order(body: OrdersStoreDto, empresa: Empresas) {
         const metodosPago = (await empresa.$get("metodos_pago")) as MetodosPago;
