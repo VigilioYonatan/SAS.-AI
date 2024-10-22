@@ -1034,7 +1034,7 @@ export class EmpresasApiService {
 				fs.rmdirSync(dir, { recursive: true });
 			}
 
-			await empresa.destroy({ force: true });
+			await empresa.destroy({ force: true, });
 			await terminal(`docker container stop ${empresa.slug} || true`);
 			await terminal(`docker container rm -f ${empresa.slug} || true`);
 			await terminal(`docker volume  rm  ${empresa.slug} || true`);
