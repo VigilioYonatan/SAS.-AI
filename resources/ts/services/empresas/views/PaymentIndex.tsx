@@ -163,7 +163,7 @@ function PaymentIndex() {
 						obtener algunos credenciales, ya que los ingresos tienen que ir a
 						sus cuentas bancarias.
 						<br />- Rellenar las pasarelas de pago que gustes. <br />- No
-						compartir las credeciales con otras personas o empresas. <br />{" "}
+						compartir las credenciales con otras personas o empresas. <br />{" "}
 						Recuerda botón <b>"Guardar"</b> para actualizar sus cambios.
 					</b>
 				</AlertInfo>
@@ -297,7 +297,7 @@ function PaymentIndex() {
 										class="font-bold underline text-primary"
 										target="_blank"
 										rel="noreferrer"
-										href="https://youtu.be/z8x-X4iKYiI"
+										href="https://youtu.be/dXwROBgQdQ0"
 									>
 										Ver video
 									</a>
