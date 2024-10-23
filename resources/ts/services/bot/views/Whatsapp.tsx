@@ -1561,18 +1561,13 @@ function WhatsappFREE() {
     const whatsappmodeForm = useForm<WhatsappmodeDto>({
         resolver: valibotVigilio(whatsappmodeDto),
         defaultValues: {
-            whatsapp_mode: {
-                ...storageEmpresa?.whatsapp_mode,
-                date: formatDateTwo(
-                    NOW().add(360, "days").toDate(),
-                    "YYYY-MM-DD"
-                ) as Date,
-            },
+            whatsapp_mode: storageEmpresa?.whatsapp_mode,
         },
     });
     const chooseVPS = useSignal(false);
     const type = whatsappmodeForm.watch("whatsapp_mode.type");
     const year = whatsappmodeForm.watch("whatsapp_mode.date");
+
     const whatsappModeMutation = useMutation(
         "/empresas/whatsapp_mode",
         async (url, body: WhatsappmodeDto) => {
@@ -1755,6 +1750,10 @@ function WhatsappFREE() {
                             } else {
                                 whatsappmodeForm.setValue("whatsapp_mode", {
                                     ...storageEmpresa!.whatsapp_mode,
+                                    date: formatDateTwo(
+                                        NOW().add(360, "days").toDate(),
+                                        "YYYY-MM-DD"
+                                    ) as Date,
                                     type: "VPS",
                                 });
                             }
@@ -1843,10 +1842,6 @@ function WhatsappFREE() {
                                 question="Mínimo 2 de MEMORIA RAM"
                             />
                         </div>
-                        <input
-                            type="hidden"
-                            {...whatsappmodeForm.register("whatsapp_mode.date")}
-                        />
                     </div>
                 </div>
                 <div class="flex justify-center flex-col items-center  md:h-[300px]  dark:text-white">
