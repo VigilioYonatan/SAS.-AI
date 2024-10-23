@@ -15,7 +15,14 @@ import {
     whatsappSendMessageApi,
     whatsappSendFileApi,
 } from "../apis/whatsapp.api";
-import { delay, handlerError, NOW, restarDays, TimePeru } from "~/libs/helpers";
+import {
+    delay,
+    formatDateTwo,
+    handlerError,
+    NOW,
+    restarDays,
+    TimePeru,
+} from "~/libs/helpers";
 import {
     contactsSchema,
     empresasSchema,
@@ -1556,7 +1563,10 @@ function WhatsappFREE() {
         defaultValues: {
             whatsapp_mode: {
                 ...storageEmpresa?.whatsapp_mode,
-                date: NOW().add(360, "days").toDate(),
+                date: formatDateTwo(
+                    NOW().add(360, "days").toDate(),
+                    "YYYY-MM-DD"
+                ) as Date,
             },
         },
     });
