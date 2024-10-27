@@ -232,7 +232,7 @@ function ProductsRestaurantStore({
 					<div class="w-full flex flex-row gap-2">
 						<Form.control
 							name={"price" as keyof ProductsRestaurantStoreDto}
-							step={0.01}
+							step={0.1}
 							type="number"
 							title="Precio Normal"
 							placeholder={`${formatMoney(10)}`}

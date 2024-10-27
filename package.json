@@ -87,6 +87,7 @@
     "quill": "^2.0.2",
     "quill-image-resize": "^3.0.9",
     "react-advanced-calculator": "^1.0.4",
+    "react-calendar": "^5.1.0",
     "react-custom-roulette": "^1.4.1",
     "react-hook-form": "7.52.1",
     "react-i18next": "^15.0.1",

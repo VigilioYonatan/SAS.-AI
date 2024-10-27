@@ -250,7 +250,7 @@ function ProductsRestaurantUpdate({
 							<Form.control
 								name={"price" as keyof ProductsRestaurantUpdateDto}
 								type="number"
-								step={0.01}
+								step={0.1}
 								title="Precio"
 								placeholder={`${formatMoney(10)}`}
 								options={{ setValueAs: Number }}
