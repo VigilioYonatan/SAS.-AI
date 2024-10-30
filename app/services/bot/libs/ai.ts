@@ -1,7 +1,7 @@
 import { delay, randomNumber } from "~/libs/helpers";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { promptAssitant } from "./prompt";
-import { NOW, restarDays } from "~/libs/dayjs";
+import { NOW, restarDays, TimePeru } from "~/libs/dayjs";
 import cron from "node-cron";
 import enviroments from "~/config/enviroments.config";
 import {
@@ -15,6 +15,8 @@ import { promptReplace, transcribeAudio } from ".";
 import { BASE_URL } from "@/empresas/libs";
 import { UrlsPayment } from "@/urls/entities/urls.payment.entity";
 import cache from "@vigilio/express-core/cache";
+import { chats } from "../controllers/whatsapp.api.controller";
+import { whatsappSendMessageApi } from "../api";
 
 export function buenosDias(query: string, name: string, empresa: Empresas) {
     const messages = [
@@ -70,7 +72,7 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
     try {
         if (!clientVigilio) {
             clientVigilio = await getClientVigilio();
-            const hour24 = 24 * 3600;
+            const hour24 = 24 * 60 * 1000;
             cache.set("client-vigilio", JSON.stringify(clientVigilio), hour24);
         }
     } catch (error) {
@@ -449,6 +451,39 @@ export async function searchProducts(empresa: Empresas, word: string) {
     const completionText = completion.choices[0].message.content!;
     return completionText === "si";
 }
+
+export function sendMessageCron(empresa: Empresas, userId: string, date: Date) {
+    const fechaUTC5 = new Date("2024-10-30T19:33:00+00:00");
+
+    fechaUTC5.setHours(fechaUTC5.getHours() - 5);
+
+    const now = new Date();
+    const task = cron.schedule("*/1 * * * *", async () => {
+        const now = new Date();
+        if (now.getTime() >= fechaUTC5.getTime()) {
+            chats[`${empresa.slug}:${userId}`] = [
+                ...(chats[`${empresa.slug}:${userId}`] || []),
+                [
+                    "assistant",
+                    `Tienes una cita: ${TimePeru(empresa, date).format(
+                        "YYYY-MM-DD HH:mm A"
+                    )}`,
+                ],
+            ];
+            await whatsappSendMessageApi(empresa, {
+                message: `Tienes una cita: ${TimePeru(empresa, date).format(
+                    "YYYY-MM-DD HH:mm A"
+                )}`,
+                telephone: userId,
+                options: {},
+                delay: 3,
+            });
+            // Detener el cron job después de que se ejecute
+            task.stop();
+        }
+    });
+}
+
 cron.schedule("0 0 * * *", () => {
     chatsTelegram = {};
 });

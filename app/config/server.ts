@@ -211,7 +211,7 @@ export class Server {
                     cache.set(
                         `${empresa.slug}:citas`,
                         JSON.stringify(citas),
-                        60 * 60 * 1
+                        1 * 60 * 1000
                     );
                 }
 

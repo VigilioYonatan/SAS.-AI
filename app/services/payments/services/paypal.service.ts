@@ -30,7 +30,11 @@ export class PaypalService {
                 to,
             });
             value = Number.parseFloat(response.result.todayNumber); // its necesary to fix
-            cache.set(`money:${from}`, response.result.todayNumber, 3600 * 24);
+            cache.set(
+                `money:${from}`,
+                response.result.todayNumber,
+                60 * 1000 * 60 * 24
+            );
         }
         const metodo = (await empresa.$get("metodos_pago")) as MetodosPago;
         if (

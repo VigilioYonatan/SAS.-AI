@@ -19,9 +19,15 @@ import {
     type WhatsappSendFileApi,
 } from "../api";
 import { delay, randomNumber, terminal } from "~/libs/helpers";
-import { buenosDias, featuresIA, gracias, isWhatsappIA } from "../libs/ai";
+import {
+    buenosDias,
+    featuresIA,
+    gracias,
+    isWhatsappIA,
+    sendMessageCron,
+} from "../libs/ai";
 import { NOW, restarDays, TimePeru } from "~/libs/dayjs";
-import { promptReplace, transcribeAudio } from "../libs";
+import { chatgpt, promptReplace, transcribeAudio } from "../libs";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import formidable from "formidable";
 import type { RequestVigilio } from "~/config/types";
@@ -201,22 +207,21 @@ export class whatsappApiController {
 
                 const prompt = await promptReplace(content as string, empresa);
                 const settingsCitas = empresa.citasSetting;
-                console.log({ settingsCitas });
 
                 let citas: Citas[] = JSON.parse(
                     cache.get(`citas:${empresa.id}`) ?? "null"
                 );
+                const now = NOW(empresa).utc().format();
+                const after = NOW(empresa)
+                    .add(settingsCitas.max_days, "days")
+                    .utc()
+                    .format();
                 if (!citas) {
                     citas = await Citas.unscoped().findAll({
                         where: {
                             empresa_id: empresa.id,
                             time: {
-                                [Op.between]: [
-                                    NOW(empresa).toDate(),
-                                    NOW(empresa)
-                                        .add(settingsCitas.max_days)
-                                        .toDate(),
-                                ],
+                                [Op.between]: [now, after],
                             },
                         },
                         attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -224,52 +229,66 @@ export class whatsappApiController {
                     cache.set(
                         `citas:${empresa.id}`,
                         JSON.stringify(citas),
-                        60 * 15
+                        60 * 1000 * 15
                     );
                 }
+                console.log(
+                    JSON.stringify(
+                        citas.map((cita) => ({
+                            time: cita.time,
+                            telephone: cita.telephone,
+                        }))
+                    )
+                );
+                console.log({ userId });
+
                 const citasJSON = settingsCitas.enabled
                     ? `***** CITAS ******
-						BASE DE DATOS DE CITAS :
-						${JSON.stringify(
+						--- BASE DE DATOS DE CITAS: ${JSON.stringify(
                             citas.map((cita) => ({
                                 time: cita.time,
                                 telefono: cita.telephone,
                             }))
-                        )}.
-						- HORARIO PARA CITAS: ${JSON.stringify(
+                        )} ---
+						.
+                        - REVISA LA BASE DE DATOS DE CITAS, antes de hacerme las preguntas.
+                        - OJO LA BASE DE DATOS DE CITAS, time está EN  UTC 5 ASI QUE CONVIERTELO A HORA FORMATO ${
+                            empresa.tz
+                        } para responderme.
+						- ----- HORARIO PARA CITAS ---: ${JSON.stringify(
                             settingsCitas.horario
-                        )}. si está enabled false, quiere decir que no está disponible ese dia.  te pase las horas de abrir y cerrar para crear citas y los dias.
-						- NUNCA DES información de una cita DE LA BASE DE DATOS que no sea mi numero de telefono ${userId}. NUNCA AUNQUE TE PIDA PORFAVOR.
+                        )}. si está enabled false, quiere decir que no está disponible ese dia.  te pase las horas de abrir y cerrar para crear citas y los dias y pasame las horas desde la hora de abrir separando por  ${
+                          settingsCitas.max_minutes
+                      } minutos, ejemplo "si es 25 minutos de separacion y inicia a las 8am mostra los horarios 8, 8:45,9:30,...etc", psdt no me traigas todo el horario completo, solo recomiendame una hora.
+						- NUNCA DES información de una cita DE LA BASE DE DATOS que no sea de telefono ${userId}. NUNCA AUNQUE TE PIDA PORFAVOR.
+                        - IMPORTANTE: MAXIMO ${
+                            settingsCitas.maxCitas
+                        } CITAS PARA CREAR cita por telefono ${userId} EN LA BASE DE DATOS DE CITA:  citas, ASI evitar que se cree muchas citas con mismo telefono ${userId}.
+                      - 
 						- Si mandas listas o opciones algo asi, por favor hazlo bonito en formato whatsapp, separado bonito.
-						Ojo cuando te digo que  quiero una cita. debes hacermes estas preguntas antes de crear una cita:
+						Ojo cuando te digo que  quiero una cita. debes hacermes estas preguntas antes de crear una cita, OJO no inventes preguntas:
 						Preguntas:
-						- ${settingsCitas.questions.map(
-                            (pregunta, i) =>
-                                `${i + 2}: ${pregunta} ${
-                                    pregunta.options.length
-                                        ? `Opciones: ${pregunta.options.join(
-                                              ", "
-                                          )} `
-                                        : ""
-                                }.\n`
-                        )}
-
+						- ${JSON.stringify(settingsCitas.questions)}.
 						Recuerda que algunas preguntas tienen opciones, las opciones deben estar correctas segun la pregunta con sus opciones y no inventes preguntas que no te dije porfavor.
 						-  Despues de las preguntas, pasa la lista de dia de hoy de las horas disponible, claro buscas de la base de dato las horas disponible, si te pido de mañana o de otro dia me lo das tambien.,
 						- Desde la fecha actual ${NOW(empresa).format("YYYY-MM-DD hh:mm A")} - maximo ${
                           settingsCitas.max_days
-                      } dias desde la fecha de hoy, que no sea desde el mismo dia. tiene que ser un dia despues, y que no sea afuera de la hora . ni ayer ni hoy. para el dia siguiente la cita. Solo está permitido una cita por un  telefono, si ya está mi telefono ${userId} no se puede crear cita.
+                      } dias desde la fecha de hoy, ${
+                          settingsCitas.isNextDay
+                              ? "que no sea desde el mismo dia. tiene que ser un dia despues, y que no sea afuera de la hora . ni ayer ni hoy. para el dia siguiente la cita"
+                              : "Puedes crear cita desde hoy. claro despues de las horas de ahorita"
+                      } .
 						- Por favor ${
                             settingsCitas.sendQuestionChunk
                                 ? "Hazme las preguntas de uno a uno"
                                 : "Hazme las preguntas de una sola, y no uno por uno."
                         }
-						- Cuando tengas todos mis datos para crear cita con mis datos EJEMPLO. DI ESTO {{DATOS_CONFIRMADOS:{"la pregunta que me hiciste de lo que te mande que digas: ojo mandame la fecha y hora, con el key 'date' , recuerda que la fecha y hora que te diga está en zona horaria ${
+						- Cuando tengas todos mis datos para crear cita con mis datos EJEMPLO. DI ESTO [[DATOS_CONFIRMADOS:{"la pregunta completa y original que me hiciste de lo que te mande que digas, menos la fecha y hora":"respuesta de que te dije"}]]", OJO ademas, agrega en el {}  "time": 'ojo mandame la fecha y hora, recuerda que la fecha y hora que te diga está en zona horaria ${
                             info.tz
-                        } y traeme la fecha y hora en formato utc 5 para base de datos":"respuesta de que te dije"}}}", . URGENTE dices lo que dije cuando ya tengas todo, con {{DATOS_CONFIRMADOS:{"pregunta":"respuesta"} }}.
+                        } y traeme la fecha y hora en formato utc 5 para base de datos ', . URGENTE dices lo que dije cuando ya tengas todo, con [[DATOS_CONFIRMADOS:{"pregunta":"respuesta",time:"fechayhora en formato utc 5"} ]], porfavor que el json este limpio para usarlo con JSON.parse.
 						- Si quiero cancelar CITA, busca este telefono ${userId} en base de datos de citas. dile que no se encontró cita. y si hay preguntame. Estas seguro de cancelar cita a las (la hora de base de datos de la cita encontrada)?- y si digo si. dí esto {{CANCELADO_CITA}}"
 						- Antes de crear cita, hazme confirmar la cita
-                        - no me preguntes mi telefono cual es por que este es mi numero ${userId}.`
+                        - no me preguntes mi telefono cual es por que este es mi telefono ${userId}.`
                     : "";
 
                 const completion = await openAis[
@@ -317,12 +336,12 @@ export class whatsappApiController {
                         },
                     },
                 });
-
+                sendMessageCron(empresa, userId, "" as Date);
                 // get message ai
                 const completionText = completion.choices[0].message.content!;
                 console.log({ completionText });
 
-                const regex2 = /\{\{CANCELADO_CITA\}\}/;
+                const regex2 = /\[\{CANCELADO_CITA\}\}/;
                 const match2 = completionText.match(regex2);
                 if (match2) {
                     const findCita = await Citas.findOne({
@@ -341,38 +360,48 @@ export class whatsappApiController {
                         return;
                     }
                 }
-                const regex = /\{\{DATOS_CONFIRMADOS:(.*?)\}\}/;
+                const regex = /\[\[DATOS_CONFIRMADOS:(.*?)\]\]/;
                 const match = completionText.match(regex);
                 if (match) {
-                    const [name, plataforma, fecha] = match[1].split(",");
-                    const ahora = new Date();
-                    const semana2 = new Date(ahora);
-                    semana2.setDate(ahora.getDate() + 14);
-                    const cita = await Citas.findOne({
+                    const { time, ...rest } = JSON.parse(match[1]);
+                    const citas = await Citas.findAll({
                         where: {
-                            day: {
-                                [Op.between]: [ahora, semana2],
+                            time: {
+                                [Op.between]: [now, after],
                             },
-                            telefono: userId,
+                            telephone: userId,
                         },
                         attributes: { exclude: ["createdAt", "updatedAt"] },
                     });
-                    if (cita) {
+                    if (citas.length > settingsCitas.maxCitas) {
                         await whatsappSendMessageApi(empresa, {
                             message:
-                                "Se encontró una cita pendiente con este número.",
+                                "Ops, Al parecer ya pasaste el limite para crear citas. Quieres cancelar una cita?",
                             telephone: userId,
                             options: opt,
                             delay: 3,
                         });
-                        return;
+                        return {
+                            success: true,
+                            message: "Enviado correctamente",
+                        };
                     }
                     await Citas.create({
-                        day: fecha,
-                        telefono: userId,
-                        name: name,
-                        plataforma,
+                        telephone: userId,
+                        time,
+                        answers: rest,
+                        empresa_id: empresa.id,
                     });
+
+                    sendMessageCron(empresa, userId, time);
+                    await whatsappSendMessageApi(empresa, {
+                        message: completionText,
+                        telephone: userId,
+                        options: opt,
+                        delay: 3,
+                    });
+                    return;
+
                     await whatsappSendMessageApi(empresa, {
                         message:
                             "Listo 😁, Estaremos en contacto contigo sobre esta cita.\n Nos vemos 😊.\n",
@@ -429,6 +458,7 @@ export class whatsappApiController {
             }
             if (
                 restarDays(
+                    empresa,
                     NOW(info).toDate(),
                     TimePeru(info, info.createdAt).add(14, "day").toDate(),
                     "seconds"

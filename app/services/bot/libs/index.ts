@@ -22,6 +22,7 @@ import { getProductAll, printVariantFeatures } from "@/products/libs";
 import type { VariantsSchema } from "@/products/schemas/options/variants.schema";
 import type { BrandsSchemaFromServe } from "@/products/schemas/brands.schema";
 import type { CategoriesSchemaFromServe } from "@/products/schemas/categories.schema";
+import type { isWhatsappIA } from "./ai";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
@@ -233,7 +234,7 @@ export async function promptReplace(message: string, empresa: Empresas) {
             cache.set(
                 `db-${empresa.slug}`,
                 JSON.stringify(data),
-                empresa.inteligenceArtificial.hour_update * 3600
+                empresa.inteligenceArtificial.hour_update * 60 * 1000 * 60
             );
         }
     }
@@ -304,4 +305,47 @@ export async function promptReplace(message: string, empresa: Empresas) {
         empresa,
         productsData
     )}. ${ordenes}. ERES UNA IA POR OPEN AI, pero fuiste entrenado por https://vigilio-services.com`;
+}
+export async function chatgpt(
+    whatsapp: Awaited<ReturnType<typeof isWhatsappIA>>,
+    content: string
+) {
+    const completion = await openAis[
+        whatsapp!.empresa.slug
+    ].chat.completions.create({
+        model: whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
+        max_tokens: 5000,
+        messages: [
+            {
+                role: "user",
+                // insert custom prompt
+                content,
+            },
+        ],
+    });
+    const completionText = completion.choices[0].message.content;
+    const latestEmpresaUsage = whatsapp!.empresa!.inteligenceArtificial.usage;
+    await whatsapp!.empresa.update({
+        ...whatsapp!.empresa.inteligenceArtificial,
+        usage: {
+            ...latestEmpresaUsage,
+            input_tokens:
+                latestEmpresaUsage.input_tokens +
+                (completion.usage!.prompt_tokens +
+                    completion.usage!.completion_tokens),
+            output_tokens:
+                latestEmpresaUsage.input_tokens +
+                completion.usage!.completion_tokens,
+        },
+        payments: {
+            ...whatsapp!.empresa.payments,
+            tokens: {
+                tokens:
+                    whatsapp!.empresa.payments.tokens.tokens -
+                    (completion.usage!.prompt_tokens +
+                        completion.usage!.completion_tokens),
+            },
+        },
+    });
+    return completionText;
 }

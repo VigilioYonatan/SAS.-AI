@@ -11,9 +11,9 @@ import { Pipe } from "@vigilio/express-core/valibot";
 import { objectAsync, string } from "@vigilio/valibot";
 import { isWhatsappIA } from "../libs/ai";
 import { Empresas } from "@/empresas/entities/empresas.entity";
-import { openAis } from "@/empresas/services/empresas.api.service";
 import * as cheerio from "cheerio";
 import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
+import { chatgpt } from "../libs";
 
 @Controller("/ia")
 export class IAApiController {
@@ -29,7 +29,7 @@ export class IAApiController {
                 throw new NotFoundException(
                     "Hubo un problema al usar la IA, Recomiendo fijarse en los limites token"
                 );
-            const esMalaPalabra = await this.prompt(
+            const esMalaPalabra = await chatgpt(
                 whatsapp,
                 `'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'. No digas nada mas que '1' o '2',porfavor`
             );
@@ -83,7 +83,7 @@ export class IAApiController {
                 throw new NotFoundException(
                     "Hubo un problema al usar la IA, Recomiendo fijarse en los limites token"
                 );
-            const esMalaPalabra = await this.prompt(
+            const esMalaPalabra = await chatgpt(
                 whatsapp,
                 `'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'. No digas nada mas que '1' o '2',porfavor`
             );
@@ -122,8 +122,8 @@ export class IAApiController {
             // `;
 
             const [description, caracterisiticas] = await Promise.all([
-                this.prompt(whatsapp, desc),
-                this.prompt(whatsapp, caract),
+                chatgpt(whatsapp, desc),
+                chatgpt(whatsapp, caract),
             ]);
 
             const cleanCharacterisitcas = caracterisiticas!
@@ -156,7 +156,7 @@ export class IAApiController {
     ) {
         try {
             const whatsapp = await isWhatsappIA(empresa.slug);
-            const esMalaPalabra = await this.prompt(
+            const esMalaPalabra = await chatgpt(
                 whatsapp,
                 `'${name}'  si es mala palabra dime solo '1' y si no solo dime '2', recuerda solo 1 y 2 me dices`
             );
@@ -215,7 +215,7 @@ export class IAApiController {
                 throw new NotFoundException(
                     "Hubo un problema al usar la IA, Recomiendo fijarse en los limites token"
                 );
-            const esMalaPalabra = await this.prompt(
+            const esMalaPalabra = await chatgpt(
                 whatsapp,
                 `'${name}'  si es mala palabra dime solo '1' y si no solo dime '2'`
             );
@@ -246,7 +246,7 @@ export class IAApiController {
                 .filter((a) => a)
                 .slice(0, 8);
             const prompt = `conoces fontawesome? tienes un icon en html <i class='fa' de ${name}? solo traime el html y en string y no en formato y no digas nada. solo traime el ico sin '' al principio ni al final`;
-            const ico = await this.prompt(whatsapp, prompt);
+            const ico = await chatgpt(whatsapp, prompt);
             return {
                 success: true,
                 data: {
@@ -257,50 +257,5 @@ export class IAApiController {
         } catch (error) {
             throw new InternalServerErrorException("Error server");
         }
-    }
-    async prompt(
-        whatsapp: Awaited<ReturnType<typeof isWhatsappIA>>,
-        content: string
-    ) {
-        const completion = await openAis[
-            whatsapp!.empresa.slug
-        ].chat.completions.create({
-            model:
-                whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
-            max_tokens: 5000,
-            messages: [
-                {
-                    role: "user",
-                    // insert custom prompt
-                    content,
-                },
-            ],
-        });
-        const completionText = completion.choices[0].message.content;
-        const latestEmpresaUsage =
-            whatsapp!.empresa!.inteligenceArtificial.usage;
-        await whatsapp!.empresa.update({
-            ...whatsapp!.empresa.inteligenceArtificial,
-            usage: {
-                ...latestEmpresaUsage,
-                input_tokens:
-                    latestEmpresaUsage.input_tokens +
-                    (completion.usage!.prompt_tokens +
-                        completion.usage!.completion_tokens),
-                output_tokens:
-                    latestEmpresaUsage.input_tokens +
-                    completion.usage!.completion_tokens,
-            },
-            payments: {
-                ...whatsapp!.empresa.payments,
-                tokens: {
-                    tokens:
-                        whatsapp!.empresa.payments.tokens.tokens -
-                        (completion.usage!.prompt_tokens +
-                            completion.usage!.completion_tokens),
-                },
-            },
-        });
-        return completionText;
     }
 }

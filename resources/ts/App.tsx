@@ -183,17 +183,12 @@ function App() {
                                 ) as any
                             }
                         />
-                        {[1, 2].includes(
-                            storageEmpresa!.tipo_empresa.tipo_servicio_id
-                        ) ? (
-                            <Route
-                                path="/delivery"
-                                component={lazy(
-                                    () =>
-                                        import("@/orders/views/OrdersDelivery")
-                                )}
-                            />
-                        ) : null}
+                        <Route
+                            path="/delivery"
+                            component={lazy(
+                                () => import("@/orders/views/OrdersDelivery")
+                            )}
+                        />
                         <Route
                             path="/perfil"
                             component={lazy(

@@ -21,10 +21,14 @@ export function TimePeru(
     return dayjs(date);
 }
 export function restarDays(
+    empresa: Empresas,
     now: Date | string | number | dayjs.Dayjs,
     back: Date | string | number | dayjs.Dayjs,
     time: QUnitType | OpUnitType = "minute"
 ) {
+    dayjs.extend(timezone);
+    dayjs.extend(utc);
+    dayjs.tz.setDefault(empresa!.tz);
     return dayjs(back).diff(now, time);
 }
 export function formatDateTwo(
@@ -43,6 +47,9 @@ export function isDateWithin(
     timer: number,
     time: dayjs.ManipulateType = "days"
 ) {
+    dayjs.extend(timezone);
+    dayjs.extend(utc);
+    dayjs.tz.setDefault(empresa!.tz);
     const today = dayjs(date);
     const twoWeeksFromNow = today.add(timer, time);
 
@@ -56,14 +63,14 @@ export function getTime(empresa: Empresas) {
     const day = dayjs();
     const currentYear = day.year();
     const currentMonth = day.month() + 1;
-    const startOfYear = day.startOf("year").add(5, "hour").toDate();
-    const endOfYear = day.endOf("year").add(5, "hour").toDate();
-    const startOfToday = day.startOf("day").add(5, "hour").toDate();
-    const endOfToday = day.endOf("day").add(5, "hour").toDate();
-    const startOfWeek = day.startOf("week").add(5, "hour").toDate();
-    const endOfWeek = day.endOf("week").add(5, "hour").toDate();
-    const startOfMonth = day.startOf("month").add(5, "hour").toDate();
-    const endOfMonth = day.endOf("month").add(5, "hour").toDate();
+    const startOfYear = day.startOf("year").utc().format();
+    const endOfYear = day.endOf("year").utc().format();
+    const startOfToday = day.startOf("day").utc().format();
+    const endOfToday = day.endOf("day").utc().format();
+    const startOfWeek = day.startOf("week").utc().format();
+    const endOfWeek = day.endOf("week").utc().format();
+    const startOfMonth = day.startOf("month").utc().format();
+    const endOfMonth = day.endOf("month").utc().format();
     const startOfYesterday = day
         .subtract(1, "day")
         .startOf("day")
