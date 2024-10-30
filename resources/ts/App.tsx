@@ -66,6 +66,15 @@ function App() {
                                     )}
                                 />
                                 <Route
+                                    path="/categorias_servicios"
+                                    component={lazy(
+                                        () =>
+                                            import(
+                                                "@/products/views/CategoriesServices"
+                                            )
+                                    )}
+                                />
+                                <Route
                                     path="/marcas"
                                     component={lazy(
                                         () =>

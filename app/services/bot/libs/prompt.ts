@@ -1,13 +1,9 @@
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import type { Settings } from "@/empresas/entities/settings.entity";
 import { NOW } from "~/libs/dayjs";
+import type { DataPrompt } from ".";
 
-export async function prompt(
-    empresa: Empresas,
-    productsData: {
-        name: string;
-    }[]
-) {
+export async function prompt(empresa: Empresas, productsData: DataPrompt) {
     const url =
         (empresa.setting as Settings).host.host &&
         (empresa.setting as Settings).host.enabled
@@ -45,11 +41,13 @@ export async function prompt(
         instrucctions = [
             ...instrucctions,
             `Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?items=}},recuerae que eres como un carrito de compra, delo que te pida te fijas en la base de datos,  será como en el siguiente ejemplo . OJO ES SOLO UN EJEMPLO, tu lo harás  segun de que te pida el id de producto,variant_id y cantidad dinamicamente   {{cart?items=${
-                empresa.tipo_empresa.tipo_servicio_id === 1
+                [1, 3].includes(empresa.tipo_empresa.tipo_servicio_id)
                     ? "%5B%7B%22id%22%3A1%2C%22quantity%22%3A2%2C%22variant%22%3A3%7D%2C%7B%22id%22%3A4%2C%22quantity%22%3A5%2C%22variant%22%3A6%7D%5D"
                     : "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%2%7D%2C%20%7B%22id%22%3A%4%2C%20%22quantity%22%3A%3%7D%5D"
             }}} que es un formato URL percent-encoding,. Solo enviame {{cart?items=URL percent-encoding}} ,  en {{cart?items=URL percent-encoding}} de productos (id producto, cantidad, ${
-                empresa.tipo_empresa.tipo_servicio_id === 1 ? "variant_id" : ""
+                [1, 3].includes(empresa.tipo_empresa.tipo_servicio_id)
+                    ? "variant_id"
+                    : ""
             } ) o servicios de la base de datos. SOLO ENVIAME ASÍ. NUNCA TE OLVIDES LEER DE LA BASE DE DATOS PARA CREAR el {{cart?items=URL percent-encoding}} con su respectivo id de variant, product id y cantidad de que te pida. el que te mande es solo un ejemplo`,
         ];
         directrices = [

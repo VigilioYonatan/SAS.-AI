@@ -22,16 +22,19 @@ import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schem
 import ProductsRestaurantUpdate from "./ProductsRestaurantUpdate";
 import { ProductsRestaurantSchema } from "../schemas/products_restaurant.schema";
 import { ProductsServicioSchemaFromServer } from "../schemas/products_servicio.schema";
+import { getPeriodDescription } from "~/libs/helpers";
+import ProductsServicioUpdate from "./ProductsServicioUpdate";
 
 interface ProductsShowProps {
     id?: string | number;
     refetch?: (clean?: boolean) => void;
     onClose?: () => void;
+    isService: boolean;
 }
-function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
-    const productsDestroyMutation = productsDestroyApi();
+function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
+    const productsDestroyMutation = productsDestroyApi(isService);
     const { guards } = useAuthstore();
-    const productsShowApiQuery = productsShowApi(id as string);
+    const productsShowApiQuery = productsShowApi(id as string, isService);
     const empresaStore = useEmpresastore();
 
     let component = null;
@@ -49,12 +52,22 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
         function onProductsUpdate() {
             sweetModal({
                 html: reactComponent(
-                    storageEmpresa?.tipo_empresa.tipo_servicio_id === 1 ? (
-                        <ProductsUpdate
-                            refetchProduct={productsShowApiQuery.refetch}
-                            id={product.id}
-                            refetch={refetch}
-                        />
+                    [1, 3].includes(
+                        storageEmpresa!.tipo_empresa.tipo_servicio_id
+                    ) ? (
+                        isService ? (
+                            <ProductsServicioUpdate
+                                refetchProduct={productsShowApiQuery.refetch}
+                                id={product.id}
+                                refetch={refetch}
+                            />
+                        ) : (
+                            <ProductsUpdate
+                                refetchProduct={productsShowApiQuery.refetch}
+                                id={product.id}
+                                refetch={refetch}
+                            />
+                        )
                     ) : (
                         <ProductsRestaurantUpdate
                             refetchProduct={productsShowApiQuery.refetch}
@@ -83,7 +96,9 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
                         <a
                             target="_blank"
                             rel="noreferrer"
-                            href={`/${product.slug}`}
+                            href={`/${isService ? "servicio/" : ""}${
+                                product.slug
+                            }`}
                             class="absolute bottom-0 right-0 m-2 bg-primary text-white px-2 py-1 rounded-md"
                         >
                             <i class="fas fa-globe-europe" />
@@ -129,12 +144,63 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
                             </div>
                             <div class="flex gap-1 flex-col mb-3 p-2 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md">
                                 <span class="text-primary dark:text-terciary font-bold">
-                                    Name:
+                                    Nombre:
                                 </span>
                                 <span class="dark:text-secondary-light text-secondary-dark tracking-wide break-words">
                                     {product.name}
                                 </span>
                             </div>
+                            {isService ? (
+                                <div class="flex gap-1 flex-col mb-3 p-2 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md  dark:text-white">
+                                    <span class="text-primary dark:text-terciary font-bold">
+                                        Servicio:
+                                    </span>
+                                    <div>
+                                        {(
+                                            product as ProductsServicioSchemaFromServer
+                                        ).days.length ? (
+                                            <div class="flex flex-col gap-1">
+                                                {(
+                                                    product as ProductsServicioSchemaFromServer
+                                                ).days.map((day) => {
+                                                    return (
+                                                        <div
+                                                            key={day.days}
+                                                            class="flex gap-2 items-center"
+                                                        >
+                                                            <span class="text-xs">
+                                                                {getPeriodDescription(
+                                                                    day.days
+                                                                )}
+                                                            </span>
+                                                            *
+                                                            <span class="text-xs">
+                                                                {day.cantidad}
+                                                            </span>
+                                                            =
+                                                            <span class="text-xs">
+                                                                {formatMoney(
+                                                                    subtotalIgv(
+                                                                        product
+                                                                    ) *
+                                                                        day.cantidad
+                                                                )}
+                                                            </span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <span>
+                                                    <i class="fas fa-handshake-alt" />
+                                                </span>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : null}
+
                             <div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
                                 <span class="text-primary dark:text-terciary font-bold">
                                     Descripción:
@@ -210,17 +276,6 @@ function ProductsShow({ id, refetch, onClose }: ProductsShowProps) {
                                     {formatMoney(product.price)}
                                 </span>
                             </div>
-                            {storageEmpresa?.tipo_empresa.tipo_servicio_id ===
-                            3 ? (
-                                <div class="flex gap-1 flex-col mb-3  p-2 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md">
-                                    <span class="text-primary dark:text-terciary font-bold">
-                                        Días:
-                                    </span>
-                                    <span class="dark:text-secondary-light text-secondary-dark tracking-wide">
-                                        {(product as ProductsServicioSchemaFromServer).days}
-                                    </span>
-                                </div>
-                            ) : null}
 
                             {storageEmpresa?.tipo_empresa.tipo_servicio_id ===
                             2 ? (

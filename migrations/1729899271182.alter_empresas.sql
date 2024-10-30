@@ -6,3 +6,5 @@ ALTER TABLE "public"."Citas" ADD COLUMN "telephone" VARCHAR(100);
 ALTER TABLE "public"."Citas"
 ALTER COLUMN "time" TYPE TIMESTAMP WITH TIME ZONE,
 ALTER COLUMN "time" SET NOT NULL;
+ALTER TABLE "public"."Categories"
+ADD COLUMN "isService"  BOOLEAN ;

@@ -32,7 +32,8 @@ function CouponsStore({ refetch }: CouponStoreProps) {
     });
     const couponsStoreMutation = couponsStoreApi();
     // categories
-    const categoriesAllQuery = categoriesIndexApi();
+    const categoriesAllQuery = categoriesIndexApi(false);
+    const ServicesAllQuery = categoriesIndexApi(true);
     const categories = couponsStoreDtoForm.watch("categories");
 
     function onAddCoupon(body: CouponsStoreDto) {
@@ -181,6 +182,68 @@ function CouponsStore({ refetch }: CouponStoreProps) {
                         </p>
                     ) : null}
                 </div>
+                <br />
+                {storageEmpresa?.tipo_empresa.tipo_servicio_id === 3 ? (
+                    <div class="w-full mb-2">
+                        <label
+                            class="text-xs dark:text-secondary-light text-secondary-dark capitalize font-semibold mb-2 block"
+                            htmlFor={"categories" as keyof CouponsStoreDto}
+                        >
+                            Servicios
+                        </label>
+                        <div class="flex gap-4 flex-wrap">
+                            {ServicesAllQuery.data?.data.map((category) => (
+                                <div
+                                    key={category.id}
+                                    class="flex gap-1 text-xs dark:text-white flex-col"
+                                >
+                                    <span class="text-primary font-bold">
+                                        {category.name}
+                                    </span>
+                                    <input
+                                        type="checkbox"
+                                        value={category.id}
+                                        onChange={(e) => {
+                                            const id = Number(
+                                                (e.target as HTMLInputElement)
+                                                    .value
+                                            );
+                                            const existID = categories.some(
+                                                (cat) => cat === id
+                                            );
+                                            if (existID) {
+                                                const filterCategory =
+                                                    categories.filter(
+                                                        (cat) => cat !== id
+                                                    );
+                                                couponsStoreDtoForm.setValue(
+                                                    "categories",
+                                                    filterCategory
+                                                );
+                                            } else {
+                                                couponsStoreDtoForm.setValue(
+                                                    "categories",
+                                                    [...categories, id]
+                                                );
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                        {couponsStoreDtoForm.formState.errors?.categories ? (
+                            <p class="text-xs text-red-600">
+                                {
+                                    couponsStoreDtoForm.formState.errors
+                                        ?.categories.message
+                                }
+                            </p>
+                        ) : null}
+                    </div>
+                ) : (
+                    <></>
+                )}
+
                 <div class="flex justify-center">
                     <Form.button.submit
                         disabled={couponsStoreMutation.isLoading || false}

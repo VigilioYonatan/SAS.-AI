@@ -46,9 +46,14 @@ export class ProductsApiController {
     @Get("/")
     async index(
         @Req("empresa") empresa: Empresas,
-        @Query("token") token: string
+        @Query("token") token: string,
+        @Query("type") type: string
     ) {
-        const result = await this.productsApiService.index(empresa, token);
+        const result = await this.productsApiService.index(
+            empresa,
+            token,
+            type === "service"
+        );
         return result;
     }
 
@@ -60,9 +65,15 @@ export class ProductsApiController {
     @Get("/:slug")
     async show(
         @Params("slug") slug: string,
-        @Req("empresa") empresa: Empresas
+        @Req("empresa") empresa: Empresas,
+        @Query("type") type: string
     ) {
-        const result = await this.productsApiService.show(empresa, slug, true);
+        const result = await this.productsApiService.show(
+            empresa,
+            slug,
+            type === "service",
+            true
+        );
         return result;
     }
     @Pipe(
@@ -75,12 +86,14 @@ export class ProductsApiController {
     async variant(
         @Req("empresa") empresa: Empresas,
         @Params("slug") slug: string,
-        @Params("variant_id") variant_id: string
+        @Params("variant_id") variant_id: string,
+        @Query("type") type: string
     ) {
         const result = await this.productsApiService.variant(
             empresa,
             slug,
-            variant_id
+            variant_id,
+            type === "service"
         );
         return result;
     }
@@ -98,13 +111,15 @@ export class ProductsApiController {
         @Req("empresa") empresa: Empresas,
         @Params("slug") slug: string,
         @Params("variant_id") variant_id: string,
-        @Body() body: VariantsUpdateDto
+        @Body() body: VariantsUpdateDto,
+        @Query("type") type: string
     ) {
         const result = await this.productsApiService.variantUpdate(
             empresa,
             slug,
             variant_id,
-            body
+            body,
+            type === "service"
         );
         return result;
     }
@@ -119,12 +134,14 @@ export class ProductsApiController {
     async varianDelete(
         @Req("empresa") empresa: Empresas,
         @Params("slug") slug: string,
-        @Params("variant_id") variant_id: string
+        @Params("variant_id") variant_id: string,
+        @Query("type") type: string
     ) {
         const result = await this.productsApiService.varianDelete(
             empresa,
             slug,
-            variant_id
+            variant_id,
+            type === "service"
         );
         return result;
     }
@@ -138,12 +155,14 @@ export class ProductsApiController {
     async coupon(
         @Params("slug") slug: string,
         @Params("coupon") coupon: string,
-        @Req("empresa") empresa: Empresas
+        @Req("empresa") empresa: Empresas,
+        @Query("type") type: string
     ) {
         const result = await this.productsApiService.coupon(
             slug,
             coupon,
-            empresa
+            empresa,
+            type === "service"
         );
         return result;
     }
@@ -156,7 +175,12 @@ export class ProductsApiController {
         @Body() body: ProductsNormalStoreDto,
         @Req("empresa") empresa: Empresas
     ) {
-        const result = await this.productsApiService.store(empresa, body, true);
+        const result = await this.productsApiService.store(
+            empresa,
+            body,
+            true,
+            false
+        );
         return result;
     }
     @PermissionAdmin()
@@ -170,6 +194,7 @@ export class ProductsApiController {
         const result = await this.productsApiService.store(
             empresa,
             body,
+            false,
             false
         );
         return result;
@@ -186,7 +211,8 @@ export class ProductsApiController {
         const result = await this.productsApiService.store(
             empresa,
             body,
-            false
+            false,
+            true
         );
         return result;
     }
@@ -209,7 +235,8 @@ export class ProductsApiController {
             empresa,
             id,
             body,
-            true
+            true,
+            false
         );
         return result;
     }
@@ -225,6 +252,7 @@ export class ProductsApiController {
             empresa,
             id,
             body,
+            false,
             false
         );
         return result;
@@ -241,7 +269,8 @@ export class ProductsApiController {
             empresa,
             id,
             body,
-            false
+            false,
+            true
         );
         return result;
     }
@@ -254,8 +283,16 @@ export class ProductsApiController {
     )
     @Status(201)
     @Delete("/:id")
-    async destroy(@Params("id") id: string, @Req("empresa") empresa: Empresas) {
-        const result = await this.productsApiService.destroy(empresa, id);
+    async destroy(
+        @Params("id") id: string,
+        @Req("empresa") empresa: Empresas,
+        @Query("type") type: string
+    ) {
+        const result = await this.productsApiService.destroy(
+            empresa,
+            id,
+            type === "service"
+        );
         return result;
     }
 }

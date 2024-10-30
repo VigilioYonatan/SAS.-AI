@@ -21,11 +21,13 @@ interface CategoriesStoreProps {
     refetch: (clean?: boolean) => Promise<void>;
     onClose: () => void;
     onSetValueCategory?: (value: number) => void;
+    isService: boolean;
 }
 function CategoriesStore({
     refetch,
     onClose,
     onSetValueCategory,
+    isService,
 }: CategoriesStoreProps) {
     const { guards } = useAuthStore();
     if (!guards.permissionAdminGuard()) {
@@ -35,7 +37,7 @@ function CategoriesStore({
     const categoriesStoreDtoForm = useForm<CategoriesStoreDto>({
         resolver: valibotVigilio(categoriesStoreDto),
         mode: "all",
-        defaultValues: { empresa_id: storageEmpresa!.id },
+        defaultValues: { empresa_id: storageEmpresa!.id, isService },
     });
 
     const categoriesStoreMutation = categoriesStoreApi();
@@ -80,7 +82,7 @@ function CategoriesStore({
                 isLoadingImage.value = true;
                 const images = await getFilesEdit(
                     data.data.images.map((img) => ({
-                        dimension: 500,
+                        dimension: 800,
                         file: img.image,
                     })),
                     null

@@ -15,12 +15,16 @@ export function productsPaginatorApi(
     >,
     props: Signal<{
         category: string | null;
-    }>
+    }>,
+    isService: boolean
 ) {
     const result = useQuery<ProductsPaginatorAPI, ProductsPaginatorAPIError>(
         "/paginator/products",
         async (url) => {
             const data = new URLSearchParams();
+            if (isService) {
+                data.append("type", "service");
+            }
             data.append("offset", String(table.pagination.value.offset));
             data.append("limit", String(table.pagination.value.limit));
             data.append("search", String(table.search.value));

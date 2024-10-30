@@ -40,33 +40,43 @@ import type { Options } from "../entities/options/options.entity";
 
 @Injectable()
 export class ProductsApiService {
-    async index(empresa: Empresas, token: string) {
+    async index(empresa: Empresas, token: string, isService: boolean) {
         if (!token)
             throw new UnauthorizedException("token is required ?token=");
         if (token !== empresa.token)
             throw new UnauthorizedException("Token no válido");
-        const data = await Product(empresa).findAll();
+        const data = await Product(empresa, isService).findAll();
         return {
             success: true,
             data,
         };
     }
+    /**
+     *
+     * @param empresa
+     * @param slug
+     * @param isService
+     * @param allProduct =false
+     * @param isView
+     * @returns
+     */
     async show(
         empresa: Empresas,
         slug: string,
-        allProduct = false,
+        isService: boolean,
+        allProduct: boolean,
         isView = false
     ) {
         let product = null;
         if (!Number.isNaN(Number(slug))) {
-            product = (await Product(empresa).findOne({
+            product = (await Product(empresa, isService).findOne({
                 where: {
                     id: slug,
                     empresa_id: empresa.id,
                 },
             })) as ProductsNormal | ProductsRestaurant | ProductsServicio;
         } else {
-            product = (await Product(empresa).findOne({
+            product = (await Product(empresa, isService).findOne({
                 where: {
                     slug,
                     empresa_id: empresa.id,
@@ -351,9 +361,14 @@ export class ProductsApiService {
     //         console.error("Error al obtener productos:", error);
     //     }
     // }
-    async coupon(product_id: string, coupon_code: string, empresa: Empresas) {
+    async coupon(
+        product_id: string,
+        coupon_code: string,
+        empresa: Empresas,
+        isService: boolean
+    ) {
         const [{ product }, coupon] = await Promise.all([
-            this.show(empresa, product_id),
+            this.show(empresa, product_id, isService, false),
             Coupons.findOne({
                 where: {
                     coupon: coupon_code,
@@ -406,9 +421,10 @@ export class ProductsApiService {
             | ProductsNormalStoreDto
             | ProductsServicioStoreDto
             | ProductsRestaurantStoreDto,
-        isNormal: boolean
+        isNormal: boolean,
+        isService: boolean
     ) {
-        const Pr = Product(empresa);
+        const Pr = Product(empresa, isService);
         const product = new Pr({
             ...productsStoreDto,
             empresa_id: empresa.id,
@@ -416,7 +432,7 @@ export class ProductsApiService {
         product!.product_code = await generateCodeEntity(
             Pr,
             "product_code",
-            "PROD",
+            isService ? "SERV" : "PROD",
             empresa
         );
         await product!.save();
@@ -474,12 +490,13 @@ export class ProductsApiService {
             | ProductsNormalUpdateDto
             | ProductsServicioUpdateDto
             | ProductsRestaurantUpdateDto,
-        isNormal: boolean
+        isNormal: boolean,
+        isService: boolean
     ) {
-        const { product } = await this.show(empresa, id, true);
+        const { product } = await this.show(empresa, id, isService, true);
 
         const [byName, bySlug] = await Promise.all([
-            Product(empresa).findOne({
+            Product(empresa, isService).findOne({
                 where: {
                     name: productsUpdateDto.name,
                     id: { [Op.not]: id },
@@ -487,7 +504,7 @@ export class ProductsApiService {
                 },
                 raw: true,
             }),
-            Product(empresa).findOne({
+            Product(empresa, isService).findOne({
                 where: {
                     slug: productsUpdateDto.slug,
                     id: { [Op.not]: id },
@@ -594,8 +611,8 @@ export class ProductsApiService {
         };
     }
 
-    async destroy(empresa: Empresas, id: string) {
-        const { product } = await this.show(empresa, id, true);
+    async destroy(empresa: Empresas, id: string, isService: boolean) {
+        const { product } = await this.show(empresa, id, isService, true);
         await product.destroy();
         if (product.images) {
             removeFile(empresa.slug, product.images);
@@ -605,8 +622,18 @@ export class ProductsApiService {
             message: `El producto con el id: ${id} fue eliminado`,
         };
     }
-    async variant(empresa: Empresas, product_id: string, variant_id: string) {
-        const { product } = await this.show(empresa, product_id, false);
+    async variant(
+        empresa: Empresas,
+        product_id: string,
+        variant_id: string,
+        isService: boolean
+    ) {
+        const { product } = await this.show(
+            empresa,
+            product_id,
+            isService,
+            false
+        );
         const variant = await (product as ProductsNormal).$get("variants", {
             where: {
                 id: variant_id,
@@ -622,9 +649,15 @@ export class ProductsApiService {
         empresa: Empresas,
         product_id: string,
         variant_id: string,
-        variantsUpdateDto: VariantsUpdateDto
+        variantsUpdateDto: VariantsUpdateDto,
+        isService: boolean
     ) {
-        const { variant } = await this.variant(empresa, product_id, variant_id);
+        const { variant } = await this.variant(
+            empresa,
+            product_id,
+            variant_id,
+            isService
+        );
         if (variantsUpdateDto.sku) {
             const existSku = await Variants.findOne({
                 where: {
@@ -649,9 +682,15 @@ export class ProductsApiService {
     async varianDelete(
         empresa: Empresas,
         product_id: string,
-        variant_id: string
+        variant_id: string,
+        isService: boolean
     ) {
-        const { variant } = await this.variant(empresa, product_id, variant_id);
+        const { variant } = await this.variant(
+            empresa,
+            product_id,
+            variant_id,
+            isService
+        );
         await variant.destroy();
         return {
             success: true,

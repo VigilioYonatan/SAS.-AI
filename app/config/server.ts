@@ -274,16 +274,27 @@ export class Server {
                 // no permitido para endpoints y que no sea el subdominio client
                 if (!req.path.includes("api")) {
                     // LAYOUT
-                    const [categories] = await Promise.all([
+                    const [categories, categoriesService] = await Promise.all([
                         Categories.findAll({
                             where: {
                                 empresa_id: empresa.id,
+                                isService: false,
+                            },
+                        }),
+                        Categories.findAll({
+                            where: {
+                                empresa_id: empresa.id,
+                                isService: true,
                             },
                         }),
                     ]);
                     const categoriasTotal = await Promise.all(
                         categories.map(async (category) => {
-                            const product = await Product(empresa).findOne({
+                            // productnormal
+                            const product = await Product(
+                                empresa,
+                                false
+                            ).findOne({
                                 order: [["createdAt", "DESC"]],
                                 where: {
                                     enabled: true,
@@ -294,6 +305,18 @@ export class Server {
                             return {
                                 ...category.toJSON(),
                                 productNew: product,
+                            };
+                        })
+                    );
+                    const categoriesServiceTotal = await Promise.all(
+                        categoriesService.map(async (category) => {
+                            // productsServicios
+                            const products = await category.$get(
+                                "productsServicios"
+                            );
+                            return {
+                                ...category.toJSON(),
+                                products,
                             };
                         })
                     );
@@ -310,8 +333,10 @@ export class Server {
                             "slug",
                         ],
                     });
+
                     res.locals.header = {
                         categories: categoriasTotal,
+                        categoriesServices: categoriesServiceTotal,
                         brands,
                     };
                 }

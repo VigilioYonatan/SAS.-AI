@@ -10,80 +10,88 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 AOS.init({
-	duration: 1200, // Duración de la animación
-	once: true, // Si quieres que la animación ocurra solo una vez
+    duration: 1200, // Duración de la animación
+    once: true, // Si quieres que la animación ocurra solo una vez
 });
 render(
-	"Initial",
-	lazy(() => import("@/Initial")),
+    "Initial",
+    lazy(() => import("@/Initial"))
 );
 render(
-	"App",
-	lazy(() => import("./App")),
+    "App",
+    lazy(() => import("./App"))
 );
 render(
-	"CategoriesPage",
-	lazy(() => import("@/web/views/shop/CategoriesPage")),
+    "CategoriesPage",
+    lazy(() => import("@/web/views/shop/CategoriesPage"))
 );
 render(
-	"ShopPage",
-	lazy(() => import("@/web/views/shop/ShopPage")),
+    "ShopPage",
+    lazy(() => import("@/web/views/shop/ShopPage"))
 );
 render(
-	"BrandPage",
-	lazy(() => import("@/web/views/shop/BrandPage")),
+    "BrandPage",
+    lazy(() => import("@/web/views/shop/BrandPage"))
 );
 render(
-	"PedidosPage",
-	lazy(() => import("@/web/views/pedidos/PedidosPage")),
+    "PedidosPage",
+    lazy(() => import("@/web/views/pedidos/PedidosPage"))
 );
 render(
-	"HomePage",
-	lazy(() => import("@/web/views/home/HomePage")),
+    "HomePage",
+    lazy(() => import("@/web/views/home/HomePage"))
 );
 render(
-	"AboutPage",
-	lazy(() => import("@/web/views/home/AboutPage")),
+    "AboutPage",
+    lazy(() => import("@/web/views/home/AboutPage"))
 );
 
 // auth
 render(
-	"LoginPage",
-	lazy(() => import("@/web/views/auth/LoginPage")),
+    "LoginPage",
+    lazy(() => import("@/web/views/auth/LoginPage"))
 ); // 404
 render(
-	"AuthForgotPassword",
-	lazy(() => import("@/web/views/auth/AuthForgotPassword")),
+    "AuthForgotPassword",
+    lazy(() => import("@/web/views/auth/AuthForgotPassword"))
 );
 render(
-	"ProductPage",
-	lazy(() => import("@/web/views/product/ProductPage")),
+    "ProductPage",
+    lazy(() => import("@/web/views/product/ProductPage"))
+);
+render(
+    "ServicioPage",
+    lazy(() => import("@/web/views/servicio/ServicioPage"))
 );
 // cart
 render(
-	"CartPage",
-	lazy(() => import("@/web/views/cart/CartPage")),
+    "CartPage",
+    lazy(() => import("@/web/views/cart/CartPage"))
 );
 render(
-	"PageError",
-	lazy(() => import("@/web/views/PageError")),
+    "CartServicioPage",
+    lazy(() => import("@/web/views/cart/CartServicioPage"))
+);
+render(
+    "PageError",
+    lazy(() => import("@/web/views/PageError"))
 ); // politica
 render(
-	"PrivacidadPage",
-	lazy(() => import("@/web/views/politica/PrivacidadPage")),
+    "PrivacidadPage",
+    lazy(() => import("@/web/views/politica/PrivacidadPage"))
 );
 render(
-	"ReclamacionesPage",
-	lazy(() => import("@/web/views/politica/ReclamacionesPage")),
+    "ReclamacionesPage",
+    lazy(() => import("@/web/views/politica/ReclamacionesPage"))
 );
 render(
-	"TerminosPage",
-	lazy(() => import("@/web/views/politica/TerminosPage")),
+    "TerminosPage",
+    lazy(() => import("@/web/views/politica/TerminosPage"))
 );
 // ************** NO BORRAR ***************
 // biome-ignore lint/suspicious/noConsoleLog: <explanation>
 console.log(
-	"%cVIGILIO SERVICES",
-	"font-family:monospace;font-size:34px;color:#fff;text-shadow:2px 2px 4px #000000;font-weight:2rem",
-	enviroments.VITE_VIGILIO_WEB,
+    "%cVIGILIO SERVICES",
+    "font-family:monospace;font-size:34px;color:#fff;text-shadow:2px 2px 4px #000000;font-weight:2rem",
+    enviroments.VITE_VIGILIO_WEB
 );

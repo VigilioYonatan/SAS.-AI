@@ -281,7 +281,8 @@ export class EmpresasApiService {
                     },
                     about: "",
                     bg_color: "rgb(28,141,227)",
-                    bg_color_responsive: "#1F2025",
+                    bg_color_responsive: "#000",
+                    color_text: "#fff",
                     type_border: "circle",
                     type_cart: "fas fa-shopping-cart",
                     icon: null,
@@ -302,6 +303,13 @@ export class EmpresasApiService {
                     position_header: true,
                     border_title_type: "normal",
                     type_icons: "normal",
+                    shows: {
+                        about: true,
+                        brands: true,
+                        cards: true,
+                        map: true,
+                        android: true,
+                    },
                 } as Omit<SettingsSchema, "id" | "empresa_id">),
                 await empresa.$create("citasSetting", {
                     max_days: 14,

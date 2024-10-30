@@ -120,7 +120,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 ),
                 to: "/categorias",
             },
-            empresaStore.state?.tipo_empresa.tipo_servicio_id === 1
+            empresaStore.state?.tipo_empresa.tipo_servicio_id !== 2
                 ? {
                       title: (
                           <span>
@@ -130,15 +130,16 @@ function AdminLayout({ children }: AdminLayoutProps) {
                       to: "/marcas",
                   }
                 : null,
-
-            {
-                title: (
-                    <span>
-                        <i class="fas fa-ticket" /> Cupones
-                    </span>
-                ),
-                to: "/cupones",
-            },
+            [1, 2].includes(empresaStore.state!.tipo_empresa.tipo_servicio_id)
+                ? {
+                      title: (
+                          <span>
+                              <i class="fas fa-ticket" /> Cupones
+                          </span>
+                      ),
+                      to: "/cupones",
+                  }
+                : null,
         ].filter(Boolean);
     }
 
@@ -264,6 +265,26 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                 to="/servicios"
                                 title="Servicios"
                                 Icon={<i class="fa-regular fa-handshake" />}
+                                uris={[
+                                    {
+                                        title: (
+                                            <span>
+                                                <i class="fa-regular fa-handshake" />{" "}
+                                                Servicios
+                                            </span>
+                                        ),
+                                        to: "/servicios",
+                                    },
+                                    {
+                                        title: (
+                                            <span>
+                                                <i class="far fa-boxes" />{" "}
+                                                Categorias
+                                            </span>
+                                        ),
+                                        to: "/categorias_servicios",
+                                    },
+                                ]}
                             />
                         ) : null}
                         <NavLink
@@ -282,6 +303,14 @@ function AdminLayout({ children }: AdminLayoutProps) {
                             }
                             uris={pathProducts()}
                         />
+                        {storageEmpresa?.tipo_empresa.tipo_servicio_id === 3 ? (
+                            <NavLink
+                                onClick={onCloseAside}
+                                to="/cupones"
+                                title="Cupones"
+                                Icon={<i class="fas fa-ticket" />}
+                            />
+                        ) : null}
 
                         <NavLink
                             onClick={onCloseAside}
@@ -330,11 +359,11 @@ function AdminLayout({ children }: AdminLayoutProps) {
                             <NavLink
                                 onClick={onCloseAside}
                                 to="/meeting"
-                                title="Citas/Meetings"
+                                title="Citas/Meetings A.I"
                                 Icon={<i class="fas fa-handshake-alt" />}
                             />
                             {storageEmpresa!.citas[NOW().get("date")] > 0 ? (
-                                <div class="w-[20px] h-[20px] bg-danger rounded-full flex justify-center items-center absolute right-0 md:right-[30%] top-1 md:top-3 text-white font-bold text-xs">
+                                <div class="w-[20px] h-[20px] bg-danger rounded-full flex justify-center items-center absolute right-0 md:right-[10%] top-1 md:top-3 text-white font-bold text-xs">
                                     {storageEmpresa?.citas[NOW().get("date")]}
                                 </div>
                             ) : null}

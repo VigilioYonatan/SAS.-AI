@@ -76,7 +76,7 @@ function CategoriesSection({ categories }: categoriesSectionProps) {
 									class="w-full h-full object-cover group-hover:scale-110 delay-custom-1"
 									width={300}
 									height={300}
-									src={printFileWithDimension(category.image, 500)[0]}
+									src={printFileWithDimension(category.image, 800)[0]}
 									alt={category.name}
 								/>
 							) : null}

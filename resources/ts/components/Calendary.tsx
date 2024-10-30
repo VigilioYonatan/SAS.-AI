@@ -105,7 +105,7 @@ function Calendar({
                     <button
                         type="button"
                         aria-label="change month"
-                        className=" dark:text-white text-xs border border-primary font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline bg-primary"
+                        className=" text-white text-xs border border-primary font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline bg-primary"
                         onClick={previousMonth}
                     >
                         <i class="fa-solid fa-caret-left " />{" "}
@@ -113,7 +113,7 @@ function Calendar({
                     </button>
                 ) : null}
                 {showTitle ? (
-                    <span className="text-lg font-bold dark:text-white  ">
+                    <span className="text-lg font-bold dark:text-white   text-center">
                         {months[date.getMonth()]} {date.getFullYear()}
                     </span>
                 ) : null}
@@ -121,7 +121,7 @@ function Calendar({
                     <button
                         type="button"
                         aria-label="change month"
-                        className=" dark:text-white text-xs border border-primary font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline  bg-primary"
+                        className=" text-white text-xs border border-primary font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline  bg-primary"
                         onClick={nextMonth}
                     >
                         {months[date.getMonth() + 1]}{" "}
@@ -158,7 +158,7 @@ function Calendar({
                                             className={`border px-4 relative py-2 text-center hover:bg-primary hover:text-white ${
                                                 isToday &&
                                                 day === new Date().getDate()
-                                                    ? "bg-primary"
+                                                    ? "bg-primary text-white"
                                                     : ""
                                             }`}
                                             onClick={() => {

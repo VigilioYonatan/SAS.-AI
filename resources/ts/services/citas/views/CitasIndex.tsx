@@ -102,7 +102,7 @@ function CitasIndex() {
                     </div>
                     <br />
                     <div class="flex gap-4">
-                        <span class="text-lg dark:text-white font-bold my-2 block">
+                        <span class="text-lg dark:text-white font-bold my-2 block ">
                             {dayjs(NOW()).isSame(dayjs(today.value), "day")
                                 ? "HOY"
                                 : dayjs(today.value).format(

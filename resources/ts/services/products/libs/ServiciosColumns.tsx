@@ -5,30 +5,58 @@ import { printImagesProduct } from "./helpers";
 import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
 import useAuthstore from "@/auth/stores/auth.store";
 import useEmpresastore from "@/empresas/stores/empresa.store";
-import ProductsUpdate from "../views/ProductsNormalUpdate";
 import { ProductsServicioSchemaFromServer } from "../schemas/products_servicio.schema";
+import { getPeriodDescription } from "~/libs/helpers";
+import ProductsServicioUpdate from "../views/ProductsServicioUpdate";
 
 export type ProductsIndexSecondaryPaginator =
     | "acciones"
     | "index"
     | "cart"
-    | "rating";
+    | "rating"
+    | "servicio";
 
 const serviciosColumns: Columns<
     ProductsServicioSchemaFromServer,
     ProductsIndexSecondaryPaginator
 > = [
-    { key: "id", isSort: true },
+    { key: "id", isSort: true, cell: (_, i) => i + 1 },
     {
         key: "product_code",
         header: "código",
         isSort: "id",
     },
-    { key: "days", header: "Días", cell: (props) => props.days },
+    {
+        key: "servicio",
+        header: "Servicio",
+        cell: (props) => (
+            <div>
+                {props.days.length ? (
+                    <div class="grid grid-cols-2 gap-1 justify-center">
+                        {props.days.map((day) => {
+                            return (
+                                <span
+                                    key={day}
+                                    class="text-xs bg-primary rounded-md text-white font-semibold"
+                                >
+                                    {getPeriodDescription(day.days)}
+                                </span>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <>
+                        <span>
+                            <i class="fas fa-handshake-alt" />
+                        </span>
+                    </>
+                )}
+            </div>
+        ),
+    },
     {
         key: "name",
         header: "nombre",
-        cell: (props) => `${props.name.slice(0, 35)}...`,
         isSort: true,
     },
 
@@ -115,10 +143,7 @@ const serviciosColumns: Columns<
             function onProductsUpdate() {
                 sweetModal({
                     html: reactComponent(
-                        <ProductsUpdate
-                            id={props.id}
-                            refetch={methods.refetch}
-                        />
+                        <ProductsServicioUpdate id={props.id} />
                     ),
                     sweetWidth: "800px",
                     showCloseButton: true,

@@ -20,31 +20,32 @@ import type { VariantsSchema } from "../schemas/options/variants.schema";
 export const productsImagesQualities = [100, 500];
 
 //  categories
-export const categoriesImageQualities = [100, 500];
+export const categoriesImageQualities = [100, 800];
 export const brandsImageQualities = [100, 500];
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function Product(empresa: Empresas): any {
+export function Product(empresa: Empresas, isService: boolean): any {
     const pr = {
         1: ProductsNormal,
         2: ProductsRestaurant,
-        3: ProductsServicio,
+        3: isService ? ProductsServicio : ProductsNormal,
     };
+
     return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
 }
-export function ProductKeys(empresa: Empresas) {
+export function ProductKeys(empresa: Empresas, isService: boolean) {
     const pr = {
         1: "ProductsNormals",
         2: "ProductsRestaurants",
-        3: "ProductsServicios",
+        3: isService ? "ProductsServicios" : "ProductsNormals",
     };
     return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
 }
-export function productEntityId(empresa: Empresas) {
+export function productEntityId(empresa: Empresas, isService: boolean) {
     const pr = {
         1: "product_normal_id",
         2: "product_restaurant_id",
-        3: "product_servicio_id",
+        3: isService ? "product_servicio_id" : "product_normal_id",
     };
     return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
 }
@@ -74,7 +75,7 @@ export async function getProductAll(
     empresa: Empresas,
     product: ProductsNormal | ProductsServicio | ProductsRestaurant
 ) {
-    if (empresa.tipo_empresa.tipo_servicio_id === 1) {
+    if (product instanceof ProductsNormal) {
         const [options, variants] = await Promise.all([
             (product as ProductsNormal).$get("options") as Promise<
                 (Options & {

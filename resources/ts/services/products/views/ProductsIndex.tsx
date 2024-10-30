@@ -23,12 +23,13 @@ function ProductsIndex() {
         category: null,
     });
 
-    const categoriesIndexQuery = categoriesIndexApi();
+    const categoriesIndexQuery = categoriesIndexApi(false);
 
     const table = useTable({
         columns: productsColumns,
     });
-    const query = productsPaginatorApi(table, filters);
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const query = productsPaginatorApi(table as any, filters, false);
 
     function handleOpenProduct(product: ProductsNormalSchemaFromServer) {
         return sweetModal((onClose) => ({
@@ -37,6 +38,7 @@ function ProductsIndex() {
                     id={product.id}
                     refetch={query.refetch}
                     onClose={onClose}
+                    isService={false}
                 />
             ),
             showCloseButton: true,

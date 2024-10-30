@@ -26,6 +26,7 @@ import { VariantSchemaFromServer } from "../schemas/options/variants.schema";
 import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schema";
 import { ProductsRestaurantSchemaFromServer } from "../schemas/products_restaurant.schema";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import { ProductsServicioSchemaFromServer } from "../schemas/products_servicio.schema";
 
 const couponStore = object({
     coupon: nullable(string([toTrimmed(), minLength(6)])),
@@ -35,9 +36,11 @@ export type CouponStore = Input<typeof couponStore>;
 interface UseProductProps {
     product:
         | ProductsNormalSchemaFromServer
-        | ProductsRestaurantSchemaFromServer;
+        | ProductsRestaurantSchemaFromServer
+        | ProductsServicioSchemaFromServer;
+    isService: boolean;
 }
-function useProduct({ product }: UseProductProps) {
+function useProduct({ product, isService }: UseProductProps) {
     const authStore = useAuthStore();
     const cartStore = useCartStore();
     const zoom = useSignal(false);
@@ -62,28 +65,27 @@ function useProduct({ product }: UseProductProps) {
         zoom.value = false;
     }
     const variant = useSignal<VariantFeature[] | null>(
-        storageEmpresa?.tipo_empresa.tipo_servicio_id === 1
+        (product as ProductsNormalSchemaFromServer).variants
             ? (product as ProductsNormalSchemaFromServer).variants[0].features
             : null
     );
 
-    const varianteChoose: VariantSchemaFromServer | null =
-        storageEmpresa?.tipo_empresa.tipo_servicio_id === 1
-            ? ((product as ProductsNormalSchemaFromServer).variants.find(
-                  (vari) => {
-                      return deepEqual(
-                          vari.features.map((v) => ({
-                              id: v.id,
-                              option_id: v.option_id,
-                          })),
-                          variant.value!.map((v) => ({
-                              id: v.id,
-                              option_id: v.option_id,
-                          }))
-                      );
-                  }
-              )! as VariantSchemaFromServer)
-            : null;
+    const varianteChoose: VariantSchemaFromServer | null = (
+        product as ProductsNormalSchemaFromServer
+    ).variants
+        ? ((product as ProductsNormalSchemaFromServer).variants.find((vari) => {
+              return deepEqual(
+                  vari.features.map((v) => ({
+                      id: v.id,
+                      option_id: v.option_id,
+                  })),
+                  variant.value!.map((v) => ({
+                      id: v.id,
+                      option_id: v.option_id,
+                  }))
+              );
+          })! as VariantSchemaFromServer)
+        : null;
 
     const isProductNew = NOW().diff(dayjs(product.createdAt), "day") < 7;
 
@@ -128,25 +130,25 @@ function useProduct({ product }: UseProductProps) {
     const images500 = printImagesProduct(product.images, 500);
     const images100 = printImagesProduct(product.images, 100);
 
-    const images100Variant =
-        storageEmpresa?.tipo_empresa.tipo_servicio_id === 1
-            ? printImagesProduct(product.images, 100).filter((_, i) =>
-                  varianteChoose!.images.some((img) => img === i + 1)
-              )
-            : printImagesProduct(product.images, 100);
-    const images500Variant =
-        storageEmpresa?.tipo_empresa.tipo_servicio_id === 1
-            ? printImagesProduct(product.images, 500).filter((_, i) =>
-                  varianteChoose!.images.some((img) => img === i + 1)
-              )
-            : printImagesProduct(product.images, 500);
+    const images100Variant = (product as ProductsNormalSchemaFromServer)
+        .variants
+        ? printImagesProduct(product.images, 100).filter((_, i) =>
+              varianteChoose!.images.some((img) => img === i + 1)
+          )
+        : printImagesProduct(product.images, 100);
+    const images500Variant = (product as ProductsNormalSchemaFromServer)
+        .variants
+        ? printImagesProduct(product.images, 500).filter((_, i) =>
+              varianteChoose!.images.some((img) => img === i + 1)
+          )
+        : printImagesProduct(product.images, 500);
     const isImagesLength = images500Variant.length
         ? images500Variant
         : [NoImage()];
 
     function changeVariant(body: VariantFeature) {
         onResetCart();
-        if (storageEmpresa?.tipo_empresa.tipo_servicio_id !== 1) return;
+        if ((product as ProductsNormalSchemaFromServer).variants) return;
         variant.value = variant.value!.map((variant) =>
             variant.option_id === body.option_id
                 ? {
@@ -162,7 +164,7 @@ function useProduct({ product }: UseProductProps) {
         resolver: valibotVigilio(couponStore),
     });
     const coupon = couponForm.watch("coupon");
-    const productCouponMutation = productCouponApi();
+    const productCouponMutation = productCouponApi(isService);
     function onCoupon(data: CouponStore) {
         const coupon = data.coupon;
         if (discount.value) {
@@ -197,7 +199,7 @@ function useProduct({ product }: UseProductProps) {
 
     async function handleInsertProduct(isOpenModal = true) {
         if (!producto.value.enabled) return;
-        if (storageEmpresa?.tipo_empresa.tipo_servicio_id === 1) {
+        if ((product as ProductsNormalSchemaFromServer).variants) {
             if (!varianteChoose!.ilimit && varianteChoose!.stock! < 1) {
                 return;
             }
@@ -292,6 +294,7 @@ function useProduct({ product }: UseProductProps) {
         isImagesLength,
         changeVariant,
         onIncrementCart,
+        coupon,
         onDecrementCart,
         images100Variant,
         images100,

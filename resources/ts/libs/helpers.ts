@@ -187,4 +187,42 @@ export async function onPageImage<T extends object>(
         });
     }
 }
+
+export function getPeriodDescription(dias: number) {
+    if (dias === 1) {
+        return "1 día";
+    }
+    if (dias === 7) {
+        return "1 semana";
+    }
+    if (dias === 30) {
+        return "1 mes";
+    }
+    if (dias === 365) {
+        return "1 año";
+    }
+    if (dias % 365 === 0) {
+        return `${dias / 365} años`;
+    }
+    if (dias % 30 === 0) {
+        return `${dias / 30} meses`;
+    }
+    if (dias % 7 === 0) {
+        return `${dias / 7} semanas`;
+    }
+    if (dias < 7) {
+        return `${dias} días`;
+    }
+    const semanas = Math.floor(dias / 7);
+    const diasRestantes = dias % 7;
+    return `${semanas} semanas ${diasRestantes} días`;
+}
+export function isColorLight(hex: string) {
+    const hex2 = hex.replace("#", "");
+    const r = Number.parseInt(hex2.substring(0, 2), 16);
+    const g = Number.parseInt(hex2.substring(2, 4), 16);
+    const b = Number.parseInt(hex2.substring(4, 6), 16);
+    const luminosity = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    return luminosity > 128;
+}
 export default dayjs;

@@ -54,7 +54,7 @@ function ProductsNormalUpdate({
         window.history.back();
         return null;
     }
-    const productQuery = productsShowApi(id as string);
+    const productQuery = productsShowApi(id as string, false);
     const optionsFeaturesQuery = optionsFeaturesApi();
     const optionsFeaturesData = useMemo(() => {
         if (optionsFeaturesQuery.isSuccess && optionsFeaturesQuery.data) {
@@ -103,7 +103,7 @@ function ProductsNormalUpdate({
         const discount = formProductsNormalUpdate.watch("discount");
         const price = formProductsNormalUpdate.watch("price");
         const brandsIndexQuery = brandsIndexApi();
-        const categoriesIndexQuery = categoriesIndexApi();
+        const categoriesIndexQuery = categoriesIndexApi(false);
 
         const categoriesSelect = useMemo(() => {
             if (categoriesIndexQuery.isSuccess && categoriesIndexQuery.data) {

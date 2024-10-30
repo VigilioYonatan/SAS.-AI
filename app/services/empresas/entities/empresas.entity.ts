@@ -24,7 +24,6 @@ import type {
 import { Address } from "./address.entity";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
-import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { Coupons } from "@/products/entities/coupons.entity";
 import { Users } from "@/users/entities/users.entity";
 import { ProductsOptions } from "@/products/entities/options/products_options.entity";
@@ -385,9 +384,6 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
     @HasMany(() => ProductsRestaurant)
     products_restaurant: ProductsRestaurant[];
-
-    @HasMany(() => ProductsServicio)
-    products_servicio: ProductsServicio[];
 
     @HasMany(() => Coupons)
     coupons: unknown[];

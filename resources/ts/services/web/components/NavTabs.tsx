@@ -3,83 +3,103 @@ import useCartStore from "@/cart/stores/cart.store";
 import useEmpresastore from "@/empresas/stores/empresa.store";
 import { printFileUser } from "@/users/libs/helpers";
 import enviroments from "~/config";
-import { isActive } from "~/libs/helpers";
+import { isActive, isColorLight } from "~/libs/helpers";
 
-function NavTabs() {
-	const cartStore = useCartStore();
-	const empresaStore = useEmpresastore();
-	const authStore = useAuthStore();
-	return (
-		<div
-			style={{
-				background: empresaStore.state!.setting.bg_color_responsive,
-			}}
-			class={
-				"fixed   z-[99] bottom-0 left-0 right-0 w-full  lg:hidden shadow-lg"
-			}
-		>
-			<div class="  w-full grid grid-cols-4">
-				<a
-					class={`text-gray-200  py-4 flex flex-col justify-center items-center gap-1 ${
-						isActive("/", false) ? "bg-black bg-opacity-40" : ""
-					} hover:bg-black hover:bg-opacity-40 delay-custom-1`}
-					href="/"
-				>
-					<i class="fas fa-home" />
-					<span class="text-xs font-semibold">Inicio</span>
-				</a>
-				<a
-					class={`text-gray-200  py-4 flex flex-col justify-center items-center gap-1 ${
-						isActive("/shop") ? "bg-black bg-opacity-40" : ""
-					}  hover:bg-black hover:bg-opacity-40 delay-custom-1`}
-					href={"/shop"}
-				>
-					<i class="fas fa-store" />
-					<span class="text-xs font-semibold">Tienda</span>
-				</a>
-				<a
-					class={`text-gray-200  py-4 flex flex-col justify-center items-center gap-1 ${
-						isActive("/cart") ? "bg-black bg-opacity-40" : ""
-					} hover:bg-black hover:bg-opacity-40 delay-custom-1`}
-					href={"/cart"}
-				>
-					<i class={`${enviroments.TYPE_CART} relative`}>
-						{cartStore.computed.showCartLength ? (
-							<span class="absolute text-primary bg-white  -top-3 w-[20px] h-[20px] flex justify-center items-center rounded-full font-bold text-xs -right-4">
-								{cartStore.computed.showCartLength}
-							</span>
-						) : null}
-					</i>
-					<span class="text-xs font-semibold">Carrito</span>
-				</a>
-				<a
-					class={`text-gray-200  py-4 flex flex-col justify-center items-center gap-1 ${
-						isActive("/auth") ? "bg-black bg-opacity-40" : ""
-					} hover:bg-black hover:bg-opacity-40 delay-custom-1`}
-					href={"/admin/perfil"}
-				>
-					{authStore.state ? (
-						<>
-							{" "}
-							<img
-								src={printFileUser(authStore.state.photo, 100)[0]}
-								width={100}
-								height={100}
-								class="rounded-full w-[35px] h-[35px]"
-								alt={authStore.state.name}
-							/>
-						</>
-					) : (
-						<>
-							{" "}
-							<i class="fas fa-user" />
-							<span class="text-xs font-semibold">Mi Perfil</span>
-						</>
-					)}
-				</a>
-			</div>
-		</div>
-	);
+interface NavTabsProps {
+    background?: string;
+}
+function NavTabs({ background }: NavTabsProps) {
+    const cartStore = useCartStore();
+    const empresaStore = useEmpresastore();
+    const authStore = useAuthStore();
+
+    const bg = background
+        ? background
+        : empresaStore.state!.setting.bg_color_responsive;
+
+    return (
+        <div
+            style={{
+                background: bg,
+                color: isColorLight(bg) ? "#000000" : "#FFFFFF",
+                position: background ? "relative" : "fixed",
+            }}
+            class={
+                " z-[99] bottom-0 left-0 right-0 w-full  lg:hidden shadow-lg"
+            }
+        >
+            <div class="  w-full grid grid-cols-4">
+                <a
+                    class={`  py-4 flex flex-col justify-center items-center gap-1 ${
+                        isActive("/", false)
+                            ? "bg-primary bg-opacity-40 text-white"
+                            : ""
+                    } hover:bg-primary hover:bg-opacity-40 hover:text-white delay-custom-1`}
+                    href="/"
+                >
+                    <i class="fas fa-home" />
+                    <span class="text-xs font-semibold">Inicio</span>
+                </a>
+                <a
+                    class={`  py-4 flex flex-col justify-center items-center gap-1 ${
+                        isActive("/shop")
+                            ? "bg-primary bg-opacity-40 text-white"
+                            : ""
+                    }  hover:bg-primary hover:bg-opacity-40 hover:text-white delay-custom-1`}
+                    href={"/shop"}
+                >
+                    <i class="fas fa-store" />
+                    <span class="text-xs font-semibold">Tienda</span>
+                </a>
+                <a
+                    class={`  py-4 flex flex-col justify-center items-center gap-1 ${
+                        isActive("/cart")
+                            ? "bg-primary bg-opacity-40 text-white"
+                            : ""
+                    } hover:bg-primary hover:text-white hover:bg-opacity-40 delay-custom-1`}
+                    href={"/cart"}
+                >
+                    <i class={`${enviroments.TYPE_CART} relative`}>
+                        {cartStore.computed.showCartLength ? (
+                            <span class="absolute text-white bg-primary  -top-3 w-[20px] h-[20px] flex justify-center items-center rounded-full font-bold text-xs -right-4">
+                                {cartStore.computed.showCartLength}
+                            </span>
+                        ) : null}
+                    </i>
+                    <span class="text-xs font-semibold">Carrito</span>
+                </a>
+                <a
+                    class={`  py-4 flex flex-col justify-center items-center gap-1 ${
+                        isActive("/auth")
+                            ? "bg-primary bg-opacity-40 text-white"
+                            : ""
+                    } hover:bg-primary hover:text-white hover:bg-opacity-40 delay-custom-1`}
+                    href={"/admin/perfil"}
+                >
+                    {authStore.state ? (
+                        <>
+                            {" "}
+                            <img
+                                src={
+                                    printFileUser(authStore.state.photo, 100)[0]
+                                }
+                                width={100}
+                                height={100}
+                                class="rounded-full w-[35px] h-[35px]"
+                                alt={authStore.state.name}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            {" "}
+                            <i class="fas fa-user" />
+                            <span class="text-xs font-semibold">Mi Perfil</span>
+                        </>
+                    )}
+                </a>
+            </div>
+        </div>
+    );
 }
 
 export default NavTabs;

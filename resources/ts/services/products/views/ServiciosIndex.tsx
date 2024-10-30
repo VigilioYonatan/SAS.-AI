@@ -6,14 +6,12 @@ import VigilioTable from "~/components/table";
 import { useEffect } from "preact/hooks";
 import { productsPaginatorApi } from "@/common/paginator/products.paginator.api";
 import { useSignal } from "@preact/signals";
-import { Link } from "wouter-preact";
 import { sweetModal } from "@vigilio/sweet";
 import { useTable } from "@vigilio/preact-table";
 import { reactComponent } from "~/libs/preact";
 import ProductsServicioStore from "./ProductsServicioStore";
 import { ProductsServicioSchemaFromServer } from "../schemas/products_servicio.schema";
 import { categoriesIndexApi } from "../apis/categories/categories.index.api";
-import CategoriesStore from "./CategoriesStore";
 import serviciosColumns from "../libs/ServiciosColumns";
 
 function ServiciosIndex() {
@@ -24,12 +22,13 @@ function ServiciosIndex() {
         category: null,
     });
 
-    const categoriesIndexQuery = categoriesIndexApi();
+    const categoriesIndexQuery = categoriesIndexApi(true);
 
     const table = useTable({
         columns: serviciosColumns,
     });
-    const query = productsPaginatorApi(table, filters);
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const query = productsPaginatorApi(table as any, filters, true);
 
     function handleOpenProduct(product: ProductsServicioSchemaFromServer) {
         return sweetModal((onClose) => ({
@@ -38,6 +37,7 @@ function ServiciosIndex() {
                     id={product.id}
                     refetch={query.refetch}
                     onClose={onClose}
+                    isService
                 />
             ),
             showCloseButton: true,
@@ -75,17 +75,7 @@ function ServiciosIndex() {
     function onChangeFilter(props: Partial<Record<FiltersKey, string | null>>) {
         filters.value = { ...filters.value, ...props };
     }
-    function onCategoriesStore() {
-        sweetModal((onClose) => ({
-            html: reactComponent(
-                <CategoriesStore onClose={onClose} refetch={query.refetch} />
-            ),
-            sweetWidth: "600px",
-            showCloseButton: true,
-            position: "start",
-            isCloseInBackground: false,
-        }));
-    }
+
     return (
         <Container className="p-2">
             <div className="flex flex-col gap-4 mx-1">
@@ -101,23 +91,7 @@ function ServiciosIndex() {
                             >
                                 <i class="fa-regular fa-handshake" /> Agregar
                             </button>
-                            <button
-                                type="button"
-                                class="bg-primary px-6 py-2 text-xs font-bold self-start rounded-md text-white"
-                                aria-label="button to open to create products"
-                                onClick={onCategoriesStore}
-                            >
-                                <i class="fa-solid fa-layer-group" /> Agregar
-                                Categoría
-                            </button>
                         </div>
-
-                        <Link
-                            class="bg-blue-600 px-2 py-2  text-white rounded-md font-bold text-xs uppercase shadow"
-                            href="/cupones"
-                        >
-                            <i class="fa-solid fa-ticket" /> Cupones
-                        </Link>
                     </div>
                 ) : null}
             </div>

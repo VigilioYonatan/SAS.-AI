@@ -4,7 +4,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useEffect, useMemo } from "preact/hooks";
 import { formatMoney, subtotal as subtotalCart } from "@/cart/libs/helpers";
 import { valibotVigilio } from "~/libs/valibot";
-import { handlerError } from "~/libs/helpers";
+import { getPeriodDescription, handlerError } from "~/libs/helpers";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import AlertInfo from "~/components/Alerts/AlertInfo";
 import { imageBackgroundIA } from "~/config/settings";
@@ -51,12 +51,13 @@ function ProductsServicioStore({
             enabled: true,
             empresa_id: empresa.state!.id,
             url: null,
+            days: [],
         },
     });
     const isImageLoading = useSignal(false);
 
     const productsServicioStoreMutation = productsServicioStoreApi();
-    const categoriesIndexQuery = categoriesIndexApi();
+    const categoriesIndexQuery = categoriesIndexApi(true);
 
     const categoriesSelect = useMemo(() => {
         if (categoriesIndexQuery.isSuccess && categoriesIndexQuery.data) {
@@ -133,7 +134,28 @@ function ProductsServicioStore({
         control: productsServicioStoreDtoForm.control,
         name: "characteristics",
     });
+    const error = useSignal<string | null>(null);
+    const dayjsArry = useFieldArray({
+        control: productsServicioStoreDtoForm.control,
+        name: "days",
+    });
     function onProductStore(body: ProductsServicioStoreDto) {
+        if (!body.showHorario && !body.days.length) {
+            error.value =
+                "Debes agregar un suscripción o habilitar 'mostrar horario' depende del servicio.";
+            return;
+        }
+        const existHorario = body.days.some(
+            (item, index) =>
+                body.days.findIndex((i) => i.days === item.days) !== index
+        );
+        if (existHorario) {
+            error.value = "Se repitieron los dias en el campo suscripción";
+            return;
+        }
+
+        error.value = null;
+
         sweetModal({
             icon: "info",
             title: "¿Estas seguro de agregar este servicio?",
@@ -166,6 +188,7 @@ function ProductsServicioStore({
                 <CategoriesStore
                     onClose={onClose}
                     refetch={categoriesIndexQuery.refetch}
+                    isService={true}
                 />
             ),
             sweetWidth: "700px",
@@ -246,7 +269,7 @@ function ProductsServicioStore({
                                 type="number"
                                 title="Descuento"
                                 placeholder="0%"
-                                step={0.01}
+                                step={0.1}
                                 options={{
                                     value: 0 as unknown as undefined,
                                     setValueAs(value) {
@@ -293,21 +316,6 @@ function ProductsServicioStore({
                             title="Disponibilidad"
                             question="Cuando está habilitado los clientes podrán comprar el producto."
                         />
-                        <Form.control
-                            name={"days" as keyof ProductsServicioStoreDto}
-                            type="number"
-                            title="Dias"
-                            placeholder="30"
-                            options={{ setValueAs: Number }}
-                            question={
-                                <div class="w-[120px]">
-                                    Días de este servicio <br />
-                                    30 dias = 1 mes <br /> 7 dias = 1 semana
-                                    <br />
-                                    365 dias = 1 año ...etc
-                                </div>
-                            }
-                        />
 
                         <div class="flex gap-2 items-center w-full">
                             <Form.control.select
@@ -334,6 +342,143 @@ function ProductsServicioStore({
                             </button>
                         </div>
                     </div>
+
+                    <div class="flex flex-col gap-2">
+                        <span class="text-xs dark:text-white font-semibold">
+                            Suscripciones <br /> (Este campo es necesario si
+                            ofreces servicios de SUSCRIPCIONES y MENSUALIDADES)
+                            <br />
+                            Cuando tu cliente realize el pago verá las
+                            suscripciones de dias disponibles de este servicio.
+                            <br />
+                            Por ejemplo: Mensual, Semestral, Anual
+                        </span>
+                        <div>
+                            {dayjsArry.fields.map((field, i) => (
+                                <div
+                                    key={field}
+                                    class="flex gap-2 items-center"
+                                >
+                                    <Form.control
+                                        title="Días"
+                                        type="number"
+                                        placeholder={"7"}
+                                        name={`days.${i}.days`}
+                                        options={{ setValueAs: Number }}
+                                        question={
+                                            <span class="block w-[100px]">
+                                                <br />
+                                                7 días: 1 semana
+                                                <br />
+                                                30 días: 30 dias
+                                                <br />
+                                                365 días: 1 año
+                                                <br />
+                                                etc
+                                            </span>
+                                        }
+                                    />
+                                    <Form.control
+                                        title="Cantidad"
+                                        type="number"
+                                        placeholder={"1"}
+                                        name={`days.${i}.cantidad`}
+                                        options={{ setValueAs: Number }}
+                                    />
+                                    <Form.control
+                                        title="Nombre"
+                                        placeholder={"Mensual"}
+                                        name={`days.${i}.name`}
+                                    />
+
+                                    <span class="text-xs dark:text-white text-center flex flex-col">
+                                        <span>
+                                            {getPeriodDescription(
+                                                productsServicioStoreDtoForm.watch(
+                                                    `days.${i}.days`
+                                                )
+                                            )}
+                                        </span>
+                                        <span>
+                                            {empresa.state!.enabled_igv
+                                                ? formatMoney(
+                                                      subtotalCart(
+                                                          subtotal,
+                                                          empresa.state!.igv,
+                                                          true
+                                                      ) *
+                                                          productsServicioStoreDtoForm.watch(
+                                                              `days.${i}.cantidad`
+                                                          )
+                                                  )
+                                                : formatMoney(
+                                                      subtotal *
+                                                          productsServicioStoreDtoForm.watch(
+                                                              `days.${i}.cantidad`
+                                                          )
+                                                  )}
+                                        </span>
+                                    </span>
+                                    <button
+                                        type="button"
+                                        class="bg-danger mt-3 px-4 py-2  text-white rounded-md "
+                                        onClick={() => {
+                                            dayjsArry.remove(i);
+                                        }}
+                                    >
+                                        <i class="fas fa-trash" />
+                                    </button>
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                class="bg-primary px-4 py-2  text-white rounded-md"
+                                onClick={() => {
+                                    dayjsArry.append({
+                                        days: 30,
+                                        cantidad: 1,
+                                        name: "Mensual",
+                                    });
+                                }}
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="flex flex-col">
+                        <span class="text-xs font-semibold dark:text-white">
+                            ¿Mostrar horario? <br /> (Este campo es necesario si
+                            ofreces servicios con horarios. <br /> Por ejemplo:
+                            barberías, peluquerias, Spas, consultas medicas,
+                            etc)
+                            <br />
+                        </span>
+                        <Form.control.toggle
+                            name={
+                                "showHorario" as keyof ProductsServicioStoreDto
+                            }
+                            title=""
+                            question={
+                                <div class="md:w-[100px]">
+                                    Cuando está habilitado, tus clientes podrán
+                                    escoger la fecha y hora en que requerirán tu
+                                    servicio al momento de realizar el pago.
+                                    <br />
+                                    Lo podrás ver en CITAS{" "}
+                                    <i class="fas fa-handshake-alt" />
+                                </div>
+                            }
+                        />
+                    </div>
+                    {error.value ? (
+                        <p class="text-sm text-danger font-bold">
+                            {error.value}
+                        </p>
+                    ) : (
+                        <></>
+                    )}
+
                     <Form.control.area
                         name={"description" as keyof ProductsServicioStoreDto}
                         title="Descripción"
