@@ -114,6 +114,8 @@ export async function initialWhatsapp() {
     });
 
     client.on("message", async (message) => {
+        console.log(message.body);
+        
         try {
             const chat = await message.getChat();
             async function getFile() {
