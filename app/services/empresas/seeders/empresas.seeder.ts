@@ -219,13 +219,13 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         // twilio: { account: "", token: "" },
         logo_pwa: null,
         name_empresa: "Tacos A",
-        dial_code: "52",
+        dial_code: "34",
         web: null,
         logo: null,
         enabledBotWeb: true,
         enable_sell_country: false,
         type_empresa_other: null,
-        tz: "America/Mexico_City",
+        tz: "Europe/Madrid",
         enabled_booster: true,
         email: "yonatanvigilio@vigilio-services.com",
         telephoneFirst: "959884398",
@@ -238,13 +238,13 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         instagram: null,
         impuestos: [18, 10],
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        timeWhatsapp: NOW({ tz: "America/Mexico_City" } as any)
+        timeWhatsapp: NOW({ tz: "Europe/Madrid" } as any)
             .add(5, "minutes")
             .toDate(),
         telephoneReclamos: null,
         telephoneThird: null,
         enabled_igv: true,
-        igv: 16,
+        igv: 21,
         credentials: {
             open_ai:
                 "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",

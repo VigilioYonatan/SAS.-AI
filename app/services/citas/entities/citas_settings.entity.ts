@@ -25,6 +25,11 @@ export class CitasSettings
         type: DataType.INTEGER,
     })
     max_minutes: number;
+    @Column({
+        allowNull: false,
+        type: DataType.INTEGER,
+    })
+    maxCitasForHour: number;
 
     @Column({
         allowNull: false,
@@ -49,6 +54,12 @@ export class CitasSettings
         type: DataType.BOOLEAN,
     })
     isNextDay: boolean;
+
+    @Column({
+        allowNull: false,
+        type: DataType.INTEGER,
+    })
+    sendAlert: number;
 
     @Column({
         type: DataType.STRING,

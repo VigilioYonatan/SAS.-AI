@@ -393,8 +393,9 @@ export class ProductsApiService {
 
         if (
             restarDays(
-                NOW(empresa).toDate(),
-                TimePeru(empresa, coupon.date).toDate()
+                empresa,
+                NOW(empresa).format(),
+                TimePeru(empresa, coupon.date).format()
             ) <= 0
         )
             throw new BadRequestException(

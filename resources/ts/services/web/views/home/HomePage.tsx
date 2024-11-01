@@ -64,7 +64,8 @@ function HomePage({
     getproductsbycategories,
     productsquantity,
     users,
-    brands,productservicesquantity
+    brands,
+    productservicesquantity,
 }: HomePageProps) {
     return (
         <>
@@ -72,11 +73,15 @@ function HomePage({
                 <Animations />
                 <Noticia noticia={noticia} />
                 <BackgroundSection backgrounds={backgrounds} />
+
                 <OfferSection
                     productlatestmapped={productlatestmapped}
                     productsoffert8mapped={productsoffert6mapped}
                 />
-                <AboutSection productservicesquantity={productservicesquantity} productsquantity={productsquantity} />
+                <AboutSection
+                    productservicesquantity={productservicesquantity}
+                    productsquantity={productsquantity}
+                />
                 <CategoriesSection categories={header.categories} />
                 <ProductsSectionRandom
                     productlatestmapped={productlatestmapped}

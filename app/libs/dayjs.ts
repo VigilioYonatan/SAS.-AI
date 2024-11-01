@@ -7,8 +7,8 @@ import utc from "dayjs/plugin/utc";
 export function NOW(empresa: Empresas) {
     dayjs.extend(timezone);
     dayjs.extend(utc);
-    dayjs.tz.setDefault(empresa!.tz);
-    return dayjs();
+    dayjs.tz.setDefault(empresa.tz);
+    return dayjs().tz(empresa.tz);
 }
 
 export function TimePeru(
@@ -18,7 +18,7 @@ export function TimePeru(
     dayjs.extend(timezone);
     dayjs.extend(utc);
     dayjs.tz.setDefault(empresa!.tz);
-    return dayjs(date);
+    return dayjs(date).tz(empresa.tz);
 }
 export function restarDays(
     empresa: Empresas,
@@ -29,7 +29,7 @@ export function restarDays(
     dayjs.extend(timezone);
     dayjs.extend(utc);
     dayjs.tz.setDefault(empresa!.tz);
-    return dayjs(back).diff(now, time);
+    return dayjs(back).tz(empresa.tz).diff(now, time);
 }
 export function formatDateTwo(
     empresa: Empresas,
@@ -39,7 +39,7 @@ export function formatDateTwo(
     dayjs.extend(timezone);
     dayjs.extend(utc);
     dayjs.tz.setDefault(empresa!.tz);
-    return dayjs(date).format(format);
+    return dayjs(date).tz(empresa.tz).format(format);
 } // verificar si esta dentro de esa fecha. pones la fecha
 export function isDateWithin(
     empresa: Empresas,
@@ -50,7 +50,7 @@ export function isDateWithin(
     dayjs.extend(timezone);
     dayjs.extend(utc);
     dayjs.tz.setDefault(empresa!.tz);
-    const today = dayjs(date);
+    const today = dayjs(date).tz(empresa.tz);
     const twoWeeksFromNow = today.add(timer, time);
 
     return NOW(empresa).isAfter(twoWeeksFromNow);
@@ -60,7 +60,7 @@ export function getTime(empresa: Empresas) {
     dayjs.extend(timezone);
     dayjs.extend(utc);
     dayjs.tz.setDefault(empresa!.tz);
-    const day = dayjs();
+    const day = dayjs().tz(empresa.tz);
     const currentYear = day.year();
     const currentMonth = day.month() + 1;
     const startOfYear = day.startOf("year").utc().format();
@@ -74,13 +74,9 @@ export function getTime(empresa: Empresas) {
     const startOfYesterday = day
         .subtract(1, "day")
         .startOf("day")
-        .add(5, "hour")
-        .toDate();
-    const endOfYesterday = day
-        .subtract(1, "day")
-        .endOf("day")
-        .add(5, "hour")
-        .toDate();
+        .utc()
+        .format();
+    const endOfYesterday = day.subtract(1, "day").endOf("day").utc().format();
 
     return {
         currentYear,

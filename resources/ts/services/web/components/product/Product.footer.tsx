@@ -53,7 +53,7 @@ function ProductFooter({ showButtonCart = false }: ProductFooterProps) {
                                 product.existProductInCart
                                     ? "bg-black"
                                     : "bg-primary"
-                            } text-white font-bold uppercase py-3 px-4 tracking-widest text-sm text-center w-full flex justify-center items-center`}
+                            } text-white font-bold uppercase py-2 md:py-3 px-4 tracking-widest text-xs md:text-sm text-center w-full flex justify-center items-center`}
                             disabled={
                                 product.cartStoreMutation.isLoading || false
                             }

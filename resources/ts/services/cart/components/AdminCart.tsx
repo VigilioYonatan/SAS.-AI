@@ -54,6 +54,7 @@ function AdminCart() {
             fullName: null,
             email: null,
             reference: null,
+            isService: false,
         },
         mode: "all",
     });

@@ -61,7 +61,7 @@ export class CartController {
                 empresa_id: empresa.id,
             },
         });
-        if (!urls || restarDays(NOW(empresa).toDate(), urls.time) <= 0)
+        if (!urls || restarDays(empresa, NOW(empresa).format(), urls.time) <= 0)
             return res.redirect("/");
 
         return res.redirect(urls.url);

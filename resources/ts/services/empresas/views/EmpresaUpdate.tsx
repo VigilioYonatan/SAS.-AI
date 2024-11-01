@@ -15,7 +15,13 @@ import {
 } from "../apis/empresas.update.api";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { valibotVigilio } from "~/libs/valibot";
-import { formatDateTwo, handlerError } from "~/libs/helpers";
+import {
+    formatDateTwo,
+    getDominantColorFromFile,
+    handlerError,
+    isColorLight,
+    rgbToHex,
+} from "~/libs/helpers";
 import Loading from "@/admin/components/Loading";
 import View404 from "@/admin/views/404";
 import { empresaPrivateApi } from "../apis/empresas.private.api";
@@ -29,6 +35,8 @@ import useEmpresastore, { storageEmpresa } from "../stores/empresa.store";
 import { formSelectNumber } from "~/components/form/FormSelect";
 import AlertInfo from "~/components/Alerts/AlertInfo";
 import { DIALCODE } from "../libs/helpers";
+import { useSignal } from "@preact/signals";
+import { settingsUpdateApi } from "../apis/settings/settings.update.api";
 
 function empresaUpdate() {
     const { guards } = useAuthstore();
@@ -48,6 +56,13 @@ function empresaUpdate() {
         const empresaStore = useEmpresastore();
         const empresa = empresaQuery.data!.empresa;
         const empresaUpdateMutation = empresaUpdateApi();
+        const settingsUpdateMutation = settingsUpdateApi();
+        const color = useSignal<string | null>(
+            storageEmpresa!.logo ? storageEmpresa!.setting.bg_color : null
+        );
+        const colorError = useSignal<string | null>(null);
+
+        const colorChoose = useSignal<string[][] | null>(null);
 
         const settingsUpdateform = useForm<EmpresasUpdateDto>({
             resolver: valibotVigilio(empresasUpdateDto),
@@ -101,19 +116,41 @@ function empresaUpdate() {
             mode: "all",
         });
 
+        const logo = settingsLogoUpdateform.watch("logo");
         async function initialUpdateLogo() {
             if (empresa.logo) {
                 const logo = await getFilesEdit(empresa.logo, 300);
                 settingsLogoUpdateform.setValue("logo", logo);
+                await getColor(logo[0]);
             }
         }
+        async function getColor(file: File) {
+            const colorC = await getDominantColorFromFile(file);
+            if (colorC) {
+                colorChoose.value = colorC as string[][];
+            }
+        }
+        useEffect(() => {
+            if (logo) {
+                getColor(logo[0]);
+                color.value = null;
+            }
+        }, [logo]);
         function onUpdateLogoSetting(body: SettingsLogoUpdateDto) {
+            if (!color.value && logo) {
+                colorError.value = "Escoge un color para tu Web.";
+                return;
+            }
+            colorError.value = null;
             sweetModal({
                 title: "¿Estas seguro de cambiar el logo de tu web?",
                 showCancelButton: true,
                 showCloseButton: true,
-            }).then(({ isConfirmed }) => {
+            }).then(async ({ isConfirmed }) => {
                 if (isConfirmed) {
+                    await settingsUpdateMutation.mutateAsync(
+                        empresaStore.state!.setting
+                    );
                     empresaUpdateLogoMutation.mutate(
                         { ...body, name: empresaStore.state!.name_empresa },
                         {
@@ -599,6 +636,60 @@ function empresaUpdate() {
                                 - GRATIS
                             </span>
                         </AlertInfo>
+                        {colorChoose.value ? (
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Escoger color de tu Web:
+                                </span>
+                                <div class="flex gap-2">
+                                    {colorChoose.value?.map((c) => (
+                                        <div
+                                            key={c}
+                                            class={`${
+                                                color.value ===
+                                                `#${rgbToHex(c)}`
+                                                    ? isColorLight(
+                                                          `#${rgbToHex(c)}`
+                                                      )
+                                                        ? "border-black border-2"
+                                                        : "border-gray-400 border-2"
+                                                    : ""
+                                            } w-[60px] h-[20px]`}
+                                            onClick={() => {
+                                                color.value = `#${rgbToHex(c)}`;
+                                                document.documentElement.style.setProperty(
+                                                    "--primary",
+                                                    color.value
+                                                );
+                                                empresaStore.methods.updateempresa(
+                                                    {
+                                                        setting: {
+                                                            ...empresaStore.state!
+                                                                .setting,
+                                                            bg_color:
+                                                                color.value,
+                                                        },
+                                                    }
+                                                );
+                                            }}
+                                            style={{
+                                                backgroundColor: `#${rgbToHex(
+                                                    c
+                                                )}`,
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                                {colorError.value ? (
+                                    <p class="text-danger text-xs font-semibold">
+                                        {colorError.value}
+                                    </p>
+                                ) : null}
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+
                         <Form.control.file
                             name={"logo" as keyof SettingsLogoUpdateDto}
                             title="Logo de la empresa"
@@ -625,9 +716,9 @@ function empresaUpdate() {
                     <span class="font-semibold">
                         <b class="font-bold">¿Sabias que?</b> El 96% de los
                         usuarios no permanece más de 5 minutos en los negocios
-                        digitales. Por esta razón, es crucial que tu negocio
-                        digital sea directo y conciso, evitando la sobrecarga de
-                        información innecesaria.
+                        digitales/tienda virtual. Por esta razón, es crucial que
+                        tu negocio digital sea directo y conciso, evitando la
+                        sobrecarga de información innecesaria.
                     </span>
                 </AlertInfo>
             </Container>

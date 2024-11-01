@@ -6,7 +6,7 @@ import enviroments from "~/config/enviroments.config";
 export function BASE_URL_WHATSAPP(empresa: Empresas) {
     return enviroments.NODE_ENV === "production"
         ? `https://www.${empresa.slug}.docker.vigilio-services.com`
-        : "https://c54e-201-218-157-99.ngrok-free.app";
+        : "https://dcf8-201-218-157-99.ngrok-free.app";
 }
 export async function whatsappSendMessageApi(
     empresa: Empresas,

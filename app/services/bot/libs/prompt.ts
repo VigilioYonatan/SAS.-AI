@@ -101,8 +101,8 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
     RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN,ORDENES, NO TRAIGAS NI CONTESTES ERRONEAMENTE, LA CANTIDAD,ETC..
     SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR.
     ACTUALIZA SIEMPRE LO QUE VAS A DECIR SI CAMBIA LA BASE DE DATOS.
-    "EN STOCK" significa. cantidad ilimitado
-    NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en 
+    "EN STOCK" significa. cantidad ilimitado.
+    NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
     ${JSON.stringify(instrucctions)}

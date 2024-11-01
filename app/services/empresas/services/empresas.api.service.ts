@@ -281,8 +281,7 @@ export class EmpresasApiService {
                     },
                     about: "",
                     bg_color: "rgb(28,141,227)",
-                    bg_color_responsive: "#000",
-                    color_text: "#fff",
+                    bg_color_responsive: "#FFFFFF",
                     type_border: "circle",
                     type_cart: "fas fa-shopping-cart",
                     icon: null,
@@ -318,6 +317,8 @@ export class EmpresasApiService {
                     enabled: true,
                     isNextDay: true,
                     maxCitas: 1,
+                    sendAlert: 5,
+                    maxCitasForHour: 1,
                     questions: [
                         {
                             question: "¿Cual es tu nombre completo?",
@@ -614,7 +615,7 @@ export class EmpresasApiService {
 
         await empresa.update(body);
         await empresa.update({
-            timeWhatsapp: NOW(empresa).add(3, "minute").toDate(),
+            timeWhatsapp: NOW(empresa).add(3, "minute").format(),
         });
         return {
             success: true,
@@ -682,7 +683,8 @@ export class EmpresasApiService {
                 empresasUpdateDto.telegram_token !== empresa.telegram_token &&
                 empresa.payments.telegram.enabled &&
                 restarDays(
-                    NOW(empresa).toDate(),
+                    empresa,
+                    NOW(empresa).format(),
                     empresa.payments.telegram.date as Date
                 ) > 0
             ) {

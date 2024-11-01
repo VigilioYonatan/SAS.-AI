@@ -9,6 +9,7 @@ import { valibotVigilio } from "~/libs/valibot";
 import useEmpresastore from "@/empresas/stores/empresa.store";
 import { handlerError, NOW } from "~/libs/helpers";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
+import { formSelectNumber } from "~/components/form/FormSelect";
 
 function CitasSettings() {
     const empresaStore = useEmpresastore();
@@ -114,6 +115,20 @@ function CitasSettings() {
                         name={"max_minutes" as keyof CitasSettingsUpdateDto}
                         options={{ setValueAs: Number }}
                     />
+                    <Form.control
+                        title="Horas de Mensaje Pendiente"
+                        type="number"
+                        question={
+                            <div class="w-[200px]">
+                                Se enviará horas antes al cliente un mensaje a
+                                WhatsApp que tiene una cita pendiente.
+                                <br />
+                                Si el valor es 0 no se enviará ningún mensaje.
+                            </div>
+                        }
+                        name={"sendAlert" as keyof CitasSettingsUpdateDto}
+                        options={{ setValueAs: formSelectNumber }}
+                    />
                 </div>
 
                 <div>
@@ -141,10 +156,10 @@ function CitasSettings() {
                                             style={{ top: -40, right: -10 }}
                                         >
                                             <div class="h-[200px] overflow-auto p-2 rounded-md shadow self-start ">
-                                                <span class="dark:text-white font-bold  block">
+                                                <span class="dark:text-white font-bold  block text-black">
                                                     Opciones
                                                 </span>
-                                                <span class="dark:text-white text-xs">
+                                                <span class="dark:text-white text-xs  text-black">
                                                     El usuario tendrá que
                                                     escoger una opción
                                                 </span>

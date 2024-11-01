@@ -40,17 +40,21 @@ function OfferSection({
                         </ProductCard>
                     ) : null}
                 </div>
-                <div class="w-full grid grid-cols-2 lg:grid-cols-3 gap-4">
-                    {productsoffert8mapped.map((product) => (
-                        <ProductCard product={product} key={product.id}>
-                            <ProductCard.header>
-                                <ProductCard.buttons isAbsolute />
-                            </ProductCard.header>
-                            <ProductCard.body showDescription={false} />
-                            <ProductCard.footer showButtonCart />
-                        </ProductCard>
-                    ))}
-                </div>
+                {productsoffert8mapped.length ? (
+                    <div class="w-full grid grid-cols-2 lg:grid-cols-3 gap-4">
+                        {productsoffert8mapped.map((product) => (
+                            <ProductCard product={product} key={product.id}>
+                                <ProductCard.header>
+                                    <ProductCard.buttons isAbsolute />
+                                </ProductCard.header>
+                                <ProductCard.body showDescription={false} />
+                                <ProductCard.footer showButtonCart />
+                            </ProductCard>
+                            
+                        ))}
+                    </div>
+                ) : null}
+
                 {/* <ProductCardAdmin product={} /> */}
             </div>
         </section>

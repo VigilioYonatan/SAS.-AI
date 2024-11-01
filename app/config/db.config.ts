@@ -67,10 +67,6 @@ const sequelize = new Sequelize({
         acquire: 60000,
         idle: 20000,
     },
-    dialectOptions: {
-        // Asegúrate de que la zona horaria sea UTC
-        timezone: "Z", // Esto asegura que todas las fechas se manejen en UTC
-    },
 });
 
 sequelize.addModels([

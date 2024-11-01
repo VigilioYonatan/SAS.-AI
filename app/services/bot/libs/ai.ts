@@ -89,7 +89,8 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
     const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
     if (!emp) return null;
     const isDateNow = restarDays(
-        NOW(emp).toDate(),
+        emp,
+        NOW(emp).format(),
         emp.payments.mensual.date!,
         "day"
     );
@@ -132,7 +133,8 @@ export async function isTelegramIA(empresa: string) {
     const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
     if (!emp?.enabledBot) return null;
     const isDateNow = restarDays(
-        NOW(emp).toDate(),
+        emp,
+        NOW(emp).format(),
         emp.payments.telegram.date!,
         "day"
     );
@@ -410,7 +412,7 @@ export async function featuresIA(
         for (const c of coincidencias) {
             const hash = Math.random().toString(32).slice(4, 8);
             const urlGet = `${BASE_URL(empresa)}/${c.slice(2, -2)}`;
-            const date = NOW(empresa).add(1, "days").toDate();
+            const date = NOW(empresa).add(1, "days").format();
             const findHash = await UrlsPayment.findOne({
                 where: { hash, empresa_id: empresa.id },
             });
@@ -451,29 +453,33 @@ export async function searchProducts(empresa: Empresas, word: string) {
     const completionText = completion.choices[0].message.content!;
     return completionText === "si";
 }
-
-export function sendMessageCron(empresa: Empresas, userId: string, date: Date) {
-    const fechaUTC5 = new Date("2024-10-30T19:33:00+00:00");
-
-    fechaUTC5.setHours(fechaUTC5.getHours() - 5);
-
-    const now = new Date();
+interface SendMessageCronProps {
+    empresa: Empresas;
+    name: string;
+    userId: string;
+    date: Date;
+}
+export function sendMessageCron({
+    empresa,
+    name,
+    userId,
+    date,
+}: SendMessageCronProps) {
     const task = cron.schedule("*/1 * * * *", async () => {
         const now = new Date();
-        if (now.getTime() >= fechaUTC5.getTime()) {
+        if (now.getTime() >= date.getTime()) {
+            const message = `Hola *${name}*😊, nos comunicamos contigo para informarte que has realizado una reserva de cita *${TimePeru(
+                empresa,
+                date
+            ).format(
+                "YYYY-MM-DD HH:mm A"
+            )}*. Por favor, no dudes en contactarnos si tienes alguna pregunta`;
             chats[`${empresa.slug}:${userId}`] = [
                 ...(chats[`${empresa.slug}:${userId}`] || []),
-                [
-                    "assistant",
-                    `Tienes una cita: ${TimePeru(empresa, date).format(
-                        "YYYY-MM-DD HH:mm A"
-                    )}`,
-                ],
+                ["assistant", message],
             ];
             await whatsappSendMessageApi(empresa, {
-                message: `Tienes una cita: ${TimePeru(empresa, date).format(
-                    "YYYY-MM-DD HH:mm A"
-                )}`,
+                message: message,
                 telephone: userId,
                 options: {},
                 delay: 3,

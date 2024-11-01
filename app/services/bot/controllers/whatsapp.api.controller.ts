@@ -27,7 +27,7 @@ import {
     sendMessageCron,
 } from "../libs/ai";
 import { NOW, restarDays, TimePeru } from "~/libs/dayjs";
-import { chatgpt, promptReplace, transcribeAudio } from "../libs";
+import { promptReplace, transcribeAudio } from "../libs";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import formidable from "formidable";
 import type { RequestVigilio } from "~/config/types";
@@ -86,398 +86,418 @@ export class whatsappApiController {
             quotedMessageId: string;
         }
     ) {
-        let content = body.content;
-        console.log({ content });
-
-        const userId = body.from;
         try {
-            const whatsapp = await isWhatsappIA(info.slug, userId);
+            let content = body.content;
 
-            if (!whatsapp)
-                throw new BadRequestException("whatsapp no permited");
-            if (!info?.enabledBot)
-                throw new BadRequestException("whatsapp desabilitado");
+            const userId = body.from;
+            try {
+                const whatsapp = await isWhatsappIA(info.slug, userId);
 
-            const { clientVigilio, latestEmpresaUsage, empresa } = whatsapp;
+                if (!whatsapp)
+                    throw new BadRequestException("whatsapp no permited");
+                if (!info?.enabledBot)
+                    throw new BadRequestException("whatsapp desabilitado");
 
-            if (body.isGroup)
-                throw new BadRequestException("whatsapp no permited"); //no se admite grupos
-            // message.type: chat,sticker,ptt,image,document
-            if (!["ptt", "chat"].includes(body.type)) return;
-            const existNumber = empresa.contacts.find(
-                (contact) => contact.telephone === userId
-            );
-            if (!existNumber) {
-                const mappedcontacts = [
-                    ...empresa.contacts,
-                    {
-                        name: body.notifyName,
-                        telephone: userId,
-                        isFavorite: false,
-                        ia: true,
-                    },
-                ];
-                await empresa.update({ contacts: mappedcontacts });
-            }
-            const random = randomNumber(
-                empresa.inteligenceArtificial.timer.start,
-                empresa.inteligenceArtificial.timer.finish
-            );
-            await delay(random);
-            // delay en 5 - 15 segundos
-            // await whatsappSendTypingApi(empresa, {
-            //     telephone: userId,
-            //     delay: random,
-            // });
-            //  cuando cierra el restaurante
-            // const findDay = empresa.schedule.find(
-            //     (day) => day.id === NOW(empresa).day()
-            // );
-            // if (
-            //     NOW(empresa).isAfter(formatTime(empresa, findDay!.openTime)) &&
-            //     NOW(empresa).isBefore(formatTime(empresa, findDay!.closeTime))
-            // ) {
-            // } else {
-            //     throw new BadRequestException("cerrado");
-            // }
+                const { clientVigilio, latestEmpresaUsage, empresa } = whatsapp;
 
-            if (body.type === "ptt") {
-                const audioToTxt = await transcribeAudio(
-                    empresa.slug,
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    Buffer.from((content as any).data)
+                if (body.isGroup)
+                    throw new BadRequestException("whatsapp no permited"); //no se admite grupos
+                // message.type: chat,sticker,ptt,image,document
+                if (!["ptt", "chat"].includes(body.type)) return;
+                const existNumber = empresa.contacts.find(
+                    (contact) => contact.telephone === userId
                 );
-                content = audioToTxt.text;
-            }
-            const buenas = buenosDias(
-                content as string,
-                body.notifyName,
-                empresa
-            );
-            const thanks = gracias(content as string);
-            const opt: WAWebJS.MessageSendOptions =
-                Math.random() < 0.5
-                    ? {
-                          quotedMessageId: body.quotedMessageId,
-                      }
-                    : {};
-            if (buenas) {
-                // aveces que responda reply
-
-                await whatsappSendMessageApi(empresa, {
-                    message: buenas,
-                    telephone: userId,
-                    options: opt,
-                    delay: 3,
-                });
-                return {
-                    success: true,
-                    message: "OK",
-                };
-            }
-            if (thanks) {
-                await whatsappSendMessageApi(empresa, {
-                    message: thanks,
-                    telephone: userId,
-                    options: opt,
-                    delay: 3,
-                });
-
-                return {
-                    success: true,
-                    message: "OK",
-                };
-            }
-
-            // imporante que esto este acá
-            chats[`${info.slug}:${userId}`] = [
-                ...(chats[`${info.slug}:${userId}`] ?? []),
-                ["user", content as string],
-            ];
-
-            if (chats[`${info.slug}:${userId}`]) {
-                const messages = chats[`${info.slug}:${userId}`].map(
-                    ([role, content]) => ({
-                        role,
-                        content,
-                    })
-                );
-
-                // Si el primer mensaje en lastMessages no es del role
-
-                const prompt = await promptReplace(content as string, empresa);
-                const settingsCitas = empresa.citasSetting;
-
-                let citas: Citas[] = JSON.parse(
-                    cache.get(`citas:${empresa.id}`) ?? "null"
-                );
-                const now = NOW(empresa).utc().format();
-                const after = NOW(empresa)
-                    .add(settingsCitas.max_days, "days")
-                    .utc()
-                    .format();
-                if (!citas) {
-                    citas = await Citas.unscoped().findAll({
-                        where: {
-                            empresa_id: empresa.id,
-                            time: {
-                                [Op.between]: [now, after],
-                            },
+                if (!existNumber) {
+                    const mappedcontacts = [
+                        ...empresa.contacts,
+                        {
+                            name: body.notifyName,
+                            telephone: userId,
+                            isFavorite: false,
+                            ia: true,
                         },
-                        attributes: { exclude: ["createdAt", "updatedAt"] },
-                    });
-                    cache.set(
-                        `citas:${empresa.id}`,
-                        JSON.stringify(citas),
-                        60 * 1000 * 15
-                    );
+                    ];
+                    await empresa.update({ contacts: mappedcontacts });
                 }
-                console.log(
-                    JSON.stringify(
-                        citas.map((cita) => ({
-                            time: cita.time,
-                            telephone: cita.telephone,
-                        }))
-                    )
+                const random = randomNumber(
+                    empresa.inteligenceArtificial.timer.start,
+                    empresa.inteligenceArtificial.timer.finish
                 );
-                console.log({ userId });
+                await delay(random);
+                // delay en 5 - 15 segundos
+                // await whatsappSendTypingApi(empresa, {
+                //     telephone: userId,
+                //     delay: random,
+                // });
+                //  cuando cierra el restaurante
+                // const findDay = empresa.schedule.find(
+                //     (day) => day.id === NOW(empresa).day()
+                // );
+                // if (
+                //     NOW(empresa).isAfter(formatTime(empresa, findDay!.openTime)) &&
+                //     NOW(empresa).isBefore(formatTime(empresa, findDay!.closeTime))
+                // ) {
+                // } else {
+                //     throw new BadRequestException("cerrado");
+                // }
 
-                const citasJSON = settingsCitas.enabled
-                    ? `***** CITAS ******
-						--- BASE DE DATOS DE CITAS: ${JSON.stringify(
+                if (body.type === "ptt") {
+                    const audioToTxt = await transcribeAudio(
+                        empresa.slug,
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                        Buffer.from((content as any).data)
+                    );
+                    content = audioToTxt.text;
+                }
+                const buenas = buenosDias(
+                    content as string,
+                    body.notifyName,
+                    empresa
+                );
+                const thanks = gracias(content as string);
+                const opt: WAWebJS.MessageSendOptions =
+                    Math.random() < 0.5
+                        ? {
+                              quotedMessageId: body.quotedMessageId,
+                          }
+                        : {};
+                if (buenas) {
+                    // aveces que responda reply
+
+                    await whatsappSendMessageApi(empresa, {
+                        message: buenas,
+                        telephone: userId,
+                        options: opt,
+                        delay: 3,
+                    });
+                    return {
+                        success: true,
+                        message: "OK",
+                    };
+                }
+                if (thanks) {
+                    await whatsappSendMessageApi(empresa, {
+                        message: thanks,
+                        telephone: userId,
+                        options: opt,
+                        delay: 3,
+                    });
+
+                    return {
+                        success: true,
+                        message: "OK",
+                    };
+                }
+
+                // imporante que esto este acá
+                chats[`${info.slug}:${userId}`] = [
+                    ...(chats[`${info.slug}:${userId}`] ?? []),
+                    ["user", content as string],
+                ];
+
+                if (chats[`${info.slug}:${userId}`]) {
+                    const messages = chats[`${info.slug}:${userId}`].map(
+                        ([role, content]) => ({
+                            role,
+                            content,
+                        })
+                    );
+
+                    // Si el primer mensaje en lastMessages no es del role
+
+                    const prompt = await promptReplace(
+                        content as string,
+                        empresa
+                    );
+                    const settingsCitas = empresa.citasSetting;
+
+                    let citas: Citas[] = JSON.parse(
+                        cache.get(`citas:${empresa.id}`) ?? "null"
+                    );
+                    const now = NOW(empresa).utc().format();
+                    const after = NOW(empresa)
+                        .add(settingsCitas.max_days, "days")
+                        .utc()
+                        .format();
+                    if (!citas) {
+                        citas = await Citas.unscoped().findAll({
+                            where: {
+                                empresa_id: empresa.id,
+                                time: {
+                                    [Op.between]: [now, after],
+                                },
+                            },
+                            attributes: { exclude: ["createdAt", "updatedAt"] },
+                        });
+                        cache.set(
+                            `citas:${empresa.id}`,
+                            JSON.stringify(citas),
+                            60 * 1000 * 5
+                        );
+                    }
+                    console.log(
+                        JSON.stringify(
                             citas.map((cita) => ({
-                                time: cita.time,
+                                time: TimePeru(empresa, cita.time).format(
+                                    "YYYY-MM-DD HH:mm A"
+                                ),
                                 telefono: cita.telephone,
                             }))
-                        )} ---
-						.
-                        - REVISA LA BASE DE DATOS DE CITAS, antes de hacerme las preguntas.
-                        - OJO LA BASE DE DATOS DE CITAS, time está EN  UTC 5 ASI QUE CONVIERTELO A HORA FORMATO ${
-                            empresa.tz
-                        } para responderme.
-						- ----- HORARIO PARA CITAS ---: ${JSON.stringify(
-                            settingsCitas.horario
-                        )}. si está enabled false, quiere decir que no está disponible ese dia.  te pase las horas de abrir y cerrar para crear citas y los dias y pasame las horas desde la hora de abrir separando por  ${
-                          settingsCitas.max_minutes
-                      } minutos, ejemplo "si es 25 minutos de separacion y inicia a las 8am mostra los horarios 8, 8:45,9:30,...etc", psdt no me traigas todo el horario completo, solo recomiendame una hora.
-						- NUNCA DES información de una cita DE LA BASE DE DATOS que no sea de telefono ${userId}. NUNCA AUNQUE TE PIDA PORFAVOR.
-                        - IMPORTANTE: MAXIMO ${
-                            settingsCitas.maxCitas
-                        } CITAS PARA CREAR cita por telefono ${userId} EN LA BASE DE DATOS DE CITA:  citas, ASI evitar que se cree muchas citas con mismo telefono ${userId}.
-                      - 
-						- Si mandas listas o opciones algo asi, por favor hazlo bonito en formato whatsapp, separado bonito.
-						Ojo cuando te digo que  quiero una cita. debes hacermes estas preguntas antes de crear una cita, OJO no inventes preguntas:
-						Preguntas:
-						- ${JSON.stringify(settingsCitas.questions)}.
-						Recuerda que algunas preguntas tienen opciones, las opciones deben estar correctas segun la pregunta con sus opciones y no inventes preguntas que no te dije porfavor.
-						-  Despues de las preguntas, pasa la lista de dia de hoy de las horas disponible, claro buscas de la base de dato las horas disponible, si te pido de mañana o de otro dia me lo das tambien.,
-						- Desde la fecha actual ${NOW(empresa).format("YYYY-MM-DD hh:mm A")} - maximo ${
-                          settingsCitas.max_days
-                      } dias desde la fecha de hoy, ${
-                          settingsCitas.isNextDay
-                              ? "que no sea desde el mismo dia. tiene que ser un dia despues, y que no sea afuera de la hora . ni ayer ni hoy. para el dia siguiente la cita"
-                              : "Puedes crear cita desde hoy. claro despues de las horas de ahorita"
-                      } .
-						- Por favor ${
-                            settingsCitas.sendQuestionChunk
-                                ? "Hazme las preguntas de uno a uno"
-                                : "Hazme las preguntas de una sola, y no uno por uno."
-                        }
-						- Cuando tengas todos mis datos para crear cita con mis datos EJEMPLO. DI ESTO [[DATOS_CONFIRMADOS:{"la pregunta completa y original que me hiciste de lo que te mande que digas, menos la fecha y hora":"respuesta de que te dije"}]]", OJO ademas, agrega en el {}  "time": 'ojo mandame la fecha y hora, recuerda que la fecha y hora que te diga está en zona horaria ${
-                            info.tz
-                        } y traeme la fecha y hora en formato utc 5 para base de datos ', . URGENTE dices lo que dije cuando ya tengas todo, con [[DATOS_CONFIRMADOS:{"pregunta":"respuesta",time:"fechayhora en formato utc 5"} ]], porfavor que el json este limpio para usarlo con JSON.parse.
-						- Si quiero cancelar CITA, busca este telefono ${userId} en base de datos de citas. dile que no se encontró cita. y si hay preguntame. Estas seguro de cancelar cita a las (la hora de base de datos de la cita encontrada)?- y si digo si. dí esto {{CANCELADO_CITA}}"
-						- Antes de crear cita, hazme confirmar la cita
-                        - no me preguntes mi telefono cual es por que este es mi telefono ${userId}.`
-                    : "";
+                        )
+                    );
 
-                const completion = await openAis[
-                    info.slug
-                ].chat.completions.create({
-                    model: clientVigilio
-                        ? clientVigilio.information.modelai
-                        : "gpt-4o-mini",
-                    max_tokens: empresa.inteligenceArtificial.max_length,
-                    messages: [
-                        {
-                            role: "user",
-                            content: `${prompt}.
-							${citasJSON}
-							por ultimo responde bonito en formato whatsapp y cuando mandes listas separalos en \n format whatsapp para que se vea bien y separados y no se vea todo junto el texto. gracias.`,
-                        },
-                        { role: "assistant", content: "Entendido, Empezemos." }, // getting start
-                        ...messages.slice(
-                            -empresa.inteligenceArtificial.memory
-                        ), // solos los ultimo 7 mensajes
-                    ],
-                });
+                    const citasJSON = settingsCitas.enabled
+                        ? `***** CITAS ******
+                            --- BASE DE DATOS DE CITAS: ${JSON.stringify(
+                                citas.map((cita) => ({
+                                    time: TimePeru(empresa, cita.time).format(
+                                        "YYYY-MM-DD HH:mm A"
+                                    ),
+                                    telefono: cita.telephone,
+                                }))
+                            )} ---
+                            .
+                            - REVISA LA BASE DE DATOS DE CITAS, antes de hacerme las preguntas.
+                            - ----- HORARIO PARA CITAS ---: ${JSON.stringify(
+                                settingsCitas.horario
+                            )}. si está enabled false, quiere decir que no está disponible ese dia.  te pase las horas de abrir y cerrar para crear citas y los dias y está separado por  ${
+                              settingsCitas.max_minutes
+                          } minutos, ejemplo "si es 45 minutos de separacion y inicia a las 8am mostra los horarios 8:, 8:45,9:30,...etc", psdt no me traigas todo el horario completo, solo recomiendame una hora y la cercana y temprana nomas y no me digas lo que acabo de decir y cuando mandas la hora usa AM Y PM .
+                            - IMPORTANTE: MAXIMO ${
+                                settingsCitas.maxCitas
+                            } CITAS PARA CREAR cita por telefono ${userId} EN LA BASE DE DATOS DE CITA:  citas, ASI evitar que se cree muchas citas con mismo telefono ${userId}.
+                          - 
+                            - Si mandas listas o opciones algo asi, por favor hazlo bonito en formato whatsapp, separado bonito.
+                            Ojo cuando te digo que  quiero una cita. debes hacermes estas preguntas antes de crear una cita, OJO no inventes preguntas:
+                            Preguntas:
+                            - ${JSON.stringify(settingsCitas.questions)}.
+                            Recuerda que algunas preguntas tienen opciones, las opciones deben estar correctas segun la pregunta con sus opciones y no inventes preguntas que no te dije porfavor.
+                            - IMPORTANTE: Recuerda que no debo crear más de ${
+                                settingsCitas.maxCitasForHour
+                            } citas por hora, eso quiere decir que si ya hay más de ${
+                              settingsCitas.maxCitasForHour
+                          } citas en la hora que te dije. ya no crees.
+                            -  Despues de las preguntas, pasa la lista de dia de hoy de las horas disponible, claro buscas de la base de dato las horas disponible, si te pido de mañana o de otro dia me lo das tambien.,
+                            - Desde la fecha actual ${NOW(empresa).format(
+                                "YYYY-MM-DD hh:mm A"
+                            )} - maximo ${
+                              settingsCitas.max_days
+                          } dias desde la fecha de hoy, ${
+                              settingsCitas.isNextDay
+                                  ? "que no sea desde el mismo dia. tiene que ser un dia despues, y que no sea afuera de la hora . ni ayer ni hoy. para el dia siguiente la cita"
+                                  : "Puedes crear cita desde hoy. claro despues de las horas de ahorita"
+                          } .
+                            - Por favor ${
+                                settingsCitas.sendQuestionChunk
+                                    ? "Hazme las preguntas de uno a uno"
+                                    : "Hazme las preguntas de una sola, y no uno por uno."
+                            }
+                            - Cuando tengas todos mis datos para crear cita con mis datos EJEMPLO. DI ESTO [[DATOS_CONFIRMADOS:{"la pregunta completa y original que me hiciste de lo que te mande que digas, menos la fecha y hora":"respuesta de que te dije"}]]", OJO ademas, agrega en el {}  "time": 'ojo mandame la fecha y hora, recuerda que la fecha y hora que te diga está en zona horaria ${
+                                info.tz
+                            } y traeme la fecha y hora en formato UTC 5 para base de datos y no me digas UTC', . URGENTE dices lo que dije cuando ya tengas todo, con [[DATOS_CONFIRMADOS:{"pregunta":"respuesta",time:"fechayhora en formato utc 5"} ]], porfavor que el json este limpio para usarlo con JSON.parse.
+                            - Si quiero cancelar CITA, busca este telefono ${userId} en base de datos de citas. dile que no se encontró cita. y si hay preguntame. Estas seguro de cancelar cita a las (la hora de base de datos de la cita encontrada)?- y si digo si. dí esto [[CANCELADO_CITA]]".
+                            - Antes de crear cita, hazme confirmar la cita.
+                            - no me preguntes mi telefono cual es por que este es mi telefono ${userId}.
+                            - NO DIGAS QUE VAS A VERIFICAR SI TENGO UNA CITA
+                            **** FORMATO DEL TEXTO ****
+                            -IMPORTANTE: RESPONDEME EN FORMATO DE TEXTO WHATSAPP.
+                            - EN LAS PREGUNTAS O PALABRAS IMPORTANTES QUE DIGAS USA *, EJEMPLO: *PREGUNTA_O_PALABRA_IMPORTANTE*.
+                            `
+                        : "";
 
-                // actualizamos uso de tokens
-                await empresa.update({
-                    ...empresa.toJSON(),
-                    inteligenceArtificial: {
-                        ...empresa.inteligenceArtificial,
-                        usage: {
-                            ...latestEmpresaUsage,
-                            input_tokens:
-                                latestEmpresaUsage.input_tokens +
-                                completion.usage!.prompt_tokens,
-                            output_tokens:
-                                latestEmpresaUsage.output_tokens +
-                                completion.usage!.completion_tokens,
-                        },
-                    },
-                    payments: {
-                        ...empresa.payments,
-                        tokens: {
-                            tokens:
-                                empresa.payments.tokens.tokens -
-                                completion.usage!.completion_tokens,
-                        },
-                    },
-                });
-                sendMessageCron(empresa, userId, "" as Date);
-                // get message ai
-                const completionText = completion.choices[0].message.content!;
-                console.log({ completionText });
-
-                const regex2 = /\[\{CANCELADO_CITA\}\}/;
-                const match2 = completionText.match(regex2);
-                if (match2) {
-                    const findCita = await Citas.findOne({
-                        where: {
-                            telefono: userId,
-                        },
-                    });
-                    if (findCita) {
-                        await findCita.destroy();
-                        await whatsappSendMessageApi(empresa, {
-                            message: "Se canceló la cita correctamente.",
-                            telephone: userId,
-                            options: opt,
-                            delay: 3,
-                        });
-                        return;
-                    }
-                }
-                const regex = /\[\[DATOS_CONFIRMADOS:(.*?)\]\]/;
-                const match = completionText.match(regex);
-                if (match) {
-                    const { time, ...rest } = JSON.parse(match[1]);
-                    const citas = await Citas.findAll({
-                        where: {
-                            time: {
-                                [Op.between]: [now, after],
+                    const completion = await openAis[
+                        info.slug
+                    ].chat.completions.create({
+                        model: clientVigilio
+                            ? clientVigilio.information.modelai
+                            : "gpt-4o-mini",
+                        max_tokens: empresa.inteligenceArtificial.max_length,
+                        messages: [
+                            {
+                                role: "user",
+                                content: `${prompt}.
+                                ${citasJSON}
+                                por ultimo responde bonito en formato whatsapp y cuando mandes listas separalos en \n format whatsapp para que se vea bien y separados y no se vea todo junto el texto. gracias.`,
                             },
-                            telephone: userId,
-                        },
-                        attributes: { exclude: ["createdAt", "updatedAt"] },
+                            {
+                                role: "assistant",
+                                content: "Entendido, Empezemos.",
+                            }, // getting start
+                            ...messages.slice(
+                                -empresa.inteligenceArtificial.memory
+                            ), // solos los ultimo 7 mensajes
+                        ],
                     });
-                    if (citas.length > settingsCitas.maxCitas) {
-                        await whatsappSendMessageApi(empresa, {
-                            message:
-                                "Ops, Al parecer ya pasaste el limite para crear citas. Quieres cancelar una cita?",
-                            telephone: userId,
-                            options: opt,
-                            delay: 3,
+
+                    // actualizamos uso de tokens
+                    await empresa.update({
+                        ...empresa.toJSON(),
+                        inteligenceArtificial: {
+                            ...empresa.inteligenceArtificial,
+                            usage: {
+                                ...latestEmpresaUsage,
+                                input_tokens:
+                                    latestEmpresaUsage.input_tokens +
+                                    completion.usage!.prompt_tokens,
+                                output_tokens:
+                                    latestEmpresaUsage.output_tokens +
+                                    completion.usage!.completion_tokens,
+                            },
+                        },
+                        payments: {
+                            ...empresa.payments,
+                            tokens: {
+                                tokens:
+                                    empresa.payments.tokens.tokens -
+                                    completion.usage!.completion_tokens,
+                            },
+                        },
+                    });
+                    // get message ai
+                    const completionText =
+                        completion.choices[0].message.content!;
+
+                    const regex2 = /\[\{CANCELADO_CITA\}\}/;
+                    const match2 = completionText.match(regex2);
+                    if (match2) {
+                        const findCita = await Citas.findOne({
+                            where: {
+                                telefono: userId,
+                            },
                         });
+                        if (findCita) {
+                            await findCita.destroy();
+                            await whatsappSendMessageApi(empresa, {
+                                message: "Se canceló la cita correctamente.",
+                                telephone: userId,
+                                options: opt,
+                                delay: 3,
+                            });
+                            return;
+                        }
+                    }
+                    const regex = /\[\[DATOS_CONFIRMADOS:(.*?)\]\]/;
+                    const match = completionText.match(regex);
+                    if (match) {
+                        const { time, ...rest } = JSON.parse(match[1]);
+                        const citas = await Citas.findAll({
+                            where: {
+                                time: {
+                                    [Op.between]: [now, after],
+                                },
+                                telephone: userId,
+                            },
+                            attributes: { exclude: ["createdAt", "updatedAt"] },
+                        });
+                        // if (citas.length > settingsCitas.maxCitas) {
+                        //     const message =
+                        //         "Ops, Al parecer ya pasaste el limite para crear citas. Quieres cancelar una cita?";
+                        //     chats[`${empresa.slug}:${userId}`] = [
+                        //         ...(chats[`${empresa.slug}:${userId}`] || []),
+                        //         ["assistant", message],
+                        //     ];
+                        //     await whatsappSendMessageApi(empresa, {
+                        //         message: message,
+                        //         telephone: userId,
+                        //         options: opt,
+                        //         delay: 3,
+                        //     });
+                        //     return {
+                        //         success: true,
+                        //         message: "Enviado correctamente",
+                        //     };
+                        // }
+                        await Citas.create({
+                            telephone: userId,
+                            time,
+                            answers: rest,
+                            empresa_id: empresa.id,
+                        });
+                        if (settingsCitas.sendAlert > 0) {
+                            const fechaUTC5 = new Date(time);
+                            fechaUTC5.setHours(
+                                fechaUTC5.getHours() - settingsCitas.sendAlert
+                            );
+                            sendMessageCron({
+                                empresa,
+                                userId,
+                                date: fechaUTC5,
+                                name: body.notifyName,
+                            });
+                        }
                         return {
                             success: true,
                             message: "Enviado correctamente",
                         };
                     }
-                    await Citas.create({
-                        telephone: userId,
-                        time,
-                        answers: rest,
-                        empresa_id: empresa.id,
-                    });
+                    const [removeNote, urlExtraidas] = await featuresIA(
+                        empresa,
+                        completionText,
+                        true
+                    );
 
-                    sendMessageCron(empresa, userId, time);
-                    await whatsappSendMessageApi(empresa, {
-                        message: completionText,
-                        telephone: userId,
-                        options: opt,
-                        delay: 3,
-                    });
-                    return;
+                    chats[`${info.slug}:${userId}`] = [
+                        ...(chats[`${info.slug}:${userId}`] || []),
+                        ["assistant", removeNote],
+                    ];
 
-                    await whatsappSendMessageApi(empresa, {
-                        message:
-                            "Listo 😁, Estaremos en contacto contigo sobre esta cita.\n Nos vemos 😊.\n",
-                        telephone: userId,
-                        options: opt,
-                        delay: 3,
-                    });
-                    return;
-                }
-                const [removeNote, urlExtraidas] = await featuresIA(
-                    empresa,
-                    completionText,
-                    true
-                );
-
-                chats[`${info.slug}:${userId}`] = [
-                    ...(chats[`${info.slug}:${userId}`] || []),
-                    ["assistant", removeNote],
-                ];
-
-                if (empresa.inteligenceArtificial.isChunk) {
-                    const chunks = removeNote.split(/(?<!\d)\.\s+/g);
-                    for (const chunk of chunks) {
+                    if (empresa.inteligenceArtificial.isChunk) {
+                        const chunks = removeNote.split(/(?<!\d)\.\s+/g);
+                        for (const chunk of chunks) {
+                            await whatsappSendMessageApi(empresa, {
+                                message: chunk,
+                                telephone: userId,
+                                options: opt,
+                                delay: 3,
+                            });
+                        }
+                    } else {
                         await whatsappSendMessageApi(empresa, {
-                            message: chunk,
+                            message: removeNote,
                             telephone: userId,
                             options: opt,
                             delay: 3,
                         });
                     }
-                } else {
-                    await whatsappSendMessageApi(empresa, {
-                        message: removeNote,
-                        telephone: userId,
-                        options: opt,
-                        delay: 3,
-                    });
-                }
 
-                // enviar imagen
-                if (urlExtraidas.length) {
-                    for (const url of urlExtraidas) {
-                        const options = {
-                            sendMediaAsSticker: true,
-                        };
-                        await whatsappSendFileApi(empresa, {
-                            telephone: userId,
-                            url,
-                            options,
-                            delay: 3,
-                        });
+                    // enviar imagen
+                    if (urlExtraidas.length) {
+                        for (const url of urlExtraidas) {
+                            const options = {
+                                sendMediaAsSticker: true,
+                            };
+                            await whatsappSendFileApi(empresa, {
+                                telephone: userId,
+                                url,
+                                options,
+                                delay: 3,
+                            });
+                        }
                     }
                 }
-            }
-            if (
-                restarDays(
-                    empresa,
-                    NOW(info).toDate(),
-                    TimePeru(info, info.createdAt).add(14, "day").toDate(),
-                    "seconds"
-                ) < 1
-            ) {
-                if (!info.slug.includes("demo")) {
-                    await terminal(`docker stop ${info.slug} || true`);
-                    await terminal(`docker rm -f ${info.slug} || true`);
+                if (
+                    restarDays(
+                        empresa,
+                        NOW(info).format(),
+                        TimePeru(info, info.createdAt).add(14, "day").format(),
+                        "seconds"
+                    ) < 1
+                ) {
+                    if (!info.slug.includes("demo")) {
+                        await terminal(`docker stop ${info.slug} || true`);
+                        await terminal(`docker rm -f ${info.slug} || true`);
+                    }
                 }
+
+                return {
+                    success: true,
+                    message: "OK",
+                };
+            } catch (error) {
+                chats[`${info.slug}:${userId}`] = [];
             }
-
-            return {
-                success: true,
-                message: "OK",
-            };
-        } catch (error) {
-            console.log(error.message);
-
-            chats[`${info.slug}:${userId}`] = [];
+        } catch (err) {
+            console.log(err.message);
         }
     }
     @Post("/send-message")
@@ -564,7 +584,7 @@ export class whatsappApiController {
     @Post("/restart")
     async restart(@Req("empresa") empresa: Empresas) {
         await empresa.update({
-            timeWhatsapp: NOW(empresa).add(1, "minute").toDate(),
+            timeWhatsapp: NOW(empresa).add(1, "minute").format(),
         });
         if (empresa.whatsapp_mode.type === "VPS") {
             function onSSH() {
@@ -717,7 +737,7 @@ export class whatsappApiController {
             );
         }
         await empresa.update({
-            timeWhatsapp: NOW(empresa).add(3, "minute").toDate(),
+            timeWhatsapp: NOW(empresa).add(3, "minute").format(),
         });
         return {
             success: true,

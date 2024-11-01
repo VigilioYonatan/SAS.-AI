@@ -20,6 +20,7 @@ export const citasSettingSchema = objectAsync({
     max_minutes: number([minValue(10), maxValue(360)]),
     sendQuestionChunk: boolean(),
     maxCitas: number([minValue(1)]),
+    maxCitasForHour: number([minValue(1)]),
     questions: array(
         object({
             question: string([minLength(4)]),
@@ -28,6 +29,7 @@ export const citasSettingSchema = objectAsync({
     ),
     enabled: boolean(),
     isNextDay: boolean(),
+    sendAlert: nullable(number([maxValue(24)])),
     horario: array(
         object({
             id: number(),

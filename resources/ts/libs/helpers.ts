@@ -7,6 +7,7 @@ import type { Path, UseFormReturn } from "react-hook-form";
 import { c, sweetAlert, sweetModal } from "@vigilio/sweet";
 import duration from "dayjs/plugin/duration";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import { prominent } from "color.js";
 
 dayjs.extend(relativeTime);
 dayjs.locale("es");
@@ -16,25 +17,25 @@ dayjs.extend(duration);
 dayjs.tz.setDefault(storageEmpresa!.tz);
 
 export function NOW() {
-    return dayjs();
+    return dayjs().tz(storageEmpresa!.tz);
 }
 
 export function TimePeru(date: Date | string | number | dayjs.Dayjs) {
-    return dayjs(date);
+    return dayjs(date).tz(storageEmpresa!.tz);
 }
 export function restarDays(
     now: Date | string | number | dayjs.Dayjs,
     back: Date | string | number | dayjs.Dayjs,
     time: QUnitType | OpUnitType = "minute"
 ) {
-    return dayjs(back).diff(now, time);
+    return dayjs(back).tz(storageEmpresa!.tz).diff(now, time);
 }
 
 export function formatDateTwo(
     date: string | Date | number,
     format = "DD-MM-YYYY"
 ): string | Date {
-    return dayjs(date).format(format);
+    return dayjs(date).tz(storageEmpresa!.tz).format(format);
 }
 export function delay(seg = 1) {
     return new Promise((res, _rej) => {
@@ -46,7 +47,7 @@ export function delay(seg = 1) {
 
 /*****    convert time - example: hace 25 minutos *****/
 export function showTime(date: Date | number | string | dayjs.Dayjs) {
-    return NOW().to(dayjs(date));
+    return NOW().to(dayjs(date).tz(storageEmpresa!.tz));
 }
 
 // handle error
@@ -76,7 +77,7 @@ export function isDateWithin(
     timer: number,
     time: dayjs.ManipulateType = "days"
 ) {
-    const today = dayjs(date);
+    const today = dayjs(date).tz(storageEmpresa!.tz);
     const twoWeeksFromNow = today.add(timer, time);
 
     return NOW().isAfter(twoWeeksFromNow);
@@ -187,6 +188,38 @@ export async function onPageImage<T extends object>(
         });
     }
 }
+export async function onPageVideo<T extends object>(
+    form: UseFormReturn<T>,
+    key: keyof T
+) {
+    const text = await navigator.clipboard.readText();
+    if (!text.startsWith("https://vimeo.com")) {
+        sweetAlert({
+            icon: "info",
+            title: "Url de video VIMEO no válido",
+        });
+        return;
+    }
+    try {
+        const response = await fetch(`/proxy?url=${text}`);
+        const blob = await response.blob(); // Convertir a blob
+        const file = new File([blob], text, { type: "image/webp" });
+        form.setValue(
+            key as unknown as Path<T>,
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            [...(form.watch(key as unknown as Path<T>) ?? []), file] as any
+        );
+        sweetAlert({
+            icon: "success",
+            title: "Imagen Agregado correctamente",
+        });
+    } catch (error) {
+        sweetAlert({
+            icon: "danger",
+            title: "Error imagen",
+        });
+    }
+}
 
 export function getPeriodDescription(dias: number) {
     if (dias === 1) {
@@ -224,5 +257,36 @@ export function isColorLight(hex: string) {
     const b = Number.parseInt(hex2.substring(4, 6), 16);
     const luminosity = 0.2126 * r + 0.7152 * g + 0.0722 * b;
     return luminosity > 128;
+}
+export function getDominantColorFromFile(file: File) {
+    return new Promise((res, rej) => {
+        const reader = new FileReader();
+        // Cuando el archivo se ha leído
+        reader.onload = async (e) => {
+            const imageUrl = e.target!.result; // URL de datos de la imagen
+            if (imageUrl) {
+                try {
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                    const color = await prominent(imageUrl as any, {
+                        sample: 10,
+                    });
+                    res(color);
+                } catch (error) {
+                    rej(null);
+                }
+            }
+        };
+        // Leer el archivo como URL de datos
+        reader.readAsDataURL(file);
+    });
+}
+export function rgbToHex(rgbArray: string[]) {
+    return rgbArray
+        .map((value) => {
+            // Convierte cada valor a hexadecimal y asegura que tenga dos dígitos
+            const hex = Number(value).toString(16).padStart(2, "0");
+            return hex;
+        })
+        .join("");
 }
 export default dayjs;

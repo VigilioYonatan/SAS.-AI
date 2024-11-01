@@ -54,6 +54,7 @@ export class SeedersApiService {
                 })
             );
             await ubigeoSeeder();
+
             if (enviroments.NODE_ENV === "development") {
                 const empresa = await empresasSeeder();
                 await this.empresasApiService.store({
@@ -87,8 +88,6 @@ export class SeedersApiService {
             // await Promise.all([Posts.bulkCreate(postsSeeder)]);
             return { success: true, message: "Seed executed" };
         } catch (error) {
-            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-            console.log(error);
             return {
                 success: false,
                 message: JSON.stringify((error as unknown as Error).message),

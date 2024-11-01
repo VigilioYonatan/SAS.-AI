@@ -930,7 +930,8 @@ export class OrdersApiService {
                 // le dio enviar sunat y no habia enviado a sunat antes y que no pase de 2 dias
                 const limitInvoice =
                     restarDays(
-                        NOW(empresa).toDate(),
+                        empresa,
+                        NOW(empresa).format(),
                         TimePeru(empresa, order.createdAt!)
                             .add(enviroments.VITE_DIASFACTURASBOLETA, "day")
                             .diff(NOW(empresa))
