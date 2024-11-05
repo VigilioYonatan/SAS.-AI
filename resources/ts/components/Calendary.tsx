@@ -6,7 +6,6 @@ interface CalendarProps {
     language?: "es" | "en";
     onPickDate?: (day: string | number, month: number, year: number) => void;
     initialDate?: Date;
-    isToday?: boolean;
     custom?: (
         day: string | number,
         month: number,
@@ -22,7 +21,6 @@ function Calendar({
     language = "es",
     onPickDate,
     initialDate = new Date(),
-    isToday = true,
     custom,
     onNextMonth,
     onPreviousMonth,

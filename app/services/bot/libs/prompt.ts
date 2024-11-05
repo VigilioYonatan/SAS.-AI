@@ -2,6 +2,7 @@ import type { Empresas } from "@/empresas/entities/empresas.entity";
 import type { Settings } from "@/empresas/entities/settings.entity";
 import { NOW } from "~/libs/dayjs";
 import type { DataPrompt } from ".";
+import { BASE_URL } from "@/empresas/libs";
 
 export async function prompt(empresa: Empresas, productsData: DataPrompt) {
     const url =
@@ -50,6 +51,14 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
                     : ""
             } ) o servicios de la base de datos. SOLO ENVIAME ASÍ. NUNCA TE OLVIDES LEER DE LA BASE DE DATOS PARA CREAR el {{cart?items=URL percent-encoding}} con su respectivo id de variant, product id y cantidad de que te pida. el que te mande es solo un ejemplo`,
         ];
+        if (empresa.tipo_empresa.tipo_servicio_id === 3) {
+            instrucctions = [
+                ...instrucctions,
+                `Ojo hay 2 tipos Productos y Servicios, para productos si {{cart?items=...}}, pero para servicios solo enviame esta url dinamica ${BASE_URL(
+                    empresa
+                )}/cart/servicios/:slug_de_servicio , :slug_de_servicio es dinamico segun BASE DE DATOS`,
+            ];
+        }
         directrices = [
             "No menciones 'carrito' ni 'BASE_DE_DATOS'. no seas muy tecnico!!! y SOLO response las preguntas que te diga y NO sobrecargues mucho tu respuesta. NO me des feedback ni recomendaciones, sin que me lo pidas",
             "No Menciones de que te entregaremos un {{cart?items=URL percent-encoding}}. Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el {{cart?items=URL percent-encoding}}. CUANDO te pida LINK enviame eso {{cart?items=URL percent-encoding}} y que este en buen estado",
