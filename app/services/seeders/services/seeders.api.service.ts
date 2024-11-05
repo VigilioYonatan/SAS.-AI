@@ -19,7 +19,7 @@ import { TipoServicio } from "@/empresas/entities/tipo_servicio.entity";
 import { servicios } from "@/empresas/seeders/tipo_empresa.seeder";
 import { ubigeoSeeder } from "@/ubigeo/seeders/countries.seeder";
 import { Information } from "@/empresas/entities/information.entity";
-import { empresasSeeder, empresasSeeder2 } from "@/empresas/seeders/empresas.seeder";
+import { empresasSeeder2 } from "@/empresas/seeders/empresas.seeder";
 import { EmpresasApiService } from "@/empresas/services/empresas.api.service";
 import { Address } from "@/empresas/entities/address.entity";
 import { addressSeeder } from "@/empresas/seeders/address.seeder";
@@ -76,6 +76,7 @@ export class SeedersApiService {
                     await Promise.all(
                         features.map(async (feature) => {
                             await option.$create("feature", {
+                                id: feature.id,
                                 value: feature.value,
                                 description: feature.description,
                             });
@@ -88,6 +89,7 @@ export class SeedersApiService {
             // await Promise.all([Posts.bulkCreate(postsSeeder)]);
             return { success: true, message: "Seed executed" };
         } catch (error) {
+
             return {
                 success: false,
                 message: JSON.stringify((error as unknown as Error).message),

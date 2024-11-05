@@ -634,6 +634,7 @@ export function ProductOptions({
 
     useEffect(() => {
         productsNormalStoreDtoForm.setValue("options", optionsFeatures.value);
+        return;
     }, [optionsFeatures.value]);
     function onFeatures(body: { option_id: number; feature_id: number }) {
         const existOptionIndex = optionsFeatures.value.findIndex(
@@ -693,15 +694,34 @@ export function ProductOptions({
                             type="button"
                             class={`dark:text-white text-xs flex justify-between w-full items-center py-2 border-b ${
                                 existOption
-                                    ? "border-primary"
+                                    ? "bg-primary text-white"
                                     : "border-gray-600"
                             } `}
-                            onClick={() => dropdown.onOpenClose()}
+                            onClick={() => {
+                                const isOption1 = optionsFeatures.value.some(
+                                    (val) => val.option_id === 1
+                                );
+
+                                if (option.id !== 1 && !isOption1) {
+                                    dropdown.onOpenClose();
+                                    return;
+                                }
+
+                                if (isOption1) {
+                                    optionsFeatures.value = [];
+                                    return;
+                                }
+                                optionsFeatures.value = [
+                                    { features: [1], option_id: 1 },
+                                ];
+                            }}
                         >
                             <span class="dark:text-secondary-light font-semibold ">
                                 {option.name}
                             </span>
-                            <i class="fa-solid fa-caret-down" />
+                            {option.id !== 1 ? (
+                                <i class="fa-solid fa-caret-down" />
+                            ) : null}
                         </button>
                         <div class="flex gap-2 flex-wrap p-2">
                             {option.features.map((feature) => (

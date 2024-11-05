@@ -358,144 +358,148 @@ function ProductPage({
                                     <div class="flex flex-col gap-3">
                                         {(
                                             producto.value as ProductsNormalSchemaFromServer
-                                        )?.options.map((option) => (
-                                            <div key={option.id}>
-                                                <span class="dark:text-white text-xs font-bold text-black">
-                                                    {option.name}
-                                                </span>
-                                                <div class="flex gap-2 flex-wrap">
-                                                    {option.features.length ? (
-                                                        <>
-                                                            {option.features
-                                                                .length >= 4 ? (
-                                                                <select
-                                                                    onChange={(
-                                                                        e
-                                                                    ) => {
-                                                                        changeVariant(
-                                                                            {
-                                                                                option_id:
-                                                                                    option.id,
-                                                                                id: Number(
-                                                                                    (
-                                                                                        e.target as HTMLInputElement
-                                                                                    )
-                                                                                        .value
-                                                                                ),
-                                                                            }
-                                                                        );
-                                                                    }}
-                                                                    class="bg-white  dark:bg-background-dark text-xs dark:text-white w-full py-3 rounded-md shadow"
-                                                                >
-                                                                    {option.features.map(
-                                                                        (
-                                                                            feature
-                                                                        ) => (
-                                                                            <option
-                                                                                value={
-                                                                                    feature.id
-                                                                                }
-                                                                                class="font-bold  rounded-md  text-sm"
-                                                                                key={
-                                                                                    feature.id
-                                                                                }
-                                                                            >
-                                                                                {
-                                                                                    feature.description
-                                                                                }
-                                                                            </option>
-                                                                        )
-                                                                    )}
-                                                                </select>
-                                                            ) : (
-                                                                <>
-                                                                    {option.features.map(
-                                                                        (
-                                                                            feature
+                                        )?.options
+                                            .filter((option) => option.id !== 1)
+                                            .map((option) => (
+                                                <div key={option.id}>
+                                                    <span class="dark:text-white text-xs font-bold text-black">
+                                                        {option.name}
+                                                    </span>
+                                                    <div class="flex gap-2 flex-wrap">
+                                                        {option.features
+                                                            .length ? (
+                                                            <>
+                                                                {option.features
+                                                                    .length >=
+                                                                4 ? (
+                                                                    <select
+                                                                        onChange={(
+                                                                            e
                                                                         ) => {
-                                                                            // para checar el boton segun variante
-                                                                            const existFeature =
-                                                                                variant
-                                                                                    .value!.map(
+                                                                            changeVariant(
+                                                                                {
+                                                                                    option_id:
+                                                                                        option.id,
+                                                                                    id: Number(
                                                                                         (
-                                                                                            feat
-                                                                                        ) =>
-                                                                                            feat.id
-                                                                                    )
-                                                                                    .includes(
-                                                                                        feature.id
-                                                                                    );
-
-                                                                            return (
-                                                                                <button
-                                                                                    type="button"
-                                                                                    aria-label="change button"
-                                                                                    key={
-                                                                                        feature?.id
-                                                                                    }
-                                                                                    onClick={() =>
-                                                                                        changeVariant(
-                                                                                            {
-                                                                                                option_id:
-                                                                                                    option.id,
-                                                                                                id: feature.id,
-                                                                                            }
+                                                                                            e.target as HTMLInputElement
                                                                                         )
+                                                                                            .value
+                                                                                    ),
+                                                                                }
+                                                                            );
+                                                                        }}
+                                                                        class="bg-white  dark:bg-background-dark text-xs dark:text-white w-full py-3 rounded-md shadow"
+                                                                    >
+                                                                        {option.features.map(
+                                                                            (
+                                                                                feature
+                                                                            ) => (
+                                                                                <option
+                                                                                    value={
+                                                                                        feature.id
+                                                                                    }
+                                                                                    class="font-bold  rounded-md  text-sm"
+                                                                                    key={
+                                                                                        feature.id
                                                                                     }
                                                                                 >
-                                                                                    {option.type ===
-                                                                                    1 ? (
-                                                                                        <div
-                                                                                            class={`shadow font-bold ${
-                                                                                                enviroments.TYPE_BORDER ===
-                                                                                                "square"
-                                                                                                    ? "rounded-sm"
-                                                                                                    : "rounded-md"
-                                                                                            }  flex text-primary py-2  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary hover:text-white ${
-                                                                                                existFeature
-                                                                                                    ? "bg-primary text-white border-2 border-primary"
-                                                                                                    : "bg-white"
-                                                                                            }`}
-                                                                                        >
-                                                                                            {
-                                                                                                feature?.value
-                                                                                            }
-                                                                                        </div>
-                                                                                    ) : (
-                                                                                        <div
-                                                                                            class={`w-[35px] h-[35px] ${
-                                                                                                enviroments.TYPE_BORDER ===
-                                                                                                "square"
-                                                                                                    ? ""
-                                                                                                    : "rounded-full"
-                                                                                            }  relative ${
-                                                                                                existFeature
-                                                                                                    ? "border-4 border-primary"
-                                                                                                    : ""
-                                                                                            }`}
-                                                                                            style={{
-                                                                                                backgroundColor:
-                                                                                                    feature?.value,
-                                                                                            }}
-                                                                                        >
-                                                                                            <span class="absolute -bottom-2 left-2 z-10 dark:bg-admin-background-dark shadow dark:text-white bg-white text-[10px] px-2 rounded-md py-1 hidden group-hover:block ">
+                                                                                    {
+                                                                                        feature.description
+                                                                                    }
+                                                                                </option>
+                                                                            )
+                                                                        )}
+                                                                    </select>
+                                                                ) : (
+                                                                    <>
+                                                                        {option.features.map(
+                                                                            (
+                                                                                feature
+                                                                            ) => {
+                                                                                // para checar el boton segun variante
+                                                                                const existFeature =
+                                                                                    variant
+                                                                                        .value!.map(
+                                                                                            (
+                                                                                                feat
+                                                                                            ) =>
+                                                                                                feat.id
+                                                                                        )
+                                                                                        .includes(
+                                                                                            feature.id
+                                                                                        );
+
+                                                                                return (
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        aria-label="change button"
+                                                                                        key={
+                                                                                            feature?.id
+                                                                                        }
+                                                                                        onClick={() =>
+                                                                                            changeVariant(
                                                                                                 {
-                                                                                                    feature?.description
+                                                                                                    option_id:
+                                                                                                        option.id,
+                                                                                                    id: feature.id,
                                                                                                 }
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    )}
-                                                                                </button>
-                                                                            );
-                                                                        }
-                                                                    )}
-                                                                </>
-                                                            )}
-                                                        </>
-                                                    ) : null}
+                                                                                            )
+                                                                                        }
+                                                                                    >
+                                                                                        {option.type ===
+                                                                                        1 ? (
+                                                                                            <div
+                                                                                                class={`shadow font-bold ${
+                                                                                                    enviroments.TYPE_BORDER ===
+                                                                                                    "square"
+                                                                                                        ? "rounded-sm"
+                                                                                                        : "rounded-md"
+                                                                                                }  flex text-primary py-2  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary hover:text-white ${
+                                                                                                    existFeature
+                                                                                                        ? "bg-primary text-white border-2 border-primary"
+                                                                                                        : "bg-white"
+                                                                                                }`}
+                                                                                            >
+                                                                                                {
+                                                                                                    feature?.value
+                                                                                                }
+                                                                                            </div>
+                                                                                        ) : (
+                                                                                            <div
+                                                                                                class={`w-[35px] h-[35px] ${
+                                                                                                    enviroments.TYPE_BORDER ===
+                                                                                                    "square"
+                                                                                                        ? ""
+                                                                                                        : "rounded-full"
+                                                                                                }  relative ${
+                                                                                                    existFeature
+                                                                                                        ? "border-4 border-primary"
+                                                                                                        : ""
+                                                                                                }`}
+                                                                                                style={{
+                                                                                                    backgroundColor:
+                                                                                                        feature?.value,
+                                                                                                }}
+                                                                                            >
+                                                                                                <span class="absolute -bottom-2 left-2 z-10 dark:bg-admin-background-dark shadow dark:text-white bg-white text-[10px] px-2 rounded-md py-1 hidden group-hover:block ">
+                                                                                                    {
+                                                                                                        feature?.description
+                                                                                                    }
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        )}
+                                                                                    </button>
+                                                                                );
+                                                                            }
+                                                                        )}
+                                                                    </>
+                                                                )}
+                                                            </>
+                                                        ) : null}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
                                     </div>
                                 </>
                             ) : null}

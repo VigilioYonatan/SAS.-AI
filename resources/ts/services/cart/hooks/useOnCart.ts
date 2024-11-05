@@ -64,6 +64,7 @@ function useOnCart() {
             fullName: null,
             email: null,
             reference: undefined,
+            isService: false,
         },
         mode: "all",
     });

@@ -246,12 +246,20 @@ function CartPage({ cart, header }: CartProps) {
                                                                             (
                                                                                 variant
                                                                             ) => {
-                                                                                return variant?.features.map(
-                                                                                    (
-                                                                                        feature
-                                                                                    ) =>
-                                                                                        feature?.description
-                                                                                );
+                                                                                return variant?.features
+                                                                                    .filter(
+                                                                                        (
+                                                                                            val
+                                                                                        ) =>
+                                                                                            val.option_id !==
+                                                                                            1
+                                                                                    )
+                                                                                    .map(
+                                                                                        (
+                                                                                            feature
+                                                                                        ) =>
+                                                                                            feature?.description
+                                                                                    );
                                                                             }
                                                                         )
                                                                         .join(
