@@ -138,5 +138,4 @@ export async function connectDB() {
         logger.error(`Error al conectar base de datos: ${error}`);
     }
 }
-
 export { sequelize };

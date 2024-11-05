@@ -173,32 +173,45 @@ function CategoriesUpdate({ id, onClose, refetch }: CategoriesUpdateProps) {
                                             }}
                                         />
                                     </div>
-                                    <Form.control
-                                        name={
-                                            "icon" as keyof CategoriesUpdateDto
-                                        }
-                                        title="Icono"
-                                        type="text"
-                                        placeholder="<i class='fa-solid fa-brush'></i>"
-                                        question={
-                                            <div>
-                                                <p>
-                                                    Busque un icono{" "}
-                                                    <a
-                                                        class="font-bold underline"
-                                                        href="https://fontawesome.com/search"
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                    >
-                                                        Aquí
-                                                    </a>{" "}
-                                                    y copie y pegue
-                                                </p>
-                                                <br />
-                                                Este campo no es obligatorio.
-                                            </div>
-                                        }
-                                    />
+                                    <div class="w-full flex gap-2 items-center">
+                                        <Form.control
+                                            name={
+                                                "icon" as keyof CategoriesUpdateDto
+                                            }
+                                            title="Icono"
+                                            type="text"
+                                            placeholder="<i class='fa-solid fa-brush'></i>"
+                                            question={
+                                                <div>
+                                                    <p>
+                                                        Busque un icono{" "}
+                                                        <a
+                                                            class="font-bold underline"
+                                                            href="https://fontawesome.com/search"
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                        >
+                                                            Aquí
+                                                        </a>{" "}
+                                                        y copie y pegue
+                                                    </p>
+                                                    <br />
+                                                    Este campo no es
+                                                    obligatorio.
+                                                </div>
+                                            }
+                                        />
+                                        {categoriesUpdateForm.watch("icon") ? (
+                                            <div
+                                                dangerouslySetInnerHTML={{
+                                                    __html: categoriesUpdateForm.watch(
+                                                        "icon"
+                                                    )!,
+                                                }}
+                                                class="mt-3"
+                                            />
+                                        ) : null}
+                                    </div>
                                     <Form.button.submit
                                         disabled={
                                             categoriesUpdateMutation.isLoading ||

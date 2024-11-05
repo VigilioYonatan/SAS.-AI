@@ -20,7 +20,7 @@ import { Categories } from "./categories.entity";
     include: [
         {
             model: Categories,
-            attributes: ["name", "slug"] as (keyof CategoriesSchema)[],
+            attributes: ["name", "slug", "icon"] as (keyof CategoriesSchema)[],
         },
     ],
 }))

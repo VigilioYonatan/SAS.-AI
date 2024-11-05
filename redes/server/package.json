@@ -1,0 +1,22 @@
+{
+    "name": "server",
+    "module": "index.ts",
+    "type": "module",
+    "scripts": {
+        "dev": "bun --watch index.ts"
+    },
+    "devDependencies": {
+        "@types/bun": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.21.1",
+        "instagram-private-api": "^1.46.1",
+        "openai": "^4.70.2",
+        "sharp": "^0.33.5",
+        "tesseract.js": "^5.1.1"
+    }
+}

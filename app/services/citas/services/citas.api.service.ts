@@ -60,7 +60,7 @@ export class CitasApiService {
         const citas = await Citas.unscoped().findAll({
             where: {
                 empresa_id: empresa.id,
-                time: {
+                date: {
                     [Op.between]: [startOfDay, endOfDay],
                 },
             },
@@ -85,6 +85,40 @@ export class CitasApiService {
             }),
         };
     }
+    async month(empresa: Empresas, year: string, month: string) {
+        const fecha = dayjs(new Date(Number(year), Number(month) - 1)); // Mes de abril (3 porque enero es 0)
+        const dias = fecha.daysInMonth();
+        const cites = await Promise.all(
+            Array.from({ length: dias }).map(async (_, i) => {
+                const startOfDay = fecha
+                    .date(i + 1)
+                    .startOf("day")
+                    .utc()
+                    .format();
+                const endOfDay = fecha
+                    .date(i + 1)
+                    .endOf("day")
+                    .utc()
+                    .format();
+
+                const qty = await Citas.unscoped().count({
+                    where: {
+                        empresa_id: empresa.id,
+                        date: {
+                            [Op.between]: [startOfDay, endOfDay],
+                        },
+                    },
+                });
+                return [i + 1, qty];
+            })
+        );
+        const citasCount = cites.reduce((acc, [key, value]) => {
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            (acc as any)[key] = value;
+            return acc;
+        }, {});
+        return { success: true, citasCount };
+    }
 
     async store(empresa: Empresas, citasStoreDto: CitasStoreDto) {
         const cita = new Citas({
@@ -96,7 +130,7 @@ export class CitasApiService {
         await cita.save();
         return {
             success: true,
-            cita,
+            // cita,
         };
     }
 
@@ -106,7 +140,10 @@ export class CitasApiService {
         citasUpdateDto: CitasUpdateDto
     ) {
         const { cita } = await this.show(empresa, id);
-        await cita.update(citasUpdateDto);
+        await cita.update({
+            ...citasUpdateDto,
+            telephone: `${empresa.dial_code}${citasUpdateDto.telephone}@c.us`,
+        });
         return {
             success: true,
             cita,

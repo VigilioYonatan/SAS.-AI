@@ -12,6 +12,8 @@ interface CalendarProps {
         month: number,
         year: number
     ) => JSX.Element | JSX.Element[];
+    onNextMonth?: (year: number, month: number) => void;
+    onPreviousMonth?: (year: number, month: number) => void;
 }
 
 function Calendar({
@@ -22,6 +24,8 @@ function Calendar({
     initialDate = new Date(),
     isToday = true,
     custom,
+    onNextMonth,
+    onPreviousMonth,
 }: CalendarProps) {
     const [date, setDate] = useState<Date>(initialDate);
 
@@ -60,15 +64,24 @@ function Calendar({
                   "December",
               ];
 
-    const previousMonth = (): void => {
+    function previousMonth(): void {
         setDate(new Date(date.getFullYear(), date.getMonth() - 1, 1));
-    };
+        if (onPreviousMonth) {
+            onPreviousMonth(date.getFullYear(), date.getMonth() - 1);
+        }
+    }
 
-    const nextMonth = (): void => {
+    function nextMonth(): void {
         setDate(new Date(date.getFullYear(), date.getMonth() + 1, 1));
-    };
+        if (onNextMonth) {
+            onNextMonth(date.getFullYear(), date.getMonth() + 1);
+        }
+    }
+    function chooseDay(day: number) {
+        setDate(new Date(date.getFullYear(), date.getMonth(), day));
+    }
 
-    const renderDays = (): (number | string)[] => {
+    function renderDays(): (number | string)[] {
         const firstDayOfMonth: number = new Date(
             date.getFullYear(),
             date.getMonth(),
@@ -92,7 +105,7 @@ function Calendar({
         }
 
         return days;
-    };
+    }
 
     return (
         <div className="mx-auto w-full">
@@ -155,14 +168,15 @@ function Calendar({
                                         <td
                                             // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                             key={dayIndex}
-                                            className={`border px-4 relative py-2 text-center hover:bg-primary hover:text-white ${
-                                                isToday &&
-                                                day === new Date().getDate()
+                                            className={`border font-semibold px-4 relative py-2 text-center hover:bg-primary hover:text-white ${
+                                                day === new Date().getDate() ||
+                                                date.getDate() === day
                                                     ? "bg-primary text-white"
                                                     : ""
                                             }`}
                                             onClick={() => {
                                                 if (onPickDate) {
+                                                    chooseDay(day as number);
                                                     onPickDate(
                                                         day,
                                                         date.getMonth(),

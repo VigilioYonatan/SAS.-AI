@@ -1,6 +1,6 @@
 import type { Columns } from "@vigilio/preact-table";
 import { ClientsSchemaFromServer } from "../schemas/client.schema";
-import { formatTelephoneNumber } from "~/libs/helpers";
+import { formatTelephoneNumber, NOW, restarDays } from "~/libs/helpers";
 
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import Form from "~/components/form";
@@ -51,6 +51,47 @@ const clientsColumns: Columns<
     },
     { key: "address", cell: (props) => `${props.address}-${props.reference}` },
     { key: "email", isSort: true, cell: (props) => props.email || "-" },
+    {
+        key: "buys",
+        header: "Compras Realizados",
+        cell: (props) => (
+            <div class="h-[60px] overflow-auto w-[200px]">
+                {props.buys?.length ? (
+                    <div class="flex flex-col gap-1">
+                        {props.buys.slice(0, 10).map((buy, i) => (
+                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                            <div class="flex gap-1 items-center" key={i}>
+                                <span class="flex">
+                                    <b class="font-bold">Orden:</b>{" "}
+                                    <a
+                                        class="hover:text-primary"
+                                        href={`/admin/orders/${buy.order}`}
+                                    >
+                                        {buy.order}
+                                    </a>{" "}
+                                </span>
+                                <span class="flex">
+                                    <b class="font-bold">Nombre:</b>{" "}
+                                    <span>{buy.title}</span>
+                                </span>
+                                {buy.date ? (
+                                    <span class="flex">
+                                        <b class="font-bold">Vence:</b>{" "}
+                                        <span>
+                                            {restarDays(NOW(), buy.date, "day")}{" "}
+                                            días
+                                        </span>
+                                    </span>
+                                ) : null}
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <span class="text-xs">No hay compras</span>
+                )}
+            </div>
+        ),
+    },
     {
         key: "enabled",
         header: "Habilitado",

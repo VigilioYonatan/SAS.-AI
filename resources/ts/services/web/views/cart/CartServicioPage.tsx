@@ -29,7 +29,7 @@ import enviroments from "~/config";
 import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
 import useProduct, { CouponStore } from "@/products/hooks/useProduct";
 import { printImagesProduct } from "@/products/libs/helpers";
-import { formatDateTwo, NOW, TimePeru } from "~/libs/helpers";
+import { formatDateTwo, NOW } from "~/libs/helpers";
 import Helper from "~/components/Helper";
 
 interface CartServicioPageProps {
@@ -387,9 +387,12 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
 
                             <span>{servicio.category.name}</span>
                         </div>
-                        <h3 class="text-primary font-bold dark:text-white line-clamp-2 text-xl  ">
+                        <a
+                            href={`/servicio/${servicio.slug}`}
+                            class="text-primary font-bold dark:text-white line-clamp-2 text-xl  "
+                        >
                             {servicio.name}
-                        </h3>{" "}
+                        </a>{" "}
                         {servicio.days.length ? (
                             <div class="flex gap-2 flex-wrap justify-center">
                                 {servicio.days.map((day) => (
@@ -444,25 +447,22 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                                             </div>
                                             <input
                                                 value={
-                                                    formatDateTwo(
-                                                        time.value
-                                                            ? time.value
-                                                            : NOW().toDate(),
-                                                        "YYYY-MM-DDTHH:MM"
-                                                    ) as string
+                                                    time.value
+                                                        ? time.value
+                                                        : (formatDateTwo(
+                                                              NOW().toDate(),
+                                                              "YYYY-MM-DDTHH:mm"
+                                                          ) as string)
                                                 }
                                                 onChange={(e) => {
                                                     const timer = (
                                                         e.target as HTMLInputElement
                                                     ).value;
-                                                    const times =
-                                                        TimePeru(
-                                                            timer
-                                                        ).toDate();
-                                                    time.value = formatDateTwo(
-                                                        timer,
-                                                        "YYYY-MM-DDTHH:MM"
-                                                    ) as string;
+                                                    const times = new Date(
+                                                        timer
+                                                    );
+
+                                                    time.value = timer;
 
                                                     const hora =
                                                         storageEmpresa?.citasSetting.horario.find(

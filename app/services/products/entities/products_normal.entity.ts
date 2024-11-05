@@ -26,7 +26,7 @@ import { Options } from "./options/options.entity";
 	include: [
 		{
 			model: Categories,
-			attributes: ["name", "slug"] as (keyof CategoriesSchema)[],
+			attributes: ["name", "slug","icon"] as (keyof CategoriesSchema)[],
 		},
 		{ model: Brands },
 	],

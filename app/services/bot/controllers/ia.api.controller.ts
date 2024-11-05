@@ -9,7 +9,7 @@ import {
 } from "@vigilio/express-core";
 import { Pipe } from "@vigilio/express-core/valibot";
 import { objectAsync, string } from "@vigilio/valibot";
-import { isWhatsappIA } from "../libs/ai";
+import { isWhatsappTelegramIA } from "../libs/ai";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import * as cheerio from "cheerio";
 import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
@@ -24,7 +24,7 @@ export class IAApiController {
         @Req("empresa") empresa: Empresas
     ) {
         try {
-            const whatsapp = await isWhatsappIA(empresa.slug);
+            const whatsapp = await isWhatsappTelegramIA(empresa.slug);
             if (!whatsapp)
                 throw new NotFoundException(
                     "Hubo un problema al usar la IA, Recomiendo fijarse en los limites token"
@@ -78,7 +78,7 @@ export class IAApiController {
         @Req("empresa") empresa: Empresas
     ) {
         try {
-            const whatsapp = await isWhatsappIA(empresa.slug);
+            const whatsapp = await isWhatsappTelegramIA(empresa.slug);
             if (!whatsapp)
                 throw new NotFoundException(
                     "Hubo un problema al usar la IA, Recomiendo fijarse en los limites token"
@@ -155,7 +155,7 @@ export class IAApiController {
         @Req("empresa") empresa: Empresas
     ) {
         try {
-            const whatsapp = await isWhatsappIA(empresa.slug);
+            const whatsapp = await isWhatsappTelegramIA(empresa.slug);
             const esMalaPalabra = await chatgpt(
                 whatsapp,
                 `'${name}'  si es mala palabra dime solo '1' y si no solo dime '2', recuerda solo 1 y 2 me dices`
@@ -210,7 +210,7 @@ export class IAApiController {
         @Req("empresa") empresa: Empresas
     ) {
         try {
-            const whatsapp = await isWhatsappIA(empresa.slug);
+            const whatsapp = await isWhatsappTelegramIA(empresa.slug);
             if (!whatsapp)
                 throw new NotFoundException(
                     "Hubo un problema al usar la IA, Recomiendo fijarse en los limites token"

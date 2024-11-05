@@ -181,7 +181,6 @@ function ServicioPage({ product, category_name, header }: ServicioPageProps) {
                                     }}
                                 />
                             ) : null}
-
                             <span>{product.category.name}</span>
                         </div>
                         <h3 class="text-primary font-bold dark:text-white line-clamp-2 text-lg">

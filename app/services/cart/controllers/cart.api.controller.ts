@@ -47,8 +47,7 @@ export class CartApiController {
             req.empresa,
             req.user.id,
             variant_id,
-            product_id,
-            false
+            product_id
         );
         return result;
     }
@@ -109,8 +108,7 @@ export class CartApiController {
             req.empresa,
             req.user.id,
             product_id,
-            variant_id,
-            false
+            variant_id
         );
         return result;
     }

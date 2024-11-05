@@ -269,6 +269,23 @@ function App() {
                                 () => import("@/empresas/views/BackgroundIndex")
                             )}
                         />
+                        {/* REDES SOCIALES */}
+                        <Route
+                            path="/messenger"
+                            component={lazy(
+                                () => import("@/bot/views/Messenger")
+                            )}
+                        />
+                        <Route
+                            path="/instagram"
+                            component={lazy(
+                                () => import("@/bot/views/Instagram")
+                            )}
+                        />
+                        <Route
+                            path="/tiktok"
+                            component={lazy(() => import("@/bot/views/TikTok"))}
+                        />
                         <Route>
                             <View404 />
                         </Route>

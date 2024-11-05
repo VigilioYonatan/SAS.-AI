@@ -13,9 +13,15 @@ import { Empresas } from "@/empresas/entities/empresas.entity";
 export class Citas extends Model implements Omit<CitasSchema, "id"> {
     @Column({
         allowNull: false,
+        type: DataType.STRING,
+    })
+    hour: string;
+
+    @Column({
+        allowNull: false,
         type: DataType.DATE,
     })
-    time: Date;
+    date: Date;
 
     @Column({
         allowNull: false,

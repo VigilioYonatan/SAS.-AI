@@ -111,7 +111,31 @@ function ProductsServicioUpdate({
             product.id
         );
 
-        function onUpdateProduct(data: ProductsServicioUpdateDto) {
+        function onUpdateProduct(body: ProductsServicioUpdateDto) {
+            if (!body.showHorario && !body.days.length) {
+                error.value =
+                    "Debes agregar un suscripción o habilitar 'mostrar horario' depende del servicio.";
+                return;
+            }
+            const existHorario = body.days.some(
+                (item, index) =>
+                    body.days.findIndex((i) => i.days === item.days) !== index
+            );
+            const existHorario2 = body.days.some(
+                (item, index) =>
+                    body.days.findIndex((i) => i.name === item.name) !== index
+            );
+            if (existHorario) {
+                error.value = "Se repitieron los dias en el campo suscripción";
+                return;
+            }
+            if (existHorario2) {
+                error.value =
+                    "Se repitieron los nombres en el campo suscripción";
+                return;
+            }
+
+            error.value = null;
             sweetModal({
                 title: "¿Estás seguro de editar este servicio?",
                 customIcon:
@@ -120,11 +144,11 @@ function ProductsServicioUpdate({
                 showCancelButton: true,
             }).then(({ isConfirmed }) => {
                 if (isConfirmed) {
-                    mutateProductsServicioUpdateApi.mutate(data, {
+                    mutateProductsServicioUpdateApi.mutate(body, {
                         onSuccess(data) {
                             sweetAlert({
                                 icon: "success",
-                                title: `<p class="text-center">Producto actualizado correctamente <b>${data.product.name}</b></p>`,
+                                title: `<p class="text-center">Servicio actualizado correctamente <b>${data.product.name}</b></p>`,
                             });
                             productQuery.refetch(false);
                             if (refetchProduct) {

@@ -75,6 +75,7 @@ export class Server {
         // habilitar para consumir json
         this.app.use(express.json({ limit: "100mb" }));
         await connectDB();
+
         this.auth();
         // habilitar carpeta public
         this.app.use(express.static(`${dirMode}/public`));
@@ -195,7 +196,7 @@ export class Server {
                             const qty = await Citas.unscoped().count({
                                 where: {
                                     empresa_id: empresa.id,
-                                    time: {
+                                    date: {
                                         [Op.between]: [startOfDay, endOfDay],
                                     },
                                 },
@@ -211,7 +212,7 @@ export class Server {
                     cache.set(
                         `${empresa.slug}:citas`,
                         JSON.stringify(citas),
-                        1 * 60 * 1000
+                        5 * 60 * 1000
                     );
                 }
 

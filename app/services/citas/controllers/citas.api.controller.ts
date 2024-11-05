@@ -22,18 +22,21 @@ import {
     citasSettingSchema,
     type CitasSettingSchema,
 } from "../schemas/citas_settings.schema";
+import { PermissionAuth } from "@/auth/guards/permission-auth.guard";
 
 @Injectable()
 @Controller("/citas")
 export class CitasApiController {
     constructor(private readonly citasApiService: CitasApiService) {}
 
+    @PermissionAuth()
     @Get("/")
     async index(@Req("empresa") empresa: Empresas) {
         const result = await this.citasApiService.index(empresa);
         return result;
     }
 
+    @PermissionAuth()
     @Get("/day")
     async day(@Req("empresa") empresa: Empresas, @Query("time") time: string) {
         const result = await this.citasApiService.day(empresa, time);
@@ -52,8 +55,17 @@ export class CitasApiController {
         const result = await this.citasApiService.show(empresa, slug);
         return result;
     }
-
-    @PermissionAdmin()
+    @PermissionAuth()
+    @Get("/:year/:month")
+    async month(
+        @Req("empresa") empresa: Empresas,
+        @Params("year") year: string,
+        @Params("month") month: string
+    ) {
+        const result = await this.citasApiService.month(empresa, year, month);
+        return result;
+    }
+    @PermissionAuth()
     @Validator(citasStoreDto)
     @Status(201)
     @Post("/")
@@ -76,8 +88,7 @@ export class CitasApiController {
         const result = await this.citasApiService.settingUpdate(empresa, body);
         return result;
     }
-
-    @PermissionAdmin()
+    @PermissionAuth()
     @Pipe(
         objectAsync({
             id: string(),
@@ -94,8 +105,7 @@ export class CitasApiController {
         const result = await this.citasApiService.update(empresa, id, body);
         return result;
     }
-
-    @PermissionAdmin()
+    @PermissionAuth()
     @Pipe(
         objectAsync({
             id: string(),

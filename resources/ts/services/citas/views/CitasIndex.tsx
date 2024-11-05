@@ -4,7 +4,7 @@ import Calendar from "~/components/Calendary";
 import { reactComponent } from "~/libs/preact";
 import CitasSettings from "./CitasSettings";
 import { useSignal } from "@preact/signals";
-import dayjs, { handlerError, NOW, TimePeru } from "~/libs/helpers";
+import dayjs, { handlerError, NOW } from "~/libs/helpers";
 import { citasByDayApi } from "../apis/citasByDay.api";
 import Form from "~/components/form";
 import { citasStoreApi } from "../apis/citas.store.api";
@@ -42,12 +42,7 @@ function CitasIndex() {
             query.refetch(false);
         }, [today.value]);
 
-        const citas = query.data?.citas.map((c) => {
-            return {
-                ...c,
-                time: TimePeru(c.time).format("YYYY-MM-DD HH:mm"),
-            };
-        });
+        const citas = query.data?.citas;
 
         const hours = Array.from({ length: 24 }, (_, index) => {
             const hour = index < 10 ? `0${index}` : index; // Formato 00, 01, ..., 24
@@ -89,15 +84,25 @@ function CitasIndex() {
                             }}
                             custom={(day) => (
                                 <div
-                                    class={`absolute bg-danger text-sm w-[20px] h-[20px] rounded-full right-0 bottom-1 font-bold ${
-                                        storageEmpresa!.citas[Number(day)] > 0
+                                    class={`absolute bg-danger text-white text-sm w-[20px] h-[20px] rounded-full right-0 bottom-1 font-bold ${
+                                        query.data?.citasCount[Number(day)]! > 0
                                             ? ""
                                             : "hidden"
                                     }`}
                                 >
-                                    {storageEmpresa!.citas[Number(day)]}
+                                    {query.data?.citasCount[Number(day)]}
                                 </div>
                             )}
+                            onNextMonth={(year, month) => {
+                                today.value = dayjs(
+                                    `${year}-${month + 1}`
+                                ).format("YYYY-MM-DD HH:mm");
+                            }}
+                            onPreviousMonth={(year, month) => {
+                                today.value = dayjs(
+                                    `${year}-${month + 1}`
+                                ).format("YYYY-MM-DD HH:mm");
+                            }}
                         />
                     </div>
                     <br />
@@ -112,591 +117,575 @@ function CitasIndex() {
                     </div>
 
                     <div class="flex flex-col gap-2">
-                        {hours.map((hour, i) => (
-                            <div
-                                key={hour}
-                                className="py-2 dark:bg-admin-terciary bg-paper-light rounded-md p-2    text-sm  flex gap-2  min-h-[60px]  h-full"
-                            >
-                                {(() => {
-                                    const citasFiltered = citas?.filter(
-                                        (time) => {
-                                            return (
-                                                time.time
-                                                    .split(" ")[1]
-                                                    .split(":")[0] ===
-                                                hour.split(":")[0]
-                                            );
-                                        }
-                                    );
+                        {hours.map((hour, i) => {
+                            const citasFiltered = citas?.filter((time) => {
+                                return (
+                                    time.hour.split(":")[0] ===
+                                    hour.split(":")[0]
+                                );
+                            });
 
-                                    return (
-                                        <>
-                                            {" "}
-                                            <span class="dark:text-white font-bold flex justify-center items-center w-[50px] mx-2">
-                                                {hour}
-                                                {i + 1 > 12 ? "PM" : "AM"}
-                                            </span>
+                            return (
+                                <div
+                                    key={hour}
+                                    className={`py-2 dark:bg-admin-terciary bg-paper-light rounded-md p-2    text-sm  flex gap-2  min-h-[60px]  h-full ${
+                                        citasFiltered?.length
+                                            ? "border-2 border-primary"
+                                            : ""
+                                    }`}
+                                >
+                                    {(() => {
+                                        return (
                                             <>
-                                                {citasFiltered?.length ? (
-                                                    <>
-                                                        {citasFiltered!.length >
-                                                        1 ? (
-                                                            <>
-                                                                <div class="flex flex-col gap-2  w-full h-full">
-                                                                    <span class="font-bold text-center dark:text-white">
-                                                                        hay{" "}
-                                                                        {
-                                                                            citasFiltered!
-                                                                                .length
-                                                                        }{" "}
-                                                                        Citas
-                                                                    </span>
-                                                                    <div class="grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid justify-center items-center gap-2">
-                                                                        {citasFiltered.map(
-                                                                            (
-                                                                                cita
-                                                                            ) => (
-                                                                                <div
-                                                                                    class="bg-primary p-2 rounded-md"
-                                                                                    key={
-                                                                                        cita.id
-                                                                                    }
-                                                                                    onClick={() =>
-                                                                                        sweetModal(
-                                                                                            {
-                                                                                                html: reactComponent(
-                                                                                                    <CitasShow
-                                                                                                        cita={{
-                                                                                                            ...cita,
-                                                                                                            time: cita.time as unknown as Date,
-                                                                                                        }}
-                                                                                                    />
-                                                                                                ),
-                                                                                                showCloseButton:
-                                                                                                    true,
-                                                                                                isCloseInBackground:
-                                                                                                    false,
-                                                                                            }
-                                                                                        )
-                                                                                    }
-                                                                                >
-                                                                                    <div class="flex flex-col">
-                                                                                        <span class="text-white text-xs font-semibold block text-center">
-                                                                                            {
-                                                                                                cita.telephone
-                                                                                            }
-                                                                                        </span>
-                                                                                        <span class="text-white text-xs font-semibold block text-center">
-                                                                                            {
-                                                                                                cita.time.split(
-                                                                                                    " "
-                                                                                                )[1]
-                                                                                            }
-                                                                                        </span>
-                                                                                    </div>
+                                                {" "}
+                                                <span class="dark:text-white font-bold flex justify-center items-center w-[50px] mx-2">
+                                                    {hour}
+                                                    {i + 1 > 12 ? "PM" : "AM"}
+                                                </span>
+                                                <>
+                                                    {citasFiltered?.length ? (
+                                                        <>
+                                                            {citasFiltered!
+                                                                .length > 1 ? (
+                                                                <>
+                                                                    <div class="flex flex-col gap-2  w-full h-full">
+                                                                        <span class="font-bold text-center dark:text-white">
+                                                                            hay{" "}
+                                                                            {
+                                                                                citasFiltered!
+                                                                                    .length
+                                                                            }{" "}
+                                                                            Citas
+                                                                        </span>
+                                                                        <div class="grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid justify-center items-center gap-2">
+                                                                            {citasFiltered.map(
+                                                                                (
+                                                                                    cita
+                                                                                ) => (
+                                                                                    <div
+                                                                                        class="bg-primary p-2 rounded-md"
+                                                                                        key={
+                                                                                            cita.id
+                                                                                        }
+                                                                                        onClick={() =>
+                                                                                            sweetModal(
+                                                                                                {
+                                                                                                    html: reactComponent(
+                                                                                                        <CitasShow
+                                                                                                            cita={
+                                                                                                                cita
+                                                                                                            }
+                                                                                                        />
+                                                                                                    ),
+                                                                                                    showCloseButton:
+                                                                                                        true,
+                                                                                                    isCloseInBackground:
+                                                                                                        false,
+                                                                                                }
+                                                                                            )
+                                                                                        }
+                                                                                    >
+                                                                                        <div class="flex flex-col">
+                                                                                            <span class="text-white text-xs font-semibold block text-center">
+                                                                                                {
+                                                                                                    cita.telephone
+                                                                                                }
+                                                                                            </span>
+                                                                                            <span class="text-white text-xs font-semibold block text-center">
+                                                                                                {
+                                                                                                    cita.hour
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
 
-                                                                                    <br />
-                                                                                    <div>
-                                                                                        <div class="grid grid-cols-3 gap-1  justify-center items-center ">
-                                                                                            {cita.contact ? (
-                                                                                                <>
-                                                                                                    {(() => {
-                                                                                                        const empresaContactsUpdateMutation =
-                                                                                                            empresaContactsUpdateApi();
-                                                                                                        return (
-                                                                                                            <button
-                                                                                                                class={` border  border-black    px-3 py-1.5 rounded-md ${
-                                                                                                                    cita
-                                                                                                                        .contact
-                                                                                                                        .ia
-                                                                                                                        ? "bg-black text-white"
-                                                                                                                        : "text-black"
-                                                                                                                }`}
-                                                                                                                type="button"
-                                                                                                                aria-label="enabled ia"
-                                                                                                                onClick={(
-                                                                                                                    e
-                                                                                                                ) => {
-                                                                                                                    e.stopPropagation();
-                                                                                                                    sweetModal(
-                                                                                                                        {
-                                                                                                                            title: "Estas seguro de quitar la IA a  este usuario?",
-                                                                                                                            text: "Este usuario ya no le responderá la IA si lo desactivas.",
-                                                                                                                            icon: "info",
-                                                                                                                            showCancelButton:
-                                                                                                                                true,
-                                                                                                                            showCloseButton:
-                                                                                                                                true,
+                                                                                        <br />
+                                                                                        <div>
+                                                                                            <div class="grid grid-cols-3 gap-1  justify-center items-center ">
+                                                                                                {cita.contact ? (
+                                                                                                    <>
+                                                                                                        {(() => {
+                                                                                                            const empresaContactsUpdateMutation =
+                                                                                                                empresaContactsUpdateApi();
+                                                                                                            return (
+                                                                                                                <button
+                                                                                                                    class={` border  border-black    px-3 py-1.5 rounded-md ${
+                                                                                                                        cita
+                                                                                                                            .contact
+                                                                                                                            .ia
+                                                                                                                            ? "bg-black text-white"
+                                                                                                                            : "text-black"
+                                                                                                                    }`}
+                                                                                                                    type="button"
+                                                                                                                    aria-label="enabled ia"
+                                                                                                                    onClick={(
+                                                                                                                        e
+                                                                                                                    ) => {
+                                                                                                                        e.stopPropagation();
+                                                                                                                        sweetModal(
+                                                                                                                            {
+                                                                                                                                title: "Estas seguro de quitar la IA a  este usuario?",
+                                                                                                                                text: "Este usuario ya no le responderá la IA si lo desactivas.",
+                                                                                                                                icon: "info",
+                                                                                                                                showCancelButton:
+                                                                                                                                    true,
+                                                                                                                                showCloseButton:
+                                                                                                                                    true,
+                                                                                                                            }
+                                                                                                                        ).then(
+                                                                                                                            ({
+                                                                                                                                isConfirmed,
+                                                                                                                            }) => {
+                                                                                                                                if (
+                                                                                                                                    isConfirmed
+                                                                                                                                ) {
+                                                                                                                                    empresaContactsUpdateMutation.mutate(
+                                                                                                                                        {
+                                                                                                                                            ...(cita.contact ??
+                                                                                                                                                {}),
+                                                                                                                                            ia: !cita
+                                                                                                                                                .contact
+                                                                                                                                                .ia,
+                                                                                                                                        },
+                                                                                                                                        {
+                                                                                                                                            onSuccess:
+                                                                                                                                                (data: {
+                                                                                                                                                    message: string;
+                                                                                                                                                }) => {
+                                                                                                                                                    query.refetch(
+                                                                                                                                                        false
+                                                                                                                                                    );
+                                                                                                                                                    sweetAlert(
+                                                                                                                                                        {
+                                                                                                                                                            icon: "success",
+                                                                                                                                                            title: data.message,
+                                                                                                                                                        }
+                                                                                                                                                    );
+                                                                                                                                                },
+                                                                                                                                            onError:
+                                                                                                                                                (error: {
+                                                                                                                                                    message: string;
+                                                                                                                                                }) => {
+                                                                                                                                                    sweetAlert(
+                                                                                                                                                        {
+                                                                                                                                                            icon: "danger",
+                                                                                                                                                            title: `Hubo un error al realizar esta acción, ${error.message}`,
+                                                                                                                                                        }
+                                                                                                                                                    );
+                                                                                                                                                },
+                                                                                                                                        }
+                                                                                                                                    );
+                                                                                                                                }
+                                                                                                                            }
+                                                                                                                        );
+                                                                                                                    }}
+                                                                                                                >
+                                                                                                                    <i class="fal fa-user-robot" />
+                                                                                                                </button>
+                                                                                                            );
+                                                                                                        })()}
+                                                                                                    </>
+                                                                                                ) : null}
+
+                                                                                                <button
+                                                                                                    type="button"
+                                                                                                    class="px-2 py-2 rounded-md text-white bg-orange-600"
+                                                                                                    onClick={(
+                                                                                                        e
+                                                                                                    ) => {
+                                                                                                        e.stopPropagation();
+                                                                                                        sweetModal(
+                                                                                                            (
+                                                                                                                onClose
+                                                                                                            ) => ({
+                                                                                                                html: reactComponent(
+                                                                                                                    <CitasUpdate
+                                                                                                                        cita={
+                                                                                                                            cita
                                                                                                                         }
-                                                                                                                    ).then(
-                                                                                                                        ({
-                                                                                                                            isConfirmed,
-                                                                                                                        }) => {
-                                                                                                                            if (
-                                                                                                                                isConfirmed
-                                                                                                                            ) {
-                                                                                                                                empresaContactsUpdateMutation.mutate(
+                                                                                                                        refetch={
+                                                                                                                            query.refetch
+                                                                                                                        }
+                                                                                                                        onClose={
+                                                                                                                            onClose
+                                                                                                                        }
+                                                                                                                    />
+                                                                                                                ),
+                                                                                                                showCloseButton:
+                                                                                                                    true,
+                                                                                                                isCloseInBackground:
+                                                                                                                    false,
+                                                                                                            })
+                                                                                                        );
+                                                                                                    }}
+                                                                                                >
+                                                                                                    <i class="fa-solid fa-pen" />
+                                                                                                </button>
+                                                                                                <button
+                                                                                                    type="button"
+                                                                                                    class="px-2 py-2 rounded-md text-white bg-danger"
+                                                                                                    onClick={(
+                                                                                                        e
+                                                                                                    ) => {
+                                                                                                        e.stopPropagation();
+                                                                                                        sweetModal(
+                                                                                                            {
+                                                                                                                title: "¿Estás seguro de cancelar cita?",
+                                                                                                                showCancelButton:
+                                                                                                                    true,
+                                                                                                                showCloseButton:
+                                                                                                                    true,
+                                                                                                                isCloseInBackground:
+                                                                                                                    false,
+                                                                                                            }
+                                                                                                        ).then(
+                                                                                                            ({
+                                                                                                                isConfirmed,
+                                                                                                            }) => {
+                                                                                                                if (
+                                                                                                                    isConfirmed
+                                                                                                                ) {
+                                                                                                                    citasDestroyMutation.mutate(
+                                                                                                                        cita.id,
+                                                                                                                        {
+                                                                                                                            onSuccess() {
+                                                                                                                                query.refetch(
+                                                                                                                                    false
+                                                                                                                                );
+                                                                                                                                sweetAlert(
                                                                                                                                     {
-                                                                                                                                        ...(cita.contact ??
-                                                                                                                                            {}),
-                                                                                                                                        ia: !cita
-                                                                                                                                            .contact
-                                                                                                                                            .ia,
-                                                                                                                                    },
-                                                                                                                                    {
-                                                                                                                                        onSuccess:
-                                                                                                                                            (data: {
-                                                                                                                                                message: string;
-                                                                                                                                            }) => {
-                                                                                                                                                query.refetch(
-                                                                                                                                                    false
-                                                                                                                                                );
-                                                                                                                                                sweetAlert(
-                                                                                                                                                    {
-                                                                                                                                                        icon: "success",
-                                                                                                                                                        title: data.message,
-                                                                                                                                                    }
-                                                                                                                                                );
-                                                                                                                                            },
-                                                                                                                                        onError:
-                                                                                                                                            (error: {
-                                                                                                                                                message: string;
-                                                                                                                                            }) => {
-                                                                                                                                                sweetAlert(
-                                                                                                                                                    {
-                                                                                                                                                        icon: "danger",
-                                                                                                                                                        title: `Hubo un error al realizar esta acción, ${error.message}`,
-                                                                                                                                                    }
-                                                                                                                                                );
-                                                                                                                                            },
+                                                                                                                                        icon: "success",
+                                                                                                                                        title: "Se canceló cita correctamente",
                                                                                                                                     }
                                                                                                                                 );
-                                                                                                                            }
+                                                                                                                            },
+                                                                                                                            onError(
+                                                                                                                                err
+                                                                                                                            ) {
+                                                                                                                                sweetAlert(
+                                                                                                                                    {
+                                                                                                                                        icon: "danger",
+                                                                                                                                        title: err.message,
+                                                                                                                                    }
+                                                                                                                                );
+                                                                                                                            },
                                                                                                                         }
                                                                                                                     );
-                                                                                                                }}
-                                                                                                            >
-                                                                                                                <i class="fal fa-user-robot" />
-                                                                                                            </button>
+                                                                                                                }
+                                                                                                            }
                                                                                                         );
-                                                                                                    })()}
-                                                                                                </>
-                                                                                            ) : null}
-
-                                                                                            <button
-                                                                                                type="button"
-                                                                                                class="px-2 py-2 rounded-md text-white bg-orange-600"
-                                                                                                onClick={(
-                                                                                                    e
-                                                                                                ) => {
-                                                                                                    e.stopPropagation();
-                                                                                                    sweetModal(
-                                                                                                        (
-                                                                                                            onClose
-                                                                                                        ) => ({
-                                                                                                            html: reactComponent(
-                                                                                                                <CitasUpdate
-                                                                                                                    cita={{
-                                                                                                                        ...cita,
-                                                                                                                        time: cita.time as unknown as Date,
-                                                                                                                    }}
-                                                                                                                    refetch={
-                                                                                                                        query.refetch
-                                                                                                                    }
-                                                                                                                    onClose={
-                                                                                                                        onClose
-                                                                                                                    }
-                                                                                                                />
-                                                                                                            ),
-                                                                                                            showCloseButton:
-                                                                                                                true,
-                                                                                                            isCloseInBackground:
-                                                                                                                false,
-                                                                                                        })
-                                                                                                    );
-                                                                                                }}
-                                                                                            >
-                                                                                                <i class="fa-solid fa-pen" />
-                                                                                            </button>
-                                                                                            <button
-                                                                                                type="button"
-                                                                                                class="px-2 py-2 rounded-md text-white bg-danger"
-                                                                                                onClick={(
-                                                                                                    e
-                                                                                                ) => {
-                                                                                                    e.stopPropagation();
-                                                                                                    sweetModal(
-                                                                                                        {
-                                                                                                            title: "¿Estás seguro de cancelar cita?",
-                                                                                                            showCancelButton:
-                                                                                                                true,
-                                                                                                            showCloseButton:
-                                                                                                                true,
-                                                                                                            isCloseInBackground:
-                                                                                                                false,
-                                                                                                        }
-                                                                                                    ).then(
-                                                                                                        ({
-                                                                                                            isConfirmed,
-                                                                                                        }) => {
-                                                                                                            if (
-                                                                                                                isConfirmed
-                                                                                                            ) {
-                                                                                                                citasDestroyMutation.mutate(
-                                                                                                                    cita.id,
-                                                                                                                    {
-                                                                                                                        onSuccess() {
+                                                                                                    }}
+                                                                                                >
+                                                                                                    <i class="fa-solid fa-ban" />
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                )
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </>
+                                                            ) : (
+                                                                <div
+                                                                    class="gap-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3  w-full overflow-auto"
+                                                                    onClick={() =>
+                                                                        sweetModal(
+                                                                            {
+                                                                                html: reactComponent(
+                                                                                    <CitasShow
+                                                                                        cita={
+                                                                                            citasFiltered![0]
+                                                                                        }
+                                                                                    />
+                                                                                ),
+                                                                                showCloseButton:
+                                                                                    true,
+                                                                                isCloseInBackground:
+                                                                                    false,
+                                                                            }
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <div class="flex flex-col justify-center items-center font-semibold dark:text-white">
+                                                                        <span class="text-center text-xs dark:text-normal">
+                                                                            {
+                                                                                citasFiltered![0]
+                                                                                    .telephone
+                                                                            }
+                                                                        </span>
+                                                                        <span class="text-center text-xs dark:text-normal">
+                                                                            {
+                                                                                citasFiltered![0]
+                                                                                    .hour
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                    <p class="w-[200px] xl:w-[300px] h-[80px]   m-2 font-semibold hidden md:flex overflow-auto dark:text-white  flex-col ">
+                                                                        {Object.entries(
+                                                                            citasFiltered![0]
+                                                                                .answers
+                                                                        ).map(
+                                                                            ([
+                                                                                key,
+                                                                                value,
+                                                                            ]) => (
+                                                                                <div
+                                                                                    key={
+                                                                                        key
+                                                                                    }
+                                                                                    class="flex flex-col gap-1"
+                                                                                >
+                                                                                    <span class="font-bold text-primary">
+                                                                                        -{" "}
+                                                                                        {
+                                                                                            key
+                                                                                        }
+                                                                                    </span>{" "}
+                                                                                    <span>
+                                                                                        {
+                                                                                            value
+                                                                                        }
+                                                                                    </span>
+                                                                                </div>
+                                                                            )
+                                                                        )}
+                                                                    </p>
+                                                                    <div class="grid grid-cols-2 gap-1  justify-center items-center ">
+                                                                        {citasFiltered![0]
+                                                                            .contact ? (
+                                                                            <>
+                                                                                {(() => {
+                                                                                    const empresaContactsUpdateMutation =
+                                                                                        empresaContactsUpdateApi();
+                                                                                    return (
+                                                                                        <button
+                                                                                            class={` border  border-black    px-3 py-1.5 rounded-md ${
+                                                                                                citasFiltered![0]
+                                                                                                    .contact
+                                                                                                    .ia
+                                                                                                    ? "bg-black text-white"
+                                                                                                    : "text-black"
+                                                                                            }`}
+                                                                                            type="button"
+                                                                                            aria-label="enabled ia"
+                                                                                            onClick={(
+                                                                                                e
+                                                                                            ) => {
+                                                                                                e.stopPropagation();
+                                                                                                sweetModal(
+                                                                                                    {
+                                                                                                        title: "Estas seguro de quitar la IA a  este usuario?",
+                                                                                                        text: "Este usuario ya no le responderá la IA si lo desactivas.",
+                                                                                                        icon: "info",
+                                                                                                        showCancelButton:
+                                                                                                            true,
+                                                                                                        showCloseButton:
+                                                                                                            true,
+                                                                                                    }
+                                                                                                ).then(
+                                                                                                    ({
+                                                                                                        isConfirmed,
+                                                                                                    }) => {
+                                                                                                        if (
+                                                                                                            isConfirmed
+                                                                                                        ) {
+                                                                                                            empresaContactsUpdateMutation.mutate(
+                                                                                                                {
+                                                                                                                    ...citasFiltered![0]
+                                                                                                                        .contact,
+                                                                                                                    ia: !citasFiltered![0]
+                                                                                                                        .contact
+                                                                                                                        .ia,
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    onSuccess:
+                                                                                                                        (data: {
+                                                                                                                            message: string;
+                                                                                                                        }) => {
                                                                                                                             query.refetch(
                                                                                                                                 false
                                                                                                                             );
                                                                                                                             sweetAlert(
                                                                                                                                 {
                                                                                                                                     icon: "success",
-                                                                                                                                    title: "Se canceló cita correctamente",
+                                                                                                                                    title: data.message,
                                                                                                                                 }
                                                                                                                             );
                                                                                                                         },
-                                                                                                                        onError(
-                                                                                                                            err
-                                                                                                                        ) {
+                                                                                                                    onError:
+                                                                                                                        (error: {
+                                                                                                                            message: string;
+                                                                                                                        }) => {
                                                                                                                             sweetAlert(
                                                                                                                                 {
                                                                                                                                     icon: "danger",
-                                                                                                                                    title: err.message,
+                                                                                                                                    title: `Hubo un error al realizar esta acción, ${error.message}`,
                                                                                                                                 }
                                                                                                                             );
                                                                                                                         },
-                                                                                                                    }
-                                                                                                                );
-                                                                                                            }
+                                                                                                                }
+                                                                                                            );
                                                                                                         }
-                                                                                                    );
-                                                                                                }}
-                                                                                            >
-                                                                                                <i class="fa-solid fa-ban" />
-                                                                                            </button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            )
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            </>
-                                                        ) : (
-                                                            <div
-                                                                class="gap-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3  w-full overflow-auto"
-                                                                onClick={() =>
-                                                                    sweetModal({
-                                                                        html: reactComponent(
-                                                                            <CitasShow
-                                                                                cita={{
-                                                                                    ...citasFiltered![0],
-                                                                                    time: citasFiltered![0]
-                                                                                        .time as unknown as Date,
-                                                                                }}
-                                                                            />
-                                                                        ),
-                                                                        showCloseButton:
-                                                                            true,
-                                                                        isCloseInBackground:
-                                                                            false,
-                                                                    })
-                                                                }
-                                                            >
-                                                                <div class="flex flex-col justify-center items-center font-semibold dark:text-white">
-                                                                    <span class="text-center text-xs dark:text-normal">
-                                                                        {
-                                                                            citasFiltered![0]
-                                                                                .telephone
-                                                                        }
-                                                                    </span>
-                                                                    <span class="text-center text-xs dark:text-normal">
-                                                                        {
-                                                                            citasFiltered![0].time.split(
-                                                                                " "
-                                                                            )[1]
-                                                                        }
-                                                                    </span>
-                                                                </div>
-                                                                <p class="w-[200px] xl:w-[300px] h-[80px]   m-2 font-semibold hidden md:flex overflow-auto dark:text-white  flex-col ">
-                                                                    {Object.entries(
-                                                                        citasFiltered![0]
-                                                                            .answers
-                                                                    ).map(
-                                                                        ([
-                                                                            key,
-                                                                            value,
-                                                                        ]) => (
-                                                                            <div
-                                                                                key={
-                                                                                    key
-                                                                                }
-                                                                                class="flex flex-col gap-1"
-                                                                            >
-                                                                                <span class="font-bold text-primary">
-                                                                                    -{" "}
+                                                                                                    }
+                                                                                                );
+                                                                                            }}
+                                                                                        >
+                                                                                            <i class="fal fa-user-robot" />
+                                                                                        </button>
+                                                                                    );
+                                                                                })()}
+                                                                            </>
+                                                                        ) : null}
+
+                                                                        <button
+                                                                            type="button"
+                                                                            class="px-2 py-2 rounded-md text-white bg-danger"
+                                                                            onClick={(
+                                                                                e
+                                                                            ) => {
+                                                                                e.stopPropagation();
+                                                                                sweetModal(
                                                                                     {
-                                                                                        key
+                                                                                        title: "¿Estás seguro de cancelar cita?",
+                                                                                        showCancelButton:
+                                                                                            true,
+                                                                                        showCloseButton:
+                                                                                            true,
+                                                                                        isCloseInBackground:
+                                                                                            false,
                                                                                     }
-                                                                                </span>{" "}
-                                                                                <span>
-                                                                                    {
-                                                                                        value
-                                                                                    }
-                                                                                </span>
-                                                                            </div>
-                                                                        )
-                                                                    )}
-                                                                </p>
-                                                                <div class="grid grid-cols-2 gap-1  justify-center items-center ">
-                                                                    {citasFiltered![0]
-                                                                        .contact ? (
-                                                                        <>
-                                                                            {(() => {
-                                                                                const empresaContactsUpdateMutation =
-                                                                                    empresaContactsUpdateApi();
-                                                                                return (
-                                                                                    <button
-                                                                                        class={` border  border-black    px-3 py-1.5 rounded-md ${
-                                                                                            citasFiltered![0]
-                                                                                                .contact
-                                                                                                .ia
-                                                                                                ? "bg-black text-white"
-                                                                                                : "text-black"
-                                                                                        }`}
-                                                                                        type="button"
-                                                                                        aria-label="enabled ia"
-                                                                                        onClick={(
-                                                                                            e
-                                                                                        ) => {
-                                                                                            e.stopPropagation();
-                                                                                            sweetModal(
+                                                                                ).then(
+                                                                                    ({
+                                                                                        isConfirmed,
+                                                                                    }) => {
+                                                                                        if (
+                                                                                            isConfirmed
+                                                                                        ) {
+                                                                                            citasDestroyMutation.mutate(
+                                                                                                citasFiltered![0]
+                                                                                                    .id,
                                                                                                 {
-                                                                                                    title: "Estas seguro de quitar la IA a  este usuario?",
-                                                                                                    text: "Este usuario ya no le responderá la IA si lo desactivas.",
-                                                                                                    icon: "info",
-                                                                                                    showCancelButton:
-                                                                                                        true,
-                                                                                                    showCloseButton:
-                                                                                                        true,
-                                                                                                }
-                                                                                            ).then(
-                                                                                                ({
-                                                                                                    isConfirmed,
-                                                                                                }) => {
-                                                                                                    if (
-                                                                                                        isConfirmed
-                                                                                                    ) {
-                                                                                                        empresaContactsUpdateMutation.mutate(
+                                                                                                    onSuccess() {
+                                                                                                        query.refetch(
+                                                                                                            false
+                                                                                                        );
+                                                                                                        sweetAlert(
                                                                                                             {
-                                                                                                                ...citasFiltered![0]
-                                                                                                                    .contact,
-                                                                                                                ia: !citasFiltered![0]
-                                                                                                                    .contact
-                                                                                                                    .ia,
-                                                                                                            },
-                                                                                                            {
-                                                                                                                onSuccess:
-                                                                                                                    (data: {
-                                                                                                                        message: string;
-                                                                                                                    }) => {
-                                                                                                                        query.refetch(
-                                                                                                                            false
-                                                                                                                        );
-                                                                                                                        sweetAlert(
-                                                                                                                            {
-                                                                                                                                icon: "success",
-                                                                                                                                title: data.message,
-                                                                                                                            }
-                                                                                                                        );
-                                                                                                                    },
-                                                                                                                onError:
-                                                                                                                    (error: {
-                                                                                                                        message: string;
-                                                                                                                    }) => {
-                                                                                                                        sweetAlert(
-                                                                                                                            {
-                                                                                                                                icon: "danger",
-                                                                                                                                title: `Hubo un error al realizar esta acción, ${error.message}`,
-                                                                                                                            }
-                                                                                                                        );
-                                                                                                                    },
+                                                                                                                icon: "success",
+                                                                                                                title: "Se canceló cita correctamente",
                                                                                                             }
                                                                                                         );
-                                                                                                    }
+                                                                                                    },
+                                                                                                    onError(
+                                                                                                        err
+                                                                                                    ) {
+                                                                                                        sweetAlert(
+                                                                                                            {
+                                                                                                                icon: "danger",
+                                                                                                                title: err.message,
+                                                                                                            }
+                                                                                                        );
+                                                                                                    },
                                                                                                 }
                                                                                             );
-                                                                                        }}
-                                                                                    >
-                                                                                        <i class="fal fa-user-robot" />
-                                                                                    </button>
-                                                                                );
-                                                                            })()}
-                                                                        </>
-                                                                    ) : null}
-
-                                                                    <button
-                                                                        type="button"
-                                                                        class="px-2 py-2 rounded-md text-white bg-danger"
-                                                                        onClick={(
-                                                                            e
-                                                                        ) => {
-                                                                            e.stopPropagation();
-                                                                            sweetModal(
-                                                                                {
-                                                                                    title: "¿Estás seguro de cancelar cita?",
-                                                                                    showCancelButton:
-                                                                                        true,
-                                                                                    showCloseButton:
-                                                                                        true,
-                                                                                    isCloseInBackground:
-                                                                                        false,
-                                                                                }
-                                                                            ).then(
-                                                                                ({
-                                                                                    isConfirmed,
-                                                                                }) => {
-                                                                                    if (
-                                                                                        isConfirmed
-                                                                                    ) {
-                                                                                        citasDestroyMutation.mutate(
-                                                                                            citasFiltered![0]
-                                                                                                .id,
-                                                                                            {
-                                                                                                onSuccess() {
-                                                                                                    query.refetch(
-                                                                                                        false
-                                                                                                    );
-                                                                                                    sweetAlert(
-                                                                                                        {
-                                                                                                            icon: "success",
-                                                                                                            title: "Se canceló cita correctamente",
-                                                                                                        }
-                                                                                                    );
-                                                                                                },
-                                                                                                onError(
-                                                                                                    err
-                                                                                                ) {
-                                                                                                    sweetAlert(
-                                                                                                        {
-                                                                                                            icon: "danger",
-                                                                                                            title: err.message,
-                                                                                                        }
-                                                                                                    );
-                                                                                                },
-                                                                                            }
-                                                                                        );
+                                                                                        }
                                                                                     }
-                                                                                }
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        <i class="fa-solid fa-ban" />
-                                                                    </button>
-                                                                    <button
-                                                                        type="button"
-                                                                        class="px-2 py-2 rounded-md text-white bg-orange-600"
-                                                                        onClick={(
-                                                                            e
-                                                                        ) => {
-                                                                            e.stopPropagation();
-                                                                            sweetModal(
-                                                                                (
-                                                                                    onClose
-                                                                                ) => ({
-                                                                                    html: reactComponent(
-                                                                                        <CitasUpdate
-                                                                                            cita={{
-                                                                                                ...citasFiltered![0],
-                                                                                                time: citasFiltered![0]
-                                                                                                    .time as unknown as Date,
-                                                                                            }}
-                                                                                            refetch={
-                                                                                                query.refetch
-                                                                                            }
-                                                                                            onClose={
-                                                                                                onClose
-                                                                                            }
-                                                                                        />
-                                                                                    ),
-                                                                                    showCloseButton:
-                                                                                        true,
-                                                                                    isCloseInBackground:
-                                                                                        false,
-                                                                                    // <CitasStore
-                                                                                    //     timer={
-                                                                                    //         timer
-                                                                                    //     }
-                                                                                    // />
-                                                                                })
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        <i class="fa-solid fa-pen" />
-                                                                    </button>
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            <i class="fa-solid fa-ban" />
+                                                                        </button>
+                                                                        <button
+                                                                            type="button"
+                                                                            class="px-2 py-2 rounded-md text-white bg-orange-600"
+                                                                            onClick={(
+                                                                                e
+                                                                            ) => {
+                                                                                e.stopPropagation();
+                                                                                sweetModal(
+                                                                                    (
+                                                                                        onClose
+                                                                                    ) => ({
+                                                                                        html: reactComponent(
+                                                                                            <CitasUpdate
+                                                                                                cita={
+                                                                                                    citasFiltered![0]
+                                                                                                }
+                                                                                                refetch={
+                                                                                                    query.refetch
+                                                                                                }
+                                                                                                onClose={
+                                                                                                    onClose
+                                                                                                }
+                                                                                            />
+                                                                                        ),
+                                                                                        showCloseButton:
+                                                                                            true,
+                                                                                        isCloseInBackground:
+                                                                                            false,
+                                                                                        // <CitasStore
+                                                                                        //     timer={
+                                                                                        //         timer
+                                                                                        //     }
+                                                                                        // />
+                                                                                    })
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            <i class="fa-solid fa-pen" />
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        )}
-                                                    </>
-                                                ) : (
-                                                    <div class="w-full ">
-                                                        <span class="flex justify-center items-center dark:text-white font-bold">
-                                                            No hay Citas
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </>{" "}
-                                            <div class="flex justify-center items-center">
-                                                <button
-                                                    type="button"
-                                                    class="px-4 py-2 rounded-md text-white bg-primary"
-                                                    onClick={() => {
-                                                        const t = today.value;
-                                                        const timer = dayjs(
-                                                            `${TimePeru(t).get(
-                                                                "year"
-                                                            )}-${
-                                                                TimePeru(t).get(
-                                                                    "month"
-                                                                ) + 1
-                                                            }-${TimePeru(t).get(
-                                                                "date"
-                                                            )} ${hour}`
-                                                        ).format(
-                                                            "YYYY-MM-DDTHH:mm"
-                                                        );
-                                                        sweetModal(
-                                                            (onClose) => ({
-                                                                html: reactComponent(
-                                                                    <CitasStore
-                                                                        time={
-                                                                            timer as unknown as Date
-                                                                        }
-                                                                        refetch={
-                                                                            query.refetch
-                                                                        }
-                                                                        onClose={
-                                                                            onClose
-                                                                        }
-                                                                    />
-                                                                ),
-                                                                showCloseButton:
-                                                                    true,
-                                                                isCloseInBackground:
-                                                                    false,
-                                                            })
-                                                        );
-                                                    }}
-                                                >
-                                                    +
-                                                </button>
-                                            </div>
-                                        </>
-                                    );
-                                })()}
-                            </div>
-                        ))}
+                                                            )}
+                                                        </>
+                                                    ) : (
+                                                        <div class="w-full ">
+                                                            <span class="flex justify-center items-center dark:text-white font-bold">
+                                                                No hay Citas
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </>{" "}
+                                                <div class="flex justify-center items-center">
+                                                    <button
+                                                        type="button"
+                                                        class="px-4 py-2 rounded-md text-white bg-primary"
+                                                        onClick={() => {
+                                                            sweetModal(
+                                                                (onClose) => ({
+                                                                    html: reactComponent(
+                                                                        <CitasStore
+                                                                            hour={
+                                                                                hour
+                                                                            }
+                                                                            date={
+                                                                                today.value as unknown as Date
+                                                                            }
+                                                                            refetch={
+                                                                                query.refetch
+                                                                            }
+                                                                            onClose={
+                                                                                onClose
+                                                                            }
+                                                                        />
+                                                                    ),
+                                                                    showCloseButton:
+                                                                        true,
+                                                                    isCloseInBackground:
+                                                                        false,
+                                                                })
+                                                            );
+                                                        }}
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            </>
+                                        );
+                                    })()}
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
@@ -705,11 +694,12 @@ function CitasIndex() {
     return component;
 }
 interface CitasStoreProps {
-    time: Date;
+    date: Date;
+    hour: string;
     onClose: () => void;
     refetch: (clean?: boolean) => void;
 }
-function CitasStore({ time, onClose, refetch }: CitasStoreProps) {
+function CitasStore({ date, hour, onClose, refetch }: CitasStoreProps) {
     const citasStoreMutation = citasStoreApi();
     const empresaStore = useEmpresastore();
     const questions = empresaStore.state?.citasSetting.questions;
@@ -717,7 +707,8 @@ function CitasStore({ time, onClose, refetch }: CitasStoreProps) {
     const citasStoreForm = useForm<CitasStoreDto>({
         resolver: valibotVigilio(citasStoreDto),
         defaultValues: {
-            time: time,
+            date,
+            hour,
             answers: questions
                 ?.map((key) => key.question)
                 .reduce((acc, curr) => {
@@ -762,7 +753,7 @@ function CitasStore({ time, onClose, refetch }: CitasStoreProps) {
     return (
         <div>
             <h1 class="font-semibold text-lg dark:text-white">
-                Crear Cita {dayjs(time).format("HH:mm A")}
+                Crear Cita {dayjs(date).format("YYYY-MM-DD")} {hour}
             </h1>
             <Form onSubmit={onCitasStore} {...citasStoreForm}>
                 <Form.control
@@ -860,8 +851,8 @@ function CitasStore({ time, onClose, refetch }: CitasStoreProps) {
                 <br />
                 <Form.control
                     title="Descripción de la cita"
-                    type="datetime-local"
-                    name={"time" as keyof CitasStoreDto}
+                    type="time"
+                    name={"hour" as keyof CitasStoreDto}
                 />
                 <Form.control
                     title="Descripción de la cita"
@@ -927,7 +918,7 @@ function CitasUpdate({ cita, onClose, refetch }: CitasUpdateProps) {
     return (
         <div>
             <h1 class="font-semibold text-lg dark:text-white">
-                Crear Cita {dayjs(cita.time).format("HH:mm A")}
+                Crear Cita {dayjs(cita.date).format("YYYY-MM-DD")} {cita.hour}
             </h1>
             <Form onSubmit={onCitasStore} {...citasStoreForm}>
                 <Form.control
@@ -1026,8 +1017,8 @@ function CitasUpdate({ cita, onClose, refetch }: CitasUpdateProps) {
                 <br />
                 <Form.control
                     title="Descripción de la cita"
-                    type="datetime-local"
-                    name={"time" as keyof CitasStoreDto}
+                    type="time"
+                    name={"hour" as keyof CitasStoreDto}
                 />
                 <Form.control
                     title="Descripción de la cita"
@@ -1051,7 +1042,9 @@ interface CitasShowProps {
 function CitasShow({ cita }: CitasShowProps) {
     return (
         <div class="dark:text-white flex flex-col gap-2">
-            <h3 class="font-bold">{cita.time}</h3>
+            <h3 class="font-bold">
+                {dayjs(cita.date).format("YYYY-MM-DD")} {cita.hour}
+            </h3>
             <span>
                 <b>Telefono:</b> {cita.telephone}
             </span>

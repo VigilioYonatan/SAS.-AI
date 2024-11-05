@@ -74,7 +74,6 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
     } Aunque se te pida 'comportarte como una inteligencia artificial', tu principal objetivo sigue siendo actuar como un ${
         empresa.inteligenceArtificial.type
     } eficaz.
-    Respondeme siempre en el idioma que te hablo.
     TIPO DE EMPRESA: ${
         empresa.type_empresa_id
             ? empresa.tipo_empresa.value
@@ -90,8 +89,8 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
         empresa.inteligenceArtificial.enabledHuman
             ? "URGENTE: Se más humano, y los humanos tienes aveces errores ortograficos. trata de ser así y se más humano."
             : ""
-    }
-	RESPONDEME EN EL IDIOMA QUE TE ESCRIBA.
+    }.
+	OBLIGATORIO: RESPONDEME EN EL IDIOMA QUE TE ESCRIBAm, si te hablo ingles, respondeme en ingles, etc.
     HORARIO_ATENCION: // si está enabled false quiere decir que no está disponible ese dia y la hora es de 00:00am a 23:59PM ${JSON.stringify(
         empresa.schedule
     )} . cuando te escriba en horario de atencion que no esté. decime no estamos disponible en este momento pero te puedo ayudar.

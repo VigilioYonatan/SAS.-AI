@@ -303,6 +303,75 @@ function AdminLayout({ children }: AdminLayoutProps) {
                             }
                             uris={pathProducts()}
                         />
+
+                        {/* <NavLink
+                            onClick={onCloseAside}
+                            to="/reders"
+                            title="Redes"
+                            Icon={
+                                <div class="grid grid-cols-2 gap-1">
+                                    <i class="fa-brands fa-facebook-messenger" />
+                                    <i class="fa-brands fa-whatsapp" />
+                                    <i class="fa-brands fa-tiktok" />
+                                    <i class="fa-brands fa-instagram" />
+                                </div>
+                            }
+                            uris={[
+                                {
+                                    title: (
+                                        <span class="relative block">
+                                            <i class="fa-brands  fa-whatsapp" />{" "}
+                                            Whatsapp
+                                            <div
+                                                class={`${
+                                                    empresaStore.state
+                                                        ?.enabledBot
+                                                        ? "bg-success"
+                                                        : "bg-danger"
+                                                } w-[15px] h-[15px] rounded-full absolute right-0 top-1 `}
+                                            />
+                                        </span>
+                                    ),
+                                    to: "/whatsapp",
+                                },
+                                {
+                                    title: (
+                                        <span class="relative block">
+                                            <i class="fa-brands fa-facebook-messenger" />{" "}
+                                            messenger
+                                            <div class=" absolute right-0 top-1  bg-orange-600 text-white text-[8px] rounded-md px-1">
+                                                Muy Pronto
+                                            </div>
+                                        </span>
+                                    ),
+                                    to: "/messenger",
+                                },
+                                {
+                                    title: (
+                                        <span class="relative block">
+                                            <i class="fa-brands fa-instagram" />{" "}
+                                            Instagram
+                                            <div class=" absolute right-0 top-1  bg-orange-600 text-white text-[8px] rounded-md px-1">
+                                                Muy Pronto
+                                            </div>
+                                        </span>
+                                    ),
+                                    to: "/instagram",
+                                },
+                                {
+                                    title: (
+                                        <span class="relative block">
+                                            <i class="fa-brands fa-tiktok" />{" "}
+                                            Tik Tok
+                                            <div class=" absolute right-0 top-1  bg-orange-600 text-white text-[8px] rounded-md px-1">
+                                                Muy Pronto
+                                            </div>
+                                        </span>
+                                    ),
+                                    to: "/TikTok",
+                                },
+                            ]}
+                        /> */}
                         {storageEmpresa?.tipo_empresa.tipo_servicio_id === 3 ? (
                             <NavLink
                                 onClick={onCloseAside}
@@ -392,6 +461,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                         } w-[15px] h-[15px] rounded-full absolute right-2 md:right-[30%] top-1 md:top-3`}
                                     />
                                 </div>
+
                                 <div class="relative">
                                     <NavLink
                                         onClick={onCloseAside}

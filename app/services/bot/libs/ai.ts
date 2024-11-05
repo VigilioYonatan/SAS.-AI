@@ -67,7 +67,10 @@ export async function initializeBot(empresa: Empresas, token: string) {
     console.log(`Conectado TELEGRAM BOT ${token}`);
 }
 
-export async function isWhatsappIA(empresa: string, telephone?: string) {
+export async function isWhatsappTelegramIA(
+    empresa: string,
+    telephone?: string
+) {
     let clientVigilio = JSON.parse(cache.get("client-vigilio") ?? "null");
     try {
         if (!clientVigilio) {
@@ -113,7 +116,7 @@ export async function isWhatsappIA(empresa: string, telephone?: string) {
         latestEmpresaUsage,
     };
 }
-export async function isTelegramIA(empresa: string) {
+export async function isRedesIA(empresa: string) {
     let clientVigilio = null;
     try {
         clientVigilio = await getClientVigilio();
@@ -135,7 +138,7 @@ export async function isTelegramIA(empresa: string) {
     const isDateNow = restarDays(
         emp,
         NOW(emp).format(),
-        emp.payments.telegram.date!,
+        emp.payments.redes.date!,
         "day"
     );
     // si se vencio la fecha y no hay tokens
@@ -154,7 +157,7 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
     const voice = message.voice ?? null;
     if (!voice && !body) return;
     try {
-        const telegram = await isTelegramIA(emp.slug);
+        const telegram = await isWhatsappTelegramIA(emp.slug);
 
         if (!telegram) return;
 
@@ -285,7 +288,7 @@ export let chatAssistant: Record<
 > = {};
 export async function cloudeAi(emp: string, userId: string, message: string) {
     try {
-        const whatsapp = await isWhatsappIA(emp);
+        const whatsapp = await isWhatsappTelegramIA(emp);
         if (!whatsapp) return;
         const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
 
@@ -490,6 +493,16 @@ export function sendMessageCron({
     });
 }
 
+export async function executeCronDate(date: Date, cb: () => void) {
+    const task = cron.schedule("*/1 * * * *", async () => {
+        const now = new Date();
+        if (now.getTime() >= date.getTime()) {
+            cb();
+            // Detener el cron job después de que se ejecute
+            task.stop();
+        }
+    });
+}
 cron.schedule("0 0 * * *", () => {
     chatsTelegram = {};
 });

@@ -415,6 +415,7 @@ export class OrdersApiService {
                     identification_number:
                         ordersStoreDto.invoice?.identification_number || null,
                     reference: ordersStoreDto.reference || null,
+                    buys: [],
                 });
             } else {
                 if (!client.enabled)
@@ -635,12 +636,19 @@ export class OrdersApiService {
                     ),
                 ]);
                 if (product instanceof ProductsServicio) {
-                    await this.citasApiService.store(empresa, {
-                        telephone: ordersStoreDto.telephone!,
-                        answers: {},
-                        description: `Se confirmó cita ${order.order_code}`,
-                        time: detail_order.variante as unknown as Date,
-                    });
+                    const date = product.showHorario
+                        ? detail_order.variante?.split("T")
+                        : null;
+                    if (date) {
+                        await this.citasApiService.store(empresa, {
+                            telephone: ordersStoreDto.telephone!,
+                            answers: {},
+                            description: `Se confirmó cita ${order.order_code}`,
+                            hour: date.at(-1)!,
+                            date: detail_order.variante as unknown as Date,
+                        });
+                    }
+                    // const
                 }
                 if (product instanceof ProductsNormal) {
                     // encontrar variant
@@ -790,6 +798,58 @@ export class OrdersApiService {
                 subFacturacion,
             });
         }
+
+        if (
+            props.ordersUpdateDto.status_order_id === STATUSORDER.entregado &&
+            order.status_order_id !== STATUSORDER.entregado &&
+            order.client_id
+        ) {
+            const client = await Clients.findByPk(order.client_id);
+            const buys: { title: string; date: Date | null; order: string }[] =
+                await Promise.all(
+                    (order.dataValues.details_orders as DetailOrders[]).map(
+                        async (prod) => {
+                            const product = await Product(
+                                empresa,
+                                order.isService
+                            ).findOne({
+                                where: {
+                                    id: prod[
+                                        productEntityId(
+                                            empresa,
+                                            order.isService
+                                        ) as keyof typeof prod
+                                    ],
+                                    empresa_id: empresa.id,
+                                },
+                            });
+                            return {
+                                order: order.order_code,
+                                title: `${product.name}  ${
+                                    prod.variante ? `- ${prod.variante}` : ""
+                                }`,
+                                date:
+                                    product instanceof ProductsServicio &&
+                                    product.days.length
+                                        ? (NOW(empresa)
+                                              .add(
+                                                  product.days.find(
+                                                      (pr) =>
+                                                          pr.name ===
+                                                          prod.variante
+                                                  )?.days ?? 0,
+                                                  "day"
+                                              )
+                                              .format() as unknown as Date)
+                                        : null,
+                            };
+                        }
+                    )
+                );
+
+            await client?.update({ buys: [...buys, ...(client.buys ?? [])] });
+        }
+
         if (
             rest.status_order_id === STATUSORDER.problema &&
             order.status_order_id !== STATUSORDER.problema

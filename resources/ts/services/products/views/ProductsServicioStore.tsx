@@ -149,8 +149,16 @@ function ProductsServicioStore({
             (item, index) =>
                 body.days.findIndex((i) => i.days === item.days) !== index
         );
+        const existHorario2 = body.days.some(
+            (item, index) =>
+                body.days.findIndex((i) => i.name === item.name) !== index
+        );
         if (existHorario) {
             error.value = "Se repitieron los dias en el campo suscripción";
+            return;
+        }
+        if (existHorario2) {
+            error.value = "Se repitieron los nombres en el campo suscripción";
             return;
         }
 

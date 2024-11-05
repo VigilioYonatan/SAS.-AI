@@ -56,7 +56,7 @@ const payments = object({
     tokens: object({
         tokens: number("Solo numeros"),
     }),
-    telegram: object({
+    redes: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
         enabled: boolean("Este campo es obligatorio"),
     }),

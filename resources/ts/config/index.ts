@@ -55,11 +55,11 @@ export function fechasVencidas() {
             storageEmpresa!.payments.mensual.date as Date,
             "day"
         ),
-        telegram: restarDays(
-            NOW().toDate(),
-            storageEmpresa!.payments.telegram.date as Date,
-            "day"
-        ),
+        // redes: restarDays(
+        //     NOW().toDate(),
+        //     storageEmpresa!.payments.redes.date as Date,
+        //     "day"
+        // ),
         token: storageEmpresa!.payments.tokens.tokens,
         facturacion: storageEmpresa!.payments.facturacion
             ? restarDays(
@@ -71,9 +71,9 @@ export function fechasVencidas() {
     };
     return fechas.mensual < 5 && fechas.mensual >= 0
         ? "tu plan mensual"
-        : fechas.telegram < 5 && fechas.mensual >= 0
-        ? "tu plan de Telegram mensual"
-        : fechas.facturacion && fechas.facturacion < 5 && fechas.mensual >= 0
+        : // : fechas.redes < 5 && fechas.mensual >= 0
+        // ? "tu plan de redes mensual"
+        fechas.facturacion && fechas.facturacion < 5 && fechas.mensual >= 0
         ? "tu plan de Facturación mensual"
         : fechas.token < 500000
         ? "tus tokens IA"

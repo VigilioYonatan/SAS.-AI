@@ -23,7 +23,8 @@ export const citasSchema = object({
         ),
     ]),
     description: nullable(string([minLength(3)])),
-    time: coerce(date(), (value) => new Date(value as string)),
+    hour: string(),
+    date: coerce(date(), (val) => new Date(val as string)),
     answers: record(string(), string([minLength(2), maxLength(300)])),
     empresa_id: number(),
 });

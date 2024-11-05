@@ -1,8 +1,7 @@
-import { nullable, record } from "@vigilio/valibot";
+import { date, nullable, record } from "@vigilio/valibot";
 import {
     coerce,
     custom,
-    date,
     maxLength,
     minLength,
     number,
@@ -21,9 +20,8 @@ export const citasSchema = objectAsync({
             "Este campo solo permite números."
         ),
     ]),
-    time: coerce(date(), (value) => {
-        return new Date(value as string);
-    }),
+    hour: string(),
+    date: coerce(date(), (val) => new Date(val as string)),
     description: nullable(string([minLength(3), maxLength(200)])),
     answers: record(string(), string([minLength(2), maxLength(300)])),
     empresa_id: number(),

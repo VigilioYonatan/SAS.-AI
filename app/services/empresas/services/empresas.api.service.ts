@@ -38,7 +38,7 @@ import enviroments from "~/config/enviroments.config";
 import { Settings } from "../entities/settings.entity";
 import type { SettingsSchema } from "../schemas/settings.schema";
 import { NOW, restarDays } from "~/libs/dayjs";
-import { initializeBot } from "@/bot/libs/ai";
+import { executeCronDate, initializeBot } from "@/bot/libs/ai";
 import { vpsShowApi } from "./backup.api.service";
 import type { SettingsUpdateDto } from "../dtos/settings.update.dto";
 import { NodeSSH } from "node-ssh";
@@ -472,6 +472,15 @@ export class EmpresasApiService {
                         enviroments.DOCKER_IMAGE_WHATSAPP
                     }`
                 );
+                // eliminar docker en 15 dias
+                const fechaUTC5 = new Date(empresa.createdAt);
+                fechaUTC5.setDate(fechaUTC5.getHours() + 14);
+                await executeCronDate(fechaUTC5, async () => {
+                    if (!empresa.slug.includes("demo")) {
+                        await terminal(`docker stop ${empresa.slug} || true`);
+                        await terminal(`docker rm -f ${empresa.slug} || true`);
+                    }
+                });
             }
 
             return {
@@ -681,11 +690,11 @@ export class EmpresasApiService {
             if (
                 empresasUpdateDto.telegram_token &&
                 empresasUpdateDto.telegram_token !== empresa.telegram_token &&
-                empresa.payments.telegram.enabled &&
+                empresa.payments.mensual.enabled &&
                 restarDays(
                     empresa,
                     NOW(empresa).format(),
-                    empresa.payments.telegram.date as Date
+                    empresa.payments.mensual.date as Date
                 ) > 0
             ) {
                 await initializeBot(empresa, empresasUpdateDto.telegram_token);

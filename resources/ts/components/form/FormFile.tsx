@@ -21,6 +21,7 @@ interface FormFileProps<T extends object> {
     options?: RegisterOptions<T, Path<T>>;
     showButonCopy?: boolean;
     showButtonClean?: boolean;
+    fileNormal?: "big" | "normal" | "small";
 }
 function FormFile<T extends object>({
     multiple = false,
@@ -32,6 +33,7 @@ function FormFile<T extends object>({
     options,
     showButonCopy = false,
     showButtonClean = false,
+    fileNormal = "big",
 }: FormFileProps<T>) {
     const form =
         useContext<UseFormReturn<T, unknown, FieldValues>>(FormControlContext);
@@ -169,137 +171,192 @@ function FormFile<T extends object>({
     );
     const nameCustom = `${name as string}${Date.now().toString(32).slice(4)}`;
     return (
-        <div class="w-full lg:mb-2">
-            <p>
-                <label
-                    class="text-xs dark:text-secondary-light text-secondary-dark capitalize font-semibold"
-                    htmlFor={nameCustom}
-                >
-                    {title}{" "}
-                </label>{" "}
-                <div class="flex items-center gap-1">
-                    {showButonCopy ? (
-                        <button
-                            type="button"
-                            aria-label="oncopy"
-                            class="ml-2 text-white bg-primary px-2 py-1 rounded-md shadow relative"
-                            onClick={async () => {
-                                isLoading.value = true;
-                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                                await onPageImage(form as any, name);
-                                isLoading.value = false;
-                            }}
-                        >
-                            {isLoading.value ? (
-                                <LoaderSubmit />
-                            ) : (
-                                <i class="fas fa-images" />
-                            )}
-                        </button>
+        <>
+            {fileNormal === "small" ? (
+                <>
+                    <label
+                        class="bg-primary text-white  px-3 rounded-md flex justify-center items-center"
+                        htmlFor={nameCustom}
+                    >
+                        <i
+                            class={`fa-solid  ${
+                                typeFile === "file"
+                                    ? "fa-paperclip"
+                                    : typeFile === "image"
+                                    ? "fa-image"
+                                    : typeFile === "video"
+                                    ? "fa-video"
+                                    : "fa-paperclip"
+                            } `}
+                        />
+                        <input
+                            id={nameCustom as string}
+                            hidden
+                            type="file"
+                            multiple={multiple}
+                            accept={accept}
+                            {...form.register(name as unknown as Path<T>, {
+                                ...options,
+                                onChange(e: Event) {
+                                    const files = (e.target as HTMLInputElement)
+                                        .files;
+                                    onChange(files!);
+                                },
+                                value: null as PathValue<T, Path<T>>,
+                            })}
+                            class=" w-full  text-sm border border-gray-200 dark:border-gray-600  rounded-lg cursor-pointer"
+                        />
+                    </label>
+                    {Object.keys(err).length ? (
+                        <p class="text-xs text-red-600">{err?.message}</p>
                     ) : null}
-                    {showButtonClean ? (
-                        <button
-                            type="button"
-                            aria-label="clean"
-                            class="ml-2 text-white bg-primary px-2 py-1 rounded-md shadow relative"
-                            onClick={() => {
-                                form.setValue(
-                                    name as unknown as Path<T>,
-                                    [] as PathValue<T, Path<T>>
-                                );
-                            }}
+                </>
+            ) : (
+                <div class="w-full lg:mb-2">
+                    <p>
+                        <label
+                            class="text-xs dark:text-secondary-light text-secondary-dark capitalize font-semibold"
+                            htmlFor={nameCustom}
                         >
-                            <i class="fas fa-eraser" />
-                        </button>
-                    ) : null}
-                </div>
-            </p>
-
-            <input
-                id={nameCustom as string}
-                hidden={true}
-                type="file"
-                multiple={multiple}
-                accept={accept}
-                {...form.register(name as unknown as Path<T>, {
-                    ...options,
-                    onChange(e: Event) {
-                        const files = (e.target as HTMLInputElement).files;
-                        onChange(files!);
-                    },
-                    value: null as PathValue<T, Path<T>>,
-                })}
-                class=" w-full  text-sm border border-gray-200 dark:border-gray-600  rounded-lg cursor-pointer"
-            />
-            <label
-                onDrop={onDrop}
-                draggable={true}
-                onDragOver={onDragEnter}
-                onDragLeave={onDragLeave}
-                htmlFor={nameCustom as unknown as Path<T>}
-                class={`${Object.keys(err).length ? "border-danger" : ""} ${
-                    isDrag.value ? "border-primary" : ""
-                } flex  w-full  flex-col items-center py-6 justify-center min-h-[180px] border-2 border-dashed rounded-lg cursor-pointer dark:bg-admin-terciary bg-paper-light max-w-full min-w-[250px] my-2  shadow-sm `}
-            >
-                <div class="flex flex-wrap justify-center gap-3 w-full">
-                    {(files as File[]) && (files as File[])?.length ? (
-                        showFiles()
-                    ) : (
-                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                            {isDrag.value ? (
-                                <>
-                                    {typeFile === "image" ? (
-                                        <i class="far fa-images text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
-                                    ) : null}
-                                    {typeFile === "video" ? (
-                                        <i class="fas fa-photo-video text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
-                                    ) : typeFile === "file" ? (
-                                        <i class="fas fa-file-alt text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
-                                    ) : null}
-                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                        <span class="font-semibold">
-                                            Arrastra
-                                        </span>
-                                        y suelta los archivos
-                                    </p>
-                                </>
-                            ) : (
-                                <>
-                                    {typeFile === "image" ? (
-                                        <i class="far fa-images text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
-                                    ) : null}
-                                    {typeFile === "video" ? (
-                                        <i class="fas fa-photo-video text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
-                                    ) : typeFile === "file" ? (
-                                        <i class="fas fa-file-alt  text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
-                                    ) : null}
-
-                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                        <span class="font-semibold">
-                                            Click to upload
-                                        </span>{" "}
-                                        or drag and drop
-                                    </p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase">
-                                        {typesText}
-                                    </p>
-                                </>
-                            )}
+                            {title}{" "}
+                        </label>{" "}
+                        <div class="flex items-center gap-1">
+                            {showButonCopy ? (
+                                <button
+                                    type="button"
+                                    aria-label="oncopy"
+                                    class="ml-2 text-white bg-primary px-2 py-1 rounded-md shadow relative"
+                                    onClick={async () => {
+                                        isLoading.value = true;
+                                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                        await onPageImage(form as any, name);
+                                        isLoading.value = false;
+                                    }}
+                                >
+                                    {isLoading.value ? (
+                                        <LoaderSubmit />
+                                    ) : (
+                                        <i class="fas fa-images" />
+                                    )}
+                                </button>
+                            ) : null}
+                            {showButtonClean ? (
+                                <button
+                                    type="button"
+                                    aria-label="clean"
+                                    class="ml-2 text-white bg-primary px-2 py-1 rounded-md shadow relative"
+                                    onClick={() => {
+                                        form.setValue(
+                                            name as unknown as Path<T>,
+                                            [] as PathValue<T, Path<T>>
+                                        );
+                                    }}
+                                >
+                                    <i class="fas fa-eraser" />
+                                </button>
+                            ) : null}
                         </div>
-                    )}
+                    </p>
+
+                    <input
+                        id={nameCustom as string}
+                        hidden={fileNormal === "big"}
+                        type="file"
+                        multiple={multiple}
+                        accept={accept}
+                        {...form.register(name as unknown as Path<T>, {
+                            ...options,
+                            onChange(e: Event) {
+                                const files = (e.target as HTMLInputElement)
+                                    .files;
+                                onChange(files!);
+                            },
+                            value: null as PathValue<T, Path<T>>,
+                        })}
+                        class=" w-full  text-sm border border-gray-200 dark:border-gray-600  rounded-lg cursor-pointer"
+                    />
+
+                    {fileNormal === "big" ? (
+                        <>
+                            <label
+                                onDrop={onDrop}
+                                draggable={true}
+                                onDragOver={onDragEnter}
+                                onDragLeave={onDragLeave}
+                                htmlFor={nameCustom as unknown as Path<T>}
+                                class={`${
+                                    Object.keys(err).length
+                                        ? "border-danger"
+                                        : ""
+                                } ${
+                                    isDrag.value ? "border-primary" : ""
+                                } flex  w-full  flex-col items-center py-6 justify-center min-h-[180px] border-2 border-dashed rounded-lg cursor-pointer dark:bg-admin-terciary bg-paper-light max-w-full min-w-[250px] my-2  shadow-sm `}
+                            >
+                                <div class="flex flex-wrap justify-center gap-3 w-full">
+                                    {(files as File[]) &&
+                                    (files as File[])?.length ? (
+                                        showFiles()
+                                    ) : (
+                                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            {isDrag.value ? (
+                                                <>
+                                                    {typeFile === "image" ? (
+                                                        <i class="far fa-images text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
+                                                    ) : null}
+                                                    {typeFile === "video" ? (
+                                                        <i class="fas fa-photo-video text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
+                                                    ) : typeFile === "file" ? (
+                                                        <i class="fas fa-file-alt text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
+                                                    ) : null}
+                                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                                        <span class="font-semibold">
+                                                            Arrastra
+                                                        </span>
+                                                        y suelta los archivos
+                                                    </p>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {typeFile === "image" ? (
+                                                        <i class="far fa-images text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
+                                                    ) : null}
+                                                    {typeFile === "video" ? (
+                                                        <i class="fas fa-photo-video text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
+                                                    ) : typeFile === "file" ? (
+                                                        <i class="fas fa-file-alt  text-4xl text-secondary-dark dark:text-secondary-light mb-3" />
+                                                    ) : null}
+
+                                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                                        <span class="font-semibold">
+                                                            Click to upload
+                                                        </span>{" "}
+                                                        or drag and drop
+                                                    </p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase">
+                                                        {typesText}
+                                                    </p>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </label>
+                        </>
+                    ) : null}
+
+                    {Object.keys(err).length ? (
+                        <p class="text-xs text-red-600">{err?.message}</p>
+                    ) : null}
+                    <style jsx>{`
+                        input::file-selector-button {
+                            background-color: var(--primary);
+                            padding: 0.5rem 1rem;
+                            border: none;
+                        }
+                    `}</style>
                 </div>
-            </label>
-            {Object.keys(err).length ? (
-                <p class="text-xs text-red-600">{err?.message}</p>
-            ) : null}
-            <style jsx>{`
-                input::file-selector-button {
-                    background-color: var(--primary);
-                    padding: 0.5rem 1rem;
-                    border: none;
-                }
-            `}</style>
-        </div>
+            )}
+        </>
     );
 }
 

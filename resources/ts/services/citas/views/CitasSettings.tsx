@@ -27,6 +27,7 @@ function CitasSettings() {
         control: citasSettings.control,
         name: "horario",
     });
+    const max_days = citasSettings.watch("max_days");
 
     function onCitasUpdate(body: CitasSettingsUpdateDto) {
         sweetModal({
@@ -90,17 +91,35 @@ function CitasSettings() {
                     <Form.control
                         type="number"
                         title="Maximo de citas por hora"
-                        name={"maxCitas" as keyof CitasSettingsUpdateDto}
+                        name={"maxCitasForHour" as keyof CitasSettingsUpdateDto}
                         question={
                             <span class="block w-[200px]">
                                 Si esto está activado, se podrá agregar muchas
                                 citas en cada hora.
+                                <br />
+                                Ejemplo: Puedes tener 1 o varias cita en cada
+                                hora.
                             </span>
                         }
                         options={{ setValueAs: Number }}
                     />
                 </div>
-                <div class="flex gap-2">
+                <div class="grid grid-cols-2 md:grid-cols-4">
+                    <Form.control
+                        type="number"
+                        title="Maximo de citas por cliente"
+                        name={"maxCitas" as keyof CitasSettingsUpdateDto}
+                        question={
+                            <span class="block w-[200px]">
+                                Maximo de citas que se podrá citas cada{" "}
+                                {max_days} dias.
+                                <br />
+                                Ejemplo: Si es 1, tu cliente podrá crear una
+                                sola cita en esos dias.
+                            </span>
+                        }
+                        options={{ setValueAs: Number }}
+                    />
                     <Form.control
                         title="Máximo Días"
                         type="number"
@@ -352,8 +371,8 @@ function CitasSettings() {
                         <span class="block w-[180px]">
                             Este campo no es obligatorio.
                             <br />
-                            Puedes personalizar las citas de la Inteligencia
-                            artificial.
+                            Puedes personalizar la Inteligencia artificial de
+                            tus citas.
                         </span>
                     }
                     name={"custom" as keyof CitasSettingsUpdateDto}

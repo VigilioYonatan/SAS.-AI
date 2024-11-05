@@ -21,7 +21,7 @@ import { Empresas } from "@/empresas/entities/empresas.entity";
 	include: [
 		{
 			model: Categories,
-			attributes: ["name", "slug"] as (keyof CategoriesSchema)[],
+			attributes: ["name", "slug","icon"] as (keyof CategoriesSchema)[],
 		},
 	],
 }))

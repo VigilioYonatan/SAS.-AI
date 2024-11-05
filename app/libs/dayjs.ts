@@ -8,6 +8,7 @@ export function NOW(empresa: Empresas) {
     dayjs.extend(timezone);
     dayjs.extend(utc);
     dayjs.tz.setDefault(empresa.tz);
+
     return dayjs().tz(empresa.tz);
 }
 

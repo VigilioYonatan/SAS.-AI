@@ -6,7 +6,6 @@ import {
 import type { CartStoreDto } from "../dtos/cart.store.dto";
 import type { CartUpdateDto } from "../dtos/cart.update.dto";
 import { Cart } from "../entites/cart.entity";
-import type { CartSchemaFromServer } from "../schemas/cart.schema";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { Variants } from "@/products/entities/options/variants.entity";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
@@ -31,11 +30,10 @@ export class CartApiService {
         empresa: Empresas,
         user_id: number,
         product_id: string,
-        variant_id: string,
-        isService: boolean
+        variant_id: string
     ) {
-        const product = productEntityId(empresa, isService);
-        const cart = (await Cart.findOne({
+        const product = productEntityId(empresa, false);
+        const cart = await Cart.findOne({
             where: {
                 user_id,
                 [product]: product_id,
@@ -43,8 +41,7 @@ export class CartApiService {
                 variant_id: variant_id ? variant_id : null,
             },
             include: [ProductsNormal, ProductsRestaurant, Variants],
-        })) as CartSchemaFromServer;
-
+        });
         if (!cart) {
             throw new NotFoundException(
                 `No se encontró un cart con ${product_id}`
@@ -62,36 +59,32 @@ export class CartApiService {
         cartStoreDto: CartStoreDto,
         isService: boolean
     ) {
-        try {
-            const productId = productEntityId(empresa, isService);
-            const existProductInCart = await Cart.findOne({
-                where: {
-                    user_id,
-                    empresa_id: empresa.id,
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    [productId]: (cartStoreDto as any)[productId],
-                    variant_id: cartStoreDto.variant_id
-                        ? cartStoreDto.variant_id
-                        : null,
-                },
-            });
-            if (existProductInCart)
-                throw new BadRequestException(
-                    "Ya existe este producto en el carrito"
-                );
-            const cart = new Cart({
-                ...cartStoreDto,
+        const productId = productEntityId(empresa, isService);
+        const existProductInCart = await Cart.findOne({
+            where: {
+                user_id,
                 empresa_id: empresa.id,
-            });
-            cart.user_id = user_id;
-            await cart.save();
-            return {
-                success: true,
-                cart,
-            };
-        } catch (error) {
-            console.log(error.message);
-        }
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                [productId]: (cartStoreDto as any)[productId],
+                variant_id: cartStoreDto.variant_id
+                    ? cartStoreDto.variant_id
+                    : null,
+            },
+        });
+        if (existProductInCart)
+            throw new BadRequestException(
+                "Ya existe este producto en el carrito"
+            );
+        const cart = new Cart({
+            ...cartStoreDto,
+            empresa_id: empresa.id,
+        });
+        cart.user_id = user_id;
+        await cart.save();
+        return {
+            success: true,
+            cart,
+        };
     }
 
     async update(
@@ -106,13 +99,12 @@ export class CartApiService {
             empresa,
             userId,
             product_id,
-            variant_id,
-            isService
+            variant_id
         );
         if (cart.variant) {
             if (
-                cart.variant.stock && // if product is stock
-                cart.variant.stock > cartUpdateDto.quantity && // quantity should dont be  more than stock
+                (cart.variant as Variants).stock && // if product is stock
+                (cart.variant as Variants).stock > cartUpdateDto.quantity && // quantity should dont be  more than stock
                 cartUpdateDto.quantity < 1 // quantity should dont be less than 1
             )
                 throw new BadRequestException(
@@ -143,15 +135,13 @@ export class CartApiService {
         empresa: Empresas,
         userId: number,
         product_id: string,
-        variant_id: string,
-        isService: boolean
+        variant_id: string
     ) {
         const { cart } = await this.show(
             empresa,
             userId,
             product_id,
-            variant_id,
-            isService
+            variant_id
         );
         await (cart as Cart).destroy();
         return {

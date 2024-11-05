@@ -161,10 +161,13 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                             </li>
                         ) : null}
 
-                        <li class="dark:text-white font-semibold">
-                            <i class="far fa-map-marker-alt  text-xl" />{" "}
-                            {empresaStore.state!.address.direccion}
-                        </li>
+                        {empresaStore.state!.address.direccion ? (
+                            <li class="dark:text-white font-semibold">
+                                <i class="far fa-map-marker-alt  text-xl" />{" "}
+                                {empresaStore.state!.address.direccion}
+                            </li>
+                        ) : null}
+
                         <li class="font-bold">
                             <TitleSectionTwo>
                                 Horario de atención

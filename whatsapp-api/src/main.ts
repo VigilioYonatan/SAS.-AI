@@ -114,47 +114,39 @@ export async function initialWhatsapp() {
     });
 
     client.on("message", async (message) => {
-        console.log(message.body);
-        
-        try {
-            const chat = await message.getChat();
-            async function getFile() {
-                const media = await message.downloadMedia();
-                if (media.data) {
-                    const binaryData = Buffer.from(media.data, "base64");
-                    return binaryData;
-                }
-                return null;
+        const chat = await message.getChat();
+        async function getFile() {
+            const media = await message.downloadMedia();
+            if (media.data) {
+                const binaryData = Buffer.from(media.data, "base64");
+                return binaryData;
             }
-            const content =
-                message.type === "chat" ? message.body : await getFile();
-            if (!content) return null;
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            const notifyName = (message as any)._data.notifyName;
-            const quotedMessageId = message.id._serialized;
-            const response = await fetch(
-                `${BASE_URL}/api/whatsapp/receive-message`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        isGroup: chat.isGroup,
-                        content,
-                        from: message.from,
-                        type: message.type,
-                        notifyName,
-                        quotedMessageId,
-                    }),
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-            const resultMessage = await response.json();
-            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-            console.log({ resultMessage });
-        } catch (error) {
-            console.log(error.message);
+            return null;
         }
+        const content =
+            message.type === "chat" ? message.body : await getFile();
+        if (!content) return null;
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const notifyName = (message as any)._data.notifyName;
+        const quotedMessageId = message.id._serialized;
+        const response = await fetch(
+            `${BASE_URL}/api/whatsapp/receive-message`,
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    isGroup: chat.isGroup,
+                    content,
+                    from: message.from,
+                    type: message.type,
+                    notifyName,
+                    quotedMessageId,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        const resultMessage = await response.json();
     });
     client.on("disconnected", async () => {
         const response = await fetch(`${BASE_URL}/api/whatsapp/disconnected`, {

@@ -171,7 +171,7 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
                 date: dayjs().add(7, "day").toDate(),
                 enabled: true,
             },
-            telegram: {
+            redes: {
                 date: dayjs().add(7, "day").toDate(),
                 enabled: true,
             },
@@ -231,7 +231,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         telephoneFirst: "959884398",
         isOpen: true,
         company: null,
-        slug: "vigilio-services",
+        slug: "vigilioservices2",
         enabledBot: true,
         enabledSound: true,
         facebook: null,
@@ -363,7 +363,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
                 enabled: true,
             },
             facturacion: { date: new Date(), enabled: true },
-            telegram: {
+            redes: {
                 date: new Date(),
                 enabled: false,
             },
@@ -371,7 +371,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
             tokens: { tokens: 10000000 },
             finanza: { enabled: true },
         },
-        type_empresa_id: 22,
+        type_empresa_id: 27, //22 servicio
         bancos: [
             {
                 key: "bbva",

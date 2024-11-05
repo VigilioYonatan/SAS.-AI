@@ -22,7 +22,7 @@ import { getProductAll, printVariantFeatures } from "@/products/libs";
 import type { VariantsSchema } from "@/products/schemas/options/variants.schema";
 import type { BrandsSchemaFromServe } from "@/products/schemas/brands.schema";
 import type { CategoriesSchemaFromServe } from "@/products/schemas/categories.schema";
-import type { isWhatsappIA } from "./ai";
+import type { isWhatsappTelegramIA } from "./ai";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
@@ -307,7 +307,7 @@ export async function promptReplace(message: string, empresa: Empresas) {
     )}. ${ordenes}. ERES UNA IA POR OPEN AI, pero fuiste entrenado por https://vigilio-services.com`;
 }
 export async function chatgpt(
-    whatsapp: Awaited<ReturnType<typeof isWhatsappIA>>,
+    whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>,
     content: string
 ) {
     const completion = await openAis[
