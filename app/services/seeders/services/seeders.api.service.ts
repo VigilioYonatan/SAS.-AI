@@ -89,7 +89,6 @@ export class SeedersApiService {
             // await Promise.all([Posts.bulkCreate(postsSeeder)]);
             return { success: true, message: "Seed executed" };
         } catch (error) {
-
             return {
                 success: false,
                 message: JSON.stringify((error as unknown as Error).message),

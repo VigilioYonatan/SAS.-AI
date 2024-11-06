@@ -92,7 +92,6 @@ export class Server {
         this.app.use(client());
         this.app.use(async (req: Request, res, next) => {
             const host = req.headers.host;
-            console.log({ host });
 
             // if (
             //     host?.includes("client-vps2.loca.lt") &&
@@ -113,11 +112,6 @@ export class Server {
                         if (subdomainSplit[1] === "com") {
                             subdomain = null;
                         }
-                        console.log({
-                            isTrue:
-                                enviroments.CLIENT.toLowerCase() ===
-                                subdomain?.toLowerCase(),
-                        });
 
                         if (
                             enviroments.CLIENT.toLowerCase() ===
