@@ -92,11 +92,11 @@ export class Server {
         this.app.use(async (req: Request, res, next) => {
             const host = req.headers.host;
 
-            if (
-                host?.includes("client-vps2.loca.lt") &&
-                enviroments.NODE_ENV !== "production"
-            )
-                return next();
+            // if (
+            //     host?.includes("client-vps2.loca.lt") &&
+            //     enviroments.NODE_ENV !== "production"
+            // )
+            //     return next();
             let subdomain = null;
             console.log({ host });
 
