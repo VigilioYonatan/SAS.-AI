@@ -523,7 +523,10 @@ function SettingsIndex() {
                                     </header>
                                 </div>
                                 <br />
-                                <NavTabs background={bg_color_responsive} />
+                                <NavTabs
+                                    totalProducts={1}
+                                    background={bg_color_responsive}
+                                />
                             </div>
                         </div>
                         <div class="flex flex-col gap-2">
