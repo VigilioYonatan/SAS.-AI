@@ -46,6 +46,8 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
             })
         );
         const prompt = await promptReplace(message!, empresa);
+        console.log({ prompt });
+
         const completion = await openAis[empresa.slug].chat.completions.create({
             model: clientVigilio
                 ? clientVigilio.information.modelai

@@ -172,7 +172,10 @@ export async function onDb(empresa: Empresas) {
                         : "",
                     days: product.days,
                     description: product.description,
-                    characteristics: JSON.stringify(product.characteristics),
+                    characteristics: empresa.inteligenceArtificial
+                        .showAllProductsInformation
+                        ? product.characteristics
+                        : [],
                     price: subtotalIgv(empresa!, product),
                     disponible: product.enabled,
                     category_id: product.category_id ?? null,
