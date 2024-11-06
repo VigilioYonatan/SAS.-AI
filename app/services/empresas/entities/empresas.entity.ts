@@ -204,7 +204,7 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     @Column({ type: DataType.BOOLEAN, defaultValue: false })
     enabled_igv: boolean;
 
-    @Column({ type: DataType.STRING(255), defaultValue: false, unique: true })
+    @Column({ type: DataType.STRING(255), unique: true, allowNull: false })
     token: string;
 
     @Column({ type: DataType.BOOLEAN, defaultValue: false })
