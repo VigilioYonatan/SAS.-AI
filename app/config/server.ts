@@ -93,7 +93,7 @@ export class Server {
             const host = req.headers.host;
 
             if (
-                host?.includes("client-vps1.loca.lt") &&
+                host?.includes("client-vps2.loca.lt") &&
                 enviroments.NODE_ENV !== "production"
             )
                 return next();
@@ -101,6 +101,8 @@ export class Server {
             if (host?.includes(".")) {
                 subdomain = !host?.startsWith("www.") ? `www.${host}` : host;
                 subdomain = subdomain.slice(4);
+                console.log({ subdomain });
+
                 const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
                 if (enviroments.NODE_ENV === "production") {
                     if (subdomainSplit?.length === 3) {
@@ -109,6 +111,12 @@ export class Server {
                         if (subdomainSplit[1] === "com") {
                             subdomain = null;
                         }
+                        console.log({
+                            isTrue:
+                                enviroments.CLIENT.toLowerCase() ===
+                                subdomain?.toLowerCase(),
+                        });
+
                         if (
                             enviroments.CLIENT.toLowerCase() ===
                             subdomain?.toLowerCase()
