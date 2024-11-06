@@ -1,8 +1,6 @@
 import useAuthStore from "@/auth/stores/auth.store";
 import useCartStore from "@/cart/stores/cart.store";
-import useEmpresastore, {
-    storageEmpresa,
-} from "@/empresas/stores/empresa.store";
+import useEmpresastore from "@/empresas/stores/empresa.store";
 import { printFileUser } from "@/users/libs/helpers";
 import enviroments from "~/config";
 import { isActive, isColorLight } from "~/libs/helpers";
@@ -54,8 +52,7 @@ function NavTabs({ background, totalProducts }: NavTabsProps) {
                     <i class="fas fa-store" />
                     <span class="text-xs font-semibold">Tienda</span>
                 </a>
-                {totalProducts > 0 &&
-                storageEmpresa?.tipo_empresa.tipo_servicio_id === 3 ? (
+                {totalProducts > 0 ? (
                     <a
                         class={`  py-4 flex flex-col justify-center items-center gap-1 ${
                             isActive("/cart")

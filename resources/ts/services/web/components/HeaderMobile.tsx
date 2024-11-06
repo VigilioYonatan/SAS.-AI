@@ -129,10 +129,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                     </div>
                     {/* endcartaside */}
                     <div class="flex gap-3 items-center   text-xl  ">
-                        {totalProducts > 0 &&
-                        storageEmpresa?.tipo_empresa.tipo_servicio_id === 3 ? (
-                            <SearchProducts />
-                        ) : null}
+                        {totalProducts > 0 ? <SearchProducts /> : null}
                         {empresaStore.state?.setting.isDark ? (
                             <button
                                 type="button"
@@ -152,8 +149,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                 )}
                             </button>
                         ) : null}
-                        {totalProducts > 0 &&
-                        storageEmpresa?.tipo_empresa.tipo_servicio_id === 3 ? (
+                        {totalProducts > 0 ? (
                             <button
                                 type="button"
                                 class=" text-xl   relative"

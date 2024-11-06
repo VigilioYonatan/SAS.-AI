@@ -428,8 +428,7 @@ function Header({ header }: HeaderProps) {
                         </div>
                     </div>
                     {/* cart */}
-                    {header.totalProducts > 0 &&
-                    storageEmpresa?.tipo_empresa.tipo_servicio_id === 3 ? (
+                    {header.totalProducts > 0 ? (
                         <div
                             class={`fixed inset-0 bg-opacity-70 bg-black z-[999] hidden lg:flex  justify-end h-full ${
                                 cartStore.dropdown.value
