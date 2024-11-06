@@ -306,11 +306,8 @@ export async function promptReplace(message: string, empresa: Empresas) {
             ordenes += "no hay pedidos aun";
         }
     }
-
-    return `${prompt(
-        empresa,
-        productsData
-    )}. ${ordenes}. ERES UNA IA POR OPEN AI, pero fuiste entrenado por https://vigilio-services.com`;
+    const promt = await prompt(empresa, productsData);
+    return `${promt}. ${ordenes}. ERES UNA IA POR OPEN AI, pero fuiste entrenado por https://vigilio-services.com`;
 }
 export async function chatgpt(
     whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>,
