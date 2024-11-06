@@ -375,7 +375,8 @@ function Header({ header }: HeaderProps) {
                         </div>
                     </nav>
                     <div class="flex items-center gap-3">
-                        <SearchProducts />
+                        {header.totalProducts > 0 ? <SearchProducts /> : null}
+
                         <div class="flex gap-3 items-center">
                             {storageEmpresa?.setting.isDark ? (
                                 <button
@@ -427,35 +428,39 @@ function Header({ header }: HeaderProps) {
                         </div>
                     </div>
                     {/* cart */}
-                    <div
-                        class={`fixed inset-0 bg-opacity-70 bg-black z-[999] hidden lg:flex  justify-end h-full ${
-                            cartStore.dropdown.value ? "visible" : "invisible"
-                        } delay-custom-1`}
-                        onClick={cartStore.dropdown.onClose}
-                    >
+                    {header.totalProducts > 0 ? (
                         <div
-                            class={`w-full delay-custom-1 md:w-[350px] bg-white dark:bg-paper-dark relative p-2 ${
+                            class={`fixed inset-0 bg-opacity-70 bg-black z-[999] hidden lg:flex  justify-end h-full ${
                                 cartStore.dropdown.value
-                                    ? "translate-x-0"
-                                    : "translate-x-full"
-                            }`}
-                            onClick={(e) => e.stopPropagation()}
+                                    ? "visible"
+                                    : "invisible"
+                            } delay-custom-1`}
+                            onClick={cartStore.dropdown.onClose}
                         >
-                            <button
-                                class="text-end block dark:text-white text-primary absolute top-0 right-0 m-2"
-                                type="button"
-                                aria-label="close cart"
-                                onClick={cartStore.dropdown.onClose}
+                            <div
+                                class={`w-full delay-custom-1 md:w-[350px] bg-white dark:bg-paper-dark relative p-2 ${
+                                    cartStore.dropdown.value
+                                        ? "translate-x-0"
+                                        : "translate-x-full"
+                                }`}
+                                onClick={(e) => e.stopPropagation()}
                             >
-                                <i class="fa-solid fa-x" />
-                            </button>
-                            <CartAside />
+                                <button
+                                    class="text-end block dark:text-white text-primary absolute top-0 right-0 m-2"
+                                    type="button"
+                                    aria-label="close cart"
+                                    onClick={cartStore.dropdown.onClose}
+                                >
+                                    <i class="fa-solid fa-x" />
+                                </button>
+                                <CartAside />
+                            </div>
                         </div>
-                    </div>
+                    ) : null}
                 </div>
             </header>
             {/* acá ira el header personalizado */}
-            <HeaderMobile headerDropdown={headerDropdown} />
+            <HeaderMobile totalProducts={header.totalProducts} headerDropdown={headerDropdown} />
             <Aside
                 brands={header.brands}
                 headerDropdown={headerDropdown}

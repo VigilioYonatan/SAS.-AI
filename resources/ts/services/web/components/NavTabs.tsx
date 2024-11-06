@@ -7,8 +7,9 @@ import { isActive, isColorLight } from "~/libs/helpers";
 
 interface NavTabsProps {
     background?: string;
+    totalProducts: number;
 }
-function NavTabs({ background }: NavTabsProps) {
+function NavTabs({ background, totalProducts }: NavTabsProps) {
     const cartStore = useCartStore();
     const empresaStore = useEmpresastore();
     const authStore = useAuthStore();
@@ -51,23 +52,26 @@ function NavTabs({ background }: NavTabsProps) {
                     <i class="fas fa-store" />
                     <span class="text-xs font-semibold">Tienda</span>
                 </a>
-                <a
-                    class={`  py-4 flex flex-col justify-center items-center gap-1 ${
-                        isActive("/cart")
-                            ? "bg-primary bg-opacity-40 text-white"
-                            : ""
-                    } hover:bg-primary hover:text-white hover:bg-opacity-40 delay-custom-1`}
-                    href={"/cart"}
-                >
-                    <i class={`${enviroments.TYPE_CART} relative`}>
-                        {cartStore.computed.showCartLength ? (
-                            <span class="absolute text-white bg-primary  -top-3 w-[20px] h-[20px] flex justify-center items-center rounded-full font-bold text-xs -right-4">
-                                {cartStore.computed.showCartLength}
-                            </span>
-                        ) : null}
-                    </i>
-                    <span class="text-xs font-semibold">Carrito</span>
-                </a>
+                {totalProducts > 0 ? (
+                    <a
+                        class={`  py-4 flex flex-col justify-center items-center gap-1 ${
+                            isActive("/cart")
+                                ? "bg-primary bg-opacity-40 text-white"
+                                : ""
+                        } hover:bg-primary hover:text-white hover:bg-opacity-40 delay-custom-1`}
+                        href={"/cart"}
+                    >
+                        <i class={`${enviroments.TYPE_CART} relative`}>
+                            {cartStore.computed.showCartLength ? (
+                                <span class="absolute text-white bg-primary  -top-3 w-[20px] h-[20px] flex justify-center items-center rounded-full font-bold text-xs -right-4">
+                                    {cartStore.computed.showCartLength}
+                                </span>
+                            ) : null}
+                        </i>
+                        <span class="text-xs font-semibold">Carrito</span>
+                    </a>
+                ) : null}
+
                 <a
                     class={`  py-4 flex flex-col justify-center items-center gap-1 ${
                         isActive("/auth")

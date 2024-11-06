@@ -397,7 +397,7 @@ export class WebApiService {
         );
 
         // obtener productos con el mismo subcategoria random
-        const categoriesProductsRandom = await Product(empresa, false).findAll({
+        const categoriesProductsRandom = await Product(empresa, true).findAll({
             where: {
                 category_id: product.category_id,
                 id: { [Op.ne]: product.id },

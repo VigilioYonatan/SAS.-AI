@@ -13,8 +13,9 @@ import { isColorLight } from "~/libs/helpers";
 
 interface HeaderMobileProps {
     headerDropdown: UseDropdown;
+    totalProducts: number;
 }
-function HeaderMobile({ headerDropdown }: HeaderMobileProps) {
+function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
     const empresaStore = useEmpresastore();
     const cartStore = useCartStore();
     const themeStore = useThemeStore();
@@ -128,7 +129,7 @@ function HeaderMobile({ headerDropdown }: HeaderMobileProps) {
                     </div>
                     {/* endcartaside */}
                     <div class="flex gap-3 items-center   text-xl  ">
-                        <SearchProducts />
+                        {totalProducts > 0 ? <SearchProducts /> : null}
                         {empresaStore.state?.setting.isDark ? (
                             <button
                                 type="button"
@@ -148,17 +149,18 @@ function HeaderMobile({ headerDropdown }: HeaderMobileProps) {
                                 )}
                             </button>
                         ) : null}
-
-                        <button
-                            type="button"
-                            class=" text-xl   relative"
-                            onClick={cartStore.dropdown.onOpen}
-                        >
-                            <i class={enviroments.TYPE_CART} />
-                            <span class="absolute -top-1 -right-2 bg-primary text-xs font-bold flex justify-center items-center text-white w-[20px] h-[20px] rounded-full">
-                                {cartStore.computed.showCartLength}
-                            </span>
-                        </button>
+                        {totalProducts > 0 ? (
+                            <button
+                                type="button"
+                                class=" text-xl   relative"
+                                onClick={cartStore.dropdown.onOpen}
+                            >
+                                <i class={enviroments.TYPE_CART} />
+                                <span class="absolute -top-1 -right-2 bg-primary text-xs font-bold flex justify-center items-center text-white w-[20px] h-[20px] rounded-full">
+                                    {cartStore.computed.showCartLength}
+                                </span>
+                            </button>
+                        ) : null}
                     </div>
                 </div>
             </div>

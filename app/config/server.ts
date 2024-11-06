@@ -279,20 +279,22 @@ export class Server {
                 // no permitido para endpoints y que no sea el subdominio client
                 if (!req.path.includes("api")) {
                     // LAYOUT
-                    const [categories, categoriesService] = await Promise.all([
-                        Categories.findAll({
-                            where: {
-                                empresa_id: empresa.id,
-                                isService: false,
-                            },
-                        }),
-                        Categories.findAll({
-                            where: {
-                                empresa_id: empresa.id,
-                                isService: true,
-                            },
-                        }),
-                    ]);
+                    const [categories, categoriesService, totalProducts] =
+                        await Promise.all([
+                            Categories.findAll({
+                                where: {
+                                    empresa_id: empresa.id,
+                                    isService: false,
+                                },
+                            }),
+                            Categories.findAll({
+                                where: {
+                                    empresa_id: empresa.id,
+                                    isService: true,
+                                },
+                            }),
+                            Product(empresa, false).count(),
+                        ]);
                     const categoriasTotal = await Promise.all(
                         categories.map(async (category) => {
                             // productnormal
@@ -343,6 +345,7 @@ export class Server {
                         categories: categoriasTotal,
                         categoriesServices: categoriesServiceTotal,
                         brands,
+                        totalProducts,
                     };
                 }
 

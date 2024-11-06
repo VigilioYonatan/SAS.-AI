@@ -22,6 +22,7 @@ export interface HeaderType {
         products: ProductsServicioSchemaFromServer[];
     })[];
     brands: Pick<BrandsSchema, "id" | "name" | "image" | "slug">[];
+    totalProducts: number;
 }
 interface WebLayoutProps {
     children: JSX.Element | JSX.Element[];
@@ -48,7 +49,7 @@ function WebLayout({ children, header }: WebLayoutProps) {
                 <ChatAi />
                 <CookiesMessage />
             </div>
-            <NavTabs />
+            <NavTabs totalProducts={header.totalProducts} />
             <Footer
                 categories={header.categories}
                 categoriesServices={header.categoriesServices}
