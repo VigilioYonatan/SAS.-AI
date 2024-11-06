@@ -86,7 +86,6 @@ export class OrdersApiService {
         empresa: Empresas,
         year: string,
         month: string,
-        isService: boolean
     ) {
         const startDate = new Date(Number(year), Number(month) - 1, 1); // Restamos 1 al mes porque en JavaScript los meses van de 0 a 11
 
@@ -186,27 +185,63 @@ export class OrdersApiService {
             orderLocal,
             mostUser,
         };
-
-        const productsMost = await detailOrders.reduce(
+        ("product_normal_id");
+        ("product_restaurant_id");
+        ("product_servicio_id");
+        const productsNormalMost = await detailOrders.reduce(
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             (acc: any, order: any) => {
-                const typeProduct = productEntityId(empresa, isService);
-                acc[order[typeProduct]] = (acc[order[typeProduct]] || 0) + 1;
+                acc[order.product_normal_id] =
+                    (acc[order.product_normal_id] || 0) + 1;
                 return acc;
             },
             {}
         );
+        const productsRestaurantMost = await detailOrders.reduce(
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            (acc: any, order: any) => {
+                acc[order.product_restaurant_id] =
+                    (acc[order.product_restaurant_id] || 0) + 1;
+                return acc;
+            },
+            {}
+        );
+        const productsServicioMost = await detailOrders.reduce(
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            (acc: any, order: any) => {
+                acc[order.product_servicio_id] =
+                    (acc[order.product_servicio_id] || 0) + 1;
+                return acc;
+            },
+            {}
+        );
+        const obj = {
+            ...productsNormalMost,
+            ...productsRestaurantMost,
+            ...productsServicioMost,
+        };
         const topThreeProductIds = await Promise.all(
-            Object.keys(productsMost)
-                .sort((a, b) => productsMost[b] - productsMost[a])
+            Object.keys(obj)
+                .sort((a, b) => obj[b] - obj[a])
                 .slice(0, 3)
                 .map(async (ord) => {
+                    let producto = null;
                     const { product } = await this.productsApiService.show(
                         empresa,
                         ord,
-                        isService,
+                        false,
                         false
                     );
+                    producto = product;
+                    if (!product) {
+                        const { product } = await this.productsApiService.show(
+                            empresa,
+                            ord,
+                            true,
+                            false
+                        );
+                        producto = product;
+                    }
                     return {
                         id: product.id,
                         name: product.name,

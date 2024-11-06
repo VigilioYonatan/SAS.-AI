@@ -44,14 +44,12 @@ export class OrdersApiController {
     async earningMonth(
         @Params("year") year: string,
         @Params("month") month: string,
-        @Req("empresa") empresa: Empresas,
-        @Query("type") type: string
+        @Req("empresa") empresa: Empresas
     ) {
         const result = await this.ordersApiService.earningMonth(
             empresa,
             year,
-            month,
-            type === "service"
+            month
         );
         return result;
     }
