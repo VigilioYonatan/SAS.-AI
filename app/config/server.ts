@@ -49,6 +49,7 @@ import { NOW } from "~/libs/dayjs";
 import { Citas } from "@/citas/entities/citas.entities";
 import { Op } from "sequelize";
 import cache from "@vigilio/express-core/cache";
+import { initial } from "@/empresas/services/empresas.api.service";
 export class Server {
     public readonly app: express.Application = express();
 
@@ -85,12 +86,13 @@ export class Server {
         this.app.set("views", `${dirMode}/resources/views`);
         this.app.use(i18nextHttpMiddleware.handle(i18next));
         this.app.use(i18nextMiddleware);
-        // await initial();
+        await initial();
 
         // vite js configuración
         this.app.use(client());
         this.app.use(async (req: Request, res, next) => {
             const host = req.headers.host;
+            console.log({ host });
 
             // if (
             //     host?.includes("client-vps2.loca.lt") &&
