@@ -99,7 +99,8 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
             ? "URGENTE: Se más humano, y los humanos tienes aveces errores ortograficos. trata de ser así y se más humano."
             : ""
     }.
-	OBLIGATORIO: RESPONDEME EN EL IDIOMA QUE TE ESCRIBAm, si te hablo ingles, respondeme en ingles, etc.
+IMPORTANTE: REVISAR LA BASE DE DATOS, ANTES DE RESPONDER, por ejemplo si una persona te pide información de algo, mira la BASE DE DATOS primero.
+	OBLIGATORIO: RESPONDEME EN EL IDIOMA QUE TE ESCRIBA, si te hablo ingles, respondeme en ingles, etc.
     HORARIO_ATENCION: // si está enabled false quiere decir que no está disponible ese dia y la hora es de 00:00am a 23:59PM ${JSON.stringify(
         empresa.schedule
     )} . cuando te escriba en horario de atencion que no esté. decime no estamos disponible en este momento pero te puedo ayudar.
