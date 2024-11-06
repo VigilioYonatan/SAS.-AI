@@ -56,7 +56,8 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
                 ...instrucctions,
                 `Ojo hay 2 tipos Productos y Servicios, para productos si {{cart?items=...}}, pero para servicios solo enviame esta url dinamica ${BASE_URL(
                     empresa
-                )}/cart/servicios/:slug_de_servicio , :slug_de_servicio es dinamico segun BASE DE DATOS`,
+                )}/cart/servicio/:slug_de_servicio , :slug_de_servicio es dinamico segun BASE DE DATOS`,
+                "Ojo: (days) recuerda que el precio del servicio es multiplicado por la cantidad, y si showHorario es true: mandame el HORARIO de CITAS si te pido horario o algo asi.",
             ];
         }
         directrices = [
