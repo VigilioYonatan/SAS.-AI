@@ -37,7 +37,7 @@ import { printImagesProduct, Product } from "@/products/libs";
 import { printFileWithDimension } from "@/uploads/libs/helpers";
 import { formatMoney, subtotal } from "@/cart/libs/helpers";
 import { Settings } from "@/empresas/entities/settings.entity";
-import { initial } from "@/empresas/services/empresas.api.service";
+// import { initial } from "@/empresas/services/empresas.api.service";
 import { corsOptions, dirMode } from ".";
 import { Brands } from "@/products/entities/brands.entitiy";
 import * as i18nextHttpMiddleware from "i18next-http-middleware";
