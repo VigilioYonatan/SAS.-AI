@@ -97,6 +97,8 @@ export async function isWhatsappTelegramIA(
         emp.payments.mensual.date!,
         "day"
     );
+    console.log({ isDateNow });
+
     if (telephone) {
         const contact = emp!.contacts.find(
             (contact) => contact.telephone === telephone

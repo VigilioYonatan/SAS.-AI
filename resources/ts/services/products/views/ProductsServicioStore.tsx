@@ -201,6 +201,7 @@ function ProductsServicioStore({
             ),
             sweetWidth: "700px",
             showCloseButton: true,
+            isCloseInBackground: false,
         }));
     }
     return (

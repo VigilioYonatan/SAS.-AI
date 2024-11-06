@@ -158,6 +158,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
             ),
             sweetWidth: "700px",
             showCloseButton: true,
+            isCloseInBackground: false,
         }));
     }
     function onBrandsStore() {
@@ -171,6 +172,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
             ),
             sweetWidth: "700px",
             showCloseButton: true,
+            isCloseInBackground: false,
         }));
     }
 

@@ -172,6 +172,7 @@ function ProductsRestaurantStore({
             ),
             sweetWidth: "700px",
             showCloseButton: true,
+            isCloseInBackground: false,
         }));
     }
     function onSetValueCategory(value: number) {
@@ -182,7 +183,7 @@ function ProductsRestaurantStore({
             <Form {...productsRestaurantStoreDtoForm} onSubmit={onProductStore}>
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="dark:text-white text-xl font-bold uppercase text-center flex gap-2">
-                        { [1, 3].includes(
+                        {[1, 3].includes(
                             storageEmpresa!.tipo_empresa.tipo_servicio_id
                         ) ? (
                             <i class="fas fa-phone-laptop" />

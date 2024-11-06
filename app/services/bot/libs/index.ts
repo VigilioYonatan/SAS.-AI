@@ -182,6 +182,7 @@ export async function onDb(empresa: Empresas) {
             })
         );
     }
+    console.log({ servicios });
 
     return {
         categorias,
@@ -225,6 +226,8 @@ export async function promptReplace(message: string, empresa: Empresas) {
     let data: DataPrompt = JSON.parse(
         cache.get(`db-${empresa.slug}`) ?? "null"
     );
+    console.log({ data });
+
     // verifica si el mensaje es un texto o pregunta de base de datos
     // const verifyMessage = await searchProducts(empresa, message);
     if (!data) {
