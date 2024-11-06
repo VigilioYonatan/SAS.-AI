@@ -33,7 +33,7 @@ function ServiciosSection({ servicios }: serviciosSectionProps) {
                         class={`md:w-[300px] flex flex-col gap-1 dark:bg-background-dark bg-white p-2 rounded-md ${
                             enviroments.TYPE_BORDER === "square"
                                 ? ""
-                                : "rounded-md overflow-hidden"
+                                : "rounded-md overflow-auto"
                         }`}
                     >
                         {servicios.map((servicio) => (

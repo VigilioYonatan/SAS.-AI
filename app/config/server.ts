@@ -345,7 +345,7 @@ export class Server {
                         categories: categoriasTotal,
                         categoriesServices: categoriesServiceTotal,
                         brands,
-                        totalProducts: 0,
+                        totalProducts,
                     };
                 }
 
