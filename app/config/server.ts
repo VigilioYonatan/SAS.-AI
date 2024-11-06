@@ -98,6 +98,8 @@ export class Server {
             )
                 return next();
             let subdomain = null;
+            console.log({ host });
+
             if (host?.includes(".")) {
                 subdomain = !host?.startsWith("www.") ? `www.${host}` : host;
                 subdomain = subdomain.slice(4);
