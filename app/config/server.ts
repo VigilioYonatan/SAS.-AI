@@ -85,7 +85,7 @@ export class Server {
         this.app.set("views", `${dirMode}/resources/views`);
         this.app.use(i18nextHttpMiddleware.handle(i18next));
         this.app.use(i18nextMiddleware);
-        await initial();
+        // await initial();
 
         // vite js configuración
         this.app.use(client());
@@ -98,12 +98,10 @@ export class Server {
             // )
             //     return next();
             let subdomain = null;
-            console.log({ host });
 
             if (host?.includes(".")) {
                 subdomain = !host?.startsWith("www.") ? `www.${host}` : host;
                 subdomain = subdomain.slice(4);
-                console.log({ subdomain });
 
                 const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
                 if (enviroments.NODE_ENV === "production") {
