@@ -1,6 +1,8 @@
 import useAuthStore from "@/auth/stores/auth.store";
 import useCartStore from "@/cart/stores/cart.store";
-import useEmpresastore from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import { printFileUser } from "@/users/libs/helpers";
 import enviroments from "~/config";
 import { isActive, isColorLight } from "~/libs/helpers";
@@ -52,7 +54,8 @@ function NavTabs({ background, totalProducts }: NavTabsProps) {
                     <i class="fas fa-store" />
                     <span class="text-xs font-semibold">Tienda</span>
                 </a>
-                {totalProducts > 0 ? (
+                {totalProducts > 0 &&
+                storageEmpresa?.tipo_empresa.tipo_servicio_id === 3 ? (
                     <a
                         class={`  py-4 flex flex-col justify-center items-center gap-1 ${
                             isActive("/cart")
@@ -70,7 +73,19 @@ function NavTabs({ background, totalProducts }: NavTabsProps) {
                         </i>
                         <span class="text-xs font-semibold">Carrito</span>
                     </a>
-                ) : null}
+                ) : (
+                    <a
+                        class={`  py-4 flex flex-col justify-center items-center gap-1 ${
+                            isActive("/pedidos")
+                                ? "bg-primary bg-opacity-40 text-white"
+                                : ""
+                        } hover:bg-primary hover:text-white hover:bg-opacity-40 delay-custom-1`}
+                        href={"/pedidos"}
+                    >
+                        <i class="fas fa-box" />
+                        <span class="text-xs font-semibold">Pedidos</span>
+                    </a>
+                )}
 
                 <a
                     class={`  py-4 flex flex-col justify-center items-center gap-1 ${

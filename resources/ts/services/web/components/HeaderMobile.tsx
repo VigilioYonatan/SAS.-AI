@@ -9,7 +9,7 @@ import useCartStore from "@/cart/stores/cart.store";
 import CartAside from "@/cart/views/CartAside";
 import useThemeStore from "~/stores/theme.store";
 import SearchProducts from "@/products/views/ProductsSearch";
-import { isColorLight } from "~/libs/helpers";
+import { isActive, isColorLight } from "~/libs/helpers";
 
 interface HeaderMobileProps {
     headerDropdown: UseDropdown;
@@ -129,7 +129,10 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                     </div>
                     {/* endcartaside */}
                     <div class="flex gap-3 items-center   text-xl  ">
-                        {totalProducts > 0 ? <SearchProducts /> : null}
+                        {totalProducts > 0 &&
+                        storageEmpresa?.tipo_empresa.tipo_servicio_id === 3 ? (
+                            <SearchProducts />
+                        ) : null}
                         {empresaStore.state?.setting.isDark ? (
                             <button
                                 type="button"
@@ -149,7 +152,8 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                 )}
                             </button>
                         ) : null}
-                        {totalProducts > 0 ? (
+                        {totalProducts > 0 &&
+                        storageEmpresa?.tipo_empresa.tipo_servicio_id === 3 ? (
                             <button
                                 type="button"
                                 class=" text-xl   relative"
@@ -160,7 +164,30 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                     {cartStore.computed.showCartLength}
                                 </span>
                             </button>
-                        ) : null}
+                        ) : (
+                            <>
+                                {!isActive("/", false) ? (
+                                    <button
+                                        onClick={() => {
+                                            window.location.href =
+                                                "/#servicios";
+                                        }}
+                                        aria-label={"change servicios page"}
+                                        type={"button"}
+                                        class=" text-xl   relative"
+                                    >
+                                        <i class={enviroments.TYPE_CART} />
+                                    </button>
+                                ) : (
+                                    <a
+                                        href="#servicios"
+                                        class=" text-xl   relative"
+                                    >
+                                        <i class={enviroments.TYPE_CART} />
+                                    </a>
+                                )}
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

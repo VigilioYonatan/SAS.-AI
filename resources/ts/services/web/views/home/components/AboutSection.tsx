@@ -69,21 +69,24 @@ function AboutSection({
                                 <b class="font-semibold">Experiencia</b>
                             </div>
                         </div>
-                        <div class="flex gap-2 flex-col sm:flex-row">
-                            <span class="text-5xl font-bold text-primary px-3 border-l-4 border-primary">
-                                {productsquantity > 99 ? (
-                                    <>+{counter99}</>
-                                ) : (
-                                    counter
-                                )}
-                            </span>
-                            <div class="flex flex-col">
-                                <span class="text-sm font-semibold">
-                                    Productos
+                        {productsquantity ? (
+                            <div class="flex gap-2 flex-col sm:flex-row">
+                                <span class="text-5xl font-bold text-primary px-3 border-l-4 border-primary">
+                                    {productsquantity > 99 ? (
+                                        <>+{counter99}</>
+                                    ) : (
+                                        counter
+                                    )}
                                 </span>
-                                <b class="font-semibold">Disponibles</b>
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-semibold">
+                                        Productos
+                                    </span>
+                                    <b class="font-semibold">Disponibles</b>
+                                </div>
                             </div>
-                        </div>
+                        ) : null}
+
                         {storageEmpresa.tipo_empresa.tipo_servicio_id === 3 ? (
                             <div class="flex gap-2 flex-col sm:flex-row">
                                 <span class="text-5xl font-bold text-primary px-3 border-l-4 border-primary">
