@@ -54,26 +54,26 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         <li class="font-bold">
                             <TitleSectionTwo>Corporación</TitleSectionTwo>
                         </li>
-                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                        <li class="dark:text-gray-400 text-sm md:text-base text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2 ">
                             <a href={"/"}>Inicio</a>
                         </li>
-                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                        <li class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/nosotros"}>Nosotros</a>
                         </li>
-                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                        <li class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/shop"}>Nuestra Tienda</a>
                         </li>
-                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                        <li class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/politica-de-privacidad"}>
                                 Politica y privacidad
                             </a>
                         </li>
-                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                        <li class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/terminos-y-condiciones"}>
                                 Términos y Condiciones
                             </a>{" "}
                         </li>
-                        <li class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                        <li class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/libro-de-reclamaciones"}>
                                 Libro de Reclamaciones
                             </a>{" "}
@@ -86,7 +86,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                             </li>
                             {categories.map((category) => (
                                 <li
-                                    class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2"
+                                    class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2"
                                     key={category.id}
                                 >
                                     <a href={`/shop/${category.slug}`}>
@@ -105,7 +105,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                             </li>
                             {categoriesServices.map((servicio) => (
                                 <li
-                                    class="dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2"
+                                    class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2"
                                     key={servicio.id}
                                 >
                                     <button
@@ -134,7 +134,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                             <TitleSectionTwo>¿Necesitas Ayuda?</TitleSectionTwo>
                         </li>
                         {empresaStore.state!.telephoneFirst ? (
-                            <li class="dark:text-white font-semibold">
+                            <li class="dark:text-white font-semibold  text-sm md:text-base">
                                 📞 +{empresaStore.state!.dial_code}{" "}
                                 {empresaStore.state!.telephoneFirst.replace(
                                     /(\d{3})(\d{3})(\d{3})/,
@@ -143,7 +143,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                             </li>
                         ) : null}
                         {empresaStore.state!.telephoneReclamos ? (
-                            <li class="dark:text-white font-semibold">
+                            <li class=" dark:text-white font-semibold  text-sm md:text-base">
                                 📞 +{empresaStore.state!.dial_code}{" "}
                                 {empresaStore.state!.telephoneReclamos.replace(
                                     /(\d{3})(\d{3})(\d{3})/,
@@ -152,7 +152,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                             </li>
                         ) : null}
                         {empresaStore.state!.telephoneThird ? (
-                            <li class="dark:text-white font-semibold">
+                            <li class="dark:text-white font-semibold  text-sm md:text-base">
                                 📞 +{empresaStore.state!.dial_code}{" "}
                                 {empresaStore.state!.telephoneThird.replace(
                                     /(\d{3})(\d{3})(\d{3})/,
@@ -162,7 +162,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         ) : null}
 
                         {empresaStore.state!.address.direccion ? (
-                            <li class="dark:text-white font-semibold">
+                            <li class="dark:text-white font-semibold  text-sm md:text-base">
                                 <i class="far fa-map-marker-alt  text-xl" />{" "}
                                 {empresaStore.state!.address.direccion}
                             </li>
@@ -176,7 +176,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         <li>
                             {agruparHorarios().map((horario) => (
                                 <div
-                                    class="flex gap-2 dark:text-gray-400"
+                                    class="flex gap-2 dark:text-gray-400  text-sm md:text-base"
                                     key={horario.days}
                                 >
                                     <b class="w-[120px] dark:text-white font-semibold">
@@ -193,7 +193,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         <li class="font-bold">
                             <TitleSectionTwo>Siguenos</TitleSectionTwo>
                         </li>
-                        <div class="flex gap-2 items-center">
+                        <div class="flex gap-2 items-center  text-sm md:text-base">
                             {empresaStore.state!.facebook ? (
                                 <a
                                     href={empresaStore.state!.facebook}

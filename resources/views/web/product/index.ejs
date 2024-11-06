@@ -8,12 +8,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="app-url" content="<%= route("/")  %>">
-  <meta name="file-base-url" content="<%= route("/public")  %>">
+  <meta name="file-base-url" content="<%= route("/")  %>">
   <meta name="robots" content="index, follow">
   <meta name="description" content="<%= productDescription  %>">
   <meta name="keywords" content="">
   <!-- Schema.org markup for Google+ -->
-  <meta itemprop="name" content="<%= product.title  %>">
+  <meta itemprop="name" content="<%= product.name  %>">
   <meta itemprop="description" content="<%=   %>">
   <meta itemprop="image" content="<%=  printImagesProduct(product.images,500)[0]  %>">
   <!-- Twitter Card data -->
@@ -23,16 +23,16 @@
   <meta name="twitter:description" content="<%= productDescription  %>">
   <meta name="twitter:creator" content="@author_handle">
   <meta name="twitter:image" content="<%=  printImagesProduct(product.images,500)[0]  %>">
-  <meta name="twitter:data1" content="S/. <%= product.price  %>">
+  <meta name="twitter:data1" content="<%= locals.$empresa.money.simbolo  %>. <%= product.price  %>">
   <meta name="twitter:label1" content="Price">
   <!-- Open Graph data -->
-  <meta property="og:title" content="<%= product.title  %>">
+  <meta property="og:title" content="<%= product.name  %>">
   <meta property="og:type" content="og:product">
   <meta property="og:url" content="<%= `/${product.slug}` %>">
   <meta property="og:image" content="<%=  printImagesProduct(product.images,500)[0]  %>">
   <meta property="og:description" content="<%= productDescription  %>">
   <meta property="og:site_name" content="Los mejores productos en un solo lugar">
-  <meta property="og:price:amount" content="S/. <%= product.price  %>">
+  <meta property="og:price:amount" content="<%= locals.$empresa.money.simbolo  %>. <%= product.price  %>">
   <meta property="product:condition" content="new">
   <meta property="product:price:amount" content="S/. <%= product.price  %>">
   <meta property="product:retailer_item_id" content="<%= product.slug  %>">

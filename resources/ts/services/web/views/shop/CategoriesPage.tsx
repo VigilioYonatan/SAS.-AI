@@ -492,156 +492,189 @@ export function FiltersAside({
                 />
             </div>
             {/*  */}
-            {optionsfeatures?.map((opt) => {
-                const show = useSignal(false);
-                return (
-                    <div
-                        class={`p-4 border border-gray-300 dark:bg-background-dark bg-background-light ${
-                            enviroments.TYPE_BORDER === "circle"
-                                ? "rounded-md"
-                                : ""
-                        }`}
-                        key={opt.id}
-                    >
-                        <TitleSectionTwo>{opt.name}</TitleSectionTwo>
-                        <>
-                            {opt.type === 2 ? (
-                                <div class="flex flex-col">
-                                    <div class="flex flex-wrap gap-1">
-                                        {opt.features.map((feature) => (
-                                            <div
-                                                type="button"
-                                                aria-label="change color"
-                                                onClick={() => {
-                                                    paginator.pagination.onChangePage(
-                                                        1
-                                                    );
-                                                    if (
-                                                        filters.value
-                                                            .optionFeature ===
-                                                        `{"option_id":${opt.id},"feature_id":${feature.id}}`
-                                                    ) {
-                                                        filters.value = {
-                                                            ...filters.value,
-                                                            optionFeature: null,
-                                                        };
-                                                    } else {
-                                                        filters.value = {
-                                                            ...filters.value,
-                                                            optionFeature: `{"option_id":${opt.id},"feature_id":${feature.id}}`,
-                                                        };
-                                                    }
+            {optionsfeatures
+                ?.filter((opt) =>
+                    opt.features.some((opt) => opt.option_id !== 1)
+                )
+                ?.map((opt) => {
+                    const show = useSignal(false);
+                    return (
+                        <div
+                            class={`p-4 border border-gray-300 dark:bg-background-dark bg-background-light ${
+                                enviroments.TYPE_BORDER === "circle"
+                                    ? "rounded-md"
+                                    : ""
+                            }`}
+                            key={opt.id}
+                        >
+                            <TitleSectionTwo>{opt.name}</TitleSectionTwo>
+                            <>
+                                {opt.type === 2 ? (
+                                    <div class="flex flex-col">
+                                        <div class="flex flex-wrap gap-1">
+                                            {opt.features
+                                                .filter(
+                                                    (opt) => opt.option_id !== 1
+                                                )
+                                                .map((feature) => (
+                                                    <div
+                                                        type="button"
+                                                        aria-label="change color"
+                                                        onClick={() => {
+                                                            paginator.pagination.onChangePage(
+                                                                1
+                                                            );
+                                                            if (
+                                                                filters.value
+                                                                    .optionFeature ===
+                                                                `{"option_id":${opt.id},"feature_id":${feature.id}}`
+                                                            ) {
+                                                                filters.value =
+                                                                    {
+                                                                        ...filters.value,
+                                                                        optionFeature:
+                                                                            null,
+                                                                    };
+                                                            } else {
+                                                                filters.value =
+                                                                    {
+                                                                        ...filters.value,
+                                                                        optionFeature: `{"option_id":${opt.id},"feature_id":${feature.id}}`,
+                                                                    };
+                                                            }
 
-                                                    if (onClose) {
-                                                        onClose();
-                                                    }
-                                                }}
-                                                key={feature.id}
-                                                class={`${
-                                                    enviroments.TYPE_BORDER ===
-                                                    "circle"
-                                                        ? "rounded-full"
-                                                        : "rounded"
-                                                }  w-[30px] h-[30px] shadow ${
-                                                    filters.value.optionFeature
-                                                        ? deepEqual(
-                                                              JSON.parse(
-                                                                  filters.value
-                                                                      .optionFeature
-                                                              ),
-                                                              {
-                                                                  option_id:
-                                                                      opt.id,
-                                                                  feature_id:
-                                                                      feature.id,
-                                                              }
-                                                          )
-                                                            ? "border-4 border-primary"
-                                                            : ""
-                                                        : ""
-                                                }`}
-                                                style={{
-                                                    background: feature.value,
-                                                }}
-                                            />
-                                        ))}
+                                                            if (onClose) {
+                                                                onClose();
+                                                            }
+                                                        }}
+                                                        key={feature.id}
+                                                        class={`${
+                                                            enviroments.TYPE_BORDER ===
+                                                            "circle"
+                                                                ? "rounded-full"
+                                                                : "rounded"
+                                                        }  w-[30px] h-[30px] shadow ${
+                                                            filters.value
+                                                                .optionFeature
+                                                                ? deepEqual(
+                                                                      [
+                                                                          JSON.parse(
+                                                                              filters
+                                                                                  .value
+                                                                                  .optionFeature
+                                                                          ),
+                                                                      ],
+                                                                      [
+                                                                          {
+                                                                              option_id:
+                                                                                  opt.id,
+                                                                              feature_id:
+                                                                                  feature.id,
+                                                                          },
+                                                                      ]
+                                                                  )
+                                                                    ? "border-4 border-primary"
+                                                                    : ""
+                                                                : ""
+                                                        }`}
+                                                        style={{
+                                                            background:
+                                                                feature.value,
+                                                        }}
+                                                    />
+                                                ))}
+                                        </div>
                                     </div>
-                                </div>
-                            ) : (
-                                <>
-                                    <div
-                                        class={`flex flex-col ${
-                                            show.value
-                                                ? "max-h-[500px]"
-                                                : "max-h-[120px] overflow-hidden"
-                                        }`}
-                                    >
-                                        {opt.features.map((feature) => (
-                                            <label
-                                                htmlFor={feature.value}
-                                                class="flex gap-2 text-sm "
-                                                key={feature.value}
-                                            >
-                                                <input
-                                                    type="checkbox"
-                                                    id={feature.value}
-                                                    value={feature.value}
-                                                    checked={
-                                                        filters.value
-                                                            .optionFeature
-                                                            ? deepEqual(
-                                                                  JSON.parse(
-                                                                      filters
-                                                                          .value
-                                                                          .optionFeature
-                                                                  ),
-                                                                  {
-                                                                      option_id:
-                                                                          opt.id,
-                                                                      feature_id:
-                                                                          feature.id,
-                                                                  }
-                                                              )
-                                                            : false
-                                                    }
-                                                    onChange={() => {
-                                                        paginator.pagination.onChangePage(
-                                                            1
-                                                        );
-                                                        if (onClose) {
-                                                            onClose();
-                                                        }
-                                                        filters.value = {
-                                                            ...filters.value,
-                                                            optionFeature: `{"option_id":${opt.id},"feature_id":${feature.id}}`,
-                                                        };
-                                                    }}
-                                                />
-                                                <span class="text-gray-500 dark:text-gray-400 hover:text-principal-primary">
-                                                    {feature.description} (
-                                                    {feature.quantity})
-                                                </span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                    {opt.features.length > 6 ? (
-                                        <button
-                                            type="button"
-                                            aria-label="more"
-                                            class="text-xs"
-                                            onClick={() => {
-                                                show.value = !show.value;
-                                            }}
+                                ) : (
+                                    <>
+                                        <div
+                                            class={`flex flex-col ${
+                                                show.value
+                                                    ? "max-h-[500px]"
+                                                    : "max-h-[120px] overflow-hidden"
+                                            }`}
                                         >
-                                            {show.value ? "Ocultar" : "Ver más"}
-                                        </button>
-                                    ) : null}
-                                </>
-                            )}
-                        </>
-                    </div>
-                );
-            })}
+                                            {opt.features
+                                                .filter(
+                                                    (opt) => opt.option_id !== 1
+                                                )
+                                                .map((feature) => (
+                                                    <label
+                                                        htmlFor={feature.value}
+                                                        class="flex gap-2 text-sm "
+                                                        key={feature.value}
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            id={feature.value}
+                                                            value={
+                                                                feature.value
+                                                            }
+                                                            checked={
+                                                                filters.value
+                                                                    .optionFeature
+                                                                    ? deepEqual(
+                                                                          [
+                                                                              JSON.parse(
+                                                                                  filters
+                                                                                      .value
+                                                                                      .optionFeature
+                                                                              ),
+                                                                          ],
+                                                                          [
+                                                                              {
+                                                                                  option_id:
+                                                                                      opt.id,
+                                                                                  feature_id:
+                                                                                      feature.id,
+                                                                              },
+                                                                          ]
+                                                                      )
+                                                                    : false
+                                                            }
+                                                            onChange={() => {
+                                                                paginator.pagination.onChangePage(
+                                                                    1
+                                                                );
+                                                                if (onClose) {
+                                                                    onClose();
+                                                                }
+                                                                filters.value =
+                                                                    {
+                                                                        ...filters.value,
+                                                                        optionFeature: `{"option_id":${opt.id},"feature_id":${feature.id}}`,
+                                                                    };
+                                                            }}
+                                                        />
+                                                        <span class="text-gray-500 dark:text-gray-400 hover:text-principal-primary">
+                                                            {
+                                                                feature.description
+                                                            }{" "}
+                                                            ({feature.quantity})
+                                                        </span>
+                                                    </label>
+                                                ))}
+                                        </div>
+                                        {opt.features.length > 6 ? (
+                                            <button
+                                                type="button"
+                                                aria-label="more"
+                                                class="text-xs"
+                                                onClick={() => {
+                                                    show.value = !show.value;
+                                                }}
+                                            >
+                                                {show.value
+                                                    ? "Ocultar"
+                                                    : "Ver más"}
+                                            </button>
+                                        ) : null}
+                                    </>
+                                )}
+                            </>
+                        </div>
+                    );
+                })}
 
             {brands?.length ? (
                 <div

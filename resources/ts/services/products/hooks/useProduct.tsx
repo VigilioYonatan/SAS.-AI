@@ -148,7 +148,8 @@ function useProduct({ product, isService }: UseProductProps) {
 
     function changeVariant(body: VariantFeature) {
         onResetCart();
-        if ((product as ProductsNormalSchemaFromServer).variants) return;
+
+        if (!(product as ProductsNormalSchemaFromServer).variants) return;
         variant.value = variant.value!.map((variant) =>
             variant.option_id === body.option_id
                 ? {

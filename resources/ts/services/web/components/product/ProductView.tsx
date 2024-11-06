@@ -448,7 +448,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                                                                             enviroments.TYPE_BORDER ===
                                                                                             "square"
                                                                                                 ? ""
-                                                                                                : "rounded-full"
+                                                                                                : "rounded-md"
                                                                                         }  relative ${
                                                                                             existFeature
                                                                                                 ? "border-4 border-primary"

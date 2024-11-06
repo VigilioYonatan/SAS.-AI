@@ -405,11 +405,11 @@ export function FiltersAside({
 												}  w-[30px] h-[30px] shadow ${
 													filters.value.optionFeature
 														? deepEqual(
-																JSON.parse(filters.value.optionFeature),
-																{
+																[JSON.parse(filters.value.optionFeature)],
+																[{
 																	option_id: opt.id,
 																	id: feature.id,
-																},
+																}],
 															)
 															? "border-4 border-primary"
 															: ""
@@ -444,11 +444,11 @@ export function FiltersAside({
 													checked={
 														filters.value.optionFeature
 															? deepEqual(
-																	JSON.parse(filters.value.optionFeature),
-																	{
+																	[JSON.parse(filters.value.optionFeature)],
+																	[{
 																		option_id: opt.id,
 																		id: feature.id,
-																	},
+																	}],
 																)
 															: false
 													}

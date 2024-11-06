@@ -28,7 +28,7 @@ function ServiciosSection({ servicios }: serviciosSectionProps) {
         >
             <TitleSection>Nuestros Servicios</TitleSection>
             <div class="flex flex-col gap-6">
-                <div class="w-full flex flex-col md:flex-row gap-3 max-h-[400px] overflow-auto">
+                <div class="w-full flex flex-col md:flex-row gap-3 max-h-[410px] overflow-auto">
                     <div
                         class={`md:w-[300px] flex flex-col gap-1 dark:bg-background-dark bg-white p-2 rounded-md ${
                             enviroments.TYPE_BORDER === "square"
