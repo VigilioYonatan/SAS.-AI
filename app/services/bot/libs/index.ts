@@ -23,6 +23,8 @@ import type { VariantsSchema } from "@/products/schemas/options/variants.schema"
 import type { BrandsSchemaFromServe } from "@/products/schemas/brands.schema";
 import type { CategoriesSchemaFromServe } from "@/products/schemas/categories.schema";
 import type { isWhatsappTelegramIA } from "./ai";
+import FormData from "form-data";
+import axios from "axios";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
@@ -350,4 +352,74 @@ export async function chatgpt(
         },
     });
     return completionText;
+}
+
+export async function interpretarImagen(
+    whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>,
+    media: Buffer
+): Promise<string | null> {
+    try {
+        // Configuración del formulario para enviar la imagen
+        const formData = new FormData();
+        formData.append("file", media, {
+            filename: `image-${crypto.randomUUID()}.jpg`, // Puedes cambiar el nombre según prefieras
+            contentType: "image/jpg",
+        });
+        const resultFile = await axios.post("https://file.io", formData, {
+            headers: formData.getHeaders(),
+        });
+        // Llamada a la API de OpenAI
+        const completion = await openAis[
+            whatsapp!.empresa.slug
+        ].chat.completions.create({
+            model:
+                whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
+            messages: [
+                {
+                    role: "user",
+                    content: [
+                        {
+                            type: "text",
+                            text: "Que imagen es y solo dime el nombre y no digas imagen?,",
+                        },
+                        {
+                            type: "image_url",
+                            image_url: {
+                                url: resultFile.data.link,
+                            },
+                        },
+                    ],
+                },
+            ],
+            max_tokens: 100,
+        });
+        const result = completion.choices[0].message.content;
+        const latestEmpresaUsage =
+            whatsapp!.empresa!.inteligenceArtificial.usage;
+        await whatsapp!.empresa.update({
+            ...whatsapp!.empresa.inteligenceArtificial,
+            usage: {
+                ...latestEmpresaUsage,
+                input_tokens:
+                    latestEmpresaUsage.input_tokens +
+                    (completion.usage!.prompt_tokens +
+                        completion.usage!.completion_tokens),
+                output_tokens:
+                    latestEmpresaUsage.input_tokens +
+                    completion.usage!.completion_tokens,
+            },
+            payments: {
+                ...whatsapp!.empresa.payments,
+                tokens: {
+                    tokens:
+                        whatsapp!.empresa.payments.tokens.tokens -
+                        (completion.usage!.prompt_tokens +
+                            completion.usage!.completion_tokens),
+                },
+            },
+        });
+        return result;
+    } catch (error) {
+        return "null";
+    }
 }

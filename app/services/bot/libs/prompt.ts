@@ -41,7 +41,7 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
     if (empresa.inteligenceArtificial.settings.enabled_cart) {
         instrucctions = [
             ...instrucctions,
-            `Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?items=}},recuerae que eres como un carrito de compra, delo que te pida te fijas en la base de datos,  será como en el siguiente ejemplo . OJO ES SOLO UN EJEMPLO, tu lo harás  segun de que te pida el id de producto,variant_id y cantidad dinamicamente   {{cart?items=${
+            `OJO: Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?items=}},recuerda que eres como un carrito de compra, de lo que te pida te fijas en la base de datos,  será como en el siguiente ejemplo . OJO ES SOLO UN EJEMPLO, tu lo harás  segun de que te pida el id de producto,variant_id y cantidad dinamicamente   {{cart?items=${
                 [1, 3].includes(empresa.tipo_empresa.tipo_servicio_id)
                     ? "%5B%7B%22id%22%3A1%2C%22quantity%22%3A2%2C%22variant%22%3A3%7D%2C%7B%22id%22%3A4%2C%22quantity%22%3A5%2C%22variant%22%3A6%7D%5D"
                     : "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%2%7D%2C%20%7B%22id%22%3A%4%2C%20%22quantity%22%3A%3%7D%5D"
@@ -58,6 +58,7 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
                     empresa
                 )}/cart/servicio/:slug_de_servicio , :slug_de_servicio es dinamico segun BASE DE DATOS`,
                 "Ojo: (days) recuerda que el precio del servicio es multiplicado por la cantidad, asi que si te pido precio traime el precio multiplicado. OJO: no me traigas la cantidad, y si showHorario es true: mandame el HORARIO de CITAS si te pido horario o algo asi.",
+
             ];
         }
         directrices = [

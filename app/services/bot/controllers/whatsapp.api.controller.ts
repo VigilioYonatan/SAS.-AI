@@ -26,7 +26,7 @@ import {
     isWhatsappTelegramIA,
 } from "../libs/ai";
 import { NOW } from "~/libs/dayjs";
-import { promptReplace, transcribeAudio } from "../libs";
+import { interpretarImagen, promptReplace, transcribeAudio } from "../libs";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import formidable from "formidable";
 import type { RequestVigilio } from "~/config/types";
@@ -101,7 +101,45 @@ export class whatsappApiController {
             if (body.isGroup)
                 throw new BadRequestException("whatsapp no permited"); //no se admite grupos
             // message.type: chat,sticker,ptt,image,document
-            if (!["ptt", "chat"].includes(body.type)) return;
+            if (!["ptt", "chat", "image"].includes(body.type)) return;
+            const opt: WAWebJS.MessageSendOptions =
+                Math.random() < 0.5
+                    ? {
+                          quotedMessageId: body.quotedMessageId,
+                      }
+                    : {};
+            if (body.type === "ptt") {
+                const audioToTxt = await transcribeAudio(
+                    empresa.slug,
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                    Buffer.from((content as any).data)
+                );
+                content = audioToTxt.text;
+            }
+            if (body.type === "image") {
+                console.log({ data: (content as any).data });
+                const imageText = await interpretarImagen(
+                    whatsapp,
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                    Buffer.from((content as any).data)
+                );
+                console.log({ imageText });
+                if (imageText === "null") {
+                    await whatsappSendMessageApi(empresa, {
+                        message:
+                            "No se pudo analizar esta imagen o no se encontró 😢.",
+                        telephone: userId,
+                        options: opt,
+                        delay: 3,
+                    });
+                    return {
+                        success: true,
+                        message: "executed",
+                    };
+                }
+                content = `Buscame en la BASE DE DATOS SI HAY '${imageText}'`;
+            }
+
             const existNumber = empresa.contacts.find(
                 (contact) => contact.telephone === userId
             );
@@ -175,27 +213,13 @@ export class whatsappApiController {
             //     throw new BadRequestException("cerrado");
             // }
 
-            if (body.type === "ptt") {
-                const audioToTxt = await transcribeAudio(
-                    empresa.slug,
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    Buffer.from((content as any).data)
-                );
-                content = audioToTxt.text;
-            }
-
             const buenas = buenosDias(
                 content as string,
                 body.notifyName,
                 empresa
             );
             const thanks = gracias(content as string);
-            const opt: WAWebJS.MessageSendOptions =
-                Math.random() < 0.5
-                    ? {
-                          quotedMessageId: body.quotedMessageId,
-                      }
-                    : {};
+
             if (buenas) {
                 // aveces que responda reply
 

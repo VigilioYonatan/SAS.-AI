@@ -126,6 +126,8 @@ export async function initialWhatsapp() {
         const content =
             message.type === "chat" ? message.body : await getFile();
         if (!content) return null;
+        console.log({ content });
+
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const notifyName = (message as any)._data.notifyName;
         const quotedMessageId = message.id._serialized;

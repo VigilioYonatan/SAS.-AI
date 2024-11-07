@@ -44,6 +44,7 @@
         "@vigilio/valibot": "^0.0.8",
         "alpinejs": "^3.14.1",
         "aos": "^2.3.4",
+        "axios": "^1.7.7",
         "bcryptjs": "^2.4.3",
         "canvas-confetti": "^1.9.3",
         "chart.js": "^4.4.4",
