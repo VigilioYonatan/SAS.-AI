@@ -117,13 +117,11 @@ export class whatsappApiController {
                 content = audioToTxt.text;
             }
             if (body.type === "image") {
-                console.log({ data: (content as any).data });
                 const imageText = await interpretarImagen(
                     whatsapp,
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                     Buffer.from((content as any).data)
                 );
-                console.log({ imageText });
                 if (imageText === "null") {
                     await whatsappSendMessageApi(empresa, {
                         message:
