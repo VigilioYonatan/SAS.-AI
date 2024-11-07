@@ -17,6 +17,7 @@ import { formatMoney } from "@/cart/libs/helpers";
 import CartAside from "@/cart/views/CartAside";
 import SearchProducts from "@/products/views/ProductsSearch";
 import { printFileWithDimension } from "~/libs/upload";
+import enviroments from "~/config";
 
 interface HeaderProps {
     header: HeaderType;
@@ -402,29 +403,58 @@ function Header({ header }: HeaderProps) {
                                     )}
                                 </button>
                             ) : null}
-
-                            <button
-                                type="button"
-                                class="bg-primary w-[30px] h-[30px] rounded-full text-white text-sm flex justify-center items-center relative"
-                                onClick={cartStore.dropdown.onOpen}
-                            >
-                                <i
-                                    class={
-                                        empresaStore.state!.setting.type_cart
-                                    }
-                                />
-                                <span class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs bg-red-500 -right-2 -top-2">
-                                    {cartStore.computed.showCartLength}
-                                </span>
-                            </button>
-                            <div class="flex flex-col gap-1 ">
-                                <span class="font-bold tracking-wide text-xs   dark:text-white">
-                                    TOTAL
-                                </span>
-                                <span class="font-semibold text-xs dark:text-white">
-                                    {formatMoney(cartStore.methods.getTotal())}
-                                </span>
-                            </div>
+                            {header.totalProducts > 0 ? (
+                                <>
+                                    <button
+                                        type="button"
+                                        class="bg-primary w-[30px] h-[30px] rounded-full text-white text-sm flex justify-center items-center relative"
+                                        onClick={cartStore.dropdown.onOpen}
+                                    >
+                                        <i
+                                            class={
+                                                empresaStore.state!.setting
+                                                    .type_cart
+                                            }
+                                        />
+                                        <span class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs bg-red-500 -right-2 -top-2">
+                                            {cartStore.computed.showCartLength}
+                                        </span>
+                                    </button>
+                                    <div class="flex flex-col gap-1 ">
+                                        <span class="font-bold tracking-wide text-xs   dark:text-white">
+                                            TOTAL
+                                        </span>
+                                        <span class="font-semibold text-xs dark:text-white">
+                                            {formatMoney(
+                                                cartStore.methods.getTotal()
+                                            )}
+                                        </span>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    {!isActive("/", false) ? (
+                                        <button
+                                            onClick={() => {
+                                                window.location.href =
+                                                    "/#servicios";
+                                            }}
+                                            aria-label={"change servicios page"}
+                                            type={"button"}
+                                            class=" text-xl   relative"
+                                        >
+                                            <i class={enviroments.TYPE_CART} />
+                                        </button>
+                                    ) : (
+                                        <a
+                                            href="#servicios"
+                                            class=" text-xl   relative"
+                                        >
+                                            <i class={enviroments.TYPE_CART} />
+                                        </a>
+                                    )}
+                                </>
+                            )}
                         </div>
                     </div>
                     {/* cart */}
