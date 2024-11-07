@@ -13,7 +13,7 @@ export default {
                 secondary: "var(--secondary)",
                 background: {
                     dark: "#0F0F0F",
-                    light: "#fff",
+                    light: "#FFFFFF",
                 },
                 paper: {
                     dark: "#272727",

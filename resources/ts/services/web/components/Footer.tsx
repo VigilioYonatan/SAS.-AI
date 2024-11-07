@@ -4,11 +4,14 @@ import {
     VisaMastercardImage,
     yapeImage,
 } from "~/config/settings";
-import useEmpresastore from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import type { HeaderType } from "./WebLayout";
 import TitleSectionTwo from "./TitleSectionTwo";
 import AdminEdit from "./AdminEdit";
 import { service } from "../views/home/components/ServiciosSection";
+import { isColorLight } from "~/libs/helpers";
 
 interface FooterProps {
     categories: HeaderType["categories"];
@@ -45,8 +48,14 @@ function Footer({ categories, categoriesServices }: FooterProps) {
 
     return (
         <footer
-            class="dark:bg-background-dark  lg:mb-0 bg-background-light mb-[4.3rem]"
+            class="  lg:mb-0  mb-[4.3rem] text-white"
             id="footer"
+            style={{
+                backgroundColor: storageEmpresa?.setting.bg_color_footer,
+                color: isColorLight(storageEmpresa!.setting.bg_color_footer)
+                    ? "#000000"
+                    : "#FFFFFF",
+            }}
         >
             <div class="max-w-6xl mx-auto px-2 ">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 py-6">

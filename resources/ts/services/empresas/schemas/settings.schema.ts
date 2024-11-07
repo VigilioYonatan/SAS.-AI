@@ -43,6 +43,9 @@ export const settingsSchema = object({
     about: nullable(string()), //  acerca de la empresa
     bg_color: string([minLength(2), maxLength(20)]),
     bg_color_responsive: string([minLength(2), maxLength(20)]),
+    bg_color_footer: string(),
+    bg_color_background: string(),
+    bg_color_paper: string(),
     type_border: string([
         custom((val) => ["circle", "square"].includes(val), "Border no válido"),
     ]),

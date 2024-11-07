@@ -25,9 +25,9 @@ function NavTabs({ background, totalProducts }: NavTabsProps) {
                 color: isColorLight(bg) ? "#000000" : "#FFFFFF",
                 position: background ? "relative" : "fixed",
             }}
-            class={
-                " z-[99] bottom-0 left-0 right-0 w-full  lg:hidden shadow-lg"
-            }
+            class={` z-[99] bottom-0 left-0 right-0 w-full ${
+                background ? "" : "lg:hidden"
+            }  shadow-lg`}
         >
             <div class="  w-full grid grid-cols-4">
                 <a

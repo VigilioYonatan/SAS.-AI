@@ -62,6 +62,9 @@ export const settingsSchema = objectAsync({
     photo: nullable(array(filesSchema())),
     isLogoImage: boolean(),
     isScrolling: boolean(),
+    bg_color_footer: string(),
+    bg_color_background: string(),
+    bg_color_paper: string(),
     hamburger: string([
         custom((val) => hamrguers.includes(val), "Hamburguesa no válida"),
     ]),

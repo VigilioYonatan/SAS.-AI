@@ -90,6 +90,11 @@ function SettingsIndex() {
         const hamburger = settingsUpdateform.watch("hamburger");
         const isLogoImage = settingsUpdateform.watch("isLogoImage");
         const bg_color = settingsUpdateform.watch("bg_color");
+        const bg_color_background = settingsUpdateform.watch(
+            "bg_color_background"
+        );
+        const bg_color_footer = settingsUpdateform.watch("bg_color_footer");
+        const bg_color_paper = settingsUpdateform.watch("bg_color_paper");
         const bg_color_responsive = settingsUpdateform.watch(
             "bg_color_responsive"
         );
@@ -270,12 +275,14 @@ function SettingsIndex() {
                         {...settingsUpdateform}
                         onSubmit={onUpdateempresa}
                     >
-                        <div class="grid grid-cols-2 md:grid-cols-4">
-                            <Form.control.color
-                                name={"bg_color" as keyof SettingsUpdateDto}
-                                title="color de tu web"
-                                question="Color de tu web"
-                            />
+                        <div class="grid grid-cols-2 md:grid-cols-3">
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={"bg_color" as keyof SettingsUpdateDto}
+                                    title="color de tu web"
+                                    question="Color de tu web"
+                                />
+                            </div>
                             <div class="w-[120px]">
                                 <Form.control.color
                                     name={
@@ -285,7 +292,35 @@ function SettingsIndex() {
                                     question="Color de tu web en modo responsive"
                                 />
                             </div>
-
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "bg_color_background" as keyof SettingsUpdateDto
+                                    }
+                                    title="color de fondo"
+                                    question="Color de fondo de tu web"
+                                />
+                            </div>
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "bg_color_paper" as keyof SettingsUpdateDto
+                                    }
+                                    title="color de fondo2 "
+                                    question="Color de fondo2 de tu web"
+                                />
+                            </div>
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "bg_color_footer" as keyof SettingsUpdateDto
+                                    }
+                                    title="color del footer "
+                                    question="Color de fondo2 de tu web"
+                                />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4">
                             <Form.control.toggle
                                 title="¿Modo Nocturno?"
                                 name={"isDark" as keyof SettingsUpdateDto}
@@ -303,314 +338,408 @@ function SettingsIndex() {
                                     name="position_header"
                                     title="Header Mobile"
                                 />
-                                <div class="flex gap-2 flex-wrap w-full">
-                                    <header
-                                        class={
-                                            " w-full px-4    py-4 shadow    delay-custom-1 "
-                                        }
-                                        style={{
-                                            background: bg_color_responsive,
-                                            color: isColorLight(
-                                                bg_color_responsive
-                                            )
-                                                ? "#000000"
-                                                : "#FFFFFF",
-                                        }}
-                                    >
-                                        <div class=" max-w-6xl mx-auto">
-                                            <div class="flex justify-between gap-2 items-center">
-                                                {!position_header ? (
-                                                    <div class="flex items-center gap-2">
-                                                        <button
-                                                            type="button"
-                                                            aria-label="open aside"
-                                                            onClick={
-                                                                headerDropdown.onOpen
-                                                            }
-                                                        >
-                                                            <Hamburguer
-                                                                isOpen={
-                                                                    headerDropdown.dropdownOpen
-                                                                }
-                                                            />
-                                                        </button>
-                                                        <a
-                                                            href={"/"}
-                                                            class="flex  items-center "
-                                                        >
-                                                            {empresaStore.state!
-                                                                .logo ? (
-                                                                <img
-                                                                    width={100}
-                                                                    height={100}
-                                                                    src={
-                                                                        printFileWithDimension(
-                                                                            empresaStore.state!
-                                                                                .logo!,
-                                                                            100
-                                                                        )[0]
-                                                                    }
-                                                                    class="w-[50px] h-[50px] object-contain"
-                                                                    alt={
-                                                                        empresaStore.state!
-                                                                            .name_empresa
-                                                                    }
-                                                                />
-                                                            ) : (
-                                                                <h2 class="text-2xl font-bold  uppercase">
-                                                                    {
-                                                                        empresaStore.state!
-                                                                            .name_empresa[0]
-                                                                    }
-                                                                </h2>
-                                                            )}
-                                                        </a>
-                                                    </div>
-                                                ) : (
-                                                    <>
-                                                        <button
-                                                            type="button"
-                                                            aria-label="open aside"
-                                                            onClick={
-                                                                headerDropdown.onOpen
-                                                            }
-                                                        >
-                                                            <div
-                                                                class={
-                                                                    "hamburger hamburger--collapse"
-                                                                }
+                                {/* bg_color_background
+bg_color_footer
+bg_color_paper */}
+                                <div
+                                    style={{
+                                        backgroundColor: bg_color_background,
+                                    }}
+                                >
+                                    <div class="flex gap-2 flex-wrap w-full">
+                                        <header
+                                            class={
+                                                " w-full px-4    py-4 shadow    delay-custom-1 "
+                                            }
+                                            style={{
+                                                background: bg_color_responsive,
+                                                color: isColorLight(
+                                                    bg_color_responsive
+                                                )
+                                                    ? "#000000"
+                                                    : "#FFFFFF",
+                                            }}
+                                        >
+                                            <div class=" max-w-6xl mx-auto">
+                                                <div class="flex justify-between gap-2 items-center">
+                                                    {!position_header ? (
+                                                        <div class="flex items-center gap-2">
+                                                            <button
                                                                 type="button"
+                                                                aria-label="open aside"
+                                                                onClick={
+                                                                    headerDropdown.onOpen
+                                                                }
                                                             >
-                                                                <i
-                                                                    class={`${hamburger} ${
-                                                                        hamburger ===
-                                                                        "fas pizza-slice"
-                                                                            ? "rotate-[250deg]"
-                                                                            : ""
-                                                                    } text-3xl `}
+                                                                <Hamburguer
+                                                                    isOpen={
+                                                                        headerDropdown.dropdownOpen
+                                                                    }
                                                                 />
-                                                            </div>
-                                                        </button>
-
-                                                        <a
-                                                            href={"/"}
-                                                            class="flex  items-center ml-12"
-                                                        >
-                                                            {empresaStore.state!
-                                                                .logo ? (
-                                                                <img
-                                                                    width={100}
-                                                                    height={100}
-                                                                    src={
-                                                                        printFileWithDimension(
-                                                                            empresaStore.state!
-                                                                                .logo!,
+                                                            </button>
+                                                            <a
+                                                                href={"/"}
+                                                                class="flex  items-center "
+                                                            >
+                                                                {empresaStore.state!
+                                                                    .logo ? (
+                                                                    <img
+                                                                        width={
                                                                             100
-                                                                        )[0]
+                                                                        }
+                                                                        height={
+                                                                            100
+                                                                        }
+                                                                        src={
+                                                                            printFileWithDimension(
+                                                                                empresaStore.state!
+                                                                                    .logo!,
+                                                                                100
+                                                                            )[0]
+                                                                        }
+                                                                        class="w-[50px] h-[50px] object-contain"
+                                                                        alt={
+                                                                            empresaStore.state!
+                                                                                .name_empresa
+                                                                        }
+                                                                    />
+                                                                ) : (
+                                                                    <h2 class="text-2xl font-bold  uppercase">
+                                                                        {
+                                                                            empresaStore.state!
+                                                                                .name_empresa[0]
+                                                                        }
+                                                                    </h2>
+                                                                )}
+                                                            </a>
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            <button
+                                                                type="button"
+                                                                aria-label="open aside"
+                                                                onClick={
+                                                                    headerDropdown.onOpen
+                                                                }
+                                                            >
+                                                                <div
+                                                                    class={
+                                                                        "hamburger hamburger--collapse"
                                                                     }
-                                                                    class="w-[60px] h-[60px] object-contain"
-                                                                    alt={
-                                                                        empresaStore.state!
-                                                                            .name_empresa
-                                                                    }
-                                                                />
-                                                            ) : (
-                                                                <h2 class="text-2xl font-bold  uppercase">
-                                                                    {
-                                                                        empresaStore.state!
-                                                                            .name_empresa[0]
-                                                                    }
-                                                                </h2>
-                                                            )}
-                                                        </a>
-                                                    </>
-                                                )}
-                                                {/* cartaside */}
-                                                <div
-                                                    class={`fixed inset-0 bg-opacity-70 bg-black z-[999] flex justify-end h-full ${
-                                                        cartStore.dropdown.value
-                                                            ? "visible"
-                                                            : "invisible"
-                                                    } delay-custom-1`}
-                                                    onClick={
-                                                        cartStore.dropdown
-                                                            .onClose
-                                                    }
-                                                >
+                                                                    type="button"
+                                                                >
+                                                                    <i
+                                                                        class={`${hamburger} ${
+                                                                            hamburger ===
+                                                                            "fas pizza-slice"
+                                                                                ? "rotate-[250deg]"
+                                                                                : ""
+                                                                        } text-3xl `}
+                                                                    />
+                                                                </div>
+                                                            </button>
+
+                                                            <a
+                                                                href={"/"}
+                                                                class="flex  items-center ml-12"
+                                                            >
+                                                                {empresaStore.state!
+                                                                    .logo ? (
+                                                                    <img
+                                                                        width={
+                                                                            100
+                                                                        }
+                                                                        height={
+                                                                            100
+                                                                        }
+                                                                        src={
+                                                                            printFileWithDimension(
+                                                                                empresaStore.state!
+                                                                                    .logo!,
+                                                                                100
+                                                                            )[0]
+                                                                        }
+                                                                        class="w-[60px] h-[60px] object-contain"
+                                                                        alt={
+                                                                            empresaStore.state!
+                                                                                .name_empresa
+                                                                        }
+                                                                    />
+                                                                ) : (
+                                                                    <h2 class="text-2xl font-bold  uppercase">
+                                                                        {
+                                                                            empresaStore.state!
+                                                                                .name_empresa[0]
+                                                                        }
+                                                                    </h2>
+                                                                )}
+                                                            </a>
+                                                        </>
+                                                    )}
+                                                    {/* cartaside */}
                                                     <div
-                                                        class={`w-full delay-custom-1 md:w-[350px] bg-white dark:bg-paper-dark relative p-2 ${
+                                                        class={`fixed inset-0 bg-opacity-70 bg-black z-[999] flex justify-end h-full ${
                                                             cartStore.dropdown
                                                                 .value
-                                                                ? "translate-x-0"
-                                                                : "translate-x-full"
-                                                        }`}
-                                                        onClick={(e) =>
-                                                            e.stopPropagation()
+                                                                ? "visible"
+                                                                : "invisible"
+                                                        } delay-custom-1`}
+                                                        onClick={
+                                                            cartStore.dropdown
+                                                                .onClose
                                                         }
                                                     >
+                                                        <div
+                                                            class={`w-full delay-custom-1 md:w-[350px] bg-white dark:bg-paper-dark relative p-2 ${
+                                                                cartStore
+                                                                    .dropdown
+                                                                    .value
+                                                                    ? "translate-x-0"
+                                                                    : "translate-x-full"
+                                                            }`}
+                                                            onClick={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                        >
+                                                            <button
+                                                                class="text-end block  text-primary absolute top-0 right-0 m-2"
+                                                                type="button"
+                                                                aria-label="close cart"
+                                                                onClick={
+                                                                    cartStore
+                                                                        .dropdown
+                                                                        .onClose
+                                                                }
+                                                            >
+                                                                <i class="fa-solid fa-x" />
+                                                            </button>
+                                                            <CartAside />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* endcartaside */}
+                                                    <div class="flex gap-3 items-center   text-xl  ">
+                                                        <SearchProducts />
                                                         <button
-                                                            class="text-end block  text-primary absolute top-0 right-0 m-2"
                                                             type="button"
-                                                            aria-label="close cart"
+                                                            aria-label="btn"
+                                                            class="text-white px-4 py-2 rounded-md text-xs font-semibold"
+                                                            style={{
+                                                                backgroundColor:
+                                                                    bg_color,
+                                                            }}
+                                                        >
+                                                            Sign In
+                                                        </button>
+                                                        {isDark ? (
+                                                            <button
+                                                                type="button"
+                                                                aria-label="change theme"
+                                                                onClick={() => {
+                                                                    themeStore.methods.changeThemeMode(
+                                                                        themeStore.state ===
+                                                                            "dark"
+                                                                            ? "light"
+                                                                            : "dark"
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {themeStore.state! ===
+                                                                "dark" ? (
+                                                                    <i class="fas fa-moon" />
+                                                                ) : (
+                                                                    <i class="far fa-sun" />
+                                                                )}
+                                                            </button>
+                                                        ) : null}
+
+                                                        <button
+                                                            type="button"
+                                                            class=" text-xl   relative"
                                                             onClick={
                                                                 cartStore
                                                                     .dropdown
-                                                                    .onClose
+                                                                    .onOpen
                                                             }
                                                         >
-                                                            <i class="fa-solid fa-x" />
+                                                            <i
+                                                                class={
+                                                                    type_cart
+                                                                }
+                                                            />
+                                                            <span class="absolute -top-1 -right-2 bg-primary text-xs font-bold flex justify-center items-center text-white w-[20px] h-[20px] rounded-full">
+                                                                {
+                                                                    cartStore
+                                                                        .computed
+                                                                        .showCartLength
+                                                                }
+                                                            </span>
                                                         </button>
-                                                        <CartAside />
                                                     </div>
                                                 </div>
-
-                                                {/* endcartaside */}
-                                                <div class="flex gap-3 items-center   text-xl  ">
-                                                    <SearchProducts />
-                                                    <button
-                                                        type="button"
-                                                        aria-label="btn"
-                                                        class="text-white px-4 py-2 rounded-md text-xs font-semibold"
-                                                        style={{
-                                                            backgroundColor:
-                                                                bg_color,
-                                                        }}
-                                                    >
-                                                        Sign In
-                                                    </button>
-                                                    {isDark ? (
-                                                        <button
-                                                            type="button"
-                                                            aria-label="change theme"
-                                                            onClick={() => {
-                                                                themeStore.methods.changeThemeMode(
-                                                                    themeStore.state ===
-                                                                        "dark"
-                                                                        ? "light"
-                                                                        : "dark"
-                                                                );
-                                                            }}
-                                                        >
-                                                            {themeStore.state! ===
-                                                            "dark" ? (
-                                                                <i class="fas fa-moon" />
-                                                            ) : (
-                                                                <i class="far fa-sun" />
-                                                            )}
-                                                        </button>
+                                            </div>
+                                        </header>
+                                    </div>
+                                    <br />{" "}
+                                    <TitleSection
+                                        titleExample={border_title_type}
+                                    >
+                                        Esto es un titulo
+                                    </TitleSection>{" "}
+                                    <div
+                                        class="flex flex-col gap-2 self-start p-2 md:w-[500px] rounded-md shadow-md mx-2"
+                                        style={{
+                                            color: isColorLight(bg_color_paper)
+                                                ? "#000000 !important"
+                                                : "#FFFFFF !important",
+                                            backgroundColor: bg_color_paper,
+                                        }}
+                                    >
+                                        <span class="text-xs font-semibold ">
+                                            Producto
+                                        </span>
+                                        <div class="flex flex-col md:flex-row gap-4 items-center">
+                                            <div
+                                                class={`w-[200px]  shadow bg-paper-light dark:bg-admin-terciary overflow-hidden ${
+                                                    type_border === "circle"
+                                                        ? "rounded-md"
+                                                        : ""
+                                                }`}
+                                            >
+                                                <div class="relative">
+                                                    <img
+                                                        class={`mx-auto w-[300px] h-[200px] ${
+                                                            isCoverImage
+                                                                ? "object-cover"
+                                                                : "object-contain"
+                                                        }`}
+                                                        width={200}
+                                                        height={150}
+                                                        src="https://http2.mlstatic.com/D_NQ_NP_993674-MLA31895860508_082019-O.webp"
+                                                        alt=""
+                                                    />
+                                                    {isLogoImage ? (
+                                                        <div class="absolute right-0 bottom-1 z-[9]">
+                                                            <LogoImage
+                                                                width="40"
+                                                                height="40"
+                                                            />
+                                                        </div>
                                                     ) : null}
-
-                                                    <button
-                                                        type="button"
-                                                        class=" text-xl   relative"
-                                                        onClick={
-                                                            cartStore.dropdown
-                                                                .onOpen
-                                                        }
-                                                    >
-                                                        <i class={type_cart} />
-                                                        <span class="absolute -top-1 -right-2 bg-primary text-xs font-bold flex justify-center items-center text-white w-[20px] h-[20px] rounded-full">
-                                                            {
-                                                                cartStore
-                                                                    .computed
-                                                                    .showCartLength
-                                                            }
-                                                        </span>
-                                                    </button>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </header>
-                                </div>
-                                <br />
-                                <NavTabs
-                                    totalProducts={1}
-                                    background={bg_color_responsive}
-                                />
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <span class="text-xs font-semibold dark:text-white">
-                                Producto
-                            </span>
-                            <div class="flex gap-4 items-center">
-                                <div
-                                    class={`w-[200px]  shadow bg-paper-light dark:bg-admin-terciary overflow-hidden ${
-                                        type_border === "circle"
-                                            ? "rounded-md"
-                                            : ""
-                                    }`}
-                                >
-                                    <div class="relative">
-                                        <img
-                                            class={`mx-auto w-[300px] h-[200px] ${
-                                                isCoverImage
-                                                    ? "object-cover"
-                                                    : "object-contain"
-                                            }`}
-                                            width={200}
-                                            height={150}
-                                            src="https://http2.mlstatic.com/D_NQ_NP_993674-MLA31895860508_082019-O.webp"
-                                            alt=""
-                                        />
-                                        {isLogoImage ? (
-                                            <div class="absolute right-0 bottom-1 z-[9]">
-                                                <LogoImage
-                                                    width="40"
-                                                    height="40"
+                                            <div
+                                                class={`${
+                                                    isColorLight(bg_color_paper)
+                                                        ? "parent_form"
+                                                        : ""
+                                                }`}
+                                            >
+                                                <style jsx>{`
+                                                    .parent_form label {
+                                                        ${isColorLight(
+                                                            bg_color_paper
+                                                        )
+                                                            ? "color: #000000 !important"
+                                                            : "color: #FFFFFF !important"};
+                                                    }
+                                                `}</style>
+                                                <Form.control.select
+                                                    name={
+                                                        "type_border" as keyof SettingsUpdateDto
+                                                    }
+                                                    title="Borde"
+                                                    array={[
+                                                        {
+                                                            key: "circle",
+                                                            value: "Redondo",
+                                                        },
+                                                        {
+                                                            key: "square",
+                                                            value: "Rectangular",
+                                                        },
+                                                    ]}
+                                                    placeholder="Escoger tipo de border"
+                                                />
+                                                <Form.control.toggle
+                                                    name={
+                                                        "isCoverImage" as keyof SettingsUpdateDto
+                                                    }
+                                                    title="¿Cover Imagen?"
+                                                />
+                                                <Form.control.toggle
+                                                    name={
+                                                        "isLogoImage" as keyof SettingsUpdateDto
+                                                    }
+                                                    title="¿Ingresar logo?"
+                                                    question={
+                                                        <div class="w-[150px]">
+                                                            {!storageEmpresa?.logo ? (
+                                                                <>
+                                                                    <Link
+                                                                        href="/empresa"
+                                                                        class="text-primary underline font-semibold text-xs"
+                                                                    >
+                                                                        No
+                                                                        ingresaste
+                                                                        logo a
+                                                                        tu
+                                                                        empresa
+                                                                    </Link>
+                                                                    <br />
+                                                                </>
+                                                            ) : null}
+                                                            Cuando subes las
+                                                            imagenes a tus
+                                                            productos se
+                                                            agregará tu logo.
+                                                        </div>
+                                                    }
                                                 />
                                             </div>
-                                        ) : null}
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <Form.control.select
-                                        name={
-                                            "type_border" as keyof SettingsUpdateDto
-                                        }
-                                        title="Borde"
-                                        array={[
-                                            { key: "circle", value: "Redondo" },
-                                            {
-                                                key: "square",
-                                                value: "Rectangular",
-                                            },
-                                        ]}
-                                        placeholder="Escoger tipo de border"
-                                    />
-                                    <Form.control.toggle
-                                        name={
-                                            "isCoverImage" as keyof SettingsUpdateDto
-                                        }
-                                        title="¿Cover Imagen?"
-                                    />
-                                    <Form.control.toggle
-                                        name={
-                                            "isLogoImage" as keyof SettingsUpdateDto
-                                        }
-                                        title="¿Ingresar logo?"
-                                        question={
-                                            <div class="w-[150px]">
-                                                {!storageEmpresa?.logo ? (
-                                                    <>
-                                                        <Link
-                                                            href="/empresa"
-                                                            class="text-primary underline font-semibold text-xs"
-                                                        >
-                                                            No ingresaste logo a
-                                                            tu empresa
-                                                        </Link>
-                                                        <br />
-                                                    </>
-                                                ) : null}
-                                                Cuando subes las imagenes a tus
-                                                productos se agregará tu logo.
-                                            </div>
-                                        }
+                                    <br />
+                                    <footer
+                                        class="flex gap-2 px-4 shadow-md items-center text-xs justify-between font-semibold parent_footer"
+                                        style={{
+                                            backgroundColor: bg_color_footer,
+                                        }}
+                                    >
+                                        <style jsx>{`
+                                            .parent_footer span {
+                                                ${isColorLight(bg_color_footer)
+                                                    ? "color: #000000 !important"
+                                                    : "color: #FFFFFF !important"};
+                                            }
+                                        `}</style>
+                                        <span class="text-center">
+                                            All right Copyrigther{" "}
+                                            {new Date().getFullYear()}
+                                        </span>
+                                        <a
+                                            href="#start"
+                                            type="button"
+                                            class="py-4 px-6 text-white"
+                                            aria-label="up"
+                                            style={{
+                                                backgroundColor: bg_color,
+                                            }}
+                                        >
+                                            <i class="fa-solid fa-caret-up" />
+                                        </a>
+                                        <span class="text-center">
+                                            Este es el pie de página
+                                        </span>
+                                    </footer>
+                                    <NavTabs
+                                        totalProducts={1}
+                                        background={bg_color_responsive}
                                     />
                                 </div>
                             </div>
                         </div>
+
                         <div class="grid grid-cols-2 gap-2 items-center">
                             <div>
                                 <span class="text-xs dark:text-white font-semibold">
@@ -706,11 +835,6 @@ function SettingsIndex() {
                                 </span>
                                 <div class="flex gap-2 flex-wrap">
                                     <div class="flex flex-col gap-1">
-                                        <TitleSection
-                                            titleExample={border_title_type}
-                                        >
-                                            Esto es un titulo
-                                        </TitleSection>{" "}
                                         <div class="flex gap-1">
                                             <button
                                                 class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
