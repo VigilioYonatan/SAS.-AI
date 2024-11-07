@@ -692,7 +692,7 @@ function empresaUpdate() {
 
                         <Form.control.file
                             name={"logo" as keyof SettingsLogoUpdateDto}
-                            title="Logo de la empresa"
+                            title="Logo de la empresa (200px x 200px)"
                             accept="image/*"
                             multiple={false}
                             typeFile="image"

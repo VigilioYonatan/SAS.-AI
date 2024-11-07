@@ -29,7 +29,7 @@ function FindSection() {
                     }}
                 />{" "}
                 <div class="flex flex-col absolute bottom-0 m-1 bg-white z-10 p-2 gap-2 max-w-[250px] rounded-md shadow ">
-                    <span class="font-bold text-black text-sm">
+                    <span class="font-bold  text-sm">
                         {empresaStore.state!.address.city.region.name} -{" "}
                         {empresaStore.state!.address.city.name}
                     </span>

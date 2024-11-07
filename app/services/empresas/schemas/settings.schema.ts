@@ -63,6 +63,12 @@ export const settingsSchema = objectAsync({
     isLogoImage: boolean(),
     isScrolling: boolean(),
     bg_color_footer: string(),
+    font_face: string([
+        custom(
+            (val) => ["Barlow", "Exo", "Poppins"].includes(val),
+            "fuente no válido"
+        ),
+    ]),
     bg_color_background: string(),
     bg_color_paper: string(),
     hamburger: string([

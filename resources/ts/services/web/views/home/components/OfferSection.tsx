@@ -29,7 +29,7 @@ function OfferSection({
         >
             <TitleSection>Nuestros Ultimas ofertas</TitleSection>{" "}
             <div class=" flex flex-col sm:flex-row gap-4 ">
-                <div>
+                <div class="min-w-[300px]">
                     {productlatestmapped ? (
                         <ProductCard product={productlatestmapped}>
                             <ProductCard.header className="[&>img]:w-full [&>img]:h-[300px!important] [&>img]:object-cover">
@@ -50,7 +50,6 @@ function OfferSection({
                                 <ProductCard.body showDescription={false} />
                                 <ProductCard.footer showButtonCart />
                             </ProductCard>
-                            
                         ))}
                     </div>
                 ) : null}

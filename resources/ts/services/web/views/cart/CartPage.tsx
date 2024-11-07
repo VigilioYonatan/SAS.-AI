@@ -155,256 +155,265 @@ function CartPage({ cart, header }: CartProps) {
 
                 {cartStore.computed.showCartLength > 0 && (
                     <div class="flex flex-col items-start w-full h-full gap-8 lg:flex-row  ">
-                        <div class="flex flex-col w-full gap-4 bg-white dark:bg-background-dark p-2 rounded-md">
-                            <p class="text-center text-md font-bold dark:text-secondary-light text-secondary-dark">
+                        <div class="flex flex-col w-full gap-4 bg-background-light dark:bg-background-dark  md:p-2 rounded-md">
+                            <p class="text-center text-md font-bold dark:text-secondary-light pt-2">
                                 Hay {cartStore.computed.showCartLength}{" "}
                                 producto(s)
                             </p>
-                            <table class="w-full">
-                                <thead class="py-3 border-b border-b-border bg-primary">
-                                    <tr class="text-xs text-left text-muted-foreground text-white">
-                                        <th class="py-2 font-medium font-bold text-sm dark:text-white ">
-                                            <span class="flex justify-center items-center">
-                                                Producto
-                                            </span>
-                                        </th>
-                                        <th class="py-2 font-medium font-bold text-sm dark:text-white ">
-                                            <span class="flex justify-center items-center">
-                                                Precio
-                                            </span>
-                                        </th>
-                                        <th class="py-2 font-medium font-bold text-sm dark:text-white ">
-                                            <span class="flex justify-center items-center">
-                                                Cantidad
-                                            </span>
-                                        </th>
-                                        <th class="py-2 font-medium font-bold text-sm dark:text-white ">
-                                            <span class="flex justify-center items-center mx-2">
-                                                Subtotal
-                                            </span>
-                                        </th>
-                                        <th />
-                                    </tr>
-                                </thead>
-                                <tbody class="pt-5 border-b border-b-border">
-                                    {cartStore.state.cart.map((product) => {
-                                        const discountCoupon =
-                                            calculatePorcentajeDiscount(
-                                                subtotalIgv(product),
-                                                product.subtotal /
-                                                    product.quantity
-                                            );
-                                        const images500 = product.variant
-                                            ? printImagesProduct(
-                                                  product.images,
-                                                  500
-                                              ).filter((_, i) => {
-                                                  return product.variant?.images.some(
-                                                      (img) => img === i + 1
+                            <div class="w-full overflow-auto">
+                                <table class="w-full ">
+                                    <thead class="py-3 border-b border-b-border bg-primary">
+                                        <tr class="text-xs text-left text-muted-foreground text-white">
+                                            <th class="py-2 font-medium font-bold text-sm dark:text-white ">
+                                                <span class="flex justify-center items-center">
+                                                    Producto
+                                                </span>
+                                            </th>
+                                            <th class="py-2 font-medium font-bold text-sm dark:text-white ">
+                                                <span class="flex justify-center items-center">
+                                                    Precio
+                                                </span>
+                                            </th>
+                                            <th class="py-2 font-medium font-bold text-sm dark:text-white ">
+                                                <span class="flex justify-center items-center">
+                                                    Cantidad
+                                                </span>
+                                            </th>
+                                            <th class="py-2 font-medium font-bold text-sm dark:text-white ">
+                                                <span class="flex justify-center items-center mx-2">
+                                                    Subtotal
+                                                </span>
+                                            </th>
+                                            <th />
+                                        </tr>
+                                    </thead>
+                                    <tbody class="pt-5 border-b border-b-border">
+                                        {cartStore.state.cart.map((product) => {
+                                            const discountCoupon =
+                                                calculatePorcentajeDiscount(
+                                                    subtotalIgv(product),
+                                                    product.subtotal /
+                                                        product.quantity
+                                                );
+                                            const images500 = product.variant
+                                                ? printImagesProduct(
+                                                      product.images,
+                                                      500
+                                                  ).filter((_, i) => {
+                                                      return product.variant?.images.some(
+                                                          (img) => img === i + 1
+                                                      );
+                                                  })
+                                                : printImagesProduct(
+                                                      product.images,
+                                                      500
                                                   );
-                                              })
-                                            : printImagesProduct(
-                                                  product.images,
-                                                  500
-                                              );
 
-                                        const isImagesLength = images500.length
-                                            ? images500
-                                            : [NoImage()];
-                                        return (
-                                            <tr
-                                                class=" odd:bg-paper-light  dark:odd:bg-paper-dark"
-                                                key={
-                                                    product.variant
-                                                        ? product.variant.id
-                                                        : product.id
-                                                }
-                                            >
-                                                <td class="py-3">
-                                                    <article class="flex items-center gap-2">
-                                                        <img
-                                                            class="w-[100px] h-[100px] object-contain rounded-lg hidden md:block"
-                                                            src={
-                                                                isImagesLength[0]
-                                                            }
-                                                            alt={product.name}
-                                                        />
-                                                        <div>
-                                                            <a
-                                                                href={`/${product.slug}`}
-                                                                class="text-xs md:text-sm font-semibold dark:text-white  block  line-clamp-3    mx-1"
-                                                            >
-                                                                {product.name}
-                                                            </a>
-                                                            {product.variant ? (
-                                                                <span class="text-gray-600 dark:text-gray-300 text-xs">
-                                                                    {printProductVariant(
-                                                                        product as ProductsNormalSchemaFromServer,
-                                                                        product.variant
-                                                                    )
-                                                                        .map(
-                                                                            (
-                                                                                variant
-                                                                            ) => {
-                                                                                return variant?.features
-                                                                                    .filter(
-                                                                                        (
-                                                                                            val
-                                                                                        ) =>
-                                                                                            val.option_id !==
-                                                                                            1
-                                                                                    )
-                                                                                    .map(
-                                                                                        (
-                                                                                            feature
-                                                                                        ) =>
-                                                                                            feature?.description
-                                                                                    );
-                                                                            }
-                                                                        )
-                                                                        .join(
-                                                                            ", "
-                                                                        )}
-                                                                </span>
-                                                            ) : null}
-                                                            <span class="text-xs text-background-dark dark:text-paper-light font-semibold">
-                                                                {product.discount >
-                                                                0 ? (
-                                                                    <>
-                                                                        {" "}
-                                                                        +
-                                                                        {
-                                                                            product.discount
-                                                                        }
-                                                                        % de
-                                                                        desc.{" "}
-                                                                    </>
-                                                                ) : null}
-                                                                {discountCoupon >
-                                                                0
-                                                                    ? `+${discountCoupon}% cupón`
-                                                                    : null}
-                                                            </span>
-                                                        </div>
-                                                    </article>
-                                                </td>
-                                                <td class="  dark:text-white font-bold  text-xs  md:text-base">
-                                                    <div class="flex justify-center items-center">
-                                                        {formatMoney(
-                                                            product.subtotal /
-                                                                product.quantity
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <>
-                                                    {!product.enabled ||
-                                                    (!product.variant
-                                                        ?.ilimit! &&
+                                            const isImagesLength =
+                                                images500.length
+                                                    ? images500
+                                                    : [NoImage()];
+                                            return (
+                                                <tr
+                                                    class=" odd:bg-paper-light  dark:odd:bg-paper-dark"
+                                                    key={
                                                         product.variant
-                                                            ?.stock! < 1) ||
-                                                    (!(
-                                                        product as ProductsRestaurantSchemaFromServer
-                                                    )?.ilimit! &&
-                                                        (
-                                                            product as ProductsRestaurantSchemaFromServer
-                                                        )?.stock! < 1) ? (
-                                                        <>
-                                                            <td>
-                                                                <span class="dark:text-secondary-light text-sm text-center">
-                                                                    Este
-                                                                    producto
-                                                                    está agotado
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <button
-                                                                    class="w-[30px]"
-                                                                    onClick={() =>
-                                                                        cartStore.methods.onRemoveProductToCart(
-                                                                            product.id,
-                                                                            product.variant
-                                                                                ? product
-                                                                                      .variant
-                                                                                      .id
-                                                                                : null
-                                                                        )
-                                                                    }
-                                                                    type="button"
-                                                                    aria-label="delete poduct to cart"
+                                                            ? product.variant.id
+                                                            : product.id
+                                                    }
+                                                >
+                                                    <td class="py-3">
+                                                        <article class="flex items-center gap-2">
+                                                            <img
+                                                                class="w-[100px] h-[100px] object-contain rounded-lg hidden md:block"
+                                                                src={
+                                                                    isImagesLength[0]
+                                                                }
+                                                                alt={
+                                                                    product.name
+                                                                }
+                                                            />
+                                                            <div>
+                                                                <a
+                                                                    href={`/${product.slug}`}
+                                                                    class="text-xs md:text-sm font-semibold dark:text-white  block  line-clamp-3    mx-1"
                                                                 >
-                                                                    <i class="fa-regular fa-trash text-primary text-lg" />
-                                                                </button>
-                                                            </td>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <td class="py-3 mx-2 w-[100px]">
-                                                                <div class="flex gap-3 items-center justify-center mx-2">
-                                                                    <button
-                                                                        aria-label="to increment to cart"
-                                                                        type="button"
-                                                                        class="md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white dark:hover:bg-primary dark:hover:text-white bg-primary dark:text-black text-white font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:text-primary delay-custom-1"
-                                                                        onClick={() =>
-                                                                            cartStore.methods.onIncrementProductToCart(
-                                                                                product
+                                                                    {
+                                                                        product.name
+                                                                    }
+                                                                </a>
+                                                                {product.variant ? (
+                                                                    <span class="text-gray-600 dark:text-gray-300 text-xs">
+                                                                        {printProductVariant(
+                                                                            product as ProductsNormalSchemaFromServer,
+                                                                            product.variant
+                                                                        )
+                                                                            .map(
+                                                                                (
+                                                                                    variant
+                                                                                ) => {
+                                                                                    return variant?.features
+                                                                                        .filter(
+                                                                                            (
+                                                                                                val
+                                                                                            ) =>
+                                                                                                val.option_id !==
+                                                                                                1
+                                                                                        )
+                                                                                        .map(
+                                                                                            (
+                                                                                                feature
+                                                                                            ) =>
+                                                                                                feature?.description
+                                                                                        );
+                                                                                }
                                                                             )
-                                                                        }
-                                                                    >
-                                                                        +
-                                                                    </button>
-                                                                    <span class="font-bold dark:text-white text-black  w-[20px] flex justify-center items-center">
-                                                                        {
-                                                                            product.quantity
-                                                                        }
+                                                                            .join(
+                                                                                ", "
+                                                                            )}
                                                                     </span>
+                                                                ) : null}
+                                                                <span class="text-xs text-background-dark dark:text-paper-light font-semibold">
+                                                                    {product.discount >
+                                                                    0 ? (
+                                                                        <>
+                                                                            {" "}
+                                                                            +
+                                                                            {
+                                                                                product.discount
+                                                                            }
+                                                                            % de
+                                                                            desc.{" "}
+                                                                        </>
+                                                                    ) : null}
+                                                                    {discountCoupon >
+                                                                    0
+                                                                        ? `+${discountCoupon}% cupón`
+                                                                        : null}
+                                                                </span>
+                                                            </div>
+                                                        </article>
+                                                    </td>
+                                                    <td class="  dark:text-white font-bold  text-xs  md:text-base">
+                                                        <div class="flex justify-center items-center">
+                                                            {formatMoney(
+                                                                product.subtotal /
+                                                                    product.quantity
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                    <>
+                                                        {!product.enabled ||
+                                                        (!product.variant
+                                                            ?.ilimit! &&
+                                                            product.variant
+                                                                ?.stock! < 1) ||
+                                                        (!(
+                                                            product as ProductsRestaurantSchemaFromServer
+                                                        )?.ilimit! &&
+                                                            (
+                                                                product as ProductsRestaurantSchemaFromServer
+                                                            )?.stock! < 1) ? (
+                                                            <>
+                                                                <td>
+                                                                    <span class="dark:text-secondary-light text-sm text-center">
+                                                                        Este
+                                                                        producto
+                                                                        está
+                                                                        agotado
+                                                                    </span>
+                                                                </td>
+                                                                <td>
                                                                     <button
+                                                                        class="w-[30px]"
                                                                         onClick={() =>
-                                                                            cartStore.methods.onDecrementProductToCart(
-                                                                                product
+                                                                            cartStore.methods.onRemoveProductToCart(
+                                                                                product.id,
+                                                                                product.variant
+                                                                                    ? product
+                                                                                          .variant
+                                                                                          .id
+                                                                                    : null
                                                                             )
                                                                         }
-                                                                        aria-label="to decrement to cart"
                                                                         type="button"
-                                                                        class="md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white dark:hover:bg-primary dark:hover:text-white bg-primary dark:text-black text-white font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:text-primary delay-custom-1"
+                                                                        aria-label="delete poduct to cart"
                                                                     >
-                                                                        -
+                                                                        <i class="fa-regular fa-trash text-primary text-lg" />
                                                                     </button>
-                                                                </div>
-                                                            </td>
-                                                            <td class="py-3  dark:text-white font-bold text-xs md:text-base ">
-                                                                <div class="flex justify-center">
-                                                                    {formatMoney(
-                                                                        product.subtotal
-                                                                    )}
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <button
-                                                                    class="w-[30px]"
-                                                                    onClick={() =>
-                                                                        cartStore.methods.onRemoveProductToCart(
-                                                                            product.id,
-                                                                            product.variant
-                                                                                ? product
-                                                                                      .variant
-                                                                                      .id
-                                                                                : null
-                                                                        )
-                                                                    }
-                                                                    type="button"
-                                                                    aria-label="delete poduct to cart"
-                                                                >
-                                                                    <i class="fa-regular fa-trash text-primary text-lg" />
-                                                                </button>
-                                                            </td>
-                                                        </>
-                                                    )}
-                                                </>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
+                                                                </td>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <td class="py-3 mx-2 w-[100px]">
+                                                                    <div class="flex gap-3 items-center justify-center mx-2">
+                                                                        <button
+                                                                            aria-label="to increment to cart"
+                                                                            type="button"
+                                                                            class="md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white dark:hover:bg-primary dark:hover:text-white bg-primary dark:text-black text-white font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:text-primary delay-custom-1"
+                                                                            onClick={() =>
+                                                                                cartStore.methods.onIncrementProductToCart(
+                                                                                    product
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            +
+                                                                        </button>
+                                                                        <span class="font-bold dark:text-white   w-[20px] flex justify-center items-center ">
+                                                                            {
+                                                                                product.quantity
+                                                                            }
+                                                                        </span>
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                cartStore.methods.onDecrementProductToCart(
+                                                                                    product
+                                                                                )
+                                                                            }
+                                                                            aria-label="to decrement to cart"
+                                                                            type="button"
+                                                                            class="md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white dark:hover:bg-primary dark:hover:text-white bg-primary dark:text-black text-white font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:text-primary delay-custom-1"
+                                                                        >
+                                                                            -
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="py-3  dark:text-white font-bold text-xs md:text-base ">
+                                                                    <div class="flex justify-center">
+                                                                        {formatMoney(
+                                                                            product.subtotal
+                                                                        )}
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <button
+                                                                        class="w-[30px]"
+                                                                        onClick={() =>
+                                                                            cartStore.methods.onRemoveProductToCart(
+                                                                                product.id,
+                                                                                product.variant
+                                                                                    ? product
+                                                                                          .variant
+                                                                                          .id
+                                                                                    : null
+                                                                            )
+                                                                        }
+                                                                        type="button"
+                                                                        aria-label="delete poduct to cart"
+                                                                    >
+                                                                        <i class="fa-regular fa-trash text-primary text-lg" />
+                                                                    </button>
+                                                                </td>
+                                                            </>
+                                                        )}
+                                                    </>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+
                             {/* <div>
                                 <div class="col-xl-6 col-md-8" />
                                 <div class="flex justify-end w-full">
@@ -418,7 +427,7 @@ function CartPage({ cart, header }: CartProps) {
                                 </div>
                             </div> */}
                         </div>
-                        <div class="flex h-max w-full min-w-80 flex-col gap-4 divide-y-[1px] dark:divide-zinc-700 bg-white dark:bg-background-dark shadow-sm lg:max-w-80 rounded-md ">
+                        <div class="flex h-max w-full min-w-80 flex-col gap-4 divide-y-[1px] dark:divide-zinc-700 bg-background-light dark:bg-background-dark shadow-sm lg:max-w-80 rounded-md ">
                             <div class="flex flex-col px-4 pt-4 gap-2">
                                 {ordersCartStoreDtoForm.watch("city_id") ? (
                                     <>
@@ -701,11 +710,11 @@ function CartPage({ cart, header }: CartProps) {
                                         {storageEmpresa?.metodos_pago
                                             .enable_efectivo ? (
                                             <>
-                                                <span class="text-sm font-bold dark:text-paper-dark">
+                                                <span class="text-sm font-bold dark:text-paper-dark text-black">
                                                     Realiza un pedido en
                                                     efectivo
                                                 </span>
-                                                <span class="text-sm font-bold">
+                                                <span class="text-sm font-bold text-black">
                                                     ó
                                                 </span>
                                             </>

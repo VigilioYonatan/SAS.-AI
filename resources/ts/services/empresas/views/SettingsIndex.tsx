@@ -99,6 +99,7 @@ function SettingsIndex() {
             "bg_color_responsive"
         );
         const border_title_type = settingsUpdateform.watch("border_title_type");
+        const font_face = settingsUpdateform.watch("font_face");
         const type_icons = settingsUpdateform.watch("type_icons");
         const themeStore = useThemeStore();
         const cartStore = useCartStore();
@@ -338,12 +339,9 @@ function SettingsIndex() {
                                     name="position_header"
                                     title="Header Mobile"
                                 />
-                                {/* bg_color_background
-bg_color_footer
-bg_color_paper */}
                                 <div
                                     style={{
-                                        backgroundColor: bg_color_background,
+                                        backgroundColor: bg_color_paper,
                                     }}
                                 >
                                     <div class="flex gap-2 flex-wrap w-full">
@@ -352,9 +350,9 @@ bg_color_paper */}
                                                 " w-full px-4    py-4 shadow    delay-custom-1 "
                                             }
                                             style={{
-                                                background: bg_color_responsive,
+                                                background: bg_color_background,
                                                 color: isColorLight(
-                                                    bg_color_responsive
+                                                    bg_color_background
                                                 )
                                                     ? "#000000"
                                                     : "#FFFFFF",
@@ -589,15 +587,15 @@ bg_color_paper */}
                                     <div
                                         class="flex flex-col gap-2 self-start p-2 md:w-[500px] rounded-md shadow-md mx-2"
                                         style={{
-                                            color: isColorLight(bg_color_paper)
+                                            color: isColorLight(
+                                                bg_color_background
+                                            )
                                                 ? "#000000 !important"
                                                 : "#FFFFFF !important",
-                                            backgroundColor: bg_color_paper,
+                                            backgroundColor:
+                                                bg_color_background,
                                         }}
                                     >
-                                        <span class="text-xs font-semibold ">
-                                            Producto
-                                        </span>
                                         <div class="flex flex-col md:flex-row gap-4 items-center">
                                             <div
                                                 class={`w-[200px]  shadow bg-paper-light dark:bg-admin-terciary overflow-hidden ${
@@ -630,7 +628,9 @@ bg_color_paper */}
                                             </div>
                                             <div
                                                 class={`${
-                                                    isColorLight(bg_color_paper)
+                                                    isColorLight(
+                                                        bg_color_background
+                                                    )
                                                         ? "parent_form"
                                                         : ""
                                                 }`}
@@ -638,7 +638,7 @@ bg_color_paper */}
                                                 <style jsx>{`
                                                     .parent_form label {
                                                         ${isColorLight(
-                                                            bg_color_paper
+                                                            bg_color_background
                                                         )
                                                             ? "color: #000000 !important"
                                                             : "color: #FFFFFF !important"};
@@ -739,7 +739,6 @@ bg_color_paper */}
                                 </div>
                             </div>
                         </div>
-
                         <div class="grid grid-cols-2 gap-2 items-center">
                             <div>
                                 <span class="text-xs dark:text-white font-semibold">
@@ -795,6 +794,65 @@ bg_color_paper */}
                                     >
                                         <i class="fas fa-shopping-basket text-lg dark:text-white" />
                                     </button>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Tipo de Fuente
+                                </span>
+                                <div class="flex gap-2 flex-wrap">
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex gap-1">
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    font_face === "Exo"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "font_face",
+                                                        "Exo"
+                                                    );
+                                                }}
+                                            >
+                                                Exo
+                                            </button>
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    font_face === "Poppins"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "font_face",
+                                                        "Poppins"
+                                                    );
+                                                }}
+                                            >
+                                                Poppins
+                                            </button>
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    font_face === "Barlow"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "font_face",
+                                                        "Barlow"
+                                                    );
+                                                }}
+                                            >
+                                                Barlow
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -49,6 +49,12 @@ export const settingsSchema = object({
     type_border: string([
         custom((val) => ["circle", "square"].includes(val), "Border no válido"),
     ]),
+    font_face: string([
+        custom(
+            (val) => ["Barlow", "Exo", "Poppins"].includes(val),
+            "fuente no válido"
+        ),
+    ]),
     type_cart: string([
         custom(
             (val) =>

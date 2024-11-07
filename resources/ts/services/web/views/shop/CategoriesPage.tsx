@@ -197,7 +197,7 @@ function CategoriesPage({
                             </div>
                         </div>
                         <select
-                            class={`py-3 px-4 text-sm outline-none border  hover:bg-white  delay-custom-1 border-gray-200 dark:bg-background-dark dark:text-white hidden sm:block ${
+                            class={`py-3 px-4 text-sm outline-none border  hover:bg-background-light  delay-custom-1 border-gray-200 dark:bg-background-dark dark:text-white hidden sm:block ${
                                 enviroments.TYPE_BORDER === "circle"
                                     ? "rounded-md"
                                     : ""
@@ -323,7 +323,7 @@ function CategoriesPage({
                         }`}
                     >
                         <div
-                            class={`w-full p-4 sm:max-w-[350px] h-full dark:bg-background-dark bg-background-light delay-custom-1 ${
+                            class={`w-full p-4 sm:max-w-[350px] h-full dark:bg-background-dark bg-paper-light delay-custom-1 ${
                                 showFilter.dropdownOpen
                                     ? "translate-x-0"
                                     : "-translate-x-full"
@@ -400,7 +400,7 @@ export function RangeComponent({
         <div class="">
             <label
                 htmlFor="range"
-                class="block text-sm font-medium text-gray-500 dark:text-gray-400"
+                class="block text-sm font-medium  dark:text-gray-400"
             >
                 Filtrar por valor:
             </label>
@@ -423,11 +423,11 @@ export function RangeComponent({
                 </button>
             </div>
 
-            <div class="flex justify-between mt-2 text-gray-500 dark:text-gray-400">
+            <div class="flex justify-between mt-2  dark:text-gray-400">
                 <span class="text-sm ">0</span>
                 <span class="text-sm ">{formatMoney(valueMax ?? 0)}</span>
             </div>
-            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            <p class="mt-2 text-sm  dark:text-gray-400">
                 Valor seleccionado: {formatMoney(rangeValue.value)}
             </p>
         </div>
@@ -646,7 +646,7 @@ export function FiltersAside({
                                                                     };
                                                             }}
                                                         />
-                                                        <span class="text-gray-500 dark:text-gray-400 hover:text-principal-primary">
+                                                        <span class=" dark:text-gray-400 hover:text-primary">
                                                             {
                                                                 feature.description
                                                             }{" "}
@@ -678,7 +678,7 @@ export function FiltersAside({
 
             {brands?.length ? (
                 <div
-                    class={`p-4 border border-gray-300 dark:bg-background-dark bg-background-light ${
+                    class={`p-4 border border-gray-300 dark:bg-background-dark bg-background-light $ {
                         enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                     }`}
                 >
@@ -714,7 +714,7 @@ export function FiltersAside({
                                     }}
                                     checked={filters.value.brand === brand.slug}
                                 />
-                                <span class="text-gray-500 dark:text-gray-400 hover:text-principal-primary">
+                                <span class=" dark:text-gray-400 hover:text-primary">
                                     {brand.name}{" "}
                                     <span class="text-xs">
                                         ({brand.quantity})
@@ -766,7 +766,7 @@ export function FiltersAside({
                                     discount.value.toString()
                                 }
                             />
-                            <div class="text-gray-500 dark:text-gray-400 hover:text-principal-primary flex  items-center gap-1">
+                            <div class=" dark:text-gray-400 hover:text-primary flex  items-center gap-1">
                                 <span>Desde {discount.value}% OFF</span>
                                 <span class="text-xs">
                                     ({discount.quantity})

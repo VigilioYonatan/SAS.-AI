@@ -11,7 +11,7 @@ function TitleSection({ children, titleExample }: TitleSectionProps) {
     storageEmpresa?.setting.border_title_type;
     return (
         <>
-            <h3 class="text-xl md:text-2xl font-bold text-center  dark:text-white my-4 title-container-1 flex justify-center flex-col items-center">
+            <h3 class="text-xl md:text-2xl  font-bold text-center  dark:text-white my-4 title-container-1 flex justify-center flex-col items-center">
                 {children}
                 {title === "normal" ? (
                     <style jsx>

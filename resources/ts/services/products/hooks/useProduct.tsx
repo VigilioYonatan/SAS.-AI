@@ -261,7 +261,7 @@ function useProduct({ product, isService }: UseProductProps) {
                                 ? "1 producto agregado"
                                 : `${producto.value.quantity} productos agregados`}{" "}
                             correctamente. (
-                            <span class="text-principal-primary font-semibold">
+                            <span class="text-primary font-semibold ">
                                 {formatMoney(subtotal)}
                             </span>
                             )

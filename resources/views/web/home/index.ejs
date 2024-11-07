@@ -43,6 +43,39 @@
   <style>
     :root {
       --primary: <%=$empresa.setting?.bg_color %>;
+      --paper: <%=$empresa.setting?.bg_color_paper %>;
+      --light: <%=$empresa.setting?.bg_color_background %>;
+
+    }
+
+    @font-face {
+      font-family: 'Font-Thin';
+      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Thin.ttf` %>');
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Font-Light';
+      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Light.ttf` %>');
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Font-Regular';
+      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Regular.ttf` %>');
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Font-Bold';
+      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Bold.ttf` %>');
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Font-Black';
+      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Black.ttf` %>');
+      font-display: swap;
     }
 
     .vigilio-modal .modal {
@@ -58,7 +91,6 @@
 
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
-
   <home-page :users="<%= JSON.stringify(users)  %>" :noticia="<%= JSON.stringify(noticia) %>" :productsQuantity="<%= JSON.stringify(productsQuantity)  %>" :productServicesQuantity="<%= JSON.stringify(productServicesQuantity)  %>" :header="<%= JSON.stringify(header)  %>" :backgrounds="<%= JSON.stringify(backgrounds)  %>" :posts="<%= JSON.stringify(posts)  %>" :productsOffert6Mapped="<%= JSON.stringify(productsOffert6Mapped)  %>" :productsLatest6Mapped="<%= JSON.stringify(productsLatest6Mapped)  %>" :productMostDiscountMapped="<%= JSON.stringify(productMostDiscountMapped)  %>" :productLatestMapped="<%= JSON.stringify(productLatestMapped)  %>" :getProductsByCategories="<%= JSON.stringify(getProductsByCategories)  %>" :brands="<%= JSON.stringify(brands)  %>"></home-page>
 </body>
 

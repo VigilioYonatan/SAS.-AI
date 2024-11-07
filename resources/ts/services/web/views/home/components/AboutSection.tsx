@@ -23,7 +23,7 @@ function AboutSection({
     );
     return (
         <section
-            class="max-w-6xl mx-auto px-2 py-6 my-6 lg:my-12 bg-white dark:bg-background-dark"
+            class="max-w-6xl mx-auto px-2 py-6 my-6 lg:my-12 bg-background-light dark:bg-background-dark"
             data-aos={`${
                 storageEmpresa?.setting.isScrolling ? "fade-up" : ""
             } `}

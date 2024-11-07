@@ -121,7 +121,7 @@ function ServicioPage({ product, category_name, header }: ServicioPageProps) {
                     </Slider>
                     <ShowImage length={images500Variant.length}>
                         <Slider
-                            className="w-full"
+                            className="w-[auto!important] md:!w-[800px] "
                             {...{
                                 dots: true,
                                 speed: 500,
@@ -136,7 +136,7 @@ function ServicioPage({ product, category_name, header }: ServicioPageProps) {
                             }}
                         >
                             {images500Variant.map((image) => (
-                                <div class="h-[800px] " key={image}>
+                                <div class="h-[800px] w-full" key={image}>
                                     <img
                                         class="w-full h-full object-contain"
                                         src={image}
@@ -173,7 +173,7 @@ function ServicioPage({ product, category_name, header }: ServicioPageProps) {
                         }
                     `}</style>
                     <div class="flex flex-col gap-2 md:w-5/12 mt-8 ">
-                        <div class="flex gap-2 text-gray-600 dark:text-gray-300 text-xs font-semibold">
+                        <div class="flex gap-2   dark:text-gray-300 text-xs font-semibold">
                             {product.category?.icon ? (
                                 <div
                                     dangerouslySetInnerHTML={{
@@ -264,7 +264,7 @@ function ServicioPage({ product, category_name, header }: ServicioPageProps) {
                             </div>
 
                             <span
-                                class="text-primary font-bold dark:text-white text-xl"
+                                class="font-bold dark:text-white text-xl"
                                 itemprop="price"
                                 content={formatMoney(
                                     subtotalIgv(product, true)
@@ -295,7 +295,7 @@ function ServicioPage({ product, category_name, header }: ServicioPageProps) {
                             quiero
                         </a>
                         <div class="flex  flex-col gap-1">
-                            <span class=" dark:text-white text-xs font-bold text-black">
+                            <span class=" dark:text-white text-xs font-bold ">
                                 Compartir
                             </span>
                             <div class="flex gap-2 items-center dark:text-white text-primary">

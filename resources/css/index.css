@@ -32,10 +32,10 @@
     z-index: 99999 !important;
 }
 .admin .vigilio-alert-container {
-    @apply dark:bg-admin-terciary bg-paper-light;
+    @apply dark:!bg-admin-terciary bg-paper-light;
 }
 .admin .vigilio-modal .modal {
-    @apply dark:bg-admin-paper-dark bg-background-light;
+    @apply dark:!bg-admin-paper-dark !bg-background-light;
 }
 .admin .vigilio-modal .modal .vigilio-success-circular-line-right {
     @apply dark:bg-admin-paper-dark bg-background-light;
@@ -65,7 +65,7 @@
 }
 
 .vigilio-modal .modal {
-    @apply dark:bg-paper-dark bg-paper-light;
+    @apply dark:bg-paper-dark !bg-paper-light;
 }
 .vigilio-modal .modal .vigilio-success-circular-line-right {
     @apply dark:bg-paper-dark bg-paper-light;
@@ -126,7 +126,7 @@
     align-items: center !important;
     width: 30px !important;
     height: 30px !important;
-    @apply !bg-white dark:!bg-background-dark;
+    @apply !bg-background-light dark:!bg-background-dark;
     position: absolute !important;
     z-index: 10;
     border-radius: 1rem !important;

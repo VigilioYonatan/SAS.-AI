@@ -205,7 +205,7 @@ function ProductCart({ product }: ProductCartProps) {
                                         >
                                             +
                                         </button>
-                                        <span class="font-bold dark:text-white text-black w-[10px] flex justify-center items-center">
+                                        <span class="font-bold dark:text-white  w-[10px] flex justify-center items-center">
                                             {product.quantity}
                                         </span>
                                         <button

@@ -23,6 +23,7 @@ import { Fragment } from "preact/jsx-runtime";
 import { verifyBank } from "@/cart/views/Niubiz";
 import { printFileWithDimension } from "~/libs/upload";
 import { printProductVariant } from "@/products/libs/helpers";
+import { isColorLight } from "~/libs/helpers";
 
 interface ProductCardViewProps {
     product: ReturnType<typeof useProduct>;
@@ -57,7 +58,15 @@ function ProductCardView({ product }: ProductCardViewProps) {
     const { ShowImage, changeShowImage, state } = useShowImage();
 
     return (
-        <div class="flex gap-6 flex-col md:flex-row  product-card p-2  lg:h-[600px]">
+        <div
+            class={`flex gap-6 flex-col md:flex-row  product-card  p-2 ${
+                (
+                    producto.value as ProductsNormalSchemaFromServer
+                )?.options.filter((option) => option.id !== 1).length
+                    ? "lg:min-h-[600px]"
+                    : "lg:min-h-[500px]"
+            }`}
+        >
             <Slider
                 {...{
                     customPaging: (i) => {
@@ -151,6 +160,11 @@ function ProductCardView({ product }: ProductCardViewProps) {
                 </Slider>
             </ShowImage>
             <style jsx>{`
+                .product-card {
+                    ${isColorLight(storageEmpresa!.setting.bg_color_paper)
+                        ? "color: #000000 !important"
+                        : "color: #FFFFFF !important"};
+                }
                 .product-card .slick-dots li {
                     min-width: 50px !important;
                     min-height: 50px !important;
@@ -180,8 +194,8 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         SKU: {product.varianteChoose?.sku}
                     </span>
                 ) : null}
-                <div class="flex  text-terciary text-xs flex-col">
-                    <div class="flex gap-2">
+                <div class="flex   text-xs flex-col">
+                    <div class="flex gap-2 text-terciary">
                         {product.producto.value.category.icon ? (
                             <div
                                 dangerouslySetInnerHTML={{
@@ -195,7 +209,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </span>
                     </div>
 
-                    <span class="dark:text-white text-black font-bold text-lg">
+                    <span class="dark:text-white  font-bold text-lg">
                         {product.producto.value.name}
 
                         {product.varianteChoose &&
@@ -242,7 +256,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                     <div class="flex gap-2">
                         {product.producto.value.discount > 0 ? (
                             <span
-                                class="text-sm text-gray-400 line-through"
+                                class="text-sm  line-through"
                                 itemprop={formatMoney(
                                     subtotalIgv(product.producto.value, false)
                                 )}
@@ -256,14 +270,14 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             </span>
                         ) : null}
                         {discount.value ? (
-                            <span class="text-sm text-gray-400 line-through">
+                            <span class="text-sm  line-through">
                                 -{discount.value}%
                             </span>
                         ) : null}
                     </div>
 
                     <span
-                        class="text-black font-bold dark:text-white text-xl"
+                        class=" font-bold dark:text-white text-xl"
                         itemprop="price"
                         content={formatMoney(
                             subtotalIgv(product.producto.value, true)
@@ -328,11 +342,21 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </>
                     ) : null}
                 </span>
-                <div class="my-2">
+
+                <>
                     {/* aaaaaaaaaaaaaaaaca variante */}
                     {(producto.value as ProductsNormalSchemaFromServer)
                         ?.variants ? (
-                        <>
+                        <div
+                            class={` ${
+                                (
+                                    producto.value as ProductsNormalSchemaFromServer
+                                )?.options.filter((option) => option.id !== 1)
+                                    .length
+                                    ? "my-2"
+                                    : ""
+                            }`}
+                        >
                             {" "}
                             <div class="flex flex-col gap-3">
                                 {(
@@ -341,7 +365,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                     .filter((option) => option.id !== 1)
                                     .map((option) => (
                                         <div key={option.id}>
-                                            <span class="dark:text-white text-xs font-bold text-black">
+                                            <span class="dark:text-white text-xs font-bold ">
                                                 {option.name}
                                             </span>
                                             <div class="flex gap-2 flex-wrap">
@@ -478,9 +502,9 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                         </div>
                                     ))}
                             </div>
-                        </>
+                        </div>
                     ) : null}
-                </div>
+                </>
                 {/* coupon form  si  esta en el carrito que no se vea el formulario de cupon */}
                 {(!existProductInCart &&
                     (varianteChoose?.ilimit ||
@@ -609,10 +633,9 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </>
                     )}
                 </div>
-
                 <MetodosDePago />
                 <div class="flex  flex-col gap-1">
-                    <span class=" dark:text-white text-xs font-bold text-black">
+                    <span class=" dark:text-white text-xs font-bold ">
                         Compartir
                     </span>
                     <div class="flex gap-6 items-center dark:text-white text-primary w-full">
@@ -665,7 +688,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                     </div>
                 </div>
                 <div class="flex  flex-col gap-1">
-                    <span class=" dark:text-white text-xs font-bold text-black">
+                    <span class=" dark:text-white text-xs font-bold ">
                         Descripción
                     </span>
                     <p class="text-xs line-clamp-4 dark:text-white">
@@ -691,7 +714,7 @@ export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
     return (
         <div class="flex flex-col gap-2">
             {isEfectivo ? (
-                <span class="dark:text-white text-xs font-bold text-black ">
+                <span class="dark:text-white text-xs font-bold ">
                     Métodos de pago disponible
                 </span>
             ) : null}
@@ -721,7 +744,7 @@ export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
                 ) : null}
                 {empresaStore.state?.metodos_pago.enable_efectivo &&
                 isEfectivo ? (
-                    <p class="text-xs  text-center border p-1 rounded-md border-gray-400 text-black dark:text-white">
+                    <p class="text-xs  text-center border p-1 rounded-md border-gray-400 ">
                         <i class="far fa-handshake" /> Efectivo
                     </p>
                 ) : null}

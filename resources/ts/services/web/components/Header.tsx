@@ -2,7 +2,7 @@ import useDropdown from "~/hooks/useDropdown";
 import Aside from "./Aside";
 import type { HeaderType } from "./WebLayout";
 import HeaderMobile from "./HeaderMobile";
-import { isActive } from "~/libs/helpers";
+import { isActive, isColorLight } from "~/libs/helpers";
 import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
@@ -33,10 +33,29 @@ function Header({ header }: HeaderProps) {
 
     return (
         <>
-            <div class="    text-white text-sm px-2 bg-white dark:bg-background-dark hidden lg:block">
+            <div class="     text-sm px-2  dark:bg-background-dark hidden lg:block bg-background-light">
+                <style jsx>{`
+                    .vigilio-modal .modal {
+                        ${isColorLight(storageEmpresa!.setting.bg_color_paper)
+                            ? "color: #000000 !important"
+                            : "color: #FFFFFF !important"};
+                    }
+                    .bg-background-light {
+                        ${isColorLight(
+                            storageEmpresa!.setting.bg_color_background
+                        )
+                            ? "color: #000000 !important"
+                            : "color: #FFFFFF !important"};
+                    }
+                    .bg-paper-light {
+                        ${isColorLight(storageEmpresa!.setting.bg_color_paper)
+                            ? "color: #000000 !important"
+                            : "color: #FFFFFF !important"};
+                    }
+                `}</style>
                 <div class="max-w-6xl  mx-auto justify-between py-2 flex font-semibold">
                     <div class="flex gap-3 items-center font-semibold">
-                        <span class="dark:text-white text-black">
+                        <span class="dark:text-white">
                             Teléfono:{" "}
                             <span class="text-primary font-semibold">
                                 (+{empresaStore.state!.dial_code}){" "}
@@ -44,7 +63,7 @@ function Header({ header }: HeaderProps) {
                             </span>
                         </span>
                         {empresaStore.state!.email ? (
-                            <span class="dark:text-white text-black">
+                            <span class="dark:text-white">
                                 Correo Electrónico:
                                 <span class="text-primary font-semibold ml-2">
                                     {empresaStore.state!.email}
@@ -52,7 +71,7 @@ function Header({ header }: HeaderProps) {
                             </span>
                         ) : null}
                     </div>
-                    <div class="flex items-center gap-2  dark:text-white text-black">
+                    <div class="flex items-center gap-2  dark:text-white ">
                         <div class="w-[1px] bg-gray-600 h-[50%] mx-2" />
                         {authStore.state ? (
                             <WebDropdown
@@ -83,7 +102,7 @@ function Header({ header }: HeaderProps) {
                                 <div class="flex flex-col dark:bg-background-dark">
                                     <a
                                         href={"/admin"}
-                                        class="dark:text-white text-black py-2 text-center font-semibold"
+                                        class="dark:text-white  py-2 text-center font-semibold"
                                     >
                                         <i class="fas fa-tachometer-alt" /> Ir
                                         al administrador
@@ -114,7 +133,7 @@ function Header({ header }: HeaderProps) {
                             class={` font-bold tracking-widest dark:hover:text-primary text-sm uppercase ${
                                 isActive("/", false)
                                     ? "text-primary"
-                                    : "text-black dark:text-white hover:text-primary"
+                                    : " dark:text-white hover:text-primary"
                             }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
                             href={"/"}
                         >
@@ -127,7 +146,7 @@ function Header({ header }: HeaderProps) {
                                 class={`font-bold tracking-widest text-sm uppercase hover:text-primary dark:hover:text-primary delay-custom-1 ${
                                     isActive("/shop")
                                         ? "text-primary"
-                                        : "text-black dark:text-white "
+                                        : " dark:text-white "
                                 } relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
                                 onBlur={() => {}}
                                 onFocus={() => {}}
@@ -210,7 +229,7 @@ function Header({ header }: HeaderProps) {
                                                                 (service) => (
                                                                     <a
                                                                         href={`/servicio/${service.slug}`}
-                                                                        class="flex gap-2 items-center justify-between p-2   w-full rounded-md hover:text-white hover:bg-primary dark:text-white text-black"
+                                                                        class="flex gap-2 items-center justify-between p-2   w-full rounded-md hover:text-white hover:bg-primary dark:text-white "
                                                                         key={
                                                                             service.id
                                                                         }
@@ -249,7 +268,7 @@ function Header({ header }: HeaderProps) {
                                             {header.brands.map((brand) => (
                                                 <a
                                                     href={`/marcas/${brand.slug}`}
-                                                    class="flex gap-2 items-center justify-between p-2   w-full rounded-md hover:text-white hover:bg-primary dark:text-white text-black"
+                                                    class="flex gap-2 items-center justify-between p-2   w-full rounded-md hover:text-white hover:bg-primary dark:text-white "
                                                     key={brand.id}
                                                     aria-label="sho category"
                                                 >
@@ -284,7 +303,7 @@ function Header({ header }: HeaderProps) {
                                 class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
                                     isActive("/nosotros")
                                         ? "text-primary"
-                                        : "text-black dark:text-white hover:text-primary"
+                                        : " dark:text-white hover:text-primary"
                                 }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
                                 href={"/nosotros"}
                             >
@@ -296,7 +315,7 @@ function Header({ header }: HeaderProps) {
                             class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
                                 isActive("/pedidos")
                                     ? "text-primary"
-                                    : "text-black dark:text-white hover:text-primary"
+                                    : " dark:text-white hover:text-primary"
                             }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
                             href={"/pedidos"}
                         >
@@ -311,7 +330,7 @@ function Header({ header }: HeaderProps) {
                                     isActive("/politica-de-privacidad") ||
                                     isActive("/libro-de-reclamaciones")
                                         ? "text-primary"
-                                        : "text-black dark:text-white "
+                                        : " dark:text-white "
                                 }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
                                 onBlur={() => {}}
                                 onFocus={() => {}}
@@ -468,7 +487,7 @@ function Header({ header }: HeaderProps) {
                             onClick={cartStore.dropdown.onClose}
                         >
                             <div
-                                class={`w-full delay-custom-1 md:w-[350px] bg-white dark:bg-paper-dark relative p-2 ${
+                                class={`w-full delay-custom-1 md:w-[350px] bg-background-light dark:bg-paper-dark relative p-2 ${
                                     cartStore.dropdown.value
                                         ? "translate-x-0"
                                         : "translate-x-full"

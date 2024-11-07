@@ -79,7 +79,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                 />
                             </button>
 
-                            <a href={"/"} class="flex  items-center ml-12">
+                            <a href={"/"} class="flex  items-center ">
                                 {empresaStore.state!.logo ? (
                                     <img
                                         width={100}
@@ -109,7 +109,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                         onClick={cartStore.dropdown.onClose}
                     >
                         <div
-                            class={`w-full delay-custom-1 md:w-[350px] bg-white dark:bg-paper-dark relative p-2 ${
+                            class={`w-full delay-custom-1 md:w-[350px] bg-background-light dark:bg-paper-dark relative p-2 ${
                                 cartStore.dropdown.value
                                     ? "translate-x-0"
                                     : "translate-x-full"

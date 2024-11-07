@@ -287,7 +287,7 @@ function ProductPage({
                             </div>
 
                             <span
-                                class="text-primary font-bold dark:text-white text-xl"
+                                class=" font-bold dark:text-white text-xl"
                                 itemprop="price"
                                 content={formatMoney(
                                     subtotalIgv(product, true)
@@ -349,11 +349,21 @@ function ProductPage({
                                 </>
                             ) : null}
                         </span>
-                        <div class="my-2">
+                        <>
                             {/* aaaaaaaaaaaaaaaaca variante */}
                             {(producto.value as ProductsNormalSchemaFromServer)
                                 ?.variants ? (
-                                <>
+                                <div
+                                    class={` ${
+                                        (
+                                            producto.value as ProductsNormalSchemaFromServer
+                                        )?.options.filter(
+                                            (option) => option.id !== 1
+                                        ).length
+                                            ? "my-2"
+                                            : ""
+                                    }`}
+                                >
                                     {" "}
                                     <div class="flex flex-col gap-3">
                                         {(
@@ -501,9 +511,9 @@ function ProductPage({
                                                 </div>
                                             ))}
                                     </div>
-                                </>
+                                </div>
                             ) : null}
-                        </div>
+                        </>
                         {/* coupon form  si  esta en el carrito que no se vea el formulario de cupon */}
                         {(!existProductInCart &&
                             (varianteChoose?.ilimit ||
@@ -651,7 +661,7 @@ function ProductPage({
                             )}
                         </div>
                         <div class="flex  flex-col gap-1">
-                            <span class=" dark:text-white text-xs font-bold text-black">
+                            <span class=" dark:text-white text-xs font-bold ">
                                 Compartir
                             </span>
                             <div class="flex gap-2 items-center dark:text-white text-primary">
@@ -705,7 +715,7 @@ function ProductPage({
                 <div class="flex flex-col lg:flex-row gap-4 mt-16">
                     <div class="flex flex-col gap-8 w-full">
                         <div class="w-full">
-                            <h2 class="font-bold dark:text-white text-primary ">
+                            <h2 class="font-bold dark:text-white text-primary  mb-2">
                                 Características
                             </h2>
                             <div>
@@ -731,7 +741,7 @@ function ProductPage({
                                             {product.characteristics.map(
                                                 (characteristic) => (
                                                     <tr
-                                                        class="text-[12px] odd:bg-white dark:odd:bg-background-dark"
+                                                        class="text-[12px] odd:bg-background-light dark:odd:bg-background-dark"
                                                         key={
                                                             characteristic.name
                                                         }

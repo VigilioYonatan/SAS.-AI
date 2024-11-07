@@ -40,7 +40,7 @@ function SearchProducts() {
         component = (
             <>
                 {!productsPaginatorApiQuery.data!.results.length ? (
-                    <span class="text-black dark:text-white  text-center text-sm">
+                    <span class=" dark:text-white  text-center text-sm">
                         No se encontró ningun producto con {value.value}
                     </span>
                 ) : (
@@ -53,7 +53,7 @@ function SearchProducts() {
                                         window.location.href = `/${product.slug}`;
                                     }}
                                     key={product.id}
-                                    class=" block p-3 dark:text-gray-300 text-black duration-200 cursor-default select-none hover:text-primary group rounded-xl hover:bg-white/5"
+                                    class=" block p-3 dark:text-gray-300  duration-200 cursor-default select-none hover:text-primary group rounded-xl hover:bg-white/5"
                                     tabindex={-1}
                                 >
                                     <div class="flex items-center justify-between my-1 w-full">
@@ -90,7 +90,7 @@ function SearchProducts() {
         <>
             <button
                 type="button"
-                class="  lg:text-black dark:lg:text-white px-3 py-2 rounded-md text-lg "
+                class="  lg: dark:lg:text-white px-3 py-2 rounded-md text-lg "
                 onClick={() => {
                     setOpenSearch(!openSearch);
                 }}
@@ -101,14 +101,14 @@ function SearchProducts() {
                 <>
                     <div class="">
                         <div
-                            class="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20 px-4 max-w-xl w-full mx-auto overflow-hidden transition-all transform dark:bg-black bg-white  border divide-y shadow-2xl divide-white/10 rounded-xl ring-1 ring-black border-white/5 ring-opacity-5 bg-opacity-80 backdrop-blur backdrop-filter"
+                            class="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20 px-4 max-w-xl w-full mx-auto overflow-hidden transition-all transform dark:bg-black bg-background-light  border divide-y shadow-2xl divide-white/10 rounded-xl ring-1 ring-black border-white/5 ring-opacity-5 bg-opacity-80 backdrop-blur backdrop-filter"
                             onClick={(e) => e.preventDefault()}
                         >
                             <div class="relative">
-                                <i class="fa-duotone absolute fa-magnifying-glass text-xl top-1/2 -translate-y-1/2 left-2 dark:text-white  text-black" />
+                                <i class="fa-duotone absolute fa-magnifying-glass text-xl top-1/2 -translate-y-1/2 left-2 dark:text-white  " />
                                 <input
                                     type="search"
-                                    class="w-full h-12 pr-4 dark:text-white placeholder-gray-400 bg-transparent border-0 pl-11  sm:text-sm focus-visible:outline-none text-black"
+                                    class="w-full h-12 pr-4 dark:text-white placeholder-gray-400 bg-transparent border-0 pl-11  sm:text-sm focus-visible:outline-none "
                                     placeholder="Buscar"
                                     role="combobox"
                                     ref={inputSearchRef}
@@ -129,8 +129,8 @@ function SearchProducts() {
                                     <>{component}</>
                                 ) : (
                                     <li class="flex flex-col items-center justify-center my-12">
-                                        <i class="fa-duotone fa-magnifying-glass text-[100px] dark:text-white my-6 text-black" />
-                                        <p class="pl-2 text-sm font-medium dark:text-white text-black">
+                                        <i class="fa-duotone fa-magnifying-glass text-[100px] dark:text-white my-6 " />
+                                        <p class="pl-2 text-sm font-medium dark:text-white ">
                                             Tipea para buscar un producto...
                                         </p>
                                     </li>

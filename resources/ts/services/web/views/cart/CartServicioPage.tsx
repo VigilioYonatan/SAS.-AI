@@ -367,7 +367,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
     return (
         <WebLayout header={header}>
             <section class="max-w-6xl mx-auto  m-4 items-center justify-center  pb-20 pt-24 lg:pt-8 px-4 flex flex-col md:flex-row gap-4">
-                <div class="md:w-1/2 w-full self-start flex justify-center flex-col  gap-4 items-center bg-white dark:bg-background-dark rounded-md p-4">
+                <div class="md:w-1/2 w-full self-start flex justify-center flex-col  gap-4 items-center bg-background-light dark:bg-background-dark rounded-md p-4">
                     <img
                         class="h-[300px] object-cover"
                         width={500}
@@ -440,7 +440,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                                                 "circle"
                                                     ? "rounded-md"
                                                     : "rounded-sm"
-                                            } overflow-hidden  text-secondary-dark   my-1 shadow-sm border `}
+                                            } overflow-hidden     my-1 shadow-sm border `}
                                         >
                                             <div class="bg-primary shadow min-w-[2.8rem]  h-full text-white flex justify-center items-center">
                                                 <i class="fa-regular fa-calendar" />
@@ -545,7 +545,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                                         </div>
                                         <div class="relative">
                                             <Helper top={1} right={0}>
-                                                <div class="dark:text-white text-black">
+                                                <div class="dark:text-white ">
                                                     <span class="font-bold">
                                                         Horario de Atención
                                                     </span>
@@ -648,7 +648,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                     </Form>
                 </div>
                 <Form
-                    className="[&>div]:h-auto flex flex-col justify-center items-center p-4 bg-white dark:bg-background-dark md:w-1/2"
+                    className="[&>div]:h-auto flex flex-col justify-center items-center p-4 bg-background-light dark:bg-background-dark md:w-1/2"
                     {...ordersCartStoreDtoForm}
                     onSubmit={onCartOrderStore}
                 >
@@ -827,7 +827,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                         isLoading={false}
                     />
                     <ul class="flex flex-col gap-2 w-full bg-orange-100 px-2 py-5 rounded-lg mt-3">
-                        <li class="flex justify-between items-center flex-col overflow-auto">
+                        <li class="flex justify-between items-center flex-col overflow-auto  text-black">
                             {storageEmpresa?.metodos_pago.enable_efectivo ? (
                                 <>
                                     <span class="text-sm font-bold dark:text-paper-dark">

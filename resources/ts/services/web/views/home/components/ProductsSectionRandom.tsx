@@ -91,7 +91,7 @@ function ProductsSectionRandom({
                                 <span class="font-bold dark:text-gray-400 tracking-widest line-clamp-2 text-2xl">
                                     {productmostdiscountmapped.name}
                                 </span>
-                                <span class="font-bold text-2xl text-gray-400 tracking-widest text-principal-primary">
+                                <span class="font-bold text-2xl  tracking-widest text-primary">
                                     {formatMoney(
                                         subtotalIgv(productmostdiscountmapped)
                                     )}

@@ -63,7 +63,7 @@ function NavTabs({ background, totalProducts }: NavTabsProps) {
                     >
                         <i class={`${enviroments.TYPE_CART} relative`}>
                             {cartStore.computed.showCartLength ? (
-                                <span class="absolute text-white bg-primary  -top-3 w-[20px] h-[20px] flex justify-center items-center rounded-full font-bold text-xs -right-4">
+                                <span class="absolute text-primary bg-white  -top-3 w-[20px] h-[20px] flex justify-center items-center rounded-full font-bold text-xs -right-4">
                                     {cartStore.computed.showCartLength}
                                 </span>
                             ) : null}

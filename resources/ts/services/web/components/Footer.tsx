@@ -60,29 +60,40 @@ function Footer({ categories, categoriesServices }: FooterProps) {
             <div class="max-w-6xl mx-auto px-2 ">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 py-6">
                     <ul class="">
-                        <li class="font-bold">
+                        <li
+                            class="font-bold"
+                            style={{
+                                backgroundColor:
+                                    storageEmpresa?.setting.bg_color_footer,
+                                color: isColorLight(
+                                    storageEmpresa!.setting.bg_color_footer
+                                )
+                                    ? "#000000"
+                                    : "var(--primary)",
+                            }}
+                        >
                             <TitleSectionTwo>Corporación</TitleSectionTwo>
                         </li>
-                        <li class="dark:text-gray-400 text-sm md:text-base text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2 ">
+                        <li class="dark:text-gray-400 text-sm md:text-base  hover:text-primary font-semibold dark:hover:text-primary my-2 ">
                             <a href={"/"}>Inicio</a>
                         </li>
-                        <li class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                        <li class=" text-sm md:text-base dark:text-gray-400  hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/nosotros"}>Nosotros</a>
                         </li>
-                        <li class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                        <li class=" text-sm md:text-base dark:text-gray-400  hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/shop"}>Nuestra Tienda</a>
                         </li>
-                        <li class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                        <li class=" text-sm md:text-base dark:text-gray-400  hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/politica-de-privacidad"}>
                                 Politica y privacidad
                             </a>
                         </li>
-                        <li class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                        <li class=" text-sm md:text-base dark:text-gray-400  hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/terminos-y-condiciones"}>
                                 Términos y Condiciones
                             </a>{" "}
                         </li>
-                        <li class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2">
+                        <li class=" text-sm md:text-base dark:text-gray-400  hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/libro-de-reclamaciones"}>
                                 Libro de Reclamaciones
                             </a>{" "}
@@ -90,12 +101,23 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                     </ul>
                     {categories.length ? (
                         <ul class="max-h-[500px] overflow-auto">
-                            <li class="font-bold">
+                            <li
+                                class="font-bold"
+                                style={{
+                                    backgroundColor:
+                                        storageEmpresa?.setting.bg_color_footer,
+                                    color: isColorLight(
+                                        storageEmpresa!.setting.bg_color_footer
+                                    )
+                                        ? "#000000"
+                                        : "var(--primary)",
+                                }}
+                            >
                                 <TitleSectionTwo>Shop</TitleSectionTwo>
                             </li>
                             {categories.map((category) => (
                                 <li
-                                    class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2"
+                                    class=" text-sm md:text-base dark:text-gray-400  hover:text-primary font-semibold dark:hover:text-primary my-2"
                                     key={category.id}
                                 >
                                     <a href={`/shop/${category.slug}`}>
@@ -107,14 +129,25 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                     ) : null}
                     {categoriesServices.length ? (
                         <ul class="max-h-[500px] overflow-auto">
-                            <li class="font-bold">
+                            <li
+                                class="font-bold"
+                                style={{
+                                    backgroundColor:
+                                        storageEmpresa?.setting.bg_color_footer,
+                                    color: isColorLight(
+                                        storageEmpresa!.setting.bg_color_footer
+                                    )
+                                        ? "#000000"
+                                        : "var(--primary)",
+                                }}
+                            >
                                 <TitleSectionTwo>
                                     Nuestros Servicios
                                 </TitleSectionTwo>
                             </li>
                             {categoriesServices.map((servicio) => (
                                 <li
-                                    class=" text-sm md:text-base dark:text-gray-400 text-gray-600 hover:text-primary font-semibold dark:hover:text-primary my-2"
+                                    class=" text-sm md:text-base dark:text-gray-400  hover:text-primary font-semibold dark:hover:text-primary my-2"
                                     key={servicio.id}
                                 >
                                     <button
@@ -139,7 +172,18 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                     ) : null}
 
                     <ul class=" flex flex-col ">
-                        <li class="font-bold">
+                        <li
+                            class="font-bold"
+                            style={{
+                                backgroundColor:
+                                    storageEmpresa?.setting.bg_color_footer,
+                                color: isColorLight(
+                                    storageEmpresa!.setting.bg_color_footer
+                                )
+                                    ? "#000000"
+                                    : "var(--primary)",
+                            }}
+                        >
                             <TitleSectionTwo>¿Necesitas Ayuda?</TitleSectionTwo>
                         </li>
                         {empresaStore.state!.telephoneFirst ? (
@@ -177,7 +221,18 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                             </li>
                         ) : null}
 
-                        <li class="font-bold">
+                        <li
+                            class="font-bold"
+                            style={{
+                                backgroundColor:
+                                    storageEmpresa?.setting.bg_color_footer,
+                                color: isColorLight(
+                                    storageEmpresa!.setting.bg_color_footer
+                                )
+                                    ? "#000000"
+                                    : "var(--primary)",
+                            }}
+                        >
                             <TitleSectionTwo>
                                 Horario de atención
                             </TitleSectionTwo>
@@ -191,7 +246,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                     <b class="w-[120px] dark:text-white font-semibold">
                                         {horario.days}:
                                     </b>
-                                    <span class="dark:text-gray-400  text-gray-600 font-semibold">
+                                    <span class="dark:text-gray-400   font-semibold">
                                         {horario.hours}
                                     </span>
                                 </div>
@@ -199,8 +254,19 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         </li>
                     </ul>
                     <ul class=" flex flex-col">
-                        <li class="font-bold">
-                            <TitleSectionTwo>Siguenos</TitleSectionTwo>
+                        <li
+                            class="font-bold"
+                            style={{
+                                backgroundColor:
+                                    storageEmpresa?.setting.bg_color_footer,
+                                color: isColorLight(
+                                    storageEmpresa!.setting.bg_color_footer
+                                )
+                                    ? "#000000"
+                                    : "var(--primary)",
+                            }}
+                        >
+                            <TitleSectionTwo>Síguenos</TitleSectionTwo>
                         </li>
                         <div class="flex gap-2 items-center  text-sm md:text-base">
                             {empresaStore.state!.facebook ? (

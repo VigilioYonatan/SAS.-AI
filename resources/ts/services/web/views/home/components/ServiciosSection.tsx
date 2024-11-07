@@ -30,7 +30,7 @@ function ServiciosSection({ servicios }: serviciosSectionProps) {
             <div class="flex flex-col gap-6">
                 <div class="w-full flex flex-col md:flex-row gap-3 max-h-[410px] overflow-auto">
                     <div
-                        class={`md:w-[300px] flex flex-col gap-1 dark:bg-background-dark bg-white p-2 rounded-md ${
+                        class={`md:w-[300px] flex flex-col gap-1 dark:bg-background-dark bg-background-light p-2 rounded-md ${
                             enviroments.TYPE_BORDER === "square"
                                 ? ""
                                 : "rounded-md overflow-auto"
@@ -66,8 +66,8 @@ function ServiciosSection({ servicios }: serviciosSectionProps) {
                         class={`w-full ${
                             enviroments.TYPE_BORDER === "square"
                                 ? ""
-                                : "rounded-md overflow-hidden"
-                        } group shadow-md`}
+                                : "rounded-md "
+                        } group shadow-md overflow-hidden`}
                     >
                         <img
                             class="w-full h-full object-cover group-hover:scale-110 delay-custom-1 shadow-md"

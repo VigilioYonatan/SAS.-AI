@@ -13,7 +13,7 @@ export function BASE_URL(empresa: Empresas) {
           (empresa.setting as Settings)?.host.enabled
             ? `https://www.${(empresa.setting as Settings)?.host.host}`
             : `https://www.${empresa.slug}.vigilio-services.com`
-        : `http://${empresa.slug}.localhost:4003`;
+        : `https://vigilioservices2.loca.lt/`;
 }
 export const empresasLogoQualities = [100, 300];
 export const empresasLogoPWAQualities = [73, 94, 145, 153, 193, 513];

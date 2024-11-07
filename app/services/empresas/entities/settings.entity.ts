@@ -35,11 +35,17 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
         type: DataType.STRING(60),
     })
     bg_color_background: string;
+
     @Column({
         type: DataType.STRING(60),
     })
     bg_color_footer: string;
-    
+
+    @Column({
+        type: DataType.STRING(60),
+    })
+    font_face: string;
+
     @Column({
         type: DataType.STRING(60),
     })

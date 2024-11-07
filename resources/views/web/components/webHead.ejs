@@ -41,12 +41,52 @@
 <style>
   :root {
     --primary: <%=$empresa.setting?.bg_color %>;
+    --paper: <%=$empresa.setting?.bg_color_paper %>;
+    --light: <%=$empresa.setting?.bg_color_background %>;
+  }
+
+  @font-face {
+    font-family: 'Font-Thin';
+    src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Thin.ttf` %>');
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Font-Light';
+    src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Light.ttf` %>');
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Font-Regular';
+    src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Regular.ttf` %>');
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Font-Bold';
+    src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Bold.ttf` %>');
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Font-Black';
+    src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Black.ttf` %>');
+    font-display: swap;
   }
 
   .vigilio-modal .modal {
     padding: 0.5rem !important;
     overflow: auto;
     <%=$empresa.setting?.type_border==="circle"? 'border-radius: 0.6rem !important;': 'border-radius: 0rem !important;'%>
+  }
+
+  .bg-background-light {
+    <%=$empresa.setting?.bg_color_background ? "color: #000000 !important": "color: #FFFFFF !important"%>;
+  }
+
+  .bg-background-paper {
+    <%=$empresa.setting?.bg_color_paper ? "color: #000000 !important": "color: #FFFFFF !important"%>;
   }
 </style>
 

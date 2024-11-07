@@ -36,7 +36,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
     return (
         <section
             id="start"
-            class="max-w-6xl mx-auto px-2 md:px-4 mt-[6.6rem] md:my-20"
+            class="max-w-6xl mx-auto px-2 md:px-4 mt-[6.6rem] md:my-10"
         >
             <div class="flex flex-col lg:flex-row  gap-4 relative">
                 <AdminEdit uri="/admin/background" />
@@ -81,7 +81,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                     ) : null}
                                     <a
                                         href={background.url}
-                                        class="bg-white hover:bg-transparent hover:text-white border delay-custom-1 border-white px-4 py-2 text-black self-start font-bold tracking-wider"
+                                        class="bg-primary hover:bg-transparent text-white hover:text-primary border delay-custom-1 border-primary px-4 py-2  self-start font-semibold tracking-wider"
                                     >
                                         Más información
                                     </a>
@@ -150,7 +150,7 @@ interface CardTypeProps {
 }
 export function CardType({ image, subtitle, title }: CardTypeProps) {
     return (
-        <div class="flex p-6 lg:p-4 gap-2  w-full  dark:bg-background-dark bg-white flex-1 items-center  dark:border-gray-600 border-gray-300 border">
+        <div class="flex p-6 lg:p-4 gap-2  w-full  dark:bg-background-dark bg-background-light flex-1 items-center  dark:border-gray-600 border-gray-300 border">
             <div
                 dangerouslySetInnerHTML={{ __html: image }}
                 class="min-w-[50px] h-[45px] flex justify-center items-center"

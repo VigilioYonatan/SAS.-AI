@@ -48,7 +48,7 @@ function Aside({
                 <div class="flex justify-between px-4 py-2 items-center">
                     <LogoImage width="60" height="60" />
                     <span
-                        class="text-2xl dark:text-white text-black   text-end block"
+                        class="text-2xl dark:text-white    text-end block"
                         onClick={() => headerDropdown.onClose()}
                     >
                         <i class="far fa-times" />
@@ -59,9 +59,9 @@ function Aside({
 				</div> */}
                 <nav class="flex flex-col max-h-[500px] overflow-auto">
                     <a
-                        class={`text-black dark:text-white text-sm hover:bg-paper-light ${
+                        class={` dark:text-white text-sm hover:bg-paper-light ${
                             isActive("/", false)
-                                ? "bg-white dark:bg-paper-dark"
+                                ? "bg-background-light dark:bg-paper-dark"
                                 : ""
                         } py-2  px-4   dark:hover:dark:bg-paper-dark tracking-wide font-semibold flex items-center gap-2`}
                         href={"/"}
@@ -69,9 +69,9 @@ function Aside({
                         <i class="fas fa-home" /> Inicio
                     </a>
                     <a
-                        class={`text-black dark:text-white   text-sm hover:bg-paper-light   flex gap-2 items-center dark:hover:dark:bg-paper-dark tracking-wide px-4 py-2  font-semibold ${
+                        class={` dark:text-white   text-sm hover:bg-paper-light   flex gap-2 items-center dark:hover:dark:bg-paper-dark tracking-wide px-4 py-2  font-semibold ${
                             isActive("/shop", false)
-                                ? "bg-white dark:bg-paper-dark"
+                                ? "bg-background-light dark:bg-paper-dark"
                                 : ""
                         }`}
                         href={"/shop"}
@@ -80,9 +80,9 @@ function Aside({
                     </a>
                     {storageEmpresa?.setting.shows.about ? (
                         <a
-                            class={`text-black flex gap-2 items-center dark:text-white text-sm hover:bg-paper-light py-2  px-4   dark:hover:dark:bg-paper-dark tracking-wide font-semibold ${
+                            class={` flex gap-2 items-center dark:text-white text-sm hover:bg-paper-light py-2  px-4   dark:hover:dark:bg-paper-dark tracking-wide font-semibold ${
                                 isActive("/nosotros")
-                                    ? "bg-white dark:bg-paper-dark"
+                                    ? "bg-background-light dark:bg-paper-dark"
                                     : ""
                             }`}
                             href={"/nosotros"}
@@ -99,12 +99,12 @@ function Aside({
 
                                 class={`flex gap-2 items-center justify-between  hover:bg-paper-light dark:hover:dark:bg-paper-dark  w-full rounded-md px-4 py-2  tracking-wide ${
                                     isActive(`/shop/${category.slug}`)
-                                        ? "bg-white dark:bg-paper-dark"
+                                        ? "bg-background-light dark:bg-paper-dark"
                                         : ""
                                 }`}
                                 key={category.id}
                             >
-                                <div class="flex gap-3 items-center justify-between w-full text-black font-semibold dark:text-white">
+                                <div class="flex gap-3 items-center justify-between w-full  font-semibold dark:text-white">
                                     <a
                                         href={`/shop/${category.slug}`}
                                         class="flex items-center gap-2 w-full"
@@ -134,9 +134,9 @@ function Aside({
                                     key={servicio.id}
                                 >
                                     <div
-                                        class={`text-black dark:text-white text-sm hover:bg-paper-light   flex gap-2 items-center dark:hover:dark:bg-paper-dark tracking-wide   font-semibold ${
+                                        class={` dark:text-white text-sm hover:bg-paper-light   flex gap-2 items-center dark:hover:dark:bg-paper-dark tracking-wide   font-semibold ${
                                             isActive("/shop", false)
-                                                ? "bg-white dark:bg-paper-dark"
+                                                ? "bg-background-light dark:bg-paper-dark"
                                                 : ""
                                         }`}
                                     >
@@ -160,7 +160,7 @@ function Aside({
                                                         e.stopPropagation();
                                                         dropdown.onOpen();
                                                     }}
-                                                    class=" dark:text-white text-black"
+                                                    class=" dark:text-white "
                                                 >
                                                     <i class="far fa-chevron-right" />
                                                     <div
@@ -168,10 +168,10 @@ function Aside({
                                                             dropdown.dropdownOpen
                                                                 ? "visible translate-x-0"
                                                                 : "invisible translate-x-full"
-                                                        } delay-custom-1  absolute inset-0 bg-white  dark:dark:bg-paper-dark`}
+                                                        } delay-custom-1  absolute inset-0 bg-background-light  dark:dark:bg-paper-dark`}
                                                     >
                                                         <span
-                                                            class="text-2xl dark:text-white text-black px-4 py-2  text-end block"
+                                                            class="text-2xl dark:text-white  px-4 py-2  text-end block"
                                                             onClick={() => {
                                                                 dropdown.onClose();
                                                             }}
@@ -188,7 +188,7 @@ function Aside({
                                                             >
                                                                 <i class="fas fa-long-arrow-left" />
                                                             </button>
-                                                            <div class="flex flex-col   w-full text-black font-semibold dark:text-white">
+                                                            <div class="flex flex-col   w-full  font-semibold dark:text-white">
                                                                 {servicio.products.map(
                                                                     (
                                                                         product
@@ -220,9 +220,9 @@ function Aside({
                     {brands.length ? (
                         <div class="px-4 py-2 flex gap-2 items-center  justify-between">
                             <div
-                                class={`text-black dark:text-white text-sm hover:bg-paper-light   flex gap-2 items-center dark:hover:dark:bg-paper-dark tracking-wide   font-semibold ${
+                                class={` dark:text-white text-sm hover:bg-paper-light   flex gap-2 items-center dark:hover:dark:bg-paper-dark tracking-wide   font-semibold ${
                                     isActive("/shop", false)
-                                        ? "bg-white dark:bg-paper-dark"
+                                        ? "bg-background-light dark:bg-paper-dark"
                                         : ""
                                 }`}
                             >
@@ -238,7 +238,7 @@ function Aside({
                                                 e.stopPropagation();
                                                 dropdown.onOpen();
                                             }}
-                                            class=" dark:text-white text-black"
+                                            class=" dark:text-white "
                                         >
                                             <i class="far fa-chevron-right" />
                                             <div
@@ -246,10 +246,10 @@ function Aside({
                                                     dropdown.dropdownOpen
                                                         ? "visible translate-x-0"
                                                         : "invisible translate-x-full"
-                                                } delay-custom-1  absolute inset-0 bg-white  dark:dark:bg-paper-dark`}
+                                                } delay-custom-1  absolute inset-0 bg-background-light  dark:dark:bg-paper-dark`}
                                             >
                                                 <span
-                                                    class="text-2xl dark:text-white text-black px-4 py-2  text-end block"
+                                                    class="text-2xl dark:text-white  px-4 py-2  text-end block"
                                                     onClick={() => {
                                                         dropdown.onClose();
                                                     }}
@@ -266,7 +266,7 @@ function Aside({
                                                     >
                                                         <i class="fas fa-long-arrow-left" />
                                                     </button>
-                                                    <div class="flex flex-col   w-full text-black font-semibold dark:text-white">
+                                                    <div class="flex flex-col   w-full  font-semibold dark:text-white">
                                                         {brands.map((brand) => (
                                                             <a
                                                                 key={brand.id}
@@ -300,7 +300,7 @@ function Aside({
                                     }
                                     alt={authStore.state!.name}
                                 />
-                                <span class=" dark:text-white text-black">
+                                <span class=" dark:text-white ">
                                     Hola <b>{authStore.state.username}</b>
                                 </span>
                             </div>
@@ -314,7 +314,7 @@ function Aside({
                                                 e.stopPropagation();
                                                 dropdown.onOpen();
                                             }}
-                                            class=" dark:text-white text-black"
+                                            class=" dark:text-white "
                                         >
                                             <i class="far fa-chevron-right" />
                                             <div
@@ -322,10 +322,10 @@ function Aside({
                                                     dropdown.dropdownOpen
                                                         ? "visible translate-x-0"
                                                         : "invisible translate-x-full"
-                                                } delay-custom-1  absolute inset-0 bg-white  dark:dark:bg-paper-dark`}
+                                                } delay-custom-1  absolute inset-0 bg-background-light  dark:dark:bg-paper-dark`}
                                             >
                                                 <span
-                                                    class="text-2xl dark:text-white text-black px-4 py-2  text-end block"
+                                                    class="text-2xl dark:text-white  px-4 py-2  text-end block"
                                                     onClick={() => {
                                                         dropdown.onClose();
                                                     }}
@@ -342,7 +342,7 @@ function Aside({
                                                     >
                                                         <i class="fas fa-long-arrow-left" />
                                                     </button>
-                                                    <div class="flex flex-col   w-full text-black font-semibold dark:text-white">
+                                                    <div class="flex flex-col   w-full  font-semibold dark:text-white">
                                                         {authStore.guards.permissionAdminGuard() ? (
                                                             <a
                                                                 href={"/admin"}
@@ -372,7 +372,7 @@ function Aside({
                         </div>
                     ) : (
                         <a
-                            class="text-black dark:text-white text-sm hover:bg-white px-4 py-2  flex gap-3 items-center font-semibold dark:hover:dark:bg-paper-dark tracking-wide"
+                            class=" dark:text-white text-sm hover:bg-background-light px-4 py-2  flex gap-3 items-center font-semibold dark:hover:dark:bg-paper-dark tracking-wide"
                             href={"/auth/login"}
                         >
                             <i class="fas fa-user-alt" /> Iniciar Sesión
@@ -380,7 +380,7 @@ function Aside({
                     )}
                 </nav>{" "}
                 <a
-                    class="text-xl font-semibold px-4 gap-2 items-center flex tracking-wider text-black dark:text-white  py-4  absolute bottom-0 right-0 left-0 border-t-[1px] border-primary w-full "
+                    class="text-xl font-semibold px-4 gap-2 items-center flex tracking-wider  dark:text-white  py-4  absolute bottom-0 right-0 left-0 border-t-[1px] border-primary w-full "
                     href={`https://wa.me/${empresaStore.state!.telephoneFirst}`}
                 >
                     <i class="fab fa-whatsapp" />+
