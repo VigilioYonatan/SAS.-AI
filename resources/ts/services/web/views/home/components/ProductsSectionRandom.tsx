@@ -27,9 +27,10 @@ function ProductsSectionRandom({
         >
             {productlatestmapped ? (
                 <div
-                    class={` bg-background-light dark:bg-background-dark p-4 md:p-6 group overflow-hidden shadow ${
+                    class={`animation-brightness bg-background-light dark:bg-background-dark p-4 md:p-6 group overflow-hidden shadow ${
                         enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                     } `}
+                    style={{ "--brightness-delay": "6s" }}
                 >
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 group-hover:scale-105 delay-custom-1">
                         <div class="flex flex-col gap-4 ">
@@ -81,9 +82,10 @@ function ProductsSectionRandom({
             ) : null}
             {productmostdiscountmapped ? (
                 <div
-                    class={`group bg-background-light shadow dark:bg-background-dark p-4 md:p-6 ${
+                    class={`group animation-brightness bg-background-light shadow dark:bg-background-dark p-4 md:p-6 ${
                         enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                     }`}
+                    style={{ "--brightness-delay": "6s" }}
                 >
                     <div class="flex gap-6 items-center group-hover:scale-105 delay-custom-1">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

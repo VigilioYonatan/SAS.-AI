@@ -12,6 +12,7 @@ import { sweetAlert } from "@vigilio/sweet";
 import { useForm } from "react-hook-form";
 import Form from "~/components/form";
 import { handlerError } from "~/libs/helpers";
+import { printFileWithDimension } from "~/libs/upload";
 import { valibotVigilio } from "~/libs/valibot";
 
 interface ReclamacionesProps {
@@ -70,8 +71,20 @@ function ReclamacionesPage({ header }: ReclamacionesProps) {
             <div class="mt-6 max-w-6xl mx-auto">
                 <WebBreadCrumb current="Libro de reclamaciones" />
             </div>
-            <div className="max-w-4xl p-4 mx-auto  my-12 lg:my-4 bg-background-light rounded-md dark:bg-background-dark ">
+            <div className="max-w-4xl p-4 mx-auto  my-12 lg:my-4 bg-background-light rounded-md dark:bg-background-dark  relative overflow-hidden">
                 <TitleSection>Libro de Reclamaciones</TitleSection>
+                {storageEmpresa?.logo ? (
+                    <img
+                        class="absolute -bottom-20 -right-20 opacity-30"
+                        src={
+                            printFileWithDimension(storageEmpresa?.logo, 300)[0]
+                        }
+                        width={300}
+                        height={300}
+                        alt={storageEmpresa.name_empresa}
+                    />
+                ) : null}
+                <br />
                 <div className="mb-6 dark:text-white">
                     <h2 className="mb-4 text-xl font-semibold underline  dark:text-white">
                         Datos Generales

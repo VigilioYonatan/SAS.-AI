@@ -57,6 +57,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                     : "#FFFFFF",
             }}
         >
+            <div class="h-[0.5px] bg-gray-500 my-2 w-full" />
             <div class="max-w-6xl mx-auto px-2 ">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 py-6">
                     <ul class="">

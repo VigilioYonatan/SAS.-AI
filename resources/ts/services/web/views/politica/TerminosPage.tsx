@@ -5,6 +5,7 @@ import TitleSection from "@/web/components/TitleSection";
 import WebBreadCrumb from "@/web/components/WebBreadCrumb";
 import type { HeaderType } from "@/web/components/WebLayout";
 import WebLayout from "@/web/components/WebLayout";
+import { printFileWithDimension } from "~/libs/upload";
 
 interface TerminosPageProps {
     header: HeaderType;
@@ -16,8 +17,20 @@ function TerminosPage({ header }: TerminosPageProps) {
             <div class="mt-6  max-w-6xl mx-auto">
                 <WebBreadCrumb current="Terminos y condiciones" />
             </div>
-            <section class="max-w-6xl mx-auto  my-12 lg:my-4 p-4 bg-background-light rounded-md dark:bg-background-dark  text-sm">
+            <section class="max-w-6xl mx-auto  my-12 lg:my-4 p-4 bg-background-light rounded-md dark:bg-background-dark  text-sm relative overflow-hidden">
                 <TitleSection>Términos y condiciones</TitleSection>
+                {storageEmpresa?.logo ? (
+                    <img
+                        class="absolute -bottom-20 -right-20 opacity-30"
+                        src={
+                            printFileWithDimension(storageEmpresa?.logo, 300)[0]
+                        }
+                        width={300}
+                        height={300}
+                        alt={storageEmpresa.name_empresa}
+                    />
+                ) : null}
+                <br />
                 <div class="dark:text-white">
                     <div class="container px-4 py-8 prose">
                         <h1 class="font-semibold">MEDIOS DE PAGO</h1>

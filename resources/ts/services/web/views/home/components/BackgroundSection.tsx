@@ -38,9 +38,9 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
             id="start"
             class="max-w-6xl mx-auto px-2 md:px-4 mt-[6.6rem] md:my-10"
         >
-            <div class="flex flex-col lg:flex-row  gap-4 relative">
+            <div class="flex flex-col lg:flex-row  gap-4 relative lg:h-[450px] h-auto">
                 <AdminEdit uri="/admin/background" />
-                <div class="w-full lg:w-[800px]">
+                <div class="w-full lg:w-[800px] ">
                     <Slider
                         className="w-full "
                         {...{
@@ -91,7 +91,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                     </Slider>
                 </div>
                 {storageEmpresa?.setting.shows.cards ? (
-                    <div class="grid  sm:grid-cols-2 lg:grid-cols-1  lg:w-[300px]   mt-3">
+                    <div class="grid  sm:grid-cols-2 lg:grid-cols-1 lg:w-[300px]   ">
                         {storageEmpresa?.enable_sell_country ? (
                             <CardType
                                 title="Envio a todo el pais"

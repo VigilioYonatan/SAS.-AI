@@ -7,6 +7,7 @@ import { signal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 import enviroments from "~/config";
 import { NoImage } from "~/config/settings";
+import { removeTextHTML } from "~/libs/helpers";
 import { printFileWithDimension } from "~/libs/upload";
 
 interface serviciosSectionProps {
@@ -111,7 +112,7 @@ function ServiciosSection({ servicios }: serviciosSectionProps) {
                             <div class="flex flex-col gap-2 justify-center pt-2">
                                 <a
                                     href={`/servicio/${servicio.slug}`}
-                                    class="line-clamp-2 text-sm   md:text-base font-semibold dark:text-white hover:text-primary dark:hover:text-primary delay-custom-1  text-center h-[38px]"
+                                    class="line-clamp-2 text-md   md:text-base font-semibold dark:text-white hover:text-primary dark:hover:text-primary delay-custom-1  text-center h-[38px] "
                                 >
                                     {servicio.name}
                                 </a>
@@ -127,6 +128,11 @@ function ServiciosSection({ servicios }: serviciosSectionProps) {
                                         {formatMoney(subtotalIgv(servicio))}
                                     </p>
                                 </div>
+                                {servicio.description ? (
+                                    <p class="mx-2 text-center text-sm md:text-sm my-1 line-clamp-4">
+                                        {removeTextHTML(servicio.description)}
+                                    </p>
+                                ) : null}
                                 <a
                                     href={`/cart/servicio/${servicio.slug}`}
                                     class="bg-primary

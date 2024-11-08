@@ -618,7 +618,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                         onSubmit={onCoupon}
                         className="flex gap-2 items-center"
                     >
-                        <div class="w-full flex-col [&>div>div>div>input]:bg-white dark:[&>div>div>div>input]:bg-background-dark">
+                        <div class="w-full flex-col ">
                             {discount.value ? (
                                 <p class="text-xs text-primary">
                                     Se agregó {discount.value}% de descuento

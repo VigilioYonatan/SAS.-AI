@@ -1,4 +1,6 @@
-import useEmpresastore from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import TitleSection from "@/web/components/TitleSection";
 import WebBreadCrumb from "@/web/components/WebBreadCrumb";
 import WebLayout, { type HeaderType } from "@/web/components/WebLayout";
@@ -14,8 +16,20 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
             <div class="mt-6  max-w-6xl mx-auto">
                 <WebBreadCrumb current="Politicas de privacidad" />
             </div>
-            <section class="max-w-6xl mx-auto dark:text-white my-12 lg:my-4 bg-background-light rounded-md dark:bg-background-dark p-4">
+            <section class="max-w-6xl mx-auto dark:text-white my-12 lg:my-4 bg-background-light rounded-md dark:bg-background-dark p-4 relative overflow-hidden">
                 <TitleSection>Política de privacidad</TitleSection>
+                {storageEmpresa?.logo ? (
+                    <img
+                        class="absolute -bottom-20 -right-20 opacity-30"
+                        src={
+                            printFileWithDimension(storageEmpresa?.logo, 300)[0]
+                        }
+                        width={300}
+                        height={300}
+                        alt={storageEmpresa.name_empresa}
+                    />
+                ) : null}
+                <br />
                 <div class="px-4  prose relative  text-sm">
                     {empresaStore.state!.logo ? (
                         <img

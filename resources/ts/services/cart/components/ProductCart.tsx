@@ -48,7 +48,7 @@ function ProductCart({ product }: ProductCartProps) {
                     alt={product.name}
                 />
 
-                <div class="flex flex-col justify-between w-full">
+                <div class="flex flex-col justify-between w-full gap-1">
                     <div class="flex justify-between w-full">
                         <a
                             href={`/${product.slug}`}
@@ -93,11 +93,11 @@ function ProductCart({ product }: ProductCartProps) {
                                     {product.variant ? (
                                         <>
                                             {product.variant?.ilimit ? (
-                                                <span class="text-xs  dark:text-white font-semibold whitespace-nowrap ">
+                                                <span class="text-xs  dark:text-white whitespace-nowrap ">
                                                     En Stock
                                                 </span>
                                             ) : (
-                                                <span class="text-sm font-semibold text-primary dark:text-white whitespace-nowrap">
+                                                <span class="text-sm  text-primary dark:text-white whitespace-nowrap">
                                                     {product.variant?.stock ===
                                                     1
                                                         ? "1 unidad "
@@ -110,11 +110,11 @@ function ProductCart({ product }: ProductCartProps) {
                                             {(
                                                 product as ProductsRestaurantSchemaFromServer
                                             ).ilimit ? (
-                                                <span class="text-xs  dark:text-white font-semibold whitespace-nowrap ">
+                                                <span class="text-xs  dark:text-white  whitespace-nowrap ">
                                                     En Stock
                                                 </span>
                                             ) : (
-                                                <span class="text-sm font-semibold text-primary dark:text-white whitespace-nowrap">
+                                                <span class="text-sm  text-primary dark:text-white whitespace-nowrap">
                                                     {(
                                                         product as ProductsRestaurantSchemaFromServer
                                                     ).stock === 1
@@ -129,7 +129,7 @@ function ProductCart({ product }: ProductCartProps) {
                                         </>
                                     )}
 
-                                    <span class="text-xs text-background-dark dark:text-paper-light">
+                                    <span class="text-xs  dark:text-paper-light">
                                         {product.discount > 0 ? (
                                             <> +{product.discount}% de desc. </>
                                         ) : null}
