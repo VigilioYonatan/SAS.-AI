@@ -302,6 +302,10 @@ export class EmpresasApiService {
                     position_header: true,
                     border_title_type: "normal",
                     type_icons: "normal",
+                    bg_color_background: "#FFFFFF",
+                    bg_color_footer: "#FFFFFF",
+                    bg_color_paper: "#f2f2f2",
+                    font_face: "Exo",
                     shows: {
                         about: true,
                         brands: true,
