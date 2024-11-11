@@ -45,6 +45,18 @@ export const settingsSchema = object({
     bg_color_responsive: string([minLength(2), maxLength(20)]),
     bg_color_footer: string(),
     bg_color_background: string(),
+    background_position: string([
+        custom(
+            (val) => ["center", "start", "end"].includes(val),
+            "position no válido"
+        ),
+    ]),
+    background_type: string([
+        custom(
+            (val) => ["first", "second"].includes(val),
+            "Tipo de Background no válido"
+        ),
+    ]),
     bg_color_paper: string(),
     type_border: string([
         custom((val) => ["circle", "square"].includes(val), "Border no válido"),
@@ -78,7 +90,21 @@ export const settingsSchema = object({
     ]),
     position_header: boolean(),
     border_title_type: string(),
-    type_icons: string(),
+    type_icons: string([
+        custom(
+            (val) =>
+                [
+                    "normal",
+                    "icons",
+                    "premium",
+                    "premium2",
+                    "premium3",
+                    "animation",
+                ].includes(val),
+            "Icono Pack no válido"
+        ),
+    ]),
+
     shows: object({
         map: boolean(),
         about: boolean(),
@@ -86,6 +112,18 @@ export const settingsSchema = object({
         android: boolean(),
         brands: boolean(),
     }),
+    type_map: string([
+        custom(
+            (val) => ["normal", "satelite", "secondary"].includes(val),
+            "Mapa no válido"
+        ),
+    ]),
+    // position_map: string([
+    //     custom(
+    //         (val) => ["start", "end"].includes(val),
+    //         "Posición de mapa no válido"
+    //     ),
+    // ]),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;
 export type SettingsSchemaFromServer = SettingsSchema & {

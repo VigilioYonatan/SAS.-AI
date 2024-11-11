@@ -17,9 +17,7 @@
         "biome:format:client": "biome format  ./resources/ts --write",
         "biome:check:client": "biome check ./resources/ts",
         "biome:format": "bun biome:format:server && bun biome:format:client",
-        "biome:check": "bun biome:check:server && bun biome:check:client",
-        "migration": "bun script.js",
-        "migration:fresh": "bun ./app/config/fresh.ts"
+        "biome:check": "bun biome:check:server && bun biome:check:client"
     },
     "keywords": [
         "@vigilio/express",
@@ -95,6 +93,7 @@
         "react-advanced-calculator": "^1.0.4",
         "react-calendar": "^5.1.0",
         "react-color": "^2.19.3",
+        "react-custom-rating-component": "^0.1.6",
         "react-custom-roulette": "^1.4.1",
         "react-hook-form": "7.52.1",
         "react-i18next": "^15.0.1",

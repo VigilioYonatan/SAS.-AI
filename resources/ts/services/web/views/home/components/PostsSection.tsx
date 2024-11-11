@@ -12,6 +12,10 @@ import { printFileWithDimension } from "~/libs/upload";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import { postsUpdateApi } from "@/posts/apis/posts.update.api";
+import { getId } from "~/stores/socket.store";
+import { useSignal } from "@preact/signals";
+import { sweetAlert } from "@vigilio/sweet";
 
 interface PostsSectionProps {
     posts: PostsSchemaFromServer[];
@@ -20,12 +24,7 @@ function PostsSection({ posts }: PostsSectionProps) {
     if (!posts.length) return null;
     const { ShowImage, state, changeShowImage } = useShowImage();
     return (
-        <section
-            data-aos={`${
-                storageEmpresa?.setting.isScrolling ? "fade-up" : ""
-            } `}
-            class="max-w-6xl mx-auto my-12 px-4 flex flex-col gap-4"
-        >
+        <section class="max-w-6xl mx-auto my-12 px-4 flex flex-col gap-4">
             <TitleSection>Novedades</TitleSection>
             <div class="">
                 {posts.length ? (
@@ -74,7 +73,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                     changeShowImage(i + 1);
                                 }}
                             >
-                                <div class="flex flex-col gap-2 ">
+                                <div class="flex flex-col">
                                     <div class="overflow-hidden">
                                         <img
                                             src={
@@ -90,15 +89,21 @@ function PostsSection({ posts }: PostsSectionProps) {
                                         />
                                     </div>
 
-                                    <div class=" p-2">
+                                    <div class=" p-2 flex flex-col gap-1">
                                         <h4 class="line-clamp-2 font-bold  dark:text-white ">
                                             {post.title}
                                         </h4>
-                                        <div class="font-thin text-sm flex flex-col gap-1 ">
-                                            <p class="line-clamp-5 text-gray-400 font-normal h-[80px]">
-                                                {post.content}
-                                            </p>
-                                            <span class="self-end  dark:text-white text-primary font-bold">
+                                        <p class="line-clamp-5 text-gray-400 font-normal h-[80px] text-sm">
+                                            {post.content}
+                                        </p>
+                                        <div class="flex justify-between ">
+                                            <div class="flex gap-1 items-center text-primary">
+                                                <i class="fa-regular fa-thumbs-up text-sm" />
+                                                <span class="font-bold text-xs">
+                                                    {post.likes.length}
+                                                </span>
+                                            </div>
+                                            <span class="self-end  text-primary font-bold text-xs">
                                                 {showTime(post.createdAt!)}
                                             </span>
                                         </div>
@@ -133,41 +138,104 @@ function PostsSection({ posts }: PostsSectionProps) {
                             },
                         }}
                     >
-                        {posts.map((post) => (
-                            <div
-                                class={`flex-col dark:bg-paper-dark bg-white  ${
-                                    storageEmpresa?.setting.type_border ===
-                                    "circle"
-                                        ? "rounded-md"
-                                        : ""
-                                }`}
-                                key={post.title}
-                            >
-                                <img
-                                    class="object-contain w-full h-full"
-                                    src={
-                                        printFileWithDimension(
-                                            post.image,
-                                            500
-                                        )[0]
-                                    }
-                                    width={800}
-                                    height={800}
-                                    alt={post.title}
-                                />
-                                <div class="flex flex-col gap-2 p-4">
-                                    <span class="font-bold text-primary dark:text-white text-center">
-                                        {post.title}
-                                    </span>
-                                    <p class="dark:text-white  text-center font-semibold">
-                                        {post.content}
-                                    </p>
-                                    <span class="text-xs justify-end text-end dark:text-white">
-                                        {showTime(post.createdAt!)}
-                                    </span>
+                        {posts.map((post) => {
+                            const postsUpdateMutation = postsUpdateApi(post.id);
+                            const postSignal =
+                                useSignal<PostsSchemaFromServer>(post);
+                            const existLike = (
+                                postSignal.value.likes ?? []
+                            ).find((p) => p === getId()!);
+                            return (
+                                <div
+                                    class={`flex-col dark:bg-paper-dark bg-white relative  ${
+                                        storageEmpresa?.setting.type_border ===
+                                        "circle"
+                                            ? "rounded-md overflow-hidden"
+                                            : ""
+                                    }`}
+                                    key={post.title}
+                                >
+                                    <img
+                                        class="object-contain w-full h-full"
+                                        src={
+                                            printFileWithDimension(
+                                                post.image,
+                                                800
+                                            )[0]
+                                        }
+                                        width={800}
+                                        height={800}
+                                        alt={post.title}
+                                    />
+                                    <button
+                                        type="button"
+                                        class={`absolute border-2 border-primary top-2 right-2 ${
+                                            existLike ? "bg-primary" : ""
+                                        }  w-[50px] h-[50px] rounded-full shadow`}
+                                        onClick={() => {
+                                            const likes = !existLike
+                                                ? [
+                                                      ...(postSignal.value
+                                                          .likes ?? []),
+                                                      getId()!,
+                                                  ]
+                                                : postSignal.value.likes.filter(
+                                                      (p) => p !== getId()!
+                                                  );
+                                            postSignal.value = {
+                                                ...postSignal.value,
+                                                likes,
+                                            };
+                                            postsUpdateMutation.mutate(
+                                                {
+                                                    ...postSignal.value,
+                                                    likes,
+                                                },
+                                                {
+                                                    onSuccess() {},
+                                                    onError(err) {
+                                                        sweetAlert({
+                                                            icon: "danger",
+                                                            title: err.message,
+                                                        });
+                                                    },
+                                                }
+                                            );
+                                        }}
+                                    >
+                                        <i
+                                            class={`fa-regular fa-thumbs-up text-lg  ${
+                                                existLike
+                                                    ? "text-white"
+                                                    : "text-primary"
+                                            }`}
+                                        />
+                                    </button>
+                                    <div class="flex flex-col gap-2 p-4">
+                                        <span class="font-bold dark:text-primary text-center   md:text-xl">
+                                            {post.title}
+                                        </span>
+                                        <p class="  text-center font-semibold text-sm md:text-base">
+                                            {post.content}
+                                        </p>
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex gap-1 items-center text-primary">
+                                                <i class="fa-regular fa-thumbs-up text-sm" />
+                                                <span class="font-bold text-xs">
+                                                    {
+                                                        postSignal.value.likes
+                                                            .length
+                                                    }
+                                                </span>
+                                            </div>{" "}
+                                            <span class="text-xs justify-end text-end text-primary font-bold">
+                                                {showTime(post.createdAt!)}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </Slider>
                 </ShowImage>
             </div>

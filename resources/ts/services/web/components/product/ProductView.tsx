@@ -24,6 +24,7 @@ import { verifyBank } from "@/cart/views/Niubiz";
 import { printFileWithDimension } from "~/libs/upload";
 import { printProductVariant } from "@/products/libs/helpers";
 import { isColorLight } from "~/libs/helpers";
+import { Rating } from "react-custom-rating-component";
 
 interface ProductCardViewProps {
     product: ReturnType<typeof useProduct>;
@@ -195,7 +196,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                     </span>
                 ) : null}
                 <div class="flex   text-xs flex-col">
-                    <div class="flex gap-2 text-terciary">
+                    <div class="flex gap-2 text-gray-400">
                         {product.producto.value.category.icon ? (
                             <div
                                 dangerouslySetInnerHTML={{
@@ -229,6 +230,14 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             : null}
                     </span>
                 </div>
+                <Rating
+                    defaultValue={product.producto.value.rating.promedio}
+                    shape={enviroments.TYPE_START}
+                    size="20px"
+                    spacing="5px"
+                    readOnly
+                    activeColor="var(--primary)"
+                />
                 {(product.producto.value as ProductsNormalSchemaFromServer)
                     .brand?.image ? (
                     <img
@@ -342,7 +351,6 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </>
                     ) : null}
                 </span>
-
                 <>
                     {/* aaaaaaaaaaaaaaaaca variante */}
                     {(producto.value as ProductsNormalSchemaFromServer)
@@ -519,9 +527,9 @@ function ProductCardView({ product }: ProductCardViewProps) {
                     <Form
                         {...couponForm}
                         onSubmit={onCoupon}
-                        className="flex gap-2 items-center"
+                        className="flex gap-2 items-center "
                     >
-                        <div class="w-full flex-col [&>div>div>div>input]:bg-white dark:[&>div>div>div>input]:bg-background-dark">
+                        <div class="w-full flex-col [&>div>div>div>input]:bg-white dark:[&>div>div>div>input]:bg-background-dark [&>div>div>div>input]:text-black">
                             {discount.value ? (
                                 <p class="text-xs text-primary">
                                     Se agregó {discount.value}% de descuento
@@ -621,7 +629,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                     ) : (
                                         <>
                                             <i class={enviroments.TYPE_CART} />{" "}
-                                            Agregar Carrito
+                                            Agregar
                                         </>
                                     )}
                                 </button>
@@ -632,6 +640,14 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             )}
                         </>
                     )}
+                </div>{" "}
+                <div class="flex  flex-col gap-1">
+                    <span class=" dark:text-white text-xs font-bold ">
+                        Descripción
+                    </span>
+                    <p class="text-xs line-clamp-4 dark:text-white">
+                        {product.producto.value.description}
+                    </p>
                 </div>
                 <MetodosDePago />
                 <div class="flex  flex-col gap-1">
@@ -686,14 +702,6 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             <i class="fab fa-whatsapp  text-lg" />
                         </a>
                     </div>
-                </div>
-                <div class="flex  flex-col gap-1">
-                    <span class=" dark:text-white text-xs font-bold ">
-                        Descripción
-                    </span>
-                    <p class="text-xs line-clamp-4 dark:text-white">
-                        {product.producto.value.description}
-                    </p>
                 </div>
                 <a
                     href={`${BASE_URL}/${product.producto.value.slug}`}

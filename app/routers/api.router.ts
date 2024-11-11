@@ -1,4 +1,3 @@
-import { ClientsApiController } from "@/users/controllers/clients.api.controller";
 import { type Type } from "@vigilio/express-core";
 import { EmpresasApiController } from "../services/empresas/controllers/empresas.api.controller";
 import { UsersApiController } from "@/users/controllers/users.api.controller";
@@ -45,10 +44,14 @@ import { CategoriesFinanzasApiController } from "@/finanzas/controllers/categori
 import { FinanzasApiController } from "@/finanzas/controllers/finanzas.api.controller";
 import { IzipayApiController } from "@/payments/controllers/izipay.api.controller";
 import { CitasApiController } from "@/citas/controllers/citas.api.controller";
+import { CommentsApiController } from "@/polymorphism/controllers/comments.api.controller";
+import { RatingApiController } from "@/polymorphism/controllers/ratings.api.controller";
+import { ReactionsApiController } from "@/polymorphism/controllers/reactions.api.controller";
+import { SubcommentsApiController } from "@/polymorphism/controllers/subcomments.api.controller";
+import { FavoritesApiController } from "@/favorites/controllers/favorites.api.controller";
 
 export const apiRouters: Type[] = [
     EmpresasApiController,
-    ClientsApiController,
     UsersApiController,
     ProductsApiController,
     CategoriesApiController,
@@ -93,4 +96,9 @@ export const apiRouters: Type[] = [
     FinanzasApiController,
     IzipayApiController,
     CitasApiController,
+    CommentsApiController,
+    RatingApiController,
+    ReactionsApiController,
+    SubcommentsApiController,
+    FavoritesApiController,
 ];

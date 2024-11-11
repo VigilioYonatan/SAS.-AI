@@ -85,14 +85,14 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
             mesa_id: null,
             floor_id: null,
             fullName: null,
-            email: null,
+            email: undefined,
             reference: "- - - - - - -",
             isService: true,
             address: "- - - - - - -",
         },
         mode: "all",
     });
-
+    const map_marker = ordersCartStoreDtoForm.watch("map_marker");
     const kindInvoice = ordersCartStoreDtoForm.watch(
         "invoice.kind_invoice_code"
     );
@@ -274,7 +274,8 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                 },
                 onError() {
                     ordersCartStoreDtoForm.setValue("city_id", null);
-                    ordersCartStoreDtoForm.setValue("email", null);
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                    ordersCartStoreDtoForm.setValue("email", null as any);
                     ordersCartStoreDtoForm.setValue(
                         "invoice.identification_number",
                         null
@@ -376,7 +377,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                         alt={servicio.name}
                     />{" "}
                     <div class="flex flex-col gap-2 items-center justify-center pb-4 w-full">
-                        <div class="flex gap-2 text-gray-600 dark:text-gray-300 text-xs font-semibold">
+                        <div class="flex gap-2 text-gray-400 dark:text-gray-300 text-xs font-semibold">
                             {servicio.category?.icon ? (
                                 <div
                                     dangerouslySetInnerHTML={{
@@ -616,7 +617,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                     <Form
                         {...couponForm}
                         onSubmit={onCoupon}
-                        className="flex gap-2 items-center"
+                        className="flex gap-2 items-center [&>div>div>div>div>input]:bg-white [&>div>div>div>div>input]:text-black dark:[&>div>div>div>div>input]:bg-background-dark"
                     >
                         <div class="w-full flex-col ">
                             {discount.value ? (
@@ -655,7 +656,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                     {storageEmpresa?.enabled_igv ? (
                         <div class="flex items-center justify-between h-max">
                             <span class="dark:text-white font-bold text-base lg:text-xl " />
-                            <span class="font-bold dark:text-gray-400 text-gray-600 text-xs ">
+                            <span class="font-bold dark:text-gray-400 text-gray-400 text-xs ">
                                 {storageEmpresa?.tipo_impuesto.toUpperCase()}{" "}
                                 Incluido
                             </span>
@@ -713,6 +714,44 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                         title="Correo Electrónico"
                         type="email"
                     />
+                    {storageEmpresa?.enabled_address ? (
+                        <>
+                            <Form.control.web
+                                ico={<i class="fas fa-map-marker-alt" />}
+                                name={"address" as keyof OrdersCartStoreDto}
+                                title="Dirección"
+                                disabled={clientsShowQuery.isLoading || false}
+                            />
+                            {empresa.state!.enable_map_marker ? (
+                                <div class="w-full">
+                                    <Form.control.map
+                                        name={
+                                            "map_marker" as keyof OrdersCartStoreDto
+                                        }
+                                        title="Ubicación para encontrarte mejor"
+                                        style={{
+                                            height: "200px",
+                                            width: "100%",
+                                            zIndex: 0,
+                                        }}
+                                        isLocal
+                                        disabled={
+                                            clientsShowQuery.isLoading || false
+                                        }
+                                        question="Para encontrarte mejor, por favor indícanos tu ubicación."
+                                    />
+                                    <span class="text-[10px] dark:text-white">
+                                        Lng: {map_marker?.lng}, Lat:{" "}
+                                        {map_marker?.lat}
+                                    </span>
+                                </div>
+                            ) : (
+                                <></>
+                            )}
+                        </>
+                    ) : (
+                        <></>
+                    )}
                     {[DIALCODE.peru].includes(
                         storageEmpresa!.dial_code as DIALCODE
                     ) ? (

@@ -68,7 +68,7 @@ function WebFormSelect<T extends object>({
                         enviroments.TYPE_BORDER === "circle"
                             ? "rounded-md"
                             : "rounded-sm"
-                    }  overflow-hidden    my-1 shadow-sm border`}
+                    }  overflow-hidden   bg-paper-light   my-1 shadow-sm border  dark:text-black`}
                 >
                     {ico ? (
                         <div class="bg-primary  shadow min-w-[2.8rem]  h-full flex justify-center items-center text-white">

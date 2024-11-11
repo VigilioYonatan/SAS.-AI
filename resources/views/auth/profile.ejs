@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../web/components/webHead", { title:`Bienvenido ${$user.username}`, description:"Bienvenido a tu perfil" } ) %>
+</head>
+
+<body class="dark:bg-background-dark bg-paper-light">
+  <profile-page :header="<%= JSON.stringify(header)  %>"></profile-page>
+</body>
+
+</html>

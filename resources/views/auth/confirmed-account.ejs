@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../web/components/webHead.ejs",{title:"Confirmar Cuenta",description:"Confirmar Cuenta tu cuenta"})  %>
+</head>
+
+<body class="dark:bg-background-dark bg-background-light">
+  <auth-confirm-page :user="<%= JSON.stringify(user)  %>"></auth-confirm-page>
+
+
+</body>
+
+</html>

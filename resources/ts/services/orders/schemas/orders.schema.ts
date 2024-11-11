@@ -21,7 +21,6 @@ import type { NotesSchema } from "./notes.schema";
 import type { GuidesSchema } from "./guides.schema";
 import { filesSchema } from "~/libs/upload";
 import { CitiesSchemaFromServer } from "@/ubigeo/schemas/cities.schema";
-import { ClientsSchema } from "@/users/schemas/client.schema";
 import { MesasSchema } from "./mesas.schema";
 import { FloorsSchema } from "./floors.schema";
 export const ordersSchema = object({
@@ -61,7 +60,7 @@ export const ordersSchema = object({
     empresa_id: number(),
     isService: boolean(),
     user_id: nullable(number()),
-    client_id: nullable(number()),
+    seller_id: nullable(number()),
     stripe_token: nullable(string()),
     mesa_id: nullable(number()),
 });
@@ -69,7 +68,10 @@ export const ordersSchema = object({
 export type OrdersSchema = Input<typeof ordersSchema>;
 export type OrdersSchemaFromServer = Input<typeof ordersSchema> & {
     user: Pick<UsersSchema, "id" | "username" | "name" | "lastname" | "photo">;
-    client: ClientsSchema;
+    seller: Pick<
+        UsersSchema,
+        "id" | "username" | "name" | "lastname" | "photo"
+    >;
     status_order: StatusOrdersSchema;
     pay_method: PayMethodsSchema;
     createdAt: Date;

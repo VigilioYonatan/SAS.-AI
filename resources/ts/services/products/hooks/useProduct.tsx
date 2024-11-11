@@ -27,6 +27,11 @@ import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schem
 import { ProductsRestaurantSchemaFromServer } from "../schemas/products_restaurant.schema";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ProductsServicioSchemaFromServer } from "../schemas/products_servicio.schema";
+import useFavoriteStore from "@/favorites/stores/favorites.store";
+import { favoritesDestroyApi } from "@/favorites/apis/favorites.destroy.api";
+import { openAuth } from "@/auth/views/AuthLogin";
+import { favoritesStoreApi } from "@/favorites/apis/favorites.store.api";
+import confetti from "canvas-confetti";
 
 const couponStore = object({
     coupon: nullable(string([toTrimmed(), minLength(6)])),
@@ -43,6 +48,7 @@ interface UseProductProps {
 function useProduct({ product, isService }: UseProductProps) {
     const authStore = useAuthStore();
     const cartStore = useCartStore();
+
     const zoom = useSignal(false);
 
     const position = useSignal<Record<"x" | "y", string>>({
@@ -97,6 +103,8 @@ function useProduct({ product, isService }: UseProductProps) {
         coupon: null,
         variant: varianteChoose ? varianteChoose : null,
     });
+    const favoriteStore = useFavoriteStore();
+    const favoritesDestroyMutation = favoritesDestroyApi(producto.value.id);
 
     const existProductInCart = cartStore.methods.isAlreadyExistProductToCart(
         producto.value.id,
@@ -166,6 +174,10 @@ function useProduct({ product, isService }: UseProductProps) {
     });
     const coupon = couponForm.watch("coupon");
     const productCouponMutation = productCouponApi(isService);
+    const favoritesStoreMutation = favoritesStoreApi(
+        producto.value.id,
+        isService
+    );
     function onCoupon(data: CouponStore) {
         const coupon = data.coupon;
         if (discount.value) {
@@ -288,9 +300,71 @@ function useProduct({ product, isService }: UseProductProps) {
         }
         producto.value = { ...producto.value, quantity: 1 };
     }
+    function onFavorite() {
+        if (!authStore.state) {
+            openAuth();
+            return;
+        }
 
+        if (producto.value.user?.isFavorite) {
+            favoritesDestroyMutation.mutate(null, {
+                onSuccess(data) {
+                    sweetAlert({
+                        title: data.message,
+                        icon: "success",
+                    });
+                    favoriteStore.methods.onFavoriteDestroy();
+                    producto.value = {
+                        ...producto.value,
+                        user: {
+                            ...producto.value.user!,
+                            isFavorite: false,
+                        },
+                    };
+                },
+                onError(error) {
+                    sweetAlert({
+                        title: error.message,
+                        icon: "danger",
+                    });
+                },
+            });
+            return;
+        }
+        favoritesStoreMutation.mutate(null, {
+            onSuccess() {
+                confetti({
+                    angle: 90,
+                    spread: 360,
+                    startVelocity: 40,
+                    colors: [
+                        "#a864fd",
+                        "#29cdff",
+                        "#78ff44",
+                        "#ff718d",
+                        "#fdff6a",
+                    ],
+                });
+                favoriteStore.methods.onFavoriteStore();
+                producto.value = {
+                    ...producto.value,
+                    user: {
+                        ...producto.value.user!,
+                        isFavorite: true,
+                    },
+                };
+            },
+            onError(error) {
+                sweetAlert({
+                    title: error.message,
+                    icon: "danger",
+                });
+            },
+        });
+    }
     return {
         onCoupon,
+        onFavorite,
         handleInsertProduct,
         isImagesLength,
         changeVariant,
@@ -306,6 +380,8 @@ function useProduct({ product, isService }: UseProductProps) {
         variant,
         existProductInCart,
         cartStoreMutation,
+        favoritesDestroyMutation,
+        favoritesStoreMutation,
         couponForm,
         discount,
         productCouponMutation,

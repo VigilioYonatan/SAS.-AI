@@ -18,6 +18,7 @@ import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 import { NotificationsUser } from "@/notificactions/entities/notifications_user.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { Posts } from "@/posts/entities/posts.entity";
+import { Cities } from "@/ubigeo/entities/cities.entity";
 
 @Scopes(() => ({
     hiddePassword: {
@@ -38,6 +39,16 @@ export class Users extends Model implements Omit<UsersSchema, "id"> {
         type: DataType.STRING(30),
     })
     username: string;
+
+    @Column({
+        type: DataType.STRING(100),
+    })
+    reference: string | null;
+
+    @Column({
+        type: DataType.STRING(100),
+    })
+    identification_number: string | null;
 
     @Column({
         allowNull: false,
@@ -123,6 +134,25 @@ export class Users extends Model implements Omit<UsersSchema, "id"> {
     })
     token: string | null;
 
+    @Column({
+        type: DataType.JSON,
+    })
+    map_marker: {
+        lng: number;
+        lat: number;
+    } | null;
+
+    @Column({
+        type: DataType.JSON,
+    })
+    buys:
+        | {
+              title: string;
+              date: Date;
+              order: string;
+          }[]
+        | null;
+
     @Index
     @Column({
         allowNull: false,
@@ -132,6 +162,12 @@ export class Users extends Model implements Omit<UsersSchema, "id"> {
 
     @Column({ allowNull: false, type: DataType.INTEGER })
     role_id: number;
+
+    @ForeignKey(() => Cities)
+    @Column({
+        type: DataType.INTEGER,
+    })
+    city_id: number | null;
 
     @ForeignKey(() => Empresas)
     @Column({ allowNull: false, type: DataType.INTEGER })
@@ -155,4 +191,7 @@ export class Users extends Model implements Omit<UsersSchema, "id"> {
 
     @HasMany(() => Posts)
     posts: unknown[];
+
+    @BelongsTo(() => Cities)
+    city: unknown;
 }

@@ -318,6 +318,40 @@ export const empresasSchema = object({
         cpu: nullable(string([custom((val) => Number(val) >= 2, "Mínimo 2.")])),
         date: nullable(coerce(date(), (value) => new Date(value as string))),
     }),
+    facebook_pixel: nullable(
+        string([
+            custom(
+                (val) => /^[0-9]{15,16}$/.test(val),
+                "Facebook Pixel no válido"
+            ),
+        ])
+    ),
+    google_tag_manager: nullable(
+        string([
+            custom(
+                (val) => /^GTM-[A-Z0-9]{6,7}$/.test(val),
+                "Google Tag Manger no válido"
+            ),
+        ])
+    ),
+    tiktok_pixel: nullable(
+        string([
+            custom(
+                (val) => /^[0-9]{16,20}$/.test(val),
+                "Tik Tok pixel no válido"
+            ),
+        ])
+    ),
+    linkedin_tag: nullable(
+        string([
+            custom(
+                (val) => /^[0-9]{9,12}$/.test(val),
+                "LinkedIn Tag no válido"
+            ),
+        ])
+    ),
+    enabled_address: boolean(),
+    isFreeVPS: boolean(),
     token: string(),
 });
 

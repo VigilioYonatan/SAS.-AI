@@ -16,12 +16,15 @@ import { DetailOrders } from "@/orders/entities/detail_orders.entity";
 import type { CategoriesSchema } from "../schemas/categories.schema";
 import type { ProductsRestaurantSchema } from "../schemas/products_restaurant.schema";
 import { Empresas } from "@/empresas/entities/empresas.entity";
+import { Comments } from "@/polymorphism/entities/comments.entity";
+import { Ratings } from "@/polymorphism/entities/ratings.entity";
+import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
 
 @DefaultScope(() => ({
 	include: [
 		{
 			model: Categories,
-			attributes: ["name", "slug","icon"] as (keyof CategoriesSchema)[],
+			attributes: ["name", "slug", "icon"] as (keyof CategoriesSchema)[],
 		},
 	],
 }))
@@ -120,4 +123,25 @@ export class ProductsRestaurant
 
 	@BelongsTo(() => Empresas)
 	empresa: unknown;
+
+	@HasMany(() => Comments, {
+		foreignKey: "commentsable_id",
+		constraints: false,
+		scope: { commentsable_type: "ProductsRestaurants" },
+	})
+	comments: unknown[];
+
+	@HasMany(() => Subcomments, {
+		foreignKey: "subcommentsable_id",
+		constraints: false,
+		scope: { commentsable_type: "ProductsRestaurants" },
+	})
+	subcomments: unknown[];
+
+	@HasMany(() => Ratings, {
+		foreignKey: "ratingsable_id",
+		constraints: false,
+		scope: { ratingsable_type: "ProductsRestaurants" },
+	})
+	ratings: unknown;
 }

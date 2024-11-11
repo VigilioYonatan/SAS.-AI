@@ -17,7 +17,7 @@ function Hamburguer({ isOpen }: HamburguerProps) {
                         storageEmpresa?.setting.hamburger === "fas pizza-slice"
                             ? "rotate-[250deg]"
                             : ""
-                    } text-3xl lg:text-white`}
+                    } text-3xl `}
                 />
             </div>
         </>

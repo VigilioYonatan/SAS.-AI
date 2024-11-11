@@ -15,11 +15,11 @@ export type PaginatorModel =
 	| "coupons"
 	| "contacts"
 	| "suppliers"
+	| "favorites"
 	| "posts"
 	| "regions"
 	| "urls"
 	| "complaints"
-	| "clients"
 	| "finanzas";
 
 export const paginatorModel: PaginatorModel[] = [
@@ -40,8 +40,8 @@ export const paginatorModel: PaginatorModel[] = [
 	"regions",
 	"urls",
 	"complaints",
-	"clients",
 	"finanzas",
+	"favorites",
 ];
 export type TimeTable =
 	| "all"

@@ -1,5 +1,5 @@
 import type { Empresas } from "@/empresas/entities/empresas.entity";
-import type { MetodosPago } from "@/empresas/entities/metodosPago.entity";
+import { MetodosPago } from "@/empresas/entities/metodosPago.entity";
 import { BASE_URL } from "@/empresas/libs";
 import type { OrdersStoreDto } from "@/orders/dtos/orders.store.dto";
 import { OrdersApiService } from "@/orders/services/orders.api.service";
@@ -20,8 +20,10 @@ import { Orders } from "@/orders/entities/orders.entity";
 export class PaymentApiService {
 	constructor(private readonly ordersApiService: OrdersApiService) {}
 	async order(empresa: Empresas, orderStore: OrdersStoreDto) {
-		const metodosPago = (await empresa.$get("metodos_pago")) as MetodosPago;
-		if (!metodosPago.mercado_pago.enabled || !metodosPago.mercado_pago.token)
+		const metodosPago = await MetodosPago.findOne({
+			where: { empresa_id: empresa.id },
+		});
+		if (!metodosPago?.mercado_pago.enabled || !metodosPago?.mercado_pago.token)
 			throw new BadRequestException("No disponible");
 		const client = new MercadoPagoConfig({
 			accessToken:
@@ -76,10 +78,13 @@ export class PaymentApiService {
 	async webhook(req: RequestVigilio, id: string, type: string) {
 		if (type === "payment") {
 			const empresa = req.empresa;
-			const metodosPago = (await req.empresa.$get(
-				"metodos_pago",
-			)) as MetodosPago;
-			if (!metodosPago.mercado_pago.enabled || !metodosPago.mercado_pago.token)
+			const metodosPago = await MetodosPago.findOne({
+				where: { empresa_id: empresa.id },
+			});
+			if (
+				!metodosPago?.mercado_pago.enabled ||
+				!metodosPago?.mercado_pago.token
+			)
 				throw new BadRequestException("No disponible");
 			try {
 				const payment = new Payment({

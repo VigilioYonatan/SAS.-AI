@@ -42,20 +42,22 @@ import { UbigeoApiService } from "@/ubigeo/services/ubigeo.api.service";
 import type { SunatNoteDto } from "../sunat/dtos/sunat.note.dto";
 import type { SunatGuideDto } from "../sunat/dtos/sunat.guide.dto";
 import { guidePDFSunatApi } from "../sunat/guide.pdf.api";
-import type { Users } from "@/users/entities/users.entity";
+import { Users } from "@/users/entities/users.entity";
 import type { RequestVigilio } from "~/config/types";
 import { Variants } from "@/products/entities/options/variants.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
-import { ClientsApiService } from "@/users/services/clients.api.service";
 import { whatsappSendFileApi, whatsappSendMessageApi } from "@/bot/api";
 import { BASE_URL, DIALCODE } from "@/empresas/libs";
 import { Product, productEntityId } from "@/products/libs";
 import { ticketHTML } from "../libs/ticket";
-import { Clients } from "@/users/entities/clients.entity";
 import type { PASARELA } from "@/payments/libs";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { CitasApiService } from "@/citas/services/citas.api.service";
+import { UsersApiService } from "@/users/services/users.api.service";
+import type { UsersStoreDto } from "@/users/dtos/users.store.dto";
+import { slug } from "@vigilio/express-core/helpers";
+import { ROLES } from "@/users/libs";
 
 @Injectable()
 export class OrdersApiService {
@@ -66,7 +68,7 @@ export class OrdersApiService {
         private readonly guidesApiService: GuidesApiService,
         private readonly detailOrdersApiService: DetailOrdersApiService,
         private readonly ubigeoApiService: UbigeoApiService,
-        private readonly clientsApiService: ClientsApiService,
+        private readonly usersApiService: UsersApiService,
         private readonly citasApiService: CitasApiService
     ) {}
 
@@ -82,11 +84,7 @@ export class OrdersApiService {
         };
     }
 
-    async earningMonth(
-        empresa: Empresas,
-        year: string,
-        month: string,
-    ) {
+    async earningMonth(empresa: Empresas, year: string, month: string) {
         const startDate = new Date(Number(year), Number(month) - 1, 1); // Restamos 1 al mes porque en JavaScript los meses van de 0 a 11
 
         // Luego, calculamos la fecha de fin del mes
@@ -230,6 +228,8 @@ export class OrdersApiService {
                         empresa,
                         ord,
                         false,
+                        false,
+                        null,
                         false
                     );
                     producto = product;
@@ -237,7 +237,9 @@ export class OrdersApiService {
                         const { product } = await this.productsApiService.show(
                             empresa,
                             ord,
-                            true,
+                            false,
+                            false,
+                            null,
                             false
                         );
                         producto = product;
@@ -428,44 +430,28 @@ export class OrdersApiService {
         const { pasarela_comision = false } = comision || {
             pasarela_comision: false,
         };
-        let client: null | Clients = null;
+        let user: null | Users = null;
         if (ordersStoreDto.telephone) {
-            client = await Clients.findOne({
+            user = await Users.findOne({
                 where: {
                     telephone: ordersStoreDto.telephone,
                     empresa_id: empresa.id,
                 },
             });
 
-            if (!client) {
-                await this.clientsApiService.store(empresa, {
-                    telephone: ordersStoreDto.telephone,
-                    enabled: true,
-                    fullname: ordersStoreDto.fullName,
-                    address: ordersStoreDto.address || null,
-                    city_id: ordersStoreDto.city_id || null,
-                    map_marker: ordersStoreDto.map_marker || null,
-                    empresa_id: empresa.id,
-                    email: ordersStoreDto.email || null,
+            if (user && !user.enabled) {
+                throw new BadRequestException(
+                    "No está permitido a realizar pedidos."
+                );
+            }
+            if (user) {
+                await user?.update({
                     identification_number:
-                        ordersStoreDto.invoice?.identification_number || null,
-                    reference: ordersStoreDto.reference || null,
-                    buys: [],
-                });
-            } else {
-                if (!client.enabled)
-                    throw new BadRequestException(
-                        "No está permitido a realizar pedidos."
-                    );
-                await client.update({
-                    fullname: ordersStoreDto.fullName,
-                    address: ordersStoreDto.address || null,
-                    city_id: ordersStoreDto.city_id || null,
-                    map_marker: ordersStoreDto.map_marker || null,
-                    email: ordersStoreDto.email || null,
-                    identification_number:
-                        ordersStoreDto.invoice?.identification_number || null,
-                    reference: ordersStoreDto.reference || null,
+                        ordersStoreDto.invoice?.identification_number,
+                    reference: ordersStoreDto.reference,
+                    address: ordersStoreDto.address,
+                    map_maker: ordersStoreDto.map_marker,
+                    city: ordersStoreDto.city_id,
                 });
             }
         }
@@ -497,7 +483,9 @@ export class OrdersApiService {
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                     (detail_order as any)[typeProduct],
                     ordersStoreDto.isService,
-                    true
+                    true,
+                    null,
+                    false
                 );
 
                 let disc = null;
@@ -614,7 +602,7 @@ export class OrdersApiService {
             moneyChange: moneyConverter,
             is_pasarela_client: empresa!.enabledClientPayComision,
             empresa_id: empresa.id,
-            client_id: client ? client.id : null,
+            user_id: user ? user.id : null,
             type_pasarela: type,
         });
         order.order_code = await generateCodeEntity(
@@ -667,7 +655,9 @@ export class OrdersApiService {
                             productID as keyof typeof detail_order
                         ],
                         ordersStoreDto.isService,
-                        true
+                        true,
+                        null,
+                        false
                     ),
                 ]);
                 if (product instanceof ProductsServicio) {
@@ -738,9 +728,52 @@ export class OrdersApiService {
             })
         );
         try {
+            try {
+                if (ordersStoreDto.telephone && !user) {
+                    const userName = `${ordersStoreDto.fullName}${Math.random()
+                        .toString(32)
+                        .slice(3, 6)}`;
+                    const token: string = crypto.randomUUID();
+                    const { user: usuario } = await this.usersApiService.store(
+                        empresa,
+                        {
+                            telephone: ordersStoreDto.telephone,
+                            enabled: true,
+                            username: userName,
+                            name: ordersStoreDto.fullName!,
+                            address: ordersStoreDto.address || null,
+                            city_id: ordersStoreDto.city_id || null,
+                            birthday: new Date(),
+                            lastname: "",
+                            password: ordersStoreDto.password,
+                            role_id: ROLES.user,
+                            map_marker: ordersStoreDto.map_marker || null,
+                            empresa_id: empresa.id,
+                            email: ordersStoreDto.email || null,
+                            identification_number:
+                                ordersStoreDto.invoice?.identification_number ||
+                                null,
+                            reference: ordersStoreDto.reference || null,
+                            buys: [],
+                            slug: slug(userName),
+                            speciality: null,
+                        } as UsersStoreDto
+                    );
+                    await usuario.update({ token });
+                    await whatsappSendMessageApi(empresa, {
+                        telephone: `${empresa.dial_code}${ordersStoreDto.telephone}@c.us`,
+                        message: `Hola *${
+                            usuario.username
+                        }*.\nYa puedes acceder a tu cuenta, ingresa al siguiente link:\n*${BASE_URL(
+                            empresa
+                        )}/auth/confirmed-account?token=${token}*`,
+                        delay: 3,
+                    });
+                }
+            } catch (error) {}
+
             if (empresa.enabledSendMessage && ordersStoreDto.telephone) {
                 const telephone = `${empresa.dial_code}${ordersStoreDto.telephone}@c.us`;
-
                 await whatsappSendMessageApi(empresa, {
                     telephone,
                     message:
@@ -837,9 +870,9 @@ export class OrdersApiService {
         if (
             props.ordersUpdateDto.status_order_id === STATUSORDER.entregado &&
             order.status_order_id !== STATUSORDER.entregado &&
-            order.client_id
+            order.user_id
         ) {
-            const client = await Clients.findByPk(order.client_id);
+            const user = await Users.findByPk(order.user_id);
             const buys: { title: string; date: Date | null; order: string }[] =
                 await Promise.all(
                     (order.dataValues.details_orders as DetailOrders[]).map(
@@ -882,7 +915,7 @@ export class OrdersApiService {
                     )
                 );
 
-            await client?.update({ buys: [...buys, ...(client.buys ?? [])] });
+            await user?.update({ buys: [...buys, ...(user.buys ?? [])] });
         }
 
         if (
@@ -899,7 +932,9 @@ export class OrdersApiService {
                             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                             (detail_order as any)[productId],
                             isService,
-                            true
+                            true,
+                            null,
+                            false
                         );
                         // encontrar variant
                         if (product instanceof ProductsNormal) {

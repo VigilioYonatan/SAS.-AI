@@ -215,7 +215,7 @@ function FormFile<T extends object>({
                 <div class="w-full lg:mb-2">
                     <p>
                         <label
-                            class="text-xs dark:text-secondary-light text-secondary-dark capitalize font-semibold"
+                            class="text-xs dark:text-secondary-light  capitalize font-semibold"
                             htmlFor={nameCustom}
                         >
                             {title}{" "}

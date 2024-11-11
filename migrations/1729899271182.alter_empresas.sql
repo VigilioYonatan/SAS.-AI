@@ -13,3 +13,7 @@
 ALTER TABLE "public"."Settings" ADD COLUMN "bg_color_background" VARCHAR(60) DEFAULT '#FFFFFF';
 ALTER TABLE "public"."Settings" ADD COLUMN "bg_color_footer" VARCHAR(60) DEFAULT '#FFFFFF';
 ALTER TABLE "public"."Settings" ADD COLUMN "bg_color_paper" VARCHAR(60) DEFAULT '#F2F2F2';
+ALTER TABLE "public"."Empresas" ADD COLUMN "google_tag_manager" VARCHAR(60) DEFAULT NULL;
+ALTER TABLE "public"."Empresas" ADD COLUMN "facebook_pixel" VARCHAR(60) DEFAULT NULL;
+
+ALTER TABLE "public"."Empresas" ADD COLUMN "enabled_address" BOOLEAN DEFAULT true;

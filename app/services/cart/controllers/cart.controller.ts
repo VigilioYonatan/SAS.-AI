@@ -14,6 +14,7 @@ import { objectAsync, string } from "@vigilio/valibot";
 import { UrlsPayment } from "@/urls/entities/urls.payment.entity";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { NOW, restarDays } from "~/libs/dayjs";
+import type { Users } from "@/users/entities/users.entity";
 
 @Injectable()
 @Controller("/cart")
@@ -43,9 +44,10 @@ export class CartController {
     async servicio(
         @Res() res: Response,
         @Req("empresa") empresa: Empresas,
-        @Params("slug") slug: string
+        @Params("slug") slug: string,
+        @Req("user") user: Users
     ) {
-        const result = await this.cartService.servicio(empresa, slug);
+        const result = await this.cartService.servicio(empresa, slug, user);
         return res.render("web/cart/servicio", result);
     }
     @Pipe(objectAsync({ hash: string() }))

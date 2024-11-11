@@ -3,6 +3,7 @@ import {
     InternalServerErrorException,
     UnauthorizedException,
     Injectable,
+    NotFoundException,
 } from "@vigilio/express-core";
 import { type PaginatorModel, type TimeTable } from "../libs";
 import {
@@ -26,7 +27,7 @@ import { getOrder } from "@/orders/libs";
 import type { Request } from "express";
 import type { RequestVigilio } from "~/config/types";
 import { Categories } from "@/products/entities/categories.entity";
-import { getProductAll, Product } from "@/products/libs";
+import { getProductAll, Product, productEntityId } from "@/products/libs";
 import { ProductsOptions } from "@/products/entities/options/products_options.entity";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { Urls } from "@/urls/entities/urls.entity";
@@ -35,8 +36,8 @@ import { Regions } from "@/ubigeo/entities/regions.entity";
 import { RegionsEmpresa } from "@/ubigeo/entities/regions_empresa.entity";
 import { Countries } from "@/ubigeo/entities/countries.entity";
 import { Complaints } from "@/empresas/entities/complaints.entity";
-import { Clients } from "@/users/entities/clients.entity";
 import { Finanzas } from "@/finanzas/entities/finanzas.entity";
+import { Favorites } from "@/favorites/entities/favorites.entity";
 
 @Injectable()
 export class PaginatorApiServices {
@@ -177,7 +178,8 @@ export class PaginatorApiServices {
                                         empresa as Empresas,
                                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                         (data as any)
-                                            .productsNormal as ProductsNormal
+                                            .productsNormal as ProductsNormal,
+                                        user
                                     )
                             )
                         );
@@ -203,7 +205,8 @@ export class PaginatorApiServices {
                             data[0].map(async (product: any) => {
                                 return await getProductAll(
                                     empresa as Empresas,
-                                    product
+                                    product,
+                                    user
                                 );
                             })
                         );
@@ -227,7 +230,8 @@ export class PaginatorApiServices {
                         data[0].map(async (product: any) => {
                             return await getProductAll(
                                 empresa as Empresas,
-                                product
+                                product,
+                                user
                             );
                         })
                     );
@@ -795,25 +799,7 @@ export class PaginatorApiServices {
                 ]);
                 break;
             }
-            case "clients": {
-                if (!user) throw new UnauthorizedException("No authorizado");
-                data = await Promise.all([
-                    Clients.unscoped().findAll({
-                        offset: offsetConverted,
-                        limit: limitConverted,
-                        order: Object.entries(rest),
-                        where: {
-                            empresa_id: empresa.id,
-                        },
-                    }),
-                    Clients.unscoped().count({
-                        where: {
-                            empresa_id: empresa.id,
-                        },
-                    }),
-                ]);
-                break;
-            }
+
             case "finanzas": {
                 if (!user || user.role_id !== 1)
                     throw new UnauthorizedException("No authorizado");
@@ -838,6 +824,39 @@ export class PaginatorApiServices {
                         },
                     }),
                 ]);
+                break;
+            }
+            case "favorites": {
+                if (!user) throw new UnauthorizedException("No authorizado");
+                data = await Promise.all([
+                    Favorites.findAll({
+                        offset: offsetConverted,
+                        limit: limitConverted,
+                        order: Object.entries(rest),
+                        where: { user_id: user.id },
+                    }),
+                    Favorites.count({ where: { user_id: user.id } }),
+                ]);
+
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                (data as any[])[0] = await Promise.all(
+                    data[0].map(async (favorite) => {
+                        const product = await Product(
+                            empresa,
+                            !!favorite.product_servicio_id
+                        ).findByPk(
+                            favorite[
+                                productEntityId(
+                                    empresa,
+                                    !!favorite.product_servicio_id
+                                ) as keyof typeof favorite
+                            ]
+                        );
+                        if (!product)
+                            throw new NotFoundException("no found product");
+                        return await getProductAll(empresa, product, user);
+                    })
+                );
                 break;
             }
 

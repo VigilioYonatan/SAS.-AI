@@ -36,7 +36,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 								<span class="text-primary dark:text-terciary font-bold">
 									ID:
 								</span>
-								<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
+								<span class="dark:text-secondary-light  tracking-wide">
 									{order.id}
 								</span>
 							</div>
@@ -52,7 +52,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 											}`}
 										/>
 									</span>
-									<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
+									<span class="dark:text-secondary-light  tracking-wide">
 										{order.order_code}
 									</span>
 								</div>
@@ -80,7 +80,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 								<span class="text-primary dark:text-terciary font-bold">
 									Estado de orden:
 								</span>
-								<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
+								<span class="dark:text-secondary-light  tracking-wide">
 									{order.status_order.name}
 								</span>
 							</div>
@@ -88,7 +88,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 								<span class="text-primary dark:text-terciary font-bold">
 									Dirección:
 								</span>
-								<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
+								<span class="dark:text-secondary-light  tracking-wide">
 									{order.address || "No se ingresó"}
 								</span>
 							</div>
@@ -109,7 +109,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 										href={`/admin/usuarios/${order.user.id}`}
 										target="_blank"
 										rel="noreferrer"
-										class="dark:text-secondary-light text-secondary-dark tracking-wide text-xs"
+										class="dark:text-secondary-light  tracking-wide text-xs"
 									>
 										{order.user.username}
 									</a>
@@ -131,7 +131,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 										href={`/admin/usuarios/${order.user.id}`}
 										target="_blank"
 										rel="noreferrer"
-										class="dark:text-secondary-light text-secondary-dark tracking-wide text-xs"
+										class="dark:text-secondary-light  tracking-wide text-xs"
 									>
 										{order.user.username}
 									</a>
@@ -141,7 +141,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 									<span class="text-primary dark:text-terciary font-bold">
 										Cliente
 									</span>
-									<span class="dark:text-secondary-light text-secondary-dark tracking-wide ">
+									<span class="dark:text-secondary-light  tracking-wide ">
 										No registrado
 									</span>
 								</div>
@@ -150,7 +150,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 								<span class="text-primary dark:text-terciary font-bold">
 									Metódo de pago:
 								</span>
-								<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
+								<span class="dark:text-secondary-light  tracking-wide">
 									<div
 										dangerouslySetInnerHTML={{
 											__html: payMethodIcon()[order.pay_method_id],
@@ -193,7 +193,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 								<span class="text-primary dark:text-terciary font-bold">
 									Creado:
 								</span>
-								<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
+								<span class="dark:text-secondary-light  tracking-wide">
 									{showTime(order.createdAt)}
 								</span>
 							</div>
@@ -201,7 +201,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 								<span class="text-primary dark:text-terciary font-bold">
 									Actualizado:
 								</span>
-								<span class="dark:text-secondary-light text-secondary-dark tracking-wide">
+								<span class="dark:text-secondary-light  tracking-wide">
 									{showTime(order.updatedAt)}
 								</span>
 							</div>
@@ -212,7 +212,7 @@ function OrderShowClient({ order_code }: OrderShowClientProps) {
 									<span class="text-primary dark:text-terciary font-bold">
 										Numero de Telefono
 									</span>
-									<span class="dark:text-secondary-light text-secondary-dark tracking-wide flex gap-2 items-center">
+									<span class="dark:text-secondary-light  tracking-wide flex gap-2 items-center">
 										<i class="fab fa-whatsapp" />
 										{order.telephone}
 									</span>

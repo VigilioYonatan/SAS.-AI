@@ -32,7 +32,10 @@ import { usersPhotoQualities } from "@/users/libs";
 import { Users } from "@/users/entities/users.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { ordersTransferenciaImage } from "@/orders/libs";
-import { EmpresasApiService } from "@/empresas/services/empresas.api.service";
+import {
+    deleteHostCache,
+    EmpresasApiService,
+} from "@/empresas/services/empresas.api.service";
 import { postsImageQualities } from "@/posts/libs";
 import { PostsApiService } from "@/posts/services/posts.api.service";
 import { BackgroundApiService } from "@/empresas/services/background.api.service";
@@ -387,6 +390,8 @@ export class UploadsService {
                     empresa,
                     id,
                     query.type === "service",
+                    true,
+                    userAuth,
                     false
                 );
                 entidad = product;
@@ -545,7 +550,10 @@ export class UploadsService {
                     throw new UnauthorizedException(
                         "No tiene permiso para realizar esta acción"
                     );
-                entidad = empresa;
+                const { empresa: emp } = await this.empresasApiService.show(
+                    empresa!.slug
+                );
+                entidad = emp;
                 if (property === "logo" && empresa.logo) {
                     removeFile(empresa.slug, empresa.logo);
                 }
@@ -555,6 +563,8 @@ export class UploadsService {
                 if (property === "certificado" && empresa.certificado) {
                     removeFile(empresa.slug, empresa.certificado);
                 }
+                deleteHostCache();
+
                 break;
             }
             default:

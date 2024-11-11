@@ -202,6 +202,9 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         mercado_pago_comision: { comision: 3.49, transaccion: 1, url: "" },
         tipo_impuesto: "igv",
         certificado: null,
+        facebook_pixel: null,
+        google_tag_manager: null,
+        enabled_address: true,
     };
 }
 
@@ -398,6 +401,9 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         },
         tipo_impuesto: "IVA",
         token: "asas",
+        facebook_pixel: null,
+        google_tag_manager: null,
         certificado: null,
+        enabled_address: true,
     };
 }

@@ -23,7 +23,6 @@ import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { Users } from "@/users/entities/users.entity";
 import type { UsersSchema } from "@/users/schemas/users.schema";
-import { Clients } from "@/users/entities/clients.entity";
 import { Cities } from "@/ubigeo/entities/cities.entity";
 import { Mesas } from "./mesas.entity";
 import { Floors } from "./floors.entity";
@@ -51,8 +50,21 @@ import type { PASARELA } from "@/payments/libs";
                 "email",
                 "role_id",
             ] as (keyof UsersSchema)[],
+            as: "user",
         },
-        { model: Clients },
+        {
+            model: Users,
+            attributes: [
+                "id",
+                "username",
+                "name",
+                "lastname",
+                "photo",
+                "email",
+                "role_id",
+            ] as (keyof UsersSchema)[],
+            as: "seller",
+        },
         {
             model: Mesas,
             include: [{ model: Floors }],
@@ -158,6 +170,10 @@ export class Orders extends Model implements Omit<OrdersSchema, "id"> {
     @Column({ type: DataType.INTEGER })
     user_id: number | null;
 
+    @ForeignKey(() => Users)
+    @Column({ type: DataType.INTEGER })
+    seller_id: number | null;
+
     @ForeignKey(() => PayMethods)
     @Column({ allowNull: false, type: DataType.INTEGER })
     pay_method_id: number;
@@ -176,8 +192,11 @@ export class Orders extends Model implements Omit<OrdersSchema, "id"> {
     @BelongsTo(() => Cities)
     city: unknown;
 
-    @BelongsTo(() => Users)
+    @BelongsTo(() => Users, { as: "user", foreignKey: "user_id" })
     user: unknown;
+
+    @BelongsTo(() => Users, { as: "seller", foreignKey: "seller_id" })
+    seller: unknown;
 
     // orders - status_order: one to many
     @BelongsTo(() => StatusOrders)
@@ -207,12 +226,6 @@ export class Orders extends Model implements Omit<OrdersSchema, "id"> {
     @BelongsTo(() => Empresas)
     empresa: unknown;
 
-    @ForeignKey(() => Clients)
-    @Column({ type: DataType.INTEGER })
-    client_id: number | null;
-
-    @BelongsTo(() => Clients)
-    client: unknown;
     // mesas - orders: one to many
     @BelongsTo(() => Mesas, { onDelete: "SET NULL" }) // cuando se eliminar la mesa. convierte en nulo los ordenes
     mesa: unknown;

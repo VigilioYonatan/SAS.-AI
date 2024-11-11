@@ -10,6 +10,7 @@ import CartAside from "@/cart/views/CartAside";
 import useThemeStore from "~/stores/theme.store";
 import SearchProducts from "@/products/views/ProductsSearch";
 import { isActive, isColorLight } from "~/libs/helpers";
+import useFavoriteStore from "@/favorites/stores/favorites.store";
 
 interface HeaderMobileProps {
     headerDropdown: UseDropdown;
@@ -19,6 +20,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
     const empresaStore = useEmpresastore();
     const cartStore = useCartStore();
     const themeStore = useThemeStore();
+    const favoriteStore = useFavoriteStore();
     return (
         <header
             class={
@@ -46,7 +48,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                     isOpen={headerDropdown.dropdownOpen}
                                 />
                             </button>
-                            <a href={"/"} class="flex  items-center ">
+                            <a href={"/"} class="flex  items-center">
                                 {empresaStore.state!.logo ? (
                                     <img
                                         width={100}
@@ -79,7 +81,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                 />
                             </button>
 
-                            <a href={"/"} class="flex  items-center ">
+                            <a href={"/"} class="flex  items-center  ml-12">
                                 {empresaStore.state!.logo ? (
                                     <img
                                         width={100}
@@ -130,6 +132,18 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                     {/* endcartaside */}
                     <div class="flex gap-3 items-center   text-xl  ">
                         {totalProducts > 0 ? <SearchProducts /> : null}
+
+                        <a
+                            href="/auth/profile?type=favorites"
+                            class="flex gap-2 items-center justify-center text-md relative"
+                        >
+                            <i class="far fa-heart text-lg" />{" "}
+                            {favoriteStore.state > 0 ? (
+                                <span class="border-2 absolute border-white rounded-full w-[22px] h-[22px] text-xs bg-danger -right-3 -top-2 flex justify-center items-center  text-white">
+                                    {favoriteStore.state}
+                                </span>
+                            ) : null}
+                        </a>
                         {empresaStore.state?.setting.isDark ? (
                             <button
                                 type="button"

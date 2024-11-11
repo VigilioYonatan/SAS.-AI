@@ -37,6 +37,7 @@ import type { VariantsUpdateDto } from "../dtos/options/variants.update.dto";
 import { Variants } from "../entities/options/variants.entity";
 import type { Features } from "../entities/options/features.entity";
 import type { Options } from "../entities/options/options.entity";
+import type { Users } from "@/users/entities/users.entity";
 
 @Injectable()
 export class ProductsApiService {
@@ -57,6 +58,7 @@ export class ProductsApiService {
      * @param slug
      * @param isService
      * @param allProduct =false
+     * @param user =null
      * @param isView
      * @returns
      */
@@ -65,6 +67,7 @@ export class ProductsApiService {
         slug: string,
         isService: boolean,
         allProduct: boolean,
+        user: Users | null,
         isView = false
     ) {
         let product = null;
@@ -91,7 +94,7 @@ export class ProductsApiService {
             throw new NotFoundException(message);
         }
         if (allProduct) {
-            product = await getProductAll(empresa, product);
+            product = await getProductAll(empresa, product, user);
         }
 
         return {
@@ -368,7 +371,7 @@ export class ProductsApiService {
         isService: boolean
     ) {
         const [{ product }, coupon] = await Promise.all([
-            this.show(empresa, product_id, isService, false),
+            this.show(empresa, product_id, isService, false, null, false),
             Coupons.findOne({
                 where: {
                     coupon: coupon_code,
@@ -494,7 +497,14 @@ export class ProductsApiService {
         isNormal: boolean,
         isService: boolean
     ) {
-        const { product } = await this.show(empresa, id, isService, true);
+        const { product } = await this.show(
+            empresa,
+            id,
+            isService,
+            true,
+            null,
+            false
+        );
 
         const [byName, bySlug] = await Promise.all([
             Product(empresa, isService).findOne({
@@ -613,7 +623,14 @@ export class ProductsApiService {
     }
 
     async destroy(empresa: Empresas, id: string, isService: boolean) {
-        const { product } = await this.show(empresa, id, isService, true);
+        const { product } = await this.show(
+            empresa,
+            id,
+            isService,
+            false,
+            null,
+            false
+        );
         await product.destroy();
         if (product.images) {
             removeFile(empresa.slug, product.images);
@@ -633,6 +650,8 @@ export class ProductsApiService {
             empresa,
             product_id,
             isService,
+            false,
+            null,
             false
         );
         const variant = await (product as ProductsNormal).$get("variants", {

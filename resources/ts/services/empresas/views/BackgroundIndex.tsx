@@ -42,9 +42,9 @@ function BackgroundIndex() {
 									>
 										<img
 											class="w-[600px] h-[300px] object-contain"
-											src={printFileWithDimension(background.image, 1000)[0]}
-											width={1000}
-											height={1000}
+											src={printFileWithDimension(background.image, 1200)[0]}
+											width={1200}
+											height={1200}
 											alt={background.title}
 										/>
 										<div class="flex flex-col gap-4 justify-center items-center lg:items-start">

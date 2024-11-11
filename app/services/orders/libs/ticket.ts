@@ -11,13 +11,12 @@ import { MONEYDOLARES } from "~/libs/helpers";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
 import type { Users } from "@/users/entities/users.entity";
 import type { PayMethods } from "../entities/pay_methods.entity";
-import type { Clients } from "@/users/entities/clients.entity";
 
 export async function ticketHTML(order: Orders, empresa: Empresas) {
     const mapped = await detailInvoice(
         empresa,
         order.dataValues.details_orders,
-        order,
+        order
     );
 
     const igv = mapped.reduce(
@@ -252,10 +251,10 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                                     <td width="70%" style="font-size: 10px;">
                                                         <p>
                                                         ${
-                                                            order.client_id
+                                                            order.user_id
                                                                 ? (
-                                                                      order.client as Clients
-                                                                  ).fullname
+                                                                      order.user as Users
+                                                                  ).name
                                                                 : "Publico General"
                                                         } ${
         (order.invoice as Invoices)?.identification_number
@@ -287,7 +286,7 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                                         <p>
                                                          ${
                                                              (
-                                                                 order.user as Users
+                                                                 order.seller as Users
                                                              )?.name ?? ""
                                                          }  ${
         (order.user as Users)?.lastname ?? ""

@@ -388,7 +388,7 @@ function MetodosDePago() {
                 />
             ) : null}
             {empresaStore.state?.metodos_pago.enable_efectivo ? (
-                <p class="text-xs  text-center border p-1 rounded-md border-gray-400 text-black dark:text-white">
+                <p class="text-xs  text-center border p-1 rounded-md border-primary text-primary dark:text-white ">
                     <i class="far fa-handshake" /> Efectivo
                 </p>
             ) : null}

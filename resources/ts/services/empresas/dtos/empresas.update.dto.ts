@@ -27,5 +27,6 @@ export const empresasUpdateDto = omit(empresasSchema, [
     "tz",
     "twilio",
     "whatsapp_mode",
+    "isFreeVPS",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;

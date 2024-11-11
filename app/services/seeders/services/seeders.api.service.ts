@@ -60,7 +60,7 @@ export class SeedersApiService {
                 await this.empresasApiService.store({
                     ...empresa,
                     fullname: "Yonatan Vigilio",
-                    password: "123456",
+                    password: "123456a",
                     servicio_id: 3,
                 });
                 await Promise.all([Address.bulkCreate(addressSeeder)]);

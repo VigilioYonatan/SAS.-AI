@@ -61,7 +61,7 @@ export const ordersSchema = objectAsync({
     ),
     empresa_id: number(),
     user_id: nullable(number()),
-    client_id: nullable(number()),
+    seller_id: nullable(number()),
     mesa_id: nullable(number()),
     type_pasarela: nullable(string()),
     isService: boolean(),

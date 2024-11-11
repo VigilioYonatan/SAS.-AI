@@ -47,6 +47,10 @@ import { CategoriesFinanzas } from "@/finanzas/entities/categories.entity";
 import { TipoFinanza } from "@/finanzas/entities/tipo.entity";
 import { CitasSettings } from "@/citas/entities/citas_settings.entity";
 import { Citas } from "@/citas/entities/citas.entities";
+import { Favorites } from "@/favorites/entities/favorites.entity";
+import { Comments } from "@/polymorphism/entities/comments.entity";
+import { Reactions } from "@/polymorphism/entities/reactions.entity";
+import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
 
 @DefaultScope(() => ({
     include: [Address, MetodosPago, TipoEmpresa, Settings, CitasSettings],
@@ -135,6 +139,26 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
         type: DataType.TEXT,
     })
     about: string;
+
+    @Column({
+        type: DataType.STRING(100),
+    })
+    facebook_pixel: string | null;
+
+    @Column({
+        type: DataType.STRING(100),
+    })
+    google_tag_manager: string | null;
+
+    @Column({
+        type: DataType.STRING(100),
+    })
+    tiktok_pixel: string | null;
+
+    @Column({
+        type: DataType.STRING(100),
+    })
+    linkedin_tag: string | null;
 
     @Column({
         type: DataType.JSON,
@@ -281,6 +305,18 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
         allowNull: false,
     })
     enabledSound: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        allowNull: false,
+    })
+    isFreeVPS: boolean;
+    // activar direccion a la hora de pagar
+    @Column({
+        type: DataType.BOOLEAN,
+        allowNull: false,
+    })
+    enabled_address: boolean;
 
     @Column({
         type: DataType.JSON,
@@ -439,6 +475,9 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     @HasMany(() => Citas)
     citas: unknown[];
 
+    @HasMany(() => Favorites)
+    favorites: Favorites[];
+
     @HasOne(() => CitasSettings)
     citasSetting: CitasSettings;
 
@@ -447,4 +486,13 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
     @BelongsToMany(() => Regions, () => RegionsEmpresa)
     regions: Regions[];
+
+    @HasMany(() => Comments)
+    comments: Comments[];
+
+    @HasMany(() => Subcomments)
+    subcomments: Reactions[];
+
+    @HasMany(() => Reactions)
+    reactions: Reactions[];
 }

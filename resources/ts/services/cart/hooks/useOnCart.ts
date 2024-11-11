@@ -50,6 +50,7 @@ function useOnCart() {
                     storageEmpresa?.dial_code === DIALCODE.peru
                         ? undefined
                         : "00",
+                identification_number: authStore.state?.identification_number,
             },
             user_id: authStore.state ? authStore.state.id : null,
             isDelivery: true,
@@ -58,13 +59,18 @@ function useOnCart() {
             map_marker: empresa.state!.enable_map_marker
                 ? empresa.state!.map_marker
                 : null,
-            city_id: null,
+            city_id: authStore.state?.city_id ? authStore.state!.city_id : null,
             mesa_id: null,
             floor_id: null,
-            fullName: null,
-            email: null,
-            reference: undefined,
+            fullName: authStore.state?.name ? authStore.state!.name : undefined,
+            email: authStore.state?.email ? authStore.state!.email : undefined,
+            reference: authStore.state?.reference
+                ? authStore.state!.reference
+                : undefined,
             isService: false,
+            seller_id: null,
+            password: undefined,
+            repeat_password: undefined,
         },
         mode: "all",
     });
@@ -274,71 +280,6 @@ function useOnCart() {
             citySelect(city_id);
         }
     }, [city_id]);
-
-    useEffect(() => {
-        if (telephone?.length) {
-            clientsShowQuery.mutate(telephone, {
-                onSuccess(data) {
-                    ordersCartStoreDtoForm.setValue(
-                        "fullName",
-                        data.client.fullname
-                    );
-                    if (data.client.city_id) {
-                        ordersCartStoreDtoForm.setValue(
-                            "city_id",
-                            data.client.city_id
-                        );
-                    }
-                    if (data.client.address) {
-                        ordersCartStoreDtoForm.setValue(
-                            "address",
-                            data.client.address
-                        );
-                    }
-                    if (data.client.email) {
-                        ordersCartStoreDtoForm.setValue(
-                            "email",
-                            data.client.email
-                        );
-                    }
-                    if (data.client.map_marker) {
-                        ordersCartStoreDtoForm.setValue(
-                            "map_marker",
-                            data.client.map_marker
-                        );
-                    }
-                    if (data.client.reference) {
-                        ordersCartStoreDtoForm.setValue(
-                            "reference",
-                            data.client.reference
-                        );
-                    }
-                    if (data.client.identification_number) {
-                        ordersCartStoreDtoForm.setValue(
-                            "invoice.identification_number",
-                            data.client.identification_number
-                        );
-                    }
-                },
-                onError() {
-                    ordersCartStoreDtoForm.setValue("fullName", null);
-                    ordersCartStoreDtoForm.setValue("city_id", null);
-
-                    ordersCartStoreDtoForm.setValue("address", "");
-                    ordersCartStoreDtoForm.setValue("email", null);
-                    ordersCartStoreDtoForm.setValue(
-                        "map_marker",
-                        storageEmpresa!.map_marker
-                    );
-                    ordersCartStoreDtoForm.setValue("reference", "");
-                    ordersCartStoreDtoForm.setValue(
-                        "invoice.identification_number",
-                        null
-                    );
-                },
-            });
-        }
-    }, [telephoneDebounce]);
 
     return {
         ordersCartStoreDtoForm,

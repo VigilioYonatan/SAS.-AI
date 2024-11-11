@@ -1852,7 +1852,7 @@ function WhatsappFREE() {
                     />
                     <b class="text-lg text-center">WhatsApp Business API</b>
                     <span class=" font-semibold  text-center">
-                        USD $1500 - $3000 / anual
+                        USD $400 - $1000 / anual
                     </span>
                     <p class="text-sm text-center">
                         <b>Mensajes Ilimitados</b>

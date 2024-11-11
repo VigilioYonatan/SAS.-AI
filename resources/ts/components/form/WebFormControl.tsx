@@ -69,7 +69,7 @@ function WebFormControl<T extends object>({
                         enviroments.TYPE_BORDER === "circle"
                             ? "rounded-md"
                             : "rounded-sm"
-                    } overflow-hidden    my-1 shadow-sm border `}
+                    } overflow-hidden   bg-paper-light  my-1 shadow-sm border  `}
                 >
                     {ico ? (
                         <div class="bg-primary shadow min-w-[2.8rem]  h-full text-white flex justify-center items-center">
@@ -77,7 +77,7 @@ function WebFormControl<T extends object>({
                         </div>
                     ) : null}
                     <input
-                        class="outline-none bg-transparent h-full w-full dark:text-secondary-light  px-2 sm:text-sm "
+                        class="outline-none bg-transparent h-full w-full dark:text-black  px-2 sm:text-sm "
                         autoComplete="off"
                         id={name as string}
                         type={hidden ? type : "text"}

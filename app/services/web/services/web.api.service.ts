@@ -40,6 +40,7 @@ export class WebApiService {
                 empresa.tipo_empresa.tipo_servicio_id === 2
                     ? ProductsRestaurant
                     : ProductsNormal;
+
             const [
                 { data: backgrounds },
                 productsOffert6,
@@ -149,7 +150,7 @@ export class WebApiService {
                     products = await Promise.all(
                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                         products.map(async (product: any) => {
-                            return await getProductAll(empresa, product);
+                            return await getProductAll(empresa, product, user);
                         })
                     );
                     return {
@@ -160,19 +161,20 @@ export class WebApiService {
             );
             // productos
             const [productsOffert6Mapped, productsLatest6Mapped] =
-                await this.fetchProductArrays(empresa, [
-                    productsOffert6,
-                    productsLatest6,
-                ]);
+                await this.fetchProductArrays(
+                    empresa,
+                    [productsOffert6, productsLatest6],
+                    user
+                );
 
             // Mapear el producto con mayor descuento y el último producto creado
             const [productMostDiscountMapped, productLatestMapped] =
                 await Promise.all([
                     productMostDiscount
-                        ? getProductAll(empresa, productMostDiscount)
+                        ? getProductAll(empresa, productMostDiscount, user)
                         : null,
                     productLatest
-                        ? getProductAll(empresa, productLatest)
+                        ? getProductAll(empresa, productLatest, user)
                         : null,
                 ]);
             cacheHome = {
@@ -195,6 +197,7 @@ export class WebApiService {
                 brands,
                 productServicesQuantity,
             };
+
             const hora = 60 * 60 * 1000;
             cache.set(`home-${empresa.slug}`, JSON.stringify(cacheHome), hora);
         }
@@ -252,7 +255,7 @@ export class WebApiService {
             productServicesQuantity,
         };
     }
-    async shop(empresa: Empresas) {
+    async shop(empresa: Empresas, user: Users) {
         const [
             productsLatest,
             productsOfferts,
@@ -296,16 +299,19 @@ export class WebApiService {
 
         // productos
         const [productsLatestMapped, productsOffertsMapped] =
-            await this.fetchProductArrays(empresa, [
-                productsLatest,
-                productsOfferts,
-            ]);
+            await this.fetchProductArrays(
+                empresa,
+                [productsLatest, productsOfferts],
+                user
+            );
         const [productMostDiscountMapped, productLatestMapped] =
             await Promise.all([
                 productMostDiscount
-                    ? getProductAll(empresa, productMostDiscount)
+                    ? getProductAll(empresa, productMostDiscount, user)
                     : null,
-                productLatest ? getProductAll(empresa, productLatest) : null,
+                productLatest
+                    ? getProductAll(empresa, productLatest, user)
+                    : null,
             ]);
 
         return {
@@ -320,12 +326,13 @@ export class WebApiService {
         };
     }
 
-    async product(slug: string, empresa: Empresas) {
+    async product(slug: string, empresa: Empresas, user: Users) {
         const { product } = await this.productsApiService.show(
             empresa,
             slug,
             false,
             true,
+            user,
             true
         );
 
@@ -347,7 +354,7 @@ export class WebApiService {
                         | ProductsServicio
                         | ProductsRestaurant
                 ) => {
-                    const prod = await getProductAll(empresa, product);
+                    const prod = await getProductAll(empresa, product, user);
                     return prod;
                 }
             )
@@ -368,7 +375,7 @@ export class WebApiService {
             });
             productByBrands = await Promise.all(
                 productByBrands.map(async (product: ProductsNormal) => {
-                    const prod = await getProductAll(empresa, product);
+                    const prod = await getProductAll(empresa, product, user);
                     return prod;
                 })
             );
@@ -387,12 +394,13 @@ export class WebApiService {
             category_name: (product.category as Categories).name,
         };
     }
-    async servicio(slug: string, empresa: Empresas) {
+    async servicio(slug: string, empresa: Empresas, user: Users) {
         const { product } = await this.productsApiService.show(
             empresa,
             slug,
             true,
             true,
+            user,
             true
         );
 
@@ -414,7 +422,7 @@ export class WebApiService {
                         | ProductsServicio
                         | ProductsRestaurant
                 ) => {
-                    const prod = await getProductAll(empresa, product);
+                    const prod = await getProductAll(empresa, product, user);
                     return prod;
                 }
             )
@@ -585,7 +593,8 @@ export class WebApiService {
     }
     async fetchProductArrays(
         empresa: Empresas,
-        products: (ProductsNormal | ProductsServicio | ProductsRestaurant)[][]
+        products: (ProductsNormal | ProductsServicio | ProductsRestaurant)[][],
+        user: Users
     ) {
         const arraysLengths = products.map((arr) => arr.length);
         const allProducts = products.flat();
@@ -612,7 +621,7 @@ export class WebApiService {
             products: (ProductsNormal | ProductsServicio | ProductsRestaurant)[]
         ) {
             return await Promise.all(
-                products.map((product) => getProductAll(empresa, product))
+                products.map((product) => getProductAll(empresa, product, user))
             );
         }
         return splitResults(allProductsMapped, arraysLengths);

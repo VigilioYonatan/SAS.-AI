@@ -5,6 +5,8 @@ import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 import { printProductVariant } from "@/products/libs/helpers";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
+import { Rating } from "react-custom-rating-component";
+import enviroments from "~/config";
 
 interface ProductBodyProps {
     showDescription: boolean;
@@ -104,6 +106,14 @@ function ProductBody({ showDescription }: ProductBodyProps) {
                               .join(" ")
                         : null}
                 </a>
+                <Rating
+                    defaultValue={product.producto.value.rating.promedio}
+                    shape={enviroments.TYPE_START}
+                    size="20px"
+                    spacing="5px"
+                    readOnly
+                    activeColor="var(--primary)"
+                />
             </div>
             {showDescription && product.producto.value.description ? (
                 <p class="text-gray-400   line-clamp-3  h-[80px]  w-full text-sm">

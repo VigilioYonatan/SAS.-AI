@@ -528,14 +528,27 @@ function empresaUpdate() {
                                     name={
                                         "enable_map_marker" as keyof EmpresasUpdateDto
                                     }
-                                    title="Habilitar ubicación a la hora de pagar"
+                                    title="Habilitar Google Maps a la hora de pagar"
                                     question={
                                         <span>
                                             Se mostrará un campo para que tu
                                             cliente ponga su ubicación de
-                                            entrega. <br />
+                                            entrega (carrito). <br />
                                             Recomendable para empresas/negocios
                                             que venden en todo el país.
+                                        </span>
+                                    }
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "enabled_address" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Habilitar Dirección a la hora de pagar"
+                                    question={
+                                        <span>
+                                            Se mostrará los campos dirección y
+                                            referencia a la hora de pagar
+                                            (carrito).
                                         </span>
                                     }
                                 />
@@ -588,6 +601,15 @@ function empresaUpdate() {
                                             <br />
                                             6. Enviar mensaje a tu Bot de
                                             telegram
+                                            <br />
+                                            <a
+                                                href="https://core.telegram.org/"
+                                                target="_blank"
+                                                class="underline text-primary font-semibold"
+                                                rel="noreferrer"
+                                            >
+                                                Más información
+                                            </a>
                                         </div>
                                     }
                                 />
@@ -608,6 +630,114 @@ function empresaUpdate() {
                                 </div>
                             }
                         />
+                        <div class="w-full my-6">
+                            {" "}
+                            <span class="dark:text-white font-semibold text-xs ">
+                                Integraciones
+                            </span>
+                            <div class="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-2">
+                                <Form.control
+                                    name={
+                                        "facebook_pixel" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Facebook Pixel ID"
+                                    question={
+                                        <div class="w-[250px]">
+                                            Facebook Pixel permite rastrear
+                                            acciones de usuarios en sitios web,
+                                            optimizando campañas publicitarias
+                                            mediante audiencias personalizadas y
+                                            análisis de conversiones detallado.
+                                            <br />
+                                            <a
+                                                href="https://www.facebook.com/business/help/171689010314963"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                class="underline text-primary"
+                                            >
+                                                {" "}
+                                                Más información
+                                            </a>
+                                        </div>
+                                    }
+                                />
+                                <Form.control
+                                    name={
+                                        "google_tag_manager" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Google Tag Manager"
+                                    question={
+                                        <div class="w-[250px]">
+                                            Google Tag Manager gestiona
+                                            etiquetas en sitios web, facilita
+                                            seguimiento de usuarios, optimiza
+                                            rendimiento y permite integración
+                                            con herramientas como Google
+                                            Analytics.
+                                            <br />
+                                            <a
+                                                href="https://marketingplatform.google.com/intl/es/about/tag-manager/"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                class="underline text-primary"
+                                            >
+                                                {" "}
+                                                Más información
+                                            </a>
+                                        </div>
+                                    }
+                                />
+                                <Form.control
+                                    name={
+                                        "tiktok_pixel" as keyof EmpresasUpdateDto
+                                    }
+                                    title="TikTok Pixel ID"
+                                    question={
+                                        <div class="w-[250px]">
+                                            TikTok Pixel es un código que
+                                            rastrea acciones en tu sitio web,
+                                            optimiza anuncios y mide
+                                            conversiones en campañas de TikTok.
+                                            <br />
+                                            <a
+                                                href="https://ads.tiktok.com/help/article/tiktok-pixel?lang=es"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                class="underline text-primary"
+                                            >
+                                                {" "}
+                                                Más información
+                                            </a>
+                                        </div>
+                                    }
+                                />
+                                <Form.control
+                                    name={
+                                        "linkedin_tag" as keyof EmpresasUpdateDto
+                                    }
+                                    title="LinkedIn Pixel Tag"
+                                    question={
+                                        <div class="w-[250px]">
+                                            LinkedIn Insight Tag rastrea
+                                            acciones en sitios web, optimiza
+                                            anuncios y mide conversiones en
+                                            campañas de LinkedIn.
+                                            <br />
+                                            <a
+                                                href="https://business.linkedin.com/es-es/marketing-solutions/conversion-tracking"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                class="underline text-primary"
+                                            >
+                                                {" "}
+                                                Más información
+                                            </a>
+                                        </div>
+                                    }
+                                />
+                            </div>
+                        </div>
+
                         <Form.button.submit
                             disabled={empresaUpdateMutation.isLoading || false}
                             isLoading={empresaUpdateMutation.isLoading || false}
@@ -695,6 +825,7 @@ function empresaUpdate() {
                             title="Logo de la empresa (200px x 200px)"
                             accept="image/*"
                             multiple={false}
+                            showButonCopy
                             typeFile="image"
                         />
                         <Form.button.submit

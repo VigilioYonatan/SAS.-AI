@@ -22,7 +22,7 @@ import { getProductAll, printVariantFeatures } from "@/products/libs";
 import type { VariantsSchema } from "@/products/schemas/options/variants.schema";
 import type { BrandsSchemaFromServe } from "@/products/schemas/brands.schema";
 import type { CategoriesSchemaFromServe } from "@/products/schemas/categories.schema";
-import type { isWhatsappTelegramIA } from "./ai";
+import { updateTokensEmpresa, type isWhatsappTelegramIA } from "./ai";
 import FormData from "form-data";
 import axios from "axios";
 
@@ -76,7 +76,7 @@ export async function onDb(empresa: Empresas) {
         });
         products = await Promise.all(
             (pr as ProductsNormal[]).map(async (product) => {
-                const producto = await getProductAll(empresa, product);
+                const producto = await getProductAll(empresa, product, null);
                 const variantes = await Promise.all(
                     (producto.dataValues.variants as Variants[]).map(
                         async (variant) => {
@@ -329,28 +329,12 @@ export async function chatgpt(
     });
     const completionText = completion.choices[0].message.content;
     const latestEmpresaUsage = whatsapp!.empresa!.inteligenceArtificial.usage;
-    await whatsapp!.empresa.update({
-        ...whatsapp!.empresa.inteligenceArtificial,
-        usage: {
-            ...latestEmpresaUsage,
-            input_tokens:
-                latestEmpresaUsage.input_tokens +
-                (completion.usage!.prompt_tokens +
-                    completion.usage!.completion_tokens),
-            output_tokens:
-                latestEmpresaUsage.input_tokens +
-                completion.usage!.completion_tokens,
-        },
-        payments: {
-            ...whatsapp!.empresa.payments,
-            tokens: {
-                tokens:
-                    whatsapp!.empresa.payments.tokens.tokens -
-                    (completion.usage!.prompt_tokens +
-                        completion.usage!.completion_tokens),
-            },
-        },
-    });
+    await updateTokensEmpresa(
+        whatsapp!.empresa,
+        latestEmpresaUsage,
+        completion
+    );
+
     return completionText;
 }
 
@@ -396,28 +380,12 @@ export async function interpretarImagen(
         const result = completion.choices[0].message.content;
         const latestEmpresaUsage =
             whatsapp!.empresa!.inteligenceArtificial.usage;
-        await whatsapp!.empresa.update({
-            ...whatsapp!.empresa.inteligenceArtificial,
-            usage: {
-                ...latestEmpresaUsage,
-                input_tokens:
-                    latestEmpresaUsage.input_tokens +
-                    (completion.usage!.prompt_tokens +
-                        completion.usage!.completion_tokens),
-                output_tokens:
-                    latestEmpresaUsage.input_tokens +
-                    completion.usage!.completion_tokens,
-            },
-            payments: {
-                ...whatsapp!.empresa.payments,
-                tokens: {
-                    tokens:
-                        whatsapp!.empresa.payments.tokens.tokens -
-                        (completion.usage!.prompt_tokens +
-                            completion.usage!.completion_tokens),
-                },
-            },
-        });
+        await updateTokensEmpresa(
+            whatsapp!.empresa,
+            latestEmpresaUsage,
+            completion
+        );
+
         return result;
     } catch (error) {
         return "null";

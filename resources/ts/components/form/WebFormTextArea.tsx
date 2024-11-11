@@ -55,7 +55,7 @@ function WebFormTextArea<T extends object>({
             >
                 {title}
             </label>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 ">
                 <textarea
                     className={`${className} ${
                         Object.keys(err).length ? "border-red-600" : ""
@@ -64,7 +64,7 @@ function WebFormTextArea<T extends object>({
                          enviroments.TYPE_BORDER === "circle"
                              ? "rounded-md"
                              : "rounded-sm"
-                     } py-2.5 my-1 text-sm w-full min-h-[100px] max-h-[100px] lg:min-h-[100px] lg:max-h-[100px] outline-none bg-transparent h-full dark:text-secondary-light  px-2 sm:text-sm `}
+                     } py-2.5 my-1  text-sm w-full min-h-[100px] max-h-[100px] lg:min-h-[100px] lg:max-h-[100px] outline-none bg-transparent h-full dark:text-secondary-light  px-2 sm:text-sm `}
                     id={name as string}
                     {...rest}
                     {...register(name as unknown as Path<T>, options)}

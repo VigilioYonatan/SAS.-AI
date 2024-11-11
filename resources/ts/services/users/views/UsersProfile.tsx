@@ -228,7 +228,6 @@ function UsersProfile() {
 								name={"birthday" as keyof UsersProfileDto}
 								type="date"
 								title="Fecha de Nacimiento"
-								placeholder="dni"
 								question={"Este campo no es obligatorio"}
 							/>
 						</div>

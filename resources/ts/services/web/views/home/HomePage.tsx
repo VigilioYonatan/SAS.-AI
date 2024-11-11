@@ -82,6 +82,7 @@ function HomePage({
                     productservicesquantity={productservicesquantity}
                     productsquantity={productsquantity}
                 />
+
                 <CategoriesSection categories={header.categories} />
                 <ProductsSectionRandom
                     productlatestmapped={productlatestmapped}

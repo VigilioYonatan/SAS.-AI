@@ -95,6 +95,16 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     @Column({
         type: DataType.STRING(60),
     })
+    background_position: "center" | "start" | "end";
+
+    @Column({
+        type: DataType.STRING(60),
+    })
+    background_type: "first" | "second";
+
+    @Column({
+        type: DataType.STRING(60),
+    })
     type_icons: string;
 
     @Column({
@@ -106,6 +116,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
         type: DataType.STRING(60),
     })
     type_cart: string;
+
+    @Column({
+        type: DataType.STRING(60),
+    })
+    type_map: string;
 
     @Column({
         type: DataType.STRING(60),

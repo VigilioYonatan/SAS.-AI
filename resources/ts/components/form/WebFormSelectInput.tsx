@@ -118,7 +118,7 @@ function WebFormSelectInput<T extends object>({
                         enviroments.TYPE_BORDER === "circle"
                             ? "rounded-md"
                             : "rounded-sm"
-                    }  overflow-hidden  my-1 shadow-sm border `}
+                    }  overflow-hidden   dark:text-black bg-paper-light my-1 shadow-sm border `}
                 >
                     {ico ? (
                         <div class="bg-primary text-white  shadow min-w-[2.8rem]  h-full flex justify-center items-center">
@@ -160,7 +160,7 @@ function WebFormSelectInput<T extends object>({
                     ) : null}
 
                     <input
-                        class="outline-none bg-transparent  w-full px-2 sm:text-sm font-normal dark:text-white"
+                        class="outline-none bg-transparent  w-full px-2 sm:text-sm font-normal dark:text-black "
                         id={name as string}
                         {...rest}
                         onChange={(e) => {

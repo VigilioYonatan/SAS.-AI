@@ -65,7 +65,7 @@
 }
 
 .vigilio-modal .modal {
-    @apply dark:bg-paper-dark !bg-paper-light;
+    @apply dark:!bg-paper-dark !bg-paper-light;
 }
 .vigilio-modal .modal .vigilio-success-circular-line-right {
     @apply dark:bg-paper-dark bg-paper-light;

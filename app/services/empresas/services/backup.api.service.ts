@@ -4,7 +4,6 @@ import enviroments from "~/config/enviroments.config";
 import fs from "node:fs";
 import dayjs from "~/libs/dayjs";
 import { Empresas } from "../entities/empresas.entity";
-import { Clients } from "@/users/entities/clients.entity";
 import { Users } from "@/users/entities/users.entity";
 import XLSXSTYLE from "xlsx-style";
 import XLSX from "xlsx";
@@ -12,6 +11,8 @@ import { terminal } from "~/libs/helpers";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
+import { Op } from "sequelize";
+import { ROLES } from "@/users/libs";
 
 export async function vpsShowApi(): Promise<{
     success: true;
@@ -152,7 +153,12 @@ export class BackupApiService {
                         },
                     }),
                     Users.findAll({
-                        where: { empresa_id: empresa.id },
+                        where: {
+                            empresa_id: empresa.id,
+                            [Op.not]: {
+                                role_id: ROLES.user,
+                            },
+                        },
                         attributes: [
                             "user_code",
                             "username",
@@ -168,10 +174,10 @@ export class BackupApiService {
                             "createdAt",
                         ],
                     }),
-                    Clients.findAll({
-                        where: { empresa_id: empresa.id },
+                    Users.findAll({
+                        where: { empresa_id: empresa.id, role_id: ROLES.user },
                         attributes: [
-                            "fullname",
+                            "name",
                             "address",
                             "telephone",
                             "enabled",
@@ -354,7 +360,7 @@ export class BackupApiService {
                 ],
                 clients.map((client, i) => [
                     `${i + 1}`,
-                    client.fullname,
+                    client.name,
                     client.telephone,
                     client.address || "",
                     client.enabled ? "✔" : "❌",

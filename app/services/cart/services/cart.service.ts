@@ -1,6 +1,7 @@
 import { Injectable } from "@vigilio/express-core";
 import { ProductsApiService } from "@/products/services/products.api.service";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
+import type { Users } from "@/users/entities/users.entity";
 
 @Injectable()
 export class CartService {
@@ -13,13 +14,14 @@ export class CartService {
             cart: items,
         };
     }
-    async servicio(empresa: Empresas, slug: string) {
+    async servicio(empresa: Empresas, slug: string, user: Users | null) {
         const { product } = await this.productsApiService.show(
             empresa,
             slug,
             true,
             true,
-            true
+            user,
+            false
         );
         return {
             title: "Carrito",

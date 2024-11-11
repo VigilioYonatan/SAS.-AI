@@ -26,7 +26,8 @@ function ProductsSectionRandom({
             class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 px-4 my-12  "
         >
             {productlatestmapped ? (
-                <div
+                <a
+                    href={`/${productlatestmapped.slug}`}
                     class={`animation-brightness bg-background-light dark:bg-background-dark p-4 md:p-6 group overflow-hidden shadow ${
                         enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                     } `}
@@ -78,10 +79,11 @@ function ProductsSectionRandom({
                             />
                         </div>
                     </div>
-                </div>
+                </a>
             ) : null}
             {productmostdiscountmapped ? (
-                <div
+                <a
+                    href={`/${productmostdiscountmapped.slug}`}
                     class={`group animation-brightness bg-background-light shadow dark:bg-background-dark p-4 md:p-6 ${
                         enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                     }`}
@@ -115,7 +117,7 @@ function ProductsSectionRandom({
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             ) : null}
         </section>
     );

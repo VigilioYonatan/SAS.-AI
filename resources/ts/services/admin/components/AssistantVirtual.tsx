@@ -69,7 +69,7 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
         <div
             class={`${
                 isOpen ? "block" : "hidden"
-            } p-2  rounded-md overflow-hidden bg-background-light dark:bg-paper-dark w-[300px] h-[405px] absolute bottom-12 z-[99] m-4 right-0  shadow`}
+            } p-2  rounded-md overflow-hidden bg-background-light dark:bg-paper-dark w-[250px] md:w-[300px] h-[350px] md:h-[405px] absolute bottom-7 md:bottom-12 z-[99] m-4 right-0  shadow`}
         >
             <div class="flex flex-col">
                 <h3 class=" dark:text-white text-primary font-bold text-center text-xl">
@@ -104,7 +104,7 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                     <Fragment key={`${message}${i + 1}`}>
                         {key === "assistant" ? (
                             <div
-                                class=" font-normal bg-paper-light dark:bg-background-dark dark:text-white shadow  p-2 rounded-md flex flex-col "
+                                class=" font-normal bg-paper-light dark:bg-background-dark dark:!text-white shadow  p-2 rounded-md flex flex-col "
                                 onTouchStart={() =>
                                     handleTouchStart(() => {
                                         cp(removeTextHTML(message)).then(() => {
@@ -126,7 +126,7 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                                 />
                             </div>
                         ) : (
-                            <div class="text-[0.6rem] font-normal bg-[#E1FEC4] px-2 py-1 rounded-md self-end flex flex-col">
+                            <div class="text-[0.6rem] font-normal bg-[#E1FEC4] px-2 py-1 rounded-md self-end flex flex-col text-black">
                                 <p class="text-sm font-semibold">{message}</p>
                             </div>
                         )}

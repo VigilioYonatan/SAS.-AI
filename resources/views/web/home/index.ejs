@@ -85,8 +85,12 @@
     }
   </style>
 
+  <%- include("../components/pixels.ejs")  %>
   <!-- initial base -->
   <initial></initial>
+  <%if($empresa.setting?.type_icons ==="animation"){%>
+  <script src="https://cdn.lordicon.com/lordicon.js"></script>
+  <% }%>
 </head>
 
 

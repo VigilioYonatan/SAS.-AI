@@ -16,6 +16,9 @@ import { Options } from "../entities/options/options.entity";
 import { Features } from "../entities/options/features.entity";
 import { ProductsOptions } from "../entities/options/products_options.entity";
 import type { VariantsSchema } from "../schemas/options/variants.schema";
+import type { Users } from "@/users/entities/users.entity";
+import { Ratings } from "@/polymorphism/entities/ratings.entity";
+import { Favorites } from "@/favorites/entities/favorites.entity";
 // products
 export const productsImagesQualities = [100, 500];
 
@@ -73,8 +76,20 @@ export function combinacionesVariants(
 /* obtener variantes y opciones para reutilizar */
 export async function getProductAll(
     empresa: Empresas,
-    product: ProductsNormal | ProductsServicio | ProductsRestaurant
+    product: ProductsNormal | ProductsServicio | ProductsRestaurant,
+    user: Users | null
 ) {
+    const [ratings] = await Promise.all([
+        Ratings.findAll({
+            where: {
+                ratingsable_id: product.id,
+                ratingsable_type: ProductKeys(
+                    empresa,
+                    product instanceof ProductsServicio
+                ),
+            },
+        }),
+    ]);
     if (product instanceof ProductsNormal) {
         const [options, variants] = await Promise.all([
             (product as ProductsNormal).$get("options") as Promise<
@@ -155,6 +170,96 @@ export async function getProductAll(
         product.dataValues.totalSold = totalSold;
     }
 
+    if (user) {
+        const product_id =
+            product instanceof ProductsNormal
+                ? "product_normal_id"
+                : product instanceof ProductsServicio
+                ? "product_servicio_id"
+                : "product_restaurant_id";
+        const [favorites, rating] = await Promise.all([
+            Favorites.findOne({
+                where: {
+                    [product_id]: product.id,
+                    user_id: user.id,
+                    empresa_id: empresa.id,
+                },
+            }),
+            Ratings.findOne({
+                where: {
+                    ratingsable_id: product.id,
+                    user_id: user.id,
+                    ratingsable_type: [
+                        ProductKeys(
+                            empresa,
+                            product instanceof ProductsServicio
+                        ),
+                    ],
+                    empresa_id: empresa.id,
+                },
+            }),
+        ]);
+        product.dataValues.user = {
+            isFavorite: !!favorites,
+            rating: rating?.rating,
+        };
+    }
+    const starsCount: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    let totalSum = 0;
+    for (const rating of ratings) {
+        const roundedRating = Math.floor(rating.rating);
+        starsCount[roundedRating] = (starsCount[roundedRating] || 0) + 1;
+        totalSum += rating.rating;
+    }
+
+    const stars5 = ratings.filter((rate) => rate.rating >= 5).length;
+    const stars4 = ratings.filter(
+        (rate) => rate.rating > 4 && rate.rating < 5
+    ).length;
+    const stars3 = ratings.filter(
+        (rate) => rate.rating > 3 && rate.rating < 4
+    ).length;
+    const stars2 = ratings.filter(
+        (rate) => rate.rating > 2 && rate.rating < 3
+    ).length;
+    const stars1 = ratings.filter(
+        (rate) => rate.rating > 1 && rate.rating < 2
+    ).length;
+
+    const rated: {
+        quantity: number;
+        ratings: { rating: number; percentage: number }[];
+        promedio: number;
+        stars5: number;
+        stars4: number;
+        stars3: number;
+        stars2: number;
+        stars1: number;
+    } = {
+        quantity: ratings.length,
+        promedio: totalSum / ratings.length,
+        ratings: Object.keys(starsCount)
+            .map((star) => ({
+                rating: Number.parseInt(star),
+                percentage:
+                    ratings.length > 0
+                        ? (starsCount[Number.parseInt(star)] / ratings.length) *
+                          100
+                        : 0,
+                length: ratings.filter(
+                    (rate) =>
+                        rate.rating >= Number.parseInt(star) &&
+                        rate.rating < Number.parseInt(star) + 1
+                ).length,
+            }))
+            .toReversed(),
+        stars5,
+        stars4,
+        stars3,
+        stars2,
+        stars1,
+    };
+    product.dataValues.rating = rated;
     return product;
 }
 export function printImagesProduct(empresa: Empresas) {

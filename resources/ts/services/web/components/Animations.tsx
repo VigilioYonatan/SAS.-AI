@@ -9,11 +9,11 @@ function holiday() {
 		case 2:
 			return "/images/settings/holidays/heart.webp";
 		// July
-		case 7:
+		case 11:
 			return "/images/settings/holidays/rosa.png";
 		// October
 		case 10:
-			return "/images/settings/holidays/happy-halloween-pumpkin-99e149.webp";
+			return "/images/settings/holidays/pumpin.webp";
 		// December
 		case 12:
 			return "/images/settings/holidays/christmas-snow.webp";
@@ -26,28 +26,20 @@ function Animations() {
 	const empresaStore = useEmpresastore();
 
 	useEffect(() => {
-		// si no tiene webstandard y está deshabilitado animaciones
 		if (!empresaStore.state!.enabledAnimation || !holiday()) return;
 
 		const body = document.body;
-		const quantitySnow = window.matchMedia("(max-width: 600px)").matches
-			? 10
-			: 20;
+		const footer = document.querySelector("footer"); // Seleccionamos el footer
+		const footerTop = footer?.offsetTop || window.innerHeight; // Obtenemos la posición superior del footer o la altura de la ventana si no hay footer
+
+		const quantitySnow = 50;
 		const widthSnowQuery = window.matchMedia("(max-width: 600px)").matches
 			? 20
 			: 30;
 
-		const offset = 300; // máximo 300 píxeles de espacio arriba y abajo
-
-		// Limitar el área para las animaciones
-		const viewportHeight = window.innerHeight;
-		const topLimit = offset;
-		const bottomLimit = viewportHeight - offset;
-
 		for (let i = 0; i < quantitySnow; i++) {
-			const leftNow = Math.floor(Math.random() * body.clientWidth);
-			const topNow =
-				Math.floor(Math.random() * (bottomLimit - topLimit)) + topLimit;
+			const leftNow = Math.floor(Math.random() * body.scrollWidth - 100);
+			const topNow = Math.floor(Math.random() * (footerTop - 100));
 			const widthNow = Math.floor(Math.random() * widthSnowQuery);
 			const timeSNow = Math.floor(Math.random() * 50 + 5);
 
@@ -68,26 +60,24 @@ function Animations() {
 			<style jsx>{`
                 .snow {
                     position: absolute;
-                    z-index: 99;
                     background-image: url(${holiday()});
-                    background-size: contain;
-                    background-repeat: no-repeat;
+                    background-size: cover;
                     animation: animationSnow 4s ease-in-out infinite;
+                    pointer-events: none;
+                    z-index: 9;
                 }
 
                 @keyframes animationSnow {
                     0% {
-                        transform: translate(0, 0);
+                        transform: translateY(-100px);
                         opacity: 0;
                     }
-
                     50% {
                         opacity: 1;
                     }
-
                     100% {
                         opacity: 0;
-                        transform: translate(100px, 50vh);
+                        transform: translateY(100vh);
                     }
                 }
             `}</style>

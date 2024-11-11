@@ -27,6 +27,7 @@ import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_norm
 import LoaderSubmit from "~/components/LoaderSubmit";
 import { MetodosDePago } from "@/web/components/product/ProductView";
 import { DIALCODE, typeFiscal } from "@/empresas/libs/helpers";
+import useAuthStore from "@/auth/stores/auth.store";
 
 interface CartProps {
     cart: { id: number; quantity: number; variant?: number }[] | null;
@@ -55,9 +56,10 @@ function CartPage({ cart, header }: CartProps) {
         citiesSelect,
         citiesIndexQuery,
     } = useOnCart();
+
     const empresa = useEmpresastore();
     const map_marker = ordersCartStoreDtoForm.watch("map_marker");
-
+    const authStore = useAuthStore();
     function onCartOrderStore(body: OrdersCartStoreDto) {
         if (!body.fullName) {
             ordersCartStoreDtoForm.setError(
@@ -130,7 +132,17 @@ function CartPage({ cart, header }: CartProps) {
             showCloseButton: true,
         }));
     }
-
+    const password = ordersCartStoreDtoForm.watch("password");
+    const repeatPassword = ordersCartStoreDtoForm.watch("repeat_password");
+    useEffect(() => {
+        if (password !== repeatPassword) {
+            ordersCartStoreDtoForm.setError("repeat_password", {
+                message: "Contraseña no similares",
+            });
+            return;
+        }
+        ordersCartStoreDtoForm.clearErrors("repeat_password");
+    }, [password, repeatPassword]);
     return (
         <WebLayout header={header}>
             <section class="max-w-6xl mx-auto  items-center justify-center  pb-20 pt-24 lg:pt-8 px-4">
@@ -154,7 +166,7 @@ function CartPage({ cart, header }: CartProps) {
                 )}
 
                 {cartStore.computed.showCartLength > 0 && (
-                    <div class="flex flex-col items-start w-full h-full gap-8 lg:flex-row  ">
+                    <div class="flex flex-col items-start w-full h-full gap-3 lg:flex-row  ">
                         <div class="flex flex-col w-full gap-4 bg-background-light dark:bg-background-dark  md:p-2 rounded-md">
                             <p class="text-center text-md font-bold dark:text-secondary-light pt-2">
                                 Hay {cartStore.computed.showCartLength}{" "}
@@ -273,7 +285,7 @@ function CartPage({ cart, header }: CartProps) {
                                                                             )}
                                                                     </span>
                                                                 ) : null}
-                                                                <span class="text-xs text-background-dark dark:text-paper-light font-semibold">
+                                                                <span class="text-xs text-gray-400 dark:text-paper-light font-semibold">
                                                                     {product.discount >
                                                                     0 ? (
                                                                         <>
@@ -427,7 +439,7 @@ function CartPage({ cart, header }: CartProps) {
                                 </div>
                             </div> */}
                         </div>
-                        <div class="flex h-max w-full min-w-80 flex-col gap-4 divide-y-[1px] dark:divide-zinc-700 bg-background-light dark:bg-background-dark shadow-sm lg:max-w-80 rounded-md ">
+                        <div class="flex h-max w-full min-w-[25rem] flex-col gap-4 divide-y-[1px] dark:divide-zinc-700 bg-background-light dark:bg-background-dark shadow-sm lg:max-w-80 rounded-md ">
                             <div class="flex flex-col px-4 pt-4 gap-2">
                                 {ordersCartStoreDtoForm.watch("city_id") ? (
                                     <>
@@ -454,7 +466,7 @@ function CartPage({ cart, header }: CartProps) {
                                 {storageEmpresa?.enabled_igv ? (
                                     <div class="flex items-center justify-between h-max">
                                         <span class="dark:text-white font-bold text-base lg:text-xl " />
-                                        <span class="font-bold dark:text-gray-400 text-gray-600 text-xs ">
+                                        <span class="font-bold dark:text-gray-400 text-gray-400 text-xs ">
                                             {storageEmpresa?.tipo_impuesto.toUpperCase()}{" "}
                                             Incluido
                                         </span>
@@ -500,6 +512,7 @@ function CartPage({ cart, header }: CartProps) {
                                                 pago a whatsapp.
                                             </span>
                                         }
+                                        disabled={!!authStore.state?.telephone}
                                     />
                                     {clientsShowQuery.isLoading ? (
                                         <LoaderSubmit color="var(--primary)" />
@@ -523,47 +536,54 @@ function CartPage({ cart, header }: CartProps) {
                                 ) : (
                                     <></>
                                 )}
-                                <Form.control.web
-                                    ico={<i class="fas fa-at" />}
-                                    name={"email" as keyof OrdersCartStoreDto}
-                                    title="Correo Electrónico"
-                                    type="email"
-                                />
-                                <Form.control.web
-                                    ico={<i class="fas fa-map-marker-alt" />}
-                                    name={"address" as keyof OrdersCartStoreDto}
-                                    title="Dirección"
-                                    disabled={
-                                        clientsShowQuery.isLoading || false
-                                    }
-                                />
-                                {empresa.state!.enable_map_marker ? (
-                                    <div class="w-full">
-                                        <Form.control.map
-                                            name={
-                                                "map_marker" as keyof OrdersCartStoreDto
+
+                                {storageEmpresa?.enabled_address ? (
+                                    <>
+                                        <Form.control.web
+                                            ico={
+                                                <i class="fas fa-map-marker-alt" />
                                             }
-                                            title="Ubicación para encontrarte mejor"
-                                            style={{
-                                                height: "200px",
-                                                width: "100%",
-                                                zIndex: 0,
-                                            }}
-                                            isLocal
+                                            name={
+                                                "address" as keyof OrdersCartStoreDto
+                                            }
+                                            title="Dirección"
                                             disabled={
                                                 clientsShowQuery.isLoading ||
                                                 false
                                             }
-                                            question="Para encontrarte mejor, por favor indícanos tu ubicación."
                                         />
-                                        <span class="text-[10px] dark:text-white">
-                                            Lng: {map_marker?.lng}, Lat:{" "}
-                                            {map_marker?.lat}
-                                        </span>
-                                    </div>
+                                        {empresa.state!.enable_map_marker ? (
+                                            <div class="w-full">
+                                                <Form.control.map
+                                                    name={
+                                                        "map_marker" as keyof OrdersCartStoreDto
+                                                    }
+                                                    title="Ubicación para encontrarte mejor"
+                                                    style={{
+                                                        height: "200px",
+                                                        width: "100%",
+                                                        zIndex: 0,
+                                                    }}
+                                                    isLocal
+                                                    disabled={
+                                                        clientsShowQuery.isLoading ||
+                                                        false
+                                                    }
+                                                    question="Para encontrarte mejor, por favor indícanos tu ubicación."
+                                                />
+                                                <span class="text-[10px] dark:text-white">
+                                                    Lng: {map_marker?.lng}, Lat:{" "}
+                                                    {map_marker?.lat}
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </>
                                 ) : (
                                     <></>
                                 )}
+
                                 <Form.control.web
                                     ico={
                                         <i class="fa-solid fa-location-plus" />
@@ -576,6 +596,7 @@ function CartPage({ cart, header }: CartProps) {
                                     question={
                                         "Lugar de referencia para ubicarte mejor."
                                     }
+                                    disabled={!!authStore.state?.reference}
                                 />
                                 {[DIALCODE.peru].includes(
                                     storageEmpresa!.dial_code as DIALCODE
@@ -674,17 +695,61 @@ function CartPage({ cart, header }: CartProps) {
                                         <></>
                                     )}
                                 </>
-                                <Form.control.web
-                                    name={
-                                        "fullName" as keyof OrdersCartStoreDto
-                                    }
-                                    title="Nombre Completo"
-                                    ico={<i class="fas fa-user" />}
-                                    placeholder=""
-                                    disabled={
-                                        clientsShowQuery.isLoading || false
-                                    }
-                                />
+                                <div class="grid grid-cols-2 gap-2 w-full">
+                                    <Form.control.web
+                                        name={
+                                            "fullName" as keyof OrdersCartStoreDto
+                                        }
+                                        title="Nombre Completo"
+                                        ico={<i class="fas fa-user" />}
+                                        placeholder=""
+                                        disabled={!!authStore.state?.email}
+                                    />
+                                    <Form.control.web
+                                        ico={<i class="fas fa-at" />}
+                                        name={
+                                            "email" as keyof OrdersCartStoreDto
+                                        }
+                                        title="Correo Electrónico"
+                                        type="email"
+                                        disabled={!!authStore.state?.email}
+                                    />
+                                </div>
+                                {!authStore.state ? (
+                                    <div class="grid grid-cols-2 gap-2 w-full">
+                                        <Form.control.web
+                                            name={
+                                                "password" as keyof OrdersCartStoreDto
+                                            }
+                                            title="Contraseña"
+                                            type="password"
+                                            ico={
+                                                <i class="fas fa-lock text-sm" />
+                                            }
+                                            question={
+                                                <span>
+                                                    Contraseña para registrarte
+                                                    a nuestra web.
+                                                </span>
+                                            }
+                                            placeholder=""
+                                        />
+                                        <Form.control.web
+                                            name={
+                                                "repeat_password" as keyof OrdersCartStoreDto
+                                            }
+                                            title="Confirmar contraseña"
+                                            type="password"
+                                            ico={
+                                                <i class="fas fa-lock text-sm" />
+                                            }
+                                            placeholder=""
+                                        />
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
+
                                 <span class="text-sm dark:text-white mt-3">
                                     Sus datos personales se utilizarán para
                                     procesar su pedido, respaldar su experiencia

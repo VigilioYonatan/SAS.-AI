@@ -21,12 +21,15 @@ import { Empresas } from "@/empresas/entities/empresas.entity";
 import { Variants } from "./options/variants.entity";
 import { ProductsOptions } from "./options/products_options.entity";
 import { Options } from "./options/options.entity";
+import { Comments } from "@/polymorphism/entities/comments.entity";
+import { Ratings } from "@/polymorphism/entities/ratings.entity";
+import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
 
 @DefaultScope(() => ({
 	include: [
 		{
 			model: Categories,
-			attributes: ["name", "slug","icon"] as (keyof CategoriesSchema)[],
+			attributes: ["name", "slug", "icon"] as (keyof CategoriesSchema)[],
 		},
 		{ model: Brands },
 	],
@@ -138,4 +141,25 @@ export class ProductsNormal
 
 	@HasMany(() => Variants)
 	variants: unknown[];
+
+	@HasMany(() => Comments, {
+		foreignKey: "commentsable_id",
+		constraints: false,
+		scope: { commentsable_type: "ProductsNormals" },
+	})
+	comments: unknown[];
+
+	@HasMany(() => Subcomments, {
+		foreignKey: "subcommentsable_id",
+		constraints: false,
+		scope: { commentsable_type: "ProductsNormals" },
+	})
+	subcomments: unknown[];
+
+	@HasMany(() => Ratings, {
+		foreignKey: "ratingsable_id",
+		constraints: false,
+		scope: { ratingsable_type: "ProductsNormals" },
+	})
+	ratings: unknown;
 }

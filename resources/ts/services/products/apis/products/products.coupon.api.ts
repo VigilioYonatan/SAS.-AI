@@ -1,30 +1,30 @@
 import { useMutation, type UseMutation } from "@vigilio/preact-fetching";
 
 export function productCouponApi(
-    isService: boolean
+	isService: boolean,
 ): UseMutation<
-    ProductCouponAPI,
-    { product_id: number; coupon: string },
-    ProductCouponErrorAPI
+	ProductCouponAPI,
+	{ product_id: number; coupon: string },
+	ProductCouponErrorAPI
 > {
-    return useMutation("/products", async (url, body) => {
-        const response = await fetch(
-            `/api${url}/${body.product_id}/coupon/${body.coupon}${
-                isService ? "?type=service" : ""
-            }`
-        );
-        const result = await response.json();
-        if (!result.success) throw result;
-        return result;
-    });
+	return useMutation("/products", async (url, body) => {
+		const response = await fetch(
+			`/api${url}/${body.product_id}/coupon/${body.coupon}${
+				isService ? "?type=service" : ""
+			}`,
+		);
+		const result = await response.json();
+		if (!result.success) throw result;
+		return result;
+	});
 }
 
 export interface ProductCouponAPI {
-    success: boolean;
-    discount: number;
+	success: boolean;
+	discount: number;
 }
 
 export interface ProductCouponErrorAPI {
-    success: boolean;
-    message: string;
+	success: boolean;
+	message: string;
 }

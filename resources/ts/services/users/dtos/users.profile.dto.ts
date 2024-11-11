@@ -17,6 +17,7 @@ export const usersProfileDto = pick(usersSchema, [
 	"enabledNotification",
 	"email",
 	"speciality",
+	"identification_number",
 ]);
 export const usersProfilePhotoDto = object({
 	photo: nullable(

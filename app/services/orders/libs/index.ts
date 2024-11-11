@@ -39,8 +39,9 @@ import { ProductsRestaurant } from "@/products/entities/products_restaurant.enti
 import wkhtmltopdf from "wkhtmltopdf";
 import { PassThrough } from "node:stream";
 import { NOW, TimePeru } from "~/libs/dayjs";
-import { Clients } from "@/users/entities/clients.entity";
 import type { PayMethods } from "../entities/pay_methods.entity";
+import { Users } from "@/users/entities/users.entity";
+import { ROLES } from "@/users/libs";
 
 export const ordersTransferenciaImage = [800];
 
@@ -703,21 +704,30 @@ export async function usersMostOrders(
     const orders = await Orders.unscoped().findAll({
         where: {
             status_order_id: STATUSORDER.entregado,
-            client_id: {
+            user_id: {
                 [Op.ne]: null,
             },
             empresa_id: empresa.id,
             ...date,
         },
-        attributes: ["id", "client_id"],
-        include: [Clients.unscoped()],
+        attributes: ["id", "user_id"],
+        include: [
+            {
+                model: Users,
+                attributes: ["id", "photo", "username", "slug"],
+                where: {
+                    role_id: ROLES.user,
+                },
+                as: "user",
+            },
+        ],
     });
 
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const groupedById: any = {};
     // Iterar sobre el array original
     for (const item of orders) {
-        const id = item.client_id!;
+        const id = item.user_id!;
         // Si el "id" ya existe en el objeto agrupado, incrementa la cantidad
         if (groupedById[id]) {
             groupedById[id].cantidad++;
@@ -726,7 +736,7 @@ export async function usersMostOrders(
             groupedById[id] = {
                 id: id,
                 cantidad: 1,
-                client: item.client,
+                client: item.user,
             };
         }
     }

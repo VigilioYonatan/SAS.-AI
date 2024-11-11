@@ -63,6 +63,18 @@ export const settingsSchema = objectAsync({
     isLogoImage: boolean(),
     isScrolling: boolean(),
     bg_color_footer: string(),
+    background_position: string([
+        custom(
+            (val) => ["center", "start", "end"].includes(val),
+            "position no válido"
+        ),
+    ]),
+    background_type: string([
+        custom(
+            (val) => ["first", "second"].includes(val),
+            "Tipo de Background no válido"
+        ),
+    ]),
     font_face: string([
         custom(
             (val) => ["Barlow", "Exo", "Poppins"].includes(val),
@@ -77,7 +89,20 @@ export const settingsSchema = objectAsync({
     position_header: boolean(),
     empresa_id: number(),
     border_title_type: string(),
-    type_icons: string(),
+    type_icons: string([
+        custom(
+            (val) =>
+                [
+                    "normal",
+                    "icons",
+                    "premium",
+                    "premium2",
+                    "premium3",
+                    "animation",
+                ].includes(val),
+            "Icono Pack no válido"
+        ),
+    ]),
     shows: object({
         map: boolean(),
         about: boolean(),
@@ -85,5 +110,11 @@ export const settingsSchema = objectAsync({
         brands: boolean(),
         android: boolean(),
     }),
+    type_map: string([
+        custom(
+            (val) => ["normal", "satelite", "secondary"].includes(val),
+            "Mapa no válido"
+        ),
+    ]),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;

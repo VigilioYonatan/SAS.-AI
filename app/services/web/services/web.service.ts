@@ -59,17 +59,17 @@ export class WebService {
         const result = await this.webApiService.about(empresa);
         return result;
     }
-    async shop(empresa: Empresas) {
-        const result = await this.webApiService.shop(empresa);
+    async shop(empresa: Empresas, user: Users) {
+        const result = await this.webApiService.shop(empresa, user);
         return result;
     }
 
-    async servicio(slug: string, empresa: Empresas) {
-        const result = await this.webApiService.servicio(slug, empresa);
+    async servicio(slug: string, empresa: Empresas, user: Users) {
+        const result = await this.webApiService.servicio(slug, empresa, user);
         return result;
     }
-    async product(slug: string, empresa: Empresas) {
-        const result = await this.webApiService.product(slug, empresa);
+    async product(slug: string, empresa: Empresas, user: Users) {
+        const result = await this.webApiService.product(slug, empresa, user);
         return result;
     }
 
@@ -119,7 +119,8 @@ export class WebService {
     }
     async fetchProductArrays(
         empresa: Empresas,
-        products: (ProductsNormal | ProductsServicio | ProductsRestaurant)[][]
+        products: (ProductsNormal | ProductsServicio | ProductsRestaurant)[][],
+        users: Users | null
     ) {
         const arraysLengths = products.map((arr) => arr.length);
         const allProducts = products.flat();
@@ -146,7 +147,9 @@ export class WebService {
             products: (ProductsNormal | ProductsServicio | ProductsRestaurant)[]
         ) {
             return await Promise.all(
-                products.map((product) => getProductAll(empresa, product))
+                products.map((product) =>
+                    getProductAll(empresa, product, users)
+                )
             );
         }
         return splitResults(allProductsMapped, arraysLengths);

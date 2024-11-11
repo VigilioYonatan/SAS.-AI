@@ -38,6 +38,7 @@ import {
     variantsUpdateDto,
     type VariantsUpdateDto,
 } from "../dtos/options/variants.update.dto";
+import type { Users } from "@/users/entities/users.entity";
 @Injectable()
 @Controller("/products")
 export class ProductsApiController {
@@ -66,13 +67,16 @@ export class ProductsApiController {
     async show(
         @Params("slug") slug: string,
         @Req("empresa") empresa: Empresas,
-        @Query("type") type: string
+        @Query("type") type: string,
+        @Req("user") user: Users
     ) {
         const result = await this.productsApiService.show(
             empresa,
             slug,
             type === "service",
-            true
+            true,
+            user,
+            false
         );
         return result;
     }

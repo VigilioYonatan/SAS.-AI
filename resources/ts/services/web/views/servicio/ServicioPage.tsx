@@ -173,7 +173,7 @@ function ServicioPage({ product, category_name, header }: ServicioPageProps) {
                         }
                     `}</style>
                     <div class="flex flex-col gap-2 md:w-5/12 mt-8 ">
-                        <div class="flex gap-2   dark:text-gray-300 text-xs font-semibold">
+                        <div class="flex gap-2   dark:text-gray-300 text-xs font-semibold text-gray-400">
                             {product.category?.icon ? (
                                 <div
                                     dangerouslySetInnerHTML={{

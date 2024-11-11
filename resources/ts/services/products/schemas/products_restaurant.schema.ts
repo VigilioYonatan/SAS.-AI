@@ -47,4 +47,18 @@ export type ProductsRestaurantSchema = Input<
 export type ProductsRestaurantSchemaFromServer = ProductsRestaurantSchema & {
 	category: CategoriesSchema;
 	totalSold: number;
+	rating: {
+		quantity: number;
+		promedio: number;
+		ratings: { rating: number; percentage: number; length: number }[];
+		stars5: number;
+		stars4: number;
+		stars3: number;
+		stars2: number;
+		stars1: number;
+	};
+	user: {
+		isFavorite: boolean;
+		rating: number;
+	} | null;
 };

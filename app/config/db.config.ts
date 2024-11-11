@@ -29,7 +29,6 @@ import { Options } from "@/products/entities/options/options.entity";
 import { Features } from "@/products/entities/options/features.entity";
 import { Variants } from "@/products/entities/options/variants.entity";
 import { VariantsFeatures } from "@/products/entities/options/variants_features.entity";
-import { Clients } from "@/users/entities/clients.entity";
 import { TipoEmpresa } from "@/empresas/entities/tipo_empresa.entity";
 import { TipoServicio } from "@/empresas/entities/tipo_servicio.entity";
 import { New } from "@/empresas/entities/new.entity";
@@ -53,6 +52,11 @@ import { CategoriesFinanzas } from "@/finanzas/entities/categories.entity";
 import { Finanzas } from "@/finanzas/entities/finanzas.entity";
 import { Citas } from "@/citas/entities/citas.entities";
 import { CitasSettings } from "@/citas/entities/citas_settings.entity";
+import { Favorites } from "@/favorites/entities/favorites.entity";
+import { Ratings } from "@/polymorphism/entities/ratings.entity";
+import { Comments } from "@/polymorphism/entities/comments.entity";
+import { Reactions } from "@/polymorphism/entities/reactions.entity";
+import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
 
 const sequelize = new Sequelize({
     dialect: "postgres",
@@ -99,7 +103,6 @@ sequelize.addModels([
     Features,
     Variants,
     VariantsFeatures,
-    Clients,
     TipoEmpresa,
     TipoServicio,
     New,
@@ -123,6 +126,11 @@ sequelize.addModels([
     Finanzas,
     Citas,
     CitasSettings,
+    Favorites,
+    Ratings,
+    Comments,
+    Reactions,
+    Subcomments,
 ]);
 
 export async function connectDB() {

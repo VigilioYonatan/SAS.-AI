@@ -50,6 +50,10 @@ import { Citas } from "@/citas/entities/citas.entities";
 import { Op } from "sequelize";
 import cache from "@vigilio/express-core/cache";
 import { initial } from "@/empresas/services/empresas.api.service";
+import { Favorites } from "@/favorites/entities/favorites.entity";
+
+export let hosts: string[] = [];
+
 export class Server {
     public readonly app: express.Application = express();
 
@@ -153,18 +157,30 @@ export class Server {
                           },
                       ],
                   };
-            const empresa = await Empresas.findOne({
-                ...where,
-                attributes: {
-                    exclude: [
-                        "about",
-                        "contacts",
-                        "groupWhatsapp",
-                        "credentials",
-                        "token",
-                    ] as (keyof EmpresasSchema)[],
-                },
-            });
+            let empresa: Empresas | null = JSON.parse(
+                cache.get(host!) ?? "null"
+            );
+
+            if (!empresa) {
+                empresa = await Empresas.findOne({
+                    ...where,
+                    attributes: {
+                        exclude: [
+                            "about",
+                            "contacts",
+                            "groupWhatsapp",
+                            "credentials",
+                            "token",
+                        ] as (keyof EmpresasSchema)[],
+                    },
+                });
+
+                empresa = empresa?.toJSON() as Empresas;
+                // agregar todos los hosts
+                hosts = [...hosts, host!];
+                const hours24 = 60 * 1000 * 60 * 24;
+                cache.set(host!, JSON.stringify(empresa), hours24);
+            }
 
             if (empresa) {
                 const certificado =
@@ -221,7 +237,7 @@ export class Server {
                 }
 
                 const info = {
-                    ...empresa?.toJSON(),
+                    ...empresa,
                     citas,
                     company: {
                         ruc: empresa.company?.ruc,
@@ -230,7 +246,7 @@ export class Server {
                         production: empresa.company?.production,
                     },
                     metodos_pago: {
-                        ...(empresa.metodos_pago as MetodosPago).toJSON(),
+                        ...(empresa.metodos_pago as MetodosPago),
                         transferencias: (empresa.metodos_pago as MetodosPago)
                             .transferencias,
                         paypal: {
@@ -273,6 +289,7 @@ export class Server {
                 const user = (req.user ?? null) as Users;
 
                 res.locals.$user = user;
+
                 (req as RequestVigilio).user = user;
                 const host = req.headers.host?.slice(4);
 
@@ -327,7 +344,17 @@ export class Server {
                             };
                         })
                     );
-
+                    if (user) {
+                        const [favorites] = await Promise.all([
+                            Favorites.count({
+                                where: {
+                                    user_id: user.id,
+                                    empresa_id: empresa.id,
+                                },
+                            }),
+                        ]);
+                        user.dataValues.products_favorites_length = favorites;
+                    }
                     const brands = await Brands.findAll({
                         where: {
                             empresa_id: empresa.id,

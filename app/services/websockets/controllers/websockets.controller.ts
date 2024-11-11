@@ -13,14 +13,19 @@ import { WebsocketsService } from "../services/websockets.service";
 import {
     chatAssistant,
     cloudeAi,
+    executeCronDate,
     featuresIA,
     isWhatsappTelegramIA,
+    updateTokensEmpresa,
 } from "@/bot/libs/ai";
 import { Injectable } from "@vigilio/express-core";
-import { openAis } from "@/empresas/services/empresas.api.service";
+import {
+    deleteHostCache,
+    openAis,
+} from "@/empresas/services/empresas.api.service";
 import cron from "node-cron";
 import { promptReplace } from "@/bot/libs";
-import type { Empresas } from "@/empresas/entities/empresas.entity";
+import { Empresas } from "@/empresas/entities/empresas.entity";
 export let chatAssistantWeb: Record<string, ["user" | "assistant", string][]> =
     {};
 export let usersInWeb: Record<string, string[]> = {};
@@ -64,30 +69,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         const completionText = completion.choices[0].message.content!;
 
         const [removeNote] = await featuresIA(empresa, completionText, false);
-
-        await empresa!.update({
-            inteligenceArtificial: {
-                ...empresa!.inteligenceArtificial,
-                usage: {
-                    ...latestEmpresaUsage,
-                    input_tokens:
-                        latestEmpresaUsage.input_tokens +
-                        completion.usage!.prompt_tokens,
-                    output_tokens:
-                        latestEmpresaUsage.output_tokens +
-                        completion.usage!.completion_tokens,
-                },
-            },
-            payments: {
-                ...empresa.payments,
-                tokens: {
-                    tokens:
-                        empresa.payments.tokens.tokens -
-                        completion.usage!.completion_tokens,
-                },
-            },
-        });
-
+        await updateTokensEmpresa(empresa, latestEmpresaUsage, completion);
         chatAssistantWeb[`${emp}:${token}`] = [
             ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
             ["assistant", removeNote],
@@ -133,6 +115,7 @@ export class WebsocketsController {
         const token = (socket.handshake.query?.["x-token"] as string) ?? "null";
         const empresa =
             (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+        // empresa -> id
         if (token === "null" || empresa === "null") return;
         socket.join(token);
         if (!(chatAssistantWeb[`${empresa}:${token}`] ?? []).length) {
@@ -192,7 +175,32 @@ export class WebsocketsController {
                 [empresa]: [...(usersInWeb[empresa] ?? []), token],
             }; // add user
         }
-
+        // si es gratis
+        if (usersInWeb[empresa].length > 30) {
+            const emp = await Empresas.unscoped().findOne({
+                where: {
+                    id: empresa,
+                    isFreeVPS: true,
+                },
+                attributes: ["enabled_catalogo", "isFreeVPS"],
+            });
+            if (emp?.isFreeVPS && emp?.enabled_catalogo) {
+                await Empresas.update(
+                    { enabled_catalogo: false },
+                    { where: { id: empresa, isFreeVPS: true } }
+                );
+                deleteHostCache();
+                const now = new Date();
+                now.setMinutes(now.getMinutes() + 15);
+                await executeCronDate(now, async () => {
+                    await Empresas.update(
+                        { enabled_catalogo: true },
+                        { where: { id: empresa, isFreeVPS: true } }
+                    );
+                    deleteHostCache();
+                });
+            }
+        }
         io.emit("users-count:index", usersInWeb[empresa].length);
     }
 
@@ -200,7 +208,7 @@ export class WebsocketsController {
     async orderStore(
         @Args()
         body: {
-            client_id: number;
+            user_id: number;
             order_code: string;
             total: number;
         },
@@ -279,6 +287,37 @@ export class WebsocketsController {
                 io.emit("floors_mesas:index", floors);
             }
         }
+    }
+    @Event("notifications:auth-register")
+    async authRegister(
+        @Args() body: { user_id: number; username: string; slug: string },
+        @IO() io: socket.Socket,
+        @Socket() socket: socket.Socket
+    ) {
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+
+        if (empresa === "null") return;
+        const result = await this.websocketsService.authRegister(empresa, body);
+        io.emit("notifications:store", result);
+    }
+    @Event("notifications:comment-store")
+    async commentStore(
+        @Args()
+        body: { product_id: number; user_id: number; isService: boolean },
+        @IO() io: socket.Socket,
+        @Socket() socket: socket.Socket
+    ) {
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+
+        if (empresa === "null") return;
+        const result = await this.websocketsService.commentStore(
+            empresa,
+            socket.handshake.query?.["x-user"] as string,
+            body
+        );
+        io.emit("notifications:store", result);
     }
 }
 // cada 24 horas

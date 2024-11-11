@@ -289,4 +289,11 @@ export function rgbToHex(rgbArray: string[]) {
         })
         .join("");
 }
+
+export function getColorPrimary() {
+    const primaryColor = getComputedStyle(document.documentElement)
+        .getPropertyValue("--primary")
+        .trim();
+    return primaryColor;
+}
 export default dayjs;

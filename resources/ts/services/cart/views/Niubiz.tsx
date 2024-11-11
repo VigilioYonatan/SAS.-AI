@@ -120,7 +120,7 @@ function Niubiz({
                         </p>
                         <div class="space-y-3">
                             {empresa.state!.metodos_pago.enable_efectivo ? (
-                                <label class="flex items-start cursor-pointer px-3 py-2 space-x-3 bg-white dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-gray-50 border-neutral-200/70">
+                                <label class="flex items-start cursor-pointer px-3 py-2 space-x-3 bg-background-light dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-paper-light border-neutral-200/70">
                                     <input
                                         type="radio"
                                         name="radio-group"
@@ -147,7 +147,7 @@ function Niubiz({
                             transferencias(
                                 empresa.state!.metodos_pago.transferencias
                             ) ? (
-                                <label class="flex items-start cursor-pointer px-3 py-2 space-x-3 bg-white dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-gray-50 border-neutral-200/70 relative">
+                                <label class="flex items-start cursor-pointer px-3 py-2 space-x-3 bg-background-light dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-paper-light border-neutral-200/70 relative">
                                     <input
                                         type="radio"
                                         name="radio-group"
@@ -208,7 +208,7 @@ function Niubiz({
                             {empresa.state!.metodos_pago.mercado_pago.enabled &&
                             storageEmpresa?.dial_code !== DIALCODE.españa ? (
                                 <>
-                                    <label class="flex items-start cursor-pointer px-3 py-2 space-x-3 bg-white dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-gray-50 border-neutral-200/70 relative">
+                                    <label class="flex items-start cursor-pointer px-3 py-2 space-x-3 bg-background-light dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-paper-light border-neutral-200/70 relative">
                                         <input
                                             type="radio"
                                             name="radio-group"
@@ -264,7 +264,7 @@ function Niubiz({
                             {empresa.state!.metodos_pago.stripe.enabled &&
                             storageEmpresa?.dial_code === DIALCODE.españa ? (
                                 <>
-                                    <label class="flex items-start cursor-pointer px-3 py-2 space-x-3 bg-white dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-gray-50 border-neutral-200/70 relative">
+                                    <label class="flex items-start cursor-pointer px-3 py-2 space-x-3 bg-background-light dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-paper-light border-neutral-200/70 relative">
                                         <input
                                             type="radio"
                                             name="radio-group"
@@ -373,7 +373,7 @@ function Niubiz({
                             ) : null}
 
                             {empresa.state!.metodos_pago.paypal.enabled ? (
-                                <label class="flex items-start px-3 py-4  space-x-3 bg-white dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-gray-50 border-neutral-200/70 cursor-pointer relative">
+                                <label class="flex items-start px-3 py-4  space-x-3 bg-background-light dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-paper-light border-neutral-200/70 cursor-pointer relative">
                                     <input
                                         type="radio"
                                         name="radio-group"
@@ -413,7 +413,7 @@ function Niubiz({
                                 <>
                                     {empresa.state!.metodos_pago.qrYape ||
                                     empresa.state!.metodos_pago.qrPlin ? (
-                                        <label class="flex items-start px-3 py-4  space-x-3 bg-white dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-gray-50 border-neutral-200/70 cursor-pointer relative">
+                                        <label class="flex items-start px-3 py-4  space-x-3 bg-background-light dark:bg-background-dark dark:text-white dark:border-paper-dark border rounded-md shadow-sm hover:bg-paper-light border-neutral-200/70 cursor-pointer relative">
                                             <input
                                                 type="radio"
                                                 name="radio-group"
@@ -474,7 +474,7 @@ function Niubiz({
                 {step === "payment" ? (
                     <div class="relative">
                         <button
-                            class="absolute top-0 left-0 bg-zinc-200 rounded-lg px-2 py-1"
+                            class="absolute top-0 left-0 bg-primary rounded-lg px-2 py-1"
                             type="button"
                             onClick={() => setStep("method")}
                             aria-label="Volver atrás"

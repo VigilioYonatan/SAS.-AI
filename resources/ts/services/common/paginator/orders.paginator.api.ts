@@ -145,7 +145,7 @@ export function ordersUserPaginatorApi(
 				data.append(key, value as string);
 			}
 
-			const response = await fetch(`/${url}?${data}`);
+			const response = await fetch(`/api${url}?${data}`);
 			const result = await response.json();
 			if (!result.success) throw result;
 			return result;

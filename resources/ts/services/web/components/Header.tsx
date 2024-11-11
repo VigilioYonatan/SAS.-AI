@@ -10,14 +10,16 @@ import useThemeStore from "~/stores/theme.store";
 import useAuthStore from "@/auth/stores/auth.store";
 import { useSignal } from "@preact/signals";
 import WebDropdown from "~/components/dropdown/WebDropdown";
-import { printFileUser } from "@/users/libs/helpers";
+import { printFileUser, ROLES } from "@/users/libs/helpers";
 import LogoImage from "~/components/LogoImage";
 import useCartStore from "@/cart/stores/cart.store";
 import { formatMoney } from "@/cart/libs/helpers";
 import CartAside from "@/cart/views/CartAside";
 import SearchProducts from "@/products/views/ProductsSearch";
-import { printFileWithDimension } from "~/libs/upload";
 import enviroments from "~/config";
+import useFavoriteStore from "@/favorites/stores/favorites.store";
+import Hamburguer from "./Hamburguer";
+import ProductsSearch2 from "@/products/views/ProductSearch2";
 
 interface HeaderProps {
     header: HeaderType;
@@ -30,25 +32,36 @@ function Header({ header }: HeaderProps) {
     const headerDropdown = useDropdown();
     const authStore = useAuthStore();
     const cartStore = useCartStore();
+    const favoriteStore = useFavoriteStore();
 
     return (
         <>
             <div class="     text-sm px-2  dark:bg-background-dark hidden lg:block bg-background-light">
                 <style jsx>{`
                     .vigilio-modal .modal {
-                        ${isColorLight(storageEmpresa!.setting.bg_color_paper)
+                        ${themeStore.state === "dark"
+                            ? "color: #FFFFFF !important"
+                            : isColorLight(
+                                  storageEmpresa!.setting.bg_color_paper
+                              )
                             ? "color: #000000 !important"
                             : "color: #FFFFFF !important"};
                     }
                     .bg-background-light {
-                        ${isColorLight(
-                            storageEmpresa!.setting.bg_color_background
-                        )
+                        ${themeStore.state === "dark"
+                            ? "color: #FFFFFF !important"
+                            : isColorLight(
+                                  storageEmpresa!.setting.bg_color_background
+                              )
                             ? "color: #000000 !important"
                             : "color: #FFFFFF !important"};
                     }
                     .bg-paper-light {
-                        ${isColorLight(storageEmpresa!.setting.bg_color_paper)
+                        ${themeStore.state === "dark"
+                            ? "color: #FFFFFF !important"
+                            : isColorLight(
+                                  storageEmpresa!.setting.bg_color_paper
+                              )
                             ? "color: #000000 !important"
                             : "color: #FFFFFF !important"};
                     }
@@ -59,7 +72,10 @@ function Header({ header }: HeaderProps) {
                             Teléfono:{" "}
                             <span class="text-primary font-semibold">
                                 (+{empresaStore.state!.dial_code}){" "}
-                                {empresaStore.state!.telephoneFirst}
+                                {empresaStore.state!.telephoneFirst.replace(
+                                    /(\d{3})(\d{3})(\d{3})/,
+                                    "$1 $2 $3"
+                                )}
                             </span>
                         </span>
                         {empresaStore.state!.email ? (
@@ -75,7 +91,7 @@ function Header({ header }: HeaderProps) {
                         <div class="w-[1px] bg-gray-600 h-[50%] mx-2" />
                         {authStore.state ? (
                             <WebDropdown
-                                className="-bottom-30 z-[100]"
+                                className="-bottom-30 z-[100] p-0"
                                 triggerChildren={({ trigger }) => (
                                     <button
                                         class="flex gap-2 items-center"
@@ -100,18 +116,52 @@ function Header({ header }: HeaderProps) {
                                 )}
                             >
                                 <div class="flex flex-col dark:bg-background-dark">
+                                    {authStore.state.role_id !== ROLES.user ? (
+                                        <a
+                                            href={"/admin"}
+                                            class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2 font-semibold flex justify-between gap-2 items-center"
+                                        >
+                                            <i class="fas fa-tachometer-alt w-[20px]" />{" "}
+                                            <span class="text-center w-full">
+                                                Dashboard
+                                            </span>
+                                        </a>
+                                    ) : null}
                                     <a
-                                        href={"/admin"}
-                                        class="dark:text-white  py-2 text-center font-semibold"
+                                        href={"/auth/profile"}
+                                        class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2 font-semibold   flex justify-between gap-2 items-center"
                                     >
-                                        <i class="fas fa-tachometer-alt" /> Ir
-                                        al administrador
+                                        <i class="fas fa-user w-[20px]" />
+                                        <span class="text-center w-full">
+                                            Mi perfil
+                                        </span>
                                     </a>
                                     <a
-                                        class="bg-danger text-center font-semibold py-2 text-white"
+                                        href={"/auth/profile?type=favorites"}
+                                        class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2  font-semibold flex justify-between gap-2 items-center"
+                                    >
+                                        <i class="fas fa-heart w-[20px]" />{" "}
+                                        <span class="text-center w-full">
+                                            Favoritos
+                                        </span>
+                                    </a>
+                                    <a
+                                        href={"/auth/profile?type=orders"}
+                                        class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2  font-semibold  flex justify-between gap-2 items-center"
+                                    >
+                                        <i class="fas fa-box w-[20px]" />{" "}
+                                        <span class="text-center w-full">
+                                            Mis pedidos
+                                        </span>
+                                    </a>
+                                    <a
+                                        class="bg-danger  font-semibold py-2 text-white flex justify-between  px-4"
                                         href={"/auth/logout"}
                                     >
-                                        <i class="fas fa-sign-out-alt" /> Salir
+                                        <i class="fas fa-sign-out-alt w-[20px] " />{" "}
+                                        <span class="text-center w-full">
+                                            Salir
+                                        </span>
                                     </a>
                                 </div>
                             </WebDropdown>
@@ -139,7 +189,7 @@ function Header({ header }: HeaderProps) {
                         >
                             Inicio
                         </a>
-                        <div class="relative">
+                        {/* <div class="relative">
                             <a
                                 href="/shop"
                                 type="button"
@@ -297,7 +347,7 @@ function Header({ header }: HeaderProps) {
                                     </button>
                                 ) : null}
                             </div>
-                        </div>
+                        </div> */}
                         {storageEmpresa?.setting.shows.about ? (
                             <a
                                 class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
@@ -396,7 +446,15 @@ function Header({ header }: HeaderProps) {
                     </nav>
                     <div class="flex items-center gap-3">
                         {header.totalProducts > 0 ? <SearchProducts /> : null}
-
+                        <a
+                            href="/auth/profile?type=favorites"
+                            class="flex gap-2 items-center justify-center text-md dark:text-white relative"
+                        >
+                            <i class="far fa-heart text-lg" />{" "}
+                            <span class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs bg-red-500 -right-3 -top-2 flex justify-center items-center text-white">
+                                {favoriteStore.state}
+                            </span>
+                        </a>
                         <div class="flex gap-3 items-center">
                             {storageEmpresa?.setting.isDark ? (
                                 <button
@@ -507,6 +565,26 @@ function Header({ header }: HeaderProps) {
                         </div>
                     ) : null}
                 </div>
+                <div class="bg-gray-600 h-[0.1px] w-full" />
+                <div class="hidden gap-6 items-center py-2 lg:flex max-w-6xl mx-auto">
+                    <div class="relative">
+                        <button
+                            class="flex gap-4 text-sm tracking-wider bg-paper-light dark:bg-paper-dark dark:!text-white items-center  px-4 py-2 w-[250px] bg-hamburger-linear font-bold text-white [&>div>i]:dark:!text-white"
+                            type="button"
+                            aria-label="categories"
+                            onClick={() => {
+                                isOpen.value = !isOpen.value;
+                            }}
+                        >
+                            <Hamburguer isOpen={false} />
+                            Shop
+                        </button>
+                        <HeaderAside header={header} isOpen={isOpen.value} />
+                    </div>
+                    <div class="flex gap-6 items-center w-full relative">
+                        <ProductsSearch2 />
+                    </div>
+                </div>
             </header>
             {/* acá ira el header personalizado */}
             <HeaderMobile
@@ -522,5 +600,34 @@ function Header({ header }: HeaderProps) {
         </>
     );
 }
-
+// this ia a second header aside
+interface HeaderAsideProps {
+    header: HeaderType;
+    isOpen: boolean;
+}
+function HeaderAside({ header, isOpen }: HeaderAsideProps) {
+    return (
+        <div
+            class={`flex absolute right-0 dark:bg-paper-dark dark:text-white z-[99] delay-custom-1 left-0 flex-col ${
+                isOpen ? "max-h-[450px]" : "max-h-[0px] overflow-hidden"
+            } `}
+        >
+            {header.categories.map((category) => {
+                const dropdown = useDropdown();
+                return (
+                    <div
+                        ref={dropdown.dropdown}
+                        key={category.id}
+                        type="button"
+                        class="bg-background-light dark:bg-paper-dark  dark:border-gray-600 py-2 font-semibold  px-5 w-full border-gray-1 flex justify-between items-center border-b border-gray-100 dark:!text-white hover:text-primary dark:hover:!text-primary"
+                    >
+                        <a class="w-full" href={`/shop/${category.slug}`}>
+                            {category.name}
+                        </a>
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
 export default Header;

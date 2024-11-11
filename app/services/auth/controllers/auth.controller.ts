@@ -9,6 +9,7 @@ import {
 import type { RequestVigilio } from "~/config/types";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { BASE_URL } from "@/empresas/libs";
+import type { Users } from "@/users/entities/users.entity";
 const CLIENT_ID = "1957086741385823";
 const CLIENT_SECRET = "94dff236a11b006bc4b215bf5c2d4fa6";
 @Injectable()
@@ -53,6 +54,18 @@ export class AuthController {
             res.status(500).send("Error al obtener el token de acceso.");
         }
     }
+    @Get("/profile", [authAuthenticatedMiddleware])
+    async profile(@Res() res: Response, @Req("user") user: Users) {
+        return res.render("auth/profile", { user });
+    }
+
+    @Get("/register", [authNoAuthenticatedMiddleware])
+    async register(@Res() res: Response) {
+        return res.render("auth/register", {
+            title: "Registrarse",
+            description: "Unete a nosotros, Registraste ahora.",
+        });
+    }
 
     @Get("/login", [authNoAuthenticatedMiddleware])
     async login(@Res() res: Response) {
@@ -81,5 +94,15 @@ export class AuthController {
         const empresa = (req as RequestVigilio).empresa;
         const result = await this.authService.forgotPassword(empresa, token);
         return res.render("auth/forgot-password", result);
+    }
+
+    @Get("/confirmed-account")
+    async confirmedAccount(
+        @Res() res: Response,
+        @Query("token") token: string | null,
+        @Req("empresa") empresa: Empresas
+    ) {
+        const result = await this.authService.confirmedAccount(empresa, token);
+        return res.render("auth/confirmed-account", result);
     }
 }
