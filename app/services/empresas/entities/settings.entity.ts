@@ -100,6 +100,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     @Column({
         type: DataType.STRING(60),
     })
+    header_type: "normal" | "search" | "transparent";
+
+    @Column({
+        type: DataType.STRING(60),
+    })
     background_type: "first" | "second";
 
     @Column({

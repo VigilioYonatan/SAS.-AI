@@ -118,7 +118,11 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
             class="mb-4 mt-[5.5rem] lg:mt-0"
         >
             <div
-                class={`flex flex-col lg:flex-row relative lg:h-[550px] h-auto ${
+                class={`flex flex-col lg:flex-row relative ${
+                    storageEmpresa?.setting.header_type === "transparent"
+                        ? " lg:h-[650px]"
+                        : " lg:h-[550px]"
+                } h-auto ${
                     storageEmpresa?.setting.background_type === "second"
                         ? "max-w-6xl mx-auto"
                         : ""
@@ -127,7 +131,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                 <AdminEdit uri="/admin/background" />
                 <div class="w-full">
                     <Slider
-                        className="w-full "
+                        className="w-full h-full"
                         {...{
                             dots: true,
                             infinite: true,
@@ -146,7 +150,12 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                 key={background.id}
                             >
                                 <div
-                                    class=" bg-cover bg-center  h-[550px] w-full  delay-custom-1  "
+                                    class={`bg-cover bg-center  ${
+                                        storageEmpresa?.setting.header_type ===
+                                        "transparent"
+                                            ? "h-[650px]"
+                                            : "h-[550px]"
+                                    }  w-full  delay-custom-1  `}
                                     style={{
                                         backgroundImage: `url('${
                                             printFileWithDimension(

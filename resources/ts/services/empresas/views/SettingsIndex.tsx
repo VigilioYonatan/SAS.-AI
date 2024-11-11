@@ -104,6 +104,7 @@ function SettingsIndex() {
         const bg_color_responsive = settingsUpdateform.watch(
             "bg_color_responsive"
         );
+        const header_type = settingsUpdateform.watch("header_type");
         const border_title_type = settingsUpdateform.watch("border_title_type");
         const font_face = settingsUpdateform.watch("font_face");
         const type_icons = settingsUpdateform.watch("type_icons");
@@ -1273,6 +1274,66 @@ function SettingsIndex() {
                             </div>
                         </div>
                         <div class="flex flex-col">
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Tipo de Header
+                                </span>
+                                <div class="flex gap-2 flex-wrap">
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex gap-1">
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    header_type === "normal"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "header_type",
+                                                        "normal"
+                                                    );
+                                                }}
+                                            >
+                                                Normal
+                                            </button>
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    header_type === "search"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "header_type",
+                                                        "search"
+                                                    );
+                                                }}
+                                            >
+                                                Search
+                                            </button>
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    header_type ===
+                                                    "transparent"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "header_type",
+                                                        "transparent"
+                                                    );
+                                                }}
+                                            >
+                                                Transparent
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div>
                                 <span class="text-xs dark:text-white font-semibold">
                                     Tipo de Background

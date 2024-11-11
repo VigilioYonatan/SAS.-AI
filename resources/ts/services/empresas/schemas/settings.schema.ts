@@ -118,6 +118,12 @@ export const settingsSchema = object({
             "Mapa no válido"
         ),
     ]),
+    header_type: string([
+        custom(
+            (val) => ["normal", "search", "transparent"].includes(val),
+            "Tipo de header no válido"
+        ),
+    ]),
     // position_map: string([
     //     custom(
     //         (val) => ["start", "end"].includes(val),

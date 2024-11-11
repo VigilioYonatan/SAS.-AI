@@ -326,6 +326,7 @@ export class EmpresasApiService {
                         android: true,
                     },
                     type_map: "satelite",
+                    header_type: "normal",
                 } as Omit<SettingsSchema, "id" | "empresa_id">),
                 await empresa.$create("citasSetting", {
                     max_days: 14,
