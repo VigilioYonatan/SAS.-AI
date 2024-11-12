@@ -2,7 +2,7 @@ import useDropdown from "~/hooks/useDropdown";
 import Aside from "./Aside";
 import type { HeaderType } from "./WebLayout";
 import HeaderMobile from "./HeaderMobile";
-import { isActive, isColorLight } from "~/libs/helpers";
+import { delay, isActive, isColorLight } from "~/libs/helpers";
 import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
@@ -38,19 +38,30 @@ function Header({ header }: HeaderProps) {
     const isTop = useSignal(true);
 
     useEffect(() => {
+        async function handleScroll() {
+            // Si la posición del scroll es 0, estamos en el top de la página
+            if (window.scrollY < 100) {
+                await delay(0.1);
+                isTop.value = true;
+            } else {
+                await delay(0.1);
+
+                isTop.value = false;
+            }
+        }
         if (
-            storageEmpresa?.setting.header_type === "transparent" &&
+            storageEmpresa!.setting.header_type === "transparent" &&
             isActive("/", false)
         ) {
-            function handleScroll() {
-                // Si la posición del scroll es 0, estamos en el top de la página
-                if (window.scrollY < 100) {
-                    isTop.value = true;
-                } else {
-                    isTop.value = false;
-                }
-            }
+            // Agregar el listener para el evento scroll
+            window.addEventListener("scroll", handleScroll);
 
+            // Limpiar el listener cuando el componente se desmonte
+            return () => {
+                window.removeEventListener("scroll", handleScroll);
+            };
+        }
+        if (storageEmpresa!.setting.header_type === "search") {
             // Agregar el listener para el evento scroll
             window.addEventListener("scroll", handleScroll);
 
@@ -89,131 +100,140 @@ function Header({ header }: HeaderProps) {
                 }
             `}</style>
             {storageEmpresa?.setting.header_type !== "transparent" ? (
-                <div class="     text-sm px-2  dark:bg-background-dark hidden lg:block bg-background-light">
-                    <div class="max-w-6xl  mx-auto justify-between py-2 flex font-semibold">
-                        <div class="flex gap-3 items-center font-semibold">
-                            <span class="dark:text-white">
-                                Teléfono:{" "}
-                                <span class="text-primary font-semibold">
-                                    (+{empresaStore.state!.dial_code}){" "}
-                                    {empresaStore.state!.telephoneFirst.replace(
-                                        /(\d{3})(\d{3})(\d{3})/,
-                                        "$1 $2 $3"
-                                    )}
-                                </span>
-                            </span>
-                            {empresaStore.state!.email ? (
+                <>
+                    <div class="     text-sm px-2  dark:bg-background-dark hidden lg:block bg-background-light">
+                        <div class="max-w-6xl  mx-auto justify-between py-2 flex font-semibold">
+                            <div class="flex gap-3 items-center font-semibold">
                                 <span class="dark:text-white">
-                                    Correo Electrónico:
-                                    <span class="text-primary font-semibold ml-2">
-                                        {empresaStore.state!.email}
+                                    Teléfono:{" "}
+                                    <span class="text-primary font-semibold">
+                                        (+{empresaStore.state!.dial_code}){" "}
+                                        {empresaStore.state!.telephoneFirst.replace(
+                                            /(\d{3})(\d{3})(\d{3})/,
+                                            "$1 $2 $3"
+                                        )}
                                     </span>
                                 </span>
-                            ) : null}
-                        </div>
-                        <div class="flex items-center gap-2  dark:text-white ">
-                            <div class="w-[1px] bg-gray-600 h-[50%] mx-2" />
-                            {authStore.state ? (
-                                <WebDropdown
-                                    className="-bottom-30 z-[100] p-0"
-                                    triggerChildren={({ trigger }) => (
-                                        <button
-                                            class="flex gap-2 items-center"
-                                            type="button"
-                                            ref={trigger}
-                                        >
-                                            <img
-                                                src={
-                                                    printFileUser(
-                                                        authStore.state!.photo
-                                                    )[0]
-                                                }
-                                                width={30}
-                                                height={30}
-                                                class="rounded-full"
-                                                alt={authStore.state!.username}
-                                            />
-                                            <span class="font-semibold dark:text-white">
-                                                {authStore.state!.username}
-                                            </span>
-                                        </button>
-                                    )}
-                                >
-                                    <div class="flex flex-col dark:bg-background-dark">
-                                        {authStore.state.role_id !==
-                                        ROLES.user ? (
-                                            <a
-                                                href={"/admin"}
-                                                class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2 font-semibold flex justify-between gap-2 items-center"
+                                {empresaStore.state!.email ? (
+                                    <span class="dark:text-white">
+                                        Correo Electrónico:
+                                        <span class="text-primary font-semibold ml-2">
+                                            {empresaStore.state!.email}
+                                        </span>
+                                    </span>
+                                ) : null}
+                            </div>
+                            <div class="flex items-center gap-2  dark:text-white ">
+                                <div class="w-[1px] bg-gray-600 h-[50%] mx-2" />
+                                {authStore.state ? (
+                                    <WebDropdown
+                                        className="-bottom-30 z-[100] p-0"
+                                        triggerChildren={({ trigger }) => (
+                                            <button
+                                                class="flex gap-2 items-center"
+                                                type="button"
+                                                ref={trigger}
                                             >
-                                                <i class="fas fa-tachometer-alt w-[20px]" />{" "}
+                                                <img
+                                                    src={
+                                                        printFileUser(
+                                                            authStore.state!
+                                                                .photo
+                                                        )[0]
+                                                    }
+                                                    width={30}
+                                                    height={30}
+                                                    class="rounded-full"
+                                                    alt={
+                                                        authStore.state!
+                                                            .username
+                                                    }
+                                                />
+                                                <span class="font-semibold dark:text-white">
+                                                    {authStore.state!.username}
+                                                </span>
+                                            </button>
+                                        )}
+                                    >
+                                        <div class="flex flex-col dark:bg-background-dark">
+                                            {authStore.state.role_id !==
+                                            ROLES.user ? (
+                                                <a
+                                                    href={"/admin"}
+                                                    class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2 font-semibold flex justify-between gap-2 items-center"
+                                                >
+                                                    <i class="fas fa-tachometer-alt w-[20px]" />{" "}
+                                                    <span class="text-center w-full">
+                                                        Dashboard
+                                                    </span>
+                                                </a>
+                                            ) : null}
+                                            <a
+                                                href={"/auth/profile"}
+                                                class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2 font-semibold   flex justify-between gap-2 items-center"
+                                            >
+                                                <i class="fas fa-user w-[20px]" />
                                                 <span class="text-center w-full">
-                                                    Dashboard
+                                                    Mi perfil
                                                 </span>
                                             </a>
-                                        ) : null}
-                                        <a
-                                            href={"/auth/profile"}
-                                            class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2 font-semibold   flex justify-between gap-2 items-center"
-                                        >
-                                            <i class="fas fa-user w-[20px]" />
-                                            <span class="text-center w-full">
-                                                Mi perfil
-                                            </span>
-                                        </a>
-                                        <a
-                                            href={
-                                                "/auth/profile?type=favorites"
-                                            }
-                                            class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2  font-semibold flex justify-between gap-2 items-center"
-                                        >
-                                            <i class="fas fa-heart w-[20px]" />{" "}
-                                            <span class="text-center w-full">
-                                                Favoritos
-                                            </span>
-                                        </a>
-                                        <a
-                                            href={"/auth/profile?type=orders"}
-                                            class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2  font-semibold  flex justify-between gap-2 items-center"
-                                        >
-                                            <i class="fas fa-box w-[20px]" />{" "}
-                                            <span class="text-center w-full">
-                                                Mis pedidos
-                                            </span>
-                                        </a>
-                                        <a
-                                            class="bg-danger  font-semibold py-2 text-white flex justify-between  px-4"
-                                            href={"/auth/logout"}
-                                        >
-                                            <i class="fas fa-sign-out-alt w-[20px] " />{" "}
-                                            <span class="text-center w-full">
-                                                Salir
-                                            </span>
-                                        </a>
-                                    </div>
-                                </WebDropdown>
-                            ) : (
-                                <a href="/auth/login">
-                                    <i class="far fa-user mr-2" />
-                                    <span>Iniciar sesión</span>
-                                </a>
-                            )}
+                                            <a
+                                                href={
+                                                    "/auth/profile?type=favorites"
+                                                }
+                                                class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2  font-semibold flex justify-between gap-2 items-center"
+                                            >
+                                                <i class="fas fa-heart w-[20px]" />{" "}
+                                                <span class="text-center w-full">
+                                                    Favoritos
+                                                </span>
+                                            </a>
+                                            <a
+                                                href={
+                                                    "/auth/profile?type=orders"
+                                                }
+                                                class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2  font-semibold  flex justify-between gap-2 items-center"
+                                            >
+                                                <i class="fas fa-box w-[20px]" />{" "}
+                                                <span class="text-center w-full">
+                                                    Mis pedidos
+                                                </span>
+                                            </a>
+                                            <a
+                                                class="bg-danger  font-semibold py-2 text-white flex justify-between  px-4"
+                                                href={"/auth/logout"}
+                                            >
+                                                <i class="fas fa-sign-out-alt w-[20px] " />{" "}
+                                                <span class="text-center w-full">
+                                                    Salir
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </WebDropdown>
+                                ) : (
+                                    <a href="/auth/login">
+                                        <i class="far fa-user mr-2" />
+                                        <span>Iniciar sesión</span>
+                                    </a>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <div class="h-[1px] w-full bg-gray-300 dark:bg-gray-500" />
+                </>
             ) : null}
 
             <header
                 class={`  hidden lg:block z-[99]   top-0 right-0 left-0 ${
                     storageEmpresa?.setting.header_type !== "transparent"
-                        ? "bg-background-light  sticky shadow"
+                        ? "bg-background-light dark:bg-background-dark sticky shadow"
                         : `  ${
                               !isTop.value
-                                  ? "sticky bg-background-light"
+                                  ? "sticky bg-background-light dark:bg-background-dark"
                                   : ` ${
                                         isActive("/", false)
                                             ? "absolute"
-                                            : "sticky bg-background-light"
+                                            : "sticky bg-background-light dark:bg-background-dark"
                                     }`
                           }`
                 }`}
@@ -516,7 +536,7 @@ function Header({ header }: HeaderProps) {
                         class={`flex items-center gap-3 ${
                             storageEmpresa?.setting.header_type ===
                                 "transparent" && isActive("/", false)
-                                ? `${isTop.value ? "text-white" : ""}`
+                                ? `${isTop.value ? "text-white " : ""}`
                                 : ""
                         }`}
                     >
@@ -525,7 +545,7 @@ function Header({ header }: HeaderProps) {
                             href="/auth/profile?type=favorites"
                             class="flex gap-2 items-center justify-center text-md dark:text-white relative"
                         >
-                            <i class="far fa-heart text-lg" />{" "}
+                            <i class="fas fa-heart text-lg" />{" "}
                             <span class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs bg-red-500 -right-3 -top-2 flex justify-center items-center text-white">
                                 {favoriteStore.state}
                             </span>
@@ -640,7 +660,8 @@ function Header({ header }: HeaderProps) {
                         </div>
                     ) : null}
                 </div>
-                {storageEmpresa?.setting.header_type === "search" ? (
+                {storageEmpresa?.setting.header_type === "search" &&
+                isTop.value ? (
                     <div class="hidden gap-6 items-center py-2 lg:flex max-w-6xl mx-auto">
                         <div class="relative">
                             <button

@@ -16,7 +16,7 @@ function FindSection() {
             data-aos={`${
                 storageEmpresa?.setting.isScrolling ? "fade-up" : ""
             } `}
-            class="  h-[400px] md:h-[700px] mx-4 md:mx-0  px-2  rounded-md  mb-4 flex flex-col gap-4"
+            class="  h-[400px] md:h-[600px] mx-4 md:mx-0  px-2  rounded-md  mb-4 flex flex-col gap-4"
         >
             <TitleSection>Encuéntranos</TitleSection>
             <div class="w-full relative h-full">

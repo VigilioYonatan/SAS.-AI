@@ -31,7 +31,9 @@ function ProductsSectionRandom({
                     class={`animation-brightness bg-background-light dark:bg-background-dark p-4 md:p-6 group overflow-hidden shadow ${
                         enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                     } `}
-                    style={{ "--brightness-delay": "6s" }}
+                    style={{
+                        "--brightness-delay": "6s",
+                    }}
                 >
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 group-hover:scale-105 delay-custom-1">
                         <div class="flex flex-col gap-4 ">
@@ -60,7 +62,7 @@ function ProductsSectionRandom({
                                     }
                                 />
                             ) : null}
-                            <span class="font-bold dark:text-gray-400 tracking-widest">
+                            <span class="font-bold dark:text-gray-400 tracking-widest  line-clamp-3">
                                 {productlatestmapped.name}
                             </span>
                         </div>
@@ -92,7 +94,7 @@ function ProductsSectionRandom({
                     <div class="flex gap-6 items-center group-hover:scale-105 delay-custom-1">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="flex flex-col gap-2">
-                                <span class="font-bold dark:text-gray-400 tracking-widest line-clamp-2 text-2xl">
+                                <span class="font-bold dark:text-gray-400 tracking-widest line-clamp-3">
                                     {productmostdiscountmapped.name}
                                 </span>
                                 <span class="font-bold text-2xl  tracking-widest text-primary">

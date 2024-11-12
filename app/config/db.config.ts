@@ -71,6 +71,7 @@ const sequelize = new Sequelize({
         acquire: 60000,
         idle: 20000,
     },
+    timezone: "+00:00",
 });
 
 sequelize.addModels([

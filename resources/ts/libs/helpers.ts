@@ -296,4 +296,178 @@ export function getColorPrimary() {
         .trim();
     return primaryColor;
 }
+
+export async function getPrincipalColor(file: File) {
+    return new Promise((res) => {
+        if (file?.type.startsWith("image/")) {
+            const img = new Image();
+            const reader = new FileReader();
+            reader.onload = (event: ProgressEvent<FileReader>) => {
+                if (event.target?.result) {
+                    img.src = event.target.result as string;
+                }
+            };
+
+            reader.readAsDataURL(file); // Leer la imagen como DataURL
+
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                if (ctx) {
+                    // Establecer dimensiones del canvas igual que la imagen
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+
+                    // Dibujar la imagen en el canvas
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+
+                    // Obtener los datos de los píxeles
+                    const imageData = ctx.getImageData(
+                        0,
+                        0,
+                        img.width,
+                        img.height
+                    );
+                    const data = imageData.data;
+
+                    const colorFrequency: { [key: string]: number } = {};
+
+                    // Iterar sobre los píxeles para contar los colores
+                    for (let i = 0; i < data.length; i += 4) {
+                        const r = data[i];
+                        const g = data[i + 1];
+                        const b = data[i + 2];
+                        const a = data[i + 3];
+
+                        // Ignorar píxeles transparentes
+                        if (a < 128) continue;
+
+                        // Crear una clave única para el color (RGB)
+                        const colorKey = `${r},${g},${b}`;
+
+                        // Contar la frecuencia del color
+                        if (colorFrequency[colorKey]) {
+                            colorFrequency[colorKey]++;
+                        } else {
+                            colorFrequency[colorKey] = 1;
+                        }
+                    }
+
+                    // Encontrar el color más frecuente
+                    let dominantColor: string | null = null;
+                    let maxCount = 0;
+
+                    for (const color in colorFrequency) {
+                        if (colorFrequency[color] > maxCount) {
+                            maxCount = colorFrequency[color];
+                            dominantColor = color;
+                        }
+                    }
+
+                    if (dominantColor) {
+                        // Convertir el color dominante a un objeto Color de color.js
+                        const [r, g, b] = dominantColor
+                            .split(",")
+                            .map((num) => Number.parseInt(num));
+                        function rgbToHex(
+                            r: number,
+                            g: number,
+                            b: number
+                        ): string {
+                            return `#${((1 << 24) | (r << 16) | (g << 8) | b)
+                                .toString(16)
+                                .slice(1)
+                                .toUpperCase()}`;
+                        }
+                        const dominantColorInstance = rgbToHex(r, g, b);
+
+                        res(dominantColorInstance);
+                    }
+                }
+            };
+        }
+    });
+}
+
+export async function getBackgroundColorImgen(file: File) {
+    return new Promise((res) => {
+        if (file?.type.startsWith("image/")) {
+            const img = new Image();
+            const reader = new FileReader();
+            reader.onload = (event: ProgressEvent<FileReader>) => {
+                if (event.target?.result) {
+                    img.src = event.target.result as string;
+                }
+            };
+
+            reader.readAsDataURL(file); // Leer la imagen como DataURL
+
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                if (ctx) {
+                    // Establecer el tamaño del canvas a las dimensiones de la imagen
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+
+                    // Dibujar la imagen en el canvas
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+
+                    // Obtener los píxeles de las esquinas (esquinas + borde)
+                    const esquinaSuperiorIzquierda = ctx.getImageData(
+                        0,
+                        0,
+                        1,
+                        1
+                    ).data;
+                    const esquinaSuperiorDerecha = ctx.getImageData(
+                        img.width - 1,
+                        0,
+                        1,
+                        1
+                    ).data;
+                    const esquinaInferiorIzquierda = ctx.getImageData(
+                        0,
+                        img.height - 1,
+                        1,
+                        1
+                    ).data;
+                    const esquinaInferiorDerecha = ctx.getImageData(
+                        img.width - 1,
+                        img.height - 1,
+                        1,
+                        1
+                    ).data;
+
+                    // Promediar los colores de las esquinas
+                    const r =
+                        (esquinaSuperiorIzquierda[0] +
+                            esquinaSuperiorDerecha[0] +
+                            esquinaInferiorIzquierda[0] +
+                            esquinaInferiorDerecha[0]) /
+                        4;
+                    const g =
+                        (esquinaSuperiorIzquierda[1] +
+                            esquinaSuperiorDerecha[1] +
+                            esquinaInferiorIzquierda[1] +
+                            esquinaInferiorDerecha[1]) /
+                        4;
+                    const b =
+                        (esquinaSuperiorIzquierda[2] +
+                            esquinaSuperiorDerecha[2] +
+                            esquinaInferiorIzquierda[2] +
+                            esquinaInferiorDerecha[2]) /
+                        4;
+
+                    // Convertir el color promedio de RGB a HEX
+                    const hexColor = `#${((1 << 24) | (r << 16) | (g << 8) | b)
+                        .toString(16)
+                        .slice(1)
+                        .toUpperCase()}`;
+                    res(hexColor);
+                }
+            };
+        }
+    });
+}
 export default dayjs;

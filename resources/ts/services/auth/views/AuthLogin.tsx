@@ -8,6 +8,7 @@ import { useSignal } from "@preact/signals";
 import { reactComponent } from "~/libs/preact";
 import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
 import { valibotVigilio } from "~/libs/valibot";
+import { ROLES } from "@/users/libs/helpers";
 
 function AuthLogin() {
     const rememberPassword = useSignal<string>(
@@ -23,7 +24,7 @@ function AuthLogin() {
             localStorage.removeItem("rememberPassword");
         }
         authLoginApiMutation.mutate(data, {
-            onSuccess() {
+            onSuccess(result) {
                 if (data.rememberPassword) {
                     localStorage.setItem("rememberPassword", data.password);
                 }
@@ -32,7 +33,11 @@ function AuthLogin() {
                     window.location.reload();
                     return;
                 }
-                window.location.href = `${window.location.origin}/admin`;
+                if (result.user.role_id === ROLES.user) {
+                    window.location.href = `${window.location.origin}`;
+                } else {
+                    window.location.href = `${window.location.origin}/admin`;
+                }
             },
             // no es necesario onError
         });

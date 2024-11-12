@@ -24,7 +24,6 @@ import {
 } from "@/cart/libs/helpers";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
-import LoaderSubmit from "~/components/LoaderSubmit";
 import { MetodosDePago } from "@/web/components/product/ProductView";
 import { DIALCODE, typeFiscal } from "@/empresas/libs/helpers";
 import useAuthStore from "@/auth/stores/auth.store";
@@ -52,7 +51,6 @@ function CartPage({ cart, header }: CartProps) {
         dniMutation,
         rucMUtation,
         city,
-        clientsShowQuery,
         citiesSelect,
         citiesIndexQuery,
     } = useOnCart();
@@ -119,7 +117,27 @@ function CartPage({ cart, header }: CartProps) {
                 return;
             }
         }
-
+        if (!authStore.state) {
+            if (!password?.length) {
+                ordersCartStoreDtoForm.setError("password", {
+                    message: "Este campo es obligatorio",
+                });
+                return;
+            }
+            if (!repeatPassword?.length) {
+                ordersCartStoreDtoForm.setError("repeat_password", {
+                    message: "Este campo es obligatorio",
+                });
+                return;
+            }
+            if (password !== repeatPassword) {
+                ordersCartStoreDtoForm.setError("repeat_password", {
+                    message: "Contraseña no similares",
+                });
+                return;
+            }
+            ordersCartStoreDtoForm.clearErrors("repeat_password");
+        }
         sweetModal((onClose) => ({
             html: reactComponent(
                 <Niubiz
@@ -439,7 +457,7 @@ function CartPage({ cart, header }: CartProps) {
                                 </div>
                             </div> */}
                         </div>
-                        <div class="flex h-max w-full min-w-[25rem] flex-col gap-4 divide-y-[1px] dark:divide-zinc-700 bg-background-light dark:bg-background-dark shadow-sm lg:max-w-80 rounded-md ">
+                        <div class="flex h-max w-full md:min-w-[25rem] flex-col gap-4 divide-y-[1px] dark:divide-zinc-700 bg-background-light dark:bg-background-dark shadow-sm lg:max-w-80 rounded-md ">
                             <div class="flex flex-col px-4 pt-4 gap-2">
                                 {ordersCartStoreDtoForm.watch("city_id") ? (
                                     <>
@@ -514,9 +532,6 @@ function CartPage({ cart, header }: CartProps) {
                                         }
                                         disabled={!!authStore.state?.telephone}
                                     />
-                                    {clientsShowQuery.isLoading ? (
-                                        <LoaderSubmit color="var(--primary)" />
-                                    ) : null}
                                 </div>
                                 {empresa.state!.enable_sell_country ? (
                                     <Form.control.web.selectInput
@@ -547,10 +562,6 @@ function CartPage({ cart, header }: CartProps) {
                                                 "address" as keyof OrdersCartStoreDto
                                             }
                                             title="Dirección"
-                                            disabled={
-                                                clientsShowQuery.isLoading ||
-                                                false
-                                            }
                                         />
                                         {empresa.state!.enable_map_marker ? (
                                             <div class="w-full">
@@ -565,10 +576,6 @@ function CartPage({ cart, header }: CartProps) {
                                                         zIndex: 0,
                                                     }}
                                                     isLocal
-                                                    disabled={
-                                                        clientsShowQuery.isLoading ||
-                                                        false
-                                                    }
                                                     question="Para encontrarte mejor, por favor indícanos tu ubicación."
                                                 />
                                                 <span class="text-[10px] dark:text-white">
@@ -673,7 +680,26 @@ function CartPage({ cart, header }: CartProps) {
                                     )}
                                 </>
                                 <>
-                                    {" "}
+                                    <Form.control.web
+                                        ico={<i class="fas fa-at" />}
+                                        name={
+                                            "email" as keyof OrdersCartStoreDto
+                                        }
+                                        title="Correo Electrónico"
+                                        type="email"
+                                        disabled={!!authStore.state?.email}
+                                    />
+                                </>
+                                <div class="grid grid-cols-2 gap-2 w-full">
+                                    <Form.control.web
+                                        name={
+                                            "fullName" as keyof OrdersCartStoreDto
+                                        }
+                                        title="Nombre Completo"
+                                        ico={<i class="fas fa-user" />}
+                                        placeholder=""
+                                        disabled={!!authStore.state?.email}
+                                    />
                                     {storageEmpresa?.dial_code !==
                                     DIALCODE.peru ? (
                                         <Form.control.web
@@ -694,26 +720,6 @@ function CartPage({ cart, header }: CartProps) {
                                     ) : (
                                         <></>
                                     )}
-                                </>
-                                <div class="grid grid-cols-2 gap-2 w-full">
-                                    <Form.control.web
-                                        name={
-                                            "fullName" as keyof OrdersCartStoreDto
-                                        }
-                                        title="Nombre Completo"
-                                        ico={<i class="fas fa-user" />}
-                                        placeholder=""
-                                        disabled={!!authStore.state?.email}
-                                    />
-                                    <Form.control.web
-                                        ico={<i class="fas fa-at" />}
-                                        name={
-                                            "email" as keyof OrdersCartStoreDto
-                                        }
-                                        title="Correo Electrónico"
-                                        type="email"
-                                        disabled={!!authStore.state?.email}
-                                    />
                                 </div>
                                 {!authStore.state ? (
                                     <div class="grid grid-cols-2 gap-2 w-full">

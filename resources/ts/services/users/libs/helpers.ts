@@ -7,14 +7,14 @@ export type UsersFotoQualities = 100 | 300;
 export const arrayRoles = [
     { key: ROLES.admin, value: "Administrador" },
     { key: ROLES.trabajador, value: "Trabajador" },
-    { key: ROLES.user, value: "Clientes" },
+    { key: ROLES.user, value: "Cliente" },
 ];
 
 export function icoRoleColor(role: number): string {
     const roles: Record<number, string> = {
         1: "bg-black",
         2: "bg-blue-600",
-        3: "white",
+        3: "bg-success",
     };
     return roles[role] || "bg-blue-600";
 }

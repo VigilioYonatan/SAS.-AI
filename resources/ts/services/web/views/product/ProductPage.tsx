@@ -114,7 +114,7 @@ function ProductPage({
                                     </div>
                                 );
                             },
-                            dots: images500Variant.length > 1,
+                            dots: true,
                             arrows: images500Variant.length > 1,
                             dotsClass: "slick-dots slick-thumb",
                             infinite: false,
@@ -129,7 +129,7 @@ function ProductPage({
                     >
                         {isImagesLength.map((img, i) => (
                             <div
-                                class="rounded-md  h-[300px] md:h-[500px]   relative overflow-hidden "
+                                class="rounded-md  h-[300px] md:h-[500px]   relative overflow-hidden w-full flex justify-center items-center"
                                 key={img}
                                 onMouseMove={zoom.handleMouseMove}
                                 onMouseLeave={zoom.handleMouseLeave}
@@ -164,9 +164,9 @@ function ProductPage({
                     </Slider>
                     <ShowImage length={images500Variant.length}>
                         <Slider
-                            className="w-full"
+                            className="w-full mx-2"
                             {...{
-                                dots: true,
+                                dots: false,
                                 speed: 500,
                                 slidesToShow: 1,
                                 slidesToScroll: 1,
@@ -179,7 +179,7 @@ function ProductPage({
                             }}
                         >
                             {images500Variant.map((image) => (
-                                <div class="h-[800px] " key={image}>
+                                <div class=" md:h-[800px]" key={image}>
                                     <img
                                         class="w-full h-full object-contain"
                                         src={image}
@@ -205,7 +205,6 @@ function ProductPage({
                             border: 2px solid var(--primary);
                         }
                         .product-card .slick-slide div {
-                            margin-inline: 8px;
                             outline: none;
                         }
                         .zoom-image {
@@ -782,7 +781,7 @@ function ProductPage({
                                 Características{" "}
                                 <b>({product.characteristics.length})</b>
                             </h2>
-                            <div class="max-h-[500px]  overflow-auto block">
+                            <div class="shadow">
                                 {product.characteristics.length ? (
                                     <table
                                         class={`text-lg  font-medium w-full  overflow-hidden shadow ${
@@ -937,7 +936,6 @@ function ProductPage({
                             />
                         ) : null}
                         <div class="bg-background-light dark:bg-background-dark p-4 rounded-md">
-                            
                             <ProductsComments
                                 type={
                                     ProductKeys(false) as

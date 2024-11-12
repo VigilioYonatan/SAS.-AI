@@ -92,6 +92,12 @@ export const settingsSchema = objectAsync({
     hamburger: string([
         custom((val) => hamrguers.includes(val), "Hamburguesa no válida"),
     ]),
+    type_star: string([
+        custom(
+            (val) => ["heart", "star"].includes(val),
+            "Tipo de estrella no válido"
+        ),
+    ]),
     position_header: boolean(),
     empresa_id: number(),
     border_title_type: string(),

@@ -10,13 +10,13 @@ import {
     string,
     maxLength,
     minLength,
-    pick,
+    toTrimmed,
+    custom,
 } from "@vigilio/valibot";
 import { ordersSchema } from "../schemas/orders.schema";
 import { invoicesStoreDto } from "./invoices.store.dto";
 import { detailOrdersSchema } from "../schemas/detail_orders.schema";
 import validFileValibot from "~/libs/valibot";
-import { authRegisterDto } from "@/auth/dtos/auth.register.dto";
 
 export const ordersStoreDto = merge([
     merge([
@@ -45,7 +45,6 @@ export const ordersStoreDto = merge([
                     "order_id",
                     "correlativo",
                     "response_sunat",
-                    "empresa_id",
                 ])
             ),
             details_orders: array(
@@ -64,6 +63,39 @@ export const ordersStoreDto = merge([
             floor_id: nullable(number()),
         }),
     ]),
-    pick(authRegisterDto, ["password", "repeat_password"]),
+    object({
+        password: nullable(
+            string([
+                toTrimmed(),
+                minLength(1),
+                minLength(6),
+                maxLength(30),
+                custom(
+                    (val) => /[a-zA-Z]/.test(val),
+                    "Deber tener por lo menos una letra."
+                ),
+                custom(
+                    (val) => /\d/.test(val),
+                    "Deber tener por lo menos un número."
+                ),
+            ])
+        ),
+        repeat_password: nullable(
+            string([
+                toTrimmed(),
+                minLength(1),
+                minLength(6),
+                maxLength(30),
+                custom(
+                    (val) => /[a-zA-Z]/.test(val),
+                    "Deber tener por lo menos una letra."
+                ),
+                custom(
+                    (val) => /\d/.test(val),
+                    "Deber tener por lo menos un número."
+                ),
+            ])
+        ),
+    }),
 ]);
 export type OrdersStoreDto = Input<typeof ordersStoreDto>;

@@ -205,6 +205,9 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         facebook_pixel: null,
         google_tag_manager: null,
         enabled_address: true,
+        isFreeVPS: false,
+        linkedin_tag: null,
+        tiktok_pixel: null,
     };
 }
 
@@ -405,5 +408,8 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         google_tag_manager: null,
         certificado: null,
         enabled_address: true,
+        isFreeVPS: false,
+        linkedin_tag: null,
+        tiktok_pixel: null,
     };
 }

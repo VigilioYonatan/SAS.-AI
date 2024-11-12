@@ -6,6 +6,7 @@ import {
     object,
     string,
     minLength,
+    custom,
 } from "@vigilio/valibot";
 
 export const authRegisterDto = merge([
@@ -19,6 +20,14 @@ export const authRegisterDto = merge([
     object({
         repeat_password: string("Este campo es obligatorio", [
             minLength(1, "Este campo es obligatorio"),
+            custom(
+                (val) => /[a-zA-Z]/.test(val),
+                "Deber tener por lo menos una letra."
+            ),
+            custom(
+                (val) => /\d/.test(val),
+                "Deber tener por lo menos un número."
+            ),
         ]),
     }),
 ]);

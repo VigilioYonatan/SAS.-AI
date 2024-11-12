@@ -215,7 +215,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                         <span class="font-bold dark:text-primary text-center   md:text-xl">
                                             {post.title}
                                         </span>
-                                        <p class="  text-center font-semibold text-sm md:text-base">
+                                        <p class="  text-center  text-sm md:text-base text-gray-500 dark:text-gray-300">
                                             {post.content}
                                         </p>
                                         <div class="flex justify-between items-center">

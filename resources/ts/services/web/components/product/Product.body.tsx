@@ -23,7 +23,7 @@ function ProductBody({ showDescription }: ProductBodyProps) {
                 }
             `}</style>
 
-            <div class="flex flex-col justify-center items-center">
+            <div class="flex flex-col justify-center items-center gap-1">
                 <span
                     class={`${
                         storageEmpresa?.tipo_empresa.tipo_servicio_id === 2

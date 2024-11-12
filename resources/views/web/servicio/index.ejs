@@ -38,6 +38,7 @@
   <meta property="product:retailer_item_id" content="<%= product.slug  %>">
   <meta property="product:price:currency" content="<%= locals.$empresa.money.simbolo  %>">
   <meta property="fb:app_id" content="">
+  <title><%= product.name %></title>
   <link rel="manifest" href="/manifest.webmanifest.json">
   <!-- ICONO -->
   <link rel="shortcut icon" href="<%=   locals.$empresa.setting?.icon ? printFileWithDimension(locals.$empresa.setting.icon,100)[0] :'' %>" type="image/x-icon" />
@@ -82,6 +83,7 @@
       src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Black.ttf` %>');
       font-display: swap;
     }
+
     .vigilio-modal .modal {
       padding: 0.5rem !important;
       overflow: auto;
@@ -94,7 +96,7 @@
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
   <servicio-page :product="<%= JSON.stringify(product)  %>" category_name="<%= category_name %>" :categoriesproductsrandom="<%= JSON.stringify(categoriesProductsRandom)  %>" :header="<%= JSON.stringify(header)  %>">
-    </servicio-page>
+  </servicio-page>
 </body>
 
 </html>

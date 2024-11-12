@@ -95,6 +95,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     @Column({
         type: DataType.STRING(60),
     })
+    type_star: string;
+
+    @Column({
+        type: DataType.STRING(60),
+    })
     background_position: "center" | "start" | "end";
 
     @Column({

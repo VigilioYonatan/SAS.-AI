@@ -12,12 +12,9 @@ import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
 import WebLayout, { HeaderType } from "@/web/components/WebLayout";
-import LoaderSubmit from "~/components/LoaderSubmit";
 import { MetodosDePago } from "@/web/components/product/ProductView";
 import { DIALCODE, typeFiscal } from "@/empresas/libs/helpers";
 import { ProductsServicioSchemaFromServer } from "@/products/schemas/products_servicio.schema";
-import { clientsShowApi } from "@/users/apis/clients.show.api";
-import { useDebounce } from "@vigilio/preact-paginator";
 import { valibotVigilio } from "~/libs/valibot";
 import { useForm } from "react-hook-form";
 import { rucApi } from "@/orders/apis/others/ruc.api";
@@ -89,6 +86,9 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
             reference: "- - - - - - -",
             isService: true,
             address: "- - - - - - -",
+            password: null,
+            repeat_password: null,
+            seller_id: null,
         },
         mode: "all",
     });
@@ -96,14 +96,21 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
     const kindInvoice = ordersCartStoreDtoForm.watch(
         "invoice.kind_invoice_code"
     );
-    const telephone = ordersCartStoreDtoForm.watch("telephone");
     const documentCode = ordersCartStoreDtoForm.watch("invoice.document_code");
     const identificationNumber = ordersCartStoreDtoForm.watch(
         "invoice.identification_number"
     );
-    const clientsShowQuery = clientsShowApi();
-    const telephoneDebounce = useDebounce(telephone);
-
+    const password = ordersCartStoreDtoForm.watch("password");
+    const repeatPassword = ordersCartStoreDtoForm.watch("repeat_password");
+    useEffect(() => {
+        if (password !== repeatPassword) {
+            ordersCartStoreDtoForm.setError("repeat_password", {
+                message: "Contraseña no similares",
+            });
+            return;
+        }
+        ordersCartStoreDtoForm.clearErrors("repeat_password");
+    }, [password, repeatPassword]);
     const arrayKindInvoices = useMemo(
         () =>
             kindInvoiceIndexQuery.isSuccess && kindInvoiceIndexQuery.data
@@ -251,39 +258,6 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
         );
     }, [discount.value, choose.value, time.value]);
 
-    useEffect(() => {
-        if (telephone?.length) {
-            clientsShowQuery.mutate(telephone, {
-                onSuccess(data) {
-                    ordersCartStoreDtoForm.setValue(
-                        "fullName",
-                        data.client.fullname
-                    );
-                    if (data.client.email) {
-                        ordersCartStoreDtoForm.setValue(
-                            "email",
-                            data.client.email
-                        );
-                    }
-                    if (data.client.identification_number) {
-                        ordersCartStoreDtoForm.setValue(
-                            "invoice.identification_number",
-                            data.client.identification_number
-                        );
-                    }
-                },
-                onError() {
-                    ordersCartStoreDtoForm.setValue("city_id", null);
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    ordersCartStoreDtoForm.setValue("email", null as any);
-                    ordersCartStoreDtoForm.setValue(
-                        "invoice.identification_number",
-                        null
-                    );
-                },
-            });
-        }
-    }, [telephoneDebounce]);
     function onCartOrderStore(body: OrdersCartStoreDto) {
         if (!body.fullName) {
             ordersCartStoreDtoForm.setError(
@@ -351,7 +325,27 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
             error.value = "Este campo es obligatorio.";
             return;
         }
-
+        if (!authStore.state) {
+            if (!password?.length) {
+                ordersCartStoreDtoForm.setError("password", {
+                    message: "Este campo es obligatorio",
+                });
+                return;
+            }
+            if (!repeatPassword?.length) {
+                ordersCartStoreDtoForm.setError("repeat_password", {
+                    message: "Este campo es obligatorio",
+                });
+                return;
+            }
+            if (password !== repeatPassword) {
+                ordersCartStoreDtoForm.setError("repeat_password", {
+                    message: "Contraseña no similares",
+                });
+                return;
+            }
+            ordersCartStoreDtoForm.clearErrors("repeat_password");
+        }
         sweetModal((onClose) => ({
             html: reactComponent(
                 <Niubiz
@@ -704,9 +698,6 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                                 </span>
                             }
                         />
-                        {clientsShowQuery.isLoading ? (
-                            <LoaderSubmit color="var(--primary)" />
-                        ) : null}
                     </div>
                     <Form.control.web
                         ico={<i class="fas fa-at" />}
@@ -720,7 +711,6 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                                 ico={<i class="fas fa-map-marker-alt" />}
                                 name={"address" as keyof OrdersCartStoreDto}
                                 title="Dirección"
-                                disabled={clientsShowQuery.isLoading || false}
                             />
                             {empresa.state!.enable_map_marker ? (
                                 <div class="w-full">
@@ -735,9 +725,6 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                                             zIndex: 0,
                                         }}
                                         isLocal
-                                        disabled={
-                                            clientsShowQuery.isLoading || false
-                                        }
                                         question="Para encontrarte mejor, por favor indícanos tu ubicación."
                                     />
                                     <span class="text-[10px] dark:text-white">
@@ -844,8 +831,35 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                         title="Nombre Completo"
                         ico={<i class="fas fa-user" />}
                         placeholder=""
-                        disabled={clientsShowQuery.isLoading || false}
                     />
+                    {!authStore.state ? (
+                        <div class="grid grid-cols-2 gap-2 w-full">
+                            <Form.control.web
+                                name={"password" as keyof OrdersCartStoreDto}
+                                title="Contraseña"
+                                type="password"
+                                ico={<i class="fas fa-lock text-sm" />}
+                                question={
+                                    <span>
+                                        Contraseña para registrarte a nuestra
+                                        web.
+                                    </span>
+                                }
+                                placeholder=""
+                            />
+                            <Form.control.web
+                                name={
+                                    "repeat_password" as keyof OrdersCartStoreDto
+                                }
+                                title="Confirmar contraseña"
+                                type="password"
+                                ico={<i class="fas fa-lock text-sm" />}
+                                placeholder=""
+                            />
+                        </div>
+                    ) : (
+                        <></>
+                    )}
                     <span class="text-sm dark:text-white mt-3">
                         Sus datos personales se utilizarán para procesar su
                         pedido, respaldar su experiencia en este sitio web y

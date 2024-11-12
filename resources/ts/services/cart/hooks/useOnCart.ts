@@ -22,9 +22,7 @@ import {
     regionsShowMutationApi,
 } from "@/ubigeo/apis/regions.show.api";
 import { useSignal } from "@preact/signals";
-import { clientsShowApi } from "@/users/apis/clients.show.api";
 import { citiesIndexApi } from "@/ubigeo/apis/citites.api.index";
-import { useDebounce } from "@vigilio/preact-paginator";
 import { DIALCODE } from "@/empresas/libs/helpers";
 
 function useOnCart() {
@@ -35,6 +33,7 @@ function useOnCart() {
     const dniMutation = dniApi();
     const rucMUtation = rucApi();
     const regionsShowQuery = regionsShowMutationApi();
+
     const city = useSignal<RegionsShowAPI["data"] | null>(null);
     const ordersCartStoreDtoForm = useForm<OrdersCartStoreDto>({
         resolver: valibotVigilio(ordersCartStoreDto),
@@ -69,8 +68,8 @@ function useOnCart() {
                 : undefined,
             isService: false,
             seller_id: null,
-            password: undefined,
-            repeat_password: undefined,
+            password: null,
+            repeat_password: null,
         },
         mode: "all",
     });
@@ -79,14 +78,11 @@ function useOnCart() {
         "invoice.kind_invoice_code"
     );
     const city_id = ordersCartStoreDtoForm.watch("city_id");
-    const telephone = ordersCartStoreDtoForm.watch("telephone");
     const documentCode = ordersCartStoreDtoForm.watch("invoice.document_code");
     const identificationNumber = ordersCartStoreDtoForm.watch(
         "invoice.identification_number"
     );
     const citiesIndexQuery = citiesIndexApi();
-    const clientsShowQuery = clientsShowApi();
-    const telephoneDebounce = useDebounce(telephone);
 
     const citiesSelect = useMemo(() => {
         if (citiesIndexQuery.isSuccess && citiesIndexQuery.data) {
@@ -122,6 +118,7 @@ function useOnCart() {
                 "invoice.identification_number",
                 null
             );
+
             ordersCartStoreDtoForm.setValue("invoice.document_code", null);
             ordersCartStoreDtoForm.setValue("invoice.razon_social", null);
             if (kindInvoice === "00") {
@@ -290,7 +287,6 @@ function useOnCart() {
         citiesSelect,
         citiesIndexQuery,
         city,
-        clientsShowQuery,
     };
 }
 

@@ -137,7 +137,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                             href="/auth/profile?type=favorites"
                             class="flex gap-2 items-center justify-center text-md relative"
                         >
-                            <i class="far fa-heart text-lg" />{" "}
+                            <i class="fas fa-heart text-lg" />{" "}
                             {favoriteStore.state > 0 ? (
                                 <span class="border-2 absolute border-white rounded-full w-[22px] h-[22px] text-xs bg-danger -right-3 -top-2 flex justify-center items-center  text-white">
                                     {favoriteStore.state}
@@ -159,7 +159,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                 {themeStore.state! === "dark" ? (
                                     <i class="fas fa-moon" />
                                 ) : (
-                                    <i class="far fa-sun" />
+                                    <i class="fas fa-sun" />
                                 )}
                             </button>
                         ) : null}

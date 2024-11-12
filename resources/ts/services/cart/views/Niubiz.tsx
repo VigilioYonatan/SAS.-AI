@@ -581,7 +581,7 @@ function Efectivo({
                             io?.emit("notifications:order-store", {
                                 total: data.order.total,
                                 order_code: data.order.order_code,
-                                client_id: data.order.client_id ?? null,
+                                user_id: data.order.user_id ?? null,
                             });
                             if (authStore.state) {
                                 await Promise.all(
@@ -727,7 +727,7 @@ function QrYapePlin({
                         io?.emit("notifications:order-store", {
                             order_code: data.order.order_code,
                             total: data.order.total,
-                            client_id: data.order.client_id ?? null,
+                            user_id: data.order.user_id ?? null,
                         });
                         if (authStore.state) {
                             await Promise.all(
@@ -999,7 +999,7 @@ function TransferenciaPayment({
                         io?.emit("notifications:order-store", {
                             order_code: data.order.order_code,
                             total: data.order.total,
-                            client_id: data.order.client_id ?? null,
+                            user_id: data.order.user_id ?? null,
                         });
                         if (authStore.state) {
                             await Promise.all(

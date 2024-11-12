@@ -444,6 +444,7 @@ export class OrdersApiService {
                     "No está permitido a realizar pedidos."
                 );
             }
+
             if (user) {
                 await user?.update({
                     identification_number:
@@ -453,6 +454,91 @@ export class OrdersApiService {
                     map_maker: ordersStoreDto.map_marker,
                     city: ordersStoreDto.city_id,
                 });
+            }
+            if (!user) {
+                const userName = `${ordersStoreDto.fullName}${Math.random()
+                    .toString(32)
+                    .slice(3, 6)}`;
+                const token: string = crypto.randomUUID();
+                const [byFullName, byTelephone, byEmail] = await Promise.all([
+                    Users.findOne({
+                        where: {
+                            username: ordersStoreDto.fullName,
+                            empresa_id: empresa.id,
+                        },
+                        raw: true,
+                    }),
+                    Users.findOne({
+                        where: {
+                            telephone: ordersStoreDto.telephone,
+                            empresa_id: empresa.id,
+                        },
+                        raw: true,
+                    }),
+                    Users.findOne({
+                        where: {
+                            email: ordersStoreDto.email,
+                            empresa_id: empresa.id,
+                        },
+                        raw: true,
+                    }),
+                ]);
+
+                if (byFullName) {
+                    throw new BadRequestException(
+                        "Ya existe un usuario con este nombre de usuario",
+                        { body: "fullName" }
+                    );
+                }
+                if (byTelephone) {
+                    throw new BadRequestException(
+                        "Ya existe un usuario con este telefono",
+                        { body: "telephone" }
+                    );
+                }
+                if (byEmail) {
+                    throw new BadRequestException(
+                        "Ya existe un usuario con este correo electrónico",
+                        { body: "email" }
+                    );
+                }
+                const { user: usuario } = await this.usersApiService.store(
+                    empresa,
+                    {
+                        telephone: ordersStoreDto.telephone,
+                        enabled: true,
+                        username: userName,
+                        name: ordersStoreDto.fullName!,
+                        address: ordersStoreDto.address || null,
+                        city_id: ordersStoreDto.city_id || null,
+                        birthday: new Date(),
+                        lastname: "",
+                        password: ordersStoreDto.password,
+                        role_id: ROLES.user,
+                        map_marker: ordersStoreDto.map_marker || null,
+                        empresa_id: empresa.id,
+                        email: ordersStoreDto.email || null,
+                        identification_number:
+                            ordersStoreDto.invoice?.identification_number ||
+                            null,
+                        reference: ordersStoreDto.reference || null,
+                        buys: [],
+                        slug: slug(userName),
+                        speciality: null,
+                    } as UsersStoreDto
+                );
+                await usuario.update({ token });
+                try {
+                    await whatsappSendMessageApi(empresa, {
+                        telephone: `${empresa.dial_code}${ordersStoreDto.telephone}@c.us`,
+                        message: `Hola *${
+                            usuario.username
+                        }*.\nYa puedes acceder a tu cuenta, ingresa al siguiente link:\n*${BASE_URL(
+                            empresa
+                        )}/auth/confirmed-account?token=${token}*`,
+                        delay: 3,
+                    });
+                } catch (error) {}
             }
         }
 
@@ -728,50 +814,6 @@ export class OrdersApiService {
             })
         );
         try {
-            try {
-                if (ordersStoreDto.telephone && !user) {
-                    const userName = `${ordersStoreDto.fullName}${Math.random()
-                        .toString(32)
-                        .slice(3, 6)}`;
-                    const token: string = crypto.randomUUID();
-                    const { user: usuario } = await this.usersApiService.store(
-                        empresa,
-                        {
-                            telephone: ordersStoreDto.telephone,
-                            enabled: true,
-                            username: userName,
-                            name: ordersStoreDto.fullName!,
-                            address: ordersStoreDto.address || null,
-                            city_id: ordersStoreDto.city_id || null,
-                            birthday: new Date(),
-                            lastname: "",
-                            password: ordersStoreDto.password,
-                            role_id: ROLES.user,
-                            map_marker: ordersStoreDto.map_marker || null,
-                            empresa_id: empresa.id,
-                            email: ordersStoreDto.email || null,
-                            identification_number:
-                                ordersStoreDto.invoice?.identification_number ||
-                                null,
-                            reference: ordersStoreDto.reference || null,
-                            buys: [],
-                            slug: slug(userName),
-                            speciality: null,
-                        } as UsersStoreDto
-                    );
-                    await usuario.update({ token });
-                    await whatsappSendMessageApi(empresa, {
-                        telephone: `${empresa.dial_code}${ordersStoreDto.telephone}@c.us`,
-                        message: `Hola *${
-                            usuario.username
-                        }*.\nYa puedes acceder a tu cuenta, ingresa al siguiente link:\n*${BASE_URL(
-                            empresa
-                        )}/auth/confirmed-account?token=${token}*`,
-                        delay: 3,
-                    });
-                }
-            } catch (error) {}
-
             if (empresa.enabledSendMessage && ordersStoreDto.telephone) {
                 const telephone = `${empresa.dial_code}${ordersStoreDto.telephone}@c.us`;
                 await whatsappSendMessageApi(empresa, {

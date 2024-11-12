@@ -18,7 +18,6 @@ import type { InvoicesSchema } from "./invoices.schema";
 import { filesSchema } from "@/uploads/schemas/uploads.schema";
 import { ordersTransferenciaImage } from "../libs";
 import type { UsersSchemaFromServer } from "@/users/schemas/users.schema";
-import type { ClientSchema } from "@/users/schemas/client.schema";
 import type { MesasSchema } from "./mesas.schema";
 import type { FloorsSchema } from "./floors.schema";
 import type { NotesSchema } from "./notes.schema";
@@ -73,9 +72,13 @@ export type OrdersSchema = Input<typeof ordersSchema> & {
 };
 export type OrdersSchemaFromServer = OrdersSchema & {
     details_orders: DetailOrdersFromServer[];
-    client: ClientSchema | null;
     invoice: InvoicesSchema;
     user: Pick<
+        UsersSchemaFromServer,
+        "id" | "username" | "name" | "lastname" | "photo" | "email" | "role_id"
+    > | null;
+
+    seller: Pick<
         UsersSchemaFromServer,
         "id" | "username" | "name" | "lastname" | "photo" | "email" | "role_id"
     > | null;

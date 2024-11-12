@@ -14,12 +14,12 @@
   <meta name="keywords" content="">
   <!-- Schema.org markup for Google+ -->
   <meta itemprop="name" content="<%= product.name  %>">
-  <meta itemprop="description" content="<%=   %>">
+  <meta itemprop="description" content="<%= productDescription  %>">
   <meta itemprop="image" content="<%=  printImagesProduct(product.images,500)[0]  %>">
   <!-- Twitter Card data -->
   <meta name="twitter:card" content="product">
   <meta name="twitter:site" content="@publisher_handle">
-  <meta name="twitter:title" content="<%= product.title  %>">
+  <meta name="twitter:title" content="<%= product.name  %>">
   <meta name="twitter:description" content="<%= productDescription  %>">
   <meta name="twitter:creator" content="@author_handle">
   <meta name="twitter:image" content="<%=  printImagesProduct(product.images,500)[0]  %>">
@@ -38,59 +38,61 @@
   <meta property="product:retailer_item_id" content="<%= product.slug  %>">
   <meta property="product:price:currency" content="<%= locals.$empresa.money.simbolo  %>">
   <meta property="fb:app_id" content="">
+  <title><%= product.name %></title>
+
   <link rel="manifest" href="/manifest.webmanifest.json">
   <!-- ICONO -->
   <link rel="shortcut icon" href="<%=   locals.$empresa.setting?.icon ? printFileWithDimension(locals.$empresa.setting.icon,100)[0] :'' %>" type="image/x-icon" />
-  <%- `<script> 
+    <%- `<script> 
       localStorage.setItem("empresa", ${JSON.stringify(JSON.stringify(typeof $empresa !== "undefined" ? $empresa  : null))});
       localStorage.setItem("user", ${JSON.stringify(JSON.stringify(typeof $user !== "undefined" ? $user  : null))});
       </script>` %>
-  <%- vite  %>
-  <style>
-    :root {
-      --primary: <%=$empresa.setting?.bg_color%>;
-      --paper: <%=$empresa.setting?.bg_color_paper %>;
-      --light: <%=$empresa.setting?.bg_color_background %>;
-    }
+    <%- vite  %>
+    <style>
+      :root {
+        --primary: <%=$empresa.setting?.bg_color%>;
+        --paper: <%=$empresa.setting?.bg_color_paper %>;
+        --light: <%=$empresa.setting?.bg_color_background %>;
+      }
 
-    @font-face {
-      font-family: 'Font-Thin';
-      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Thin.ttf` %>');
-      font-display: swap;
-    }
+      @font-face {
+        font-family: 'Font-Thin';
+        src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Thin.ttf` %>');
+        font-display: swap;
+      }
 
-    @font-face {
-      font-family: 'Font-Light';
-      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Light.ttf` %>');
-      font-display: swap;
-    }
+      @font-face {
+        font-family: 'Font-Light';
+        src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Light.ttf` %>');
+        font-display: swap;
+      }
 
-    @font-face {
-      font-family: 'Font-Regular';
-      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Regular.ttf` %>');
-      font-display: swap;
-    }
+      @font-face {
+        font-family: 'Font-Regular';
+        src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Regular.ttf` %>');
+        font-display: swap;
+      }
 
-    @font-face {
-      font-family: 'Font-Bold';
-      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Bold.ttf` %>');
-      font-display: swap;
-    }
+      @font-face {
+        font-family: 'Font-Bold';
+        src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Bold.ttf` %>');
+        font-display: swap;
+      }
 
-    @font-face {
-      font-family: 'Font-Black';
-      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Black.ttf` %>');
-      font-display: swap;
-    }
+      @font-face {
+        font-family: 'Font-Black';
+        src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Black.ttf` %>');
+        font-display: swap;
+      }
 
-    .vigilio-modal .modal {
-      padding: 0.5rem !important;
-      overflow: auto;
-      <%=$empresa.setting?.type_border==="circle"? 'border-radius: 0.6rem !important;': 'border-radius: 0rem !important;'%>
-    }
-  </style>
-  <!-- initial base -->
-  <initial></initial>
+      .vigilio-modal .modal {
+        padding: 0.5rem !important;
+        overflow: auto;
+        <%=$empresa.setting?.type_border==="circle"? 'border-radius: 0.6rem !important;': 'border-radius: 0rem !important;'%>
+      }
+    </style>
+    <!-- initial base -->
+    <initial></initial>
 </head>
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">

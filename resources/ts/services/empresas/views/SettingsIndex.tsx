@@ -109,6 +109,7 @@ function SettingsIndex() {
         const font_face = settingsUpdateform.watch("font_face");
         const type_icons = settingsUpdateform.watch("type_icons");
         const type_map = settingsUpdateform.watch("type_map");
+        const type_star = settingsUpdateform.watch("type_star");
         const themeStore = useThemeStore();
         const cartStore = useCartStore();
         const headerDropdown = useDropdown();
@@ -1129,61 +1130,104 @@ function SettingsIndex() {
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-2 items-center">
-                        <div>
-                            <span class="text-xs dark:text-white font-semibold">
-                                Tipo de Icono
-                            </span>
-                            <div class="flex gap-2">
-                                <button
-                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                        type_cart === "fas fa-shopping-cart"
-                                            ? "bg-paper-light dark:bg-admin-terciary"
-                                            : ""
-                                    }`}
-                                    type="button"
-                                    onClick={() =>
-                                        settingsUpdateform.setValue(
-                                            "type_cart",
-                                            "fas fa-shopping-cart"
-                                        )
-                                    }
-                                >
-                                    <i class="fas fa-shopping-cart text-lg dark:text-white" />
-                                </button>
-                                <button
-                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                        type_cart === "fas fa-shopping-bag"
-                                            ? "bg-paper-light dark:bg-admin-terciary"
-                                            : ""
-                                    }`}
-                                    type="button"
-                                    onClick={() =>
-                                        settingsUpdateform.setValue(
-                                            "type_cart",
-                                            "fas fa-shopping-bag"
-                                        )
-                                    }
-                                >
-                                    <i class="fas fa-shopping-bag text-lg dark:text-white" />
-                                </button>
-                                <button
-                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                        type_cart === "fas fa-shopping-basket"
-                                            ? "bg-paper-light dark:bg-admin-terciary"
-                                            : ""
-                                    }`}
-                                    type="button"
-                                    onClick={() =>
-                                        settingsUpdateform.setValue(
-                                            "type_cart",
+                        <div class="flex flex-col gap-2">
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Tipo de Icono
+                                </span>
+                                <div class="flex gap-2">
+                                    <button
+                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                            type_cart === "fas fa-shopping-cart"
+                                                ? "bg-paper-light dark:bg-admin-terciary"
+                                                : ""
+                                        }`}
+                                        type="button"
+                                        onClick={() =>
+                                            settingsUpdateform.setValue(
+                                                "type_cart",
+                                                "fas fa-shopping-cart"
+                                            )
+                                        }
+                                    >
+                                        <i class="fas fa-shopping-cart text-lg dark:text-white" />
+                                    </button>
+                                    <button
+                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                            type_cart === "fas fa-shopping-bag"
+                                                ? "bg-paper-light dark:bg-admin-terciary"
+                                                : ""
+                                        }`}
+                                        type="button"
+                                        onClick={() =>
+                                            settingsUpdateform.setValue(
+                                                "type_cart",
+                                                "fas fa-shopping-bag"
+                                            )
+                                        }
+                                    >
+                                        <i class="fas fa-shopping-bag text-lg dark:text-white" />
+                                    </button>
+                                    <button
+                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                            type_cart ===
                                             "fas fa-shopping-basket"
-                                        )
-                                    }
-                                >
-                                    <i class="fas fa-shopping-basket text-lg dark:text-white" />
-                                </button>
+                                                ? "bg-paper-light dark:bg-admin-terciary"
+                                                : ""
+                                        }`}
+                                        type="button"
+                                        onClick={() =>
+                                            settingsUpdateform.setValue(
+                                                "type_cart",
+                                                "fas fa-shopping-basket"
+                                            )
+                                        }
+                                    >
+                                        <i class="fas fa-shopping-basket text-lg dark:text-white" />
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Tipo de Estrella
+                                </span>
+                                <div class="flex gap-2">
+                                    <button
+                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                            type_star === "star"
+                                                ? "bg-paper-light dark:bg-admin-terciary"
+                                                : ""
+                                        }`}
+                                        type="button"
+                                        onClick={() =>
+                                            settingsUpdateform.setValue(
+                                                "type_star",
+                                                "star"
+                                            )
+                                        }
+                                    >
+                                        <i class="fas fa-star text-lg dark:text-white" />
+                                    </button>
+                                    <button
+                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                            type_star === "heart"
+                                                ? "bg-paper-light dark:bg-admin-terciary"
+                                                : ""
+                                        }`}
+                                        type="button"
+                                        onClick={() =>
+                                            settingsUpdateform.setValue(
+                                                "type_star",
+                                                "heart"
+                                            )
+                                        }
+                                    >
+                                        <i class="fas fa-heart text-lg dark:text-white" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
+
                         <div>
                             <span class="text-xs dark:text-white font-semibold">
                                 Tipo de Fuente

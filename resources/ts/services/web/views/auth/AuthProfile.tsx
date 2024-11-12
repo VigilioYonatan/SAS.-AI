@@ -42,6 +42,7 @@ import useAuthstore from "@/auth/stores/auth.store";
 import { logoutUrl } from "@/auth/libs";
 import WebPaginationFooter from "@/web/components/WebPaginatorFooter";
 import { Fragment } from "preact/jsx-runtime";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 type View = "information" | "orders" | "change-password" | "favorites";
 
@@ -201,6 +202,7 @@ function Information() {
                 address: user.address,
                 identification_number: user.identification_number,
                 email: user.email,
+                reference: user.reference,
                 lastname: user.lastname,
                 enabledNotification: user.enabledNotification,
                 birthday: user.birthday
@@ -280,25 +282,34 @@ function Information() {
                             type="email"
                             title="Correo Electrónico"
                             placeholder="correo@gmail.com"
-                            disabled
                         />
                     </div>
                     <div class="w-full flex flex-col sm:flex-row gap-2">
                         <Form.control.web
-                            ico={<i class="fas fa-at" />}
+                            ico={<i class="fas fa-house" />}
                             name={"address" as keyof UsersProfileDto}
                             title="Dirección"
-                            placeholder="MZ D LT - Puente Piedra"
+                            placeholder=""
                         />
                         <Form.control.web
-                            ico={<i class="fas fa-mobile-alt" />}
+                            ico={<i class="fas fa-home" />}
+                            name={"reference" as keyof UsersProfileDto}
+                            title="Referencia"
+                            placeholder=""
+                        />
+                    </div>
+                    <div class="w-full flex flex-col sm:flex-row gap-2">
+                        <Form.control.web
+                            ico={
+                                <span class="font-semibold">
+                                    +{storageEmpresa?.dial_code}
+                                </span>
+                            }
                             name={"telephone" as keyof UsersProfileDto}
                             type="tel"
                             title="Numero de Celular"
                             placeholder="9XXXXXXXX"
                         />
-                    </div>
-                    <div class="w-full flex flex-col sm:flex-row gap-2">
                         <Form.control.web
                             ico={<i class="fas fa-id-card" />}
                             name={
@@ -308,23 +319,13 @@ function Information() {
                             title="Documento de Identidad"
                             placeholder=""
                         />
+                    </div>
+                    <div class="w-full flex flex-col sm:flex-row gap-2">
                         <Form.control.web
                             ico={<i class="fas fa-birthday-cake" />}
                             name={"birthday" as keyof UsersProfileDto}
                             type="date"
                             title="Fecha de Nacimiento"
-                        />
-                    </div>
-                    <h3 class="dark:text-white font-semibold text-sm mb-2">
-                        Configuración
-                    </h3>
-                    <div class="w-full flex flex-col sm:flex-row gap-2">
-                        <Form.control.toggle
-                            name={
-                                "enabledEmailsOffers" as keyof UsersProfileDto
-                            }
-                            title="Habilitar  Ofertas y Eventos"
-                            question="Ya no estará habilitado los correos de ofertas y eventos."
                         />
                         <Form.control.toggle
                             name={

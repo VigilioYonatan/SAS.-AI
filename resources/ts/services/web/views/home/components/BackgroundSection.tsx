@@ -120,7 +120,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
             <div
                 class={`flex flex-col lg:flex-row relative ${
                     storageEmpresa?.setting.header_type === "transparent"
-                        ? " lg:h-[650px]"
+                        ? " lg:h-[750px]"
                         : " lg:h-[550px]"
                 } h-auto ${
                     storageEmpresa?.setting.background_type === "second"
@@ -153,7 +153,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                     class={`bg-cover bg-center  ${
                                         storageEmpresa?.setting.header_type ===
                                         "transparent"
-                                            ? "h-[650px]"
+                                            ? "h-[750px]"
                                             : "h-[550px]"
                                     }  w-full  delay-custom-1  `}
                                     style={{

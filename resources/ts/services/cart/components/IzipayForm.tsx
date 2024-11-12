@@ -78,7 +78,7 @@ const IzipayForm = ({
 				io?.emit("notifications:order-store", {
 					total: data.order.total,
 					order_code: data.order.order_code,
-					client_id: data.order.client_id ?? null,
+					user_id: data.order.user_id ?? null,
 				});
 				sweetModal({
 					icon: "success",

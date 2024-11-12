@@ -314,7 +314,7 @@ export class EmpresasApiService {
                     type_icons: "normal",
                     bg_color_background: "#FFFFFF",
                     bg_color_footer: "#FFFFFF",
-                    bg_color_paper: "#f2f2f2",
+                    bg_color_paper: "#F2F2F2",
                     font_face: "Exo",
                     background_position: "center",
                     background_type: "first",
@@ -327,6 +327,7 @@ export class EmpresasApiService {
                     },
                     type_map: "satelite",
                     header_type: "normal",
+                    type_star: "star",
                 } as Omit<SettingsSchema, "id" | "empresa_id">),
                 await empresa.$create("citasSetting", {
                     max_days: 14,

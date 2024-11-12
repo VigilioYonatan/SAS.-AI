@@ -21,7 +21,7 @@ import "leaflet/dist/leaflet.css";
 import type { CSSProperties } from "preact/compat";
 import { anidarPropiedades } from ".";
 import { typeMap } from "../MapValue";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
+
 export const customIcon = new L.Icon({
     iconUrl: markerImage(),
     iconSize: [35, 35], // Establece el tamaño del icono
@@ -110,20 +110,11 @@ function FormMap<T extends object>({
                     style={style}
                     zoom={zoom}
                     scrollWheelZoom={false}
+                    attributionControl={false}
                 >
                     <TileLayer
-                        url={
-                            typeMap[
-                                storageEmpresa!.setting
-                                    .type_map as keyof typeof typeMap
-                            ].url
-                        }
-                        attribution={
-                            typeMap[
-                                storageEmpresa!.setting
-                                    .type_map as keyof typeof typeMap
-                            ].attribution
-                        }
+                        url={typeMap.normal.url}
+                        attribution={typeMap.normal.attribution}
                     />
                     <LocationMarker />
                 </MapContainer>
