@@ -972,7 +972,7 @@ function ProductPage({
                                 <>
                                     <div
                                         class={
-                                            "delay-custom-1 h-[1800px] overflow-auto"
+                                            "delay-custom-1  max-h-[1200px] overflow-auto"
                                         }
                                     >
                                         <div

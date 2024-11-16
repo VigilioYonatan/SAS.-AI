@@ -841,7 +841,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                                                                                 <div class="flex flex-wrap justify-center gap-5 max-w-[500px]">
                                                                                                     {printImagesProduct(
                                                                                                         product.images,
-                                                                                                        null
+                                                                                                        500
                                                                                                     )
                                                                                                         .filter(
                                                                                                             (
@@ -866,9 +866,6 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                                                                                                         img
                                                                                                                     }
                                                                                                                 >
-                                                                                                                    {
-                                                                                                                        img
-                                                                                                                    }
                                                                                                                     {img?.endsWith(
                                                                                                                         "mp4"
                                                                                                                     ) ? (
@@ -1036,14 +1033,28 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                             </span>
                             <div class="flex gap-2">
                                 {images.map((img) => (
-                                    <img
-                                        key={img}
-                                        src={img}
-                                        width="80"
-                                        height="80"
-                                        class="w-[50px] h-[50px] object-contain rounded-md"
-                                        alt={product.name}
-                                    />
+                                    <Fragment key={img}>
+                                        {img?.endsWith("mp4") ? (
+                                            <video
+                                                src={img}
+                                                loop
+                                                muted
+                                                autoPlay
+                                                width="100"
+                                                height="100"
+                                                class="w-[50px] h-[50px] object-contain rounded-md"
+                                            />
+                                        ) : (
+                                            <img
+                                                key={img}
+                                                src={img}
+                                                width="80"
+                                                height="80"
+                                                class="w-[50px] h-[50px] object-contain rounded-md"
+                                                alt={product.name}
+                                            />
+                                        )}
+                                    </Fragment>
                                 ))}
                             </div>
                         </div>

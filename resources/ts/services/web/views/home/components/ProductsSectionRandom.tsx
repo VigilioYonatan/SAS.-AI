@@ -25,7 +25,7 @@ function ProductsSectionRandom({
             data-aos={`${
                 storageEmpresa?.setting.isScrolling ? "fade-up" : ""
             } `}
-            class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 px-4 my-12  "
+            class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 px-4  my-4 md:my-8  "
         >
             {productlatestmapped ? (
                 <a

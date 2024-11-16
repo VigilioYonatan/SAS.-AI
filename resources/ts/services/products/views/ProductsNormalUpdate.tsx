@@ -230,12 +230,8 @@ function ProductsNormalUpdate({
 
         async function initialUpdateImages() {
             if (product.images) {
-                const [imgs, videos] = await Promise.all([
-                    getFilesEdit(product.images, 500),
-                    getFilesEdit(product.images, null, "video/mp4"),
-                ]);
-                const images = [...imgs, ...videos];
-                formProductsNormalUpdateImages.setValue("images", images);
+                const files = await getFilesEdit(product.images, 500);
+                formProductsNormalUpdateImages.setValue("images", files);
             }
         }
 

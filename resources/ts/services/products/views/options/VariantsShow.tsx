@@ -103,7 +103,7 @@ function VariantsShow({
                                     {images.map((image) => {
                                         const img = printImagesProduct(
                                             product.images,
-                                            null
+                                            500
                                         ).find((_, i) => i + 1 === image);
                                         return (
                                             <div key={image}>
@@ -205,7 +205,7 @@ function VariantImages({
             <div class="flex gap-2  flex-wrap">
                 {images?.length ? (
                     <>
-                        {printImagesProduct(images, null).map((image, i) => (
+                        {printImagesProduct(images, 500).map((image, i) => (
                             <div key={image}>
                                 <button
                                     type="button"

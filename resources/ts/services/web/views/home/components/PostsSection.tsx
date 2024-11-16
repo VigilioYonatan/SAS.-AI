@@ -24,7 +24,7 @@ function PostsSection({ posts }: PostsSectionProps) {
     if (!posts.length) return null;
     const { ShowImage, state, changeShowImage } = useShowImage();
     return (
-        <section class="max-w-6xl mx-auto my-12 px-4 flex flex-col gap-4">
+        <section class="max-w-6xl mx-auto  my-4 md:my-8 px-4 flex flex-col gap-4">
             <TitleSection>Novedades</TitleSection>
             <div class="">
                 {posts.length ? (
@@ -110,7 +110,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                                 </span>
                                             </div>
                                             <span class="self-end  text-primary font-bold text-xs">
-                                                <i class="fa-regular fa-calendar-days" />{" "}
+                                                <i class="fa-regular fa-calendar-days mr-1" />{" "}
                                                 {showTime(post.createdAt!)}
                                             </span>
                                         </div>

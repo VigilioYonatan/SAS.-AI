@@ -25,7 +25,7 @@ function ProductsUsers({
     if (!storageEmpresa?.setting.shows.offers_user) return null;
 
     return (
-        <section class="max-w-6xl mx-auto my-12 px-4  gap-4 grid grid-cols-1 lg:grid-cols-3">
+        <section class="max-w-6xl mx-auto my-4 md:my-8 px-4  gap-4 grid grid-cols-1 lg:grid-cols-3">
             <div
                 class={`bg-background-light dark:bg-background-dark shadow p-2 ${
                     enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""

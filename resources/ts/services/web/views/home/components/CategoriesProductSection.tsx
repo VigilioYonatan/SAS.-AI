@@ -13,7 +13,7 @@ function CategoriesProductSection({
     const isEccomerce = storageEmpresa?.setting.type_card === "eccomerce";
 
     return (
-        <section class="max-w-6xl mx-auto  px-4 flex flex-col gap-4 my-12 ">
+        <section class="max-w-6xl mx-auto  px-4 flex flex-col gap-4  my-4 md:my-8 ">
             <TitleSection>Nuestros Productos</TitleSection>
             {getProductsByCategories.map((category) => (
                 <div

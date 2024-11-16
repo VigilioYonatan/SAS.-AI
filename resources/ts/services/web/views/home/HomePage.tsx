@@ -91,7 +91,6 @@ function HomePage({
                 <Animations />
                 <Noticia noticia={noticia} />
                 <BackgroundSection backgrounds={backgrounds} />
-
                 <GridBanners grid={gridbanners} i={0} />
                 <OfferSection
                     productlatestmapped={productlatestmapped}

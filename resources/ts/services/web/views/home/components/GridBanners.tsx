@@ -24,7 +24,7 @@ function GridBanners({ grid, i }: GridBanners) {
         }
     }, []);
     return (
-        <div class={`max-w-6xl mx-auto relative grid-banner-${i}`}>
+        <div class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}`}>
             {grid[i].title ? (
                 <TitleSection>{grid[i].title}</TitleSection>
             ) : null}

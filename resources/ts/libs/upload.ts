@@ -17,7 +17,8 @@ export function printFileWithDimension(
         ? files.filter(
               (img) =>
                   img.file!.startsWith("https://") ||
-                  img.dimension === dimension
+                  img.dimension === dimension ||
+                  img.file?.endsWith("mp4")
           )
         : files;
 
@@ -36,11 +37,13 @@ export async function getFilesEdit(
 ) {
     try {
         const filterImages = dimension
-            ? files.filter(
-                  (pro) =>
+            ? files.filter((pro) => {
+                  return (
                       pro.file!.startsWith("https://") ||
-                      pro.dimension === dimension
-              )
+                      pro.dimension === dimension ||
+                      pro.file!.endsWith("mp4")
+                  );
+              })
             : files;
 
         const response = await Promise.all(
@@ -65,7 +68,9 @@ export async function getFilesEdit(
         const images = result.map(
             (res, i) =>
                 new File([res], filterImages[i].file!, {
-                    type,
+                    type: filterImages[i].file!.endsWith("mp4")
+                        ? "video/mp4"
+                        : type,
                 })
         );
         return images;
