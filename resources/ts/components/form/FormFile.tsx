@@ -16,7 +16,7 @@ interface FormFileProps<T extends object> {
     name: keyof T;
     multiple?: boolean;
     accept?: string;
-    typeFile?: "image" | "file" | "video" | { value: string };
+    typeFile?: "image" | "file" | "video" | "image-video" | { value: string };
     typesText?: string;
     options?: RegisterOptions<T, Path<T>>;
     showButonCopy?: boolean;
@@ -115,6 +115,28 @@ function FormFile<T extends object>({
                                     src={printImageBlog(file)}
                                     height="100"
                                 />
+                            ) : null}
+                            {typeFile === "image-video" ? (
+                                <>
+                                    {file.type.startsWith("image") ? (
+                                        <img
+                                            alt=""
+                                            class="w-[inherit] h-[inherit] object-contain"
+                                            width="100"
+                                            src={printImageBlog(file)}
+                                            height="100"
+                                        />
+                                    ) : (
+                                        <video
+                                            autoPlay
+                                            loop
+                                            muted
+                                            width="150"
+                                            height="150"
+                                            src={printImageBlog(file)}
+                                        />
+                                    )}
+                                </>
                             ) : null}
                             {typeFile === "video" ? (
                                 // biome-ignore lint/a11y/useMediaCaption: <explanation>
@@ -248,7 +270,7 @@ function FormFile<T extends object>({
                                     onClick={() => {
                                         form.setValue(
                                             name as unknown as Path<T>,
-                                            [] as PathValue<T, Path<T>>
+                                            null as PathValue<T, Path<T>>
                                         );
                                     }}
                                 >

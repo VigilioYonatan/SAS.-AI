@@ -1,6 +1,4 @@
-import { filesSchema } from "@/uploads/schemas/uploads.schema";
 import {
-    array,
     boolean,
     coerce,
     custom,
@@ -39,9 +37,9 @@ export const hostSchema = object({
 export const settingsSchema = objectAsync({
     id: number(),
     host: hostSchema,
-    about: nullable(string()), //  acerca de la empresa
     bg_color: string([minLength(2), maxLength(20)]),
     bg_color_responsive: string([minLength(2), maxLength(20)]),
+    bg_color_button: string(),
     isDark: boolean(),
     type_border: string([
         custom((val) => ["circle", "square"].includes(val), "Border no válido"),
@@ -58,11 +56,10 @@ export const settingsSchema = objectAsync({
         ),
     ]),
     isCoverImage: boolean(),
-    icon: nullable(array(filesSchema([100, 300]))), //obligatorio
-    photo: nullable(array(filesSchema())),
     isLogoImage: boolean(),
     isScrolling: boolean(),
     bg_color_footer: string(),
+    is_subcategory: boolean(),
     background_position: string([
         custom(
             (val) => ["center", "start", "end"].includes(val),
@@ -89,6 +86,7 @@ export const settingsSchema = objectAsync({
     ]),
     bg_color_background: string(),
     bg_color_paper: string(),
+    logo_width: number(),
     hamburger: string([
         custom((val) => hamrguers.includes(val), "Hamburguesa no válida"),
     ]),
@@ -121,6 +119,25 @@ export const settingsSchema = objectAsync({
         cards: boolean(),
         brands: boolean(),
         android: boolean(),
+        offers_section: boolean(),
+        offers_user: boolean(),
+    }),
+    background_custom_html: nullable(string()),
+    header: object({
+        home: boolean(),
+        shop: boolean(),
+        profile: boolean(),
+        about: boolean(),
+        pedidos: boolean(),
+        condiciones: boolean(),
+        categories: boolean(),
+        subcategories: boolean(),
+        services: boolean(),
+    }),
+    header_position: object({
+        logo: number(),
+        navbar: number(),
+        icons: number(),
     }),
     type_map: string([
         custom(
@@ -128,5 +145,12 @@ export const settingsSchema = objectAsync({
             "Mapa no válido"
         ),
     ]),
+    type_card: string([
+        custom(
+            (val) => ["normal", "eccomerce"].includes(val),
+            "card no válido"
+        ),
+    ]),
+    is_block_aside: boolean(),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;

@@ -43,6 +43,7 @@ import { logoutUrl } from "@/auth/libs";
 import WebPaginationFooter from "@/web/components/WebPaginatorFooter";
 import { Fragment } from "preact/jsx-runtime";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import { bgPrimaryHover } from "~/config/settings";
 
 type View = "information" | "orders" | "change-password" | "favorites";
 
@@ -104,14 +105,14 @@ function AuthProfile() {
                                 view.value === "information"
                                     ? "bg-primary text-white"
                                     : ""
-                            } py-2 px-3 rounded-sm hover:bg-primary delay-custom-1 hover:text-white`}
+                            } py-2 px-3 rounded-sm  delay-custom-1 hover:bg-primary ${bgPrimaryHover()}`}
                         >
                             <a
                                 href="/auth/profile?type=information"
                                 class="  font-vigilio-p dark:text-white"
                             >
                                 <i class="fas fa-user mr-1" />
-                                <span class=" hidden md:inline">
+                                <span class=" hidden md:inline font-semibold">
                                     Información Personal
                                 </span>
                             </a>
@@ -121,14 +122,14 @@ function AuthProfile() {
                                 view.value === "favorites"
                                     ? "bg-primary text-white"
                                     : ""
-                            } py-2 px-3 rounded-sm  hover:bg-primary delay-custom-1 hover:text-white`}
+                            } py-2 px-3 rounded-sm   delay-custom-1 hover:bg-primary ${bgPrimaryHover()}`}
                         >
                             <a
                                 href="/auth/profile?type=favorites"
                                 class="font-vigilio-p dark:text-white"
                             >
                                 <i class="fas fa-heart mr-1" />
-                                <span class=" hidden md:inline">
+                                <span class=" hidden md:inline  font-semibold">
                                     Mis Favoritos
                                 </span>
                             </a>
@@ -138,14 +139,14 @@ function AuthProfile() {
                                 view.value === "orders"
                                     ? "bg-primary text-white"
                                     : ""
-                            } py-2 px-3 rounded-sm  hover:bg-primary delay-custom-1 hover:text-white`}
+                            } py-2 px-3 rounded-sm   delay-custom-1 hover:bg-primary ${bgPrimaryHover()}`}
                         >
                             <a
                                 href="/auth/profile?type=orders"
                                 class=" font-vigilio-p dark:text-white"
                             >
                                 <i class="fas fa-box mr-1" />
-                                <span class=" hidden md:inline">
+                                <span class=" hidden md:inline  font-semibold">
                                     {" "}
                                     Mis pedidos
                                 </span>
@@ -156,14 +157,14 @@ function AuthProfile() {
                                 view.value === "change-password"
                                     ? "bg-primary text-white"
                                     : ""
-                            } py-2 px-3 rounded-sm  hover:bg-primary delay-custom-1 hover:text-white`}
+                            } py-2 px-3 rounded-sm   delay-custom-1 hover:bg-primary ${bgPrimaryHover()}`}
                         >
                             <a
                                 href="/auth/profile?type=change-password"
                                 class="font-vigilio-p dark:text-white"
                             >
                                 <i class="fas fa-lock mr-1" />
-                                <span class=" hidden md:inline">
+                                <span class=" hidden md:inline  font-semibold">
                                     Cambiar Contraseña
                                 </span>
                             </a>
@@ -327,7 +328,7 @@ function Information() {
                             type="date"
                             title="Fecha de Nacimiento"
                         />
-                        <Form.control.toggle
+                        <Form.control.web.toggle
                             name={
                                 "enabledNotification" as keyof UsersProfileDto
                             }
@@ -409,7 +410,7 @@ function OrdersUser() {
                         </VigilioTable.thead>
                         <VigilioTable.tbody className="bg-paper-light dark:bg-background-dark">
                             <VigilioTable.tbody.row
-                                className="border-b h-[60px] dark:border-admin-terciary border-paper-light dark:text-white  hover:bg-primary  hover:text-secondary-light"
+                                className={`border-b h-[60px] dark:border-admin-terciary border-paper-light dark:text-white hover:bg-primary    ${bgPrimaryHover()}`}
                                 handleClick={handleOpenOrderLocals}
                             >
                                 {(data) => (

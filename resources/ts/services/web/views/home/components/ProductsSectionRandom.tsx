@@ -18,6 +18,8 @@ function ProductsSectionRandom({
     productlatestmapped,
     productmostdiscountmapped,
 }: ProductsSectionRandomProps) {
+    if (!storageEmpresa?.setting.shows.offers_section) return null;
+
     return (
         <section
             data-aos={`${
@@ -28,7 +30,12 @@ function ProductsSectionRandom({
             {productlatestmapped ? (
                 <a
                     href={`/${productlatestmapped.slug}`}
-                    class={`animation-brightness bg-background-light dark:bg-background-dark p-4 md:p-6 group overflow-hidden shadow ${
+                    class={`animation-brightness bg-background-light dark:bg-background-dark p-4 md:p-6 group overflow-hidden ${
+                        storageEmpresa.setting.bg_color_background ===
+                        storageEmpresa.setting.bg_color_paper
+                            ? ""
+                            : "shadow"
+                    }  ${
                         enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                     } `}
                     style={{
@@ -86,7 +93,12 @@ function ProductsSectionRandom({
             {productmostdiscountmapped ? (
                 <a
                     href={`/${productmostdiscountmapped.slug}`}
-                    class={`group animation-brightness bg-background-light shadow dark:bg-background-dark p-4 md:p-6 ${
+                    class={`group animation-brightness bg-background-light ${
+                        storageEmpresa.setting.bg_color_background ===
+                        storageEmpresa.setting.bg_color_paper
+                            ? ""
+                            : "shadow"
+                    } dark:bg-background-dark p-4 md:p-6 ${
                         enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                     }`}
                     style={{ "--brightness-delay": "6s" }}

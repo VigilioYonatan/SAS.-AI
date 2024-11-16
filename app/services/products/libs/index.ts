@@ -28,342 +28,336 @@ export const brandsImageQualities = [100, 500];
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function Product(empresa: Empresas, isService: boolean): any {
-    const pr = {
-        1: ProductsNormal,
-        2: ProductsRestaurant,
-        3: isService ? ProductsServicio : ProductsNormal,
-    };
+	const pr = {
+		1: ProductsNormal,
+		2: ProductsRestaurant,
+		3: isService ? ProductsServicio : ProductsNormal,
+	};
 
-    return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
+	return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
 }
 export function ProductKeys(empresa: Empresas, isService: boolean) {
-    const pr = {
-        1: "ProductsNormals",
-        2: "ProductsRestaurants",
-        3: isService ? "ProductsServicios" : "ProductsNormals",
-    };
-    return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
+	const pr = {
+		1: "ProductsNormals",
+		2: "ProductsRestaurants",
+		3: isService ? "ProductsServicios" : "ProductsNormals",
+	};
+	return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
 }
 export function productEntityId(empresa: Empresas, isService: boolean) {
-    const pr = {
-        1: "product_normal_id",
-        2: "product_restaurant_id",
-        3: isService ? "product_servicio_id" : "product_normal_id",
-    };
-    return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
+	const pr = {
+		1: "product_normal_id",
+		2: "product_restaurant_id",
+		3: isService ? "product_servicio_id" : "product_normal_id",
+	};
+	return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
 }
 
 /** combinar para crear variantes */
 export function combinacionesVariants(
-    arrays: number[][],
-    indice = 0,
-    combinacion: number[] = []
+	arrays: number[][],
+	indice = 0,
+	combinacion: number[] = [],
 ) {
-    if (indice === arrays.length) return [combinacion];
+	if (indice === arrays.length) return [combinacion];
 
-    let resultado: number[][] = [];
-    for (const item of arrays[indice]) {
-        const combinacionTemp = [...combinacion];
-        combinacionTemp.push(item);
-        resultado = resultado.concat(
-            combinacionesVariants(arrays, indice + 1, combinacionTemp)
-        );
-    }
+	let resultado: number[][] = [];
+	for (const item of arrays[indice]) {
+		const combinacionTemp = [...combinacion];
+		combinacionTemp.push(item);
+		resultado = resultado.concat(
+			combinacionesVariants(arrays, indice + 1, combinacionTemp),
+		);
+	}
 
-    return resultado;
+	return resultado;
 }
 
 /* obtener variantes y opciones para reutilizar */
 export async function getProductAll(
-    empresa: Empresas,
-    product: ProductsNormal | ProductsServicio | ProductsRestaurant,
-    user: Users | null
+	empresa: Empresas,
+	product: ProductsNormal | ProductsServicio | ProductsRestaurant,
+	user: Users | null,
 ) {
-    const [ratings] = await Promise.all([
-        Ratings.findAll({
-            where: {
-                ratingsable_id: product.id,
-                ratingsable_type: ProductKeys(
-                    empresa,
-                    product instanceof ProductsServicio
-                ),
-            },
-        }),
-    ]);
-    if (product instanceof ProductsNormal) {
-        const [options, variants] = await Promise.all([
-            (product as ProductsNormal).$get("options") as Promise<
-                (Options & {
-                    ProductsOptions: ProductsOptions;
-                })[]
-            >,
-            (product as ProductsNormal).$get("variants", {
-                order: [["id", "ASC"]],
-                include: [Features],
-            }),
-        ]);
+	const [ratings] = await Promise.all([
+		Ratings.findAll({
+			where: {
+				ratingsable_id: product.id,
+				ratingsable_type: ProductKeys(
+					empresa,
+					product instanceof ProductsServicio,
+				),
+			},
+		}),
+	]);
+	if (product instanceof ProductsNormal) {
+		const [options, variants] = await Promise.all([
+			(product as ProductsNormal).$get("options") as Promise<
+				(Options & {
+					ProductsOptions: ProductsOptions;
+				})[]
+			>,
+			(product as ProductsNormal).$get("variants", {
+				order: [["id", "ASC"]],
+				include: [Features],
+			}),
+		]);
 
-        product.dataValues.options = await Promise.all(
-            options.map(async (opt) => {
-                const { ProductsOptions, ...rest } = opt.toJSON();
-                const features = await Promise.all(
-                    opt.ProductsOptions.features.map(async (feat) => {
-                        const feature = await Features.findByPk(feat);
-                        return feature;
-                    })
-                );
-                return {
-                    ...rest,
-                    features,
-                };
-            })
-        );
+		product.dataValues.options = await Promise.all(
+			options.map(async (opt) => {
+				const { ProductsOptions, ...rest } = opt.toJSON();
+				const features = await Promise.all(
+					opt.ProductsOptions.features.map(async (feat) => {
+						const feature = await Features.findByPk(feat);
+						return feature;
+					}),
+				);
+				return {
+					...rest,
+					features,
+				};
+			}),
+		);
 
-        product.dataValues.variants = await Promise.all(
-            variants.map(async (variant) => {
-                const totalSold = await DetailOrders.count({
-                    where: {
-                        product_normal_id: product.id,
-                        variant_id: (variant as Variants).id,
-                    },
-                    include: [
-                        {
-                            model: Orders,
-                            where: {
-                                status_order_id: STATUSORDER.entregado,
-                            },
-                            required: true,
-                        },
-                    ],
-                });
-                return {
-                    ...(variant as Variants).toJSON(),
+		product.dataValues.variants = await Promise.all(
+			variants.map(async (variant) => {
+				const totalSold = await DetailOrders.count({
+					where: {
+						product_normal_id: product.id,
+						variant_id: (variant as Variants).id,
+					},
+					include: [
+						{
+							model: Orders,
+							where: {
+								status_order_id: STATUSORDER.entregado,
+							},
+							required: true,
+						},
+					],
+				});
+				return {
+					...(variant as Variants).toJSON(),
 
-                    totalSold,
-                };
-            })
-        );
-    } else {
-        const product_id =
-            product instanceof ProductsNormal
-                ? "product_normal_id"
-                : product instanceof ProductsServicio
-                ? "product_servicio_id"
-                : "product_restaurant_id";
-        const [totalSold] = await Promise.all([
-            DetailOrders.count({
-                where: {
-                    [product_id]: product.id,
-                    empresa_id: empresa.id,
-                },
-                include: [
-                    {
-                        model: Orders,
-                        where: {
-                            status_order_id: STATUSORDER.entregado,
-                        },
-                        required: true,
-                    },
-                ],
-            }),
-        ]);
-        product.dataValues.totalSold = totalSold;
-    }
+					totalSold,
+				};
+			}),
+		);
+	} else {
+		const product_id =
+			product instanceof ProductsNormal
+				? "product_normal_id"
+				: product instanceof ProductsServicio
+					? "product_servicio_id"
+					: "product_restaurant_id";
+		const [totalSold] = await Promise.all([
+			DetailOrders.count({
+				where: {
+					[product_id]: product.id,
+					empresa_id: empresa.id,
+				},
+				include: [
+					{
+						model: Orders,
+						where: {
+							status_order_id: STATUSORDER.entregado,
+						},
+						required: true,
+					},
+				],
+			}),
+		]);
+		product.dataValues.totalSold = totalSold;
+	}
 
-    if (user) {
-        const product_id =
-            product instanceof ProductsNormal
-                ? "product_normal_id"
-                : product instanceof ProductsServicio
-                ? "product_servicio_id"
-                : "product_restaurant_id";
-        const [favorites, rating] = await Promise.all([
-            Favorites.findOne({
-                where: {
-                    [product_id]: product.id,
-                    user_id: user.id,
-                    empresa_id: empresa.id,
-                },
-            }),
-            Ratings.findOne({
-                where: {
-                    ratingsable_id: product.id,
-                    user_id: user.id,
-                    ratingsable_type: [
-                        ProductKeys(
-                            empresa,
-                            product instanceof ProductsServicio
-                        ),
-                    ],
-                    empresa_id: empresa.id,
-                },
-            }),
-        ]);
-        product.dataValues.user = {
-            isFavorite: !!favorites,
-            rating: rating?.rating,
-        };
-    }
-    const starsCount: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-    let totalSum = 0;
-    for (const rating of ratings) {
-        const roundedRating = Math.floor(rating.rating);
-        starsCount[roundedRating] = (starsCount[roundedRating] || 0) + 1;
-        totalSum += rating.rating;
-    }
+	if (user) {
+		const product_id =
+			product instanceof ProductsNormal
+				? "product_normal_id"
+				: product instanceof ProductsServicio
+					? "product_servicio_id"
+					: "product_restaurant_id";
+		const [favorites, rating] = await Promise.all([
+			Favorites.findOne({
+				where: {
+					[product_id]: product.id,
+					user_id: user.id,
+					empresa_id: empresa.id,
+				},
+			}),
+			Ratings.findOne({
+				where: {
+					ratingsable_id: product.id,
+					user_id: user.id,
+					ratingsable_type: [
+						ProductKeys(empresa, product instanceof ProductsServicio),
+					],
+					empresa_id: empresa.id,
+				},
+			}),
+		]);
+		product.dataValues.user = {
+			isFavorite: !!favorites,
+			rating: rating?.rating,
+		};
+	}
+	const starsCount: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+	let totalSum = 0;
+	for (const rating of ratings) {
+		const roundedRating = Math.floor(rating.rating);
+		starsCount[roundedRating] = (starsCount[roundedRating] || 0) + 1;
+		totalSum += rating.rating;
+	}
 
-    const stars5 = ratings.filter((rate) => rate.rating >= 5).length;
-    const stars4 = ratings.filter(
-        (rate) => rate.rating > 4 && rate.rating < 5
-    ).length;
-    const stars3 = ratings.filter(
-        (rate) => rate.rating > 3 && rate.rating < 4
-    ).length;
-    const stars2 = ratings.filter(
-        (rate) => rate.rating > 2 && rate.rating < 3
-    ).length;
-    const stars1 = ratings.filter(
-        (rate) => rate.rating > 1 && rate.rating < 2
-    ).length;
+	const stars5 = ratings.filter((rate) => rate.rating >= 5).length;
+	const stars4 = ratings.filter(
+		(rate) => rate.rating > 4 && rate.rating < 5,
+	).length;
+	const stars3 = ratings.filter(
+		(rate) => rate.rating > 3 && rate.rating < 4,
+	).length;
+	const stars2 = ratings.filter(
+		(rate) => rate.rating > 2 && rate.rating < 3,
+	).length;
+	const stars1 = ratings.filter(
+		(rate) => rate.rating > 1 && rate.rating < 2,
+	).length;
 
-    const rated: {
-        quantity: number;
-        ratings: { rating: number; percentage: number }[];
-        promedio: number;
-        stars5: number;
-        stars4: number;
-        stars3: number;
-        stars2: number;
-        stars1: number;
-    } = {
-        quantity: ratings.length,
-        promedio: totalSum / ratings.length,
-        ratings: Object.keys(starsCount)
-            .map((star) => ({
-                rating: Number.parseInt(star),
-                percentage:
-                    ratings.length > 0
-                        ? (starsCount[Number.parseInt(star)] / ratings.length) *
-                          100
-                        : 0,
-                length: ratings.filter(
-                    (rate) =>
-                        rate.rating >= Number.parseInt(star) &&
-                        rate.rating < Number.parseInt(star) + 1
-                ).length,
-            }))
-            .toReversed(),
-        stars5,
-        stars4,
-        stars3,
-        stars2,
-        stars1,
-    };
-    product.dataValues.rating = rated;
-    return product;
+	const rated: {
+		quantity: number;
+		ratings: { rating: number; percentage: number }[];
+		promedio: number;
+		stars5: number;
+		stars4: number;
+		stars3: number;
+		stars2: number;
+		stars1: number;
+	} = {
+		quantity: ratings.length,
+		promedio: totalSum / ratings.length,
+		ratings: Object.keys(starsCount)
+			.map((star) => ({
+				rating: Number.parseInt(star),
+				percentage:
+					ratings.length > 0
+						? (starsCount[Number.parseInt(star)] / ratings.length) * 100
+						: 0,
+				length: ratings.filter(
+					(rate) =>
+						rate.rating >= Number.parseInt(star) &&
+						rate.rating < Number.parseInt(star) + 1,
+				).length,
+			}))
+			.toReversed(),
+		stars5,
+		stars4,
+		stars3,
+		stars2,
+		stars1,
+	};
+	product.dataValues.rating = rated;
+	return product;
 }
 export function printImagesProduct(empresa: Empresas) {
-    return (images: FilesSchema[] | null, quality = 500) => {
-        if (images) {
-            return printFileWithDimension(empresa)(images, quality);
-        }
-        return [`${BASE_URL(empresa)}/images/settings/others/no-profile.webp`];
-    };
+	return (images: FilesSchema[] | null, quality = 500) => {
+		if (images) {
+			return printFileWithDimension(empresa)(images, quality);
+		}
+		return [`${BASE_URL(empresa)}/images/settings/others/no-profile.webp`];
+	};
 }
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function areArraysEqual(obj1: any, obj2: any): boolean {
-    if (obj1.length !== obj2.length) {
-        return false; // Si tienen diferente longitud, no son iguales
-    }
-    // Convertimos los arrays en sets de strings para compararlos independientemente del orden
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const set1 = new Set(obj1.map((item: any) => JSON.stringify(item)));
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const set2 = new Set(obj2.map((item: any) => JSON.stringify(item)));
+	if (obj1.length !== obj2.length) {
+		return false; // Si tienen diferente longitud, no son iguales
+	}
+	// Convertimos los arrays en sets de strings para compararlos independientemente del orden
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const set1 = new Set(obj1.map((item: any) => JSON.stringify(item)));
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const set2 = new Set(obj2.map((item: any) => JSON.stringify(item)));
 
-    // Verificamos si ambos sets son iguales
-    for (const item of set1) {
-        if (!set2.has(item)) {
-            return false; // Si algún elemento no está en ambos sets, no son iguales
-        }
-    }
+	// Verificamos si ambos sets son iguales
+	for (const item of set1) {
+		if (!set2.has(item)) {
+			return false; // Si algún elemento no está en ambos sets, no son iguales
+		}
+	}
 
-    return true;
+	return true;
 }
 
 type ArrayNoRepeat = {
-    array1: number[];
-    array2: number[];
-    onDelete?: (props: number[]) => Promise<void>;
-    onCreate?: (props: number[]) => Promise<void>;
+	array1: number[];
+	array2: number[];
+	onDelete?: (props: number[]) => Promise<void>;
+	onCreate?: (props: number[]) => Promise<void>;
 };
 export async function arrayNoRepeat({
-    array1,
-    array2,
-    onDelete,
-    onCreate,
+	array1,
+	array2,
+	onDelete,
+	onCreate,
 }: ArrayNoRepeat) {
-    const array1Set = new Set(array1);
-    const array2Set = new Set(array2);
-    if (
-        array1Set.size === array2Set.size &&
-        [...array1Set].every((id) => array2Set.has(id))
-    ) {
-    } else if (array1Set.size > array2Set.size) {
-        const deleteIds = [...array1Set].filter((id) => !array2Set.has(id));
-        if (onDelete) {
-            await onDelete(deleteIds);
-        }
-    } else {
-        const addedIds = [...array2Set].filter((id) => !array1Set.has(id));
-        if (onCreate) {
-            await onCreate(addedIds);
-        }
-    }
+	const array1Set = new Set(array1);
+	const array2Set = new Set(array2);
+	if (
+		array1Set.size === array2Set.size &&
+		[...array1Set].every((id) => array2Set.has(id))
+	) {
+	} else if (array1Set.size > array2Set.size) {
+		const deleteIds = [...array1Set].filter((id) => !array2Set.has(id));
+		if (onDelete) {
+			await onDelete(deleteIds);
+		}
+	} else {
+		const addedIds = [...array2Set].filter((id) => !array1Set.has(id));
+		if (onCreate) {
+			await onCreate(addedIds);
+		}
+	}
 }
 export function printProductVariant(
-    product: ProductsNormal,
-    variant: VariantsSchema & {
-        features: { option_id: number; id: number }[];
-    }
+	product: ProductsNormal,
+	variant: VariantsSchema & {
+		features: { option_id: number; id: number }[];
+	},
 ) {
-    const result = variant.features.map((option) => {
-        const opt = (product.dataValues.options as Options[]).find(
-            (opt) => opt.id === option.option_id
-        );
-        if (opt) {
-            const detailedFeatures = (opt.features as Features[])
-                .map((featureId) =>
-                    variant.features.find(
-                        (feature) => feature.id === featureId.id
-                    )
-                        ? featureId
-                        : null
-                )
-                .filter((opt) => opt !== null);
-            return { ...opt, features: detailedFeatures };
-        }
-        return null;
-    });
-    return result;
+	const result = variant.features.map((option) => {
+		const opt = (product.dataValues.options as Options[]).find(
+			(opt) => opt.id === option.option_id,
+		);
+		if (opt) {
+			const detailedFeatures = (opt.features as Features[])
+				.map((featureId) =>
+					variant.features.find((feature) => feature.id === featureId.id)
+						? featureId
+						: null,
+				)
+				.filter((opt) => opt !== null);
+			return { ...opt, features: detailedFeatures };
+		}
+		return null;
+	});
+	return result;
 }
 
 export type Products = {
-    product_normal: ProductsNormalSchema | null;
-    product_restaurant: ProductsRestaurantSchema | null;
-    product_servicio: ProductsServicioSchema | null;
+	product_normal: ProductsNormalSchema | null;
+	product_restaurant: ProductsRestaurantSchema | null;
+	product_servicio: ProductsServicioSchema | null;
 };
 export function printVariantFeatures(
-    product: ProductsNormal,
-    variant: VariantsSchema & {
-        features: { option_id: number; id: number }[];
-    },
-    spacing = " "
+	product: ProductsNormal,
+	variant: VariantsSchema & {
+		features: { option_id: number; id: number }[];
+	},
+	spacing = " ",
 ) {
-    return printProductVariant(product, variant)
-        .map((variant) => {
-            // si es color que muestre el color, sino solo el valor
-            return variant?.features.map((feature) => feature?.description);
-        })
-        .join(spacing);
+	return printProductVariant(product, variant)
+		.map((variant) => {
+			// si es color que muestre el color, sino solo el valor
+			return variant?.features.map((feature) => feature?.description);
+		})
+		.join(spacing);
 }

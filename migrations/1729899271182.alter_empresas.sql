@@ -17,3 +17,11 @@ ALTER TABLE "public"."Empresas" ADD COLUMN "google_tag_manager" VARCHAR(60) DEFA
 ALTER TABLE "public"."Empresas" ADD COLUMN "facebook_pixel" VARCHAR(60) DEFAULT NULL;
 
 ALTER TABLE "public"."Empresas" ADD COLUMN "enabled_address" BOOLEAN DEFAULT true;
+
+-- foreign
+ALTER TABLE "public"."Banners"
+ADD COLUMN "grid_banner_id" INTEGER;
+ALTER TABLE "public"."Banners"
+ADD CONSTRAINT "fk_grid_banner_id" FOREIGN KEY ("grid_banner_id")
+REFERENCES "public"."GridBanners"("id")
+ON DELETE SET NULL;

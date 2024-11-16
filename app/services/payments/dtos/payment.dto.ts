@@ -5,10 +5,10 @@ import { type Input, nullable, object, mergeAsync } from "@vigilio/valibot";
 
 // @ts-ignore
 export const paymentDto = mergeAsync([
-    ordersStoreDto,
-    object({
-        creditCard: nullable(creditCardSchema),
-        yape: nullable(yapeSchema),
-    }),
+	ordersStoreDto,
+	object({
+		creditCard: nullable(creditCardSchema),
+		yape: nullable(yapeSchema),
+	}),
 ]);
 export type PaymentDto = Input<typeof paymentDto>;

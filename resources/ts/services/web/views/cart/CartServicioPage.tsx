@@ -28,6 +28,7 @@ import useProduct, { CouponStore } from "@/products/hooks/useProduct";
 import { printImagesProduct } from "@/products/libs/helpers";
 import { formatDateTwo, NOW } from "~/libs/helpers";
 import Helper from "~/components/Helper";
+import { bgPrimaryHover } from "~/config/settings";
 
 interface CartServicioPageProps {
     servicio: ProductsServicioSchemaFromServer;
@@ -397,7 +398,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                                             enviroments.TYPE_BORDER === "square"
                                                 ? "rounded-sm"
                                                 : "rounded-md"
-                                        }  flex text-primary py-1  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary hover:text-white ${
+                                        }  flex text-primary py-1  text-sm min-w-[100px] px-2  justify-center items-center  hover:bg-primary ${bgPrimaryHover()} ${
                                             choose.value?.days === day.days
                                                 ? "bg-primary text-white border-2 border-primary"
                                                 : "bg-white"

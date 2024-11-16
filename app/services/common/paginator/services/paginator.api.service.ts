@@ -38,6 +38,7 @@ import { Countries } from "@/ubigeo/entities/countries.entity";
 import { Complaints } from "@/empresas/entities/complaints.entity";
 import { Finanzas } from "@/finanzas/entities/finanzas.entity";
 import { Favorites } from "@/favorites/entities/favorites.entity";
+import { Subcategories } from "@/products/entities/subcategories.entity";
 
 @Injectable()
 export class PaginatorApiServices {
@@ -290,7 +291,23 @@ export class PaginatorApiServices {
                 ]);
                 break;
             }
-
+            case "subcategories":
+                data = await Promise.all([
+                    Subcategories.findAll({
+                        offset: offsetConverted,
+                        limit: limitConverted,
+                        order: Object.entries(rest),
+                        where: {
+                            empresa_id: empresa.id,
+                        },
+                    }),
+                    Subcategories.count({
+                        where: {
+                            empresa_id: empresa.id,
+                        },
+                    }),
+                ]);
+                break;
             case "users":
                 {
                     if (

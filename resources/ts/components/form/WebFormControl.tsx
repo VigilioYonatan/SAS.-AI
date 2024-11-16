@@ -89,7 +89,7 @@ function WebFormControl<T extends object>({
                             type="button"
                             aria-label="change password button eye"
                             onClick={onChangeHidde}
-                            class="mr-4 text-secondary-dark dark:text-secondary-light"
+                            class="mr-4 "
                         >
                             {hidden ? (
                                 <i class="fas fa-eye" />

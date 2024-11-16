@@ -17,6 +17,7 @@ import useShowImage from "~/hooks/useShowImage";
 import TitleSectionTwo from "@/web/components/TitleSectionTwo";
 import { MetodosDePago } from "@/web/components/product/ProductView";
 import { ProductsServicioSchemaFromServer } from "@/products/schemas/products_servicio.schema";
+import { bgPrimaryHover } from "~/config/settings";
 
 export interface VariantFeature {
     option_id: number;
@@ -218,7 +219,7 @@ function ServicioPage({ product, category_name, header }: ServicioPageProps) {
                                             enviroments.TYPE_BORDER === "square"
                                                 ? "rounded-sm"
                                                 : "rounded-md"
-                                        }  flex text-primary py-1  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary hover:text-white ${
+                                        }  flex text-primary py-1  text-sm min-w-[100px] px-2  justify-center items-center  hover:bg-primary ${bgPrimaryHover()} ${
                                             choose.value?.days === day.days
                                                 ? "bg-primary text-white border-2 border-primary"
                                                 : "bg-white"

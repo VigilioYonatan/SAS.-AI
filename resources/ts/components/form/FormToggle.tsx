@@ -2,72 +2,74 @@ import { useContext } from "preact/hooks";
 import { FormControlContext } from "./Form";
 import type { JSX } from "preact";
 import type {
-	FieldValues,
-	Path,
-	RegisterOptions,
-	UseFormReturn,
+    FieldValues,
+    Path,
+    RegisterOptions,
+    UseFormReturn,
 } from "react-hook-form";
 import { anidarPropiedades } from ".";
+import { isColorLight } from "~/libs/helpers";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 interface FormControlLabelProps<T extends object> {
-	title: string | JSX.Element;
-	name: keyof T;
-	question?: JSX.Element | JSX.Element[] | string;
-	options?: RegisterOptions<T, Path<T>>;
-	disabled?: boolean;
+    title: string | JSX.Element;
+    name: keyof T;
+    question?: JSX.Element | JSX.Element[] | string;
+    options?: RegisterOptions<T, Path<T>>;
+    disabled?: boolean;
 }
 function FormRadio<T extends object>({
-	name,
-	title,
-	question,
-	options = {},
-	disabled = false,
+    name,
+    title,
+    question,
+    options = {},
+    disabled = false,
 }: FormControlLabelProps<T>) {
-	const {
-		register,
-		formState: { errors },
-	} = useContext<UseFormReturn<T, unknown, FieldValues>>(FormControlContext);
-	const nameRandom = `${name as string}${Math.random()
-		.toString(32)
-		.substring(4)}`;
+    const {
+        register,
+        formState: { errors },
+    } = useContext<UseFormReturn<T, unknown, FieldValues>>(FormControlContext);
+    const nameRandom = `${name as string}${Math.random()
+        .toString(32)
+        .substring(4)}`;
 
-	const err = anidarPropiedades(errors, (name as string).split("."));
+    const err = anidarPropiedades(errors, (name as string).split("."));
 
-	return (
-		<>
-			<div class="lg:mb-2 w-full ">
-				<label
-					class="text-xs dark:text-secondary-light text-secondary-dark capitalize font-semibold"
-					htmlFor={nameRandom}
-				>
-					{title}
-				</label>
-				<div class="flex gap-4 items-center">
-					<div class="wrap-toggle my-1">
-						<input
-							type="checkbox"
-							{...register(name as unknown as Path<T>, options)}
-							id={nameRandom}
-							class="offscreen"
-							disabled={disabled}
-						/>
-						<label for={nameRandom} class="switch" />
-					</div>
-					{question ? (
-						<div class="relative group ">
-							<i class="fa-solid fa-circle-question text-xs dark:text-white" />
-							<div class="text-xs min-w-[100px] hidden group-hover:block -top-[35px] right-1 p-1 shadow text-center absolute rounded-md dark:bg-admin-background-dark bg-background-light dark:text-white z-10 font-semibold">
-								{question}
-							</div>
-						</div>
-					) : null}
-				</div>
+    return (
+        <>
+            <div class="lg:mb-2 w-full ">
+                <label
+                    class="text-xs dark:text-secondary-light text-secondary-dark capitalize font-semibold"
+                    htmlFor={nameRandom}
+                >
+                    {title}
+                </label>
+                <div class="flex gap-4 items-center">
+                    <div class="wrap-toggle my-1">
+                        <input
+                            type="checkbox"
+                            {...register(name as unknown as Path<T>, options)}
+                            id={nameRandom}
+                            class="offscreen"
+                            disabled={disabled}
+                        />
+                        <label for={nameRandom} class="switch" />
+                    </div>
+                    {question ? (
+                        <div class="relative group ">
+                            <i class="fa-solid fa-circle-question text-xs dark:text-white" />
+                            <div class="text-xs min-w-[100px] hidden group-hover:block -top-[35px] right-1 p-1 shadow text-center absolute rounded-md dark:bg-admin-background-dark bg-background-light dark:text-white z-10 font-semibold">
+                                {question}
+                            </div>
+                        </div>
+                    ) : null}
+                </div>
 
-				{Object.keys(err).length ? (
-					<p class="text-xs text-red-600">{err.message}</p>
-				) : null}
-			</div>
-			<style jsx>{`
+                {Object.keys(err).length ? (
+                    <p class="text-xs text-red-600">{err.message}</p>
+                ) : null}
+            </div>
+            <style jsx>{`
                 .wrap-toggle {
                 }
 
@@ -96,7 +98,11 @@ function FormRadio<T extends object>({
 
                 input[type="checkbox"]:checked + .switch:after {
                     transform: translateX(40px);
-                    background-color: white;
+                    background-color: ${isColorLight(
+                        storageEmpresa!.setting.bg_color
+                    )
+                        ? "#000"
+                        : "#fff"};
                 }
 
                 input[type="checkbox"]:checked + .switch {
@@ -108,8 +114,8 @@ function FormRadio<T extends object>({
                     left: -9999px;
                 }
             `}</style>
-		</>
-	);
+        </>
+    );
 }
 
 export default FormRadio;

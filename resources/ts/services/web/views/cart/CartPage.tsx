@@ -193,7 +193,7 @@ function CartPage({ cart, header }: CartProps) {
                             <div class="w-full overflow-auto">
                                 <table class="w-full ">
                                     <thead class="py-3 border-b border-b-border bg-primary">
-                                        <tr class="text-xs text-left text-muted-foreground text-white">
+                                        <tr class="text-xs text-left text-muted-foreground ">
                                             <th class="py-2 font-medium font-bold text-sm dark:text-white ">
                                                 <span class="flex justify-center items-center">
                                                     Producto
@@ -380,7 +380,7 @@ function CartPage({ cart, header }: CartProps) {
                                                                         <button
                                                                             aria-label="to increment to cart"
                                                                             type="button"
-                                                                            class="md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white dark:hover:bg-primary dark:hover:text-white bg-primary dark:text-black text-white font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:text-primary delay-custom-1"
+                                                                            class="md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white dark: dark:hover:text-white bg-primary dark:text-black text-white font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:text-primary delay-custom-1"
                                                                             onClick={() =>
                                                                                 cartStore.methods.onIncrementProductToCart(
                                                                                     product
@@ -402,7 +402,7 @@ function CartPage({ cart, header }: CartProps) {
                                                                             }
                                                                             aria-label="to decrement to cart"
                                                                             type="button"
-                                                                            class="md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white dark:hover:bg-primary dark:hover:text-white bg-primary dark:text-black text-white font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:text-primary delay-custom-1"
+                                                                            class="md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white dark: dark:hover:text-white bg-primary dark:text-black text-white font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:text-primary delay-custom-1"
                                                                         >
                                                                             -
                                                                         </button>

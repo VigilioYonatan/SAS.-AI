@@ -10,6 +10,7 @@ import useEmpresastore, {
 import useShowImage from "~/hooks/useShowImage";
 import Form from "~/components/form";
 import {
+    bgPrimaryHover,
     paypalICOImage,
     plinImage,
     VisaMastercardImage,
@@ -464,7 +465,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                                                                             "square"
                                                                                                 ? "rounded-sm"
                                                                                                 : "rounded-md"
-                                                                                        }  flex text-primary py-2  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary hover:text-white ${
+                                                                                        }  flex text-primary py-2  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary ${bgPrimaryHover()} ${
                                                                                             existFeature
                                                                                                 ? "bg-primary text-white border-2 border-primary"
                                                                                                 : "bg-white"

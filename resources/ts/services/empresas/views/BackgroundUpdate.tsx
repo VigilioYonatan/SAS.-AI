@@ -106,8 +106,15 @@ function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
         }
         async function initialUpdateImage() {
             if (background.image) {
-                const image = await getFilesEdit(background.image, 1200);
-                formBackgroundUpdateImage.setValue("image", image);
+                const [image, video] = await Promise.all([
+                    getFilesEdit(background.image, 1200),
+                    getFilesEdit(background.image, null, "video/mp4"),
+                ]);
+
+                formBackgroundUpdateImage.setValue(
+                    "image",
+                    image.length ? image : video
+                );
             }
         }
 
@@ -159,7 +166,7 @@ function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
                 <div class="flex justify-between items-center">
                     <h3 class="dark:text-white text-lg lg:text-2xl font-bold uppercase text-center flex gap-2">
                         <i class="fa-solid fa-image" />
-                        Editar Imagen
+                        Editar Imagen/video
                     </h3>
                 </div>
                 <Form
@@ -169,9 +176,10 @@ function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
                     <Form.control.file
                         name={"image" as keyof BackgroundImageUpdateDto}
                         title="Image de empresa"
-                        accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
-                        typeFile="image"
+                        accept="image/png, image/jpeg, image/jpg, image/webp, image/gif y video/mp4"
+                        typeFile="image-video"
                         showButonCopy
+                        typesText="JPG, PNG, WEBP, GIF, MP4, OGG Ó JPEG"
                     />
                     <div class="flex justify-center">
                         <Form.button.submit

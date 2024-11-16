@@ -5,13 +5,24 @@ import Form from "~/components/form";
 import { useForm } from "react-hook-form";
 import { useEffect, useMemo } from "preact/hooks";
 import {
+    empresasIconUpdateDto,
+    EmpresasIconUpdateDto,
+    empresasLogoPWAUpdateDto,
+    EmpresasLogoPWAUpdateDto,
+    empresasLogoUpdateDto,
+    EmpresasLogoUpdateDto,
+    empresasPhotoUpdateDto,
+    EmpresasPhotoUpdateDto,
     empresasUpdateDto,
     EmpresasUpdateDto,
 } from "../dtos/empresas.update.dto";
 
 import {
+    empresasUpdateIconApi,
+    empresasUpdatePhotoApi,
     empresaUpdateApi,
     empresaUpdateLogoApi,
+    empresaUpdateLogoPWAApi,
 } from "../apis/empresas.update.api";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { valibotVigilio } from "~/libs/valibot";
@@ -25,12 +36,7 @@ import {
 import Loading from "@/admin/components/Loading";
 import View404 from "@/admin/views/404";
 import { empresaPrivateApi } from "../apis/empresas.private.api";
-import {
-    settingsLogoUpdateDto,
-    SettingsLogoUpdateDto,
-} from "../dtos/settings.update.dto";
 import { getFilesEdit } from "~/libs/upload";
-import Hr from "@/web/components/Hr";
 import useEmpresastore, { storageEmpresa } from "../stores/empresa.store";
 import { formSelectNumber } from "~/components/form/FormSelect";
 import AlertInfo from "~/components/Alerts/AlertInfo";
@@ -56,7 +62,9 @@ function empresaUpdate() {
         const empresaStore = useEmpresastore();
         const empresa = empresaQuery.data!.empresa;
         const empresaUpdateMutation = empresaUpdateApi();
-        const settingsUpdateMutation = settingsUpdateApi();
+        const empresaUpdateIconMutation = empresasUpdateIconApi();
+        const empresasUpdatePhotoMutation = empresasUpdatePhotoApi();
+        const empresasUpdateMutation = settingsUpdateApi();
         const color = useSignal<string | null>(
             storageEmpresa!.logo ? storageEmpresa!.setting.bg_color : null
         );
@@ -64,7 +72,7 @@ function empresaUpdate() {
 
         const colorChoose = useSignal<string[][] | null>(null);
 
-        const settingsUpdateform = useForm<EmpresasUpdateDto>({
+        const empresasUpdateform = useForm<EmpresasUpdateDto>({
             resolver: valibotVigilio(empresasUpdateDto),
             mode: "all",
             defaultValues: useMemo(() => {
@@ -86,6 +94,89 @@ function empresaUpdate() {
                 };
             }, []),
         });
+        const empresasIconUpdateform = useForm<EmpresasIconUpdateDto>({
+            resolver: valibotVigilio(empresasIconUpdateDto),
+            mode: "all",
+        });
+
+        const empresasPhotoUpdateform = useForm<EmpresasPhotoUpdateDto>({
+            resolver: valibotVigilio(empresasPhotoUpdateDto),
+            mode: "all",
+        });
+        async function initialUpdateIcon() {
+            if (empresa.icon) {
+                const icon = await getFilesEdit(empresa.icon, 300);
+                empresasIconUpdateform.setValue("icon", icon);
+            }
+        }
+        async function initialUpdatePhoto() {
+            if (empresa.photo) {
+                const photo = await getFilesEdit(empresa.photo, 800);
+                empresasPhotoUpdateform.setValue("photo", photo);
+            }
+        }
+
+        function onUpdateIconEmpresa(body: EmpresasIconUpdateDto) {
+            sweetModal({
+                title: "¿Estas seguro de cambiar el icono de tu web?",
+                showCancelButton: true,
+                showCloseButton: true,
+            }).then(({ isConfirmed }) => {
+                if (isConfirmed) {
+                    empresaUpdateIconMutation.mutate(
+                        { ...body, name: empresaStore.state!.name_empresa },
+                        {
+                            onSuccess(data) {
+                                empresaStore.methods.updateempresa({
+                                    icon: data.files,
+                                });
+                                sweetAlert({
+                                    icon: "success",
+                                    title: "Actualizado icono correctamente",
+                                });
+                            },
+                            onError() {
+                                sweetAlert({
+                                    icon: "danger",
+                                    title: "Error al actualizar",
+                                });
+                            },
+                        }
+                    );
+                }
+            });
+        }
+
+        function onUpdatePhotoempresa(body: EmpresasPhotoUpdateDto) {
+            sweetModal({
+                title: "¿Estas seguro de cambiar el photo de tu web?",
+                showCancelButton: true,
+                showCloseButton: true,
+            }).then(({ isConfirmed }) => {
+                if (isConfirmed) {
+                    empresasUpdatePhotoMutation.mutate(
+                        { ...body, name: empresaStore.state!.name_empresa },
+                        {
+                            onSuccess(data) {
+                                empresaStore.methods.updateempresa({
+                                    photo: data.files,
+                                });
+                                sweetAlert({
+                                    icon: "success",
+                                    title: "Actualizado icono correctamente",
+                                });
+                            },
+                            onError() {
+                                sweetAlert({
+                                    icon: "danger",
+                                    title: "Error al actualizar",
+                                });
+                            },
+                        }
+                    );
+                }
+            });
+        }
 
         function onUpdateempresa(body: EmpresasUpdateDto) {
             sweetModal({
@@ -103,25 +194,36 @@ function empresaUpdate() {
                             });
                         },
                         onError(error) {
-                            handlerError(settingsUpdateform, error);
+                            handlerError(empresasUpdateform, error);
                         },
                     });
                 }
             });
         }
         const empresaUpdateLogoMutation = empresaUpdateLogoApi();
+        const empresaUpdateLogoPWAMutation = empresaUpdateLogoPWAApi();
 
-        const settingsLogoUpdateform = useForm<SettingsLogoUpdateDto>({
-            resolver: valibotVigilio(settingsLogoUpdateDto),
+        const empresasLogoUpdateform = useForm<EmpresasLogoUpdateDto>({
+            resolver: valibotVigilio(empresasLogoUpdateDto),
+            mode: "all",
+        });
+        const empresasLogoPWAUpdateform = useForm<EmpresasLogoPWAUpdateDto>({
+            resolver: valibotVigilio(empresasLogoPWAUpdateDto),
             mode: "all",
         });
 
-        const logo = settingsLogoUpdateform.watch("logo");
+        const logo = empresasLogoUpdateform.watch("logo");
         async function initialUpdateLogo() {
             if (empresa.logo) {
                 const logo = await getFilesEdit(empresa.logo, 300);
-                settingsLogoUpdateform.setValue("logo", logo);
+                empresasLogoUpdateform.setValue("logo", logo);
                 await getColor(logo[0]);
+            }
+        }
+        async function initialUpdatePWALogo() {
+            if (empresa.logo_pwa) {
+                const logo_pwa = await getFilesEdit(empresa.logo_pwa, 513);
+                empresasLogoPWAUpdateform.setValue("logo_pwa", logo_pwa);
             }
         }
         async function getColor(file: File) {
@@ -136,7 +238,13 @@ function empresaUpdate() {
                 color.value = null;
             }
         }, [logo]);
-        function onUpdateLogoSetting(body: SettingsLogoUpdateDto) {
+        useEffect(() => {
+            initialUpdateIcon();
+        }, []);
+        useEffect(() => {
+            initialUpdatePhoto();
+        }, []);
+        function onUpdateLogoSetting(body: EmpresasLogoUpdateDto) {
             if (!color.value && logo) {
                 colorError.value = "Escoge un color para tu Web.";
                 return;
@@ -148,7 +256,7 @@ function empresaUpdate() {
                 showCloseButton: true,
             }).then(async ({ isConfirmed }) => {
                 if (isConfirmed) {
-                    await settingsUpdateMutation.mutateAsync(
+                    await empresasUpdateMutation.mutateAsync(
                         empresaStore.state!.setting
                     );
                     empresaUpdateLogoMutation.mutate(
@@ -175,9 +283,41 @@ function empresaUpdate() {
                 }
             });
         }
+        function onUpdateLogoPWASetting(body: EmpresasLogoPWAUpdateDto) {
+            sweetModal({
+                title: "¿Estas seguro de cambiar el logo de tu web?",
+                showCancelButton: true,
+                showCloseButton: true,
+            }).then(async ({ isConfirmed }) => {
+                if (isConfirmed) {
+                    empresaUpdateLogoPWAMutation.mutate(
+                        { ...body, name: empresaStore.state!.name_empresa },
+                        {
+                            onSuccess(data) {
+                                empresaStore.methods.updateempresa({
+                                    ...empresaStore.state!,
+                                    logo_pwa: data.files,
+                                });
+                                sweetAlert({
+                                    icon: "success",
+                                    title: "Actualizado logo correctamente",
+                                });
+                            },
+                            onError(error) {
+                                sweetAlert({
+                                    icon: "danger",
+                                    title: error.message,
+                                });
+                            },
+                        }
+                    );
+                }
+            });
+        }
 
         useEffect(() => {
             initialUpdateLogo();
+            initialUpdatePWALogo();
         }, []);
 
         component = (
@@ -190,7 +330,7 @@ function empresaUpdate() {
                         <i class="fa-solid fa-tools" />
                         Empresa {empresa.name_empresa}
                     </h3>
-                    <Form {...settingsUpdateform} onSubmit={onUpdateempresa}>
+                    <Form {...empresasUpdateform} onSubmit={onUpdateempresa}>
                         <div class="flex justify-between items-center mb-4 gap-2">
                             <div class="flex items-center justify-between w-full gap-2 flex-wrap">
                                 <Form.button.reset />
@@ -326,6 +466,11 @@ function empresaUpdate() {
                                     title="Fundado"
                                 />
                             </div>
+                            <Form.control.area
+                                name={"about" as keyof EmpresasUpdateDto}
+                                title="Acerca de la empresa"
+                                placeholder={`Somos  ${storageEmpresa?.name_empresa} ...`}
+                            />
                             <span class="font-semibold dark:text-secondary-light">
                                 Redes Sociales
                             </span>
@@ -613,23 +758,27 @@ function empresaUpdate() {
                                         </div>
                                     }
                                 />
-                            </div>{" "}
+                                <Form.control
+                                    name={
+                                        "header_cart" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Titulo Carrito Link"
+                                    question={
+                                        <div class="w-[250px]">
+                                            Perzonaliza el texto del link de tu
+                                            carrito de compra.
+                                            <br />
+                                            Por defecto es{" "}
+                                            <b class="font-semibold">
+                                                Los mejores productos en un solo
+                                                lugar
+                                            </b>
+                                        </div>
+                                    }
+                                />
+                            </div>
                         </div>
-                        <Form.control.area
-                            name={"header_cart" as keyof EmpresasUpdateDto}
-                            title="Titulo Carrito Link"
-                            question={
-                                <div class="w-[250px]">
-                                    Perzonaliza el texto del link de tu carrito
-                                    de compra.
-                                    <br />
-                                    Por defecto es{" "}
-                                    <b class="font-semibold">
-                                        Los mejores productos en un solo lugar
-                                    </b>
-                                </div>
-                            }
-                        />
+
                         <div class="w-full my-6">
                             {" "}
                             <span class="dark:text-white font-semibold text-xs ">
@@ -744,100 +893,174 @@ function empresaUpdate() {
                             title="Guardar Cambios"
                         />
                     </Form>
-                    <Hr spacing={13} />
-
-                    <Form
-                        {...settingsLogoUpdateform}
-                        onSubmit={onUpdateLogoSetting}
-                    >
-                        <AlertInfo>
-                            <span class="font-semibold dark:text-white">
-                                ¿No tienes un logo?
-                                <br />
-                                Digite su logo en esta Inteligencia Artificial{" "}
-                                <a
-                                    href="https://www.bing.com/images/create"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    class="text-primary underline"
-                                >
-                                    aquí
-                                </a>{" "}
-                                - GRATIS
-                            </span>
-                        </AlertInfo>
-                        {colorChoose.value ? (
-                            <div>
-                                <span class="text-xs dark:text-white font-semibold">
-                                    Escoger color de tu Web:
-                                </span>
-                                <div class="flex gap-2">
-                                    {colorChoose.value?.map((c) => (
-                                        <div
-                                            key={c}
-                                            class={`${
-                                                color.value ===
-                                                `#${rgbToHex(c)}`
-                                                    ? isColorLight(
-                                                          `#${rgbToHex(c)}`
-                                                      )
-                                                        ? "border-black border-2"
-                                                        : "border-gray-400 border-2"
-                                                    : ""
-                                            } w-[60px] h-[20px]`}
-                                            onClick={() => {
-                                                color.value = `#${rgbToHex(c)}`;
-                                                document.documentElement.style.setProperty(
-                                                    "--primary",
-                                                    color.value
-                                                );
-                                                empresaStore.methods.updateempresa(
-                                                    {
-                                                        setting: {
-                                                            ...empresaStore.state!
-                                                                .setting,
-                                                            bg_color:
-                                                                color.value,
-                                                        },
-                                                    }
-                                                );
-                                            }}
-                                            style={{
-                                                backgroundColor: `#${rgbToHex(
-                                                    c
-                                                )}`,
-                                            }}
-                                        />
-                                    ))}
+                    <br />
+                    <AlertInfo>
+                        <span class="font-semibold dark:text-white">
+                            ¿No tienes un logo?
+                            <br />
+                            Digite su logo en esta Inteligencia Artificial{" "}
+                            <a
+                                href="https://www.bing.com/images/create"
+                                target="_blank"
+                                rel="noreferrer"
+                                class="text-primary underline"
+                            >
+                                aquí
+                            </a>{" "}
+                            - GRATIS
+                        </span>
+                    </AlertInfo>
+                    <div class="grid-cols-2 grid gap-2 items-center">
+                        <Form
+                            {...empresasLogoUpdateform}
+                            onSubmit={onUpdateLogoSetting}
+                        >
+                            {colorChoose.value ? (
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Escoger color de tu Web:
+                                    </span>
+                                    <div class="flex gap-2">
+                                        {colorChoose.value?.map((c) => (
+                                            <div
+                                                key={c}
+                                                class={`${
+                                                    color.value ===
+                                                    `#${rgbToHex(c)}`
+                                                        ? isColorLight(
+                                                              `#${rgbToHex(c)}`
+                                                          )
+                                                            ? "border-black border-2"
+                                                            : "border-gray-400 border-2"
+                                                        : ""
+                                                } w-[60px] h-[20px]`}
+                                                onClick={() => {
+                                                    color.value = `#${rgbToHex(
+                                                        c
+                                                    )}`;
+                                                    document.documentElement.style.setProperty(
+                                                        "--primary",
+                                                        color.value
+                                                    );
+                                                    empresaStore.methods.updateempresa(
+                                                        {
+                                                            setting: {
+                                                                ...empresaStore.state!
+                                                                    .setting,
+                                                                bg_color:
+                                                                    color.value,
+                                                            },
+                                                        }
+                                                    );
+                                                }}
+                                                style={{
+                                                    backgroundColor: `#${rgbToHex(
+                                                        c
+                                                    )}`,
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                    {colorError.value ? (
+                                        <p class="text-danger text-xs font-semibold">
+                                            {colorError.value}
+                                        </p>
+                                    ) : null}
                                 </div>
-                                {colorError.value ? (
-                                    <p class="text-danger text-xs font-semibold">
-                                        {colorError.value}
-                                    </p>
-                                ) : null}
-                            </div>
-                        ) : (
-                            <></>
-                        )}
+                            ) : (
+                                <></>
+                            )}
 
-                        <Form.control.file
-                            name={"logo" as keyof SettingsLogoUpdateDto}
-                            title="Logo de la empresa (200px x 200px)"
-                            accept="image/*"
-                            multiple={false}
-                            showButonCopy
-                            typeFile="image"
-                        />
-                        <Form.button.submit
-                            disabled={
-                                empresaUpdateLogoMutation.isLoading || false
-                            }
-                            isLoading={
-                                empresaUpdateLogoMutation.isLoading || false
-                            }
-                            title="Guardar Cambios"
-                        />
-                    </Form>
+                            <Form.control.file
+                                name={"logo" as keyof EmpresasLogoUpdateDto}
+                                title="Logo de la empresa"
+                                accept="image/*"
+                                multiple={false}
+                                showButonCopy
+                                typeFile="image"
+                            />
+                            <Form.button.submit
+                                disabled={
+                                    empresaUpdateLogoMutation.isLoading || false
+                                }
+                                isLoading={
+                                    empresaUpdateLogoMutation.isLoading || false
+                                }
+                                title="Guardar Cambios"
+                            />
+                        </Form>
+                        <Form
+                            {...empresasIconUpdateform}
+                            onSubmit={onUpdateIconEmpresa}
+                        >
+                            <Form.control.file
+                                name={"icon" as keyof EmpresasIconUpdateDto}
+                                title="Icono de la web (Imagen Rectangular)"
+                                accept="image/*"
+                                multiple={false}
+                                typeFile="image"
+                                showButonCopy
+                            />
+                            <Form.button.submit
+                                disabled={
+                                    empresaUpdateIconMutation.isLoading || false
+                                }
+                                isLoading={
+                                    empresaUpdateIconMutation.isLoading || false
+                                }
+                                title="Guardar Cambios"
+                            />
+                        </Form>
+                        <Form
+                            {...empresasLogoPWAUpdateform}
+                            onSubmit={onUpdateLogoPWASetting}
+                        >
+                            <Form.control.file
+                                name={
+                                    "logo_pwa" as keyof EmpresasLogoPWAUpdateDto
+                                }
+                                title="Icono de la Aplicación Movil (Imagen Rectangular)"
+                                accept="image/*"
+                                multiple={false}
+                                typeFile="image"
+                                showButonCopy
+                            />
+                            <Form.button.submit
+                                disabled={
+                                    empresaUpdateIconMutation.isLoading || false
+                                }
+                                isLoading={
+                                    empresaUpdateIconMutation.isLoading || false
+                                }
+                                title="Guardar Cambios"
+                            />
+                        </Form>
+                        <Form
+                            {...empresasPhotoUpdateform}
+                            onSubmit={onUpdatePhotoempresa}
+                        >
+                            <br id="#foto_empresa" />
+                            <Form.control.file
+                                name={"photo" as keyof EmpresasPhotoUpdateDto}
+                                title="Imagen de  tu negocio/empresa"
+                                showButonCopy
+                                accept="image/*"
+                                typeFile="image"
+                                multiple={false}
+                            />
+                            <Form.button.submit
+                                disabled={
+                                    empresasUpdatePhotoMutation.isLoading ||
+                                    false
+                                }
+                                isLoading={
+                                    empresasUpdatePhotoMutation.isLoading ||
+                                    false
+                                }
+                                title="Guardar Cambios"
+                            />
+                        </Form>
+                    </div>
 
                     <span class="dark:text-gray-300 mt-6 text-end text-xs block ">
                         <b>Token:</b> {empresa.token}

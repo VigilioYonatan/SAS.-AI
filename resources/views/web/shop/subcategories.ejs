@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../components/webHead")  %>
+</head>
+
+<body class="dark:bg-paper-dark  bg-paper-light">
+  <subcategories-page :header="<%= JSON.stringify(header)  %>" :priceMinMax="<%= JSON.stringify(priceMinMax)  %>" :subcategory="<%= JSON.stringify(subcategory)  %>" :discounts="<%= JSON.stringify(discounts)  %>" :brands="<%= JSON.stringify(brands)  %>" :optionsFeatures="<%= JSON.stringify(optionsFeatures)  %>">
+  </subcategories-page>
+</body>
+
+</html>

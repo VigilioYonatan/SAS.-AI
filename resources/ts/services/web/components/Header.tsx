@@ -22,6 +22,7 @@ import Hamburguer from "./Hamburguer";
 import ProductsSearch2 from "@/products/views/ProductSearch2";
 import { printFileWithDimension } from "~/libs/upload";
 import { useEffect } from "preact/hooks";
+import { bgPrimaryHover } from "~/config/settings";
 
 interface HeaderProps {
     header: HeaderType;
@@ -40,7 +41,7 @@ function Header({ header }: HeaderProps) {
     useEffect(() => {
         async function handleScroll() {
             // Si la posición del scroll es 0, estamos en el top de la página
-            if (window.scrollY < 100) {
+            if (window.scrollY < 10) {
                 await delay(0.1);
                 isTop.value = true;
             } else {
@@ -95,6 +96,11 @@ function Header({ header }: HeaderProps) {
                     ${themeStore.state === "dark"
                         ? "color: #FFFFFF !important"
                         : isColorLight(storageEmpresa!.setting.bg_color_paper)
+                        ? "color: #000000 !important"
+                        : "color: #FFFFFF !important"};
+                }
+                .bg-primary {
+                    ${isColorLight(storageEmpresa!.setting.bg_color)
                         ? "color: #000000 !important"
                         : "color: #FFFFFF !important"};
                 }
@@ -212,7 +218,7 @@ function Header({ header }: HeaderProps) {
                                     </WebDropdown>
                                 ) : (
                                     <a href="/auth/login">
-                                        <i class="far fa-user mr-2" />
+                                        <i class="fas fa-user-circle mr-2" />
                                         <span>Iniciar sesión</span>
                                     </a>
                                 )}
@@ -239,7 +245,17 @@ function Header({ header }: HeaderProps) {
                 }`}
             >
                 <div class="max-w-6xl   mx-auto flex gap-4 justify-between items-center px-2 py-4 ">
-                    <LogoImage width="60" height="60" />
+                    <div
+                        style={{
+                            order: storageEmpresa?.setting.header_position.logo,
+                        }}
+                    >
+                        <LogoImage
+                            width={storageEmpresa?.setting.logo_width}
+                            height="60"
+                        />
+                    </div>
+
                     <nav
                         class={`gap-6 items-center hidden lg:flex  relative ${
                             storageEmpresa?.setting.header_type ===
@@ -247,25 +263,33 @@ function Header({ header }: HeaderProps) {
                                 ? `${isTop.value ? "text-white" : ""}`
                                 : ""
                         } `}
+                        style={{
+                            order: storageEmpresa?.setting.header_position
+                                .navbar,
+                        }}
                     >
-                        <a
-                            class={` font-bold tracking-widest dark:hover:text-primary text-sm uppercase ${
-                                isActive("/", false)
-                                    ? "text-primary"
-                                    : " dark:text-white hover:text-primary"
-                            }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                            href={"/"}
-                        >
-                            Inicio
-                        </a>
-                        {storageEmpresa?.setting.header_type !== "search" ? (
+                        {storageEmpresa?.setting.header.home ? (
+                            <a
+                                class={` font-bold tracking-widest dark:hover:text-primary text-sm uppercase ${
+                                    isActive("/", false)
+                                        ? "text-primary after:scale-x-100 "
+                                        : " dark:text-white hover:text-primary"
+                                }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                                href={"/"}
+                            >
+                                Inicio
+                            </a>
+                        ) : null}
+
+                        {storageEmpresa?.setting.header_type !== "search" &&
+                        storageEmpresa?.setting.header.shop ? (
                             <div class="relative">
                                 <a
                                     href="/shop"
                                     type="button"
                                     class={`font-bold tracking-widest text-sm uppercase hover:text-primary dark:hover:text-primary delay-custom-1 ${
                                         isActive("/shop")
-                                            ? "text-primary"
+                                            ? "text-primary after:scale-x-100"
                                             : " dark:text-white "
                                     } relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
                                     onBlur={() => {}}
@@ -279,58 +303,36 @@ function Header({ header }: HeaderProps) {
                                 >
                                     Shop
                                 </a>
-                                <div
-                                    onFocus={() => {}}
-                                    onBlur={() => {}}
-                                    onMouseOver={() => {
-                                        isOpen.value = true;
-                                    }}
-                                    onMouseOut={() => {
-                                        isOpen.value = false;
-                                    }}
-                                    class={`flex p-2 min-w-[300px]  bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
-                                        isOpen.value
-                                            ? "max-h-[800px]  opacity-100"
-                                            : "max-h-0 overflow-hidden opacity-0"
-                                    } `}
-                                >
-                                    <div class="">
-                                        {header.categories.map((category) => {
-                                            const dropdown = useDropdown();
-                                            return (
-                                                <a
-                                                    href={`/shop/${category.slug}`}
-                                                    class="flex gap-2 items-center justify-between p-2 hover:bg-primary hover:text-white group w-full rounded-md"
-                                                    ref={dropdown.dropdown}
-                                                    key={category.id}
-                                                    aria-label="sho category"
-                                                >
-                                                    <div class="flex gap-3 items-center dark:text-white">
-                                                        {category.icon ? (
-                                                            <div
-                                                                dangerouslySetInnerHTML={{
-                                                                    __html: category.icon,
-                                                                }}
-                                                            />
-                                                        ) : null}
-                                                        <span class="font-semibold">
-                                                            {category.name}
-                                                        </span>
-                                                    </div>
-                                                </a>
-                                            );
-                                        })}
-                                    </div>
-                                    {header.categoriesServices.length ? (
-                                        <>
-                                            {header.categoriesServices.map(
-                                                (category) => (
-                                                    <>
-                                                        <button
+                                {storageEmpresa.setting.header.categories ? (
+                                    <div
+                                        onFocus={() => {}}
+                                        onBlur={() => {}}
+                                        onMouseOver={() => {
+                                            isOpen.value = true;
+                                        }}
+                                        onMouseOut={() => {
+                                            isOpen.value = false;
+                                        }}
+                                        class={`flex p-2 min-w-[300px]  bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
+                                            isOpen.value
+                                                ? "max-h-[800px]  opacity-100"
+                                                : "max-h-0 overflow-hidden opacity-0"
+                                        } `}
+                                    >
+                                        <div class="">
+                                            {header.categories.map(
+                                                (category) => {
+                                                    const dropdown =
+                                                        useDropdown();
+                                                    return (
+                                                        <a
+                                                            href={`/shop/${category.slug}`}
+                                                            class={`flex gap-2 items-center justify-between p-2   group w-full rounded-md hover:bg-primary ${bgPrimaryHover()}`}
+                                                            ref={
+                                                                dropdown.dropdown
+                                                            }
                                                             key={category.id}
-                                                            type="button"
-                                                            aria-label="marcas"
-                                                            class="flex gap-2 items-center justify-between p-2 hover:bg-primary hover:text-white group w-full rounded-md  relative group "
+                                                            aria-label="sho category"
                                                         >
                                                             <div class="flex gap-3 items-center dark:text-white">
                                                                 {category.icon ? (
@@ -346,91 +348,133 @@ function Header({ header }: HeaderProps) {
                                                                     }
                                                                 </span>
                                                             </div>
-                                                            <div class="absolute rounded-md right-[-312px] min-w-[300px]  p-2 bg-background-light dark:bg-paper-dark rounded-b-md flex-col hidden group-hover:flex">
-                                                                {category.products.map(
-                                                                    (
-                                                                        service
-                                                                    ) => (
-                                                                        <a
-                                                                            href={`/servicio/${service.slug}`}
-                                                                            class="flex gap-2 items-center justify-between p-2   w-full rounded-md hover:text-white hover:bg-primary dark:text-white "
-                                                                            key={
-                                                                                service.id
-                                                                            }
-                                                                            aria-label="show category"
-                                                                        >
-                                                                            <div class="flex gap-2 items-center ">
-                                                                                <span class="font-semibold">
-                                                                                    {
-                                                                                        service.name
-                                                                                    }
-                                                                                </span>
-                                                                            </div>
-                                                                        </a>
-                                                                    )
-                                                                )}
-                                                            </div>
-                                                        </button>
-                                                    </>
-                                                )
+                                                        </a>
+                                                    );
+                                                }
                                             )}
-                                        </>
-                                    ) : null}
-                                    {header.brands.length ? (
-                                        <button
-                                            type="button"
-                                            aria-label="marcas"
-                                            class="flex gap-2 items-center justify-between p-2 hover:bg-primary hover:text-white group w-full rounded-md  relative group "
-                                        >
-                                            <div class="flex gap-3 items-center dark:text-white">
-                                                <i class="fas fa-tag" />
-                                                <span class="font-semibold">
-                                                    Marcas
-                                                </span>
-                                            </div>
-                                            <div class="absolute rounded-md right-[-312px] min-w-[300px]  p-2 bg-background-light dark:bg-paper-dark rounded-b-md flex-col hidden group-hover:flex">
-                                                {header.brands.map((brand) => (
-                                                    <a
-                                                        href={`/marcas/${brand.slug}`}
-                                                        class="flex gap-2 items-center justify-between p-2   w-full rounded-md hover:text-white hover:bg-primary dark:text-white "
-                                                        key={brand.id}
-                                                        aria-label="sho category"
-                                                    >
-                                                        <div class="flex gap-2 items-center ">
-                                                            {brand.image ? (
-                                                                <img
-                                                                    class="object-contain w-[30px] h-[30px]"
-                                                                    width={100}
-                                                                    height={100}
-                                                                    alt={
-                                                                        brand.name
-                                                                    }
-                                                                    src={
-                                                                        printFileWithDimension(
-                                                                            brand.image,
-                                                                            100
-                                                                        )[0]
-                                                                    }
-                                                                />
-                                                            ) : null}
-                                                            <span class="font-semibold">
-                                                                {brand.name}
-                                                            </span>
-                                                        </div>
-                                                    </a>
-                                                ))}
-                                            </div>
-                                        </button>
-                                    ) : null}
-                                </div>
+                                        </div>
+                                        {header.categoriesServices.length ? (
+                                            <>
+                                                {header.categoriesServices.map(
+                                                    (category) => (
+                                                        <>
+                                                            <button
+                                                                key={
+                                                                    category.id
+                                                                }
+                                                                type="button"
+                                                                aria-label="marcas"
+                                                                class={`flex gap-2 items-center justify-between p-2 hover:bg-primary  ${bgPrimaryHover()}  group w-full rounded-md  relative group `}
+                                                            >
+                                                                <div class="flex gap-3 items-center dark:text-white">
+                                                                    {category.icon ? (
+                                                                        <div
+                                                                            dangerouslySetInnerHTML={{
+                                                                                __html: category.icon,
+                                                                            }}
+                                                                        />
+                                                                    ) : null}
+                                                                    <span class="font-semibold">
+                                                                        {
+                                                                            category.name
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                                <div class="absolute rounded-md right-[-312px] min-w-[300px]  p-2 bg-background-light dark:bg-paper-dark rounded-b-md flex-col hidden group-hover:flex">
+                                                                    {category.products.map(
+                                                                        (
+                                                                            service
+                                                                        ) => (
+                                                                            <a
+                                                                                href={`/servicio/${service.slug}`}
+                                                                                class={`flex gap-2 items-center justify-between p-2   w-full rounded-md hover:bg-primary ${bgPrimaryHover()} `}
+                                                                                key={
+                                                                                    service.id
+                                                                                }
+                                                                                aria-label="show category"
+                                                                            >
+                                                                                <div class="flex gap-2 items-center ">
+                                                                                    <span class="font-semibold">
+                                                                                        {
+                                                                                            service.name
+                                                                                        }
+                                                                                    </span>
+                                                                                </div>
+                                                                            </a>
+                                                                        )
+                                                                    )}
+                                                                </div>
+                                                            </button>
+                                                        </>
+                                                    )
+                                                )}
+                                            </>
+                                        ) : null}
+                                        {header.brands.length ? (
+                                            <button
+                                                type="button"
+                                                aria-label="marcas"
+                                                class={`flex gap-2 items-center justify-between p-2 hover:bg-primary ${bgPrimaryHover()} group w-full rounded-md  relative group  `}
+                                            >
+                                                <div class="flex gap-3 items-center dark:text-white">
+                                                    <i class="fas fa-tag" />
+                                                    <span class="font-semibold">
+                                                        Marcas
+                                                    </span>
+                                                </div>
+                                                <div class="absolute rounded-md right-[-312px] min-w-[300px]  p-2 bg-background-light dark:bg-paper-dark rounded-b-md flex-col hidden group-hover:flex">
+                                                    {header.brands.map(
+                                                        (brand) => (
+                                                            <a
+                                                                href={`/marcas/${brand.slug}`}
+                                                                class={`flex gap-2 items-center justify-between p-2   w-full rounded-md hover:bg-primary  ${bgPrimaryHover()}`}
+                                                                key={brand.id}
+                                                                aria-label="sho category"
+                                                            >
+                                                                <div class="flex gap-2 items-center ">
+                                                                    {brand.image ? (
+                                                                        <img
+                                                                            class="object-contain w-[30px] h-[30px]"
+                                                                            width={
+                                                                                100
+                                                                            }
+                                                                            height={
+                                                                                100
+                                                                            }
+                                                                            alt={
+                                                                                brand.name
+                                                                            }
+                                                                            src={
+                                                                                printFileWithDimension(
+                                                                                    brand.image,
+                                                                                    100
+                                                                                )[0]
+                                                                            }
+                                                                        />
+                                                                    ) : null}
+                                                                    <span class="font-semibold">
+                                                                        {
+                                                                            brand.name
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                            </a>
+                                                        )
+                                                    )}
+                                                </div>
+                                            </button>
+                                        ) : null}
+                                    </div>
+                                ) : null}
                             </div>
                         ) : null}
 
-                        {storageEmpresa?.setting.shows.about ? (
+                        {storageEmpresa?.setting.shows.about &&
+                        storageEmpresa?.setting.header.about ? (
                             <a
                                 class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
                                     isActive("/nosotros")
-                                        ? "text-primary"
+                                        ? "text-primary after:scale-x-100"
                                         : " dark:text-white hover:text-primary"
                                 }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
                                 href={"/nosotros"}
@@ -438,99 +482,104 @@ function Header({ header }: HeaderProps) {
                                 Nosotros
                             </a>
                         ) : null}
-
-                        <a
-                            class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
-                                isActive("/auth/profile", true)
-                                    ? "text-primary"
-                                    : " dark:text-white hover:text-primary"
-                            }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                            href={"/auth/profile"}
-                        >
-                            Mi Perfil
-                        </a>
-                        <a
-                            class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
-                                isActive("/pedidos")
-                                    ? "text-primary"
-                                    : " dark:text-white hover:text-primary"
-                            }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                            href={"/pedidos"}
-                        >
-                            Pedidos
-                        </a>
-                        {/*  */}
-                        <div class="relative">
-                            <button
-                                type="button"
-                                class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1  hover:text-primary  delay-custom-1 ${
-                                    isActive("/terminos-y-condiciones") ||
-                                    isActive("/politica-de-privacidad") ||
-                                    isActive("/libro-de-reclamaciones")
-                                        ? "text-primary"
-                                        : " dark:text-white "
+                        {storageEmpresa?.setting.header.profile ? (
+                            <a
+                                class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
+                                    isActive("/auth/profile", true)
+                                        ? "text-primary after:scale-x-100"
+                                        : " dark:text-white hover:text-primary"
                                 }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                                onBlur={() => {}}
-                                onFocus={() => {}}
-                                onMouseOver={() => {
-                                    isOpenCondiciones.value =
-                                        !isOpenCondiciones.value;
-                                }}
-                                onMouseOut={() => {
-                                    isOpenCondiciones.value = false;
-                                }}
+                                href={"/auth/profile"}
                             >
-                                Condiciones de Uso
-                            </button>
-                            <div
-                                onFocus={() => {}}
-                                onBlur={() => {}}
-                                onMouseOver={() => {
-                                    isOpenCondiciones.value = true;
-                                }}
-                                onMouseOut={() => {
-                                    isOpenCondiciones.value = false;
-                                }}
-                                class={`flex p-2 min-w-[240px] bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
-                                    isOpenCondiciones.value
-                                        ? "max-h-[800px]  opacity-100"
-                                        : "max-h-0 overflow-hidden opacity-0"
-                                } `}
+                                Mi Perfil
+                            </a>
+                        ) : null}
+                        {storageEmpresa?.setting.header.pedidos ? (
+                            <a
+                                class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
+                                    isActive("/pedidos")
+                                        ? "text-primary after:scale-x-100"
+                                        : " dark:text-white hover:text-primary "
+                                }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                                href={"/pedidos"}
                             >
-                                <div class="">
-                                    <a
-                                        href="/terminos-y-condiciones"
-                                        class="flex gap-2 items-center justify-between p-2 hover:bg-primary hover:text-white group w-full rounded-md"
-                                    >
-                                        <div class="flex gap-3 items-center dark:text-white">
-                                            <span class="font-semibold">
-                                                Términos y Condiciones
-                                            </span>
-                                        </div>
-                                    </a>
-                                    <a
-                                        href="/politica-de-privacidad"
-                                        class="flex gap-2 items-center justify-between p-2 hover:bg-primary hover:text-white group w-full rounded-md"
-                                    >
-                                        <div class="flex gap-3 items-center dark:text-white">
-                                            <span class="font-semibold">
-                                                Política y Privacidad
-                                            </span>
-                                        </div>
-                                    </a>
-                                    <a
-                                        href="/libro-de-reclamaciones"
-                                        class="flex gap-2 items-center justify-between p-2 hover:bg-primary hover:text-white group w-full rounded-md"
-                                    >
-                                        <div class="flex gap-3 items-center dark:text-white">
-                                            <span class="font-semibold">
-                                                Libro de Reclamaciones
-                                            </span>
-                                        </div>
-                                    </a>
+                                Pedidos
+                            </a>
+                        ) : null}
+
+                        {storageEmpresa?.setting.header.condiciones ? (
+                            <div class="relative">
+                                <button
+                                    type="button"
+                                    class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1  hover:text-primary  delay-custom-1 ${
+                                        isActive("/terminos-y-condiciones") ||
+                                        isActive("/politica-de-privacidad") ||
+                                        isActive("/libro-de-reclamaciones")
+                                            ? "text-primary after:scale-x-100"
+                                            : " dark:text-white "
+                                    }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                                    onBlur={() => {}}
+                                    onFocus={() => {}}
+                                    onMouseOver={() => {
+                                        isOpenCondiciones.value =
+                                            !isOpenCondiciones.value;
+                                    }}
+                                    onMouseOut={() => {
+                                        isOpenCondiciones.value = false;
+                                    }}
+                                >
+                                    Condiciones de Uso
+                                </button>
+                                <div
+                                    onFocus={() => {}}
+                                    onBlur={() => {}}
+                                    onMouseOver={() => {
+                                        isOpenCondiciones.value = true;
+                                    }}
+                                    onMouseOut={() => {
+                                        isOpenCondiciones.value = false;
+                                    }}
+                                    class={`flex p-2 min-w-[240px] bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
+                                        isOpenCondiciones.value
+                                            ? "max-h-[800px]  opacity-100"
+                                            : "max-h-0 overflow-hidden opacity-0"
+                                    } `}
+                                >
+                                    <div class="">
+                                        <a
+                                            href="/terminos-y-condiciones"
+                                            class={`flex gap-2 items-center justify-between p-2 hover:bg-primary  ${bgPrimaryHover()} group w-full rounded-md`}
+                                        >
+                                            <div class="flex gap-3 items-center dark:text-white">
+                                                <span class="font-semibold">
+                                                    Términos y Condiciones
+                                                </span>
+                                            </div>
+                                        </a>
+                                        <a
+                                            href="/politica-de-privacidad"
+                                            class={`flex gap-2 items-center justify-between p-2  hover:bg-primary ${bgPrimaryHover()} group w-full rounded-md `}
+                                        >
+                                            <div class="flex gap-3 items-center dark:text-white">
+                                                <span class="font-semibold">
+                                                    Política y Privacidad
+                                                </span>
+                                            </div>
+                                        </a>
+                                        <a
+                                            href="/libro-de-reclamaciones"
+                                            class={`flex gap-2 items-center  hover:bg-primary justify-between p-2  ${bgPrimaryHover()} group w-full rounded-md`}
+                                        >
+                                            <div class="flex gap-3 items-center dark:text-white">
+                                                <span class="font-semibold">
+                                                    Libro de Reclamaciones
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        ) : null}
                     </nav>
                     <div
                         class={`flex items-center gap-3 ${
@@ -539,6 +588,10 @@ function Header({ header }: HeaderProps) {
                                 ? `${isTop.value ? "text-white " : ""}`
                                 : ""
                         }`}
+                        style={{
+                            order: storageEmpresa?.setting.header_position
+                                .icons,
+                        }}
                     >
                         {header.totalProducts > 0 ? <SearchProducts /> : null}
                         <a
@@ -588,7 +641,7 @@ function Header({ header }: HeaderProps) {
                                                     .type_cart
                                             }
                                         />
-                                        <span class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs bg-red-500 -right-2 -top-2">
+                                        <span class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs bg-red-500 -right-2 -top-2 text-white">
                                             {cartStore.computed.showCartLength}
                                         </span>
                                     </button>
@@ -660,31 +713,32 @@ function Header({ header }: HeaderProps) {
                         </div>
                     ) : null}
                 </div>
-                {storageEmpresa?.setting.header_type === "search" &&
-                isTop.value ? (
-                    <div class="hidden gap-6 items-center py-2 lg:flex max-w-6xl mx-auto">
-                        <div class="relative">
-                            <button
-                                class="flex gap-4 text-sm tracking-wider bg-paper-light dark:bg-paper-dark dark:!text-white items-center  px-4 py-2 w-[250px] bg-hamburger-linear font-bold text-white [&>div>i]:dark:!text-white"
-                                type="button"
-                                aria-label="categories"
-                                onClick={() => {
-                                    isOpen.value = !isOpen.value;
-                                }}
-                            >
-                                <Hamburguer isOpen={false} />
-                                Shop
-                            </button>
-                            <HeaderAside
-                                header={header}
-                                isOpen={isOpen.value}
-                            />
-                        </div>
-                        <div class="flex gap-6 items-center w-full relative">
-                            <ProductsSearch2 />
-                        </div>
+                <div
+                    class={`${
+                        storageEmpresa?.setting.header_type === "search" &&
+                        isTop.value
+                            ? "hidden lg:flex"
+                            : "hidden"
+                    }  gap-6 items-center  py-2  max-w-6xl mx-auto  px-2`}
+                >
+                    <div class="relative ">
+                        <button
+                            class="flex gap-4 text-md tracking-wider  items-center  px-4 py-2 w-[250px] bg-hamburger-linear font-bold text-white [&>div>i]:dark:!text-white bg-primary"
+                            type="button"
+                            aria-label="categories"
+                            onClick={() => {
+                                isOpen.value = !isOpen.value;
+                            }}
+                        >
+                            <Hamburguer isOpen={false} />
+                            Shop
+                        </button>
+                        <HeaderAside header={header} isOpen={isOpen.value} />
                     </div>
-                ) : null}
+                    <div class="flex gap-6 items-center w-full relative">
+                        <ProductsSearch2 />
+                    </div>
+                </div>
             </header>
             {/* acá ira el header personalizado */}
             <HeaderMobile
@@ -709,21 +763,123 @@ function HeaderAside({ header, isOpen }: HeaderAsideProps) {
     return (
         <div
             class={`flex absolute right-0 dark:bg-paper-dark dark:text-white z-[99] delay-custom-1 left-0 flex-col ${
-                isOpen ? "max-h-[450px]" : "max-h-[0px] overflow-hidden"
+                storageEmpresa?.setting.is_block_aside && isActive("/", false)
+                    ? "max-h-[450px]"
+                    : isOpen
+                    ? "max-h-[450px]"
+                    : "max-h-[0px] overflow-hidden"
             } `}
         >
             {header.categories.map((category) => {
                 const dropdown = useDropdown();
+                const dropdown2 = useDropdown();
+
                 return (
                     <div
                         ref={dropdown.dropdown}
                         key={category.id}
                         type="button"
-                        class="bg-background-light dark:bg-paper-dark  dark:border-gray-600 py-2 font-semibold  px-5 w-full border-gray-1 flex justify-between items-center border-b border-gray-100 dark:!text-white hover:text-primary dark:hover:!text-primary"
+                        class="bg-background-light dark:bg-paper-dark  dark:border-gray-600 py-2 font-semibold  px-3 w-full border-gray-1 flex justify-between items-center border-b border-gray-100 dark:!text-white hover:text-primary dark:hover:!text-primary"
                     >
-                        <a class="w-full" href={`/shop/${category.slug}`}>
-                            {category.name}
-                        </a>
+                        <div class="w-full flex gap-2 items-center justify-between">
+                            <a
+                                href={`/shop/${category.slug}`}
+                                class="flex  gap-2 items-center w-full  hover:bg-primary"
+                            >
+                                {category.icon ? (
+                                    <div
+                                        class="w-[20px] flex justify-center items-center"
+                                        dangerouslySetInnerHTML={{
+                                            __html: category.icon,
+                                        }}
+                                    />
+                                ) : null}
+                                <span>{category.name}</span>
+                            </a>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    dropdown2.onOpenClose();
+                                }}
+                                type="button"
+                                class="w-[20px]"
+                            >
+                                <i class="fas fa-caret-right" />
+                            </button>
+                        </div>{" "}
+                        {dropdown2.dropdownOpen &&
+                        category.subcategories.length ? (
+                            <div
+                                class="absolute bg-background-dark w-[250px] left-[250px]"
+                                ref={dropdown2.dropdown}
+                            >
+                                {category.subcategories.map((sub) => {
+                                    return (
+                                        <a
+                                            href={`/shop/${sub.category.slug}/${sub.slug}`}
+                                            class={`text-sm text-white hover:bg-primary ${bgPrimaryHover()} py-2.5 px-2 w-full block dark:border-gray-600 border-gray-1 border-b border-gray-100 bg-background-light dark:bg-paper-dark hover:bg-primary  dark:hover:!text-primary relative`}
+                                            key={sub.id}
+                                        >
+                                            {sub.name}{" "}
+                                        </a>
+                                    );
+                                })}
+                            </div>
+                        ) : null}
+                    </div>
+                );
+            })}
+            {header.categoriesServices.map((category) => {
+                const dropdown = useDropdown();
+                const dropdown2 = useDropdown();
+                return (
+                    <div
+                        ref={dropdown.dropdown}
+                        key={category.id}
+                        type="button"
+                        class="bg-background-light dark:bg-paper-dark  dark:border-gray-600 py-2 font-semibold  px-5 w-full border-gray-1 flex justify-between items-center border-b border-gray-100 dark:!text-white hover:text-primary dark:hover:!text-primary  relative"
+                    >
+                        <button
+                            type="button"
+                            class="w-full flex gap-2 items-center justify-between "
+                            ref={dropdown2.trigger}
+                            onClick={() => {
+                                dropdown2.onOpenClose();
+                            }}
+                        >
+                            <div class="flex items-center gap-2">
+                                {category.icon ? (
+                                    <div
+                                        class="w-[20px] flex justify-center items-center"
+                                        dangerouslySetInnerHTML={{
+                                            __html: category.icon,
+                                        }}
+                                    />
+                                ) : null}{" "}
+                                {category.name}
+                            </div>
+                            <span>
+                                <i class="fas fa-caret-right" />
+                            </span>
+                        </button>{" "}
+                        {dropdown2.dropdownOpen && category.products.length ? (
+                            <div
+                                class="absolute bg-background-dark w-[250px] left-[250px]"
+                                ref={dropdown2.dropdown}
+                            >
+                                {category.products.map((pr) => {
+                                    return (
+                                        <a
+                                            href={`/servicio/${pr.slug}`}
+                                            class="text-sm text-white py-2.5 px-2 w-full block dark:border-gray-600 border-gray-1 border-b border-gray-100 bg-background-light dark:bg-paper-dark hover:text-primary dark:hover:!text-primary"
+                                            key={pr.id}
+                                        >
+                                            {pr.name}
+                                        </a>
+                                    );
+                                })}
+                            </div>
+                        ) : null}
                     </div>
                 );
             })}

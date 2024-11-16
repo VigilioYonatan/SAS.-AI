@@ -162,6 +162,7 @@ export const empresasSchema = object({
     name_empresa: string([minLength(2), maxLength(100)]),
     web: nullable(string([startsWith("https://", "Web no válida. https://")])),
     email: nullable(string([email()])),
+    about: nullable(string()), //  acerca de la empresa
     telephoneFirst: string([
         minLength(1),
         maxLength(30),
@@ -352,6 +353,9 @@ export const empresasSchema = object({
     ),
     enabled_address: boolean(),
     isFreeVPS: boolean(),
+    isTemplate: boolean(), // es template
+    icon: nullable(array(filesSchema())),
+    photo: nullable(array(filesSchema())),
     token: string(),
 });
 

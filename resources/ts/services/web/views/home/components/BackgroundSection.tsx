@@ -5,6 +5,7 @@ import {
     SampleNextArrow,
     SamplePrevArrow,
 } from "@/web/components/ArrowsSlider";
+import { useEffect } from "preact/hooks";
 import Slider from "react-slick";
 import { getColorPrimary } from "~/libs/helpers";
 import { printFileWithDimension } from "~/libs/upload";
@@ -110,12 +111,24 @@ interface BackgroundSectionProps {
 }
 function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
     if (!backgrounds.length) return null;
+    useEffect(() => {
+        if (storageEmpresa?.setting.background_custom_html) {
+            const script = document.createElement("script");
+            const div = document.querySelector(".background-home");
+            script.innerHTML = storageEmpresa?.setting.background_custom_html;
+            div?.appendChild(script);
 
+            // Limpieza del script para evitar problemas
+            return () => {
+                document.body.removeChild(script);
+            };
+        }
+    }, []);
     return (
         <section
             id="start"
             // class="max-w-6xl mx-auto px-2 md:px-4 mt-[6.6rem] md:my-10"
-            class="mb-4 mt-[5.5rem] lg:mt-0"
+            class="mb-4 mt-[5.5rem] lg:mt-0 relative background-home"
         >
             <div
                 class={`flex flex-col lg:flex-row relative ${
@@ -129,12 +142,12 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                 }`}
             >
                 <AdminEdit uri="/admin/background" />
-                <div class="w-full">
+                <div class="w-full ">
                     <Slider
-                        className="w-full h-full"
+                        className="w-full h-full "
                         {...{
                             dots: true,
-                            infinite: true,
+                            infinite: backgrounds.length > 1,
                             speed: 500,
                             slidesToShow: 1,
                             slidesToScroll: 1,
@@ -142,18 +155,19 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                             nextArrow: <SampleNextArrow />,
                             prevArrow: <SamplePrevArrow />,
                             arrows: backgrounds.length > 1,
+                            swipe: backgrounds.length > 1,
                         }}
                     >
                         {backgrounds.map((background) => (
                             <div
-                                class="w-full group overflow-hidden"
+                                class="w-full group overflow-hidden  relative"
                                 key={background.id}
                             >
                                 <div
                                     class={`bg-cover bg-center  ${
                                         storageEmpresa?.setting.header_type ===
                                         "transparent"
-                                            ? "h-[750px]"
+                                            ? "h-[500px] lg:h-[750px]"
                                             : "h-[550px]"
                                     }  w-full  delay-custom-1  `}
                                     style={{
@@ -214,7 +228,13 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                                 style={{
                                                     "--brightness-delay": "8s",
                                                 }}
-                                                class={`bg-primary animation-brightness  hover:bg-transparent  text-white hover:text-primary border delay-custom-1 border-primary px-4 py-2   font-semibold tracking-wider ${
+                                                class={`bg-primary animation-brightness ${
+                                                    storageEmpresa?.setting
+                                                        .type_border ===
+                                                    "circle"
+                                                        ? "rounded-md"
+                                                        : ""
+                                                }   text-sm md:text-base  text-white hover:text-primary border delay-custom-1 border-primary px-4 py-2   font-semibold tracking-wider ${
                                                     storageEmpresa?.setting
                                                         .background_position ===
                                                     "start"
@@ -231,6 +251,25 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                             </a>
                                         </div>
                                     </div>
+                                    {printFileWithDimension(
+                                        background.image,
+                                        null
+                                    )[0]?.endsWith("mp4") ? (
+                                        <video
+                                            class="absolute inset-0 w-full h-full -z-10 object-cover"
+                                            src={
+                                                printFileWithDimension(
+                                                    background.image,
+                                                    null
+                                                )[0]
+                                            }
+                                            width={800}
+                                            height={800}
+                                            loop
+                                            muted
+                                            autoplay
+                                        />
+                                    ) : null}
                                 </div>
                             </div>
                         ))}
@@ -239,7 +278,13 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
 
                 {storageEmpresa?.setting.shows.cards &&
                 storageEmpresa?.setting.background_type === "second" ? (
-                    <div class="grid   my-6 lg:my-0 grid-cols-2 lg:grid-cols-1 lg:w-[380px]   ">
+                    <div
+                        class={`grid   my-6 lg:my-0  ${
+                            storageEmpresa?.enable_sell_country
+                                ? "grid-cols-2 lg:grid-cols-1"
+                                : "grid-cols-1 lg:grid-cols-1"
+                        } lg:w-[380px]   `}
+                    >
                         {storageEmpresa?.enable_sell_country ? (
                             <CardType
                                 title="Envio a todo el pais"

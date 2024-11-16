@@ -20,12 +20,15 @@ export const empresasUpdateDto = omitAsync(empresasSchema, [
     "mercado_pago_comision",
     "certificado",
     "logo",
+    "icon",
     "token",
+    "photo",
     "timeWhatsapp",
     "impuestos",
     "logo_pwa",
     "tz",
     "whatsapp_mode",
     "isFreeVPS",
+    "isTemplate",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;

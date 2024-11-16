@@ -7,7 +7,6 @@ import {
     Table,
 } from "sequelize-typescript";
 import type { SettingsSchema } from "../schemas/settings.schema";
-import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 import { Empresas } from "./empresas.entity";
 
 @Table
@@ -23,14 +22,10 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     host: SettingsSchema["host"];
 
     @Column({
-        type: DataType.TEXT,
-    })
-    about: string;
-
-    @Column({
         type: DataType.STRING(60),
     })
     bg_color: string;
+
     @Column({
         type: DataType.STRING(60),
     })
@@ -52,6 +47,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     bg_color_paper: string;
 
     @Column({
+        type: DataType.STRING(60),
+    })
+    bg_color_button: string;
+
+    @Column({
         type: DataType.BOOLEAN,
     })
     isCoverImage: boolean;
@@ -70,10 +70,23 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
 
     @Column({
         type: DataType.BOOLEAN,
-        defaultValue: null,
+        defaultValue: false,
         allowNull: false,
     })
     isLogoImage: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+    })
+    is_block_aside: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: false,
+    })
+    is_subcategory: boolean;
 
     @Column({
         type: DataType.BOOLEAN,
@@ -133,14 +146,47 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     type_map: string;
 
     @Column({
-        type: DataType.STRING(60),
+        type: DataType.DECIMAL,
     })
-    hamburger: string;
+    get logo_width(): number {
+        return Number.parseFloat(
+            this.getDataValue("logo_width" as keyof Settings)
+        );
+    }
+    @Column({
+        type: DataType.TEXT,
+    })
+    background_custom_html: string | null;
 
     @Column({
         type: DataType.JSON,
     })
-    icon: FilesSchema[] | null;
+    header_position: { logo: number; navbar: number; icons: number };
+
+    @Column({
+        type: DataType.JSON,
+    })
+    header: {
+        home: boolean;
+        shop: boolean;
+        profile: boolean;
+        about: boolean;
+        pedidos: boolean;
+        condiciones: boolean;
+        categories: boolean;
+        subcategories: boolean;
+        services: boolean;
+    };
+
+    @Column({
+        type: DataType.STRING(60),
+    })
+    type_card: string;
+
+    @Column({
+        type: DataType.STRING(60),
+    })
+    hamburger: string;
 
     @Column({
         type: DataType.JSON,
@@ -151,12 +197,9 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
         cards: boolean;
         brands: boolean;
         android: boolean;
+        offers_section: boolean;
+        offers_user: boolean;
     };
-
-    @Column({
-        type: DataType.JSON,
-    })
-    photo: FilesSchema[] | null;
 
     @ForeignKey(() => Empresas)
     @Column({ type: DataType.INTEGER, allowNull: false })

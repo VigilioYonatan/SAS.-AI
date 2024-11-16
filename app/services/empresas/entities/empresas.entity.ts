@@ -51,6 +51,8 @@ import { Favorites } from "@/favorites/entities/favorites.entity";
 import { Comments } from "@/polymorphism/entities/comments.entity";
 import { Reactions } from "@/polymorphism/entities/reactions.entity";
 import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
+import { Banner } from "./banner.entity";
+import { GridBanner } from "./grid_banner.entity";
 
 @DefaultScope(() => ({
     include: [Address, MetodosPago, TipoEmpresa, Settings, CitasSettings],
@@ -311,12 +313,27 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
         allowNull: false,
     })
     isFreeVPS: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        allowNull: false,
+    })
+    isTemplate: boolean;
     // activar direccion a la hora de pagar
     @Column({
         type: DataType.BOOLEAN,
         allowNull: false,
     })
     enabled_address: boolean;
+
+    @Column({
+        type: DataType.JSON,
+    })
+    icon: FilesSchema[] | null;
+    @Column({
+        type: DataType.JSON,
+    })
+    photo: FilesSchema[] | null;
 
     @Column({
         type: DataType.JSON,
@@ -447,6 +464,12 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
     @HasOne(() => MetodosPago)
     metodos_pago: unknown;
+
+    @HasMany(() => GridBanner)
+    gridBanners: unknown[];
+
+    @HasMany(() => Banner)
+    banners: unknown[];
 
     @HasMany(() => Urls)
     urls: unknown[];

@@ -22,6 +22,7 @@ import {
 } from "@/products/libs";
 import {
     backgroundQualities,
+    bannersQualities,
     empresasLogoPWAQualities,
     empresasLogoQualities,
 } from "@/empresas/libs";
@@ -41,9 +42,11 @@ import { PostsApiService } from "@/posts/services/posts.api.service";
 import { BackgroundApiService } from "@/empresas/services/background.api.service";
 import { CategoriesApiService } from "@/products/services/categories.api.service";
 import { BrandsApiService } from "@/products/services/brands.api.service";
-import { SettingsApiService } from "@/empresas/services/settings.api.service";
 import { suppliersLogoQualities } from "@/suppliers/libs";
 import { SuppliersApiService } from "@/suppliers/services/suppliers.api.service";
+import { NewApiService } from "@/empresas/services/new.api.service";
+import { SubCategoriesApiService } from "@/products/services/subcategories.api.service";
+import { BannerApiService } from "@/empresas/services/banner.api.service";
 
 @Injectable()
 export class UploadsService {
@@ -54,9 +57,11 @@ export class UploadsService {
         private readonly postsApiService: PostsApiService,
         private readonly backgroundApiService: BackgroundApiService,
         private readonly categoriesApiService: CategoriesApiService,
+        private readonly subCategoriesApiService: SubCategoriesApiService,
         private readonly brandsApiService: BrandsApiService,
-        private readonly settingsApiService: SettingsApiService,
-        private readonly suppliersApiService: SuppliersApiService
+        private readonly suppliersApiService: SuppliersApiService,
+        private readonly newApiService: NewApiService,
+        private readonly bannerApiService: BannerApiService
     ) {}
     async store(props: {
         req: Request;
@@ -104,6 +109,17 @@ export class UploadsService {
                             minFiles: 1,
                             maxFiles: 12,
                             required: false,
+                            typeFile: {
+                                value: [
+                                    "image/jpg",
+                                    "image/webp",
+                                    "image/jpeg",
+                                    "image/gif",
+                                    "image/png",
+                                    "video/mp4",
+                                ],
+                            },
+                            maxSize: empresa.isFreeVPS ? 15 : 50,
                         },
                         productsImagesQualities
                     );
@@ -130,7 +146,7 @@ export class UploadsService {
                     );
                 }
                 break;
-            case "settings":
+            case "categories":
                 if (
                     !userAuth ||
                     !userAuth.enabled ||
@@ -139,8 +155,7 @@ export class UploadsService {
                     throw new UnauthorizedException(
                         "No tiene permiso para realizar esta acción"
                     );
-
-                if (property === "icon") {
+                if (property === "image") {
                     qualities = await this.customUpload(
                         files,
                         {
@@ -148,23 +163,11 @@ export class UploadsService {
                             maxFiles: 1,
                             required: true,
                         },
-                        [100, 300]
+                        categoriesImageQualities
                     );
                 }
-                if (property === "photo") {
-                    qualities = await this.customUpload(
-                        files,
-                        {
-                            minFiles: 1,
-                            maxFiles: 1,
-                            required: true,
-                        },
-                        [800]
-                    );
-                }
-
                 break;
-            case "categories":
+            case "subcategories":
                 if (
                     !userAuth ||
                     !userAuth.enabled ||
@@ -232,6 +235,19 @@ export class UploadsService {
                     );
                 }
                 break;
+            case "new":
+                if (property === "image") {
+                    qualities = await this.customUpload(
+                        files,
+                        {
+                            minFiles: 1,
+                            maxFiles: 1,
+                            required: true,
+                        },
+                        [100, 800]
+                    );
+                }
+                break;
             case "metodos_pago":
                 if (
                     !userAuth ||
@@ -272,8 +288,43 @@ export class UploadsService {
                             minFiles: 1,
                             maxFiles: 1,
                             required: true,
+                            typeFile: {
+                                value: [
+                                    "image/jpg",
+                                    "image/webp",
+                                    "image/jpeg",
+                                    "image/gif",
+                                    "image/png",
+                                    "video/mp4",
+                                ],
+                            },
+                            maxSize: empresa.isFreeVPS ? 50 : 100,
                         },
                         backgroundQualities
+                    );
+                }
+                break;
+            case "banner":
+                if (property === "file") {
+                    qualities = await this.customUpload(
+                        files,
+                        {
+                            minFiles: 1,
+                            maxFiles: 1,
+                            required: true,
+                            typeFile: {
+                                value: [
+                                    "image/jpg",
+                                    "image/webp",
+                                    "image/jpeg",
+                                    "image/gif",
+                                    "image/png",
+                                    "video/mp4",
+                                ],
+                            },
+                            maxSize: empresa.isFreeVPS ? 35 : 100,
+                        },
+                        [...bannersQualities.filter((val) => val !== 0), 100]
                     );
                 }
                 break;
@@ -308,6 +359,17 @@ export class UploadsService {
                         empresasLogoQualities
                     );
                 }
+                if (property === "photo") {
+                    qualities = await this.customUpload(
+                        files,
+                        {
+                            minFiles: 1,
+                            maxFiles: 1,
+                            required: true,
+                        },
+                        [100, 800]
+                    );
+                }
                 if (property === "logo_pwa") {
                     qualities = await this.customUpload(
                         files,
@@ -319,6 +381,17 @@ export class UploadsService {
                         empresasLogoPWAQualities,
                         undefined,
                         true
+                    );
+                }
+                if (property === "icon") {
+                    qualities = await this.customUpload(
+                        files,
+                        {
+                            minFiles: 1,
+                            maxFiles: 1,
+                            required: true,
+                        },
+                        [100, 300]
                     );
                 }
 
@@ -401,27 +474,6 @@ export class UploadsService {
                 break;
             }
 
-            case "settings": {
-                if (
-                    !userAuth ||
-                    !userAuth.enabled ||
-                    ![1].includes(userAuth.role_id)
-                )
-                    throw new UnauthorizedException(
-                        "No tiene permiso para realizar esta acción"
-                    );
-                const { data } = await this.settingsApiService.index(empresa);
-                entidad = data;
-
-                if (property === "icon" && data.icon) {
-                    removeFile(empresa.slug, data.icon);
-                }
-                if (property === "photo" && data.photo) {
-                    removeFile(empresa.slug, data.photo);
-                }
-
-                break;
-            }
             case "categories": {
                 if (
                     !userAuth ||
@@ -438,6 +490,26 @@ export class UploadsService {
                 entidad = category;
                 if (property === "image" && category.image) {
                     removeFile(empresa.slug, category.image);
+                }
+
+                break;
+            }
+            case "subcategories": {
+                if (
+                    !userAuth ||
+                    !userAuth.enabled ||
+                    ![1].includes(userAuth.role_id)
+                )
+                    throw new UnauthorizedException(
+                        "No tiene permiso para realizar esta acción"
+                    );
+                const { subcategory } = await this.subCategoriesApiService.show(
+                    empresa,
+                    id
+                );
+                entidad = subcategory;
+                if (property === "image" && subcategory.image) {
+                    removeFile(empresa.slug, subcategory.image);
                 }
 
                 break;
@@ -541,6 +613,46 @@ export class UploadsService {
                 }
                 break;
             }
+            case "banner": {
+                if (
+                    !userAuth ||
+                    !userAuth.enabled ||
+                    ![1].includes(userAuth.role_id)
+                )
+                    throw new UnauthorizedException(
+                        "No tiene permiso para realizar esta acción"
+                    );
+                const { banner } = await this.bannerApiService.show(
+                    empresa,
+                    Number(id)
+                );
+                entidad = banner;
+                if (property === "file") {
+                    removeFile(empresa.slug, banner.file);
+                }
+                break;
+            }
+            case "new": {
+                if (
+                    !userAuth ||
+                    !userAuth.enabled ||
+                    ![1].includes(userAuth.role_id)
+                )
+                    throw new UnauthorizedException(
+                        "No tiene permiso para realizar esta acción"
+                    );
+                const { nuevo } = await this.newApiService.show(
+                    empresa,
+                    Number(id)
+                );
+                entidad = nuevo;
+                if (property === "image") {
+                    if (nuevo.image) {
+                        removeFile(empresa.slug, nuevo.image);
+                    }
+                }
+                break;
+            }
             case "empresas": {
                 if (
                     !userAuth ||
@@ -562,6 +674,12 @@ export class UploadsService {
                 }
                 if (property === "certificado" && empresa.certificado) {
                     removeFile(empresa.slug, empresa.certificado);
+                }
+                if (property === "icon" && emp.icon) {
+                    removeFile(empresa.slug, emp.icon);
+                }
+                if (property === "photo" && emp.photo) {
+                    removeFile(empresa.slug, emp.photo);
                 }
                 deleteHostCache();
 

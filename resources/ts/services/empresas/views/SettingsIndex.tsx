@@ -3,26 +3,18 @@ import Container from "@/admin/components/Container";
 import { settingsIndexApi } from "../apis/settings/settings.index.api";
 import Loading from "@/admin/components/Loading";
 import Form from "~/components/form";
-import { useEffect, useMemo } from "preact/hooks";
+import { useMemo } from "preact/hooks";
 import { handlerError, isColorLight, NOW, restarDays } from "~/libs/helpers";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import useEmpresastore, { storageEmpresa } from "../stores/empresa.store";
 import { useForm } from "react-hook-form";
 import {
-    settingsIconUpdateDto,
-    SettingsIconUpdateDto,
-    SettingsPhotoUpdateDto,
     SettingsUpdateDto,
     settingsUpdateDto,
-    settingsPhotoUpdateDto,
 } from "../dtos/settings.update.dto";
 import { valibotVigilio } from "~/libs/valibot";
-import { getFilesEdit, printFileWithDimension } from "~/libs/upload";
-import {
-    settingsUpdateApi,
-    settingsUpdateIconApi,
-    settingsUpdatePhotoApi,
-} from "../apis/settings/settings.update.api";
+import { printFileWithDimension } from "~/libs/upload";
+import { settingsUpdateApi } from "../apis/settings/settings.update.api";
 import Hr from "@/web/components/Hr";
 import {
     settingsDominioDeleteServerUpdateApi,
@@ -49,6 +41,7 @@ import TitleSection from "@/web/components/TitleSection";
 import { icons } from "@/web/views/home/components/BackgroundSection";
 import NavTabs from "@/web/components/NavTabs";
 import MapValue, { typeMap } from "~/components/MapValue";
+import AlertWarning from "~/components/Alerts/AlertWarning";
 
 const dominioUpdate = pick(hostSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
@@ -67,8 +60,7 @@ function SettingsIndex() {
     if (settingsIndexQuery.isSuccess) {
         const setting = settingsIndexQuery.data?.data!;
         const empresaUpdateMutation = settingsUpdateApi();
-        const empresaUpdateIconMutation = settingsUpdateIconApi();
-        const settingsUpdatePhotoMutation = settingsUpdatePhotoApi();
+
         const settingsDominioUpdateMutation = settingsDominioUpdateApi();
         const settingsDominioNameServerUpdateMutation =
             settingsDominioNameServerUpdateApi();
@@ -79,8 +71,10 @@ function SettingsIndex() {
             resolver: valibotVigilio(settingsUpdateDto),
             mode: "all",
             defaultValues: useMemo(() => {
-                const { photo, icon, ...rest } = setting;
-                return rest;
+                const { ...rest } = setting;
+                return {
+                    ...rest,
+                };
             }, []),
         });
 
@@ -104,112 +98,25 @@ function SettingsIndex() {
         const bg_color_responsive = settingsUpdateform.watch(
             "bg_color_responsive"
         );
+        const header_position = settingsUpdateform.watch("header_position");
         const header_type = settingsUpdateform.watch("header_type");
         const border_title_type = settingsUpdateform.watch("border_title_type");
         const font_face = settingsUpdateform.watch("font_face");
         const type_icons = settingsUpdateform.watch("type_icons");
         const type_map = settingsUpdateform.watch("type_map");
         const type_star = settingsUpdateform.watch("type_star");
+        const type_card = settingsUpdateform.watch("type_card");
         const themeStore = useThemeStore();
         const cartStore = useCartStore();
         const headerDropdown = useDropdown();
         const [cp1] = useCopyToClipboard();
         const [cp2] = useCopyToClipboard();
-        const settingsIconUpdateform = useForm<SettingsIconUpdateDto>({
-            resolver: valibotVigilio(settingsIconUpdateDto),
-            mode: "all",
-        });
 
-        const settingsPhotoUpdateform = useForm<SettingsPhotoUpdateDto>({
-            resolver: valibotVigilio(settingsPhotoUpdateDto),
-            mode: "all",
-        });
         const settingsPhotoDominioform = useForm<DominioUpdate>({
             resolver: valibotVigilio(dominioUpdate),
             mode: "all",
             defaultValues: { host: setting.host.host },
         });
-
-        async function initialUpdateIcon() {
-            if (setting.icon) {
-                const icon = await getFilesEdit(setting.icon, 300);
-                settingsIconUpdateform.setValue("icon", icon);
-            }
-        }
-        async function initialUpdatePhoto() {
-            if (setting.photo) {
-                const photo = await getFilesEdit(setting.photo, 800);
-                settingsPhotoUpdateform.setValue("photo", photo);
-            }
-        }
-
-        function onUpdateIconEmpresa(body: SettingsIconUpdateDto) {
-            sweetModal({
-                title: "¿Estas seguro de cambiar el icono de tu web?",
-                showCancelButton: true,
-                showCloseButton: true,
-            }).then(({ isConfirmed }) => {
-                if (isConfirmed) {
-                    empresaUpdateIconMutation.mutate(
-                        { ...body, name: empresaStore.state!.name_empresa },
-                        {
-                            onSuccess(data) {
-                                empresaStore.methods.updateempresa({
-                                    setting: {
-                                        ...empresaStore.state!.setting,
-                                        icon: data.files,
-                                    },
-                                });
-                                sweetAlert({
-                                    icon: "success",
-                                    title: "Actualizado icono correctamente",
-                                });
-                            },
-                            onError() {
-                                sweetAlert({
-                                    icon: "danger",
-                                    title: "Error al actualizar",
-                                });
-                            },
-                        }
-                    );
-                }
-            });
-        }
-
-        function onUpdatePhotoempresa(body: SettingsPhotoUpdateDto) {
-            sweetModal({
-                title: "¿Estas seguro de cambiar el photo de tu web?",
-                showCancelButton: true,
-                showCloseButton: true,
-            }).then(({ isConfirmed }) => {
-                if (isConfirmed) {
-                    settingsUpdatePhotoMutation.mutate(
-                        { ...body, name: empresaStore.state!.name_empresa },
-                        {
-                            onSuccess(data) {
-                                empresaStore.methods.updateempresa({
-                                    setting: {
-                                        ...empresaStore.state!.setting,
-                                        icon: data.files,
-                                    },
-                                });
-                                sweetAlert({
-                                    icon: "success",
-                                    title: "Actualizado icono correctamente",
-                                });
-                            },
-                            onError() {
-                                sweetAlert({
-                                    icon: "danger",
-                                    title: "Error al actualizar",
-                                });
-                            },
-                        }
-                    );
-                }
-            });
-        }
 
         function onUpdateempresa(body: SettingsUpdateDto) {
             sweetModal({
@@ -267,12 +174,6 @@ function SettingsIndex() {
             });
         }
 
-        useEffect(() => {
-            initialUpdateIcon();
-        }, []);
-        useEffect(() => {
-            initialUpdatePhoto();
-        }, []);
         component = (
             <>
                 <div class="p-4 max-w-3xl">
@@ -630,51 +531,6 @@ function SettingsIndex() {
                         </div>
                     ) : null}
                     <br />
-                    <Hr spacing={13} />
-                    <Form
-                        {...settingsIconUpdateform}
-                        onSubmit={onUpdateIconEmpresa}
-                    >
-                        <Form.control.file
-                            name={"icon" as keyof SettingsIconUpdateDto}
-                            title="Icono de la web"
-                            accept="image/*"
-                            multiple={false}
-                            typeFile="image"
-                        />
-                        <Form.button.submit
-                            disabled={
-                                empresaUpdateIconMutation.isLoading || false
-                            }
-                            isLoading={
-                                empresaUpdateIconMutation.isLoading || false
-                            }
-                            title="Guardar Cambios"
-                        />
-                    </Form>
-                    <Hr spacing={13} />
-                    <br id="#foto_empresa" />
-                    <Form
-                        {...settingsPhotoUpdateform}
-                        onSubmit={onUpdatePhotoempresa}
-                    >
-                        <Form.control.file
-                            name={"photo" as keyof SettingsPhotoUpdateDto}
-                            title="Imagen de  tu negocio/empresa"
-                            accept="image/*"
-                            typeFile="image"
-                            multiple={false}
-                        />
-                        <Form.button.submit
-                            disabled={
-                                settingsUpdatePhotoMutation.isLoading || false
-                            }
-                            isLoading={
-                                settingsUpdatePhotoMutation.isLoading || false
-                            }
-                            title="Guardar Cambios"
-                        />
-                    </Form>
                 </div>{" "}
                 <AlertInfo>
                     <span class="font-semibold">
@@ -732,6 +588,14 @@ function SettingsIndex() {
                                 question="Color de fondo2 de tu web"
                             />
                         </div>
+                        <div class="w-[120px]">
+                            <Form.control.color
+                                name={
+                                    "bg_color_button" as keyof SettingsUpdateDto
+                                }
+                                title="color del boton carrito"
+                            />
+                        </div>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4">
                         <Form.control.toggle
@@ -744,13 +608,107 @@ function SettingsIndex() {
                             name={"isScrolling" as keyof SettingsUpdateDto}
                             question="Animación cuando tus clientes bajan con el mouse o dedo a tu web"
                         />
+                        <Form.control.toggle
+                            title="Bloquear Aside"
+                            name={"is_block_aside" as keyof SettingsUpdateDto}
+                            question="Bloquear Aside"
+                        />
+                        <Form.control.toggle
+                            title="¿Agregar subcategorias"
+                            name={"is_subcategory" as keyof SettingsUpdateDto}
+                            question={
+                                <span class="block w-[200px]">
+                                    ¿Tu web solo permite categorías a tus
+                                    productos?
+                                    <br />
+                                    Con esto activado, podrás agregar
+                                    subcategorías.
+                                    <br />
+                                    Ejemplo 1:
+                                    <br />
+                                    <b class="font-bold">Categoría</b>:
+                                    Tecnología <br />{" "}
+                                    <b class="font-bold">Subcategorias</b> :
+                                    Televisores, Celulares, Laptops, etc.
+                                    <br />
+                                    Ejemplo 2:
+                                    <br />
+                                    <b class="font-bold">Categoría</b>: Calzados
+                                    <br />{" "}
+                                    <b class="font-bold">Subcategorias</b> :
+                                    Zapatillas, Zapatos, Zandalias, etc.
+                                    <br />
+                                    <div class="[&>div]:p-0 [&>div>i]:me-0">
+                                        <AlertWarning>
+                                            <span class="text-xs">
+                                                Si ya tiene productos agregados,
+                                                Agregar subcategorías a esos
+                                                productos.
+                                            </span>
+                                        </AlertWarning>
+                                    </div>
+                                </span>
+                            }
+                        />
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4">
+                        <Form.control.toggle
+                            name="position_header"
+                            title="Header Mobile"
+                        />
+                        <div class="w-[120px]">
+                            <Form.control
+                                name="logo_width"
+                                type="number"
+                                title="Tamaño de logo"
+                                placeholder={"80"}
+                                question="Tamaño de tu logo en pixeles"
+                                options={{ setValueAs: Number }}
+                            />
+                        </div>
+                        <div>
+                            <label
+                                htmlFor=""
+                                class="text-xs font-semibold  dark:text-white"
+                            >
+                                Posición del header [1, 2, 3]
+                            </label>
+                            <div class="grid grid-cols-3">
+                                <div class="w-[60px]">
+                                    <Form.control
+                                        title="logo"
+                                        name={"header_position.logo"}
+                                        type="number"
+                                        min={1}
+                                        max={3}
+                                        options={{ setValueAs: Number }}
+                                    />
+                                </div>
+                                <div class="w-[60px]">
+                                    <Form.control
+                                        title="Navbar"
+                                        name={"header_position.navbar"}
+                                        type="number"
+                                        min={1}
+                                        max={3}
+                                        options={{ setValueAs: Number }}
+                                    />
+                                </div>
+                                <div class="w-[60px]">
+                                    <Form.control
+                                        title="Iconoes"
+                                        name={"header_position.icons"}
+                                        type="number"
+                                        min={1}
+                                        max={3}
+                                        options={{ setValueAs: Number }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="flex gap-2 items-center w-full">
                         <div class="w-full">
-                            <Form.control.toggle
-                                name="position_header"
-                                title="Header Mobile"
-                            />
                             <div
                                 style={{
                                     backgroundColor: bg_color_paper,
@@ -773,7 +731,14 @@ function SettingsIndex() {
                                         <div class=" max-w-6xl mx-auto">
                                             <div class="flex justify-between gap-2 items-center">
                                                 {!position_header ? (
-                                                    <div class="flex items-center gap-2">
+                                                    <div
+                                                        class="flex items-center gap-2"
+                                                        style={{
+                                                            order:
+                                                                header_position?.logo ??
+                                                                1,
+                                                        }}
+                                                    >
                                                         <button
                                                             type="button"
                                                             aria-label="open aside"
@@ -827,6 +792,11 @@ function SettingsIndex() {
                                                             onClick={
                                                                 headerDropdown.onOpen
                                                             }
+                                                            style={{
+                                                                order:
+                                                                    header_position?.logo ??
+                                                                    1,
+                                                            }}
                                                         >
                                                             <div
                                                                 class={
@@ -848,6 +818,11 @@ function SettingsIndex() {
                                                         <a
                                                             href={"/"}
                                                             class="flex  items-center ml-12"
+                                                            style={{
+                                                                order:
+                                                                    header_position?.logo ??
+                                                                    1,
+                                                            }}
                                                         >
                                                             {empresaStore.state!
                                                                 .logo ? (
@@ -889,6 +864,11 @@ function SettingsIndex() {
                                                         cartStore.dropdown
                                                             .onClose
                                                     }
+                                                    style={{
+                                                        order:
+                                                            header_position?.navbar ??
+                                                            2,
+                                                    }}
                                                 >
                                                     <div
                                                         class={`w-full delay-custom-1 md:w-[350px] bg-white dark:bg-paper-dark relative p-2 ${
@@ -918,7 +898,14 @@ function SettingsIndex() {
                                                 </div>
 
                                                 {/* endcartaside */}
-                                                <div class="flex gap-3 items-center   text-xl  ">
+                                                <div
+                                                    class="flex gap-3 items-center   text-xl "
+                                                    style={{
+                                                        order:
+                                                            header_position?.icons ??
+                                                            3,
+                                                    }}
+                                                >
                                                     <SearchProducts />
                                                     <button
                                                         type="button"
@@ -1059,6 +1046,51 @@ function SettingsIndex() {
                                                 }
                                                 title="¿Cover Imagen?"
                                             />
+                                            <div>
+                                                <span class="text-xs dark:text-white font-semibold">
+                                                    Tipo de Card
+                                                </span>
+                                                <div class="flex gap-2 flex-wrap">
+                                                    <div class="flex flex-col gap-1">
+                                                        <div class="flex gap-1">
+                                                            <button
+                                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                                    type_card ===
+                                                                    "normal"
+                                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                                        : ""
+                                                                } font-semibold text-xs dark:text-white`}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    settingsUpdateform.setValue(
+                                                                        "type_card",
+                                                                        "normal"
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Normal
+                                                            </button>
+                                                            <button
+                                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                                    type_card ===
+                                                                    "eccomerce"
+                                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                                        : ""
+                                                                } font-semibold text-xs dark:text-white`}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    settingsUpdateform.setValue(
+                                                                        "type_card",
+                                                                        "eccomerce"
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Eccomerce
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <Form.control.toggle
                                                 name={
                                                     "isLogoImage" as keyof SettingsUpdateDto
@@ -1646,6 +1678,61 @@ function SettingsIndex() {
                     </div>
                     <div>
                         <span class="dark:text-white text-xs font-semibold">
+                            Header
+                        </span>
+                        <div class="grid grid-cols-3 md:grid-cols-3">
+                            <Form.control.toggle
+                                name={"header.home" as keyof SettingsUpdateDto}
+                                title="Mostrar Home"
+                            />
+                            <Form.control.toggle
+                                name={"header.shop" as keyof SettingsUpdateDto}
+                                title="Mostrar Shop"
+                            />
+                            <Form.control.toggle
+                                name={"header.about" as keyof SettingsUpdateDto}
+                                title="Mostrar Nosotros"
+                            />
+                            <Form.control.toggle
+                                name={
+                                    "header.profile" as keyof SettingsUpdateDto
+                                }
+                                title="Mostrar Perfil"
+                            />
+                            <Form.control.toggle
+                                name={
+                                    "header.pedidos" as keyof SettingsUpdateDto
+                                }
+                                title="Mostrar Pedidos"
+                            />
+                            <Form.control.toggle
+                                name={
+                                    "header.condiciones" as keyof SettingsUpdateDto
+                                }
+                                title="Mostrar Condiciones"
+                            />
+                            <Form.control.toggle
+                                name={
+                                    "header.categories" as keyof SettingsUpdateDto
+                                }
+                                title="Mostrar Categorias"
+                            />
+                            <Form.control.toggle
+                                name={
+                                    "header.subcategories" as keyof SettingsUpdateDto
+                                }
+                                title="Mostrar Subcategorías"
+                            />
+                            <Form.control.toggle
+                                name={
+                                    "header.services" as keyof SettingsUpdateDto
+                                }
+                                title="Mostrar Servicios"
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <span class="dark:text-white text-xs font-semibold">
                             Mostrar
                         </span>
                         <div class="grid grid-cols-3 md:grid-cols-3">
@@ -1671,12 +1758,25 @@ function SettingsIndex() {
                                 }
                                 title="Tarjeta Android"
                             />
+                            <Form.control.toggle
+                                name={
+                                    "shows.offers_section" as keyof SettingsUpdateDto
+                                }
+                                title="Seccion Ofertas"
+                            />
+                            <Form.control.toggle
+                                name={
+                                    "shows.offers_user" as keyof SettingsUpdateDto
+                                }
+                                title="Seccion Ofertas Usuarios"
+                            />
                         </div>
                     </div>
-                    <Form.control.area
-                        name={"about" as keyof SettingsUpdateDto}
-                        title="Acerca de la empresa"
-                        placeholder={`Somos  ${storageEmpresa?.name_empresa} ...`}
+                    <Form.control.editorJS
+                        name={
+                            "background_custom_html" as keyof SettingsUpdateDto
+                        }
+                        title="Personalización background"
                     />
                     <Form.button.submit
                         title="Actualizar"

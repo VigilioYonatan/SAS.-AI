@@ -36,6 +36,9 @@ import BrandsStore from "./BrandsStore";
 import { aiProductApi } from "@/bot/apis/ai.product.api";
 import { getFilesEdit } from "~/libs/upload";
 import Helper from "~/components/Helper";
+import SettingsProduct from "@/admin/components/SettingsProduct";
+import { subcategoriesIndexApi } from "../apis/subcategories/subcategories.index.api";
+import SubcategoriesStore from "./SubcategoriesStore";
 
 interface ProductsNormalStoreProps {
     refetch: (clean?: boolean | undefined) => Promise<void>;
@@ -58,15 +61,17 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
             enabled: true,
             url: null,
             empresa_id: empresa.state!.id,
+            subcategory_id: null,
         },
     });
-    console.log(productsNormalStoreDtoForm.formState.errors);
+    const description = useSignal<string | null>(null);
 
     const productsNormalStoreMutation = productsNormalStoreApi();
     const aiProductQuery = aiProductApi();
     const isImageLoading = useSignal(false);
     const optionsFeaturesQuery = optionsFeaturesApi();
     const categoriesIndexQuery = categoriesIndexApi(false);
+    const subcategoriesIndexQuery = subcategoriesIndexApi();
     const brandsIndexQuery = brandsIndexApi();
 
     const optionsFeaturesData = useMemo(() => {
@@ -85,6 +90,15 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
         }
         return [];
     }, [categoriesIndexQuery.data, categoriesIndexQuery.isSuccess]);
+    const subcategoriesSelect = useMemo(() => {
+        if (subcategoriesIndexQuery.isSuccess && subcategoriesIndexQuery.data) {
+            return subcategoriesIndexQuery.data.data.map((value) => ({
+                key: value.id,
+                value: value.name,
+            }));
+        }
+        return [];
+    }, [subcategoriesIndexQuery.data, subcategoriesIndexQuery.isSuccess]);
 
     const brandsSelect = useMemo(() => {
         if (brandsIndexQuery.isSuccess && brandsIndexQuery.data) {
@@ -162,6 +176,20 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
             isCloseInBackground: false,
         }));
     }
+    function onSubcategoriesStore() {
+        sweetModal((onClose) => ({
+            html: reactComponent(
+                <SubcategoriesStore
+                    onClose={onClose}
+                    refetch={subcategoriesIndexQuery.refetch}
+                    onSetValueSubcategory={onSetValueSubcategory}
+                />
+            ),
+            sweetWidth: "700px",
+            showCloseButton: true,
+            isCloseInBackground: false,
+        }));
+    }
     function onBrandsStore() {
         sweetModal((onClose) => ({
             html: reactComponent(
@@ -196,10 +224,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                         value: val.value,
                     }))
                 );
-                productsNormalStoreDtoForm.setValue(
-                    "description",
-                    data.data.description
-                );
+                description.value = `<p>${data.data.description}</p>`;
 
                 if (images.length) {
                     productsNormalStoreDtoForm.setValue("images", images);
@@ -221,6 +246,9 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
     function onSetValueCategory(value: number) {
         productsNormalStoreDtoForm.setValue("category_id", value);
     }
+    function onSetValueSubcategory(value: number) {
+        productsNormalStoreDtoForm.setValue("subcategory_id", value);
+    }
     function onSetValueBrand(value: number) {
         productsNormalStoreDtoForm.setValue("brand_id", value);
     }
@@ -233,7 +261,10 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                         <i class="fas fa-phone-laptop" />
                         Agregar Producto
                     </h3>
-                    <Form.button.reset />
+                    <div class="flex gap-2 items-center">
+                        <SettingsProduct />
+                        <Form.button.reset />
+                    </div>
                 </div>
 
                 <div class="">
@@ -399,12 +430,40 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                                 +
                             </button>
                         </div>
+                        {storageEmpresa?.setting.is_subcategory ? (
+                            <div class="flex gap-2 items-center w-full">
+                                <Form.control.select
+                                    name={
+                                        "subcategory_id" as keyof ProductsNormalStoreDto
+                                    }
+                                    title="Subcategoría"
+                                    placeholder="Escoger subcategoría"
+                                    array={subcategoriesSelect}
+                                    options={{
+                                        setValueAs: formSelectNumber,
+                                    }}
+                                    isLoading={
+                                        subcategoriesIndexQuery.isLoading ||
+                                        false
+                                    }
+                                />
+                                <button
+                                    type="button"
+                                    aria-label="add"
+                                    class="bg-primary px-4 py-2 rounded-md shadow text-white mt-2"
+                                    onClick={onSubcategoriesStore}
+                                >
+                                    +
+                                </button>
+                            </div>
+                        ) : null}
                     </div>
 
-                    <Form.control.area
+                    <Form.control.editor
                         name={"description" as keyof ProductsNormalStoreDto}
                         title="Descripción"
-                        placeholder="Descripción de producto"
+                        isShow
+                        change={description.value}
                     />
 
                     <div>
@@ -596,9 +655,10 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
 
                 <Form.control.file
                     name={"images" as keyof ProductsNormalStoreDto}
-                    accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
-                    title="Imagenes"
-                    typeFile="image"
+                    accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, video/mp4"
+                    typeFile="image-video"
+                    title="Imagenes/video"
+                    typesText="JPG, PNG, WEBP, GIF, MP4, OGG Ó JPEG"
                     multiple
                     showButonCopy
                     showButtonClean

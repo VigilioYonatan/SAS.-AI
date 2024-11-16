@@ -57,6 +57,9 @@ import { Ratings } from "@/polymorphism/entities/ratings.entity";
 import { Comments } from "@/polymorphism/entities/comments.entity";
 import { Reactions } from "@/polymorphism/entities/reactions.entity";
 import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
+import { Subcategories } from "@/products/entities/subcategories.entity";
+import { Banner } from "@/empresas/entities/banner.entity";
+import { GridBanner } from "@/empresas/entities/grid_banner.entity";
 
 const sequelize = new Sequelize({
     dialect: "postgres",
@@ -132,6 +135,9 @@ sequelize.addModels([
     Comments,
     Reactions,
     Subcomments,
+    Subcategories,
+    GridBanner,
+    Banner,
 ]);
 
 export async function connectDB() {

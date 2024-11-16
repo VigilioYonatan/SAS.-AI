@@ -19,6 +19,13 @@ import { Brands } from "@/products/entities/brands.entitiy";
 import { getFeatures } from "../libs";
 import { Users } from "@/users/entities/users.entity";
 import { BrandsApiService } from "@/products/services/brands.api.service";
+import { Sequelize } from "sequelize-typescript";
+import { Favorites } from "@/favorites/entities/favorites.entity";
+import { Ratings } from "@/polymorphism/entities/ratings.entity";
+import { Comments } from "@/polymorphism/entities/comments.entity";
+import { SubCategoriesApiService } from "@/products/services/subcategories.api.service";
+import { GridBanner } from "@/empresas/entities/grid_banner.entity";
+import { Banner } from "@/empresas/entities/banner.entity";
 
 @Injectable()
 export class WebApiService {
@@ -26,7 +33,8 @@ export class WebApiService {
         private readonly productsApiService: ProductsApiService,
         private readonly categoriesApiService: CategoriesApiService,
         private readonly backgroundApiService: BackgroundApiService,
-        private readonly brandsApiService: BrandsApiService
+        private readonly brandsApiService: BrandsApiService,
+        private readonly subCategoriesApiService: SubCategoriesApiService
     ) {}
 
     async home(empresa: Empresas, user: Users) {
@@ -40,7 +48,12 @@ export class WebApiService {
                 empresa.tipo_empresa.tipo_servicio_id === 2
                     ? ProductsRestaurant
                     : ProductsNormal;
-
+            const key = [1, 3].includes(empresa.tipo_empresa.tipo_servicio_id)
+                ? "product_normal_id"
+                : "product_restaurant_id";
+            const keys = [1, 3].includes(empresa.tipo_empresa.tipo_servicio_id)
+                ? "ProductsNormals"
+                : "ProductsRestaurants";
             const [
                 { data: backgrounds },
                 productsOffert6,
@@ -51,9 +64,13 @@ export class WebApiService {
                 categories,
                 noticia,
                 productsQuantity,
+                productsMostReaction,
+                productsMostRating,
+                productsMostComments,
                 users,
                 brands,
                 productServicesQuantity,
+                gridBanners,
             ] = await Promise.all([
                 this.backgroundApiService.index(empresa),
                 Products.findAll({
@@ -66,12 +83,12 @@ export class WebApiService {
                         enabled: true,
                     },
                     order: [["createdAt", "DESC"]],
-                    limit: 6,
+                    limit: empresa?.setting.type_card === "eccomerce" ? 8 : 6,
                 }),
                 Products.findAll({
                     // productos recien subidos
                     order: [["createdAt", "DESC"]],
-                    limit: 6,
+                    limit: empresa?.setting.type_card === "eccomerce" ? 8 : 6,
                     where: {
                         enabled: true,
                         empresa_id: empresa.id,
@@ -114,6 +131,53 @@ export class WebApiService {
                 Product(empresa, false).count({
                     where: { empresa_id: empresa.id, enabled: true },
                 }),
+
+                // // aca ira productos normal
+                Favorites.findAll({
+                    attributes: [
+                        key,
+                        [
+                            Sequelize.fn("COUNT", Sequelize.col(key)),
+                            "favoritescount",
+                        ],
+                    ],
+                    where: { empresa_id: empresa.id },
+                    group: [key],
+                    order: [[Sequelize.literal("favoritescount"), "DESC"]],
+                    limit: 6,
+                    raw: true,
+                }),
+                Ratings.findAll({
+                    attributes: [
+                        "ratingsable_id",
+                        [Sequelize.fn("AVG", Sequelize.col("rating")), "stars"], // Calcula el promedio de las estrellas y lo nombra 'stars'
+                    ],
+                    group: ["ratingsable_id"],
+                    order: [[Sequelize.literal("stars"), "DESC"]], // Ordena por el promedio en orden descendente
+                    limit: 6, // Limita a los 5 productos con mejor promedio de rating
+                    where: {
+                        empresa_id: empresa.id,
+                        ratingsable_type: keys,
+                    },
+                    raw: true,
+                }),
+                Comments.unscoped().findAll({
+                    attributes: [
+                        "commentsable_id",
+                        [
+                            Sequelize.fn("COUNT", Sequelize.col("Comments.id")),
+                            "commentscount",
+                        ],
+                    ],
+                    where: {
+                        empresa_id: empresa.id,
+                        commentsable_type: keys,
+                    },
+                    group: ["commentsable_id"],
+                    order: [[Sequelize.literal("commentscount"), "DESC"]],
+                    limit: 6,
+                    raw: true,
+                }),
                 Users.findAll({
                     where: { empresa_id: empresa.id, enabled: true },
                     attributes: [
@@ -130,16 +194,22 @@ export class WebApiService {
                     },
                     attributes: ["id", "image"],
                 }),
-                // aca ira productos normal
+
+                // aca ira servicios normal
                 Product(empresa, true).count({
                     where: { empresa_id: empresa.id, enabled: true },
+                }),
+                GridBanner.findAll({
+                    include: [Banner],
+                    where: { empresa_id: empresa.id },
                 }),
             ]);
 
             const getProductsByCategories = await Promise.all(
                 categories.map(async (category) => {
                     let products = await Products.findAll({
-                        limit: 4,
+                        limit:
+                            empresa?.setting.type_card === "eccomerce" ? 5 : 4,
                         where: {
                             enabled: true,
                             category_id: category.id,
@@ -159,6 +229,48 @@ export class WebApiService {
                     };
                 })
             );
+
+            const productsMostReactionMapped = await Promise.all(
+                productsMostReaction.map(async (product) => {
+                    let producto = await Product(empresa, false).findByPk(
+                        product[
+                            empresa.tipo_empresa.tipo_servicio_id !== 2
+                                ? "product_normal_id"
+                                : "product_servicio_id"
+                        ]
+                    );
+                    producto = await getProductAll(empresa, producto, user);
+                    return {
+                        ...producto.toJSON(),
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                        favoritescount: (product as any).stars,
+                    };
+                })
+            );
+
+            const productsMostRatingMapped = await Promise.all(
+                productsMostRating.map(async (product) => {
+                    let producto = await Product(empresa, false).findByPk(
+                        product.ratingsable_id
+                    );
+                    producto = await getProductAll(empresa, producto, user);
+                    return producto;
+                })
+            );
+            const productsMostCommentsMapped = await Promise.all(
+                productsMostComments.map(async (product) => {
+                    let producto = await Product(empresa, false).findByPk(
+                        product.commentsable_id
+                    );
+                    producto = await getProductAll(empresa, producto, user);
+                    return {
+                        ...producto.toJSON(),
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                        quantity: (product as any).commentscount,
+                    };
+                })
+            );
+
             // productos
             const [productsOffert6Mapped, productsLatest6Mapped] =
                 await this.fetchProductArrays(
@@ -177,13 +289,12 @@ export class WebApiService {
                         ? getProductAll(empresa, productLatest, user)
                         : null,
                 ]);
+
             cacheHome = {
                 title: "Inicio",
                 backgrounds, //backgrounds
                 description: `Bienvenidos a ${empresa.name_empresa} - ${
-                    empresa.setting.about
-                        ? empresa.setting.about.slice(0, 100)
-                        : ""
+                    empresa.about ? empresa.about.slice(0, 100) : ""
                 }`,
                 posts, // posts
                 productsOffert6Mapped,
@@ -196,6 +307,10 @@ export class WebApiService {
                 users,
                 brands,
                 productServicesQuantity,
+                productsMostReactionMapped,
+                productsMostRatingMapped,
+                productsMostCommentsMapped,
+                gridBanners,
             };
 
             const hora = 60 * 60 * 1000;
@@ -519,11 +634,120 @@ export class WebApiService {
                 };
             })
         );
+        const subcategories = await category.$get("subcategories");
         return {
             title: category.name,
             description: category.name,
             priceMinMax: { max: max ?? 0, min: min ?? 0 },
             category,
+            discounts,
+            brands,
+            optionsFeatures,
+            subcategories,
+        };
+    }
+    async subcategories(
+        category_slug: string,
+        subcategory_slug: string,
+        empresa: Empresas,
+        isView = false
+    ) {
+        const [{ category }, { subcategory }] = await Promise.all([
+            this.categoriesApiService.show(
+                empresa,
+                category_slug.toLowerCase(),
+                isView
+            ),
+            this.subCategoriesApiService.show(
+                empresa,
+                subcategory_slug.toLowerCase(),
+                isView
+            ),
+        ]);
+        // solo para obtener  precio y descuentos de los productos con la familia
+        const products = await Product(empresa, false)
+            .unscoped()
+            .findAll({
+                attributes: ["id", "price", "discount"],
+                where: {
+                    category_id: category.id,
+                    subcategory_id: subcategory.id,
+                    enabled: true,
+                },
+            });
+        const mappedProducts = products.map(
+            (prod: ProductsNormal | ProductsServicio | ProductsRestaurant) =>
+                subtotalIgv(empresa, prod)
+        );
+
+        const max = Math.max(...mappedProducts);
+        const min = Math.min(...mappedProducts);
+        let brands = null;
+        let optionsFeatures = null;
+        if ([1, 3].includes(empresa.tipo_empresa.tipo_servicio_id)) {
+            const brandsID = products.map(
+                (product: ProductsNormal) => product.brand_id!
+            ); // obtener marcas id
+            const uniqueIdsBrands = [...new Set(brandsID)]; // que no se repita los id
+            const brandsId = await Brands.findAll({
+                where: {
+                    id: uniqueIdsBrands,
+                },
+            });
+            brands = await Promise.all(
+                brandsId.map(async (brand) => {
+                    const quantity = await Product(empresa, false)
+                        .unscoped()
+                        .count({
+                            where: {
+                                brand_id: brand.id,
+                                category_id: category.id,
+                                subcategory_id: subcategory.id,
+                                enabled: true,
+                            },
+                        });
+
+                    return {
+                        ...brand.toJSON(),
+                        quantity,
+                    };
+                })
+            );
+            optionsFeatures = await getFeatures(products, category.id);
+        }
+
+        const discounts = await Promise.all(
+            createIncrementArray(
+                products.map(
+                    (
+                        product:
+                            | ProductsNormal
+                            | ProductsServicio
+                            | ProductsRestaurant
+                    ) => product.discount
+                )
+            ).map(async (disc) => {
+                const quantity = await Product(empresa, false)
+                    .unscoped()
+                    .count({
+                        where: {
+                            discount: { [Op.gte]: disc ?? 0 },
+                            category_id: category.id,
+                            subcategory_id: subcategory.id,
+                            enabled: true,
+                        },
+                    });
+                return {
+                    value: disc,
+                    quantity,
+                };
+            })
+        );
+        return {
+            title: category.name,
+            description: category.name,
+            priceMinMax: { max: max ?? 0, min: min ?? 0 },
+            subcategory,
             discounts,
             brands,
             optionsFeatures,

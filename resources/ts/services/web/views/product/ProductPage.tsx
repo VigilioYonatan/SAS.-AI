@@ -27,6 +27,9 @@ import ProductRatingStore from "@/products/components/ProductRatingStore";
 import ProductsComments from "@/products/components/ProductsComments";
 import useCartStore from "@/cart/stores/cart.store";
 import { Rating } from "react-custom-rating-component";
+import LoaderSubmit from "~/components/LoaderSubmit";
+import useVideo from "~/hooks/useVideo";
+import { bgPrimaryHover } from "~/config/settings";
 
 export interface VariantFeature {
     option_id: number;
@@ -53,8 +56,10 @@ function ProductPage({
     productbybrands,
     header,
 }: ProductPageProps) {
+    const type = useSignal<
+        "description" | "characteristics" | "reviews" | "more"
+    >("description");
     // description
-    const isOpenDescription = useSignal(false);
     const empresaStore = useEmpresastore();
     const themeStore = useThemeStore();
     const authStore = useAuthStore();
@@ -75,6 +80,9 @@ function ProductPage({
         images500Variant,
         varianteChoose,
         changeVariant,
+        favoritesStoreMutation,
+        favoritesDestroyMutation,
+        onFavorite,
         variant,
     } = useProduct({ product, isService: false });
 
@@ -83,19 +91,30 @@ function ProductPage({
     return (
         <WebLayout header={header}>
             <section class="max-w-6xl gap-6 mx-auto mb-6 mt-28  lg:mt-6 lg:flex-row px-4">
-                <div class="my-2 md:my-6 overflow-auto">
+                <div class="my-2 md:my-6 ">
                     <WebBreadCrumb
                         current={product.name}
-                        uris={[
-                            {
-                                title: "Tienda",
-                                uri: "/shop",
-                            },
-                            {
-                                title: category_name,
-                                uri: `/shop/${product.category.slug}`,
-                            },
-                        ]}
+                        uris={
+                            [
+                                {
+                                    title: "Tienda",
+                                    uri: "/shop",
+                                },
+                                {
+                                    title: `${category_name}`,
+                                    uri: `/shop/${product.category.slug}`,
+                                },
+                                product.subcategory
+                                    ? {
+                                          title: `${category_name}`,
+                                          uri: `/shop/${product.category.slug}/${product.subcategory.slug}`,
+                                      }
+                                    : null,
+                            ].filter(Boolean) as {
+                                title: string;
+                                uri: string;
+                            }[]
+                        }
                     />
                 </div>
                 <div class="flex gap-6 flex-col md:flex-row  product-card p-2">
@@ -104,13 +123,26 @@ function ProductPage({
                             customPaging: (i) => {
                                 return (
                                     <div class="w-full h-full dark:bg-paper-dark bg-paper-light">
-                                        <img
-                                            width={100}
-                                            height={100}
-                                            class="w-full h-full object-contain"
-                                            alt={product.name}
-                                            src={isImagesLength[i]}
-                                        />
+                                        {isImagesLength[i]?.endsWith("mp4") ? (
+                                            <div class="w-full h-full relative">
+                                                <video
+                                                    width={100}
+                                                    height={100}
+                                                    class="w-full h-full object-cover"
+                                                    src={isImagesLength[i]}
+                                                    muted
+                                                />
+                                                <i class="fas fa-play text-white absolute text-sm top-[15px] right-[16px] z-[9]" />
+                                            </div>
+                                        ) : (
+                                            <img
+                                                width={100}
+                                                height={100}
+                                                class="w-full h-full object-contain"
+                                                alt={product.name}
+                                                src={isImagesLength[i]}
+                                            />
+                                        )}
                                     </div>
                                 );
                             },
@@ -146,19 +178,22 @@ function ProductPage({
                                         <i class="fa-light fa-magnifying-glass-plus" />
                                     </button>
                                 ) : null}
-
-                                <img
-                                    alt={product.name}
-                                    class={`h-full object-contain w-full ${
-                                        zoom ? "zoom-image" : ""
-                                    }`}
-                                    width={800}
-                                    height={800}
-                                    src={img}
-                                    style={{
-                                        transformOrigin: `${zoom.position.x} ${zoom.position.y}`,
-                                    }}
-                                />
+                                {img?.endsWith("mp4") ? (
+                                    <VideoProduct file={img} />
+                                ) : (
+                                    <img
+                                        alt={product.name}
+                                        class={`h-full object-contain w-full ${
+                                            zoom ? "zoom-image" : ""
+                                        }`}
+                                        width={800}
+                                        height={800}
+                                        src={img}
+                                        style={{
+                                            transformOrigin: `${zoom.position.x} ${zoom.position.y}`,
+                                        }}
+                                    />
+                                )}
                             </div>
                         ))}
                     </Slider>
@@ -179,14 +214,18 @@ function ProductPage({
                             }}
                         >
                             {images500Variant.map((image) => (
-                                <div class=" md:h-[800px]" key={image}>
-                                    <img
-                                        class="w-full h-full object-contain"
-                                        src={image}
-                                        width={800}
-                                        height={800}
-                                        alt=""
-                                    />
+                                <div class=" md:h-[800px] relative" key={image}>
+                                    {image?.endsWith("mp4") ? (
+                                        <VideoProduct file={image} />
+                                    ) : (
+                                        <img
+                                            class="w-full h-full object-contain"
+                                            src={image}
+                                            width={800}
+                                            height={800}
+                                            alt=""
+                                        />
+                                    )}
                                 </div>
                             ))}
                         </Slider>
@@ -480,7 +519,7 @@ function ProductPage({
                                                                                                     "square"
                                                                                                         ? "rounded-sm"
                                                                                                         : "rounded-md"
-                                                                                                }  flex text-primary py-2  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary hover:text-white ${
+                                                                                                }  flex text-primary py-2  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary ${bgPrimaryHover()} ${
                                                                                                     existFeature
                                                                                                         ? "bg-primary text-white border-2 border-primary"
                                                                                                         : "bg-white"
@@ -651,7 +690,6 @@ function ProductPage({
                                                         </button>
                                                     </div>
                                                 ) : null}
-
                                                 {!existProductInCart ? (
                                                     <button
                                                         class={`bg-primary text-white px-6 py-2 ${
@@ -691,7 +729,34 @@ function ProductPage({
                                                     <span class=" flex gap-2 items-center justify-center w-full bg-secondary border-r border-primary  font-bold  py-3 text-white shadow rounded-md">
                                                         <span> Añadido </span>
                                                     </span>
-                                                )}
+                                                )}{" "}
+                                                <button
+                                                    type="button"
+                                                    disabled={
+                                                        favoritesStoreMutation.isLoading ||
+                                                        favoritesDestroyMutation.isLoading ||
+                                                        false
+                                                    }
+                                                    class={`${
+                                                        producto.value.user
+                                                            ?.isFavorite
+                                                            ? "bg-primary text-white"
+                                                            : "text-primary"
+                                                    }  px-2 py-1 ${
+                                                        enviroments.TYPE_BORDER ===
+                                                        "circle"
+                                                            ? "rounded-md"
+                                                            : ""
+                                                    }  border-2 border-primary min-w-[50px] `}
+                                                    onClick={onFavorite}
+                                                >
+                                                    {favoritesStoreMutation.isLoading ||
+                                                    favoritesDestroyMutation.isLoading ? (
+                                                        <LoaderSubmit />
+                                                    ) : (
+                                                        <i class="fas fa-heart text-2xl " />
+                                                    )}
+                                                </button>
                                             </>
                                         )}
                                     </div>
@@ -726,7 +791,7 @@ function ProductPage({
                             <span class=" dark:text-white text-xs font-bold ">
                                 Compartir
                             </span>
-                            <div class="flex gap-2 items-center dark:text-white text-primary">
+                            <div class="flex gap-2 items-center dark:text-white text-primary text-lg">
                                 <a
                                     target="_self"
                                     rel="noreferrer"
@@ -774,14 +839,75 @@ function ProductPage({
                         <MetodosDePago />
                     </div>
                 </div>
-                <div class="flex flex-col lg:flex-row gap-4 mt-16">
-                    <div class="flex flex-col gap-8 w-full">
-                        <div class="w-full">
-                            <h2 class="font-bold dark:text-white text-primary  mb-2">
-                                Características{" "}
-                                <b>({product.characteristics.length})</b>
-                            </h2>
-                            <div class="shadow">
+                <div class="flex flex-col lg:flex-row gap-4 mt-16 ">
+                    <div class="flex flex-col gap-8 w-full bg-background-light dark:bg-background-dark p-2 rounded-md">
+                        <div class="w-full flex md:grid md:grid-cols-4   overflow-auto font-semibold text-sm border-b border-gray-400 dark:border-gray-500">
+                            <button
+                                type="button"
+                                aria-label="change type"
+                                class={` flex justify-center items-center  pb-2 ${
+                                    type.value === "description"
+                                        ? "md:border-b-2 border-primary"
+                                        : ""
+                                } min-w-[120px]`}
+                                onClick={() => {
+                                    type.value = "description";
+                                }}
+                            >
+                                Descripción
+                            </button>
+                            <button
+                                type="button"
+                                aria-label="change type"
+                                class={` flex justify-center items-center gap-1  pb-2 ${
+                                    type.value === "characteristics"
+                                        ? "md:border-b-2 border-primary"
+                                        : ""
+                                } min-w-[120px]`}
+                                onClick={() => {
+                                    type.value = "characteristics";
+                                }}
+                            >
+                                Características{"  "}
+                                <span class="text-xs ">
+                                    ({product.characteristics.length})
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                aria-label="change type"
+                                class={` flex justify-center items-center  pb-2 ${
+                                    type.value === "reviews"
+                                        ? "md:border-b-2 border-primary"
+                                        : ""
+                                } min-w-[120px]`}
+                                onClick={() => {
+                                    type.value = "reviews";
+                                }}
+                            >
+                                Reviews
+                            </button>
+                            <button
+                                type="button"
+                                aria-label="change type"
+                                class={` flex justify-center items-center  pb-2 ${
+                                    type.value === "more"
+                                        ? "md:border-b-2 border-primary"
+                                        : ""
+                                } min-w-[120px]`}
+                                onClick={() => {
+                                    type.value = "more";
+                                }}
+                            >
+                                Más
+                            </button>
+                        </div>
+                        <div
+                            class={`${
+                                type.value === "characteristics" ? "" : "hidden"
+                            } w-full`}
+                        >
+                            <div class="">
                                 {product.characteristics.length ? (
                                     <table
                                         class={`text-lg  font-medium w-full  overflow-hidden shadow ${
@@ -837,18 +963,17 @@ function ProductPage({
                                 )}
                             </div>
                         </div>
-                        <div class="">
-                            <h2 class="font-bold dark:text-white text-primary">
-                                Descripción
-                            </h2>
+                        <div
+                            class={`${
+                                type.value === "description" ? "" : "hidden"
+                            }`}
+                        >
                             {product.description ? (
                                 <>
                                     <div
-                                        class={`${
-                                            isOpenDescription.value
-                                                ? "max-h-[1800px]"
-                                                : "max-h-[200px] overflow-hidden"
-                                        } delay-custom-1`}
+                                        class={
+                                            "delay-custom-1 h-[1800px] overflow-auto"
+                                        }
                                     >
                                         <div
                                             class="dark:text-secondary-light text-sm font-normal"
@@ -857,24 +982,6 @@ function ProductPage({
                                             }}
                                         />
                                     </div>
-                                    <button
-                                        class={`${
-                                            product.description.length < 1200
-                                                ? "hidden"
-                                                : ""
-                                        } text-xs bg-primary px-4 py-1 rounded-md font-bold text-white my-2`}
-                                        type="button"
-                                        aria-label="open to description"
-                                        onClick={() => {
-                                            isOpenDescription.value =
-                                                !isOpenDescription.value;
-                                        }}
-                                    >
-                                        <span>
-                                            Ver más{" "}
-                                            <i class="fas fa-chevron-down" />
-                                        </span>
-                                    </button>
                                 </>
                             ) : (
                                 <p class="dark:text-white text-sm">
@@ -884,67 +991,80 @@ function ProductPage({
                             )}
                         </div>
                         {/* si el usuario esta logueado que pueda loguear */}
-                        <div class="flex flex-col w-full md:w-1/2">
-                            <div class="flex justify-between">
-                                <span class=" dark:text-principal-light font-semibold">
-                                    {enviroments.TYPE_START === "heart" ? (
-                                        <i class="fa-solid fa-heart mr-1" />
-                                    ) : (
-                                        <i class="fa-solid fa-star mr-1" />
-                                    )}
-                                    {product.rating.promedio ?? 0} de 5
-                                </span>
-                                <span class=" dark:text-principal-light font-semibold">
-                                    {product.rating.quantity} ratings
-                                </span>
-                            </div>
-                            {product.rating.ratings.map((rate) => (
-                                <div
-                                    class="flex gap-2 items-center "
-                                    key={rate.rating}
-                                >
-                                    <span class=" dark:text-principal-light font-bold text-xl w-[15px] flex justify-center items-center">
-                                        {rate.rating}
-                                    </span>
-                                    <div
-                                        class={`bg-gray-300 ${
-                                            enviroments.TYPE_BORDER === "circle"
-                                                ? "rounded-lg"
-                                                : "rounded-md"
-                                        }  overflow-hidden w-full`}
-                                    >
-                                        <div
-                                            class="bg-primary h-4"
-                                            style={`width: ${rate.percentage}%;`}
-                                        />
+
+                        <div
+                            class={`${
+                                type.value === "reviews" ? "" : "hidden"
+                            } flex flex-col md:flex-row gap-2`}
+                        >
+                            <div class="w-[350px]">
+                                <div class="flex flex-col w-full">
+                                    <div class="flex justify-between text-sm">
+                                        <span class=" dark:text-principal-light font-semibold">
+                                            {enviroments.TYPE_START ===
+                                            "heart" ? (
+                                                <i class="fa-solid fa-heart mr-1" />
+                                            ) : (
+                                                <i class="fa-solid fa-star mr-1" />
+                                            )}
+                                            {product.rating.promedio ?? 0} de 5
+                                        </span>
+                                        <span class=" dark:text-principal-light font-semibold">
+                                            {product.rating.quantity} ratings
+                                        </span>
                                     </div>
-                                    <span class=" dark:text-principal-light font-bold text-xl w-[60px]">
-                                        {rate.percentage}%
-                                    </span>
+                                    {product.rating.ratings.map((rate) => (
+                                        <div
+                                            class="flex gap-1 items-center "
+                                            key={rate.rating}
+                                        >
+                                            <span class=" dark:text-principal-light font-bold text-md w-[15px] flex justify-center items-center">
+                                                {rate.rating}
+                                            </span>
+                                            <div
+                                                class={`bg-gray-300 ${
+                                                    enviroments.TYPE_BORDER ===
+                                                    "circle"
+                                                        ? "rounded-lg"
+                                                        : "rounded-md"
+                                                }  overflow-hidden w-full`}
+                                            >
+                                                <div
+                                                    class="bg-primary h-3"
+                                                    style={`width: ${rate.percentage}%;`}
+                                                />
+                                            </div>
+                                            <span class=" dark:text-principal-light font-bold text-md w-[60px]">
+                                                {rate.percentage}%
+                                            </span>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
-                        {authStore.state! ? (
-                            <ProductRatingStore
-                                type={
-                                    ProductKeys(false) as
-                                        | "ProductsNormals"
-                                        | "ProductsRestaurants"
-                                        | "ProductsServicios"
-                                }
-                                product={producto}
-                            />
-                        ) : null}
-                        <div class="bg-background-light dark:bg-background-dark p-4 rounded-md">
-                            <ProductsComments
-                                type={
-                                    ProductKeys(false) as
-                                        | "ProductsNormals"
-                                        | "ProductsRestaurants"
-                                        | "ProductsServicios"
-                                }
-                                product={producto}
-                            />
+                                <br />
+                                {authStore.state! ? (
+                                    <ProductRatingStore
+                                        type={
+                                            ProductKeys(false) as
+                                                | "ProductsNormals"
+                                                | "ProductsRestaurants"
+                                                | "ProductsServicios"
+                                        }
+                                        product={producto}
+                                    />
+                                ) : null}
+                            </div>
+                            <br />
+                            <div class=" p-1 rounded-md w-full">
+                                <ProductsComments
+                                    type={
+                                        ProductKeys(false) as
+                                            | "ProductsNormals"
+                                            | "ProductsRestaurants"
+                                            | "ProductsServicios"
+                                    }
+                                    product={producto}
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -952,7 +1072,7 @@ function ProductPage({
                         <TitleSectionTwo>
                             <>Más de {category_name}</>
                         </TitleSectionTwo>
-                        <div class="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 justify-center lg:h-[800px] p-2 overflow-y-auto">
+                        <div class="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 justify-center lg:h-[1200px] p-2 overflow-y-auto">
                             {categoriesproductsrandom.map((product) => (
                                 <ProductCard product={product} key={product.id}>
                                     <ProductCard.header>
@@ -1041,5 +1161,83 @@ function ProductPage({
         </WebLayout>
     );
 }
-
+interface VideoProductProps {
+    file: string;
+}
+function VideoProduct({ file }: VideoProductProps) {
+    const { state: video, methods, refs } = useVideo();
+    return (
+        <div class="relative w-full h-full group">
+            <div class="absolute top-0 left-0 right-0 bottom-0" />
+            {/* biome-ignore lint/a11y/useMediaCaption: <explanation> */}
+            <video
+                ref={refs.video}
+                class="h-full w-full relative object-contain"
+                onClick={methods.onHover}
+            >
+                <source src={file} type="video/mp4" />
+                Tu navegador no soporta el tag de video.
+            </video>{" "}
+            <button
+                class={`${
+                    video.isHover ? "visible" : "invisible"
+                } absolute delay-custom-1 top-[46%] right-[48%] md:top-[45%] md:right-[45%] text-xl md:text-4xl text-white flex justify-center items-center`}
+                onClick={methods.onPlayPause}
+                type="button"
+                aria-label="play video"
+            >
+                {video.isPlay ? (
+                    <i class="fas fa-pause group-hover:opacity-100" />
+                ) : (
+                    <i class="fas fa-play " />
+                )}
+            </button>{" "}
+            <div
+                class={`${
+                    video.isHover ? "visible" : "invisible"
+                } flex  items-center z-[9] mt-2 absolute bottom-6 right-0 left-0 mx-1`}
+            >
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={methods.reproductor.progress} // Progreso del video
+                    onChange={methods.reproductor.handleProgressChange} // Cambia la posición del video
+                    className="w-full  custom-range" // Estilo para que sea ancho completo
+                />
+                <style jsx>{`
+                    .custom-range::-moz-range-progress {
+                        background-color: var(--primary);
+                        height: 8px;
+                    }
+                    /* Color de la barra después del control deslizante */
+                    .custom-range::-webkit-slider-thumb {
+                        -webkit-appearance: none;
+                        appearance: none;
+                        width: 16px;
+                        height: 16px;
+                        background-color: var(--primary);
+                        cursor: pointer;
+                        border-radius: 50%;
+                        position: relative;
+                        z-index: 2;
+                    }
+                `}</style>
+                <div class="flex items-center text-xs">
+                    <span>
+                        {methods.reproductor.formatTime(
+                            methods.reproductor.currentTime
+                        )}
+                    </span>
+                    {"/"}
+                    <span>
+                        {methods.reproductor.formatTime(
+                            methods.reproductor.duration
+                        )}
+                    </span>
+                </div>
+            </div>
+        </div>
+    );
+}
 export default ProductPage;

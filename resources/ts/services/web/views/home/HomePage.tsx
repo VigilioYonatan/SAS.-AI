@@ -20,6 +20,10 @@ import CategoriesSection from "./components/CategoriesSection";
 import BrandsSection from "./components/BrandsSection";
 import { BrandsSchemaFromServer } from "@/products/schemas/brands.schema";
 import ServiciosSection from "./components/ServiciosSection";
+import ProductsUsers from "./components/ProductsUsers";
+import { GridBannerSchema } from "@/empresas/schemas/grid_banner.schema";
+import { BannerSchema } from "@/empresas/schemas/banner.schema";
+import GridBanners from "./components/GridBanners";
 
 export interface HomePageProps {
     header: HeaderType;
@@ -43,6 +47,15 @@ export interface HomePageProps {
         | ProductsNormalSchemaFromServer
         | ProductsRestaurantSchemaFromServer
         | null;
+    productsmostreactionmapped:
+        | (ProductsNormalSchemaFromServer & { favoritescount: string })[]
+        | (ProductsRestaurantSchemaFromServer & { favoritescount: string })[];
+    productsmostcommentsmapped:
+        | (ProductsNormalSchemaFromServer & { quantity: string })[]
+        | (ProductsRestaurantSchemaFromServer & { quantity: string })[];
+    productsmostratingmapped:
+        | ProductsNormalSchemaFromServer[]
+        | ProductsRestaurantSchemaFromServer[];
     backgrounds: BackgroundSchemaFromServer[];
     noticia: NewSchema | null;
     productsquantity: number;
@@ -52,6 +65,7 @@ export interface HomePageProps {
         "id" | "name" | "speciality" | "photo" | "birthday"
     >[];
     brands: Pick<BrandsSchemaFromServer, "id" | "image">[];
+    gridbanners: (GridBannerSchema & { banners: BannerSchema[] })[];
 }
 function HomePage({
     header,
@@ -66,6 +80,10 @@ function HomePage({
     users,
     brands,
     productservicesquantity,
+    productsmostreactionmapped,
+    productsmostratingmapped,
+    productsmostcommentsmapped,
+    gridbanners,
 }: HomePageProps) {
     return (
         <>
@@ -73,6 +91,8 @@ function HomePage({
                 <Animations />
                 <Noticia noticia={noticia} />
                 <BackgroundSection backgrounds={backgrounds} />
+
+                <GridBanners grid={gridbanners} i={0} />
                 <OfferSection
                     productlatestmapped={productlatestmapped}
                     productsoffert8mapped={productsoffert6mapped}
@@ -81,6 +101,7 @@ function HomePage({
                     productservicesquantity={productservicesquantity}
                     productsquantity={productsquantity}
                 />
+                <GridBanners grid={gridbanners} i={1} />
                 <CategoriesSection categories={header.categories} />
                 <ProductsSectionRandom
                     productlatestmapped={productlatestmapped}
@@ -90,9 +111,46 @@ function HomePage({
                 <CategoriesProductSection
                     getProductsByCategories={getproductsbycategories}
                 />
+                <GridBanners grid={gridbanners} i={2} />
+                <ProductsUsers
+                    productsmostreactionmapped={[
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                        ...((productsoffert6mapped as any) ?? []),
+                        ...productsmostreactionmapped,
+                    ]
+                        .slice(0, 6)
+                        .filter(
+                            (item, index, self) =>
+                                index ===
+                                self.findIndex((t) => t.id === item.id)
+                        )}
+                    productsmostratingmapped={[
+                        ...(productsoffert6mapped ?? []),
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                        ...(productsmostratingmapped as any),
+                    ]
+                        .slice(0, 6)
+                        .filter(
+                            (item, index, self) =>
+                                index ===
+                                self.findIndex((t) => t.id === item.id)
+                        )}
+                    productsmostcommentsmapped={[
+                        ...(productsoffert6mapped ?? []),
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                        ...((productsmostcommentsmapped as any) ?? []),
+                    ]
+                        .slice(0, 6)
+                        .filter(
+                            (item, index, self) =>
+                                index ===
+                                self.findIndex((t) => t.id === item.id)
+                        )}
+                />
                 <BrandsSection brands={brands} />
                 <PostsSection posts={posts} />
                 <UsersSection users={users} />
+                <GridBanners grid={gridbanners} i={3} />
                 <FindSection />
             </WebLayout>
         </>

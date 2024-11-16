@@ -49,6 +49,9 @@ import { RatingApiController } from "@/polymorphism/controllers/ratings.api.cont
 import { ReactionsApiController } from "@/polymorphism/controllers/reactions.api.controller";
 import { SubcommentsApiController } from "@/polymorphism/controllers/subcomments.api.controller";
 import { FavoritesApiController } from "@/favorites/controllers/favorites.api.controller";
+import { SubcategoriesApiController } from "@/products/controllers/subcategories.api.controller";
+import { BannerApiController } from "@/empresas/controllers/banner.api.controller";
+import { GridBannerApiController } from "@/empresas/controllers/grid_banner.api.controller";
 
 export const apiRouters: Type[] = [
     EmpresasApiController,
@@ -101,4 +104,7 @@ export const apiRouters: Type[] = [
     ReactionsApiController,
     SubcommentsApiController,
     FavoritesApiController,
+    SubcategoriesApiController,
+    BannerApiController,
+    GridBannerApiController,
 ];

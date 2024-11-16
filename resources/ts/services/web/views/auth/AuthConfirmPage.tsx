@@ -23,6 +23,11 @@ function AuthConfirmPage({ user }: AuthConfirmPageProps) {
                         ? "color: #000000 !important"
                         : "color: #FFFFFF !important"};
                 }
+                .bg-primary {
+                    ${isColorLight(storageEmpresa!.setting.bg_color)
+                        ? "color: #000000 !important"
+                        : "color: #FFFFFF !important"};
+                }
             `}</style>
             <div class="sticky z-10  dark:bg-background-dark sm:static sm:col-span-3 lg:col-span-1">
                 <div class="col-span-1 flex h-[85vh] flex-col items-start justify-center px-4 sm:h-[calc(100vh-34px)] sm:px-8">

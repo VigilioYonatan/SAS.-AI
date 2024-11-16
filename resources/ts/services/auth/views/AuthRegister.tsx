@@ -62,8 +62,11 @@ function AuthRegister() {
     return (
         <div class="text-start p-4">
             <div class="flex justify-center items-center flex-col gap-2 mb-2">
-                <LogoImage width="50" height="50" />
-                <h3 class="text-2xl font-bold dark:text-secondary-light text-secondary-dark">
+                <LogoImage
+                    width={storageEmpresa?.setting.logo_width}
+                    height="50"
+                />
+                <h3 class="text-2xl font-bold dark:text-secondary-light ">
                     Crear cuenta
                 </h3>
                 <p class="text-terciary text-sm font-semibold">
@@ -84,7 +87,7 @@ function AuthRegister() {
 
                 <Form.control.web
                     ico={
-                        <span class="font-semibold">
+                        <span class="font-bold">
                             +{storageEmpresa?.dial_code}
                         </span>
                     }

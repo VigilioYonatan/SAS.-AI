@@ -4,34 +4,33 @@ import type { Users } from "@/users/entities/users.entity";
 import { ROLES } from "@/users/libs";
 
 export function PermissionAdminWorker() {
-    return (
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        target: any,
-        propertyKey: string,
-        _descriptor: PropertyDescriptor
-    ) => {
-        attachMiddleware(
-            target,
-            propertyKey,
-            (req: Request, res: Response, next: NextFunction) => {
-                // local
-                if (req.isAuthenticated()) {
-                    const user = req.user as Users;
+	return (
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		target: any,
+		propertyKey: string,
+		_descriptor: PropertyDescriptor,
+	) => {
+		attachMiddleware(
+			target,
+			propertyKey,
+			(req: Request, res: Response, next: NextFunction) => {
+				// local
+				if (req.isAuthenticated()) {
+					const user = req.user as Users;
 
-                    if (!user || !user.enabled || user.role_id === ROLES.user) {
-                        return res.status(403).json({
-                            success: false,
-                            message:
-                                "No está permitido realizar esta acción solo admin",
-                        });
-                    }
-                    return next();
-                }
-                return res.status(403).json({
-                    success: false,
-                    message: "Unauthorized",
-                });
-            }
-        );
-    };
+					if (!user || !user.enabled || user.role_id === ROLES.user) {
+						return res.status(403).json({
+							success: false,
+							message: "No está permitido realizar esta acción solo admin",
+						});
+					}
+					return next();
+				}
+				return res.status(403).json({
+					success: false,
+					message: "Unauthorized",
+				});
+			},
+		);
+	};
 }

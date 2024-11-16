@@ -42,7 +42,7 @@
 
   <link rel="manifest" href="/manifest.webmanifest.json">
   <!-- ICONO -->
-  <link rel="shortcut icon" href="<%=   locals.$empresa.setting?.icon ? printFileWithDimension(locals.$empresa.setting.icon,100)[0] :'' %>" type="image/x-icon" />
+  <link rel="shortcut icon" href="<%=   locals.$empresa.icon ? printFileWithDimension(locals.$empresa.icon,100)[0] :'' %>" type="image/x-icon" />
     <%- `<script> 
       localStorage.setItem("empresa", ${JSON.stringify(JSON.stringify(typeof $empresa !== "undefined" ? $empresa  : null))});
       localStorage.setItem("user", ${JSON.stringify(JSON.stringify(typeof $user !== "undefined" ? $user  : null))});

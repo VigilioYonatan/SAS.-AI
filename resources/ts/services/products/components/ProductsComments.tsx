@@ -230,9 +230,6 @@ function ProductsComments({ product, type }: ProductsCommentsProps) {
     }
     return (
         <>
-            <span class=" dark:text-principal-light font-bold">
-                Comentarios ({productCommentsIndexApiQuery.data?.count})
-            </span>
             <Form
                 className="flex items-center justify-center gap-3"
                 onSubmit={onCommentsStore}

@@ -64,7 +64,13 @@ function PostsSection({ posts }: PostsSectionProps) {
                         {posts.map((post, i) => (
                             <div
                                 key={post.id}
-                                class={`group overflow-hidden shadow ${
+                                class={`group overflow-hidden ${
+                                    storageEmpresa?.setting
+                                        .bg_color_background !==
+                                    storageEmpresa?.setting.bg_color_paper
+                                        ? "shadow"
+                                        : ""
+                                }  ${
                                     enviroments.TYPE_BORDER === "circle"
                                         ? "rounded-md"
                                         : ""
@@ -96,7 +102,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                         <p class="line-clamp-5 text-gray-400 font-normal h-[80px] text-sm">
                                             {post.content}
                                         </p>
-                                        <div class="flex justify-between ">
+                                        <div class="flex justify-between items-center ">
                                             <div class="flex gap-1 items-center text-primary">
                                                 <i class="fa-regular fa-thumbs-up text-sm" />
                                                 <span class="font-bold text-xs">
@@ -104,6 +110,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                                 </span>
                                             </div>
                                             <span class="self-end  text-primary font-bold text-xs">
+                                                <i class="fa-regular fa-calendar-days" />{" "}
                                                 {showTime(post.createdAt!)}
                                             </span>
                                         </div>
@@ -147,7 +154,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                             ).find((p) => p === getId()!);
                             return (
                                 <div
-                                    class={`flex-col dark:bg-paper-dark bg-white relative  ${
+                                    class={`flex-col dark:bg-paper-dark bg-paper-light  relative  ${
                                         storageEmpresa?.setting.type_border ===
                                         "circle"
                                             ? "rounded-md overflow-hidden"
@@ -205,9 +212,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                     >
                                         <i
                                             class={`fa-regular fa-thumbs-up text-lg  ${
-                                                existLike
-                                                    ? "text-white"
-                                                    : "text-primary"
+                                                existLike ? "" : "text-primary"
                                             }`}
                                         />
                                     </button>
@@ -215,7 +220,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                         <span class="font-bold dark:text-primary text-center   md:text-xl">
                                             {post.title}
                                         </span>
-                                        <p class="  text-center  text-sm md:text-base text-gray-500 dark:text-gray-300">
+                                        <p class="  text-center  text-sm md:text-base  dark:text-gray-300">
                                             {post.content}
                                         </p>
                                         <div class="flex justify-between items-center">
@@ -228,7 +233,8 @@ function PostsSection({ posts }: PostsSectionProps) {
                                                     }
                                                 </span>
                                             </div>{" "}
-                                            <span class="text-xs justify-end text-end text-primary font-bold">
+                                            <span class="text-xs justify-end text-end text-primary font-bold flex gap-2 items-center ">
+                                                <i class="fa-regular fa-calendar-days" />{" "}
                                                 {showTime(post.createdAt!)}
                                             </span>
                                         </div>

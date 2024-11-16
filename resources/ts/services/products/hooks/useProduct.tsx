@@ -146,7 +146,7 @@ function useProduct({ product, isService }: UseProductProps) {
         : printImagesProduct(product.images, 100);
     const images500Variant = (product as ProductsNormalSchemaFromServer)
         .variants
-        ? printImagesProduct(product.images, 500).filter((_, i) =>
+        ? printImagesProduct(product.images, null).filter((_, i) =>
               varianteChoose!.images.some((img) => img === i + 1)
           )
         : printImagesProduct(product.images, 500);

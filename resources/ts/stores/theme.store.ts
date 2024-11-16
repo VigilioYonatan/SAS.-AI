@@ -5,8 +5,8 @@ import { useEffect } from "preact/hooks";
 type ThemeMode = "light" | "dark" | "default";
 function getThemeLocalStorage() {
 	let themeMode: ThemeMode = "default";
-	if (localStorage.getItem("theme")) {
-		themeMode = localStorage.getItem("theme") as ThemeMode;
+	if (localStorage.getItem(`theme:${storageEmpresa?.slug}`)) {
+		themeMode = localStorage.getItem(`theme:${storageEmpresa?.slug}`) as ThemeMode;
 	}
 
 	return themeMode;
@@ -19,11 +19,11 @@ export function useThemeStore() {
 	function changeThemeMode(them: ThemeMode) {
 		if (them === theme.value) return;
 		if (them === "default") {
-			localStorage.removeItem("theme");
+			localStorage.removeItem(`theme:${storageEmpresa?.slug}`);
 			changeTheme(them);
 			return;
 		}
-		localStorage.setItem("theme", them);
+		localStorage.setItem(`theme:${storageEmpresa?.slug}`, them);
 		changeTheme(them);
 	}
 	function lightModeElement() {

@@ -1,6 +1,5 @@
 import { CitiesSchemaFromServer } from "@/ubigeo/schemas/cities.schema";
 import {
-    array,
     boolean,
     coerce,
     custom,
@@ -13,7 +12,6 @@ import {
     string,
     type Input,
 } from "@vigilio/valibot";
-import { filesSchema } from "~/libs/upload";
 
 export const hamburgers = [
     "fas fa-pizza-slice",
@@ -40,11 +38,12 @@ export const hostSchema = object({
 export const settingsSchema = object({
     id: number(),
     host: hostSchema,
-    about: nullable(string()), //  acerca de la empresa
     bg_color: string([minLength(2), maxLength(20)]),
     bg_color_responsive: string([minLength(2), maxLength(20)]),
     bg_color_footer: string(),
+    bg_color_button: string(),
     bg_color_background: string(),
+    is_subcategory: boolean(),
     background_position: string([
         custom(
             (val) => ["center", "start", "end"].includes(val),
@@ -80,8 +79,7 @@ export const settingsSchema = object({
     ]),
     isCoverImage: boolean(),
     isScrolling: boolean(),
-    icon: nullable(array(filesSchema())), //obligatorio
-    photo: nullable(array(filesSchema())),
+
     isDark: boolean(),
     isLogoImage: boolean(),
     empresa_id: number(),
@@ -111,6 +109,8 @@ export const settingsSchema = object({
         cards: boolean(),
         android: boolean(),
         brands: boolean(),
+        offers_section: boolean(),
+        offers_user: boolean(),
     }),
     type_map: string([
         custom(
@@ -130,6 +130,31 @@ export const settingsSchema = object({
             "Tipo de header no válido"
         ),
     ]),
+    logo_width: number(),
+    type_card: string([
+        custom(
+            (val) => ["normal", "eccomerce"].includes(val),
+            "card no válido"
+        ),
+    ]),
+    background_custom_html: nullable(string()),
+    header_position: object({
+        logo: number(),
+        navbar: number(),
+        icons: number(),
+    }),
+    is_block_aside: boolean(),
+    header: object({
+        home: boolean(),
+        shop: boolean(),
+        profile: boolean(),
+        about: boolean(),
+        pedidos: boolean(),
+        condiciones: boolean(),
+        categories: boolean(),
+        subcategories: boolean(),
+        services: boolean(),
+    }),
     // position_map: string([
     //     custom(
     //         (val) => ["start", "end"].includes(val),

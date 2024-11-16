@@ -10,12 +10,18 @@ import enviroments from "~/config";
 
 interface ProductBodyProps {
     showDescription: boolean;
+    isShowQuantity?: boolean;
+    isShowRating?: boolean;
 }
-function ProductBody({ showDescription }: ProductBodyProps) {
+function ProductBody({
+    showDescription,
+    isShowQuantity = true,
+    isShowRating = true,
+}: ProductBodyProps) {
     const { product } = useContext(productContext);
 
     return (
-        <div class="flex flex-col gap-2 px-2 pt-2  w-full justify-center items-center ">
+        <div class="flex flex-col gap-2 px-2   w-full justify-center items-center  mt-1">
             <style jsx>{`
                 .slick-slide > div {
                     margin-inline: 4px;
@@ -24,70 +30,74 @@ function ProductBody({ showDescription }: ProductBodyProps) {
             `}</style>
 
             <div class="flex flex-col justify-center items-center gap-1">
-                <span
-                    class={`${
-                        storageEmpresa?.tipo_empresa.tipo_servicio_id === 2
-                            ? (
-                                  product.producto
-                                      .value as ProductsRestaurantSchemaFromServer
-                              ).ilimit ||
-                              (!(
-                                  product.producto
-                                      .value as ProductsRestaurantSchemaFromServer
-                              ).ilimit &&
-                                  (
+                {isShowQuantity ? (
+                    <span
+                        class={`${
+                            storageEmpresa?.tipo_empresa.tipo_servicio_id === 2
+                                ? (
                                       product.producto
                                           .value as ProductsRestaurantSchemaFromServer
-                                  ).stock! > 0)
-                                ? "text-primary"
-                                : "text-danger"
-                            : ""
-                    } ${
-                        [1, 3].includes(
-                            storageEmpresa!.tipo_empresa.tipo_servicio_id
-                        )
-                            ? (!product.varianteChoose!.ilimit &&
-                                  product.varianteChoose!.stock! > 0) ||
-                              product.varianteChoose!.ilimit
-                                ? "text-primary"
-                                : "text-danger"
-                            : ""
-                    }  font-bold  py-1 rounded-md uppercase text-xs flex  items-center gap-2`}
-                >
-                    {storageEmpresa!.tipo_empresa.tipo_servicio_id === 2 ? (
-                        <>
-                            {(
-                                product.producto
-                                    .value as ProductsRestaurantSchemaFromServer
-                            ).ilimit
-                                ? "En stock"
-                                : `${
+                                  ).ilimit ||
+                                  (!(
+                                      product.producto
+                                          .value as ProductsRestaurantSchemaFromServer
+                                  ).ilimit &&
                                       (
                                           product.producto
                                               .value as ProductsRestaurantSchemaFromServer
-                                      ).stock
-                                  } unidades`}
-                        </>
-                    ) : null}
-                    {[1, 3].includes(
-                        storageEmpresa!.tipo_empresa.tipo_servicio_id
-                    ) ? (
-                        <>
-                            {product.varianteChoose!.ilimit
-                                ? "En stock"
-                                : `${
-                                      product.varianteChoose!.stock! > 0
-                                          ? `${
-                                                product.varianteChoose!.stock
-                                            } unidades`
-                                          : "No disponible"
-                                  } `}
-                        </>
-                    ) : null}
-                </span>{" "}
+                                      ).stock! > 0)
+                                    ? "text-primary"
+                                    : "text-danger"
+                                : ""
+                        } ${
+                            [1, 3].includes(
+                                storageEmpresa!.tipo_empresa.tipo_servicio_id
+                            )
+                                ? (!product.varianteChoose!.ilimit &&
+                                      product.varianteChoose!.stock! > 0) ||
+                                  product.varianteChoose!.ilimit
+                                    ? "text-primary"
+                                    : "text-danger"
+                                : ""
+                        }  font-bold  py-1 rounded-md uppercase text-xs flex  items-center gap-2`}
+                    >
+                        {storageEmpresa!.tipo_empresa.tipo_servicio_id === 2 ? (
+                            <>
+                                {(
+                                    product.producto
+                                        .value as ProductsRestaurantSchemaFromServer
+                                ).ilimit
+                                    ? "En stock"
+                                    : `${
+                                          (
+                                              product.producto
+                                                  .value as ProductsRestaurantSchemaFromServer
+                                          ).stock
+                                      } unidades`}
+                            </>
+                        ) : null}
+                        {[1, 3].includes(
+                            storageEmpresa!.tipo_empresa.tipo_servicio_id
+                        ) ? (
+                            <>
+                                {product.varianteChoose!.ilimit
+                                    ? "En stock"
+                                    : `${
+                                          product.varianteChoose!.stock! > 0
+                                              ? `${
+                                                    product.varianteChoose!
+                                                        .stock
+                                                } unidades`
+                                              : "No disponible"
+                                      } `}
+                            </>
+                        ) : null}
+                    </span>
+                ) : null}
+
                 <a
                     href={`/${product.producto.value.slug}`}
-                    class="line-clamp-2 text-sm   md:text-base font-semibold dark:text-white hover:text-primary dark:hover:text-primary delay-custom-1  text-center h-[45px]"
+                    class="line-clamp-2 text-sm   md:text-base font-semibold dark:text-white hover:text-primary dark:hover:text-primary delay-custom-1  text-center "
                 >
                     {product.producto.value.name}{" "}
                     {product.varianteChoose &&
@@ -106,17 +116,19 @@ function ProductBody({ showDescription }: ProductBodyProps) {
                               .join(" ")
                         : null}
                 </a>
-                <Rating
-                    defaultValue={product.producto.value.rating.promedio}
-                    shape={enviroments.TYPE_START}
-                    size="20px"
-                    spacing="5px"
-                    readOnly
-                    activeColor="var(--primary)"
-                />
+                {isShowRating ? (
+                    <Rating
+                        defaultValue={product.producto.value.rating.promedio}
+                        shape={enviroments.TYPE_START}
+                        size="20px"
+                        spacing="5px"
+                        readOnly
+                        activeColor="var(--primary)"
+                    />
+                ) : null}
             </div>
             {showDescription && product.producto.value.description ? (
-                <p class="text-gray-400   line-clamp-3  h-[80px]  w-full text-sm">
+                <p class="text-gray-500 dark:text-gray-300 font-semibold  line-clamp-3  h-[80px]  w-full text-sm">
                     {removeTextHTML(product.producto.value.description)}
                 </p>
             ) : null}

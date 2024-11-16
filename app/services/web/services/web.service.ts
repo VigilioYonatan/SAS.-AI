@@ -43,9 +43,9 @@ export class WebService {
             background_color: "#fff",
             lang: empresa.dial_code === "55" ? "pt" : "es",
             scope: "/dist/",
-            description: !empresa.setting.about
+            description: !empresa.about
                 ? `Bienvenido a ${empresa.name_empresa}`
-                : empresa.setting.about.slice(0, 100),
+                : empresa.about.slice(0, 100),
             theme_color: empresa.setting.bg_color,
             icons,
             form_factor: "wide",
@@ -77,6 +77,19 @@ export class WebService {
         const result = await this.webApiService.categories(
             category_slug,
             empresa
+        );
+        return result;
+    }
+    async subcategories(
+        category_slug: string,
+        subcategory_slug: string,
+        empresa: Empresas
+    ) {
+        const result = await this.webApiService.subcategories(
+            category_slug,
+            subcategory_slug,
+            empresa,
+            true
         );
         return result;
     }

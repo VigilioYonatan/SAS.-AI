@@ -27,6 +27,7 @@ import { useSignal } from "@preact/signals";
 import { getFilesEdit } from "~/libs/upload";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import Helper from "~/components/Helper";
+import SettingsProduct from "@/admin/components/SettingsProduct";
 
 interface ProductsRestaurantStoreProps {
 	refetch: (clean?: boolean | undefined) => Promise<void>;
@@ -190,7 +191,10 @@ function ProductsRestaurantStore({
 						)}
 						Agregar Producto
 					</h3>
-					<Form.button.reset />
+					<div class="flex gap-2 items-center">
+                        <SettingsProduct />
+                        <Form.button.reset />
+                    </div>
 				</div>
 
 				<div class="">

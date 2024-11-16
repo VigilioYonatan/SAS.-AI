@@ -15,7 +15,7 @@ function ProductButtons({ isAbsolute }: ProductsButtonProps) {
     const { product } = useContext(productContext);
     return (
         <div
-            class={`grid grid-cols-4 w-full delay-custom-1 ${
+            class={` grid-cols-4 w-full delay-custom-1 hidden md:grid ${
                 isAbsolute
                     ? "absolute bottom-0 right-0 left-0  md:translate-y-full md:group-hover:translate-y-0 "
                     : ""
@@ -69,7 +69,7 @@ function ProductButtons({ isAbsolute }: ProductsButtonProps) {
                     product.producto.value.user?.isFavorite
                         ? "bg-primary text-white "
                         : "bg-background-light  dark:bg-paper-dark dark:text-white  hover:text-primary "
-                }  p-2 border border-gray-400   `}
+                }  p-2 border border-gray-300   `}
                 type="button"
                 aria-label="favorite"
             >

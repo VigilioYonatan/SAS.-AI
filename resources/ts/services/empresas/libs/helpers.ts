@@ -7,6 +7,7 @@ export enum DIALCODE {
 	peru = "51",
 	españa = "34",
 }
+export const bannersQualities = [0, 300, 600, 800, 1200];
 
 export function printLogoempresa(
 	images: FilesSchema[],
@@ -152,3 +153,4 @@ export const typeFiscal = {
 		equivalente_dni: "DNI/NIE",
 	},
 };
+

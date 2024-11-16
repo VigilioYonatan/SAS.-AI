@@ -16,10 +16,16 @@ function FindSection() {
             data-aos={`${
                 storageEmpresa?.setting.isScrolling ? "fade-up" : ""
             } `}
-            class="  h-[400px] md:h-[600px] mx-4 md:mx-0  px-2  rounded-md  mb-4 flex flex-col gap-4"
+            class=" max-w-6xl mx-auto h-[400px] md:h-[600px]  px-2  rounded-md  mb-4 flex flex-col gap-4 "
         >
             <TitleSection>Encuéntranos</TitleSection>
-            <div class="w-full relative h-full">
+            <div
+                class={`w-full relative h-full ${
+                    storageEmpresa.setting.type_border === "circle"
+                        ? "rounded-md overflow-hidden"
+                        : ""
+                }`}
+            >
                 <MapValue
                     zoom={16}
                     value={empresaStore.state!.map_marker}
@@ -29,7 +35,7 @@ function FindSection() {
                     }}
                     scrollWheelZoom={false}
                 />{" "}
-                <div class="flex flex-col absolute  bottom-2 md:bottom-0 m-1 bg-opacity-80 bg-background-dark z-10 p-2 gap-2 max-w-[250px] rounded-md shadow ">
+                <div class="flex flex-col absolute  bottom-2 md:bottom-0 m-1 bg-opacity-80 bg-background-dark z-10 p-2 gap-2 max-w-[250px] rounded-md shadow  ">
                     <span class="font-bold  text-sm text-primary">
                         {empresaStore.state!.address.city.region.name} -{" "}
                         {empresaStore.state!.address.city.name}

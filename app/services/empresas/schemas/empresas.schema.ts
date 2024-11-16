@@ -152,6 +152,7 @@ export const empresasSchema = objectAsync({
     dial_code: string(),
     name_empresa: string([minLength(2), maxLength(100)]),
     email: nullable(string([email()])),
+    about: nullable(string()), //  acerca de la empresa
     logo: nullable(array(filesSchema(empresasLogoQualities))), //obligatorio
     logo_pwa: nullable(array(filesSchema(empresasLogoQualities))), //obligatorio
     telephoneFirst: string([
@@ -342,6 +343,9 @@ export const empresasSchema = objectAsync({
         ])
     ),
     isFreeVPS: boolean(),
+    isTemplate: boolean(), // es template
+    icon: nullable(array(filesSchema([100, 300]))), //obligatorio
+    photo: nullable(array(filesSchema())),
     token: string(),
 });
 

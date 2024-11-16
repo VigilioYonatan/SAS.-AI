@@ -9,6 +9,7 @@ import { reactComponent } from "~/libs/preact";
 import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
 import { valibotVigilio } from "~/libs/valibot";
 import { ROLES } from "@/users/libs/helpers";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 function AuthLogin() {
     const rememberPassword = useSignal<string>(
@@ -45,7 +46,10 @@ function AuthLogin() {
     return (
         <div class="text-start p-4 w-full">
             <div class="flex justify-center items-center flex-col gap-2 mb-2">
-                <LogoImage width="50" height="50" />
+                <LogoImage
+                    width={storageEmpresa?.setting.logo_width}
+                    height="50"
+                />
                 <h3 class="text-2xl font-bold dark:text-secondary-light ">
                     Inicio de sesión
                 </h3>

@@ -30,7 +30,7 @@ import { Regions } from "@/ubigeo/entities/regions.entity";
 import { RegionsEmpresa } from "@/ubigeo/entities/regions_empresa.entity";
 import { Countries } from "@/ubigeo/entities/countries.entity";
 import { BackgroundApiService } from "./background.api.service";
-import { BASE_URL } from "../libs";
+import { bannersQualities, BASE_URL, gridEmpresa } from "../libs";
 import { mesasSeeder } from "../seeders/mesas.seeder";
 import { Floors } from "@/orders/entities/floors.entity";
 import { terminal } from "~/libs/helpers";
@@ -48,6 +48,7 @@ import { finanzasSeeder } from "@/finanzas/seeders/finanzas.seeder";
 import { CategoriesFinanzas } from "@/finanzas/entities/categories.entity";
 import cache from "@vigilio/express-core/cache";
 import { hosts } from "~/config/server";
+import { GridBanner } from "../entities/grid_banner.entity";
 
 export function deleteHostCache() {
     for (const host of hosts) {
@@ -58,16 +59,48 @@ export function deleteHostCache() {
 export let openAis: Record<string, openai> = {};
 export async function initial() {
     const empresas = await Empresas.findAll({
-        attributes: ["slug", "credentials", "payments", "telegram_token"],
+        attributes: ["slug", "credentials", "payments", "telegram_token", "id"],
     });
     for (const empresa of empresas) {
         const openAiClient = new openai.OpenAI({
             apiKey: empresa.credentials.open_ai,
         });
+        const haveGridEmpresas = await empresa.$get("gridBanners");
         if (empresa.telegram_token) {
             await initializeBot(empresa, empresa.telegram_token);
         }
-
+        if (!haveGridEmpresas.length) {
+            await GridBanner.bulkCreate([
+                {
+                    responsive: gridEmpresa(bannersQualities),
+                    enabled: true,
+                    empresa_id: empresa.id,
+                    title: null,
+                    className: null,
+                },
+                {
+                    responsive: gridEmpresa(bannersQualities),
+                    enabled: true,
+                    empresa_id: empresa.id,
+                    title: null,
+                    className: null,
+                },
+                {
+                    responsive: gridEmpresa(bannersQualities),
+                    enabled: true,
+                    empresa_id: empresa.id,
+                    title: null,
+                    className: null,
+                },
+                {
+                    responsive: gridEmpresa(bannersQualities),
+                    enabled: true,
+                    empresa_id: empresa.id,
+                    title: null,
+                    className: null,
+                },
+            ]);
+        }
         // tipos finanzas
         // const finanzas = await TipoFinanza.findAll();
 
@@ -201,6 +234,14 @@ export class EmpresasApiService {
                 },
                 enable_map_marker: false,
                 enabled_address: true,
+                photo: [
+                    {
+                        file: `https://www.${body.slug}.vigilio-services.com/images/settings/others/restaurant.jpg`,
+                        dimension: 800,
+                    },
+                ],
+                icon: null,
+                logo_pwa: null,
             });
             await empresa.save();
             if (body.servicio_id === 2) {
@@ -274,13 +315,13 @@ export class EmpresasApiService {
                         stripe_secret_key: null,
                     },
                 } as Omit<MetodosPagoSchema, "empresa_id">),
-                await empresa.$create("address", {
+                empresa.$create("address", {
                     city_id: 1,
                     urbanizacion: "",
                     direccion: "",
                     codLocal: "0000",
                 }),
-                await empresa.$create("setting", {
+                empresa.$create("setting", {
                     web: body.web,
                     host: {
                         host: null,
@@ -294,27 +335,19 @@ export class EmpresasApiService {
                     bg_color_responsive: "#FFFFFF",
                     type_border: "circle",
                     type_cart: "fas fa-shopping-cart",
-                    icon: null,
-                    logo: null,
-                    photo: [
-                        {
-                            file: `${BASE_URL(
-                                empresa
-                            )}/images/settings/others/restaurant.jpg`,
-                            dimension: 800,
-                        },
-                    ],
                     isCoverImage: true,
                     isDark: false,
                     isScrolling: true,
                     hamburger: "fas fa-bars",
                     isLogoImage: false,
                     position_header: true,
+                    logo_width: 80,
                     border_title_type: "normal",
                     type_icons: "normal",
                     bg_color_background: "#FFFFFF",
                     bg_color_footer: "#FFFFFF",
                     bg_color_paper: "#F2F2F2",
+                    bg_color_button: "rgb(28,141,227)",
                     font_face: "Exo",
                     background_position: "center",
                     background_type: "first",
@@ -324,11 +357,30 @@ export class EmpresasApiService {
                         cards: true,
                         map: true,
                         android: true,
+                        offers_section: true,
+                        offers_user: true,
                     },
                     type_map: "satelite",
                     header_type: "normal",
                     type_star: "star",
+                    is_block_aside: false,
+                    type_card: "normal",
+                    is_subcategory: false,
+                    background_custom_html: null,
+                    header_position: { logo: 1, icons: 3, navbar: 2 },
+                    header: {
+                        about: true,
+                        condiciones: true,
+                        home: true,
+                        pedidos: true,
+                        profile: true,
+                        shop: true,
+                        categories: true,
+                        services: true,
+                        subcategories: true,
+                    },
                 } as Omit<SettingsSchema, "id" | "empresa_id">),
+
                 await empresa.$create("citasSetting", {
                     max_days: 14,
                     max_minutes: 60,
@@ -402,6 +454,29 @@ export class EmpresasApiService {
                     ],
                 }),
             ]);
+            await GridBanner.bulkCreate([
+                {
+                    responsive: gridEmpresa(bannersQualities),
+                    enabled: true,
+                    empresa_id: empresa.id,
+                },
+                {
+                    responsive: gridEmpresa(bannersQualities),
+                    enabled: true,
+                    empresa_id: empresa.id,
+                },
+                {
+                    responsive: gridEmpresa(bannersQualities),
+                    enabled: true,
+                    empresa_id: empresa.id,
+                },
+                {
+                    responsive: gridEmpresa(bannersQualities),
+                    enabled: true,
+                    empresa_id: empresa.id,
+                },
+            ]);
+
             const username = `${fullname}${Math.random()
                 .toString(32)
                 .slice(3, 4)}`;

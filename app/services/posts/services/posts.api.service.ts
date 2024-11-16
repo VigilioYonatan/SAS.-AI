@@ -40,6 +40,7 @@ export class PostsApiService {
             ...postsStoreDto,
             user_id: user.id,
             empresa_id: empresa.id,
+            likes: [],
         });
         await post.save();
         return {

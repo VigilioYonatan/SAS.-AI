@@ -84,7 +84,10 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                             <a href={"/"} class="flex  items-center  ml-12">
                                 {empresaStore.state!.logo ? (
                                     <img
-                                        width={100}
+                                        width={
+                                            empresaStore.state?.setting
+                                                .logo_width
+                                        }
                                         height={100}
                                         src={
                                             printFileWithDimension(
@@ -92,7 +95,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                                 100
                                             )[0]
                                         }
-                                        class="w-[60px] h-[60px] object-contain"
+                                        class=" object-contain"
                                         alt={empresaStore.state!.name_empresa}
                                     />
                                 ) : (
@@ -139,7 +142,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                         >
                             <i class="fas fa-heart text-lg" />{" "}
                             {favoriteStore.state > 0 ? (
-                                <span class="border-2 absolute border-white rounded-full w-[22px] h-[22px] text-xs bg-danger -right-3 -top-2 flex justify-center items-center  text-white">
+                                <span class="border-2 absolute border-white rounded-full w-[20px] h-[20px] font-semibold text-[0.7rem] bg-black -right-3 -top-1 flex justify-center items-center  text-white ">
                                     {favoriteStore.state}
                                 </span>
                             ) : null}
@@ -170,7 +173,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                 onClick={cartStore.dropdown.onOpen}
                             >
                                 <i class={enviroments.TYPE_CART} />
-                                <span class="absolute -top-1 -right-2 bg-primary text-xs font-bold flex justify-center items-center text-white w-[20px] h-[20px] rounded-full">
+                                <span class="absolute -top-1 -right-2 bg-black border-2 text-xs font-bold flex justify-center items-center text-white w-[20px] h-[20px] rounded-full">
                                     {cartStore.computed.showCartLength}
                                 </span>
                             </button>

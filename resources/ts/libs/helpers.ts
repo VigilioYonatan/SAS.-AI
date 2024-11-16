@@ -256,6 +256,7 @@ export function isColorLight(hex: string) {
     const g = Number.parseInt(hex2.substring(2, 4), 16);
     const b = Number.parseInt(hex2.substring(4, 6), 16);
     const luminosity = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
     return luminosity > 128;
 }
 export function getDominantColorFromFile(file: File) {
@@ -294,7 +295,14 @@ export function getColorPrimary() {
     const primaryColor = getComputedStyle(document.documentElement)
         .getPropertyValue("--primary")
         .trim();
-    return primaryColor;
+
+    const remove = primaryColor.startsWith("#")
+        ? primaryColor
+        : `#${
+              // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+              rgbToHex((primaryColor as any)?.match(/\d+/g).map(Number))
+          }`;
+    return remove.toUpperCase();
 }
 
 export async function getPrincipalColor(file: File) {

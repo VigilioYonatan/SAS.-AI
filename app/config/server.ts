@@ -166,7 +166,6 @@ export class Server {
                     ...where,
                     attributes: {
                         exclude: [
-                            "about",
                             "contacts",
                             "groupWhatsapp",
                             "credentials",
@@ -291,6 +290,7 @@ export class Server {
                 res.locals.$user = user;
 
                 (req as RequestVigilio).user = user;
+
                 const host = req.headers.host?.slice(4);
 
                 // no permitido para endpoints y que no sea el subdominio client
@@ -315,20 +315,21 @@ export class Server {
                     const categoriasTotal = await Promise.all(
                         categories.map(async (category) => {
                             // productnormal
-                            const product = await Product(
-                                empresa,
-                                false
-                            ).findOne({
-                                order: [["createdAt", "DESC"]],
-                                where: {
-                                    enabled: true,
-                                    category_id: category.id,
-                                    empresa_id: empresa.id,
-                                },
-                            });
+                            const [product, subcategories] = await Promise.all([
+                                Product(empresa, false).findOne({
+                                    order: [["createdAt", "DESC"]],
+                                    where: {
+                                        enabled: true,
+                                        category_id: category.id,
+                                        empresa_id: empresa.id,
+                                    },
+                                }),
+                                category.$get("subcategories"),
+                            ]);
                             return {
                                 ...category.toJSON(),
                                 productNew: product,
+                                subcategories,
                             };
                         })
                     );

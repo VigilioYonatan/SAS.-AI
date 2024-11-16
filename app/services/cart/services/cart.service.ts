@@ -5,27 +5,27 @@ import type { Users } from "@/users/entities/users.entity";
 
 @Injectable()
 export class CartService {
-    constructor(private readonly productsApiService: ProductsApiService) {}
-    async index(
-        items: { id: number; quantity: number; variant?: number }[] | null
-    ) {
-        return {
-            title: "Carrito",
-            cart: items,
-        };
-    }
-    async servicio(empresa: Empresas, slug: string, user: Users | null) {
-        const { product } = await this.productsApiService.show(
-            empresa,
-            slug,
-            true,
-            true,
-            user,
-            false
-        );
-        return {
-            title: "Carrito",
-            servicio: product,
-        };
-    }
+	constructor(private readonly productsApiService: ProductsApiService) {}
+	async index(
+		items: { id: number; quantity: number; variant?: number }[] | null,
+	) {
+		return {
+			title: "Carrito",
+			cart: items,
+		};
+	}
+	async servicio(empresa: Empresas, slug: string, user: Users | null) {
+		const { product } = await this.productsApiService.show(
+			empresa,
+			slug,
+			true,
+			true,
+			user,
+			false,
+		);
+		return {
+			title: "Carrito",
+			servicio: product,
+		};
+	}
 }
