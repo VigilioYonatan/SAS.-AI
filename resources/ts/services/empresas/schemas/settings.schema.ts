@@ -1,5 +1,6 @@
 import { CitiesSchemaFromServer } from "@/ubigeo/schemas/cities.schema";
 import {
+    array,
     boolean,
     coerce,
     custom,
@@ -12,6 +13,7 @@ import {
     string,
     type Input,
 } from "@vigilio/valibot";
+import { filesSchema } from "~/libs/upload";
 
 export const hamburgers = [
     "fas fa-pizza-slice",
@@ -40,6 +42,7 @@ export const settingsSchema = object({
     host: hostSchema,
     bg_color: string([minLength(2), maxLength(20)]),
     bg_color_responsive: string([minLength(2), maxLength(20)]),
+    bg_color_secondary: string(),
     bg_color_footer: string(),
     bg_color_button: string(),
     bg_color_background: string(),
@@ -155,6 +158,8 @@ export const settingsSchema = object({
         subcategories: boolean(),
         services: boolean(),
     }),
+    type_animation: string(),
+    background_auth: array(filesSchema()),
     // position_map: string([
     //     custom(
     //         (val) => ["start", "end"].includes(val),

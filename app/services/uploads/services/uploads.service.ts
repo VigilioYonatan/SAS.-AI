@@ -47,6 +47,7 @@ import { SuppliersApiService } from "@/suppliers/services/suppliers.api.service"
 import { NewApiService } from "@/empresas/services/new.api.service";
 import { SubCategoriesApiService } from "@/products/services/subcategories.api.service";
 import { BannerApiService } from "@/empresas/services/banner.api.service";
+import { SettingsApiService } from "@/empresas/services/settings.api.service";
 
 @Injectable()
 export class UploadsService {
@@ -61,7 +62,8 @@ export class UploadsService {
         private readonly brandsApiService: BrandsApiService,
         private readonly suppliersApiService: SuppliersApiService,
         private readonly newApiService: NewApiService,
-        private readonly bannerApiService: BannerApiService
+        private readonly bannerApiService: BannerApiService,
+        private readonly settingsApiService: SettingsApiService
     ) {}
     async store(props: {
         req: Request;
@@ -328,6 +330,19 @@ export class UploadsService {
                     );
                 }
                 break;
+            case "settings":
+                if (property === "background_auth") {
+                    qualities = await this.customUpload(
+                        files,
+                        {
+                            minFiles: 1,
+                            maxFiles: 1,
+                            required: true,
+                        },
+                        [100, 1600]
+                    );
+                }
+                break;
             case "empresas":
                 if (property === "certificado") {
                     qualities = await this.customUpload(
@@ -589,6 +604,21 @@ export class UploadsService {
                 entidad = background;
                 if (property === "image") {
                     removeFile(empresa.slug, background.image);
+                }
+                break;
+            }
+            case "settings": {
+                if (
+                    !userAuth ||
+                    !userAuth.enabled ||
+                    ![1].includes(userAuth.role_id)
+                )
+                    throw new UnauthorizedException(
+                        "No tiene permiso para realizar esta acción"
+                    );
+                const { data } = await this.settingsApiService.index(empresa);
+                entidad = data;
+                if (property === "background_auth" && data.background_auth) {
                 }
                 break;
             }

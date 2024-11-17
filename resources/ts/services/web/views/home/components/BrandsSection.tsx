@@ -14,7 +14,9 @@ function BrandsSection({ brands }: BrandsSectionProps) {
         <>
             <section
                 data-aos={`${
-                    storageEmpresa?.setting.isScrolling ? "fade-up" : ""
+                    storageEmpresa?.setting.isScrolling
+                        ? storageEmpresa.setting.type_animation
+                        : ""
                 } `}
                 class="max-w-6xl mx-auto my-4  md:my-8 px-4 flex flex-col"
             >

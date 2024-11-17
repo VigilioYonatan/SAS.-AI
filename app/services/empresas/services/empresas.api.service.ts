@@ -379,6 +379,9 @@ export class EmpresasApiService {
                         services: true,
                         subcategories: true,
                     },
+                    background_auth: null,
+                    bg_color_secondary: "#dc2626",
+                    type_animation: "fade-up",
                 } as Omit<SettingsSchema, "id" | "empresa_id">),
 
                 await empresa.$create("citasSetting", {

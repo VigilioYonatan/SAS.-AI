@@ -27,7 +27,8 @@ export type UploadsEntities =
     | "subcategories"
     | "suppliers"
     | "new"
-    | "banner";
+    | "banner"
+    | "settings";
 
 export const uploadsEntities: UploadsEntities[] = [
     "products",
@@ -43,6 +44,7 @@ export const uploadsEntities: UploadsEntities[] = [
     "suppliers",
     "new",
     "banner",
+    "settings",
 ];
 
 /**** properties about entities *****/
@@ -58,7 +60,8 @@ export type UploadsProperties =
     | "qrYape"
     | "qrPlin"
     | "logo_pwa"
-    | "file";
+    | "file"
+    | "background_auth";
 export const uploadsProperties: UploadsProperties[] = [
     "images",
     "image",
@@ -72,6 +75,7 @@ export const uploadsProperties: UploadsProperties[] = [
     "qrPlin",
     "logo_pwa",
     "file",
+    "background_auth",
 ];
 
 interface uploadFilesProps {

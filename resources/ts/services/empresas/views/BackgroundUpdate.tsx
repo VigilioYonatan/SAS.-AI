@@ -106,15 +106,9 @@ function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
         }
         async function initialUpdateImage() {
             if (background.image) {
-                const [image, video] = await Promise.all([
-                    getFilesEdit(background.image, 1200),
-                    getFilesEdit(background.image, null, "video/mp4"),
-                ]);
+                const files = await getFilesEdit(background.image, 1600);
 
-                formBackgroundUpdateImage.setValue(
-                    "image",
-                    image.length ? image : video
-                );
+                formBackgroundUpdateImage.setValue("image", files);
             }
         }
 

@@ -23,7 +23,9 @@ function ProductsSectionRandom({
     return (
         <section
             data-aos={`${
-                storageEmpresa?.setting.isScrolling ? "fade-up" : ""
+                storageEmpresa?.setting.isScrolling
+                    ? storageEmpresa.setting.type_animation
+                    : ""
             } `}
             class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 px-4  my-4 md:my-8  "
         >

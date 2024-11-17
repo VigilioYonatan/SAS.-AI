@@ -8,6 +8,7 @@ import {
 } from "sequelize-typescript";
 import type { SettingsSchema } from "../schemas/settings.schema";
 import { Empresas } from "./empresas.entity";
+import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 
 @Table
 export class Settings extends Model implements Omit<SettingsSchema, "id"> {
@@ -35,6 +36,21 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
         type: DataType.STRING(60),
     })
     bg_color_footer: string;
+
+    @Column({
+        type: DataType.STRING(60),
+    })
+    bg_color_secondary: string;
+
+    @Column({
+        type: DataType.STRING(60),
+    })
+    type_animation: string;
+
+    @Column({
+        type: DataType.JSON,
+    })
+    background_auth: FilesSchema[];
 
     @Column({
         type: DataType.STRING(60),

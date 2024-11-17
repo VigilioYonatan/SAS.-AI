@@ -1,6 +1,7 @@
 import { isColorLight } from "~/libs/helpers";
 import enviroments from ".";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import { printFileWithDimension } from "~/libs/upload";
 // tipo de negocio
 export function negocio() {
     return "Restaurante";
@@ -82,8 +83,14 @@ export function libroReclamacionesImage() {
 export function petImage() {
     return "/images/settings/others/pet.webp";
 }
+
 export function authWallpaper() {
-    return "/images/settings/others/portada.jpeg";
+    return storageEmpresa?.setting.background_auth
+        ? printFileWithDimension(
+              storageEmpresa?.setting.background_auth,
+              1600
+          )[0]
+        : "/images/settings/others/portada.jpeg";
 }
 
 export function imageBackgroundIA() {

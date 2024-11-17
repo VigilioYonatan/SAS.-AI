@@ -142,7 +142,20 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                         >
                             <i class="fas fa-heart text-lg" />{" "}
                             {favoriteStore.state > 0 ? (
-                                <span class="border-2 absolute border-white rounded-full w-[20px] h-[20px] font-semibold text-[0.7rem] bg-black -right-3 -top-1 flex justify-center items-center  text-white ">
+                                <span
+                                    class="border-2 absolute border-white rounded-full w-[20px] h-[20px] font-semibold text-[0.7rem]   -right-3 -top-1 flex justify-center items-center   "
+                                    style={{
+                                        backgroundColor:
+                                            storageEmpresa?.setting
+                                                .bg_color_secondary,
+                                        color: isColorLight(
+                                            storageEmpresa!.setting
+                                                .bg_color_secondary
+                                        )
+                                            ? "#000000"
+                                            : "#ffffff",
+                                    }}
+                                >
                                     {favoriteStore.state}
                                 </span>
                             ) : null}
@@ -173,7 +186,20 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                 onClick={cartStore.dropdown.onOpen}
                             >
                                 <i class={enviroments.TYPE_CART} />
-                                <span class="absolute -top-1 -right-2 bg-black border-2 text-xs font-bold flex justify-center items-center text-white w-[20px] h-[20px] rounded-full">
+                                <span
+                                    class="absolute -top-1 -right-2  border-2 text-xs font-bold flex justify-center items-center  w-[20px] h-[20px] rounded-full"
+                                    style={{
+                                        backgroundColor:
+                                            storageEmpresa?.setting
+                                                .bg_color_secondary,
+                                        color: isColorLight(
+                                            storageEmpresa!.setting
+                                                .bg_color_secondary
+                                        )
+                                            ? "#000000"
+                                            : "#ffffff",
+                                    }}
+                                >
                                     {cartStore.computed.showCartLength}
                                 </span>
                             </button>

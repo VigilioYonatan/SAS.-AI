@@ -14,7 +14,9 @@ function FindSection() {
     return (
         <section
             data-aos={`${
-                storageEmpresa?.setting.isScrolling ? "fade-up" : ""
+                storageEmpresa?.setting.isScrolling
+                    ? storageEmpresa.setting.type_animation
+                    : ""
             } `}
             class=" max-w-6xl mx-auto h-[400px] md:h-[600px]  px-2  rounded-md   flex flex-col gap-4  my-4 md:my-8"
         >

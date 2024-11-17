@@ -1,4 +1,6 @@
+import { filesSchema } from "@/uploads/schemas/uploads.schema";
 import {
+    array,
     boolean,
     coerce,
     custom,
@@ -39,6 +41,7 @@ export const settingsSchema = objectAsync({
     host: hostSchema,
     bg_color: string([minLength(2), maxLength(20)]),
     bg_color_responsive: string([minLength(2), maxLength(20)]),
+    bg_color_secondary: string(),
     bg_color_button: string(),
     isDark: boolean(),
     type_border: string([
@@ -152,5 +155,7 @@ export const settingsSchema = objectAsync({
         ),
     ]),
     is_block_aside: boolean(),
+    type_animation: string(),
+    background_auth: nullable(array(filesSchema([100, 1600]))),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;

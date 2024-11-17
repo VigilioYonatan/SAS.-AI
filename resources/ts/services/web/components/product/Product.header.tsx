@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { productContext } from "./Product";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
+import { isColorLight } from "~/libs/helpers";
 
 interface ProductHeaderProps {
     className?: string;
@@ -58,7 +59,18 @@ function ProductHeader({
             {/* Se subio recien el producto 7 dias */}
             <div class="flex flex-col absolute top-0 m-1 right-0 gap-1 ">
                 {product.producto.value.discount > 0 ? (
-                    <span class=" bg-danger text-white px-2 py-1 text-xs font-semibold rounded-md">
+                    <span
+                        style={{
+                            backgroundColor:
+                                storageEmpresa?.setting.bg_color_secondary,
+                            color: isColorLight(
+                                storageEmpresa!.setting.bg_color_secondary
+                            )
+                                ? "#000000"
+                                : "#ffffff",
+                        }}
+                        class=" text-white px-2 py-1 text-xs font-semibold rounded-md"
+                    >
                         <i class="fa-solid fa-up" /> %{" "}
                         {product.producto.value.discount}
                     </span>

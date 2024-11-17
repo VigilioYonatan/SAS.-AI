@@ -174,7 +174,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                         backgroundImage: `url('${
                                             printFileWithDimension(
                                                 background.image,
-                                                1200
+                                                1600
                                             )[0]
                                         }')`,
                                     }}
@@ -253,7 +253,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                     </div>
                                     {printFileWithDimension(
                                         background.image,
-                                        null
+                                        1600
                                     )[0]?.endsWith("mp4") ? (
                                         <video
                                             class="absolute inset-0 w-full h-full -z-10 object-cover"
@@ -263,8 +263,8 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                                     null
                                                 )[0]
                                             }
-                                            width={800}
-                                            height={800}
+                                            width={1600}
+                                            height={1400}
                                             loop
                                             muted
                                             autoplay

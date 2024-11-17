@@ -1,6 +1,8 @@
 import useAuthStore from "@/auth/stores/auth.store";
 import useCartStore from "@/cart/stores/cart.store";
-import useEmpresastore from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import { printFileUser, ROLES } from "@/users/libs/helpers";
 import enviroments from "~/config";
 import { bgPrimaryHover } from "~/config/settings";
@@ -64,7 +66,20 @@ function NavTabs({ background, totalProducts }: NavTabsProps) {
                     >
                         <i class={`${enviroments.TYPE_CART} relative`}>
                             {cartStore.computed.showCartLength ? (
-                                <span class="absolute text-white bg-black  -top-3 w-[20px] h-[20px] flex justify-center items-center rounded-full font-bold text-xs -right-4">
+                                <span
+                                    style={{
+                                        backgroundColor:
+                                            storageEmpresa?.setting
+                                                .bg_color_secondary,
+                                        color: isColorLight(
+                                            storageEmpresa!.setting
+                                                .bg_color_secondary
+                                        )
+                                            ? "#000000"
+                                            : "#ffffff",
+                                    }}
+                                    class="absolute  -top-3 w-[20px] h-[20px] flex justify-center items-center rounded-full font-bold text-xs -right-4"
+                                >
                                     {cartStore.computed.showCartLength}
                                 </span>
                             ) : null}

@@ -11,7 +11,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 AOS.init({
     duration: 1200, // Duración de la animación
-    once: true, // Si quieres que la animación ocurra solo una vez
+    once: false, // Si quieres que la animación ocurra solo una vez
 });
 render(
     "Initial",

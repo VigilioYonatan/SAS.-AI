@@ -9,10 +9,7 @@ import type {
     UseFormReturn,
 } from "react-hook-form";
 import { anidarPropiedades } from ".";
-import CodeMirror from "react-simple-code-editor";
-import Prism from "prismjs";
-import "prismjs/themes/prism.css";
-import "prismjs/components/prism-markup.min.js";
+import MonacoEditor from "@monaco-editor/react";
 import useThemeStore from "~/stores/theme.store";
 interface FormControlLabelProps<T extends object> {
     title: string;
@@ -41,39 +38,21 @@ function FormEditorJSControl<T extends object>({
             >
                 {title}
             </label>
-            <div class="flex items-center gap-2 w-full">
-                <CodeMirror
-                    value={value}
-                    onValueChange={(val) => {
-                        setValue(name as Path<T>, val as PathValue<T, Path<T>>);
-                    }}
-                    highlight={(code) =>
-                        Prism.highlight(
-                            code ?? "",
-                            Prism.languages.html,
-                            "html"
-                        )
+            <div class="flex items-center gap-2 w-full border-2">
+                <MonacoEditor
+                    height="300px"
+                    defaultLanguage="javascript"
+                    defaultValue={value}
+                    onChange={(val) =>
+                        setValue(name as Path<T>, val as PathValue<T, Path<T>>)
                     }
-                    padding={10}
-                    style={{
-                        fontFamily: "monospace",
-                        fontSize: 14,
-                        color:
-                            useThemeStore().state === "dark"
-                                ? "#ffffff"
-                                : "#000000", // Color de fondo del editor
-                        backgroundColor:
-                            useThemeStore().state === "dark"
-                                ? "#111827"
-                                : "#f5f5f5", // Color de fondo del editor
-                        borderRadius: "5px", // Bordes redondeados
-                        minHeight: "200px", // Altura mínima
-                        overflow: "auto", // Scroll si el contenido es largo
-                        whiteSpace: "pre-wrap", // Evitar que el código se desborde
-                        wordWrap: "break-word", // Ajustar el texto si es necesario
-                        lineHeight: "1.5", // Mejorar la legibilidad
-                        width: "100%",
+                    options={{
+                        selectOnLineNumbers: true,
+                        autoClosingBrackets: "always",
+                        suggestOnTriggerCharacters: true,
+                        minimap: { enabled: false },
                     }}
+                    theme={useThemeStore().state === "dark" ? "vs-dark" : ""}
                 />
 
                 {question ? (

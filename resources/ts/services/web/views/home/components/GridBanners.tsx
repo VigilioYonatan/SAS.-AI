@@ -1,5 +1,6 @@
 import { BannerSchema } from "@/empresas/schemas/banner.schema";
 import { GridBannerSchema } from "@/empresas/schemas/grid_banner.schema";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import TitleSection from "@/web/components/TitleSection";
 import { useEffect } from "preact/hooks";
 import { printFileWithDimension } from "~/libs/upload";
@@ -24,7 +25,14 @@ function GridBanners({ grid, i }: GridBanners) {
         }
     }, []);
     return (
-        <div class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}`}>
+        <div
+            data-aos={`${
+                storageEmpresa?.setting.isScrolling
+                    ? storageEmpresa.setting.type_animation
+                    : ""
+            }`}
+            class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}`}
+        >
             {grid[i].title ? (
                 <TitleSection>{grid[i].title}</TitleSection>
             ) : null}

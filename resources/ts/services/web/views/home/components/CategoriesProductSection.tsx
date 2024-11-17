@@ -20,7 +20,9 @@ function CategoriesProductSection({
                     key={category.id}
                     class="flex flex-col lg:flex-row gap-6  overflow-hidden"
                     data-aos={`${
-                        storageEmpresa?.setting.isScrolling ? "fade-up" : ""
+                        storageEmpresa?.setting.isScrolling
+                            ? storageEmpresa.setting.type_animation
+                            : ""
                     } `}
                 >
                     <div

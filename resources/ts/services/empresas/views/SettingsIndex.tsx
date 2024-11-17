@@ -3,18 +3,23 @@ import Container from "@/admin/components/Container";
 import { settingsIndexApi } from "../apis/settings/settings.index.api";
 import Loading from "@/admin/components/Loading";
 import Form from "~/components/form";
-import { useMemo } from "preact/hooks";
+import { useEffect, useMemo } from "preact/hooks";
 import { handlerError, isColorLight, NOW, restarDays } from "~/libs/helpers";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import useEmpresastore, { storageEmpresa } from "../stores/empresa.store";
 import { useForm } from "react-hook-form";
 import {
+    settingsBackgrounAuthUpdateDto,
+    SettingsBackgrounAuthUpdateDto,
     SettingsUpdateDto,
     settingsUpdateDto,
 } from "../dtos/settings.update.dto";
 import { valibotVigilio } from "~/libs/valibot";
-import { printFileWithDimension } from "~/libs/upload";
-import { settingsUpdateApi } from "../apis/settings/settings.update.api";
+import { getFilesEdit, printFileWithDimension } from "~/libs/upload";
+import {
+    settingsBackgroundAuthUpdateApi,
+    settingsUpdateApi,
+} from "../apis/settings/settings.update.api";
 import Hr from "@/web/components/Hr";
 import {
     settingsDominioDeleteServerUpdateApi,
@@ -42,6 +47,7 @@ import { icons } from "@/web/views/home/components/BackgroundSection";
 import NavTabs from "@/web/components/NavTabs";
 import MapValue, { typeMap } from "~/components/MapValue";
 import AlertWarning from "~/components/Alerts/AlertWarning";
+import { BASE_URL } from "~/config";
 
 const dominioUpdate = pick(hostSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
@@ -62,6 +68,8 @@ function SettingsIndex() {
         const empresaUpdateMutation = settingsUpdateApi();
 
         const settingsDominioUpdateMutation = settingsDominioUpdateApi();
+        const settingsBackgroundAuthUpdateMutation =
+            settingsBackgroundAuthUpdateApi();
         const settingsDominioNameServerUpdateMutation =
             settingsDominioNameServerUpdateApi();
         const settingsDominioDeleteServerUpdateMutation =
@@ -78,6 +86,43 @@ function SettingsIndex() {
             }, []),
         });
 
+        const formBackgroundUpdateImage =
+            useForm<SettingsBackgrounAuthUpdateDto>({
+                mode: "all",
+                resolver: valibotVigilio(settingsBackgrounAuthUpdateDto),
+            });
+        function onUpdateBackgroundAuth(body: SettingsBackgrounAuthUpdateDto) {
+            settingsBackgroundAuthUpdateMutation.mutate(body, {
+                onSuccess() {
+                    sweetAlert({
+                        icon: "success",
+                        title: "Se actualizó image correctamente",
+                    });
+                },
+                onError(error) {
+                    handlerError(formBackgroundUpdateImage, error);
+                },
+            });
+        }
+        async function initialUpdateImage() {
+            const files = await getFilesEdit(
+                setting.background_auth
+                    ? setting.background_auth
+                    : [
+                          {
+                              file: `${BASE_URL}/images/settings/others/portada.jpeg`,
+                              dimension: 1600,
+                          },
+                      ],
+                1600
+            );
+
+            formBackgroundUpdateImage.setValue("background_auth", files);
+        }
+
+        useEffect(() => {
+            initialUpdateImage();
+        }, []);
         const position_header = settingsUpdateform.watch("position_header");
         const isDark = settingsUpdateform.watch("isDark");
         const isCoverImage = settingsUpdateform.watch("isCoverImage");
@@ -92,6 +137,7 @@ function SettingsIndex() {
         const background_position = settingsUpdateform.watch(
             "background_position"
         );
+        const type_animation = settingsUpdateform.watch("type_animation");
         const background_type = settingsUpdateform.watch("background_type");
         const bg_color_footer = settingsUpdateform.watch("bg_color_footer");
         const bg_color_paper = settingsUpdateform.watch("bg_color_paper");
@@ -532,6 +578,34 @@ function SettingsIndex() {
                     ) : null}
                     <br />
                 </div>{" "}
+                <br />
+                <Form
+                    {...formBackgroundUpdateImage}
+                    onSubmit={onUpdateBackgroundAuth}
+                >
+                    <Form.control.file
+                        name={
+                            "background_auth" as keyof SettingsBackgrounAuthUpdateDto
+                        }
+                        title="Imagen de portada - Autenticación"
+                        accept="image/*"
+                        multiple={false}
+                        showButonCopy
+                        typeFile="image"
+                    />
+                    <Form.button.submit
+                        disabled={
+                            settingsBackgroundAuthUpdateMutation.isLoading ||
+                            false
+                        }
+                        isLoading={
+                            settingsBackgroundAuthUpdateMutation.isLoading ||
+                            false
+                        }
+                        title="Guardar Cambios"
+                    />
+                </Form>
+                <br />{" "}
                 <AlertInfo>
                     <span class="font-semibold">
                         <b class="font-bold">¿Sabias que?</b> El 90% de los
@@ -594,6 +668,14 @@ function SettingsIndex() {
                                     "bg_color_button" as keyof SettingsUpdateDto
                                 }
                                 title="color del boton carrito"
+                            />
+                        </div>
+                        <div class="w-[120px]">
+                            <Form.control.color
+                                name={
+                                    "bg_color_secondary" as keyof SettingsUpdateDto
+                                }
+                                title="Color Secundario"
                             />
                         </div>
                     </div>
@@ -1260,61 +1342,123 @@ function SettingsIndex() {
                             </div>
                         </div>
 
-                        <div>
-                            <span class="text-xs dark:text-white font-semibold">
-                                Tipo de Fuente
-                            </span>
-                            <div class="flex gap-2 flex-wrap">
-                                <div class="flex flex-col gap-1">
-                                    <div class="flex gap-1">
-                                        <button
-                                            class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                font_face === "Exo"
-                                                    ? "bg-paper-light dark:bg-admin-terciary"
-                                                    : ""
-                                            } font-semibold text-xs dark:text-white`}
-                                            type="button"
-                                            onClick={() => {
-                                                settingsUpdateform.setValue(
-                                                    "font_face",
-                                                    "Exo"
-                                                );
-                                            }}
-                                        >
-                                            Exo
-                                        </button>
-                                        <button
-                                            class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                font_face === "Poppins"
-                                                    ? "bg-paper-light dark:bg-admin-terciary"
-                                                    : ""
-                                            } font-semibold text-xs dark:text-white`}
-                                            type="button"
-                                            onClick={() => {
-                                                settingsUpdateform.setValue(
-                                                    "font_face",
-                                                    "Poppins"
-                                                );
-                                            }}
-                                        >
-                                            Poppins
-                                        </button>
-                                        <button
-                                            class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                font_face === "Barlow"
-                                                    ? "bg-paper-light dark:bg-admin-terciary"
-                                                    : ""
-                                            } font-semibold text-xs dark:text-white`}
-                                            type="button"
-                                            onClick={() => {
-                                                settingsUpdateform.setValue(
-                                                    "font_face",
-                                                    "Barlow"
-                                                );
-                                            }}
-                                        >
-                                            Barlow
-                                        </button>
+                        <div class="flex flex-col gap-2">
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Tipo de Fuente
+                                </span>
+                                <div class="flex gap-2 flex-wrap">
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex gap-1">
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    font_face === "Exo"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "font_face",
+                                                        "Exo"
+                                                    );
+                                                }}
+                                            >
+                                                Exo
+                                            </button>
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    font_face === "Poppins"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "font_face",
+                                                        "Poppins"
+                                                    );
+                                                }}
+                                            >
+                                                Poppins
+                                            </button>
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    font_face === "Barlow"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "font_face",
+                                                        "Barlow"
+                                                    );
+                                                }}
+                                            >
+                                                Barlow
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Tipo de Animacion Scroll
+                                </span>
+                                <div class="flex gap-2 flex-wrap">
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex gap-1">
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    type_animation === "fade-up"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "type_animation",
+                                                        "fade-up"
+                                                    );
+                                                }}
+                                            >
+                                                Fade Up
+                                            </button>
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    type_animation === "zoom-in"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "type_animation",
+                                                        "zoom-in"
+                                                    );
+                                                }}
+                                            >
+                                                Zoom In
+                                            </button>
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    type_animation ===
+                                                    "flip-left"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "type_animation",
+                                                        "flip-left"
+                                                    );
+                                                }}
+                                            >
+                                                Flip Left
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

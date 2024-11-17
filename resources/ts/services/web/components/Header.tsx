@@ -509,7 +509,20 @@ function Header({ header }: HeaderProps) {
                             class="flex gap-2 items-center justify-center text-md dark:text-white relative"
                         >
                             <i class="fas fa-heart text-lg" />{" "}
-                            <span class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs bg-red-500 -right-3 -top-2 flex justify-center items-center text-white">
+                            <span
+                                style={{
+                                    backgroundColor:
+                                        storageEmpresa?.setting
+                                            .bg_color_secondary,
+                                    color: isColorLight(
+                                        storageEmpresa!.setting
+                                            .bg_color_secondary
+                                    )
+                                        ? "#000000"
+                                        : "#ffffff",
+                                }}
+                                class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs  -right-3 -top-2 flex justify-center items-center "
+                            >
                                 {favoriteStore.state}
                             </span>
                         </a>
@@ -551,7 +564,20 @@ function Header({ header }: HeaderProps) {
                                                     .type_cart
                                             }
                                         />
-                                        <span class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs bg-red-500 -right-2 -top-2 text-white">
+                                        <span
+                                            class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs -right-2 -top-2 "
+                                            style={{
+                                                backgroundColor:
+                                                    storageEmpresa?.setting
+                                                        .bg_color_secondary,
+                                                color: isColorLight(
+                                                    storageEmpresa!.setting
+                                                        .bg_color_secondary
+                                                )
+                                                    ? "#000000"
+                                                    : "#ffffff",
+                                            }}
+                                        >
                                             {cartStore.computed.showCartLength}
                                         </span>
                                     </button>

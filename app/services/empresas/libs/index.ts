@@ -17,7 +17,7 @@ export function BASE_URL(empresa: Empresas) {
 }
 export const empresasLogoQualities = [100, 300];
 export const empresasLogoPWAQualities = [73, 94, 145, 153, 193, 513];
-export const backgroundQualities = [100, 1200];
+export const backgroundQualities = [100, 1600];
 export const bannersQualities = [0, 300, 600, 800, 1200];
 // TIPO EMPRESA
 

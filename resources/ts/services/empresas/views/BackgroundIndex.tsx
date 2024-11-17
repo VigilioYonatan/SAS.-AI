@@ -45,18 +45,18 @@ function BackgroundIndex() {
                                         >
                                             {printFileWithDimension(
                                                 background.image,
-                                                null
+                                                1600
                                             )[0]?.endsWith("mp4") ? (
                                                 // biome-ignore lint/a11y/useMediaCaption: <explanation>
                                                 <video
                                                     src={
                                                         printFileWithDimension(
                                                             background.image,
-                                                            null
+                                                            1600
                                                         )[0]
                                                     }
-                                                    width={300}
-                                                    height={300}
+                                                    width={1600}
+                                                    height={1600}
                                                     controls
                                                 />
                                             ) : (
@@ -65,11 +65,11 @@ function BackgroundIndex() {
                                                     src={
                                                         printFileWithDimension(
                                                             background.image,
-                                                            1200
+                                                            1600
                                                         )[0]
                                                     }
-                                                    width={1200}
-                                                    height={1200}
+                                                    width={1600}
+                                                    height={1600}
                                                     alt={background.title}
                                                 />
                                             )}
