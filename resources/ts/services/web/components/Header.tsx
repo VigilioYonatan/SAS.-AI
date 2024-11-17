@@ -555,6 +555,7 @@ function Header({ header }: HeaderProps) {
                                             {cartStore.computed.showCartLength}
                                         </span>
                                     </button>
+                                    <AuthUserIcon hiddenName={false} />
                                     <div class="flex flex-col gap-1 ">
                                         <span class="font-bold tracking-wide text-xs   dark:text-white">
                                             TOTAL
@@ -565,7 +566,6 @@ function Header({ header }: HeaderProps) {
                                             )}
                                         </span>
                                     </div>
-                                    <AuthUserIcon hiddenName={false} />
                                 </>
                             ) : (
                                 <>
@@ -879,8 +879,12 @@ function AuthUserIcon({ hiddenName }: AuthUserIconProps) {
                 </WebDropdown>
             ) : (
                 <a href="/auth/login">
-                    <i class="fas fa-user-circle mr-2" />
-                    <span>Iniciar sesión</span>
+                    <i
+                        class={`fas fa-user-circle mr-2 ${
+                            hiddenName ? "" : "text-2xl"
+                        } `}
+                    />
+                    {hiddenName ? <span>Iniciar sesión</span> : null}
                 </a>
             )}
         </>

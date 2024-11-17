@@ -279,6 +279,7 @@ function ProductPage({
                                       producto.value as ProductsNormalSchemaFromServer,
                                       varianteChoose
                                   )
+                                      .filter((opt) => opt?.id !== 1)
                                       .map((variant) => {
                                           // si es color que muestre el color, sino solo el valor
                                           return variant?.features.map(
@@ -426,7 +427,7 @@ function ProductPage({
                                             .filter((option) => option.id !== 1)
                                             .map((option) => (
                                                 <div key={option.id}>
-                                                    <span class="dark:text-white text-xs font-bold text-black">
+                                                    <span class="dark:text-white text-xs font-bold ">
                                                         {option.name}
                                                     </span>
                                                     <div class="flex gap-2 flex-wrap">
@@ -519,10 +520,10 @@ function ProductPage({
                                                                                                     "square"
                                                                                                         ? "rounded-sm"
                                                                                                         : "rounded-md"
-                                                                                                }  flex text-primary py-2  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary ${bgPrimaryHover()} ${
+                                                                                                }  flex  py-2  text-sm min-w-[100px] px-2  justify-center items-center hover:bg-primary ${bgPrimaryHover()} ${
                                                                                                     existFeature
-                                                                                                        ? "bg-primary text-white border-2 border-primary"
-                                                                                                        : "bg-white"
+                                                                                                        ? "bg-primary   border-2 border-primary"
+                                                                                                        : "bg-white text-black"
                                                                                                 }`}
                                                                                             >
                                                                                                 {

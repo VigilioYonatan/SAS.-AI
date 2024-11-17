@@ -52,6 +52,7 @@ import { Input, merge, nullable, number, object } from "@vigilio/valibot";
 import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
+import useAuthStore from "@/auth/stores/auth.store";
 const orderUpdateAdminDto = merge([
     ordersUpdateDto,
     object({
@@ -81,6 +82,7 @@ function OrderFormUpdate({
     const floorsIndexQuery = floorsIndexApi();
     const dniMutation = dniApi();
     const rucMutation = rucApi();
+    const authstore = useAuthStore();
     const { io } = useSocketStore();
 
     const ordersUpdateDtoForm = useForm<OrderUpdateAdminDto>({
@@ -118,6 +120,7 @@ function OrderFormUpdate({
                 email: order.email ?? null,
                 reference: order.reference ?? null,
                 isService: order.isService,
+                seller_id: authstore.state?.id,
             };
         }, []),
     });

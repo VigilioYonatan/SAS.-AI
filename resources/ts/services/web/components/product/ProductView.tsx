@@ -24,7 +24,7 @@ import { Fragment } from "preact/jsx-runtime";
 import { verifyBank } from "@/cart/views/Niubiz";
 import { printFileWithDimension } from "~/libs/upload";
 import { printProductVariant } from "@/products/libs/helpers";
-import { isColorLight } from "~/libs/helpers";
+import { isColorLight, removeTextHTML } from "~/libs/helpers";
 import { Rating } from "react-custom-rating-component";
 
 interface ProductCardViewProps {
@@ -221,6 +221,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                       .value as ProductsNormalSchemaFromServer,
                                   product.varianteChoose
                               )
+                                  .filter((opt) => opt?.id !== 1)
                                   .map((variant) => {
                                       // si es color que muestre el color, sino solo el valor
                                       return variant?.features.map(
@@ -647,7 +648,9 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         Descripción
                     </span>
                     <p class="text-xs line-clamp-4 dark:text-white">
-                        {product.producto.value.description}
+                        {product.producto.value.description
+                            ? removeTextHTML(product.producto.value.description)
+                            : "Sin descripción"}
                     </p>
                 </div>
                 <MetodosDePago />

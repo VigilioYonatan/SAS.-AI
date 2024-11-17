@@ -25,3 +25,14 @@ ALTER TABLE "public"."Banners"
 ADD CONSTRAINT "fk_grid_banner_id" FOREIGN KEY ("grid_banner_id")
 REFERENCES "public"."GridBanners"("id")
 ON DELETE SET NULL;
+
+-- alter
+ALTER TABLE "Carts" DROP CONSTRAINT "Carts_variant_id_fkey";
+ALTER TABLE "Carts"
+ADD CONSTRAINT "Carts_variant_id_fkey"
+FOREIGN KEY ("variant_id") REFERENCES "Variants" ("id")
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+
+-------- END EXAMPLES --------------

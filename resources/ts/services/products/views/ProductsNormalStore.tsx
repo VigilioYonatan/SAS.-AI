@@ -757,7 +757,7 @@ export function ProductOptions({
                             type="button"
                             class={`dark:text-white text-xs flex justify-between w-full items-center py-2 border-b ${
                                 existOption
-                                    ? "bg-primary text-white"
+                                    ? "bg-admin-terciary "
                                     : "border-gray-600"
                             } `}
                             onClick={() => {
