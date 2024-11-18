@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "target": "ESNext",
-        "module": "ESNext",
-        "moduleResolution": "bundler",
+        "target": "es2016",
+        "module": "CommonJS",
+        "moduleResolution": "node",
         "moduleDetection": "force",
         "resolveJsonModule": true,
         "outDir": "dist",
@@ -15,7 +15,7 @@
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "noImplicitAny": true,
-        "verbatimModuleSyntax": true,
+        "verbatimModuleSyntax": false,
         "noUnusedParameters": true,
         "skipLibCheck": true,
         "baseUrl": ".",
