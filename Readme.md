@@ -181,11 +181,119 @@ free -h
 top
 
 # entrar dentro de sql postgres
+
 psql -U postgres -d saas
-\dt  // ver tablas
+\dt // ver tablas
 
 // actualizar
 UPDATE "public"."Empresas"
 SET whatsapp_mode = '{"type": "FREE", "ip": null, "password": null, "memory": null, "cpu": null}'
 WHERE whatsapp_mode IS NULL;
 UPDATE 0
+
+```js
+{
+    #seettings
+    web: body.web,
+                    host: {
+                        host: null,
+                        nameserver_one: null,
+                        nameserver_two: null,
+                        time: null,
+                        enabled: false,
+                    },
+                    bg_color: "rgb(28,141,227)",
+                    bg_color_responsive: "#FFFFFF",
+                    type_border: "circle",
+                    type_cart: "fas fa-shopping-cart",
+                    isCoverImage: true,
+                    isDark: false,
+                    isScrolling: true,
+                    hamburger: "fas fa-bars",
+                    isLogoImage: false,
+                    position_header: true,
+                    logo_width: 80,
+                    border_title_type: "normal",
+                    type_icons: "normal",
+                    bg_color_background: "#FFFFFF",
+                    bg_color_footer: "#FFFFFF",
+                    bg_color_paper: "#F2F2F2",
+                    bg_color_button: "rgb(28,141,227)",
+                    font_face: "Exo",
+                    background_position: "center",
+                    background_type: "first",
+                    shows: {
+                        about: true,
+                        brands: true,
+                        cards: true,
+                        map: true,
+                        android: true,
+                        offers_section: true,
+                        offers_user: true,
+                    },
+                    type_map: "satelite",
+                    header_type: "normal",
+                    type_star: "star",
+                    is_block_aside: false,
+                    type_card: "normal",
+                    is_subcategory: false,
+                    background_custom_html: null,
+                    header_position: { logo: 1, icons: 3, navbar: 2 },
+                    header: {
+                        about: true,
+                        condiciones: true,
+                        home: true,
+                        pedidos: true,
+                        profile: true,
+                        shop: true,
+                        categories: true,
+                        services: true,
+                        subcategories: true,
+                    },
+                    background_auth: null,
+                    bg_color_secondary: "#dc2626",
+                    type_animation: "fade-up",
+}
+```
+
+```js
+export function gridEmpresa(width: number[]): {
+    width: number,
+    height: number,
+    gap: number,
+    cols: number,
+    rows: number,
+    title: null,
+}[] {
+    return width.map((grid) => ({
+        width: grid,
+        height: 200,
+        rows: 1,
+        cols: 3,
+        gap: 1,
+        title: null,
+    }));
+}
+[
+    {
+        responsive: gridEmpresa(bannersQualities),
+        enabled: true,
+        empresa_id: empresa.id,
+    },
+    {
+        responsive: gridEmpresa(bannersQualities),
+        enabled: true,
+        empresa_id: empresa.id,
+    },
+    {
+        responsive: gridEmpresa(bannersQualities),
+        enabled: true,
+        empresa_id: empresa.id,
+    },
+    {
+        responsive: gridEmpresa(bannersQualities),
+        enabled: true,
+        empresa_id: empresa.id,
+    },
+];
+```

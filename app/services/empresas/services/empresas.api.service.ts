@@ -49,6 +49,7 @@ import { CategoriesFinanzas } from "@/finanzas/entities/categories.entity";
 import cache from "@vigilio/express-core/cache";
 import { hosts } from "~/config/server";
 import { GridBanner } from "../entities/grid_banner.entity";
+import { Banner } from "../entities/banner.entity";
 
 export function deleteHostCache() {
     for (const host of hosts) {
@@ -136,6 +137,23 @@ export class EmpresasApiService {
         return {
             success: true,
             data,
+        };
+    }
+    async settingsTemplate(slug: string) {
+        const { data: setting } = await this.settings(slug);
+        const { empresa } = await this.show(slug);
+        const gridBanners = await GridBanner.findAll({
+            where: {
+                empresa_id: empresa.id,
+                include: [Banner],
+            },
+        });
+        return {
+            success: true,
+            data: {
+                setting,
+                gridBanners: gridBanners,
+            },
         };
     }
     async updateSettings(slug: string, body: SettingsUpdateDto) {
@@ -321,68 +339,10 @@ export class EmpresasApiService {
                     direccion: "",
                     codLocal: "0000",
                 }),
-                empresa.$create("setting", {
-                    web: body.web,
-                    host: {
-                        host: null,
-                        nameserver_one: null,
-                        nameserver_two: null,
-                        time: null,
-                        enabled: false,
-                    },
-                    about: "",
-                    bg_color: "rgb(28,141,227)",
-                    bg_color_responsive: "#FFFFFF",
-                    type_border: "circle",
-                    type_cart: "fas fa-shopping-cart",
-                    isCoverImage: true,
-                    isDark: false,
-                    isScrolling: true,
-                    hamburger: "fas fa-bars",
-                    isLogoImage: false,
-                    position_header: true,
-                    logo_width: 80,
-                    border_title_type: "normal",
-                    type_icons: "normal",
-                    bg_color_background: "#FFFFFF",
-                    bg_color_footer: "#FFFFFF",
-                    bg_color_paper: "#F2F2F2",
-                    bg_color_button: "rgb(28,141,227)",
-                    font_face: "Exo",
-                    background_position: "center",
-                    background_type: "first",
-                    shows: {
-                        about: true,
-                        brands: true,
-                        cards: true,
-                        map: true,
-                        android: true,
-                        offers_section: true,
-                        offers_user: true,
-                    },
-                    type_map: "satelite",
-                    header_type: "normal",
-                    type_star: "star",
-                    is_block_aside: false,
-                    type_card: "normal",
-                    is_subcategory: false,
-                    background_custom_html: null,
-                    header_position: { logo: 1, icons: 3, navbar: 2 },
-                    header: {
-                        about: true,
-                        condiciones: true,
-                        home: true,
-                        pedidos: true,
-                        profile: true,
-                        shop: true,
-                        categories: true,
-                        services: true,
-                        subcategories: true,
-                    },
-                    background_auth: null,
-                    bg_color_secondary: "#dc2626",
-                    type_animation: "fade-up",
-                } as Omit<SettingsSchema, "id" | "empresa_id">),
+                empresa.$create(
+                    "setting",
+                    body.setting as Omit<SettingsSchema, "id" | "empresa_id">
+                ),
 
                 await empresa.$create("citasSetting", {
                     max_days: 14,
@@ -457,28 +417,42 @@ export class EmpresasApiService {
                     ],
                 }),
             ]);
-            await GridBanner.bulkCreate([
-                {
-                    responsive: gridEmpresa(bannersQualities),
-                    enabled: true,
-                    empresa_id: empresa.id,
-                },
-                {
-                    responsive: gridEmpresa(bannersQualities),
-                    enabled: true,
-                    empresa_id: empresa.id,
-                },
-                {
-                    responsive: gridEmpresa(bannersQualities),
-                    enabled: true,
-                    empresa_id: empresa.id,
-                },
-                {
-                    responsive: gridEmpresa(bannersQualities),
-                    enabled: true,
-                    empresa_id: empresa.id,
-                },
-            ]);
+            if (body.gridBanners) {
+                await Promise.all(
+                    body.gridBanners.map(async (grid) => {
+                        const { banners, ...rest } = grid;
+                        const g = await GridBanner.create(rest);
+                        await Promise.all(
+                            banners.map(async (banner) => {
+                                await g.$create("banner", banner);
+                            })
+                        );
+                    })
+                );
+            } else {
+                await GridBanner.bulkCreate([
+                    {
+                        responsive: gridEmpresa(bannersQualities),
+                        enabled: true,
+                        empresa_id: empresa.id,
+                    },
+                    {
+                        responsive: gridEmpresa(bannersQualities),
+                        enabled: true,
+                        empresa_id: empresa.id,
+                    },
+                    {
+                        responsive: gridEmpresa(bannersQualities),
+                        enabled: true,
+                        empresa_id: empresa.id,
+                    },
+                    {
+                        responsive: gridEmpresa(bannersQualities),
+                        enabled: true,
+                        empresa_id: empresa.id,
+                    },
+                ]);
+            }
 
             const username = `${fullname}${Math.random()
                 .toString(32)
@@ -549,7 +523,7 @@ export class EmpresasApiService {
                     );
                 })
             );
-            if (enviroments.NODE_ENV === "production") {
+            if (enviroments.NODE_ENV === "production" && !body.isTemplate) {
                 const result = await vpsShowApi();
                 // crear whatsapp contenedor
                 await terminal(
