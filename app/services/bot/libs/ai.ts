@@ -17,6 +17,7 @@ import { UrlsPayment } from "@/urls/entities/urls.payment.entity";
 import cache from "@vigilio/express-core/cache";
 import { chats } from "../controllers/whatsapp.api.controller";
 import { whatsappSendMessageApi } from "../api";
+import type { ChatCompletion } from "openai/resources/index.mjs";
 
 export function buenosDias(query: string, name: string, empresa: Empresas) {
     const messages = [
@@ -276,8 +277,7 @@ export async function updateTokensEmpresa(
         input_tokens: number;
         output_tokens: number;
     },
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    completion: any
+    completion: ChatCompletion
 ) {
     // actualizamos uso de tokens
     const empresaUpdate = {
