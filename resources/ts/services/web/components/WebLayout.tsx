@@ -14,51 +14,50 @@ import { ProductsServicioSchemaFromServer } from "@/products/schemas/products_se
 import { SubcategoriesSchemaFromServer } from "@/products/schemas/subcategories.schema";
 
 export interface HeaderType {
-    categories: (CategoriesSchema & {
-        productNew:
-            | ProductsNormalSchemaFromServer
-            | ProductsRestaurantSchemaFromServer;
-        subcategories: SubcategoriesSchemaFromServer[];
-    })[];
-    categoriesServices: (CategoriesSchema & {
-        products: ProductsServicioSchemaFromServer[];
-    })[];
-    brands: Pick<BrandsSchema, "id" | "name" | "image" | "slug">[];
-    totalProducts: number;
-    
+	categories: (CategoriesSchema & {
+		productNew:
+			| ProductsNormalSchemaFromServer
+			| ProductsRestaurantSchemaFromServer;
+		subcategories: SubcategoriesSchemaFromServer[];
+	})[];
+	categoriesServices: (CategoriesSchema & {
+		products: ProductsServicioSchemaFromServer[];
+	})[];
+	brands: Pick<BrandsSchema, "id" | "name" | "image" | "slug">[];
+	totalProducts: number;
 }
 interface WebLayoutProps {
-    children: JSX.Element | JSX.Element[];
-    header: HeaderType;
+	children: JSX.Element | JSX.Element[];
+	header: HeaderType;
 }
 function WebLayout({ children, header }: WebLayoutProps) {
-    const empresaStore = useEmpresastore();
+	const empresaStore = useEmpresastore();
 
-    return (
-        <>
-            <MessagePWA />
-            <MessageNew />
-            <Header header={header} />
-            {children}
-            <div>
-                <a
-                    href={`https://wa.me/${empresaStore.state!.dial_code}${
-                        empresaStore.state!.telephoneFirst
-                    }`}
-                    class="fixed bottom-16 right-10 z-[99] bg-green-600 w-[50px] h-[50px] flex justify-center items-center rounded-full text-white animate-bounce"
-                >
-                    <i class="fa-brands fa-whatsapp text-2xl" />
-                </a>
-                <ChatAi />
-                <CookiesMessage />
-            </div>
-            <NavTabs totalProducts={header.totalProducts} />
-            <Footer
-                categories={header.categories}
-                categoriesServices={header.categoriesServices}
-            />
-        </>
-    );
+	return (
+		<>
+			<MessagePWA />
+			<MessageNew />
+			<Header header={header} />
+			{children}
+			<div>
+				<a
+					href={`https://wa.me/${empresaStore.state!.dial_code}${
+						empresaStore.state!.telephoneFirst
+					}`}
+					class="fixed bottom-16 right-10 z-[99] bg-green-600 w-[50px] h-[50px] flex justify-center items-center rounded-full text-white animate-bounce"
+				>
+					<i class="fa-brands fa-whatsapp text-2xl" />
+				</a>
+				<ChatAi />
+				<CookiesMessage />
+			</div>
+			<NavTabs totalProducts={header.totalProducts} />
+			<Footer
+				categories={header.categories}
+				categoriesServices={header.categoriesServices}
+			/>
+		</>
+	);
 }
 
 export default WebLayout;

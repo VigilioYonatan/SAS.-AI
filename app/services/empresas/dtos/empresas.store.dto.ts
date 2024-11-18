@@ -13,9 +13,9 @@ import {
 } from "@vigilio/valibot";
 import { empresasSchema } from "../schemas/empresas.schema";
 import { Empresas } from "../entities/empresas.entity";
-import { settingsUpdateDto } from "./settings.update.dto";
 import { bannerSchema } from "../schemas/banner.schema";
 import { gridBannerSchema } from "../schemas/grid_banner.schema";
+import { settingsSchema } from "../schemas/settings.schema";
 
 export const empresasStoreDto = mergeAsync([
     omitAsync(
@@ -64,7 +64,7 @@ export const empresasStoreDto = mergeAsync([
         servicio_id: number(),
     }),
     objectAsync({
-        setting: settingsUpdateDto,
+        setting: omitAsync(settingsSchema, ["id", "empresa_id"]),
         gridBanners: nullableAsync(
             arrayAsync(
                 mergeAsync([

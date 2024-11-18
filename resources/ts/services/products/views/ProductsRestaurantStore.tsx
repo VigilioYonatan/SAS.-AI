@@ -192,9 +192,9 @@ function ProductsRestaurantStore({
 						Agregar Producto
 					</h3>
 					<div class="flex gap-2 items-center">
-                        <SettingsProduct />
-                        <Form.button.reset />
-                    </div>
+						<SettingsProduct />
+						<Form.button.reset />
+					</div>
 				</div>
 
 				<div class="">

@@ -6,7 +6,9 @@ type ThemeMode = "light" | "dark" | "default";
 function getThemeLocalStorage() {
 	let themeMode: ThemeMode = "default";
 	if (localStorage.getItem(`theme:${storageEmpresa?.slug}`)) {
-		themeMode = localStorage.getItem(`theme:${storageEmpresa?.slug}`) as ThemeMode;
+		themeMode = localStorage.getItem(
+			`theme:${storageEmpresa?.slug}`,
+		) as ThemeMode;
 	}
 
 	return themeMode;

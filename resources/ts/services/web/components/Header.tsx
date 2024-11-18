@@ -33,7 +33,6 @@ function Header({ header }: HeaderProps) {
     const isOpen = useSignal(false);
     const isOpenCondiciones = useSignal(false);
     const headerDropdown = useDropdown();
-    const authStore = useAuthStore();
     const cartStore = useCartStore();
     const favoriteStore = useFavoriteStore();
     const isTop = useSignal(true);

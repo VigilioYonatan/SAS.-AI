@@ -62,95 +62,95 @@ import { Banner } from "@/empresas/entities/banner.entity";
 import { GridBanner } from "@/empresas/entities/grid_banner.entity";
 
 const sequelize = new Sequelize({
-    dialect: "postgres",
-    host: enviroments.DB_HOST,
-    username: enviroments.DB_USER,
-    password: enviroments.DB_PASS,
-    database: enviroments.DB_NAME,
-    port: enviroments.DB_PORT,
-    pool: {
-        max: 30,
-        min: 10,
-        acquire: 60000,
-        idle: 20000,
-    },
-    timezone: "+00:00",
+	dialect: "postgres",
+	host: enviroments.DB_HOST,
+	username: enviroments.DB_USER,
+	password: enviroments.DB_PASS,
+	database: enviroments.DB_NAME,
+	port: enviroments.DB_PORT,
+	pool: {
+		max: 30,
+		min: 10,
+		acquire: 60000,
+		idle: 20000,
+	},
+	timezone: "+00:00",
 });
 
 sequelize.addModels([
-    // here entities
-    ProductsServicio,
-    ProductsNormal,
-    ProductsRestaurant,
-    Empresas,
-    Users,
-    Cart,
-    Address,
-    Orders,
-    DetailOrders,
-    Guides,
-    Invoices,
-    KindCreditNotes,
-    KindDebitNotes,
-    KindInvoice,
-    Notes,
-    PayMethods,
-    StatusOrders,
-    Brands,
-    Categories,
-    Coupons,
-    Notifications,
-    NotificationsUser,
-    Documents,
-    ProductsOptions,
-    Options,
-    Features,
-    Variants,
-    VariantsFeatures,
-    TipoEmpresa,
-    TipoServicio,
-    New,
-    MetodosPago,
-    Urls,
-    Background,
-    Posts,
-    Suppliers,
-    Regions,
-    Cities,
-    Countries,
-    RegionsEmpresa,
-    Mesas,
-    Complaints,
-    Floors,
-    Settings,
-    Information,
-    UrlsPayment,
-    TipoFinanza,
-    CategoriesFinanzas,
-    Finanzas,
-    Citas,
-    CitasSettings,
-    Favorites,
-    Ratings,
-    Comments,
-    Reactions,
-    Subcomments,
-    Subcategories,
-    GridBanner,
-    Banner,
+	// here entities
+	ProductsServicio,
+	ProductsNormal,
+	ProductsRestaurant,
+	Empresas,
+	Users,
+	Cart,
+	Address,
+	Orders,
+	DetailOrders,
+	Guides,
+	Invoices,
+	KindCreditNotes,
+	KindDebitNotes,
+	KindInvoice,
+	Notes,
+	PayMethods,
+	StatusOrders,
+	Brands,
+	Categories,
+	Coupons,
+	Notifications,
+	NotificationsUser,
+	Documents,
+	ProductsOptions,
+	Options,
+	Features,
+	Variants,
+	VariantsFeatures,
+	TipoEmpresa,
+	TipoServicio,
+	New,
+	MetodosPago,
+	Urls,
+	Background,
+	Posts,
+	Suppliers,
+	Regions,
+	Cities,
+	Countries,
+	RegionsEmpresa,
+	Mesas,
+	Complaints,
+	Floors,
+	Settings,
+	Information,
+	UrlsPayment,
+	TipoFinanza,
+	CategoriesFinanzas,
+	Finanzas,
+	Citas,
+	CitasSettings,
+	Favorites,
+	Ratings,
+	Comments,
+	Reactions,
+	Subcomments,
+	Subcategories,
+	GridBanner,
+	Banner,
 ]);
 
 export async function connectDB() {
-    try {
-        await sequelize.authenticate();
-        logger.success("conectado a base de datos correctamente");
-        if (enviroments.NODE_ENV === "production") {
-            await sequelize.sync({ alter: true });
-            return;
-        }
-        await sequelize.sync({ alter: true });
-    } catch (error) {
-        logger.error(`Error al conectar base de datos: ${error}`);
-    }
+	try {
+		await sequelize.authenticate();
+		logger.success("conectado a base de datos correctamente");
+		if (enviroments.NODE_ENV === "production") {
+			await sequelize.sync({ alter: true });
+			return;
+		}
+		await sequelize.sync({ alter: true });
+	} catch (error) {
+		logger.error(`Error al conectar base de datos: ${error}`);
+	}
 }
 export { sequelize };

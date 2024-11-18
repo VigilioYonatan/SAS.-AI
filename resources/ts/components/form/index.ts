@@ -20,42 +20,42 @@ import FormColor from "./FormColor";
 import WebFormRadio from "./WebFormToggle";
 import FormEditorJSControl from "./FormEditorJS";
 export function anidarPropiedades<T extends object>(
-    obj: FieldErrors<T>,
-    keysArray: string[]
+	obj: FieldErrors<T>,
+	keysArray: string[],
 ) {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    let currentObj: any = obj;
-    for (let i = 0; i < keysArray.length; i++) {
-        const key = keysArray[i];
-        // biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
-        if (!currentObj.hasOwnProperty(key)) {
-            currentObj[key] = {}; // Crear un objeto vacío si la propiedad no existe
-        }
-        currentObj = currentObj[key]; // Moverse al siguiente nivel del objeto
-    }
-    return currentObj;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	let currentObj: any = obj;
+	for (let i = 0; i < keysArray.length; i++) {
+		const key = keysArray[i];
+		// biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
+		if (!currentObj.hasOwnProperty(key)) {
+			currentObj[key] = {}; // Crear un objeto vacío si la propiedad no existe
+		}
+		currentObj = currentObj[key]; // Moverse al siguiente nivel del objeto
+	}
+	return currentObj;
 }
 
 const Form = Object.assign(VigilioForm, {
-    control: Object.assign(FormControl, {
-        file: FormFile,
-        select: FormSelect,
-        area: FormTextArea,
-        editor: FormEditor,
-        web: Object.assign(WebFormControl, {
-            area: WebFormTextArea,
-            select: WebFormSelect,
-            selectInput: WebFormSelectInput,
-            toggle: WebFormRadio,
-        }),
-        auth: authFormControl,
-        toggle: FormRadio,
-        datalist: FormDataList,
-        selectInput: FormSelectInput,
-        map: FormMap,
-        color: FormColor,
-        editorJS: FormEditorJSControl,
-    }),
-    button: { reset: FormButtonReset, submit: FormButtonSubmit },
+	control: Object.assign(FormControl, {
+		file: FormFile,
+		select: FormSelect,
+		area: FormTextArea,
+		editor: FormEditor,
+		web: Object.assign(WebFormControl, {
+			area: WebFormTextArea,
+			select: WebFormSelect,
+			selectInput: WebFormSelectInput,
+			toggle: WebFormRadio,
+		}),
+		auth: authFormControl,
+		toggle: FormRadio,
+		datalist: FormDataList,
+		selectInput: FormSelectInput,
+		map: FormMap,
+		color: FormColor,
+		editorJS: FormEditorJSControl,
+	}),
+	button: { reset: FormButtonReset, submit: FormButtonSubmit },
 });
 export default Form;

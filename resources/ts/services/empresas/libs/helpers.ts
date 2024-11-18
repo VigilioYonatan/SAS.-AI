@@ -153,4 +153,3 @@ export const typeFiscal = {
 		equivalente_dni: "DNI/NIE",
 	},
 };
-
