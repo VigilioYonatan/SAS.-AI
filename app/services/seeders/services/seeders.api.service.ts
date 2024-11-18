@@ -26,134 +26,134 @@ import { addressSeeder } from "@/empresas/seeders/address.seeder";
 
 @Injectable()
 export class SeedersApiService {
-    constructor(private readonly empresasApiService: EmpresasApiService) {}
-    async index() {
-        try {
-            if (enviroments.NODE_ENV !== "production") {
-                await sequelize.sync({ force: true });
-            }
+	constructor(private readonly empresasApiService: EmpresasApiService) {}
+	async index() {
+		try {
+			if (enviroments.NODE_ENV !== "production") {
+				await sequelize.sync({ force: true });
+			}
 
-            await Promise.all([
-                Information.create({ token: enviroments.VITE_VIGILIO_TOKEN }),
-                StatusOrders.bulkCreate(statusOrdersSeeder),
-                PayMethods.bulkCreate(payMethodsSeeder),
-                Documents.bulkCreate(documentsSeeder),
-                KindCreditNotes.bulkCreate(kindCreditNotesSeeder),
-                KindDebitNotes.bulkCreate(kindDebitNotesSeeder),
-            ]);
-            await Promise.all([KindInvoice.bulkCreate(kindInvoiceSeeder)]);
-            await Promise.all(
-                servicios.map(async (servicio) => {
-                    const { tipo, empresas, id } = servicio;
-                    const service = await TipoServicio.create({ id, tipo });
-                    await Promise.all(
-                        empresas.map(async (empresa) => {
-                            await service.$create("tipo_empresa", empresa);
-                        })
-                    );
-                })
-            );
-            await ubigeoSeeder();
+			await Promise.all([
+				Information.create({ token: enviroments.VITE_VIGILIO_TOKEN }),
+				StatusOrders.bulkCreate(statusOrdersSeeder),
+				PayMethods.bulkCreate(payMethodsSeeder),
+				Documents.bulkCreate(documentsSeeder),
+				KindCreditNotes.bulkCreate(kindCreditNotesSeeder),
+				KindDebitNotes.bulkCreate(kindDebitNotesSeeder),
+			]);
+			await Promise.all([KindInvoice.bulkCreate(kindInvoiceSeeder)]);
+			await Promise.all(
+				servicios.map(async (servicio) => {
+					const { tipo, empresas, id } = servicio;
+					const service = await TipoServicio.create({ id, tipo });
+					await Promise.all(
+						empresas.map(async (empresa) => {
+							await service.$create("tipo_empresa", empresa);
+						}),
+					);
+				}),
+			);
+			await ubigeoSeeder();
 
-            if (enviroments.NODE_ENV === "development") {
-                const empresa = await empresasSeeder2();
-                await this.empresasApiService.store({
-                    ...empresa,
-                    fullname: "Yonatan Vigilio",
-                    password: "123456a",
-                    servicio_id: 3,
-                    gridBanners: [],
-                    setting: {
-                        host: {
-                            host: null,
-                            nameserver_one: null,
-                            nameserver_two: null,
-                            time: null,
-                            enabled: false,
-                        },
-                        bg_color: "rgb(28,141,227)",
-                        bg_color_responsive: "#FFFFFF",
-                        type_border: "circle",
-                        type_cart: "fas fa-shopping-cart",
-                        isCoverImage: true,
-                        isDark: false,
-                        isScrolling: true,
-                        hamburger: "fas fa-bars",
-                        isLogoImage: false,
-                        position_header: true,
-                        logo_width: 80,
-                        border_title_type: "normal",
-                        type_icons: "normal",
-                        bg_color_background: "#FFFFFF",
-                        bg_color_footer: "#FFFFFF",
-                        bg_color_paper: "#F2F2F2",
-                        bg_color_button: "rgb(28,141,227)",
-                        font_face: "Exo",
-                        background_position: "center",
-                        background_type: "first",
-                        shows: {
-                            about: true,
-                            brands: true,
-                            cards: true,
-                            map: true,
-                            android: true,
-                            offers_section: true,
-                            offers_user: true,
-                        },
-                        type_map: "satelite",
-                        header_type: "normal",
-                        type_star: "star",
-                        is_block_aside: false,
-                        type_card: "normal",
-                        is_subcategory: false,
-                        background_custom_html: null,
-                        header_position: { logo: 1, icons: 3, navbar: 2 },
-                        header: {
-                            about: true,
-                            condiciones: true,
-                            home: true,
-                            pedidos: true,
-                            profile: true,
-                            shop: true,
-                            categories: true,
-                            services: true,
-                            subcategories: true,
-                        },
-                        background_auth: null,
-                        bg_color_secondary: "#dc2626",
-                        type_animation: "fade-up",
-                    },
-                });
-                await Promise.all([Address.bulkCreate(addressSeeder)]);
-            }
+			if (enviroments.NODE_ENV === "development") {
+				const empresa = await empresasSeeder2();
+				await this.empresasApiService.store({
+					...empresa,
+					fullname: "Yonatan Vigilio",
+					password: "123456a",
+					servicio_id: 3,
+					gridBanners: [],
+					setting: {
+						host: {
+							host: null,
+							nameserver_one: null,
+							nameserver_two: null,
+							time: null,
+							enabled: false,
+						},
+						bg_color: "rgb(28,141,227)",
+						bg_color_responsive: "#FFFFFF",
+						type_border: "circle",
+						type_cart: "fas fa-shopping-cart",
+						isCoverImage: true,
+						isDark: false,
+						isScrolling: true,
+						hamburger: "fas fa-bars",
+						isLogoImage: false,
+						position_header: true,
+						logo_width: 80,
+						border_title_type: "normal",
+						type_icons: "normal",
+						bg_color_background: "#FFFFFF",
+						bg_color_footer: "#FFFFFF",
+						bg_color_paper: "#F2F2F2",
+						bg_color_button: "rgb(28,141,227)",
+						font_face: "Exo",
+						background_position: "center",
+						background_type: "first",
+						shows: {
+							about: true,
+							brands: true,
+							cards: true,
+							map: true,
+							android: true,
+							offers_section: true,
+							offers_user: true,
+						},
+						type_map: "satelite",
+						header_type: "normal",
+						type_star: "star",
+						is_block_aside: false,
+						type_card: "normal",
+						is_subcategory: false,
+						background_custom_html: null,
+						header_position: { logo: 1, icons: 3, navbar: 2 },
+						header: {
+							about: true,
+							condiciones: true,
+							home: true,
+							pedidos: true,
+							profile: true,
+							shop: true,
+							categories: true,
+							services: true,
+							subcategories: true,
+						},
+						background_auth: null,
+						bg_color_secondary: "#dc2626",
+						type_animation: "fade-up",
+					},
+				});
+				await Promise.all([Address.bulkCreate(addressSeeder)]);
+			}
 
-            // if (enviroments.NODE_ENV === "production") {
+			// if (enviroments.NODE_ENV === "production") {
 
-            // await Promise.all([Suppliers.bulkCreate(suppliersSeeder)]);
-            await Promise.all(
-                optionsSeeder.map(async (prod) => {
-                    const { features, ...rest } = prod;
-                    const option = await Options.create(rest);
-                    await Promise.all(
-                        features.map(async (feature) => {
-                            await option.$create("feature", {
-                                id: feature.id,
-                                value: feature.value,
-                                description: feature.description,
-                            });
-                        })
-                    );
-                })
-            );
-            // await Promise.all([Users.bulkCreate([...usersSeeder])]);
+			// await Promise.all([Suppliers.bulkCreate(suppliersSeeder)]);
+			await Promise.all(
+				optionsSeeder.map(async (prod) => {
+					const { features, ...rest } = prod;
+					const option = await Options.create(rest);
+					await Promise.all(
+						features.map(async (feature) => {
+							await option.$create("feature", {
+								id: feature.id,
+								value: feature.value,
+								description: feature.description,
+							});
+						}),
+					);
+				}),
+			);
+			// await Promise.all([Users.bulkCreate([...usersSeeder])]);
 
-            // await Promise.all([Posts.bulkCreate(postsSeeder)]);
-            return { success: true, message: "Seed executed" };
-        } catch (error) {
-            return {
-                success: false,
-                message: JSON.stringify((error as unknown as Error).message),
-            };
-        }
-    }
+			// await Promise.all([Posts.bulkCreate(postsSeeder)]);
+			return { success: true, message: "Seed executed" };
+		} catch (error) {
+			return {
+				success: false,
+				message: JSON.stringify((error as unknown as Error).message),
+			};
+		}
+	}
 }
