@@ -7,7 +7,7 @@ import { Empresas } from "../entities/empresas.entity";
 import { Users } from "@/users/entities/users.entity";
 import XLSXSTYLE from "xlsx-style";
 import XLSX from "xlsx";
-import { terminal } from "~/libs/helpers";
+import { delay, terminal } from "~/libs/helpers";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
@@ -124,8 +124,10 @@ export class BackupApiService {
 
     async restart() {
         try {
-            const dumpCommand = `git checkout HEAD -- app && git checkout HEAD -- resources/ts && pm2 restart ${enviroments.PM2_ID} && rm -rf app && rm -rf resources/ts`;
+            const dumpCommand = `git checkout HEAD -- app && git checkout HEAD -- resources/ts && pm2 restart ${enviroments.PM2_ID}`;
             await terminal(dumpCommand);
+            await delay(15);
+            await terminal("rm -rf app && rm -rf resources/ts");
         } catch (error) {
             throw new BadRequestException(
                 "error pm2 - comunicarse con empresa."
