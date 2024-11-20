@@ -580,7 +580,7 @@ function Header({ header }: HeaderProps) {
                                             {cartStore.computed.showCartLength}
                                         </span>
                                     </button>
-                                    <AuthUserIcon hiddenName={false} />
+                                    <AuthUserIcon hiddenName={true} />
                                     <div class="flex flex-col gap-1 ">
                                         <span class="font-bold tracking-wide text-xs   dark:text-white">
                                             TOTAL
@@ -828,6 +828,7 @@ interface AuthUserIconProps {
 }
 function AuthUserIcon({ hiddenName }: AuthUserIconProps) {
     const authStore = useAuthStore();
+
     return (
         <>
             {" "}
@@ -903,13 +904,13 @@ function AuthUserIcon({ hiddenName }: AuthUserIconProps) {
                     </div>
                 </WebDropdown>
             ) : (
-                <a href="/auth/login">
+                <a href="/auth/login" class="flex gap-1 items-center">
                     <i
                         class={`fas fa-user-circle mr-2 ${
-                            hiddenName ? "" : "text-2xl"
+                            hiddenName ? "text-xl" : "text-2xl"
                         } `}
                     />
-                    {hiddenName ? <span>Iniciar sesión</span> : null}
+                    {hiddenName ? null : <span>Iniciar sesión</span>}
                 </a>
             )}
         </>

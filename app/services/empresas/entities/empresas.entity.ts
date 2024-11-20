@@ -53,6 +53,7 @@ import { Reactions } from "@/polymorphism/entities/reactions.entity";
 import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
 import { Banner } from "./banner.entity";
 import { GridBanner } from "./grid_banner.entity";
+import { FileSchema } from "./file.entity";
 
 @DefaultScope(() => ({
 	include: [Address, MetodosPago, TipoEmpresa, Settings, CitasSettings],
@@ -521,4 +522,7 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
 	@HasMany(() => Reactions)
 	reactions: Reactions[];
+
+	@HasMany(() => FileSchema)
+	files: FileSchema[];
 }

@@ -84,7 +84,7 @@
       <%=$empresa.setting?.type_border==="circle"? 'border-radius: 0.6rem !important;': 'border-radius:  0rem !important;'%>
     }
   </style>
-
+  <script src="/js/sweet.min.js"></script>
   <%- include("../components/pixels.ejs")  %>
   <!-- initial base -->
   <initial></initial>
@@ -96,6 +96,7 @@
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
   <home-page :users="<%= JSON.stringify(users)  %>" :gridBanners="<%= JSON.stringify(gridBanners) %>" :productsmostreactionmapped="<%= JSON.stringify(productsMostReactionMapped) %>" :productsMostCommentsMapped="<%= JSON.stringify(productsMostCommentsMapped)  %>" :productsMostRatingMapped="<%= JSON.stringify(productsMostRatingMapped)%>" :noticia="<%= JSON.stringify(noticia) %>" :productsQuantity="<%= JSON.stringify(productsQuantity)  %>" :productServicesQuantity="<%= JSON.stringify(productServicesQuantity)  %>" :header="<%= JSON.stringify(header)  %>" :backgrounds="<%= JSON.stringify(backgrounds)  %>" :posts="<%= JSON.stringify(posts)  %>" :productsOffert6Mapped="<%= JSON.stringify(productsOffert6Mapped)  %>" :productsLatest6Mapped="<%= JSON.stringify(productsLatest6Mapped)  %>" :productMostDiscountMapped="<%= JSON.stringify(productMostDiscountMapped)  %>" :productLatestMapped="<%= JSON.stringify(productLatestMapped)  %>" :getProductsByCategories="<%= JSON.stringify(getProductsByCategories)  %>" :brands="<%= JSON.stringify(brands)  %>"></home-page>
+
 </body>
 
 </html>

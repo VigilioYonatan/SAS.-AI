@@ -39,6 +39,8 @@
   <meta property="product:price:currency" content="<%= locals.$empresa.money.simbolo  %>">
   <meta property="fb:app_id" content="">
   <title><%= product.name %></title>
+  <script src="/js/sweet.min.js"></script>
+
   <link rel="manifest" href="/manifest.webmanifest.json">
   <!-- ICONO -->
   <link rel="shortcut icon" href="<%=   locals.$empresa.icon ? printFileWithDimension(locals.$empresa.icon,100)[0] :'' %>" type="image/x-icon" />
@@ -95,7 +97,7 @@
 </head>
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
-  <servicio-page :product="<%= JSON.stringify(product)  %>" category_name="<%= category_name %>" :categoriesproductsrandom="<%= JSON.stringify(categoriesProductsRandom)  %>" :header="<%= JSON.stringify(header)  %>">
+  <servicio-page :product="<%= JSON.stringify(product)  %>" category_name="<%= category_name %>" :categoriesproductsrandom="<%= JSON.stringify(categoriesProductsRandom)  %>" :header="<%= JSON.stringify(header)  %>" :totalComments="<%= JSON.stringify(totalComments)  %>">
   </servicio-page>
 </body>
 

@@ -1,369 +1,533 @@
 import {
-	libroReclamacionesImage,
-	paypalICOImage,
-	VisaMastercardImage,
-	yapeImage,
+    libroReclamacionesImage,
+    paypalICOImage,
+    VisaMastercardImage,
+    yapeImage,
 } from "~/config/settings";
 import useEmpresastore, {
-	storageEmpresa,
+    storageEmpresa,
 } from "@/empresas/stores/empresa.store";
 import type { HeaderType } from "./WebLayout";
 import TitleSectionTwo from "./TitleSectionTwo";
 import AdminEdit from "./AdminEdit";
 import { service } from "../views/home/components/ServiciosSection";
 import { isColorLight } from "~/libs/helpers";
+import { holidayChristmas } from "./Animations";
 
 interface FooterProps {
-	categories: HeaderType["categories"];
-	categoriesServices: HeaderType["categoriesServices"];
+    categories: HeaderType["categories"];
+    categoriesServices: HeaderType["categoriesServices"];
 }
 function Footer({ categories, categoriesServices }: FooterProps) {
-	const empresaStore = useEmpresastore();
+    const empresaStore = useEmpresastore();
 
-	// Lun, Mar,Mier : 08:00 - 22:00
-	function agruparHorarios() {
-		const grupos: Record<string, string[]> = {};
+    // Lun, Mar,Mier : 08:00 - 22:00
+    function agruparHorarios() {
+        const grupos: Record<string, string[]> = {};
 
-		for (const { day, openTime, closeTime, enabled } of empresaStore.state!
-			.schedule) {
-			const key = `${openTime} ${
-				Number.parseInt(openTime.split(":")[0]) < 12 ? "AM" : "PM"
-			} - ${closeTime} ${
-				Number.parseInt(closeTime.split(":")[0]) < 12 ? "AM" : "PM"
-			}`;
-			if (!grupos[key]) {
-				grupos[key] = [];
-			}
+        for (const { day, openTime, closeTime, enabled } of empresaStore.state!
+            .schedule) {
+            const key = `${openTime} ${
+                Number.parseInt(openTime.split(":")[0]) < 12 ? "AM" : "PM"
+            } - ${closeTime} ${
+                Number.parseInt(closeTime.split(":")[0]) < 12 ? "AM" : "PM"
+            }`;
+            if (!grupos[key]) {
+                grupos[key] = [];
+            }
 
-			grupos[key].push(enabled ? day.slice(0, 3) : "");
-		}
+            grupos[key].push(enabled ? day.slice(0, 3) : "");
+        }
 
-		return Object.entries(grupos).map(([horas, dias]) => {
-			return {
-				days: dias.join(", "),
-				hours: horas,
-			};
-		});
-	}
+        return Object.entries(grupos).map(([horas, dias]) => {
+            return {
+                days: dias.join(", "),
+                hours: horas,
+            };
+        });
+    }
 
-	return (
-		<footer
-			class="  lg:mb-0  mb-[4.3rem] text-white"
-			id="footer"
-			style={{
-				backgroundColor: storageEmpresa?.setting.bg_color_footer,
-				color: isColorLight(storageEmpresa!.setting.bg_color_footer)
-					? "#000000"
-					: "#FFFFFF",
-			}}
-		>
-			<div class="h-[0.5px] bg-gray-300 dark:bg-gray-500 my-2 w-full" />
-			<div class="max-w-6xl mx-auto px-2 ">
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 py-6">
-					<ul class="">
-						<li
-							class="font-bold"
-							style={{
-								backgroundColor: storageEmpresa?.setting.bg_color_footer,
-								color: isColorLight(storageEmpresa!.setting.bg_color_footer)
-									? "#000000"
-									: "var(--primary)",
-							}}
-						>
-							<TitleSectionTwo>Corporación</TitleSectionTwo>
-						</li>
-						<li class=" text-sm  hover:text-primary font-semibold dark:hover:text-primary my-2 ">
-							<a href={"/"}>Inicio</a>
-						</li>
-						<li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
-							<a href={"/nosotros"}>Nosotros</a>
-						</li>
-						<li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
-							<a href={"/shop"}>Nuestra Tienda</a>
-						</li>
-						<li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
-							<a href={"/politica-de-privacidad"}>Politica y privacidad</a>
-						</li>
-						<li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
-							<a href={"/terminos-y-condiciones"}>
-								Términos y Condiciones
-							</a>{" "}
-						</li>
-						<li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
-							<a href={"/libro-de-reclamaciones"}>
-								Libro de Reclamaciones
-							</a>{" "}
-						</li>
-					</ul>
-					{categories.length ? (
-						<ul class="max-h-[500px] overflow-auto">
-							<li
-								class="font-bold"
-								style={{
-									backgroundColor: storageEmpresa?.setting.bg_color_footer,
-									color: isColorLight(storageEmpresa!.setting.bg_color_footer)
-										? "#000000"
-										: "var(--primary)",
-								}}
-							>
-								<TitleSectionTwo>Shop</TitleSectionTwo>
-							</li>
-							{categories.map((category) => (
-								<li
-									class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2"
-									key={category.id}
-								>
-									<a href={`/shop/${category.slug}`}>{category.name}</a>
-								</li>
-							))}
-						</ul>
-					) : null}
-					{categoriesServices.length ? (
-						<ul class="max-h-[500px] overflow-auto">
-							<li
-								class="font-bold"
-								style={{
-									backgroundColor: storageEmpresa?.setting.bg_color_footer,
-									color: isColorLight(storageEmpresa!.setting.bg_color_footer)
-										? "#000000"
-										: "var(--primary)",
-								}}
-							>
-								<TitleSectionTwo>Nuestros Servicios</TitleSectionTwo>
-							</li>
-							{categoriesServices.map((servicio) => (
-								<li
-									class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2"
-									key={servicio.id}
-								>
-									<button
-										type="button"
-										aria-label="change service"
-										onClick={() => {
-											service.value = servicio;
-											const section = document.getElementById("servicios");
-											section?.scrollIntoView({
-												behavior: "smooth",
-											});
-										}}
-									>
-										{servicio.name}
-									</button>
-								</li>
-							))}
-						</ul>
-					) : null}
+    return (
+        <footer
+            class=" lg:mb-0 lg:mt-40  mb-[4.3rem] text-white relative "
+            id="footer"
+            style={{
+                backgroundColor: storageEmpresa?.setting.bg_color_footer,
+                color: isColorLight(storageEmpresa!.setting.bg_color_footer)
+                    ? "#000000"
+                    : "#FFFFFF",
+            }}
+        >
+            <img
+                class="absolute -top-22 lg:-top-36  right-0 left-0 w-full"
+                src="/images/image.png"
+                alt=""
+            />
+            <div class="h-[0.5px] bg-gray-300 dark:bg-gray-500 my-2 w-full" />
+            <div class="max-w-6xl mx-auto px-2 ">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 py-6">
+                    <ul class="">
+                        <li
+                            class="font-bold"
+                            style={{
+                                color: isColorLight(
+                                    storageEmpresa!.setting.bg_color_footer
+                                )
+                                    ? "#000000"
+                                    : storageEmpresa?.setting
+                                          .bg_color_footer ===
+                                      storageEmpresa?.setting.bg_color
+                                    ? isColorLight(
+                                          storageEmpresa!.setting
+                                              .bg_color_footer
+                                      )
+                                        ? "#000"
+                                        : "#fff"
+                                    : "var(--primary)",
+                            }}
+                        >
+                            <TitleSectionTwo>Corporación</TitleSectionTwo>
+                        </li>
+                        <li class=" text-sm  hover:text-primary font-semibold dark:hover:text-primary my-2 ">
+                            <a href={"/"}>Inicio</a>
+                        </li>
+                        <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
+                            <a href={"/nosotros"}>Nosotros</a>
+                        </li>
+                        <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
+                            <a href={"/shop"}>Nuestra Tienda</a>
+                        </li>
+                        <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
+                            <a href={"/politica-de-privacidad"}>
+                                Politica y privacidad
+                            </a>
+                        </li>
+                        <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
+                            <a href={"/terminos-y-condiciones"}>
+                                Términos y Condiciones
+                            </a>{" "}
+                        </li>
+                        <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
+                            <a href={"/libro-de-reclamaciones"}>
+                                Libro de Reclamaciones
+                            </a>{" "}
+                        </li>
+                    </ul>
+                    {categories.length ? (
+                        <ul class="max-h-[500px] overflow-auto">
+                            <li
+                                class="font-bold"
+                                style={{
+                                    color: isColorLight(
+                                        storageEmpresa!.setting.bg_color_footer
+                                    )
+                                        ? "#000000"
+                                        : storageEmpresa?.setting
+                                              .bg_color_footer ===
+                                          storageEmpresa?.setting.bg_color
+                                        ? isColorLight(
+                                              storageEmpresa!.setting
+                                                  .bg_color_footer
+                                          )
+                                            ? "#000"
+                                            : "#fff"
+                                        : "var(--primary)",
+                                }}
+                            >
+                                <TitleSectionTwo>Shop</TitleSectionTwo>
+                            </li>
+                            {categories.map((category) => (
+                                <li
+                                    class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2"
+                                    key={category.id}
+                                >
+                                    <a href={`/shop/${category.slug}`}>
+                                        {category.name}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : null}
+                    {categoriesServices.length ? (
+                        <ul class="max-h-[500px] overflow-auto">
+                            <li
+                                class="font-bold"
+                                style={{
+                                    color: isColorLight(
+                                        storageEmpresa!.setting.bg_color_footer
+                                    )
+                                        ? "#000000"
+                                        : storageEmpresa?.setting
+                                              .bg_color_footer ===
+                                          storageEmpresa?.setting.bg_color
+                                        ? isColorLight(
+                                              storageEmpresa!.setting
+                                                  .bg_color_footer
+                                          )
+                                            ? "#000"
+                                            : "#fff"
+                                        : "var(--primary)",
+                                }}
+                            >
+                                <TitleSectionTwo>
+                                    Nuestros Servicios
+                                </TitleSectionTwo>
+                            </li>
+                            {categoriesServices.map((servicio) => (
+                                <li
+                                    class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2"
+                                    key={servicio.id}
+                                >
+                                    <button
+                                        type="button"
+                                        aria-label="change service"
+                                        onClick={() => {
+                                            service.value = servicio;
+                                            const section =
+                                                document.getElementById(
+                                                    "servicios"
+                                                );
+                                            section?.scrollIntoView({
+                                                behavior: "smooth",
+                                            });
+                                        }}
+                                    >
+                                        {servicio.name}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : null}
 
-					<ul class=" flex flex-col ">
-						<li
-							class="font-bold"
-							style={{
-								backgroundColor: storageEmpresa?.setting.bg_color_footer,
-								color: isColorLight(storageEmpresa!.setting.bg_color_footer)
-									? "#000000"
-									: "var(--primary)",
-							}}
-						>
-							<TitleSectionTwo>¿Necesitas Ayuda?</TitleSectionTwo>
-						</li>
-						{empresaStore.state!.telephoneFirst ? (
-							<li class="dark:text-white font-semibold  text-sm">
-								📞 +{empresaStore.state!.dial_code}{" "}
-								{empresaStore.state!.telephoneFirst.replace(
-									/(\d{3})(\d{3})(\d{3})/,
-									"$1 $2 $3",
-								)}
-							</li>
-						) : null}
-						{empresaStore.state!.telephoneReclamos ? (
-							<li class=" dark:text-white font-semibold  text-sm">
-								📞 +{empresaStore.state!.dial_code}{" "}
-								{empresaStore.state!.telephoneReclamos.replace(
-									/(\d{3})(\d{3})(\d{3})/,
-									"$1 $2 $3",
-								)}
-							</li>
-						) : null}
-						{empresaStore.state!.telephoneThird ? (
-							<li class="dark:text-white font-semibold  text-sm">
-								📞 +{empresaStore.state!.dial_code}{" "}
-								{empresaStore.state!.telephoneThird.replace(
-									/(\d{3})(\d{3})(\d{3})/,
-									"$1 $2 $3",
-								)}
-							</li>
-						) : null}
+                    <ul class=" flex flex-col ">
+                        <li
+                            class="font-bold"
+                            style={{
+                                color: isColorLight(
+                                    storageEmpresa!.setting.bg_color_footer
+                                )
+                                    ? "#000000"
+                                    : storageEmpresa?.setting
+                                          .bg_color_footer ===
+                                      storageEmpresa?.setting.bg_color
+                                    ? isColorLight(
+                                          storageEmpresa!.setting
+                                              .bg_color_footer
+                                      )
+                                        ? "#000"
+                                        : "#fff"
+                                    : "var(--primary)",
+                            }}
+                        >
+                            <TitleSectionTwo>¿Necesitas Ayuda?</TitleSectionTwo>
+                        </li>
+                        {empresaStore.state!.telephoneFirst ? (
+                            <li class="dark:text-white font-semibold  text-sm">
+                                <i class="far fa-phone mr-2  text-xl" /> +
+                                {empresaStore.state!.dial_code}{" "}
+                                {empresaStore.state!.telephoneFirst.replace(
+                                    /(\d{3})(\d{3})(\d{3})/,
+                                    "$1 $2 $3"
+                                )}
+                            </li>
+                        ) : null}
+                        {empresaStore.state!.telephoneReclamos ? (
+                            <li class=" dark:text-white font-semibold  text-sm">
+                                <i class="far fa-phone mr-2  text-xl" /> +
+                                {empresaStore.state!.dial_code}{" "}
+                                {empresaStore.state!.telephoneReclamos.replace(
+                                    /(\d{3})(\d{3})(\d{3})/,
+                                    "$1 $2 $3"
+                                )}
+                            </li>
+                        ) : null}
+                        {empresaStore.state!.telephoneThird ? (
+                            <li class="dark:text-white font-semibold  text-sm">
+                                <i class="far fa-phone mr-2  text-xl" /> +
+                                {empresaStore.state!.dial_code}{" "}
+                                {empresaStore.state!.telephoneThird.replace(
+                                    /(\d{3})(\d{3})(\d{3})/,
+                                    "$1 $2 $3"
+                                )}
+                            </li>
+                        ) : null}
 
-						{empresaStore.state!.address.direccion ? (
-							<li class="dark:text-white font-semibold  text-sm">
-								<i class="far fa-map-marker-alt  text-xl" />{" "}
-								{empresaStore.state!.address.direccion}
-							</li>
-						) : null}
+                        {empresaStore.state!.address.direccion ? (
+                            <li class="dark:text-white font-semibold  text-sm">
+                                <i class="far fa-map-marker-alt  text-xl" />{" "}
+                                {empresaStore.state!.address.direccion}
+                            </li>
+                        ) : null}
 
-						<li
-							class="font-bold"
-							style={{
-								backgroundColor: storageEmpresa?.setting.bg_color_footer,
-								color: isColorLight(storageEmpresa!.setting.bg_color_footer)
-									? "#000000"
-									: "var(--primary)",
-							}}
-						>
-							<TitleSectionTwo>Horario de atención</TitleSectionTwo>
-						</li>
-						<li>
-							{agruparHorarios().map((horario) => (
-								<div class="flex gap-2   text-sm" key={horario.days}>
-									<b class="w-[120px] text-gray-400 font-semibold">
-										{horario.days}:
-									</b>
-									<span class="   font-semibold">{horario.hours}</span>
-								</div>
-							))}
-						</li>
-					</ul>
-					<ul class=" flex flex-col">
-						<li
-							class="font-bold"
-							style={{
-								backgroundColor: storageEmpresa?.setting.bg_color_footer,
-								color: isColorLight(storageEmpresa!.setting.bg_color_footer)
-									? "#000000"
-									: "var(--primary)",
-							}}
-						>
-							<TitleSectionTwo>Síguenos</TitleSectionTwo>
-						</li>
-						<div class="flex gap-2 items-center  text-sm">
-							{empresaStore.state!.facebook ? (
-								<a
-									href={empresaStore.state!.facebook}
-									target="_blank"
-									rel="noreferrer"
-								>
-									<i class="fa-brands fa-facebook text-xl" />
-								</a>
-							) : null}
-							{empresaStore.state!.instagram ? (
-								<a
-									href={empresaStore.state!.instagram}
-									target="_blank"
-									rel="noreferrer"
-								>
-									<i class="fa-brands fa-instagram text-xl" />
-								</a>
-							) : null}
-							{empresaStore.state!.tiktok ? (
-								<a
-									href={empresaStore.state!.tiktok}
-									target="_blank"
-									rel="noreferrer"
-								>
-									<i class="fa-brands fa-tiktok text-xl" />
-								</a>
-							) : null}
-							{empresaStore.state!.youtube ? (
-								<a
-									href={empresaStore.state!.youtube}
-									target="_blank"
-									rel="noreferrer"
-								>
-									<i class="fa-brands fa-youtube text-xl" />
-								</a>
-							) : null}
-							{empresaStore.state!.twitter ? (
-								<a
-									href={empresaStore.state!.twitter}
-									target="_blank"
-									rel="noreferrer"
-								>
-									<i class="fa-brands fa-twitter text-xl" />
-								</a>
-							) : null}
-						</div>
-						<a href={"/libro-de-reclamaciones"}>
-							<img
-								class="mt-3"
-								src={libroReclamacionesImage()}
-								width={100}
-								height={100}
-								alt="libro de reclamaciones"
-							/>
-						</a>
-					</ul>
-				</div>
-				<div class="h-[1px] w-full bg-primary" />
-				<div class="w-full flex justify-between items-center">
-					<span class="text-sm w-[160px]  md:w-[250px] font-semibold text-center flex flex-col">
-						<span>
-							© Todos los derechos Reservados.{" "}
-							<b class="text-primary font-bold">
-								{storageEmpresa?.name_empresa}{" "}
-								<span>
-									{new Date(empresaStore.state!.yearFounded).getFullYear()}
-									{" - "}
-									{new Date().getFullYear()}
-								</span>
-							</b>
-						</span>
-					</span>
-					<a
-						href="#start"
-						type="button"
-						class="bg-primary py-4 px-6 text-white"
-						aria-label="up"
-					>
-						<i class="fa-solid fa-caret-up" />
-					</a>
-					<div class="flex flex-col">
-						<MetodosDePago />
-					</div>
-				</div>
-			</div>
-		</footer>
-	);
+                        <li
+                            class="font-bold"
+                            style={{
+                                color: isColorLight(
+                                    storageEmpresa!.setting.bg_color_footer
+                                )
+                                    ? "#000000"
+                                    : storageEmpresa?.setting
+                                          .bg_color_footer ===
+                                      storageEmpresa?.setting.bg_color
+                                    ? isColorLight(
+                                          storageEmpresa!.setting
+                                              .bg_color_footer
+                                      )
+                                        ? "#000"
+                                        : "#fff"
+                                    : "var(--primary)",
+                            }}
+                        >
+                            <TitleSectionTwo>
+                                Horario de atención
+                            </TitleSectionTwo>
+                        </li>
+                        <li>
+                            {agruparHorarios().map((horario) => (
+                                <div
+                                    class="flex gap-2   text-sm"
+                                    key={horario.days}
+                                >
+                                    <b class="w-[120px]  font-bold">
+                                        {horario.days}:
+                                    </b>
+                                    <span class="   font-semibold">
+                                        {horario.hours}
+                                    </span>
+                                </div>
+                            ))}
+                        </li>
+                    </ul>
+                    <ul class=" flex flex-col">
+                        <li
+                            class="font-bold"
+                            style={{
+                                color: isColorLight(
+                                    storageEmpresa!.setting.bg_color_footer
+                                )
+                                    ? "#000000"
+                                    : storageEmpresa?.setting
+                                          .bg_color_footer ===
+                                      storageEmpresa?.setting.bg_color
+                                    ? isColorLight(
+                                          storageEmpresa!.setting
+                                              .bg_color_footer
+                                      )
+                                        ? "#000"
+                                        : "#fff"
+                                    : "var(--primary)",
+                            }}
+                        >
+                            <TitleSectionTwo>Síguenos</TitleSectionTwo>
+                        </li>
+                        <div class="flex gap-2 items-center  text-sm">
+                            {empresaStore.state!.facebook ? (
+                                <a
+                                    class="w-[35px] h-[35px] flex justify-center items-center  border rounded-md relative"
+                                    href={empresaStore.state!.facebook}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <i class="fa-brands fa-facebook text-xl" />
+                                    {holidayChristmas() ? (
+                                        <img
+                                            class="absolute rotate-[20deg] -top-2 -right-2.5 w-[25px] h-[25px] object-contain"
+                                            width={60}
+                                            height={60}
+                                            src="/images/settings/holidays/christmas.hat2.webp"
+                                            alt="hat christmas"
+                                        />
+                                    ) : null}
+                                </a>
+                            ) : null}
+                            {empresaStore.state!.instagram ? (
+                                <a
+                                    class="w-[35px] h-[35px] flex justify-center items-center  border rounded-md relative"
+                                    href={empresaStore.state!.instagram}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <i class="fa-brands fa-instagram text-xl" />
+                                    {holidayChristmas() ? (
+                                        <img
+                                            class="absolute rotate-[20deg] -top-2 -right-2.5 w-[25px] h-[25px] object-contain"
+                                            width={60}
+                                            height={60}
+                                            src="/images/settings/holidays/christmas.hat2.webp"
+                                            alt="hat christmas"
+                                        />
+                                    ) : null}
+                                </a>
+                            ) : null}
+                            {empresaStore.state!.tiktok ? (
+                                <a
+                                    class="w-[35px] h-[35px] flex justify-center items-center  border rounded-md relative"
+                                    href={empresaStore.state!.tiktok}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <i class="fa-brands fa-tiktok text-xl" />
+                                    {holidayChristmas() ? (
+                                        <img
+                                            class="absolute rotate-[20deg] -top-2 -right-2.5 w-[25px] h-[25px] object-contain"
+                                            width={60}
+                                            height={60}
+                                            src="/images/settings/holidays/christmas.hat2.webp"
+                                            alt="hat christmas"
+                                        />
+                                    ) : null}
+                                </a>
+                            ) : null}
+                            {empresaStore.state!.youtube ? (
+                                <a
+                                    class="w-[35px] h-[35px] flex justify-center items-center  border rounded-md relative"
+                                    href={empresaStore.state!.youtube}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <i class="fa-brands fa-youtube text-xl" />{" "}
+                                    {holidayChristmas() ? (
+                                        <img
+                                            class="absolute rotate-[20deg] -top-2 -right-2.5 w-[25px] h-[25px] object-contain"
+                                            width={60}
+                                            height={60}
+                                            src="/images/settings/holidays/christmas.hat2.webp"
+                                            alt="hat christmas"
+                                        />
+                                    ) : null}
+                                </a>
+                            ) : null}
+                            {empresaStore.state!.twitter ? (
+                                <a
+                                    class="w-[35px] h-[35px] flex justify-center items-center  border rounded-md relative"
+                                    href={empresaStore.state!.twitter}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <i class="fa-brands fa-twitter text-xl" />{" "}
+                                    {holidayChristmas() ? (
+                                        <img
+                                            class="absolute rotate-[20deg] -top-2 -right-2.5 w-[25px] h-[25px] object-contain"
+                                            width={60}
+                                            height={60}
+                                            src="/images/settings/holidays/christmas.hat2.webp"
+                                            alt="hat christmas"
+                                        />
+                                    ) : null}
+                                </a>
+                            ) : null}
+                        </div>
+                        <br />
+                        <a href={"/libro-de-reclamaciones"}>
+                            <img
+                                class="mt-3"
+                                src={libroReclamacionesImage()}
+                                width={100}
+                                height={100}
+                                alt="libro de reclamaciones"
+                            />
+                        </a>
+                    </ul>
+                </div>
+                <div class="h-[1px] w-full bg-primary" />
+                <div class="w-full flex justify-between md:items-center  gap-2">
+                    <span class="text-sm w-[160px]  md:w-[250px] font-semibold text-center flex flex-col">
+                        <span>
+                            © Todos los derechos Reservados.{" "}
+                            <b
+                                class=" font-bold"
+                                style={{
+                                    color:
+                                        storageEmpresa?.setting
+                                            .bg_color_footer !==
+                                        storageEmpresa?.setting.bg_color
+                                            ? storageEmpresa?.setting.bg_color
+                                            : isColorLight(
+                                                  storageEmpresa!.setting
+                                                      .bg_color_footer
+                                              )
+                                            ? "#000"
+                                            : "#fff",
+                                }}
+                            >
+                                {storageEmpresa?.name_empresa}{" "}
+                                <span>
+                                    {new Date(
+                                        empresaStore.state!.yearFounded
+                                    ).getFullYear()}
+                                    {" - "}
+                                    {new Date().getFullYear()}
+                                </span>
+                            </b>
+                        </span>
+                    </span>
+                    <a
+                        href="#start"
+                        type="button"
+                        class="bg-primary py-4 px-6 text-white border-2 hidden md:block border-white self-start md:self-start"
+                        aria-label="up"
+                    >
+                        <i class="fa-solid fa-caret-up" />
+                    </a>
+                    <div class="flex flex-col">
+                        <MetodosDePago />
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
 }
 function MetodosDePago() {
-	const empresaStore = useEmpresastore();
+    const empresaStore = useEmpresastore();
 
-	return (
-		<div class="flex gap-2 items-center overflow-auto  relative">
-			<AdminEdit uri="/admin/payment" isLeft={false} />
-			{empresaStore.state?.metodos_pago.mercado_pago.enabled ? (
-				<img
-					src={VisaMastercardImage()}
-					width={80}
-					height={80}
-					alt="visa"
-					class="w-[60px] md:w-[80px]"
-				/>
-			) : null}
-			{empresaStore.state?.metodos_pago.qrYape ? (
-				<img
-					src={yapeImage()}
-					class="w-[20px] md:w-[30px]"
-					width={30}
-					height={30}
-					alt="yape"
-				/>
-			) : null}
+    return (
+        <div class="flex gap-2 items-center overflow-auto  relative">
+            <AdminEdit uri="/admin/payment" isLeft={false} />
+            {empresaStore.state?.metodos_pago.mercado_pago.enabled ? (
+                <img
+                    src={VisaMastercardImage()}
+                    width={80}
+                    height={80}
+                    alt="visa"
+                    class="w-[60px] md:w-[80px]"
+                />
+            ) : null}
+            {empresaStore.state?.metodos_pago.qrYape ? (
+                <img
+                    src={yapeImage()}
+                    class="w-[20px] md:w-[30px]"
+                    width={30}
+                    height={30}
+                    alt="yape"
+                />
+            ) : null}
 
-			{empresaStore.state?.metodos_pago.paypal.enabled ? (
-				<img
-					src={paypalICOImage()}
-					class="w-[20px] md:w-[30px]"
-					width={30}
-					height={30}
-					alt="yape"
-				/>
-			) : null}
-			{empresaStore.state?.metodos_pago.enable_efectivo ? (
-				<p class="text-xs  text-center border p-1 rounded-md border-primary text-primary dark:text-white ">
-					<i class="far fa-handshake" /> Efectivo
-				</p>
-			) : null}
-		</div>
-	);
+            {empresaStore.state?.metodos_pago.paypal.enabled ? (
+                <img
+                    src={paypalICOImage()}
+                    class="w-[20px] md:w-[30px]"
+                    width={30}
+                    height={30}
+                    alt="yape"
+                />
+            ) : null}
+            {empresaStore.state?.metodos_pago.enable_efectivo ? (
+                <p
+                    class={`text-xs  text-center border p-1 rounded-md ${
+                        storageEmpresa?.setting.bg_color !==
+                        storageEmpresa?.setting.bg_color_footer
+                            ? "border-primary"
+                            : isColorLight(
+                                  storageEmpresa!.setting.bg_color_footer
+                              )
+                            ? "border-black text-black "
+                            : "border-white text-white"
+                    }   dark:text-white`}
+                >
+                    <i class="far fa-handshake" /> Efectivo
+                </p>
+            ) : null}
+        </div>
+    );
 }
 export default Footer;
