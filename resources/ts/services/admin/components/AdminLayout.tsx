@@ -720,7 +720,10 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                 )}
                             >
                                 {({ onClose }) => (
-                                    <methods.Notifications onClose={onClose} />
+                                    <methods.Notifications
+                                        isWeb={false}
+                                        onClose={onClose}
+                                    />
                                 )}
                             </AdminDropdown>
                             <AdminDropdown

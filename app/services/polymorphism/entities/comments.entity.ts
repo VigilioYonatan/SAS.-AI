@@ -27,7 +27,7 @@ import { ProductsRestaurant } from "@/products/entities/products_restaurant.enti
 }))
 @Table
 export class Comments extends Model implements Omit<CommentsSchema, "id"> {
-	@Column({ allowNull: false, type: DataType.STRING(255) })
+	@Column({ allowNull: false, type: DataType.TEXT })
 	content: string;
 
 	@ForeignKey(() => Users)

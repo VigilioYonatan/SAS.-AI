@@ -30,6 +30,7 @@ import { Rating } from "react-custom-rating-component";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import useVideo from "~/hooks/useVideo";
 import { bgPrimaryHover } from "~/config/settings";
+import { getParams } from "~/libs/helpers";
 
 export interface VariantFeature {
     option_id: number;
@@ -58,9 +59,11 @@ function ProductPage({
     header,
     totalcomments,
 }: ProductPageProps) {
+    const params = getParams();
+    const commentID = params.get("comment");
     const type = useSignal<
         "description" | "characteristics" | "reviews" | "more"
-    >("description");
+    >(commentID ? "reviews" : "description");
     // description
     const empresaStore = useEmpresastore();
     const themeStore = useThemeStore();
@@ -1011,7 +1014,10 @@ function ProductPage({
                                             ) : (
                                                 <i class="fa-solid fa-star mr-1" />
                                             )}
-                                            {product.rating.promedio ?? 0} de 5
+                                            {Math.round(
+                                                product.rating.promedio
+                                            ) ?? 0}{" "}
+                                            de 5
                                         </span>
                                         <span class=" dark:text-principal-light font-semibold">
                                             {product.rating.quantity} ratings
@@ -1023,7 +1029,7 @@ function ProductPage({
                                             key={rate.rating}
                                         >
                                             <span class=" dark:text-principal-light font-bold text-md w-[15px] flex justify-center items-center">
-                                                {rate.rating}
+                                                {Math.round(rate.rating)}
                                             </span>
                                             <div
                                                 class={`bg-gray-300 ${
@@ -1039,7 +1045,7 @@ function ProductPage({
                                                 />
                                             </div>
                                             <span class=" dark:text-principal-light font-bold text-md w-[60px]">
-                                                {rate.percentage}%
+                                                {Math.round(rate.percentage)}%
                                             </span>
                                         </div>
                                     ))}
@@ -1060,6 +1066,9 @@ function ProductPage({
                             <br />
                             <div class=" p-1 rounded-md w-full">
                                 <ProductsComments
+                                    comment_id={
+                                        commentID ? Number(commentID) : null
+                                    }
                                     type={
                                         ProductKeys(false) as
                                             | "ProductsNormals"

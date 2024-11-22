@@ -19,7 +19,7 @@ function ChatAi() {
                 aria-label="open chat ai"
                 onClick={onOpen}
             >
-                <i class="fa-solid fa-message-bot" />
+                <i class="fas fa-message-bot" />
             </button>
         </div>
     );

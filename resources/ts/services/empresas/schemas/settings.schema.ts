@@ -164,6 +164,12 @@ export const settingsSchema = object({
         custom((val) => ["first", "second"].includes(val)),
     ]),
     is_hover_product: boolean(),
+    type_icons_bars: string([
+        custom(
+            (val) => ["normal", "light", ""].includes(val),
+            "Tipo de icono no válido"
+        ),
+    ]),
     // position_map: string([
     //     custom(
     //         (val) => ["start", "end"].includes(val),

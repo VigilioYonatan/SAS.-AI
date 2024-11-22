@@ -580,6 +580,13 @@ function empresaUpdate() {
                                         title="Habilitar IA de de whatsapp"
                                         question="Ya no estará habilitado el bot de whatsapp IA si no está habilitado"
                                     />{" "}
+                                    <Form.control.toggle
+                                        name={
+                                            "enabled_commentario_ia" as keyof EmpresasUpdateDto
+                                        }
+                                        title="Habilitar IA en los comentarios de tu web"
+                                        question="Lo usuarios que comentan en tu productos o servicios, le responderá la I.A."
+                                    />{" "}
                                     {/* <Form.control.toggle
                                         name={
                                             "" as keyof EmpresasUpdateDto
@@ -1023,7 +1030,7 @@ function empresaUpdate() {
                                 accept="image/*"
                                 multiple={false}
                                 typeFile="image"
-                                showButonCopy 
+                                showButonCopy
                             />
                             <Form.button.submit
                                 disabled={

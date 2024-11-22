@@ -212,6 +212,7 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         linkedin_tag: null,
         isTemplate: true,
         tiktok_pixel: null,
+        enabled_commentario_ia: true,
     };
 }
 
@@ -419,5 +420,6 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         linkedin_tag: null,
         tiktok_pixel: null,
         isTemplate: true,
+        enabled_commentario_ia: true,
     };
 }

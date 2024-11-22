@@ -124,6 +124,8 @@ export class SeedersApiService {
                         bg_color_secondary: "#dc2626",
                         type_animation: "fade-up",
                         web_script: null,
+                        is_hover_product: true,
+                        type_product_buttons: "first",
                     },
                 });
                 await Promise.all([Address.bulkCreate(addressSeeder)]);

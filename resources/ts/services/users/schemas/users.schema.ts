@@ -77,6 +77,7 @@ export const usersSchema = object({
         )
     ),
     enabledNotification: nullable(boolean()),
+    isBot: boolean(),
     city_id: nullable(number()),
 });
 

@@ -250,7 +250,7 @@ export class WebApiService {
                     return {
                         ...producto.toJSON(),
                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                        favoritescount: (product as any).stars,
+                        favoritescount: (product as any).stars ?? "0",
                     };
                 })
             );

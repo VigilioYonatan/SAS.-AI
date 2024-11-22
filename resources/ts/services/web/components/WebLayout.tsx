@@ -10,14 +10,11 @@ import NavTabs from "./NavTabs";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 import { BrandsSchema } from "@/products/schemas/brands.schema";
-import MessageNew from "../views/home/components/MessageNew";
 import MessagePWA from "../views/home/components/MessagePWA";
 import { ProductsServicioSchemaFromServer } from "@/products/schemas/products_servicio.schema";
 import { SubcategoriesSchemaFromServer } from "@/products/schemas/subcategories.schema";
 import { useEffect } from "preact/hooks";
-import { ColorResult, SketchPicker } from "react-color";
-import { useSignal } from "@preact/signals";
-import { getColorPrimary } from "~/libs/helpers";
+import PalleteCustom from "./PalleteCustom";
 
 export interface HeaderType {
     categories: (CategoriesSchema & {
@@ -36,16 +33,9 @@ interface WebLayoutProps {
     children: JSX.Element | JSX.Element[];
     header: HeaderType;
 }
+
 function WebLayout({ children, header }: WebLayoutProps) {
     const empresaStore = useEmpresastore();
-    const color = useSignal(getColorPrimary());
-    const showPallete = useSignal(false);
-    function handleChangeComplete(newColor: ColorResult) {
-        color.value = newColor.hex;
-    }
-    useEffect(() => {
-        document.documentElement.style.setProperty("--primary", color.value); // Cambia el color a rojo
-    }, [color.value]);
     useEffect(() => {
         if (storageEmpresa?.setting.web_script) {
             const script = document.createElement("script");
@@ -62,32 +52,10 @@ function WebLayout({ children, header }: WebLayoutProps) {
         <>
             <MessagePWA />
 
-            <MessageNew />
+            {/* <MessageNew /> */}
             <Header header={header} />
             {children}
             <div>
-                {storageEmpresa?.isTemplate ? (
-                    <div class="">
-                        <button
-                            class="fixed bottom-44 right-10 z-[99]  bg-white shadow dark:bg-background-dark w-[50px] h-[50px] flex justify-center items-center rounded-full text-black"
-                            type="button"
-                            aria-label="open chat ai"
-                            onClick={() => {
-                                showPallete.value = !showPallete.value;
-                            }}
-                        >
-                            <i class="fa-sharp fa-regular fa-palette" />
-                        </button>
-                        {showPallete.value ? (
-                            <div class="  bottom-56 right-10 fixed">
-                                <SketchPicker
-                                    color={color.value}
-                                    onChangeComplete={handleChangeComplete}
-                                />
-                            </div>
-                        ) : null}
-                    </div>
-                ) : null}
                 <a
                     href={`https://wa.me/${empresaStore.state!.dial_code}${
                         empresaStore.state!.telephoneFirst
@@ -96,6 +64,7 @@ function WebLayout({ children, header }: WebLayoutProps) {
                 >
                     <i class="fa-brands fa-whatsapp text-2xl" />
                 </a>
+                <PalleteCustom />
                 <ChatAi />
                 <CookiesMessage />
             </div>

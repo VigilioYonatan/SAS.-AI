@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import { productContext } from "./Product";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 import { isColorLight } from "~/libs/helpers";
 
@@ -17,6 +19,7 @@ function ProductHeader({
     isShowOffer = true,
 }: ProductHeaderProps) {
     const { product } = useContext(productContext);
+    const empresaStore = useEmpresastore();
     const isEccomerce = storageEmpresa?.setting.type_card === "eccomerce";
     const isHover = storageEmpresa?.setting.is_hover_product;
 
@@ -148,9 +151,11 @@ function ProductHeader({
                         <span
                             style={{
                                 backgroundColor:
-                                    storageEmpresa?.setting.bg_color_secondary,
+                                    empresaStore.state?.setting
+                                        .bg_color_secondary,
                                 color: isColorLight(
-                                    storageEmpresa!.setting.bg_color_secondary
+                                    empresaStore.state!.setting
+                                        .bg_color_secondary
                                 )
                                     ? "#000000"
                                     : "#ffffff",

@@ -211,6 +211,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     type_product_buttons: string;
 
     @Column({
+        type: DataType.STRING(60),
+    })
+    type_icons_bars: string;
+
+    @Column({
         type: DataType.BOOLEAN,
     })
     is_hover_product: boolean;

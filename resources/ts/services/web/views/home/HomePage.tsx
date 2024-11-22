@@ -112,50 +112,9 @@ function HomePage({
                 />
                 <GridBanners grid={gridbanners} i={2} />
                 <ProductsUsers
-                    productsmostreactionmapped={[
-                        ...((getproductsbycategories.flatMap(
-                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                            (prod) => (prod as any).products
-                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                        ) as any) ?? []),
-                        ...productsmostreactionmapped,
-                    ]
-                        .slice(0, 6)
-                        .filter(
-                            (item, index, self) =>
-                                index ===
-                                self.findIndex((t) => t.id === item.id)
-                        )}
-                    productsmostratingmapped={[
-                        ...((getproductsbycategories.flatMap(
-                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                            (prod) => (prod as any).products
-                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                        ) as any) ?? []),
-                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                        ...(productsmostratingmapped as any),
-                    ]
-                        .slice(0, 6)
-                        .filter(
-                            (item, index, self) =>
-                                index ===
-                                self.findIndex((t) => t.id === item.id)
-                        )}
-                    productsmostcommentsmapped={[
-                        ...((getproductsbycategories.flatMap(
-                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                            (prod) => (prod as any).products
-                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                        ) as any) ?? []),
-                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                        ...((productsmostcommentsmapped as any) ?? []),
-                    ]
-                        .slice(0, 6)
-                        .filter(
-                            (item, index, self) =>
-                                index ===
-                                self.findIndex((t) => t.id === item.id)
-                        )}
+                    productsmostreactionmapped={productsmostreactionmapped}
+                    productsmostratingmapped={productsmostratingmapped}
+                    productsmostcommentsmapped={productsmostcommentsmapped}
                 />
                 <BrandsSection brands={brands} />
                 <PostsSection posts={posts} />

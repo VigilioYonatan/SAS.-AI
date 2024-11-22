@@ -90,6 +90,12 @@ export const settingsSchema = objectAsync({
     bg_color_background: string(),
     bg_color_paper: string(),
     logo_width: number(),
+    type_icons_bars: string([
+        custom(
+            (val) => ["normal", "light", ""].includes(val),
+            "Tipo de icono no válido"
+        ),
+    ]),
     hamburger: string([
         custom((val) => hamrguers.includes(val), "Hamburguesa no válida"),
     ]),

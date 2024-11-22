@@ -26,7 +26,7 @@ async function interpretarImagen(rutaImagen: string): Promise<void> {
                     content: [
                         {
                             type: "text",
-                            text: "Que imagen es y solo dime el nombre y no digas imagen?",
+                            text: "Que imagen es y describeme algo breve (max 100 letras) - lo importante lo que es?",
                         },
                         {
                             type: "image_url",
@@ -39,6 +39,7 @@ async function interpretarImagen(rutaImagen: string): Promise<void> {
             ],
             max_tokens: 300,
         });
+
         return;
     } catch (error) {
         console.error("Error interpretando la imagen:", error);
@@ -47,4 +48,4 @@ async function interpretarImagen(rutaImagen: string): Promise<void> {
 
 // Llamada a la función con la ruta de la imagen
 
-interpretarImagen("./astro.webp");
+interpretarImagen("./samsung.jpg");

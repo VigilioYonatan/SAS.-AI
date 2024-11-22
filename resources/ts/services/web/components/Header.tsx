@@ -23,6 +23,8 @@ import ProductsSearch2 from "@/products/views/ProductSearch2";
 import { printFileWithDimension } from "~/libs/upload";
 import { useEffect } from "preact/hooks";
 import { bgPrimaryHover } from "~/config/settings";
+import WebNotificacion from "./WebNotificacion";
+import useMediaQuery from "~/hooks/useMediaQuery";
 
 interface HeaderProps {
     header: HeaderType;
@@ -99,7 +101,7 @@ function Header({ header }: HeaderProps) {
                         : "color: #FFFFFF !important"};
                 }
                 .bg-primary {
-                    ${isColorLight(storageEmpresa!.setting.bg_color)
+                    ${isColorLight(empresaStore.state!.setting.bg_color)
                         ? "color: #000000 !important"
                         : "color: #FFFFFF !important"};
                 }
@@ -111,7 +113,7 @@ function Header({ header }: HeaderProps) {
                             <div class="flex gap-3 items-center font-semibold">
                                 <span class="dark:text-white">
                                     Teléfono:{" "}
-                                    <span class="text-primary font-semibold">
+                                    <span class="text-primary font-semibold ml-1">
                                         (+{empresaStore.state!.dial_code}){" "}
                                         {empresaStore.state!.telephoneFirst.replace(
                                             /(\d{3})(\d{3})(\d{3})/,
@@ -122,7 +124,7 @@ function Header({ header }: HeaderProps) {
                                 {empresaStore.state!.email ? (
                                     <span class="dark:text-white">
                                         Correo Electrónico:
-                                        <span class="text-primary font-semibold ml-2">
+                                        <span class="text-primary font-semibold ml-1">
                                             {empresaStore.state!.email}
                                         </span>
                                     </span>
@@ -326,7 +328,16 @@ function Header({ header }: HeaderProps) {
                                                 class={`flex gap-2 items-center justify-between p-2 hover:bg-primary ${bgPrimaryHover()} group w-full rounded-md  relative group  `}
                                             >
                                                 <div class="flex gap-3 items-center dark:text-white">
-                                                    <i class="fas fa-tag" />
+                                                    <i
+                                                        class={`fa${
+                                                            storageEmpresa
+                                                                ?.setting
+                                                                .type_icons_bars ===
+                                                            "normal"
+                                                                ? "s"
+                                                                : "r"
+                                                        } fa-tag`}
+                                                    />
                                                     <span class="font-semibold">
                                                         Marcas
                                                     </span>
@@ -505,22 +516,29 @@ function Header({ header }: HeaderProps) {
                         {header.totalProducts > 0 ? <SearchProducts /> : null}
                         <a
                             href="/auth/profile?type=favorites"
-                            class="flex gap-2 items-center justify-center text-md dark:text-white relative"
+                            class=" text-sm flex justify-center items-center relative"
                         >
-                            <i class="fas fa-heart text-lg" />{" "}
+                            <i
+                                class={`fa${
+                                    storageEmpresa?.setting.type_icons_bars ===
+                                    "normal"
+                                        ? "s"
+                                        : "r"
+                                } fa-heart text-lg  dark:text-white`}
+                            />{" "}
                             <span
                                 style={{
                                     backgroundColor:
-                                        storageEmpresa?.setting
+                                        empresaStore.state!.setting
                                             .bg_color_secondary,
                                     color: isColorLight(
-                                        storageEmpresa!.setting
+                                        empresaStore.state!.setting
                                             .bg_color_secondary
                                     )
                                         ? "#000000"
                                         : "#ffffff",
                                 }}
-                                class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs  -right-3 -top-2 flex justify-center items-center "
+                                class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs  -right-3 -top-2 flex justify-center items-center  font-semibold"
                             >
                                 {favoriteStore.state}
                             </span>
@@ -541,11 +559,27 @@ function Header({ header }: HeaderProps) {
                                 >
                                     {themeStore.state === "dark" ? (
                                         <>
-                                            <i class="fa-solid fa-moon " />{" "}
+                                            <i
+                                                class={`fa${
+                                                    storageEmpresa?.setting
+                                                        .type_icons_bars ===
+                                                    "normal"
+                                                        ? "s"
+                                                        : "r"
+                                                } fa-moon  dark:text-white`}
+                                            />{" "}
                                         </>
                                     ) : (
                                         <>
-                                            <i class="fa-solid fa-sun " />{" "}
+                                            <i
+                                                class={`fa${
+                                                    storageEmpresa?.setting
+                                                        .type_icons_bars ===
+                                                    "normal"
+                                                        ? "s"
+                                                        : "r"
+                                                } fa-sun  dark:text-white`}
+                                            />{" "}
                                         </>
                                     )}
                                 </button>
@@ -554,23 +588,27 @@ function Header({ header }: HeaderProps) {
                                 <>
                                     <button
                                         type="button"
-                                        class="bg-primary w-[30px] h-[30px] rounded-full text-white text-sm flex justify-center items-center relative"
+                                        class=" text-sm flex justify-center items-center relative"
                                         onClick={cartStore.dropdown.onOpen}
                                     >
                                         <i
-                                            class={
-                                                empresaStore.state!.setting
-                                                    .type_cart
-                                            }
+                                            class={`${empresaStore.state!.setting.type_cart.replace(
+                                                "fas",
+                                                storageEmpresa?.setting
+                                                    .type_icons_bars ===
+                                                    "normal"
+                                                    ? "fas"
+                                                    : "far"
+                                            )} text-lg  dark:text-white`}
                                         />
                                         <span
-                                            class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs -right-2 -top-2 "
+                                            class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs -right-2 -top-2  font-semibold"
                                             style={{
                                                 backgroundColor:
-                                                    storageEmpresa?.setting
+                                                    empresaStore.state!.setting
                                                         .bg_color_secondary,
                                                 color: isColorLight(
-                                                    storageEmpresa!.setting
+                                                    empresaStore.state!.setting
                                                         .bg_color_secondary
                                                 )
                                                     ? "#000000"
@@ -579,7 +617,10 @@ function Header({ header }: HeaderProps) {
                                         >
                                             {cartStore.computed.showCartLength}
                                         </span>
-                                    </button>
+                                    </button>{" "}
+                                    {useMediaQuery("(min-width:1025px)") ? (
+                                        <WebNotificacion />
+                                    ) : null}
                                     <AuthUserIcon hiddenName={true} />
                                     <div class="flex flex-col gap-1 ">
                                         <span class="font-bold tracking-wide text-xs   dark:text-white">
@@ -602,16 +643,34 @@ function Header({ header }: HeaderProps) {
                                             }}
                                             aria-label={"change servicios page"}
                                             type={"button"}
-                                            class=" text-xl   relative"
+                                            class=" text-xl   relative dark:text-white"
                                         >
-                                            <i class={enviroments.TYPE_CART} />
+                                            <i
+                                                class={enviroments.TYPE_CART.replace(
+                                                    "fas",
+                                                    storageEmpresa?.setting
+                                                        .type_icons_bars ===
+                                                        "normal"
+                                                        ? "fas"
+                                                        : "far"
+                                                )}
+                                            />
                                         </button>
                                     ) : (
                                         <a
                                             href="#servicios"
-                                            class=" text-xl   relative"
+                                            class=" text-xl   relative  dark:text-white"
                                         >
-                                            <i class={enviroments.TYPE_CART} />
+                                            <i
+                                                class={enviroments.TYPE_CART.replace(
+                                                    "fas",
+                                                    storageEmpresa?.setting
+                                                        .type_icons_bars ===
+                                                        "normal"
+                                                        ? "fas"
+                                                        : "far"
+                                                )}
+                                            />
                                         </a>
                                     )}
                                 </>
@@ -642,7 +701,14 @@ function Header({ header }: HeaderProps) {
                                     aria-label="close cart"
                                     onClick={cartStore.dropdown.onClose}
                                 >
-                                    <i class="fa-solid fa-x" />
+                                    <i
+                                        class={`fa${
+                                            storageEmpresa?.setting
+                                                .type_icons_bars === "normal"
+                                                ? "s"
+                                                : "r"
+                                        } fa-x  dark:text-white`}
+                                    />
                                 </button>
                                 <CartAside />
                             </div>
@@ -671,7 +737,7 @@ function Header({ header }: HeaderProps) {
                         </button>
                         <HeaderAside header={header} isOpen={isOpen.value} />
                     </div>
-                    <div class="flex gap-6 items-center w-full relative">
+                    <div class="flex gap-6 items-center w-full relative border dark:border-gray-600">
                         <ProductsSearch2 />
                     </div>
                 </div>
@@ -696,6 +762,7 @@ interface HeaderAsideProps {
     isOpen: boolean;
 }
 function HeaderAside({ header, isOpen }: HeaderAsideProps) {
+    const empresaStore = useEmpresastore();
     return (
         <div
             class={`flex absolute right-0 dark:bg-paper-dark dark:text-white z-[99] delay-custom-1 left-0 flex-col ${
@@ -714,13 +781,16 @@ function HeaderAside({ header, isOpen }: HeaderAsideProps) {
                     <div
                         ref={dropdown.dropdown}
                         key={category.id}
-                        type="button"
-                        class="bg-background-light dark:bg-paper-dark  dark:border-gray-600 py-2 font-semibold  px-3 w-full border-gray-1 flex justify-between items-center border-b border-gray-100 dark:!text-white hover:text-primary dark:hover:!text-primary"
+                        class={`bg-background-light dark:bg-paper-dark  dark:border-gray-600 py-2 font-semibold  px-3 w-full border-gray-1 flex justify-between items-center border-b border-gray-100 dark:!text-white dark:hover:!text-primary hover:bg-primary ${
+                            isColorLight(empresaStore.state!.setting.bg_color)
+                                ? "hover:!text-black"
+                                : "hover:!text-white"
+                        } `}
                     >
                         <div class="w-full flex gap-2 items-center justify-between">
                             <a
                                 href={`/shop/${category.slug}`}
-                                class="flex  gap-2 items-center w-full  hover:bg-primary"
+                                class="flex  gap-2 items-center w-full  "
                             >
                                 {category.icon ? (
                                     <div
@@ -795,7 +865,14 @@ function HeaderAside({ header, isOpen }: HeaderAsideProps) {
                                 {category.name}
                             </div>
                             <span>
-                                <i class="fas fa-caret-right" />
+                                <i
+                                    class={`fa${
+                                        storageEmpresa?.setting
+                                            .type_icons_bars === "normal"
+                                            ? "s"
+                                            : "r"
+                                    } fa-caret-right`}
+                                />
                             </span>
                         </button>{" "}
                         {dropdown2.dropdownOpen && category.products.length ? (
@@ -867,7 +944,14 @@ function AuthUserIcon({ hiddenName }: AuthUserIconProps) {
                                 href={"/admin"}
                                 class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2 font-semibold flex justify-between gap-2 items-center"
                             >
-                                <i class="fas fa-tachometer-alt w-[20px]" />{" "}
+                                <i
+                                    class={`fa${
+                                        storageEmpresa?.setting
+                                            .type_icons_bars === "normal"
+                                            ? "s"
+                                            : "r"
+                                    } fa-tachometer-alt w-[20px]`}
+                                />{" "}
                                 <span class="text-center w-full">
                                     Dashboard
                                 </span>
@@ -877,38 +961,73 @@ function AuthUserIcon({ hiddenName }: AuthUserIconProps) {
                             href={"/auth/profile"}
                             class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2 font-semibold   flex justify-between gap-2 items-center"
                         >
-                            <i class="fas fa-user w-[20px]" />
+                            <i
+                                class={`fa${
+                                    storageEmpresa?.setting.type_icons_bars ===
+                                    "normal"
+                                        ? "s"
+                                        : "r"
+                                } fa-user w-[20px]`}
+                            />
                             <span class="text-center w-full">Mi perfil</span>
                         </a>
                         <a
                             href={"/auth/profile?type=favorites"}
                             class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2  font-semibold flex justify-between gap-2 items-center"
                         >
-                            <i class="fas fa-heart w-[20px]" />{" "}
+                            <i
+                                class={`fa${
+                                    storageEmpresa?.setting.type_icons_bars ===
+                                    "normal"
+                                        ? "s"
+                                        : "r"
+                                } fa-heart w-[20px]`}
+                            />{" "}
                             <span class="text-center w-full">Favoritos</span>
                         </a>
                         <a
                             href={"/auth/profile?type=orders"}
                             class="dark:text-white dark:hover:bg-paper-dark hover:bg-paper-light px-4  py-2  font-semibold  flex justify-between gap-2 items-center"
                         >
-                            <i class="fas fa-box w-[20px]" />{" "}
+                            <i
+                                class={`fa${
+                                    storageEmpresa?.setting.type_icons_bars ===
+                                    "normal"
+                                        ? "s"
+                                        : "r"
+                                } fa-box w-[20px]  dark:text-white`}
+                            />{" "}
                             <span class="text-center w-full">Mis pedidos</span>
                         </a>
                         <a
-                            class="bg-danger  font-semibold py-2 text-white flex justify-between  px-4"
+                            class="bg-danger  font-semibold py-2 text-white flex justify-between  px-4 items-center"
                             href={"/auth/logout"}
                         >
-                            <i class="fas fa-sign-out-alt w-[20px] " />{" "}
+                            <i
+                                class={`fa${
+                                    storageEmpresa?.setting.type_icons_bars ===
+                                    "normal"
+                                        ? "s"
+                                        : "r"
+                                } fa-sign-out-alt w-[20px]  dark:text-white `}
+                            />{" "}
                             <span class="text-center w-full">Salir</span>
                         </a>
                     </div>
                 </WebDropdown>
             ) : (
-                <a href="/auth/login" class="flex gap-1 items-center">
+                <a
+                    href="/auth/login"
+                    class="flex gap-1 items-center justify-center"
+                >
                     <i
-                        class={`fas fa-user-circle mr-2 ${
-                            hiddenName ? "text-xl" : "text-2xl"
-                        } `}
+                        class={`fa${
+                            storageEmpresa?.setting.type_icons_bars === "normal"
+                                ? "s"
+                                : "r"
+                        } fa-user-circle  ${
+                            hiddenName ? "text-xl" : "text-xl mr-2"
+                        }  dark:text-white `}
                     />
                     {hiddenName ? null : <span>Iniciar sesión</span>}
                 </a>

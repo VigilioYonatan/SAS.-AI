@@ -8,14 +8,14 @@ import ProductCardView from "./ProductView";
 import enviroments from "~/config";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 import { isColorLight } from "~/libs/helpers";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import useEmpresastore from "@/empresas/stores/empresa.store";
 
 interface ProductsButtonProps {
     isAbsolute: boolean;
 }
 function ProductButtons2({ isAbsolute }: ProductsButtonProps) {
     const { product } = useContext(productContext);
-
+    const empresaStore = useEmpresastore();
     return (
         <div
             class={` grid-cols-1 w-[40px] gap-1  delay-custom-1 hidden md:grid ${
@@ -29,7 +29,7 @@ function ProductButtons2({ isAbsolute }: ProductsButtonProps) {
                     product.existProductInCart
                         ? "bg-primary text-white cursor-not-allowed "
                         : `bg-background-light hover:bg-primary ${
-                              isColorLight(storageEmpresa!.setting.bg_color)
+                              isColorLight(empresaStore.state!.setting.bg_color)
                                   ? "hover:text-black"
                                   : "hover:!text-white "
                           }   dark:bg-paper-dark   dark:text-white  border border-gray-200 rounded-md dark:border-gray-500`
@@ -75,7 +75,7 @@ function ProductButtons2({ isAbsolute }: ProductsButtonProps) {
                         ? "bg-primary text-white "
                         : "bg-background-light rounded-md dark:bg-paper-dark dark:text-white   "
                 }  p-2 border hover:bg-primary ${
-                    isColorLight(storageEmpresa!.setting.bg_color)
+                    isColorLight(empresaStore.state!.setting.bg_color)
                         ? "hover:text-black"
                         : "hover:!text-white "
                 }  border-gray-200   `}
@@ -87,7 +87,7 @@ function ProductButtons2({ isAbsolute }: ProductsButtonProps) {
             <a
                 href={`/${product.producto.value.slug}`}
                 class={`bg-background-light dark:bg-paper-dark  dark:text-white border border-gray-200 rounded-md dark:border-gray-500 p-2   flex justify-center items-center hover:bg-primary ${
-                    isColorLight(storageEmpresa!.setting.bg_color)
+                    isColorLight(empresaStore.state!.setting.bg_color)
                         ? "hover:text-black"
                         : " hover:!text-white"
                 } `}
@@ -96,7 +96,7 @@ function ProductButtons2({ isAbsolute }: ProductsButtonProps) {
             </a>
             <button
                 class={`bg-background-light dark:bg-paper-dark  dark:text-white border border-gray-200 rounded-md dark:border-gray-500 p-2 hover:bg-primary ${
-                    isColorLight(storageEmpresa!.setting.bg_color)
+                    isColorLight(empresaStore.state!.setting.bg_color)
                         ? "hover:text-black"
                         : "hover:!text-white "
                 } `}

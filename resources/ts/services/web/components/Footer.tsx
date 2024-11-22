@@ -223,8 +223,15 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         </li>
                         {empresaStore.state!.telephoneFirst ? (
                             <li class="dark:text-white font-semibold  text-sm">
-                                <i class="far fa-phone mr-2  text-xl" /> +
-                                {empresaStore.state!.dial_code}{" "}
+                                <i
+                                    class={`fa${
+                                        storageEmpresa?.setting
+                                            .type_icons_bars === "normal"
+                                            ? "s"
+                                            : "r"
+                                    } fa-phone mr-2  text-xl`}
+                                />{" "}
+                                +{empresaStore.state!.dial_code}{" "}
                                 {empresaStore.state!.telephoneFirst.replace(
                                     /(\d{3})(\d{3})(\d{3})/,
                                     "$1 $2 $3"
@@ -233,8 +240,15 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         ) : null}
                         {empresaStore.state!.telephoneReclamos ? (
                             <li class=" dark:text-white font-semibold  text-sm">
-                                <i class="far fa-phone mr-2  text-xl" /> +
-                                {empresaStore.state!.dial_code}{" "}
+                                <i
+                                    class={`fa${
+                                        storageEmpresa?.setting
+                                            .type_icons_bars === "normal"
+                                            ? "s"
+                                            : "r"
+                                    } fa-phone mr-2  text-xl`}
+                                />{" "}
+                                +{empresaStore.state!.dial_code}{" "}
                                 {empresaStore.state!.telephoneReclamos.replace(
                                     /(\d{3})(\d{3})(\d{3})/,
                                     "$1 $2 $3"
@@ -243,8 +257,15 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         ) : null}
                         {empresaStore.state!.telephoneThird ? (
                             <li class="dark:text-white font-semibold  text-sm">
-                                <i class="far fa-phone mr-2  text-xl" /> +
-                                {empresaStore.state!.dial_code}{" "}
+                                <i
+                                    class={`fa${
+                                        storageEmpresa?.setting
+                                            .type_icons_bars === "normal"
+                                            ? "s"
+                                            : "r"
+                                    } fa-phone mr-2  text-xl`}
+                                />{" "}
+                                +{empresaStore.state!.dial_code}{" "}
                                 {empresaStore.state!.telephoneThird.replace(
                                     /(\d{3})(\d{3})(\d{3})/,
                                     "$1 $2 $3"
@@ -283,19 +304,29 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                             </TitleSectionTwo>
                         </li>
                         <li>
-                            {agruparHorarios().map((horario) => (
-                                <div
-                                    class="flex gap-2   text-sm"
-                                    key={horario.days}
-                                >
-                                    <b class="w-[120px]  font-bold">
-                                        {horario.days}:
-                                    </b>
-                                    <span class="   font-semibold">
-                                        {horario.hours}
-                                    </span>
-                                </div>
-                            ))}
+                            <div class="flex gap-3 items-center ">
+                                <i
+                                    class={`fa${
+                                        storageEmpresa?.setting
+                                            .type_icons_bars === "normal"
+                                            ? "s"
+                                            : "r"
+                                    } fa-alarm-clock text-3xl mb-1`}
+                                />
+                                {agruparHorarios().map((horario) => (
+                                    <div
+                                        class="flex gap-1   text-sm"
+                                        key={horario.days}
+                                    >
+                                        <b class="w-[100px]  font-bold">
+                                            {horario.days}:
+                                        </b>
+                                        <span class="   font-semibold">
+                                            {horario.hours}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
                         </li>
                     </ul>
                     <ul class=" flex flex-col">
@@ -430,7 +461,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                     </ul>
                 </div>
                 <div class="h-[1px] w-full bg-primary" />
-                <div class="w-full flex justify-between md:items-center  gap-2">
+                <div class="w-full flex justify-between items-center  gap-2">
                     <span class="text-sm w-[160px]  md:w-[250px] font-semibold text-center flex flex-col">
                         <span>
                             © Todos los derechos Reservados.{" "}
@@ -464,7 +495,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                     <a
                         href="#start"
                         type="button"
-                        class="bg-primary py-4 px-6 text-white border-2 hidden md:block border-white self-start md:self-start"
+                        class="bg-primary py-4 px-6 text-white  hidden md:block  self-start md:self-start"
                         aria-label="up"
                     >
                         <i class="fa-solid fa-caret-up" />

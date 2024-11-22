@@ -138,6 +138,7 @@ function SettingsIndex() {
             "background_position"
         );
         const type_animation = settingsUpdateform.watch("type_animation");
+        const type_icons_bars = settingsUpdateform.watch("type_icons_bars");
         const background_type = settingsUpdateform.watch("background_type");
         const bg_color_footer = settingsUpdateform.watch("bg_color_footer");
         const bg_color_paper = settingsUpdateform.watch("bg_color_paper");
@@ -1304,6 +1305,45 @@ function SettingsIndex() {
                         <div class="flex flex-col gap-2">
                             <div>
                                 <span class="text-xs dark:text-white font-semibold">
+                                    Tipo de Icono Weight
+                                </span>
+                                <div class="flex gap-2">
+                                    <button
+                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                            type_icons_bars === "normal"
+                                                ? "bg-paper-light dark:bg-admin-terciary"
+                                                : ""
+                                        }`}
+                                        type="button"
+                                        onClick={() =>
+                                            settingsUpdateform.setValue(
+                                                "type_icons_bars",
+                                                "normal"
+                                            )
+                                        }
+                                    >
+                                        <i class="fas fa-shopping-cart text-lg dark:text-white" />
+                                    </button>
+                                    <button
+                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                            type_icons_bars === "light"
+                                                ? "bg-paper-light dark:bg-admin-terciary"
+                                                : ""
+                                        }`}
+                                        type="button"
+                                        onClick={() =>
+                                            settingsUpdateform.setValue(
+                                                "type_icons_bars",
+                                                "light"
+                                            )
+                                        }
+                                    >
+                                        <i class="far fa-shopping-cart text-lg dark:text-white" />
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
                                     Tipo de Icono
                                 </span>
                                 <div class="flex gap-2">
@@ -1321,7 +1361,13 @@ function SettingsIndex() {
                                             )
                                         }
                                     >
-                                        <i class="fas fa-shopping-cart text-lg dark:text-white" />
+                                        <i
+                                            class={`fa${
+                                                type_icons_bars === "normal"
+                                                    ? "s"
+                                                    : "r"
+                                            } fa-shopping-cart text-lg dark:text-white`}
+                                        />
                                     </button>
                                     <button
                                         class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
@@ -1337,7 +1383,13 @@ function SettingsIndex() {
                                             )
                                         }
                                     >
-                                        <i class="fas fa-shopping-bag text-lg dark:text-white" />
+                                        <i
+                                            class={`fa${
+                                                type_icons_bars === "normal"
+                                                    ? "s"
+                                                    : "r"
+                                            } fa-shopping-bag text-lg dark:text-white`}
+                                        />
                                     </button>
                                     <button
                                         class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
@@ -1354,7 +1406,13 @@ function SettingsIndex() {
                                             )
                                         }
                                     >
-                                        <i class="fas fa-shopping-basket text-lg dark:text-white" />
+                                        <i
+                                            class={`fa${
+                                                type_icons_bars === "normal"
+                                                    ? "s"
+                                                    : "r"
+                                            } fa-shopping-basket text-lg dark:text-white`}
+                                        />
                                     </button>
                                 </div>
                             </div>
@@ -1377,7 +1435,13 @@ function SettingsIndex() {
                                             )
                                         }
                                     >
-                                        <i class="fas fa-star text-lg dark:text-white" />
+                                        <i
+                                            class={`fa${
+                                                type_icons_bars === "normal"
+                                                    ? "s"
+                                                    : "r"
+                                            } fa-star text-lg dark:text-white`}
+                                        />
                                     </button>
                                     <button
                                         class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
@@ -1393,7 +1457,13 @@ function SettingsIndex() {
                                             )
                                         }
                                     >
-                                        <i class="fas fa-heart text-lg dark:text-white" />
+                                        <i
+                                            class={`fa${
+                                                type_icons_bars === "normal"
+                                                    ? "s"
+                                                    : "r"
+                                            } fa-heart text-lg dark:text-white`}
+                                        />
                                     </button>
                                 </div>
                             </div>
@@ -1544,7 +1614,12 @@ function SettingsIndex() {
                                         }
                                     >
                                         <i
-                                            class={`${hbm} text-lg dark:text-white`}
+                                            class={`${hbm.replace(
+                                                "fas",
+                                                type_icons_bars === "normal"
+                                                    ? "fas"
+                                                    : "far"
+                                            )} text-lg dark:text-white`}
                                         />
                                     </button>
                                 ))}

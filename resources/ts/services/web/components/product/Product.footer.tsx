@@ -3,7 +3,9 @@ import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import useThemeStore from "~/stores/theme.store";
 import { productContext } from "./Product";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 import { isColorLight } from "~/libs/helpers";
@@ -16,6 +18,7 @@ function ProductFooter({
     className = "",
 }: ProductFooterProps) {
     const { product } = useContext(productContext);
+    const empresaStore = useEmpresastore();
 
     const isEccomerce = storageEmpresa?.setting.type_card === "eccomerce";
     return (
@@ -75,8 +78,8 @@ function ProductFooter({
                                   isEccomerce ? "px-3" : "w-full"
                               }  flex justify-center items-center absolute bottom-0
                               ${
-                                  storageEmpresa?.setting.bg_color_button ===
-                                  "transparent"
+                                  empresaStore.state!.setting
+                                      .bg_color_button === "transparent"
                                       ? ""
                                       : "shadow"
                               }
@@ -84,13 +87,17 @@ function ProductFooter({
                             style={{
                                 backgroundColor: product.existProductInCart
                                     ? "black"
-                                    : storageEmpresa?.setting.bg_color_button,
-                                color: isColorLight(
-                                    storageEmpresa!.setting.bg_color_button
-                                        ? storageEmpresa!.setting
+                                    : empresaStore.state!.setting
+                                          .bg_color_button,
+                                color: product.existProductInCart
+                                    ? "#fff"
+                                    : isColorLight(
+                                          empresaStore.state!.setting
                                               .bg_color_button
-                                        : "black"
-                                )
+                                              ? empresaStore.state!.setting
+                                                    .bg_color_button
+                                              : "black"
+                                      )
                                     ? "#000"
                                     : "#fff",
                             }}

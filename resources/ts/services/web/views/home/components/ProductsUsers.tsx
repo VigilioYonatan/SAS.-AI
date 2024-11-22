@@ -43,10 +43,18 @@ function ProductsUsers({
                     enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                 }`}
             >
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-center md:justify-between">
                     <TitleSectionTwo>
                         <>
-                            <i class="fas fa-heart" /> Productos Más Favoritos
+                            <i
+                                class={`fa${
+                                    storageEmpresa?.setting.type_icons_bars ===
+                                    "normal"
+                                        ? "s"
+                                        : "r"
+                                } fa-heart`}
+                            />{" "}
+                            Productos Más Favoritos
                         </>
                     </TitleSectionTwo>
                 </div>
@@ -70,8 +78,18 @@ function ProductsUsers({
                                         isShowRating={false}
                                     />
                                     <span class="font-semibold text-sm relative">
-                                        <span class="absolute top-2 left-3 text-sm text-white font-bold">
-                                            {product.favoritescount ?? 0}
+                                        <span
+                                            class={`absolute top-2 ${
+                                                String(product.favoritescount)
+                                                    .length > 1
+                                                    ? "left-2"
+                                                    : "left-3"
+                                            } text-sm text-white font-bold`}
+                                        >
+                                            {(Number(product.favoritescount) ??
+                                                0) > 99
+                                                ? "+99"
+                                                : product.favoritescount}
                                         </span>
                                         <i class="fas fa-heart text-3xl text-primary" />
                                     </span>
@@ -93,10 +111,17 @@ function ProductsUsers({
                     enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                 }`}
             >
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-center md:justify-between">
                     <TitleSectionTwo>
                         <>
-                            <i class={`fas fa-${enviroments.TYPE_START}`} />{" "}
+                            <i
+                                class={`fa${
+                                    storageEmpresa?.setting.type_icons_bars ===
+                                    "normal"
+                                        ? "s"
+                                        : "r"
+                                } fa-${enviroments.TYPE_START}`}
+                            />{" "}
                             Productos Mejor Valorados
                         </>
                     </TitleSectionTwo>
@@ -138,11 +163,18 @@ function ProductsUsers({
                     enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                 }`}
             >
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-center md:justify-between">
                     <TitleSectionTwo>
                         <>
-                            <i class="fa-solid fa-comment" /> Productos más
-                            comentados
+                            <i
+                                class={`fa${
+                                    storageEmpresa?.setting.type_icons_bars ===
+                                    "normal"
+                                        ? "s"
+                                        : "r"
+                                } fa-comment`}
+                            />{" "}
+                            Productos más comentados
                         </>
                     </TitleSectionTwo>
                 </div>
@@ -165,9 +197,19 @@ function ProductsUsers({
                                         showDescription={false}
                                         isShowRating={false}
                                     />
-                                    <span class="font-semibold text-sm relative">
-                                        <span class="absolute top-2 left-3 text-sm text-white font-bold">
-                                            {product.quantity ?? 0}
+                                    <span class="font-semibold text-sm relative flex justify-center items-center">
+                                        <span
+                                            class={`absolute top-2 ${
+                                                String(product.quantity)
+                                                    .length > 1
+                                                    ? "left-2"
+                                                    : "left-3"
+                                            }  text-sm text-white font-bold`}
+                                        >
+                                            {(Number(product.quantity) ?? 0) >
+                                            99
+                                                ? "+99"
+                                                : product.quantity}
                                         </span>
                                         <i class="fa-solid fa-comment text-3xl text-primary" />
                                     </span>

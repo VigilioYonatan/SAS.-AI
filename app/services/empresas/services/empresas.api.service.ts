@@ -570,8 +570,8 @@ export class EmpresasApiService {
                     }`
                 );
                 // eliminar docker en 15 dias
-                const fechaUTC5 = new Date(empresa.createdAt);
-                fechaUTC5.setDate(fechaUTC5.getHours() + 14);
+                const fechaUTC5 = new Date();
+                fechaUTC5.setDate(fechaUTC5.getDate() + 14);
                 await executeCronDate(fechaUTC5, async () => {
                     if (!empresa.slug.includes("demo")) {
                         await terminal(`docker stop ${empresa.slug} || true`);
@@ -826,7 +826,7 @@ export class EmpresasApiService {
     async whatsappConfigUpdate(slug: string, whatsappconfig: Whatsappconfig) {
         const empresa = await Empresas.findOne({
             where: { slug },
-            attributes: ["id", "whatsappconfig"],
+            attributes: ["id", "whatsappconfig", "slug"],
         });
         if (!empresa) throw new NotFoundException("Error empresas.");
         cache.delete(`EMPRESA:${empresa.id}`);
@@ -1187,7 +1187,7 @@ export class EmpresasApiService {
     async whatsappGroupStore(slug: string, body: GroupWhatsapp) {
         const empresa = await Empresas.findOne({
             where: { slug },
-            attributes: ["contacts", "groupWhatsapp", "id"],
+            attributes: ["contacts", "groupWhatsapp", "id", "slug"],
         });
         if (!empresa) throw new BadRequestException("No informacion");
         const findGroup = empresa.groupWhatsapp?.find(
@@ -1211,7 +1211,7 @@ export class EmpresasApiService {
     async whatsappGroupUpdate(slug: string, body: GroupWhatsapp) {
         const empresa = await Empresas.findOne({
             where: { slug },
-            attributes: ["contacts", "groupWhatsapp", "id"],
+            attributes: ["contacts", "groupWhatsapp", "id", "slug"],
         });
         if (!empresa) throw new BadRequestException("No informacion");
         const findGroup = empresa.groupWhatsapp?.find(

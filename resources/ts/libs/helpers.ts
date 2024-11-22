@@ -465,4 +465,9 @@ export async function getBackgroundColorImgen(file: File) {
 		}
 	});
 }
+export function getParams(){
+	const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    return params
+}
 export default dayjs;

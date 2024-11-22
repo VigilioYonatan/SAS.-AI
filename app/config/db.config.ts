@@ -61,6 +61,7 @@ import { Subcategories } from "@/products/entities/subcategories.entity";
 import { Banner } from "@/empresas/entities/banner.entity";
 import { GridBanner } from "@/empresas/entities/grid_banner.entity";
 import { FileSchema } from "@/empresas/entities/file.entity";
+import { RedesChat } from "@/empresas/entities/redes_chat.entity";
 
 const sequelize = new Sequelize({
     dialect: "postgres",
@@ -140,6 +141,7 @@ sequelize.addModels([
     GridBanner,
     Banner,
     FileSchema,
+    RedesChat,
 ]);
 
 export async function connectDB() {

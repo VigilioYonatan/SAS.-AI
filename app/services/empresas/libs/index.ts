@@ -1,6 +1,9 @@
 import enviroments from "~/config/enviroments.config";
 import type { Empresas } from "../entities/empresas.entity";
 import type { Settings } from "../entities/settings.entity";
+import { Regions } from "@/ubigeo/entities/regions.entity";
+import { Countries } from "@/ubigeo/entities/countries.entity";
+import { RegionsEmpresa } from "@/ubigeo/entities/regions_empresa.entity";
 export enum DIALCODE {
     mexico = "52",
     peru = "51",
@@ -45,5 +48,43 @@ export function gridEmpresa(width: number[]): {
         cols: 3,
         gap: 1,
         title: null,
+    }));
+}
+
+export async function regionsCountry(empresa: Empresas) {
+    const regions = await Regions.findAll({
+        include: [
+            {
+                model: Countries,
+                where: {
+                    code: empresa.dial_code,
+                },
+                required: true,
+                attributes: ["code"],
+            },
+        ],
+    });
+
+    const allData = await Promise.all(
+        regions.map(async (data) => {
+            const regionsEmpresa = await RegionsEmpresa.findOne({
+                where: {
+                    empresa_id: empresa.id,
+                    region_id: data.id,
+                },
+            });
+            return {
+                ...data.toJSON(),
+                priceShipping: regionsEmpresa?.priceShipping,
+                enabled: regionsEmpresa?.enabled,
+                days: regionsEmpresa?.days,
+            };
+        })
+    );
+    return allData.map((c) => ({
+        name: c.name,
+        price: c.priceShipping,
+        days: c.days,
+        enabled: c.enabled,
     }));
 }

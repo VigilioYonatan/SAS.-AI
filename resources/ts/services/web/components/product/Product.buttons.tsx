@@ -8,14 +8,14 @@ import ProductCardView from "./ProductView";
 import enviroments from "~/config";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
 import { isColorLight } from "~/libs/helpers";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import useEmpresastore from "@/empresas/stores/empresa.store";
 
 interface ProductsButtonProps {
     isAbsolute: boolean;
 }
 function ProductButtons({ isAbsolute }: ProductsButtonProps) {
     const { product } = useContext(productContext);
-
+    const empresaStore = useEmpresastore();
     return (
         <div
             class={` grid-cols-4 w-full delay-custom-1 hidden md:grid ${
@@ -29,7 +29,7 @@ function ProductButtons({ isAbsolute }: ProductsButtonProps) {
                     product.existProductInCart
                         ? "bg-primary text-white cursor-not-allowed "
                         : `bg-background-light  dark:bg-paper-dark hover:bg-primary ${
-                              isColorLight(storageEmpresa!.setting.bg_color)
+                              isColorLight(empresaStore.state!.setting.bg_color)
                                   ? "hover:text-black"
                                   : "hover:!text-white "
                           }   dark:text-white hover:text-primary border border-gray-200 dark:border-gray-500`
@@ -74,7 +74,7 @@ function ProductButtons({ isAbsolute }: ProductsButtonProps) {
                     product.producto.value.user?.isFavorite
                         ? "bg-primary text-white "
                         : `bg-background-light  dark:bg-paper-dark dark:text-white  hover:text-primary hover:bg-primary ${
-                              isColorLight(storageEmpresa!.setting.bg_color)
+                              isColorLight(empresaStore.state!.setting.bg_color)
                                   ? "hover:text-black"
                                   : "hover:!text-white "
                           }`
@@ -87,7 +87,7 @@ function ProductButtons({ isAbsolute }: ProductsButtonProps) {
             <a
                 href={`/${product.producto.value.slug}`}
                 class={`bg-background-light dark:bg-paper-dark  dark:text-white border border-gray-200 dark:border-gray-500 p-2 hover:text-primary  flex justify-center items-center hover:bg-primary ${
-                    isColorLight(storageEmpresa!.setting.bg_color)
+                    isColorLight(empresaStore.state!.setting.bg_color)
                         ? "hover:text-black"
                         : "hover:!text-white "
                 }`}
@@ -96,7 +96,7 @@ function ProductButtons({ isAbsolute }: ProductsButtonProps) {
             </a>
             <button
                 class={`bg-background-light dark:bg-paper-dark  dark:text-white border border-gray-200 dark:border-gray-500 p-2 hover:text-primary  hover:bg-primary ${
-                    isColorLight(storageEmpresa!.setting.bg_color)
+                    isColorLight(empresaStore.state!.setting.bg_color)
                         ? "hover:text-black"
                         : "hover:!text-white "
                 }`}

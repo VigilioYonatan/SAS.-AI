@@ -35,5 +35,6 @@ export const usersSeeder: Omit<UsersSchema, "id">[] = Array.from({
     subscription: null,
     role_id: i === 0 ? 1 : Math.floor(Math.random() * 3) + 1,
     empresa_id: 1,
+    isBot: false,
     speciality: null,
 }));
