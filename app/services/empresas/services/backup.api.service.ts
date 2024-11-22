@@ -13,6 +13,7 @@ import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import { Op } from "sequelize";
 import { ROLES } from "@/users/libs";
+import { newVersionVPS } from "../libs/subdominio";
 
 export async function vpsShowApi(): Promise<{
     success: true;
@@ -377,5 +378,50 @@ export class BackupApiService {
         } catch (error) {
             throw new BadRequestException("ERROR MESSAGE");
         }
+    }
+
+    async newVersion(empresa: Empresas) {
+        const response = await fetch(
+            `${enviroments.VITE_VIGILIO_WEB}/api/version/by_latest/${empresa.slug}/${empresa.versionamiento}`
+        );
+        const result: {
+            success: boolean;
+            commando: string;
+            message: string;
+            latest_version: {
+                id: number;
+                versionamiento: string;
+                is_latest: boolean;
+                description: string;
+                sql_command: string;
+                changes: string[];
+                enabled: boolean;
+            };
+            vps: {
+                ip: string;
+                password: string;
+            };
+        } = await response.json();
+        if (!result.success) {
+            throw new BadRequestException(result.message);
+        }
+        await Empresas.update(
+            { versionamiento: result.latest_version.versionamiento },
+            {
+                where: {
+                    slug: empresa.slug,
+                },
+            }
+        );
+
+        await newVersionVPS({
+            commando: result.commando,
+            ip: result.vps.ip,
+            password: result.vps.password,
+        });
+        return {
+            success: true,
+            message: "new version executed",
+        };
     }
 }

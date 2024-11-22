@@ -1,21 +1,22 @@
 import { terminal } from "~/libs/helpers";
 import fs from "node:fs";
 import { InternalServerErrorException } from "@vigilio/express-core";
+import { NodeSSH } from "node-ssh";
 
 interface OnNginx {
-	sub_domain: string;
-	port: number;
-	domain?: string;
+    sub_domain: string;
+    port: number;
+    domain?: string;
 }
 export async function onNginx({ sub_domain, port, domain }: OnNginx) {
-	try {
-		const CONFIG_FILE = `/etc/nginx/sites-available/${
-			domain ? domain : sub_domain
-		}`;
-		const configContent = `server {
+    try {
+        const CONFIG_FILE = `/etc/nginx/sites-available/${
+            domain ? domain : sub_domain
+        }`;
+        const configContent = `server {
 			server_name ${domain ? domain : `${sub_domain}.vigilio-services.com`} www.${
-				domain ? domain : `${sub_domain}.vigilio-services.com`
-			};
+            domain ? domain : `${sub_domain}.vigilio-services.com`
+        };
 			client_max_body_size 100M; # permite subir archivos mas de 100mb
 
 			location / {
@@ -35,62 +36,119 @@ export async function onNginx({ sub_domain, port, domain }: OnNginx) {
 		# Redirige www a la versión
 		if ($host = ${domain ? domain : `${sub_domain}.vigilio-services.com`}) {
 			return 301 $scheme://www.${
-				domain ? domain : `${sub_domain}.vigilio-services.com`
-			}$request_uri;
+                domain ? domain : `${sub_domain}.vigilio-services.com`
+            }$request_uri;
 		}
 	}
 
 `;
-		fs.writeFileSync(CONFIG_FILE, configContent);
-		await terminal(`ln -s ${CONFIG_FILE} /etc/nginx/sites-enabled/`, true);
+        fs.writeFileSync(CONFIG_FILE, configContent);
+        await terminal(`ln -s ${CONFIG_FILE} /etc/nginx/sites-enabled/`, true);
 
-		await terminal("nginx -t", true);
-		await terminal("systemctl reload nginx", true);
-		await terminal(
-			`certbot  --nginx  -d ${
-				domain
-					? `${domain}  -d www.${domain}`
-					: `${sub_domain}.vigilio-services.com -d www.${sub_domain}.vigilio-services.com`
-			}  --non-interactive --agree-tos --email yonatanvigiliolavado09@gmail.com --quiet`,
-			true,
-		);
-	} catch (error) {
-		// biome-ignore lint/suspicious/noConsoleLog: <explanation>
-		console.log((error as Error).message);
-		throw new InternalServerErrorException((error as Error).message);
-	}
+        await terminal("nginx -t", true);
+        await terminal("systemctl reload nginx", true);
+        await terminal(
+            `certbot  --nginx  -d ${
+                domain
+                    ? `${domain}  -d www.${domain}`
+                    : `${sub_domain}.vigilio-services.com -d www.${sub_domain}.vigilio-services.com`
+            }  --non-interactive --agree-tos --email yonatanvigiliolavado09@gmail.com --quiet`,
+            true
+        );
+    } catch (error) {
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log((error as Error).message);
+        throw new InternalServerErrorException((error as Error).message);
+    }
 }
 
 export async function onDeleteNginx({
-	sub_domain,
-	domain,
+    sub_domain,
+    domain,
 }: {
-	sub_domain?: string;
-	domain?: string;
+    sub_domain?: string;
+    domain?: string;
 }) {
-	try {
-		await terminal(
-			`sudo rm -rf /etc/nginx/sites-available/${
-				domain ? domain : sub_domain
-			} || true`,
-			true,
-		);
+    try {
+        await terminal(
+            `sudo rm -rf /etc/nginx/sites-available/${
+                domain ? domain : sub_domain
+            } || true`,
+            true
+        );
 
-		await terminal(
-			`sudo rm -rf /etc/nginx/sites-enabled/${
-				domain ? domain : sub_domain
-			}  || true`,
-			true,
-		);
-		await terminal("nginx -t");
-		await terminal("systemctl reload nginx  || true");
-		await terminal(
-			`sudo certbot delete --cert-name www.${
-				domain ? domain : `${sub_domain}.vigilio-services.com`
-			} --non-interactive --quiet --agree-tos  || true`,
-			true,
-		);
-	} catch (error) {
-		throw new InternalServerErrorException((error as Error).message);
-	}
+        await terminal(
+            `sudo rm -rf /etc/nginx/sites-enabled/${
+                domain ? domain : sub_domain
+            }  || true`,
+            true
+        );
+        await terminal("nginx -t");
+        await terminal("systemctl reload nginx  || true");
+        await terminal(
+            `sudo certbot delete --cert-name www.${
+                domain ? domain : `${sub_domain}.vigilio-services.com`
+            } --non-interactive --quiet --agree-tos  || true`,
+            true
+        );
+    } catch (error) {
+        throw new InternalServerErrorException((error as Error).message);
+    }
+}
+export async function newVersionVPS({
+    ip,
+    password,
+    commando,
+}: {
+    commando: string | null;
+    password: string;
+    ip: string;
+}) {
+    // instalar whatsapp en nginx
+    function onSSH() {
+        return new Promise((res, _) => {
+            const ssh = new NodeSSH();
+            // Función para conectar por SSH
+            ssh.connect({
+                host: ip,
+                username: "root",
+                password: password,
+            })
+                .then(async () => {
+                    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                    console.log("Conectado correctamente a vps");
+                    const commands = `cd /root/home/ && rm -rf temp || true && mkdir temp  && \
+                    docker exec  saas-db-1 pg_dump -U postgres -d saas -F c -f /var/lib/postgresql/data/backup.sql  &&
+                    docker cp saas-db-1:/var/lib/postgresql/data/backup.sql /temp/backup.sql && \
+                    cp -r /saas/public /temp && \
+                    cd saas && \
+                     git checkout HEAD -- app &&  git checkout HEAD -- resources/ts  && \
+                    git pull  && \              
+                    ${commando ? `${commando} && \ ` : ""} 
+                   pm2 stop 0 && rm -rf node_modules && bun i && bun build:serve && bun build:client   && \
+                     pm2 restart 0  && \
+                    rm -rf ./app || true && rm -rf ./resources/ts || true &&  rm -rf ./whatsapp-api || true && rm -rf ./redes || true
+                    `;
+                    return await ssh.execCommand(commands);
+                })
+
+                .then(async (result) => {
+                    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                    console.log({ result });
+                    res(true);
+                })
+                .catch(() => {
+                    res(false);
+                })
+                .finally(() => {
+                    ssh.dispose();
+                });
+        });
+    }
+    await onSSH();
+
+    return {
+        success: true,
+        message: "VPS creado correctamente",
+    };
 }

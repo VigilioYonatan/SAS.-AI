@@ -416,6 +416,11 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     tipo_impuesto: string;
 
     @Column({
+        type: DataType.STRING,
+    })
+    versionamiento: string;
+
+    @Column({
         type: DataType.TEXT,
     })
     header_cart: string;

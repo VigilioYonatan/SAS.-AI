@@ -358,6 +358,7 @@ export const empresasSchema = object({
     photo: nullable(array(filesSchema())),
     enabled_commentario_ia: boolean(),
     token: string(),
+    versionamiento: string(),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

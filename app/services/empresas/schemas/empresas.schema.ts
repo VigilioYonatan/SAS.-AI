@@ -347,6 +347,7 @@ export const empresasSchema = objectAsync({
     icon: nullable(array(filesSchema([100, 300]))), //obligatorio
     photo: nullable(array(filesSchema())),
     enabled_commentario_ia: boolean(),
+    versionamiento: string(),
     token: string(),
 });
 

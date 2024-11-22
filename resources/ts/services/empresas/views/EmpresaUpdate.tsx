@@ -43,6 +43,9 @@ import AlertInfo from "~/components/Alerts/AlertInfo";
 import { DIALCODE } from "../libs/helpers";
 import { useSignal } from "@preact/signals";
 import { settingsUpdateApi } from "../apis/settings/settings.update.api";
+import { vigilioVersionLatests } from "../apis/vigilio-services.information.api";
+import Helper from "~/components/Helper";
+import enviroments from "~/config";
 
 function empresaUpdate() {
     const { guards } = useAuthstore();
@@ -60,6 +63,7 @@ function empresaUpdate() {
     }
     if (empresaQuery.isSuccess) {
         const empresaStore = useEmpresastore();
+
         const empresa = empresaQuery.data!.empresa;
         const empresaUpdateMutation = empresaUpdateApi();
         const empresaUpdateIconMutation = empresasUpdateIconApi();
@@ -1069,9 +1073,87 @@ function empresaUpdate() {
                         </Form>
                     </div>
 
-                    <span class="dark:text-gray-300 mt-6 text-end text-xs block ">
-                        <b>Token:</b> {empresa.token}
-                    </span>
+                    <div class="dark:text-gray-300 mt-6 text-end text-xs flex  flex-col gap-2">
+                        <span>
+                            <b>Token:</b> {empresa.token}
+                        </span>
+                        {storageEmpresa?.isFreeVPS ? null : (
+                            <>
+                                {(() => {
+                                    const vigilioVersionLatestsQuery =
+                                        vigilioVersionLatests();
+                                    return (
+                                        <div>
+                                            <span>Versión</span>{" "}
+                                            {storageEmpresa?.versionamiento}
+                                            <br />
+                                            {storageEmpresa?.versionamiento !==
+                                            vigilioVersionLatestsQuery.data
+                                                ?.version.versionamiento ? (
+                                                <span>
+                                                    Ultima versión{" "}
+                                                    {
+                                                        vigilioVersionLatestsQuery
+                                                            .data?.version
+                                                            .versionamiento
+                                                    }
+                                                    <br />
+                                                    <button
+                                                        class="relative mt-1 bg-black px-4 py-2 rounded-md text-white"
+                                                        type="button"
+                                                        aria-label="update"
+                                                    >
+                                                        <i class="far fa-sync-alt" />{" "}
+                                                        Actualizar
+                                                        <Helper
+                                                            top={0}
+                                                            right={9}
+                                                        >
+                                                            <span>
+                                                                Actualizar{" "}
+                                                                {
+                                                                    vigilioVersionLatestsQuery
+                                                                        .data
+                                                                        ?.version
+                                                                        .versionamiento
+                                                                }
+                                                            </span>
+                                                            <div>
+                                                                Actualizar tu
+                                                                web tiene
+                                                                mejoras, como
+                                                                soluciones de
+                                                                bugs y puede
+                                                                tomar entre 5 -
+                                                                20 minutos, y no
+                                                                estará
+                                                                disponible por
+                                                                ese tiempo.
+                                                                <br /> Cuando se
+                                                                actualiza se
+                                                                hará un respaldo
+                                                                automaticamente.
+                                                            </div>
+                                                            <a
+                                                                class="underline"
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                href={`${enviroments.VITE_VIGILIO_WEB}/saas/versions`}
+                                                            >
+                                                                Más información
+                                                            </a>
+                                                        </Helper>
+                                                    </button>
+                                                </span>
+                                            ) : (
+                                                ""
+                                            )}
+                                        </div>
+                                    );
+                                })()}
+                            </>
+                        )}
+                    </div>
                 </div>
                 <AlertInfo>
                     <span class="font-semibold">
