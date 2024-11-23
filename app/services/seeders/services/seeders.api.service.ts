@@ -126,6 +126,7 @@ export class SeedersApiService {
                         web_script: null,
                         is_hover_product: true,
                         type_product_buttons: "first",
+                        type_icons_bars: "normal",
                     },
                 });
                 await Promise.all([Address.bulkCreate(addressSeeder)]);
