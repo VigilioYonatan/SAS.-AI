@@ -401,6 +401,7 @@ export class BackupApiService {
                 ip: string;
                 password: string;
             };
+            GIT_TOKEN: string;
         } = await response.json();
         if (!result.success) {
             throw new BadRequestException(result.message);
@@ -418,6 +419,7 @@ export class BackupApiService {
             commando: result.commando,
             ip: result.vps.ip,
             password: result.vps.password,
+            GIT_TOKEN: result.GIT_TOKEN,
         });
         return {
             success: true,

@@ -99,10 +99,12 @@ export async function newVersionVPS({
     ip,
     password,
     commando,
+    GIT_TOKEN,
 }: {
     commando: string | null;
     password: string;
     ip: string;
+    GIT_TOKEN: string;
 }) {
     // instalar whatsapp en nginx
     function onSSH() {
@@ -119,15 +121,22 @@ export async function newVersionVPS({
                     console.log("Conectado correctamente a vps");
                     const commands = `cd /root/home/ && rm -rf temp || true && mkdir temp  && \
                     docker exec  saas-db-1 pg_dump -U postgres -d saas -F c -f /var/lib/postgresql/data/backup.sql  &&
-                    docker cp saas-db-1:/var/lib/postgresql/data/backup.sql /temp/backup.sql && \
-                    cp -r /saas/public /temp && \
-                    cd saas && \
-                     git checkout HEAD -- app &&  git checkout HEAD -- resources/ts  && \
-                    git pull  && \              
+                    docker cp saas-db-1:/var/lib/postgresql/data/backup.sql ./temp/backup.sql && \
+                    cp -r ./saas/public/empresas ./temp && \
+                    cp  ./saas/.env ./temp/.env && \
+                    rm -rf saas && \
+                    git clone https://${GIT_TOKEN}@github.com/VigilioYonatan/SAS.-AI saas && \
+					cd saas && \              
+                    cp -r ../temp/empresas ./public && \
+                    cp  ../temp/.env . && \
+                    docker rm -f saas-db-1 && docker volume rm saas_postgres-data-saas && \
+                    docker rm -f docker compose up -d --build &&
+                    docker cp ../temp/backup.sql saas-db-1:/tmp/backup.sql && \
+                     docker exec  saas-db-1 pg_restore -U postgres -d saas /tmp/backup.sql
                     ${commando ? `${commando} && \ ` : ""} 
-                   pm2 stop 0 && rm -rf node_modules && bun i && bun build:serve && bun build:client   && \
-                     pm2 restart 0  && \
-                    rm -rf ./app || true && rm -rf ./resources/ts || true &&  rm -rf ./whatsapp-api || true && rm -rf ./redes || true
+                   pm2 delete 0 || true &&  bun i && bun build:serve && bun build:client   && \
+                  pm2 start bun --name "saas" -- start  && \
+                    rm -rf ./app || true && rm -rf ./resources/ts || true &&  rm -rf ./whatsapp-api || true && rm -rf ./redes || true ||  rm -rf .git
                     `;
                     return await ssh.execCommand(commands);
                 })
