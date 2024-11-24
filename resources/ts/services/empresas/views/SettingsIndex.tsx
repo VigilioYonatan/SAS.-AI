@@ -142,6 +142,7 @@ function SettingsIndex() {
         const background_type = settingsUpdateform.watch("background_type");
         const bg_color_footer = settingsUpdateform.watch("bg_color_footer");
         const bg_color_paper = settingsUpdateform.watch("bg_color_paper");
+
         const bg_color_responsive = settingsUpdateform.watch(
             "bg_color_responsive"
         );
@@ -180,8 +181,6 @@ function SettingsIndex() {
                             sweetAlert({
                                 icon: "success",
                                 title: "Actualizado correctamente tu web correctamente",
-                            }).then(() => {
-                                window.location.reload();
                             });
                         },
                         onError(error) {
@@ -433,30 +432,27 @@ function SettingsIndex() {
                             <br />
                             <div>
                                 <div class="  self-center mt-3 flex gap-2 items-center">
-                                    <>
-                                        {restarDays(
-                                            NOW().toDate(),
-                                            state!.setting.host.time as Date,
-                                            "seconds"
-                                        ) >= 0 ? (
-                                            <>
-                                                {(() => {
-                                                    const countdown =
-                                                        useCountDown(
-                                                            state!.setting.host
-                                                                .time as Date
-                                                        );
+                                    {restarDays(
+                                        NOW().toDate(),
+                                        state!.setting.host.time as Date,
+                                        "seconds"
+                                    ) >= 0 ? (
+                                        <>
+                                            {(() => {
+                                                const countdown = useCountDown(
+                                                    state!.setting.host
+                                                        .time as Date
+                                                );
 
-                                                    return (
-                                                        <span class="font-bold">
-                                                            {countdown.minutes}:
-                                                            {countdown.seconds}
-                                                        </span>
-                                                    );
-                                                })()}
-                                            </>
-                                        ) : null}
-                                    </>
+                                                return (
+                                                    <span class="font-bold">
+                                                        {countdown.minutes}:
+                                                        {countdown.seconds}
+                                                    </span>
+                                                );
+                                            })()}
+                                        </>
+                                    ) : null}
                                     {storageEmpresa?.setting.host.enabled ? (
                                         <button
                                             type="button"
@@ -742,6 +738,11 @@ function SettingsIndex() {
                             name="position_header"
                             title="Header Mobile"
                         />
+                        <Form.control.toggle
+                            name="is_hidde_total_cart"
+                            title="Ocultar carrito Total"
+                            question="Ocultar total en el header"
+                        />
                         <div class="w-[120px]">
                             <Form.control
                                 name="logo_width"
@@ -888,7 +889,6 @@ function SettingsIndex() {
                                                                 class={
                                                                     "hamburger hamburger--collapse"
                                                                 }
-                                                                type="button"
                                                             >
                                                                 <i
                                                                     class={`${hamburger} ${
@@ -1914,7 +1914,7 @@ function SettingsIndex() {
                             <div class="flex gap-2 flex-wrap overflow-auto">
                                 <div class="flex flex-col gap-1">
                                     <div class="grid grid-cols-3 gap-1">
-                                        {Object.entries(icons).map(
+                                        {Object.entries(icons()).map(
                                             ([key, val]) => (
                                                 <button
                                                     key={key}

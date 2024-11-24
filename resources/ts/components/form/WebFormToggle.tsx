@@ -54,7 +54,8 @@ function WebFormRadio<T extends object>({
                             class="offscreen"
                             disabled={disabled}
                         />
-                        <label for={nameRandom} class="switch" />
+                        {/* biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+                        <label htmlFor={nameRandom} class="switch" />
                     </div>
                     {question ? (
                         <div class="relative group ">

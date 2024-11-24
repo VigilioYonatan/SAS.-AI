@@ -1,6 +1,5 @@
 import { BannerSchema } from "@/empresas/schemas/banner.schema";
 import { GridBannerSchema } from "@/empresas/schemas/grid_banner.schema";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import TitleSection from "@/web/components/TitleSection";
 import { printFileWithDimension } from "~/libs/upload";
 
@@ -12,79 +11,90 @@ function GridBanners({ grid, i }: GridBanners) {
     if (!grid[i]?.banners.length || !grid[i].enabled) return null;
     return (
         <div
-            data-aos={`${
-                storageEmpresa?.setting.isScrolling
-                    ? storageEmpresa.setting.type_animation
-                    : ""
-            }`}
-            class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}`}
+            class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}  `}
         >
             {grid[i].title ? (
                 <TitleSection>{grid[i].title}</TitleSection>
             ) : null}
             <div class={`w-full  grid banner-${i} relative`}>
-                <>
-                    {grid[i].banners.map((banner) => {
-                        const file = printFileWithDimension(
-                            banner.file,
-                            null
-                        )[0];
+                {grid[i].banners.map((banner) => {
+                    const file = printFileWithDimension(banner.file, 1200)[0];
 
-                        return (
-                            <div
-                                class="w-full relative h-full"
-                                key={banner.id}
-                                onClick={() => {
-                                    if (banner.link && !banner.button) {
-                                        window.location.href = banner.link;
-                                    }
-                                }}
-                            >
-                                {file?.endsWith("mp4") ? (
-                                    <div class="relative w-full h-full flex justify-center items-end">
-                                        <video
-                                            class="absolute top-0 left-0 w-full h-full object-cover -z-10"
-                                            autoplay
-                                            muted
-                                            loop
-                                        >
-                                            <source
-                                                src={file}
-                                                type="video/mp4"
-                                            />
-                                            Tu navegador no soporta el elemento
-                                            video.
-                                        </video>
-                                        {banner.button && banner.link ? (
-                                            <a
-                                                href={banner.link}
-                                                class="bg-primary px-4 py-2 text-xs font-semibold mb-2"
-                                            >
-                                                {banner.button}
-                                            </a>
-                                        ) : null}
-                                    </div>
-                                ) : (
-                                    <div
-                                        class="w-full h-full   bg-cover  bg-no-repeat -z-10 flex justify-center items-end"
-                                        style={{
-                                            backgroundImage: `url(${file})`,
-                                        }}
+                    return (
+                        <div
+                            class="w-full relative h-full"
+                            key={banner.id}
+                            onClick={() => {
+                                if (banner.link && !banner.button) {
+                                    window.location.href = banner.link;
+                                }
+                            }}
+                        >
+                            {file?.endsWith("mp4") ? (
+                                <div class="relative w-full h-full flex items-end">
+                                    <video
+                                        class="absolute top-0 left-0 w-full h-full object-cover  -z-10"
+                                        autoplay
+                                        muted
+                                        loop
                                     >
+                                        <source src={file} type="video/mp4" />
+                                        Tu navegador no soporta el elemento
+                                        video.
+                                    </video>
+                                    <div class="m-6 flex flex-col gap-4 self-start ">
+                                        {banner.title ? (
+                                            <span class="font-bold text-3xl text-white">
+                                                Toy Story Toons Small Fry
+                                            </span>
+                                        ) : null}
+                                        {banner.subtitle ? (
+                                            <span class="font-semibold  text-white">
+                                                Toy Story Toons Small Fry
+                                            </span>
+                                        ) : null}
                                         {banner.button && banner.link ? (
                                             <a
                                                 href={banner.link}
-                                                class="bg-primary px-4 py-2 text-xs font-semibold  mb-2"
+                                                class="bg-primary px-7 py-2 mt-2  font-semibold  mb-2 hover:bg-black text-white delay-custom-1  self-start"
                                             >
                                                 {banner.button}
                                             </a>
                                         ) : null}
                                     </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </>
+                                </div>
+                            ) : (
+                                <div
+                                    class="w-full h-full   bg-cover bg-center   bg-no-repeat -z-10 flex items-end"
+                                    style={{
+                                        backgroundImage: `url(${file})`,
+                                    }}
+                                >
+                                    <div class="m-6 flex flex-col gap-4 self-start ">
+                                        {banner.title ? (
+                                            <span class="font-bold text-3xl text-white">
+                                                Toy Story Toons Small Fry
+                                            </span>
+                                        ) : null}
+                                        {banner.subtitle ? (
+                                            <span class="font-semibold  text-white">
+                                                Toy Story Toons Small Fry
+                                            </span>
+                                        ) : null}
+                                        {banner.button && banner.link ? (
+                                            <a
+                                                href={banner.link}
+                                                class="bg-primary px-7 py-2 mt-2  font-semibold  mb-2 hover:bg-black text-white delay-custom-1  self-start"
+                                            >
+                                                {banner.button}
+                                            </a>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
                 <style jsx>{`
                     ${grid[i].responsive
                         .map(

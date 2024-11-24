@@ -114,14 +114,30 @@ export class EmpresasApiService {
         const gridBanners = await GridBanner.findAll({
             where: {
                 empresa_id: empresa.id,
-                include: [Banner],
             },
+            include: [Banner],
         });
+        const grid = gridBanners.map((banner) => {
+            const bannersMapped = (banner.banners as Banner[]).map((b) => ({
+                ...b.toJSON(),
+                file: b.file.map((f) => ({
+                    ...f,
+                    file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
+                        f.file
+                    }`,
+                })),
+            }));
+            return {
+                ...banner.toJSON(),
+                banners: bannersMapped,
+            };
+        });
+
         return {
             success: true,
             data: {
                 setting,
-                gridBanners: gridBanners,
+                gridBanners: grid,
             },
         };
     }
@@ -391,11 +407,18 @@ export class EmpresasApiService {
             if (body.gridBanners?.length) {
                 await Promise.all(
                     body.gridBanners.map(async (grid) => {
-                        const { banners, ...rest } = grid;
-                        const g = await GridBanner.create(rest);
+                        const { banners, id, ...rest } = grid;
+                        const g = await GridBanner.create({
+                            ...rest,
+                            empresa_id: empresa.id,
+                        });
                         await Promise.all(
                             banners.map(async (banner) => {
-                                await g.$create("banner", banner);
+                                const { id, ...rest } = banner;
+                                await g.$create("banner", {
+                                    ...rest,
+                                    empresa_id: empresa.id,
+                                });
                             })
                         );
                     })

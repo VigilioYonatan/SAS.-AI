@@ -271,16 +271,6 @@ function ProductsComments({
                         </button>
                     )}
                 </Form>
-                <button
-                    class="w-[20px] h-[20px] rounded-md"
-                    type="button"
-                    aria-label="refetch comment"
-                    onClick={() => {
-                        productCommentsIndexApiQuery.refetch(false);
-                    }}
-                >
-                    <i class="fas fa-sync-alt" />
-                </button>
             </div>
 
             <section>{productComments}</section>

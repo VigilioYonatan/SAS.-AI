@@ -2,192 +2,196 @@ import { useContext, useEffect } from "preact/hooks";
 import { FormControlContext } from "./Form";
 import { type JSX } from "preact";
 import {
-	type FieldErrors,
-	type FieldValues,
-	type Path,
-	type PathValue,
-	type RegisterOptions,
-	type UseFormReturn,
+    type FieldErrors,
+    type FieldValues,
+    type Path,
+    type PathValue,
+    type RegisterOptions,
+    type UseFormReturn,
 } from "react-hook-form";
 import { useSignal } from "@preact/signals";
-import type { HTMLAttributes } from "preact/compat";
 import useDropdown from "~/hooks/useDropdown";
 import enviroments from "~/config";
 
 interface WebFormSelectInputProps<T extends object>
-	extends Omit<HTMLAttributes<HTMLInputElement>, "name"> {
-	title: string;
-	name: Path<T>;
-	question?: JSX.Element | JSX.Element[] | string;
-	ico?: JSX.Element | JSX.Element[];
-	options?: RegisterOptions<T, Path<T>>;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	array: { value: string; key: any }[];
-	placeholder?: string;
-	isLoading?: boolean;
+    extends Omit<JSX.IntrinsicElements["input"], "name"> {
+    title: string;
+    name: Path<T>;
+    question?: JSX.Element | JSX.Element[] | string;
+    ico?: JSX.Element | JSX.Element[];
+    options?: RegisterOptions<T, Path<T>>;
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    array: { value: string; key: any }[];
+    placeholder?: string;
+    isLoading?: boolean;
 }
 function WebFormSelectInput<T extends object>({
-	name,
-	title,
-	question,
-	ico,
-	array,
-	options,
-	isLoading = false,
-	...rest
+    name,
+    title,
+    question,
+    ico,
+    array,
+    options,
+    isLoading = false,
+    ...rest
 }: WebFormSelectInputProps<T>) {
-	const {
-		register,
-		formState: { errors },
-		setValue,
-		getValues,
-	} = useContext<UseFormReturn<T, unknown, FieldValues>>(FormControlContext);
-	const dropdown = useDropdown();
+    const {
+        register,
+        formState: { errors },
+        setValue,
+        getValues,
+    } = useContext<UseFormReturn<T, unknown, FieldValues>>(FormControlContext);
+    const dropdown = useDropdown();
 
-	function anidarPropiedades(obj: FieldErrors<T>, keysArray: string[]) {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		let currentObj: any = obj;
-		for (let i = 0; i < keysArray.length; i++) {
-			const key = keysArray[i];
-			// biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
-			if (!currentObj.hasOwnProperty(key)) {
-				currentObj[key] = {}; // Crear un objeto vacío si la propiedad no existe
-			}
-			currentObj = currentObj[key]; // Moverse al siguiente nivel del objeto
-		}
-		return currentObj;
-	}
-	const err = anidarPropiedades(errors, (name as string).split("."));
-	const input = useSignal<null | string>(null);
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	const valueArray = useSignal<{ value: string; key: any }[]>([]);
-	const value = getValues(name as Path<T>);
+    function anidarPropiedades(obj: FieldErrors<T>, keysArray: string[]) {
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        let currentObj: any = obj;
+        for (let i = 0; i < keysArray.length; i++) {
+            const key = keysArray[i];
+            // biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
+            if (!currentObj.hasOwnProperty(key)) {
+                currentObj[key] = {}; // Crear un objeto vacío si la propiedad no existe
+            }
+            currentObj = currentObj[key]; // Moverse al siguiente nivel del objeto
+        }
+        return currentObj;
+    }
+    const err = anidarPropiedades(errors, (name as string).split("."));
+    const input = useSignal<null | string>(null);
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const valueArray = useSignal<{ value: string; key: any }[]>([]);
+    const value = getValues(name as Path<T>);
 
-	useEffect(() => {
-		if (array.length) {
-			if (!input.value || !input.value?.length) {
-				valueArray.value = [];
-				setValue(name as Path<T>, null as PathValue<T, Path<T>>);
-				return;
-			}
-			valueArray.value = array
-				.filter((val) =>
-					new RegExp(input.value!.toLowerCase(), "i").test(
-						val.value.toLowerCase(),
-					),
-				)
-				.slice(0, 8);
-			if (!valueArray.value.length) {
-				setValue(name as Path<T>, null as PathValue<T, Path<T>>);
-			}
-		}
-	}, [input.value, array]);
-	useEffect(() => {
-		if (value) {
-			const data = array.find((val) => val.key === value) ?? null;
-			if (data) {
-				input.value = data.value;
-				setValue(name as Path<T>, data?.key as PathValue<T, Path<T>>);
-			}
-		}
-	}, [value]);
+    useEffect(() => {
+        if (array.length) {
+            if (!input.value || !input.value?.length) {
+                valueArray.value = [];
+                setValue(name as Path<T>, null as PathValue<T, Path<T>>);
+                return;
+            }
+            valueArray.value = array
+                .filter((val) =>
+                    new RegExp(input.value!.toLowerCase(), "i").test(
+                        val.value.toLowerCase()
+                    )
+                )
+                .slice(0, 8);
+            if (!valueArray.value.length) {
+                setValue(name as Path<T>, null as PathValue<T, Path<T>>);
+            }
+        }
+    }, [input.value, array]);
+    useEffect(() => {
+        if (value) {
+            const data = array.find((val) => val.key === value) ?? null;
+            if (data) {
+                input.value = data.value;
+                setValue(name as Path<T>, data?.key as PathValue<T, Path<T>>);
+            }
+        }
+    }, [value]);
 
-	useEffect(() => {
-		if (value) {
-			const data = array.find((val) => val.key === value) ?? null;
-			if (data) {
-				input.value = data.value;
-				setValue(name as Path<T>, data?.key as PathValue<T, Path<T>>);
-			}
-		}
-	}, [array]);
+    useEffect(() => {
+        if (value) {
+            const data = array.find((val) => val.key === value) ?? null;
+            if (data) {
+                input.value = data.value;
+                setValue(name as Path<T>, data?.key as PathValue<T, Path<T>>);
+            }
+        }
+    }, [array]);
 
-	return (
-		<div class="w-full mb-2 relative">
-			<label
-				class="text-xs dark:text-secondary-light  capitalize font-semibold"
-				htmlFor={name as string}
-			>
-				{title}
-			</label>
-			<div class="flex items-center gap-2 relative">
-				<div
-					class={`${
-						Object.keys(err).length ? "border border-red-600" : ""
-					} w-full h-[2.5rem] flex  items-center gap-2 text-xs ${
-						enviroments.TYPE_BORDER === "circle" ? "rounded-md" : "rounded-sm"
-					}  overflow-hidden   dark:text-black bg-paper-light my-1 shadow-sm border `}
-				>
-					{ico ? (
-						<div class="bg-primary text-white  shadow min-w-[2.8rem]  h-full flex justify-center items-center">
-							{ico}
-						</div>
-					) : null}
+    return (
+        <div class="w-full mb-2 relative">
+            <label
+                class="text-xs dark:text-secondary-light  capitalize font-semibold"
+                htmlFor={name as string}
+            >
+                {title}
+            </label>
+            <div class="flex items-center gap-2 relative">
+                <div
+                    class={`${
+                        Object.keys(err).length ? "border border-red-600" : ""
+                    } w-full h-[2.5rem] flex  items-center gap-2 text-xs ${
+                        enviroments.TYPE_BORDER === "circle"
+                            ? "rounded-md"
+                            : "rounded-sm"
+                    }  overflow-hidden   dark:text-black bg-paper-light my-1 shadow-sm border `}
+                >
+                    {ico ? (
+                        <div class="bg-primary text-white  shadow min-w-[2.8rem]  h-full flex justify-center items-center">
+                            {ico}
+                        </div>
+                    ) : null}
 
-					{dropdown.dropdownOpen ? (
-						<div
-							class="absolute p-2 rounded-md shadow dark:bg-paper-dark top-12 left-0 right-0 z-[10] bg-background-light"
-							ref={dropdown.dropdown}
-						>
-							{valueArray.value.length ? (
-								<>
-									{valueArray.value.map((val) => (
-										<button
-											type="button"
-											class="w-full dark:text-white py-1.5 hover:bg-paper-light dark:hover:bg-background-dark line-clamp-1"
-											key={val.key}
-											onClick={() => {
-												setValue(name as Path<T>, val.key);
-												input.value = val.value;
-												dropdown.onClose();
-											}}
-										>
-											{val.value}
-										</button>
-									))}
-								</>
-							) : (
-								<span class="dark:text-white text-xs w-full text-center block py-2">
-									No se encontró resultados
-								</span>
-							)}
-						</div>
-					) : null}
+                    {dropdown.dropdownOpen ? (
+                        <div
+                            class="absolute p-2 rounded-md shadow dark:bg-paper-dark top-12 left-0 right-0 z-[10] bg-background-light"
+                            ref={dropdown.dropdown}
+                        >
+                            {valueArray.value.length ? (
+                                <>
+                                    {valueArray.value.map((val) => (
+                                        <button
+                                            type="button"
+                                            class="w-full dark:text-white py-1.5 hover:bg-paper-light dark:hover:bg-background-dark line-clamp-1"
+                                            key={val.key}
+                                            onClick={() => {
+                                                setValue(
+                                                    name as Path<T>,
+                                                    val.key
+                                                );
+                                                input.value = val.value;
+                                                dropdown.onClose();
+                                            }}
+                                        >
+                                            {val.value}
+                                        </button>
+                                    ))}
+                                </>
+                            ) : (
+                                <span class="dark:text-white text-xs w-full text-center block py-2">
+                                    No se encontró resultados
+                                </span>
+                            )}
+                        </div>
+                    ) : null}
 
-					<input
-						class="outline-none bg-transparent  w-full px-2 sm:text-sm font-normal dark:text-black "
-						id={name as string}
-						{...rest}
-						onChange={(e) => {
-							input.value = (e.target as HTMLInputElement).value;
-							if (dropdown.dropdownOpen) return;
-							dropdown.onOpen();
-						}}
-						value={input.value ?? ""}
-						disabled={isLoading || false}
-						autocomplete="off"
-					/>
+                    <input
+                        class="outline-none bg-transparent  w-full px-2 sm:text-sm font-normal dark:text-black "
+                        id={name as string}
+                        {...rest}
+                        onChange={(e) => {
+                            input.value = (e.target as HTMLInputElement).value;
+                            if (dropdown.dropdownOpen) return;
+                            dropdown.onOpen();
+                        }}
+                        value={input.value ?? ""}
+                        disabled={isLoading || false}
+                        autocomplete="off"
+                    />
 
-					<input
-						type="hidden"
-						{...register(name as unknown as Path<T>, options)}
-					/>
-				</div>
+                    <input
+                        type="hidden"
+                        {...register(name as unknown as Path<T>, options)}
+                    />
+                </div>
 
-				{question ? (
-					<div class="relative group">
-						<i class="fa-solid fa-circle-question text-xs dark:text-white" />
-						<div class="text-xs min-w-[200px] max-w-[250px] hidden group-hover:block -top-[35px] right-1 p-1 shadow text-center absolute rounded-md dark:bg-paper-dark bg-background-light dark:text-white font-semibold">
-							{question}
-						</div>
-					</div>
-				) : null}
-			</div>
-			<div class={`${isLoading ? "loading-bar" : ""} w-full h-[2px] `} />
-			{Object.keys(err).length ? (
-				<p class="text-xs text-red-600">{err?.message}</p>
-			) : null}
-			<style jsx>{`
+                {question ? (
+                    <div class="relative group">
+                        <i class="fa-solid fa-circle-question text-xs dark:text-white" />
+                        <div class="text-xs min-w-[200px] max-w-[250px] hidden group-hover:block -top-[35px] right-1 p-1 shadow text-center absolute rounded-md dark:bg-paper-dark bg-background-light dark:text-white font-semibold">
+                            {question}
+                        </div>
+                    </div>
+                ) : null}
+            </div>
+            <div class={`${isLoading ? "loading-bar" : ""} w-full h-[2px] `} />
+            {Object.keys(err).length ? (
+                <p class="text-xs text-red-600">{err?.message}</p>
+            ) : null}
+            <style jsx>{`
                 @keyframes loadingAnimation {
                     0% {
                         left: -100%;
@@ -219,8 +223,8 @@ function WebFormSelectInput<T extends object>({
                     animation: loadingAnimation 2s infinite;
                 }
             `}</style>
-		</div>
-	);
+        </div>
+    );
 }
 
 export default WebFormSelectInput;

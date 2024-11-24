@@ -330,9 +330,6 @@ function ProductPage({
                                         itemprop={formatMoney(
                                             subtotalIgv(product, false)
                                         )}
-                                        content={formatMoney(
-                                            subtotalIgv(product, false)
-                                        )}
                                     >
                                         {formatMoney(
                                             subtotalIgv(product, false)
@@ -349,9 +346,6 @@ function ProductPage({
                             <span
                                 class=" font-bold dark:text-white text-xl"
                                 itemprop="price"
-                                content={formatMoney(
-                                    subtotalIgv(product, true)
-                                )}
                             >
                                 {formatMoney(
                                     subtotalIgv(product, true, discount.value)
@@ -574,224 +568,219 @@ function ProductPage({
                                 </div>
                             ) : null}
                         </>
-                        <>
-                            {cartStore.state.cart ? (
-                                <>
-                                    {(!existProductInCart &&
-                                        (varianteChoose?.ilimit ||
-                                            (!varianteChoose?.ilimit &&
-                                                varianteChoose?.stock! > 0))) ||
+                        {cartStore.state.cart ? (
+                            <>
+                                {(!existProductInCart &&
+                                    (varianteChoose?.ilimit ||
+                                        (!varianteChoose?.ilimit &&
+                                            varianteChoose?.stock! > 0))) ||
+                                (
+                                    producto.value as ProductsRestaurantSchemaFromServer
+                                )?.ilimit ||
+                                (!(
+                                    producto.value as ProductsRestaurantSchemaFromServer
+                                )?.ilimit &&
                                     (
-                                        producto.value as ProductsRestaurantSchemaFromServer
-                                    )?.ilimit ||
-                                    (!(
+                                        producto.value! as ProductsRestaurantSchemaFromServer
+                                    ).stock! > 0) ? (
+                                    <Form
+                                        {...couponForm}
+                                        onSubmit={onCoupon}
+                                        className="flex gap-2 items-center [&>div>div>div>div>input]:bg-white [&>div>div>div>div>input]:text-black  dark:[&>div>div>div>div>input]:bg-background-dark"
+                                    >
+                                        <div class="w-full flex-col ">
+                                            {discount.value ? (
+                                                <p class="text-xs text-primary">
+                                                    Se agregó {discount.value}%
+                                                    de descuento
+                                                </p>
+                                            ) : null}
+                                            <Form.control.web
+                                                type="text"
+                                                title="¿Tienes un cupón de descuento?"
+                                                placeholder="XXXXX-XXXXX-XXXXX"
+                                                name={
+                                                    "coupon" as keyof CouponStore
+                                                }
+                                                disabled={!!discount.value}
+                                            />
+                                        </div>
+
+                                        <Form.button.submit
+                                            disabled={
+                                                productCouponMutation.isLoading ||
+                                                false
+                                            }
+                                            isLoading={
+                                                productCouponMutation.isLoading ||
+                                                false
+                                            }
+                                            title=""
+                                            className="w-[40px] h-[40px] flex justify-center items-center"
+                                            ico={
+                                                discount.value ? (
+                                                    <span>x</span>
+                                                ) : (
+                                                    <i class="fa-solid fa-magnifying-glass text-base" />
+                                                )
+                                            }
+                                        />
+                                    </Form>
+                                ) : null}
+
+                                <div class="flex gap-2">
+                                    {(!(
                                         producto.value as ProductsRestaurantSchemaFromServer
                                     )?.ilimit &&
                                         (
-                                            producto.value! as ProductsRestaurantSchemaFromServer
-                                        ).stock! > 0) ? (
-                                        <Form
-                                            {...couponForm}
-                                            onSubmit={onCoupon}
-                                            className="flex gap-2 items-center [&>div>div>div>div>input]:bg-white [&>div>div>div>div>input]:text-black  dark:[&>div>div>div>div>input]:bg-background-dark"
-                                        >
-                                            <div class="w-full flex-col ">
-                                                {discount.value ? (
-                                                    <p class="text-xs text-primary">
-                                                        Se agregó{" "}
-                                                        {discount.value}% de
-                                                        descuento
-                                                    </p>
-                                                ) : null}
-                                                <Form.control.web
-                                                    type="text"
-                                                    title="¿Tienes un cupón de descuento?"
-                                                    placeholder="XXXXX-XXXXX-XXXXX"
-                                                    name={
-                                                        "coupon" as keyof CouponStore
-                                                    }
-                                                    disabled={!!discount.value}
-                                                />
-                                            </div>
-
-                                            <Form.button.submit
-                                                disabled={
-                                                    productCouponMutation.isLoading ||
-                                                    false
-                                                }
-                                                isLoading={
-                                                    productCouponMutation.isLoading ||
-                                                    false
-                                                }
-                                                title=""
-                                                className="w-[40px] h-[40px] flex justify-center items-center"
-                                                ico={
-                                                    discount.value ? (
-                                                        <span>x</span>
-                                                    ) : (
-                                                        <i class="fa-solid fa-magnifying-glass text-base" />
-                                                    )
-                                                }
-                                            />
-                                        </Form>
-                                    ) : null}
-
-                                    <div class="flex gap-2">
-                                        {(!(
                                             producto.value as ProductsRestaurantSchemaFromServer
-                                        )?.ilimit &&
-                                            (
-                                                producto.value as ProductsRestaurantSchemaFromServer
-                                            )?.stock! < 1) ||
-                                        (!varianteChoose?.ilimit &&
-                                            varianteChoose?.stock! < 1) ? (
-                                            <span
-                                                class={`bg-danger py-3 w-full text-center ${
-                                                    enviroments.TYPE_BORDER ===
-                                                    "circle"
-                                                        ? "rounded-md"
-                                                        : ""
-                                                } shadow text-white font-semibold`}
-                                            >
-                                                {!producto.value.enabled
-                                                    ? "No disponible"
-                                                    : "Agotado"}
-                                            </span>
-                                        ) : (
-                                            <>
-                                                {!existProductInCart ? (
-                                                    <div
-                                                        class={`flex items-center bg-secondary ${
-                                                            enviroments.TYPE_BORDER ===
-                                                            "circle"
-                                                                ? "rounded-md"
-                                                                : ""
-                                                        } group hover:outline-2 hover:outline-primary shadow `}
-                                                    >
-                                                        <button
-                                                            type="button"
-                                                            class="px-4 py-2 text-xl text-white font-bold"
-                                                            aria-label="increase quantity"
-                                                            onClick={
-                                                                onDecrementCart
-                                                            }
-                                                        >
-                                                            -
-                                                        </button>
-                                                        <span class="px-4 py-2  block text-white font-bold">
-                                                            {
-                                                                producto.value
-                                                                    .quantity
-                                                            }
-                                                        </span>
-                                                        <button
-                                                            type="button"
-                                                            class="px-4 py-2 text-xl text-white font-bold"
-                                                            aria-label="decrease quantity"
-                                                            onClick={
-                                                                onIncrementCart
-                                                            }
-                                                        >
-                                                            +
-                                                        </button>
-                                                    </div>
-                                                ) : null}
-                                                {!existProductInCart ? (
-                                                    <button
-                                                        class={`bg-primary text-white px-6 py-2 ${
-                                                            enviroments.TYPE_BORDER ===
-                                                            "circle"
-                                                                ? "rounded-md"
-                                                                : ""
-                                                        } text-primary font-bold shadow  w-full`}
-                                                        type="button"
-                                                        aria-label="add cart"
-                                                        onClick={async () => {
-                                                            await handleInsertProduct(
-                                                                false
-                                                            );
-                                                        }}
-                                                        disabled={
-                                                            cartStoreMutation.isLoading ||
-                                                            false
-                                                        }
-                                                    >
-                                                        {cartStoreMutation.isLoading ? (
-                                                            <span>
-                                                                cargando...
-                                                            </span>
-                                                        ) : (
-                                                            <>
-                                                                <i
-                                                                    class={
-                                                                        enviroments.TYPE_CART
-                                                                    }
-                                                                />{" "}
-                                                                Agregar
-                                                            </>
-                                                        )}
-                                                    </button>
-                                                ) : (
-                                                    <span class=" flex gap-2 items-center justify-center w-full bg-secondary border-r border-primary  font-bold  py-3 text-white shadow rounded-md">
-                                                        <span> Añadido </span>
-                                                    </span>
-                                                )}{" "}
-                                                <button
-                                                    type="button"
-                                                    disabled={
-                                                        favoritesStoreMutation.isLoading ||
-                                                        favoritesDestroyMutation.isLoading ||
-                                                        false
-                                                    }
-                                                    class={`${
-                                                        producto.value.user
-                                                            ?.isFavorite
-                                                            ? "bg-primary text-white"
-                                                            : "text-primary"
-                                                    }  px-2 py-1 ${
+                                        )?.stock! < 1) ||
+                                    (!varianteChoose?.ilimit &&
+                                        varianteChoose?.stock! < 1) ? (
+                                        <span
+                                            class={`bg-danger py-3 w-full text-center ${
+                                                enviroments.TYPE_BORDER ===
+                                                "circle"
+                                                    ? "rounded-md"
+                                                    : ""
+                                            } shadow text-white font-semibold`}
+                                        >
+                                            {!producto.value.enabled
+                                                ? "No disponible"
+                                                : "Agotado"}
+                                        </span>
+                                    ) : (
+                                        <>
+                                            {!existProductInCart ? (
+                                                <div
+                                                    class={`flex items-center bg-secondary ${
                                                         enviroments.TYPE_BORDER ===
                                                         "circle"
                                                             ? "rounded-md"
                                                             : ""
-                                                    }  border-2 border-primary min-w-[50px] `}
-                                                    onClick={onFavorite}
+                                                    } group hover:outline-2 hover:outline-primary shadow `}
                                                 >
-                                                    {favoritesStoreMutation.isLoading ||
-                                                    favoritesDestroyMutation.isLoading ? (
-                                                        <LoaderSubmit />
+                                                    <button
+                                                        type="button"
+                                                        class="px-4 py-2 text-xl text-white font-bold"
+                                                        aria-label="increase quantity"
+                                                        onClick={
+                                                            onDecrementCart
+                                                        }
+                                                    >
+                                                        -
+                                                    </button>
+                                                    <span class="px-4 py-2  block text-white font-bold">
+                                                        {
+                                                            producto.value
+                                                                .quantity
+                                                        }
+                                                    </span>
+                                                    <button
+                                                        type="button"
+                                                        class="px-4 py-2 text-xl text-white font-bold"
+                                                        aria-label="decrease quantity"
+                                                        onClick={
+                                                            onIncrementCart
+                                                        }
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            ) : null}
+                                            {!existProductInCart ? (
+                                                <button
+                                                    class={`bg-primary text-white px-6 py-2 ${
+                                                        enviroments.TYPE_BORDER ===
+                                                        "circle"
+                                                            ? "rounded-md"
+                                                            : ""
+                                                    } text-primary font-bold shadow  w-full`}
+                                                    type="button"
+                                                    aria-label="add cart"
+                                                    onClick={async () => {
+                                                        await handleInsertProduct(
+                                                            false
+                                                        );
+                                                    }}
+                                                    disabled={
+                                                        cartStoreMutation.isLoading ||
+                                                        false
+                                                    }
+                                                >
+                                                    {cartStoreMutation.isLoading ? (
+                                                        <span>cargando...</span>
                                                     ) : (
-                                                        <i class="fas fa-heart text-2xl " />
+                                                        <>
+                                                            <i
+                                                                class={
+                                                                    enviroments.TYPE_CART
+                                                                }
+                                                            />{" "}
+                                                            Agregar
+                                                        </>
                                                     )}
                                                 </button>
-                                            </>
-                                        )}
-                                    </div>
-                                </>
-                            ) : (
-                                <div
-                                    class={`animate-pulse ${
-                                        enviroments.TYPE_BORDER === "circle"
-                                            ? "rounded-md"
-                                            : ""
-                                    } overflow-hidden`}
-                                >
-                                    <div class="bg-gray-500 w-full h-[22px] " />
-
-                                    <div class="flex gap-2 mt-2">
-                                        <div class="bg-gray-500 w-full h-[32px]" />
-                                        <div class="bg-gray-500 w-[60px] h-[32px]" />
-                                    </div>
-                                    <div class="flex gap-2 mt-2">
-                                        <div class="grid grid-cols-3 gap-2 w-[250px]">
-                                            <div class="bg-gray-500 w-full h-[32px]" />
-                                            <div class="bg-gray-500 w-full h-[32px]" />
-                                            <div class="bg-gray-500 w-full h-[32px]" />
-                                        </div>
-                                        <div class="bg-gray-500 w-full h-[32px]" />
-                                    </div>
+                                            ) : (
+                                                <span class=" flex gap-2 items-center justify-center w-full bg-secondary border-r border-primary  font-bold  py-3 text-white shadow rounded-md">
+                                                    <span> Añadido </span>
+                                                </span>
+                                            )}{" "}
+                                            <button
+                                                type="button"
+                                                disabled={
+                                                    favoritesStoreMutation.isLoading ||
+                                                    favoritesDestroyMutation.isLoading ||
+                                                    false
+                                                }
+                                                class={`${
+                                                    producto.value.user
+                                                        ?.isFavorite
+                                                        ? "bg-primary text-white"
+                                                        : "text-primary"
+                                                }  px-2 py-1 ${
+                                                    enviroments.TYPE_BORDER ===
+                                                    "circle"
+                                                        ? "rounded-md"
+                                                        : ""
+                                                }  border-2 border-primary min-w-[50px] `}
+                                                onClick={onFavorite}
+                                            >
+                                                {favoritesStoreMutation.isLoading ||
+                                                favoritesDestroyMutation.isLoading ? (
+                                                    <LoaderSubmit />
+                                                ) : (
+                                                    <i class="fas fa-heart text-2xl " />
+                                                )}
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
-                            )}
-                        </>
+                            </>
+                        ) : (
+                            <div
+                                class={`animate-pulse ${
+                                    enviroments.TYPE_BORDER === "circle"
+                                        ? "rounded-md"
+                                        : ""
+                                } overflow-hidden`}
+                            >
+                                <div class="bg-gray-500 w-full h-[22px] " />
+
+                                <div class="flex gap-2 mt-2">
+                                    <div class="bg-gray-500 w-full h-[32px]" />
+                                    <div class="bg-gray-500 w-[60px] h-[32px]" />
+                                </div>
+                                <div class="flex gap-2 mt-2">
+                                    <div class="grid grid-cols-3 gap-2 w-[250px]">
+                                        <div class="bg-gray-500 w-full h-[32px]" />
+                                        <div class="bg-gray-500 w-full h-[32px]" />
+                                        <div class="bg-gray-500 w-full h-[32px]" />
+                                    </div>
+                                    <div class="bg-gray-500 w-full h-[32px]" />
+                                </div>
+                            </div>
+                        )}
                         {/* coupon form  si  esta en el carrito que no se vea el formulario de cupon */}
                         <div class="flex  flex-col gap-1">
                             <span class=" dark:text-white text-xs font-bold ">
@@ -1099,78 +1088,73 @@ function ProductPage({
                     </div>
                 </div>
             </section>
-            <>
-                {productbybrands?.length &&
-                (product as ProductsNormalSchemaFromServer).brand?.name ? (
-                    <section class="max-w-6xl gap-6 mx-auto px-4 my-12">
-                        <TitleSectionTwo>
-                            <>
-                                Más de{" "}
-                                {
-                                    (product as ProductsNormalSchemaFromServer)
-                                        .brand.name
-                                }
-                            </>
-                        </TitleSectionTwo>
-                        <div class="w-full">
-                            <Slider
-                                {...{
-                                    adaptiveHeight: true,
-                                    focusOnSelect: true,
-                                    infinite: true,
-                                    slidesToShow: 4,
-                                    slidesToScroll: 1,
-                                    speed: 500,
-                                    nextArrow: <SampleNextArrow />,
-                                    prevArrow: <SamplePrevArrow />,
-                                    responsive: [
-                                        {
-                                            breakpoint: 1024,
-                                            settings: {
-                                                slidesToShow: 3,
-                                            },
+            {productbybrands?.length &&
+            (product as ProductsNormalSchemaFromServer).brand?.name ? (
+                <section class="max-w-6xl gap-6 mx-auto px-4 my-12">
+                    <TitleSectionTwo>
+                        <>
+                            Más de{" "}
+                            {
+                                (product as ProductsNormalSchemaFromServer)
+                                    .brand.name
+                            }
+                        </>
+                    </TitleSectionTwo>
+                    <div class="w-full">
+                        <Slider
+                            {...{
+                                adaptiveHeight: true,
+                                focusOnSelect: true,
+                                infinite: true,
+                                slidesToShow: 4,
+                                slidesToScroll: 1,
+                                speed: 500,
+                                nextArrow: <SampleNextArrow />,
+                                prevArrow: <SamplePrevArrow />,
+                                responsive: [
+                                    {
+                                        breakpoint: 1024,
+                                        settings: {
+                                            slidesToShow: 3,
                                         },
-                                        {
-                                            breakpoint: 600,
-                                            settings: {
-                                                slidesToShow: 2,
-                                            },
+                                    },
+                                    {
+                                        breakpoint: 600,
+                                        settings: {
+                                            slidesToShow: 2,
                                         },
-                                        {
-                                            breakpoint: 480,
-                                            settings: {
-                                                slidesToShow: 1,
-                                            },
+                                    },
+                                    {
+                                        breakpoint: 480,
+                                        settings: {
+                                            slidesToShow: 1,
                                         },
-                                    ],
-                                }}
-                                className="w-full brands-section"
-                            >
-                                {productbybrands.map((product) => (
-                                    <ProductCard
-                                        product={product}
-                                        key={product.id}
-                                    >
-                                        <ProductCard.header>
-                                            <ProductCard.buttons isAbsolute />
-                                        </ProductCard.header>
-                                        <ProductCard.body
-                                            showDescription={false}
-                                        />
-                                        <ProductCard.footer showButtonCart />
-                                    </ProductCard>
-                                ))}
-                            </Slider>
-                            <style jsx>{`
-                                .brands-section .slick-slide > div {
-                                    margin-inline: 8px;
-                                    outline: none;
-                                }
-                            `}</style>
-                        </div>
-                    </section>
-                ) : null}
-            </>
+                                    },
+                                ],
+                            }}
+                            className="w-full brands-section"
+                        >
+                            {productbybrands.map((product) => (
+                                <ProductCard product={product} key={product.id}>
+                                    <ProductCard.header>
+                                        <ProductCard.buttons isAbsolute />
+                                    </ProductCard.header>
+                                    <ProductCard.body showDescription={false} />
+                                    <ProductCard.footer showButtonCart />
+                                </ProductCard>
+                            ))}
+                        </Slider>
+                        <style jsx>{`
+                            .brands-section .slick-slide > div {
+                                margin-inline: 8px;
+                                outline: none;
+                            }
+                        `}</style>
+                    </div>
+                </section>
+            ) : (
+                <></>
+            )}
         </WebLayout>
     );
 }

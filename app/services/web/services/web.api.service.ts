@@ -395,7 +395,7 @@ export class WebApiService {
             Product(empresa, false).findAll({
                 // traer 10 los ultimos products
                 limit: 10,
-                where: { enabled: true },
+                where: { enabled: true, empresa_id: empresa.id },
                 order: [["createdAt", "DESC"]],
             }),
             Product(empresa, false).findAll({
@@ -405,6 +405,7 @@ export class WebApiService {
                         [Op.gt]: 0,
                     },
                     enabled: true,
+                    empresa_id: empresa.id,
                 },
                 limit: 9,
                 order: [["createdAt", "DESC"]],
@@ -414,15 +415,22 @@ export class WebApiService {
                 order: [["discount", "DESC"]],
                 where: {
                     enabled: true,
+                    empresa_id: empresa.id,
                 },
             }), // producto con mas oferta
             Product(empresa, false).findOne({
                 order: [["createdAt", "DESC"]],
                 where: {
                     enabled: true,
+                    empresa_id: empresa.id,
                 },
             }), // ultimo producto creado
-            New.findOne({ order: [["id", "DESC"]] }),
+            New.findOne({
+                order: [["id", "DESC"]],
+                where: {
+                    empresa_id: empresa.id,
+                },
+            }),
         ]);
 
         // productos
@@ -470,6 +478,7 @@ export class WebApiService {
                 category_id: product.category_id,
                 id: { [Op.ne]: product.id },
                 enabled: true,
+                empresa_id: empresa.id,
             },
             limit: 6,
             order: sequelize.random(), // obtener productos random
@@ -498,6 +507,7 @@ export class WebApiService {
                     brand_id: (product as ProductsNormal).brand_id,
                     enabled: true,
                     id: { [Op.ne]: product.id },
+                    empresa_id: empresa.id,
                 },
                 limit: 8,
             });
@@ -546,6 +556,7 @@ export class WebApiService {
                 category_id: product.category_id,
                 id: { [Op.ne]: product.id },
                 enabled: true,
+                empresa_id: empresa.id,
             },
             limit: 6,
             order: sequelize.random(), // obtener productos random
@@ -594,7 +605,11 @@ export class WebApiService {
             .unscoped()
             .findAll({
                 attributes: ["id", "price", "discount"],
-                where: { category_id: category.id, enabled: true },
+                where: {
+                    category_id: category.id,
+                    enabled: true,
+                    empresa_id: empresa.id,
+                },
             });
         const mappedProducts = products.map(
             (prod: ProductsNormal | ProductsServicio | ProductsRestaurant) =>
@@ -613,6 +628,7 @@ export class WebApiService {
             const brandsId = await Brands.findAll({
                 where: {
                     id: uniqueIdsBrands,
+                    empresa_id: empresa.id,
                 },
             });
             brands = await Promise.all(
@@ -624,6 +640,7 @@ export class WebApiService {
                                 brand_id: brand.id,
                                 category_id: category.id,
                                 enabled: true,
+                                empresa_id: empresa.id,
                             },
                         });
 
@@ -654,6 +671,7 @@ export class WebApiService {
                             discount: { [Op.gte]: disc ?? 0 },
                             category_id: category.id,
                             enabled: true,
+                            empresa_id: empresa.id,
                         },
                     });
                 return {
@@ -700,6 +718,7 @@ export class WebApiService {
                 where: {
                     category_id: category.id,
                     subcategory_id: subcategory.id,
+                    empresa_id: empresa.id,
                     enabled: true,
                 },
             });
@@ -720,6 +739,7 @@ export class WebApiService {
             const brandsId = await Brands.findAll({
                 where: {
                     id: uniqueIdsBrands,
+                    empresa_id: empresa.id,
                 },
             });
             brands = await Promise.all(
@@ -732,6 +752,7 @@ export class WebApiService {
                                 category_id: category.id,
                                 subcategory_id: subcategory.id,
                                 enabled: true,
+                                empresa_id: empresa.id,
                             },
                         });
 
@@ -763,6 +784,7 @@ export class WebApiService {
                             category_id: category.id,
                             subcategory_id: subcategory.id,
                             enabled: true,
+                            empresa_id: empresa.id,
                         },
                     });
                 return {
@@ -787,7 +809,11 @@ export class WebApiService {
             .unscoped()
             .findAll({
                 attributes: ["id", "price", "discount"],
-                where: { brand_id: brand.id, enabled: true },
+                where: {
+                    brand_id: brand.id,
+                    enabled: true,
+                    empresa_id: empresa.id,
+                },
             });
         const mappedProducts = products.map(
             (prod: ProductsNormal | ProductsServicio | ProductsRestaurant) =>
@@ -819,6 +845,7 @@ export class WebApiService {
                             discount: { [Op.gte]: disc ?? 0 },
                             brand_id: brand.id,
                             enabled: true,
+                            empresa_id: empresa.id,
                         },
                     });
                 return {

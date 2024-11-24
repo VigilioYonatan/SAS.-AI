@@ -205,7 +205,7 @@ export class WebsocketsService {
                 emp,
                 String(body.product_id),
                 body.isService,
-                false,
+                true,
                 null,
                 false
             );
@@ -214,7 +214,7 @@ export class WebsocketsService {
             //     title: `Nueva comentario ${product.name}`,
             //     message: removeTextHTML(content), // Asegúrate de que content sea el mensaje que quieres enviar
             //     url: body.isService
-            //         ? `${BASE_URL(emp)}/servicios/${product.slug}`
+            //         ? `${BASE_URL(emp)}/servicio/${product.slug}`
             //         : `${BASE_URL(emp)}/${product.slug}`, // URL dinámica
             //     logo: emp.logo
             //         ? printFileWithDimension(emp)(emp.logo!, 100)[0]
@@ -241,7 +241,7 @@ export class WebsocketsService {
             const notification = await this.notificationsApiService.store({
                 type: "comment",
                 url: body.isService
-                    ? `/servicios/${product.slug}?comment=${body.comment_id}`
+                    ? `/servicio/${product.slug}?comment=${body.comment_id}`
                     : `/${product.slug}?comment=${body.comment_id}`,
                 content,
                 user_id: body.user_id,
@@ -344,7 +344,7 @@ export class WebsocketsService {
                 const notification = await this.notificationsApiService.store({
                     type: "comment",
                     url: body.isService
-                        ? `/servicios/${product.slug}?comment=${body.comment_id}`
+                        ? `/servicio/${product.slug}?comment=${body.comment_id}`
                         : `/${product.slug}?comment=${body.comment_id}`,
                     content: contentido,
                     user_id: userBot!.id,
@@ -401,7 +401,7 @@ export class WebsocketsService {
             emp,
             String(body.product_id),
             body.isService,
-            false,
+            true,
             null,
             false
         );
@@ -410,7 +410,7 @@ export class WebsocketsService {
         //     title: `Nueva comentario ${product.name}`,
         //     message: removeTextHTML(content), // Asegúrate de que content sea el mensaje que quieres enviar
         //     url: body.isService
-        //         ? `${BASE_URL(emp)}/servicios/${product.slug}`
+        //         ? `${BASE_URL(emp)}/servicio/${product.slug}`
         //         : `${BASE_URL(emp)}/${product.slug}`, // URL dinámica
         //     logo: emp.logo
         //         ? printFileWithDimension(emp)(emp.logo!, 100)[0]
@@ -420,7 +420,7 @@ export class WebsocketsService {
         const notification = await this.notificationsApiService.store({
             type: "comment",
             url: body.isService
-                ? `/servicios/${product.slug}?comment=${body.comment_id}`
+                ? `/servicio/${product.slug}?comment=${body.comment_id}`
                 : `/${product.slug}?comment=${body.comment_id}`,
             content,
             user_id: body.user_id,
@@ -550,7 +550,7 @@ export class WebsocketsService {
             const notification = await this.notificationsApiService.store({
                 type: "comment",
                 url: body.isService
-                    ? `/servicios/${product.slug}?comment=${body.comment_id}`
+                    ? `/servicio/${product.slug}?comment=${body.comment_id}`
                     : `/${product.slug}?comment=${body.comment_id}`,
                 content: contentido,
                 user_id: userBot!.id,

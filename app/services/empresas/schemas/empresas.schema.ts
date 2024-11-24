@@ -348,6 +348,7 @@ export const empresasSchema = objectAsync({
     photo: nullable(array(filesSchema())),
     enabled_commentario_ia: boolean(),
     versionamiento: string(),
+    enabled_dni_cart: boolean(),
     token: string(),
 });
 

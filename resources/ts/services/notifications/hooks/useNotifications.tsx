@@ -54,7 +54,7 @@ export function useNotifications() {
             }) => {
                 const notification = data.notification;
                 if (notification.type === "comment") {
-                    await delay(15);
+                    await delay(5);
                 }
                 if (!authStore.state?.enabledNotification) return;
                 // roles permitidos
@@ -345,9 +345,18 @@ export function useNotifications() {
             </div>
         );
     }
-    function NotificationCountComponent() {
+    interface NotificationCountComponentProps {
+        isWeb?: boolean;
+    }
+    function NotificationCountComponent({
+        isWeb = false,
+    }: NotificationCountComponentProps) {
         return notificationsCountQuery.data?.data! > 0 ? (
-            <span class="absolute left-[4px] top-[-5px] text-xs bg-danger px-[.3rem] font-bold rounded-full text-white">
+            <span
+                class={`absolute left-[4px] top-[-5px] text-xs ${
+                    isWeb ? "bg-primary" : "bg-danger"
+                } px-[.3rem] font-bold rounded-full text-white  border-2 border-white`}
+            >
                 {notificationsCountQuery.data?.data! > 99
                     ? "+99"
                     : notificationsCountQuery?.data?.data}

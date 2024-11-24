@@ -163,6 +163,7 @@ export const settingsSchema = objectAsync({
     type_animation: string(),
     background_auth: nullable(array(filesSchema([100, 1600]))),
     web_script: nullable(string()),
+    is_hidde_total_cart: boolean(),
     type_product_buttons: string([
         custom((val) => ["first", "second"].includes(val)),
     ]),

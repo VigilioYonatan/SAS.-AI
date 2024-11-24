@@ -1,7 +1,7 @@
 import { delay, randomNumber } from "~/libs/helpers";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { promptAssitant } from "./prompt";
-import { NOW, restarDays, TimePeru } from "~/libs/dayjs";
+import dayjs, { NOW, restarDays, TimePeru } from "~/libs/dayjs";
 import cron from "node-cron";
 import enviroments from "~/config/enviroments.config";
 import {
@@ -18,6 +18,8 @@ import cache from "@vigilio/express-core/cache";
 import { chats } from "../controllers/whatsapp.api.controller";
 import { whatsappSendMessageApi } from "../api";
 import type { ChatCompletion } from "openai/resources/index.mjs";
+import { Citas } from "@/citas/entities/citas.entities";
+import { Op } from "sequelize";
 
 export function buenosDias(query: string, name: string, empresa: Empresas) {
     const messages = [
@@ -446,6 +448,97 @@ export async function featuresIA(
                 c,
                 `${BASE_URL(empresa)}/cart/${hash}`
             );
+        }
+    }
+    const now = NOW(empresa).utc().format();
+    const after = NOW(empresa)
+        .add(empresa.citasSetting.max_days, "days")
+        .utc()
+        .format();
+    const regex2 = /\[\[CANCELADO_CITA:(.*?)\]\]/;
+    const match2 = completionText.match(regex2);
+    if (match2) {
+        const { hour, telefono } = JSON.parse(match2[1]);
+        const findCita = await Citas.findOne({
+            where: {
+                telephone: telefono,
+                empresa_id: empresa.id,
+                hour: {
+                    [Op.like]: `${hour}%`,
+                },
+            },
+        });
+
+        if (findCita) {
+            await findCita.destroy();
+        }
+        const message = completionText
+            .replace(regex2, "")
+            .replace(/\s{2,}/g, "\n");
+        textoNormal = message;
+    }
+    const regex = /\[\[DATOS_CONFIRMADOS:(.*?)\]\]/;
+    const matchCitas = completionText.match(regex);
+    if (matchCitas) {
+        const { hour, date, telefono, ...rest } = JSON.parse(matchCitas[1]);
+        const citas = await Citas.findAll({
+            where: {
+                date: {
+                    [Op.between]: [now, after],
+                },
+                telephone: telefono,
+                empresa_id: empresa.id,
+            },
+            attributes: {
+                exclude: ["createdAt", "updatedAt"],
+            },
+        });
+        const citasHour = await Citas.findAll({
+            where: {
+                date,
+                hour: {
+                    [Op.like]: `${hour}%`,
+                },
+                empresa_id: empresa.id,
+            },
+            attributes: {
+                exclude: ["createdAt", "updatedAt"],
+            },
+            raw: true,
+        });
+
+        if (citas.length > empresa.citasSetting.maxCitas) {
+            textoNormal =
+                "Parece que has alcanzado el límite para crear citas.";
+        } else if (citasHour.length > empresa.citasSetting.maxCitasForHour) {
+            textoNormal =
+                "Lo sentimos, ya hay citas programadas para esa hora.";
+        } else {
+            await Citas.create({
+                telephone: `${empresa.dial_code}${telefono}@c.us`,
+                date,
+                hour,
+                answers: rest,
+                empresa_id: empresa.id,
+            });
+            const message = completionText
+                .replace(regex, "")
+                .replace(/\s{2,}/g, "\n");
+            textoNormal = message;
+            if (empresa.citasSetting.sendAlert > 0) {
+                const time = dayjs
+                    .tz(`${date} ${hour}`, empresa.tz)
+                    .subtract(empresa.citasSetting.sendAlert, "hour")
+                    .utc()
+                    .format() as unknown as Date;
+
+                sendMessageCron({
+                    empresa,
+                    userId: telefono,
+                    date: time,
+                    name: "",
+                });
+            }
         }
     }
 

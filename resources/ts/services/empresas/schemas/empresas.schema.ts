@@ -135,6 +135,7 @@ export const inteligenceArtificial = object({
         enabled_order: boolean(),
     }),
     max_length: number([minValue(100), maxValue(1000)]),
+    try_to_sell: boolean(), //tratará de ofrecer y vender
     enabledHuman: boolean(),
     showAllProductsInformation: boolean(),
 });
@@ -358,6 +359,7 @@ export const empresasSchema = object({
     photo: nullable(array(filesSchema())),
     enabled_commentario_ia: boolean(),
     token: string(),
+    enabled_dni_cart: boolean(),
     versionamiento: string(),
 });
 

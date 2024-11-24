@@ -97,7 +97,7 @@ function PalleteCustom() {
             {showPallete.value ? (
                 <div class="  bottom-56 right-10 fixed flex justify-center flex-col items-center rounded-md dark:bg-background-dark bg-white p-2 shadow gap-2">
                     <span class="dark:text-white text-xs font-semibold">
-                        Personaliza los colores de la tienda Virtual 100%
+                        Personaliza los colores de la tienda Virtual 100% (demo)
                     </span>
                     <div class="flex">
                         <SketchPicker

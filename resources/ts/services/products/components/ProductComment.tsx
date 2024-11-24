@@ -308,77 +308,71 @@ function ProductComment({
                             id={comment.id}
                             refetch={commentRefetch}
                         />
-                        <>
-                            {authStore.state?.id ? (
-                                <>
-                                    <WebDropdown
-                                        triggerChildren={({ onOpen }) => (
-                                            <button
-                                                type="button"
-                                                onClick={onOpen}
-                                                aria-label="open"
-                                            >
-                                                <i class="fas fa-ellipsis-v" />
-                                            </button>
-                                        )}
-                                        className="min-w-[60px] top-0"
-                                    >
-                                        <div class="flex flex-col p-2">
-                                            <button
-                                                type="button"
-                                                class=" rounded-md flex items-center gap-2 text-xs py-1"
-                                                onClick={() =>
-                                                    onSelectUpdateSubcommentary(
-                                                        {
+                        {authStore.state?.id ? (
+                            <>
+                                <WebDropdown
+                                    triggerChildren={({ onOpen }) => (
+                                        <button
+                                            type="button"
+                                            onClick={onOpen}
+                                            aria-label="open"
+                                        >
+                                            <i class="fas fa-ellipsis-v" />
+                                        </button>
+                                    )}
+                                    className="min-w-[60px] top-0"
+                                >
+                                    <div class="flex flex-col p-2">
+                                        <button
+                                            type="button"
+                                            class=" rounded-md flex items-center gap-2 text-xs py-1"
+                                            onClick={() =>
+                                                onSelectUpdateSubcommentary({
+                                                    id: comment.id,
+                                                    content: comment.content,
+                                                })
+                                            }
+                                        >
+                                            <i class="fas fa-reply" /> Responder
+                                        </button>
+                                        {authStore.state?.id ===
+                                        comment.user_id ? (
+                                            <>
+                                                {" "}
+                                                <button
+                                                    type="button"
+                                                    class=" rounded-md flex items-center gap-2 text-xs py-1"
+                                                    onClick={() =>
+                                                        onSelectUpdate({
                                                             id: comment.id,
                                                             content:
                                                                 comment.content,
-                                                        }
-                                                    )
-                                                }
-                                            >
-                                                <i class="fas fa-reply" />{" "}
-                                                Responder
-                                            </button>
-                                            {authStore.state?.id ===
-                                            comment.user_id ? (
-                                                <>
-                                                    {" "}
-                                                    <button
-                                                        type="button"
-                                                        class=" rounded-md flex items-center gap-2 text-xs py-1"
-                                                        onClick={() =>
-                                                            onSelectUpdate({
-                                                                id: comment.id,
-                                                                content:
-                                                                    comment.content,
-                                                            })
-                                                        }
-                                                    >
-                                                        <i class="fa-solid fa-pen" />{" "}
-                                                        Editar
-                                                    </button>
-                                                    <button
-                                                        onClick={() =>
-                                                            onSelectDestroy(
-                                                                comment.id
-                                                            )
-                                                        }
-                                                        type="button"
-                                                        class=" rounded-md flex items-center gap-2 text-xs py-1"
-                                                    >
-                                                        <i class="fa-solid fa-trash" />
-                                                        Eliminar
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <></>
-                                            )}
-                                        </div>
-                                    </WebDropdown>
-                                </>
-                            ) : null}
-                        </>
+                                                        })
+                                                    }
+                                                >
+                                                    <i class="fa-solid fa-pen" />{" "}
+                                                    Editar
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        onSelectDestroy(
+                                                            comment.id
+                                                        )
+                                                    }
+                                                    type="button"
+                                                    class=" rounded-md flex items-center gap-2 text-xs py-1"
+                                                >
+                                                    <i class="fa-solid fa-trash" />
+                                                    Eliminar
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </div>
+                                </WebDropdown>
+                            </>
+                        ) : null}
                     </div>
                 </div>
             </div>

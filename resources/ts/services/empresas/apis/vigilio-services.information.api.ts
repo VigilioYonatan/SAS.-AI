@@ -1,4 +1,4 @@
-import { useQuery } from "@vigilio/preact-fetching";
+import { useMutation, useQuery } from "@vigilio/preact-fetching";
 import enviroments from "~/config";
 export async function vigilioServicesempresa() {
     const vigilio = await fetch(
@@ -45,4 +45,19 @@ export function vigilioVersionLatests() {
         },
         { isCaching: 60 * 3600 * 500 }
     );
+}
+export function updateVps() {
+    return useMutation<
+        {
+            success: boolean;
+            message: string;
+        },
+        null,
+        { success: false; message: string }
+    >("/backup/new-version", async (url) => {
+        const vigilio = await fetch(`/api/${url}`, { method: "POST" });
+        const responseV = await vigilio.json();
+        if (!vigilio.ok) throw new Error(responseV);
+        return responseV;
+    });
 }

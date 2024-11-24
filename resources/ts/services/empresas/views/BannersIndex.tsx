@@ -49,7 +49,7 @@ function BannersIndex() {
     }
     if (gridBannerIndexQuery.isSuccess) {
         component = (
-            <>
+            <Fragment>
                 {gridBannerIndexQuery.data?.data.map((grid, g) => {
                     return (
                         <div key={grid.id}>
@@ -112,176 +112,239 @@ function BannersIndex() {
                             <div
                                 class={`dark:bg-admin-terciary w-full  grid banner-${g} relative  `}
                             >
-                                <>
-                                    {Array.from({
-                                        length:
-                                            grid.responsive
-                                                .filter((val) => {
-                                                    return (
-                                                        widthResponsive >=
-                                                        val.width
+                                {Array.from({
+                                    length:
+                                        grid.responsive
+                                            .filter((val) => {
+                                                return (
+                                                    widthResponsive >= val.width
+                                                );
+                                            })
+                                            .pop()?.cols || 1,
+                                }).map((_, i) => {
+                                    return (
+                                        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                        <Fragment key={i}>
+                                            {(() => {
+                                                const banner =
+                                                    grid.banners.find(
+                                                        (banner) =>
+                                                            banner.order ===
+                                                            i + 1
                                                     );
-                                                })
-                                                .pop()?.cols || 1,
-                                    }).map((_, i) => {
-                                        return (
-                                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                                            <Fragment key={i}>
-                                                {(() => {
-                                                    const banner =
-                                                        grid.banners.find(
-                                                            (banner) =>
-                                                                banner.order ===
-                                                                i + 1
-                                                        );
-                                                    return (
-                                                        <>
-                                                            {banner ? (
-                                                                <>
-                                                                    {(() => {
-                                                                        const file =
-                                                                            printFileWithDimension(
-                                                                                banner.file,
-                                                                                null
-                                                                            )[0];
-                                                                        return (
-                                                                            <div
-                                                                                class="w-full relative row-span-1"
-                                                                                key={
-                                                                                    banner.id
-                                                                                }
-                                                                                style={{
-                                                                                    gridColumn: `span ${banner.col} / span ${banner.col}`,
-                                                                                    gridRow: `span ${banner.row} / span ${banner.row}`,
-                                                                                }}
-                                                                            >
-                                                                                {file?.endsWith(
-                                                                                    "mp4"
-                                                                                ) ? (
-                                                                                    <div class="relative w-full h-full">
-                                                                                        <video
-                                                                                            class="absolute top-0 left-0 w-full h-full object-cover"
-                                                                                            autoplay
-                                                                                            muted
-                                                                                            loop
-                                                                                        >
-                                                                                            <source
-                                                                                                src={
-                                                                                                    file
+                                                return (
+                                                    <>
+                                                        {banner ? (
+                                                            <>
+                                                                {(() => {
+                                                                    const file =
+                                                                        printFileWithDimension(
+                                                                            banner.file,
+                                                                            null
+                                                                        )[0];
+                                                                    return (
+                                                                        <div
+                                                                            class="w-full relative row-span-1"
+                                                                            key={
+                                                                                banner.id
+                                                                            }
+                                                                            style={{
+                                                                                gridColumn: `span ${banner.col} / span ${banner.col}`,
+                                                                                gridRow: `span ${banner.row} / span ${banner.row}`,
+                                                                            }}
+                                                                        >
+                                                                            {file?.endsWith(
+                                                                                "mp4"
+                                                                            ) ? (
+                                                                                <div class="relative w-full h-full flex items-end">
+                                                                                    <video
+                                                                                        class="absolute top-0 left-0 w-full h-full object-cover  -z-10"
+                                                                                        autoplay
+                                                                                        muted
+                                                                                        loop
+                                                                                    >
+                                                                                        <source
+                                                                                            src={
+                                                                                                file
+                                                                                            }
+                                                                                            type="video/mp4"
+                                                                                        />
+                                                                                        Tu
+                                                                                        navegador
+                                                                                        no
+                                                                                        soporta
+                                                                                        el
+                                                                                        elemento
+                                                                                        video.
+                                                                                    </video>
+                                                                                    <div class="m-6 flex flex-col gap-4 self-start ">
+                                                                                        {banner.title ? (
+                                                                                            <span class="font-bold text-3xl text-white">
+                                                                                                Toy
+                                                                                                Story
+                                                                                                Toons
+                                                                                                Small
+                                                                                                Fry
+                                                                                            </span>
+                                                                                        ) : null}
+                                                                                        {banner.subtitle ? (
+                                                                                            <span class="font-semibold  text-white">
+                                                                                                Toy
+                                                                                                Story
+                                                                                                Toons
+                                                                                                Small
+                                                                                                Fry
+                                                                                            </span>
+                                                                                        ) : null}
+                                                                                        {banner.button &&
+                                                                                        banner.link ? (
+                                                                                            <a
+                                                                                                href={
+                                                                                                    banner.link
                                                                                                 }
-                                                                                                type="video/mp4"
-                                                                                            />
-                                                                                            Tu
-                                                                                            navegador
-                                                                                            no
-                                                                                            soporta
-                                                                                            el
-                                                                                            elemento
-                                                                                            video.
-                                                                                        </video>
+                                                                                                class="bg-primary px-7 py-2 mt-2  font-semibold  mb-2 hover:bg-black text-white delay-custom-1  self-start"
+                                                                                            >
+                                                                                                {
+                                                                                                    banner.button
+                                                                                                }
+                                                                                            </a>
+                                                                                        ) : null}
                                                                                     </div>
-                                                                                ) : (
-                                                                                    <div
-                                                                                        class="w-full h-full block  bg-cover  bg-no-repeat"
-                                                                                        style={{
-                                                                                            backgroundImage: `url(${file})`,
-                                                                                        }}
-                                                                                    />
-                                                                                )}
-                                                                                <button
-                                                                                    type="button"
-                                                                                    class="top-1 right-1 absolute bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
-                                                                                    onClick={() => {
-                                                                                        sweetModal(
-                                                                                            (
-                                                                                                onClose
-                                                                                            ) => ({
-                                                                                                html: reactComponent(
-                                                                                                    <BannerUpdate
-                                                                                                        onClose={
-                                                                                                            onClose
-                                                                                                        }
-                                                                                                        banner={
-                                                                                                            banner
-                                                                                                        }
-                                                                                                        g={
-                                                                                                            g
-                                                                                                        }
-                                                                                                        refetch={
-                                                                                                            gridBannerIndexQuery.refetch
-                                                                                                        }
-                                                                                                        grid={
-                                                                                                            grid
-                                                                                                        }
-                                                                                                    />
-                                                                                                ),
-                                                                                                showCloseButton:
-                                                                                                    true,
-                                                                                                isCloseInBackground:
-                                                                                                    false,
-                                                                                            })
-                                                                                        );
+                                                                                </div>
+                                                                            ) : (
+                                                                                <div
+                                                                                    class="w-full h-full   bg-cover bg-center   bg-no-repeat -z-10 flex items-end"
+                                                                                    style={{
+                                                                                        backgroundImage: `url(${file})`,
                                                                                     }}
                                                                                 >
-                                                                                    <i class="fas fa-pen" />
-                                                                                </button>
-                                                                            </div>
-                                                                        );
-                                                                    })()}
-                                                                </>
-                                                            ) : (
-                                                                <div
-                                                                    type="button"
-                                                                    onClick={() => {
-                                                                        sweetModal(
-                                                                            (
-                                                                                onClose
-                                                                            ) => ({
-                                                                                html: reactComponent(
-                                                                                    <BannerStore
-                                                                                        order={
-                                                                                            i +
-                                                                                            1
-                                                                                        }
-                                                                                        grid={
-                                                                                            grid
-                                                                                        }
-                                                                                        i={
-                                                                                            g +
-                                                                                            1
-                                                                                        }
-                                                                                        onClose={
+                                                                                    <div class="m-6 flex flex-col gap-4 self-start ">
+                                                                                        {banner.title ? (
+                                                                                            <span class="font-bold text-3xl text-white">
+                                                                                                Toy
+                                                                                                Story
+                                                                                                Toons
+                                                                                                Small
+                                                                                                Fry
+                                                                                            </span>
+                                                                                        ) : null}
+                                                                                        {banner.subtitle ? (
+                                                                                            <span class="font-semibold  text-white">
+                                                                                                Toy
+                                                                                                Story
+                                                                                                Toons
+                                                                                                Small
+                                                                                                Fry
+                                                                                            </span>
+                                                                                        ) : null}
+                                                                                        {banner.button &&
+                                                                                        banner.link ? (
+                                                                                            <a
+                                                                                                href={
+                                                                                                    banner.link
+                                                                                                }
+                                                                                                class="bg-primary px-7 py-2 mt-2  font-semibold  mb-2 hover:bg-black text-white delay-custom-1  self-start"
+                                                                                            >
+                                                                                                {
+                                                                                                    banner.button
+                                                                                                }
+                                                                                            </a>
+                                                                                        ) : null}
+                                                                                    </div>
+                                                                                </div>
+                                                                            )}
+                                                                            <button
+                                                                                type="button"
+                                                                                class="top-1 right-1 absolute bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
+                                                                                onClick={() => {
+                                                                                    sweetModal(
+                                                                                        (
                                                                                             onClose
-                                                                                        }
-                                                                                        refetch={
-                                                                                            gridBannerIndexQuery.refetch
-                                                                                        }
-                                                                                    />
-                                                                                ),
-                                                                                showCloseButton:
-                                                                                    true,
-                                                                                isCloseInBackground:
-                                                                                    true,
-                                                                            })
-                                                                        );
-                                                                    }}
-                                                                    aria-label="more"
-                                                                    class="h-full bg-admin-background-dark w-full flex justify-center items-center"
-                                                                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                                                                    key={i}
-                                                                >
-                                                                    <span class="text-3xl font-bold">
-                                                                        +
-                                                                    </span>
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    );
-                                                })()}
-                                            </Fragment>
-                                        );
-                                    })}
-                                </>
+                                                                                        ) => ({
+                                                                                            html: reactComponent(
+                                                                                                <BannerUpdate
+                                                                                                    onClose={
+                                                                                                        onClose
+                                                                                                    }
+                                                                                                    banner={
+                                                                                                        banner
+                                                                                                    }
+                                                                                                    g={
+                                                                                                        g
+                                                                                                    }
+                                                                                                    refetch={
+                                                                                                        gridBannerIndexQuery.refetch
+                                                                                                    }
+                                                                                                    grid={
+                                                                                                        grid
+                                                                                                    }
+                                                                                                />
+                                                                                            ),
+                                                                                            showCloseButton:
+                                                                                                true,
+                                                                                            isCloseInBackground:
+                                                                                                false,
+                                                                                        })
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                <i class="fas fa-pen" />
+                                                                            </button>
+                                                                        </div>
+                                                                    );
+                                                                })()}
+                                                            </>
+                                                        ) : (
+                                                            <div
+                                                                onClick={() => {
+                                                                    sweetModal(
+                                                                        (
+                                                                            onClose
+                                                                        ) => ({
+                                                                            html: reactComponent(
+                                                                                <BannerStore
+                                                                                    order={
+                                                                                        i +
+                                                                                        1
+                                                                                    }
+                                                                                    grid={
+                                                                                        grid
+                                                                                    }
+                                                                                    i={
+                                                                                        g +
+                                                                                        1
+                                                                                    }
+                                                                                    onClose={
+                                                                                        onClose
+                                                                                    }
+                                                                                    refetch={
+                                                                                        gridBannerIndexQuery.refetch
+                                                                                    }
+                                                                                />
+                                                                            ),
+                                                                            showCloseButton:
+                                                                                true,
+                                                                            isCloseInBackground:
+                                                                                true,
+                                                                        })
+                                                                    );
+                                                                }}
+                                                                aria-label="more"
+                                                                class="h-full bg-admin-background-dark w-full flex justify-center items-center"
+                                                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                                                key={i}
+                                                            >
+                                                                <span class="text-3xl font-bold">
+                                                                    +
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                );
+                                            })()}
+                                        </Fragment>
+                                    );
+                                })}
 
                                 <style jsx>{`
                                     ${grid.responsive
@@ -309,7 +372,7 @@ function BannersIndex() {
                         </div>
                     );
                 })}
-            </>
+            </Fragment>
         );
     }
     return (
@@ -492,12 +555,24 @@ function BannerStore({ order, grid, i, refetch, onClose }: BannerStoreProps) {
         <div class="dark:text-white">
             <span>Banner {i}</span>
             <Form {...bannerStoreForm} onSubmit={onBannerStore}>
-                <Form.control
-                    title="Link"
-                    placeholder={BASE_URL}
-                    name={"link" as keyof BannerStoreDto}
-                    question="Este campo no es obligatorio. El link cuando el usuario presione."
-                />
+                <div class="">
+                    <Form.control
+                        title="Link"
+                        placeholder={BASE_URL}
+                        name={"link" as keyof BannerStoreDto}
+                        question="Este campo no es obligatorio. El link cuando el usuario presione."
+                    />
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <Form.control
+                        title="Titulo"
+                        name={"title" as keyof BannerStoreDto}
+                    />
+                    <Form.control
+                        title="Subtitulo"
+                        name={"subtitle" as keyof BannerStoreDto}
+                    />
+                </div>
                 <div class="grid grid-cols-2 gap-2">
                     <Form.control
                         type="number"
@@ -560,67 +635,65 @@ function Banners({ banners, g, grid, refetch }: BannersProps) {
             <div class="flex gap-2 flex-wrap w-full justify-center items-center">
                 {banners.map((banner) => (
                     <div key={banner.id}>
-                        <>
-                            {(() => {
-                                const file = printFileWithDimension(
-                                    banner.file,
-                                    null
-                                )[0];
+                        {(() => {
+                            const file = printFileWithDimension(
+                                banner.file,
+                                null
+                            )[0];
 
-                                return (
-                                    <div
-                                        class=" relative w-[120px]  h-[120px]"
-                                        key={banner.id}
-                                    >
-                                        {file?.endsWith("mp4") ? (
-                                            <div class="relative w-full h-full">
-                                                <video
-                                                    class="absolute top-0 left-0 w-full h-full object-cover"
-                                                    autoplay
-                                                    muted
-                                                    loop
-                                                >
-                                                    <source
-                                                        src={file}
-                                                        type="video/mp4"
-                                                    />
-                                                    Tu navegador no soporta el
-                                                    elemento video.
-                                                </video>
-                                            </div>
-                                        ) : (
-                                            <div
-                                                class="w-full h-full block  bg-cover  bg-no-repeat"
-                                                style={{
-                                                    backgroundImage: `url(${file})`,
-                                                }}
-                                            />
-                                        )}
-                                        <button
-                                            type="button"
-                                            class="top-1 right-1 absolute bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
-                                            onClick={() => {
-                                                sweetModal((onClose) => ({
-                                                    html: reactComponent(
-                                                        <BannerUpdate
-                                                            onClose={onClose}
-                                                            banner={banner}
-                                                            g={g}
-                                                            refetch={refetch}
-                                                            grid={grid}
-                                                        />
-                                                    ),
-                                                    showCloseButton: true,
-                                                    isCloseInBackground: false,
-                                                }));
+                            return (
+                                <div
+                                    class=" relative w-[120px]  h-[120px]"
+                                    key={banner.id}
+                                >
+                                    {file?.endsWith("mp4") ? (
+                                        <div class="relative w-full h-full">
+                                            <video
+                                                class="absolute top-0 left-0 w-full h-full object-cover"
+                                                autoplay
+                                                muted
+                                                loop
+                                            >
+                                                <source
+                                                    src={file}
+                                                    type="video/mp4"
+                                                />
+                                                Tu navegador no soporta el
+                                                elemento video.
+                                            </video>
+                                        </div>
+                                    ) : (
+                                        <div
+                                            class="w-full h-full block  bg-cover  bg-no-repeat"
+                                            style={{
+                                                backgroundImage: `url(${file})`,
                                             }}
-                                        >
-                                            <i class="fas fa-pen" />
-                                        </button>
-                                    </div>
-                                );
-                            })()}
-                        </>
+                                        />
+                                    )}
+                                    <button
+                                        type="button"
+                                        class="top-1 right-1 absolute bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
+                                        onClick={() => {
+                                            sweetModal((onClose) => ({
+                                                html: reactComponent(
+                                                    <BannerUpdate
+                                                        onClose={onClose}
+                                                        banner={banner}
+                                                        g={g}
+                                                        refetch={refetch}
+                                                        grid={grid}
+                                                    />
+                                                ),
+                                                showCloseButton: true,
+                                                isCloseInBackground: false,
+                                            }));
+                                        }}
+                                    >
+                                        <i class="fas fa-pen" />
+                                    </button>
+                                </div>
+                            );
+                        })()}
                     </div>
                 ))}
             </div>
@@ -703,12 +776,8 @@ function BannerUpdate({
     }
     async function initialUpdateImages() {
         if (banner.file) {
-            const [imgs, videos] = await Promise.all([
-                getFilesEdit(banner.file, 1200),
-                getFilesEdit(banner.file, null, "video/mp4"),
-            ]);
-            const images = [...imgs, ...videos];
-            bannerUpdateFormFile.setValue("file", images);
+            const files = await getFilesEdit(banner.file, 1200);
+            bannerUpdateFormFile.setValue("file", files);
         }
     }
 
@@ -739,6 +808,16 @@ function BannerUpdate({
                     name={"link" as keyof BannerStoreDto}
                     question="Este campo no es obligatorio. El link cuando el usuario presione."
                 />
+                <div class="grid grid-cols-2 gap-2">
+                    <Form.control
+                        title="Titulo"
+                        name={"title" as keyof BannerStoreDto}
+                    />
+                    <Form.control
+                        title="Subtitulo"
+                        name={"subtitle" as keyof BannerStoreDto}
+                    />
+                </div>
                 <Form.control.select
                     title="Orden"
                     array={arrayNumber}

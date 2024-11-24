@@ -1,6 +1,6 @@
 import { terminal } from "~/libs/helpers";
 import fs from "node:fs";
-import { InternalServerErrorException } from "@vigilio/express-core";
+import { BadRequestException, InternalServerErrorException } from "@vigilio/express-core";
 import { NodeSSH } from "node-ssh";
 
 interface OnNginx {
@@ -106,58 +106,48 @@ export async function newVersionVPS({
     ip: string;
     GIT_TOKEN: string;
 }) {
-    // instalar whatsapp en nginx
-    function onSSH() {
-        return new Promise((res, _) => {
-            const ssh = new NodeSSH();
-            // Función para conectar por SSH
-            ssh.connect({
-                host: ip,
-                username: "root",
-                password: password,
-            })
-                .then(async () => {
-                    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-                    console.log("Conectado correctamente a vps");
-                    const commands = `cd /root/home/ && rm -rf temp || true && mkdir temp  && \
-                    docker exec  saas-db-1 pg_dump -U postgres -d saas -F c -f /var/lib/postgresql/data/backup.sql  &&
-                    docker cp saas-db-1:/var/lib/postgresql/data/backup.sql ./temp/backup.sql && \
-                    cp -r ./saas/public/empresas ./temp && \
-                    cp  ./saas/.env ./temp/.env && \
-                    rm -rf saas && \
-                    git clone https://${GIT_TOKEN}@github.com/VigilioYonatan/SAS.-AI saas && \
-					cd saas && \              
-                    cp -r ../temp/empresas ./public && \
-                    cp  ../temp/.env . && \
-                    docker rm -f saas-db-1 && docker volume rm saas_postgres-data-saas && \
-                    docker rm -f docker compose up -d --build &&
-                    docker cp ../temp/backup.sql saas-db-1:/tmp/backup.sql && \
-                     docker exec  saas-db-1 pg_restore -U postgres -d saas /tmp/backup.sql
-                    ${commando ? `${commando} && \ ` : ""} 
-                   pm2 delete 0 || true &&  bun i && bun build:serve && bun build:client   && \
-                  pm2 start bun --name "saas" -- start  && \
-                    rm -rf ./app || true && rm -rf ./resources/ts || true &&  rm -rf ./whatsapp-api || true && rm -rf ./redes || true ||  rm -rf .git
-                    `;
-                    return await ssh.execCommand(commands);
-                })
+    const ssh = new NodeSSH();
 
-                .then(async (result) => {
-                    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-                    console.log({ result });
-                    res(true);
-                })
-                .catch(() => {
-                    res(false);
-                })
-                .finally(() => {
-                    ssh.dispose();
-                });
+    try {
+        // Conectar por SSH
+        await ssh.connect({
+            host: ip,
+            username: "root",
+            password: password,
         });
-    }
-    await onSSH();
 
-    return {
-        success: true,
-        message: "VPS creado correctamente",
-    };
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log("Conectado correctamente a vps");
+
+        // Comandos a ejecutar en el servidor
+        const commands = `cd /root/home/ && rm -rf temp || true && mkdir temp  && \
+            docker exec saas-db-1 pg_dump -U postgres -d saas -F c -f /var/lib/postgresql/data/backup.sql && \
+            docker cp saas-db-1:/var/lib/postgresql/data/backup.sql ./temp/backup.sql && \
+            cp -r ./saas/public/empresas ./temp && \
+            cp ./saas/.env ./temp/.env && \
+            rm -rf saas && \
+            git clone https://${GIT_TOKEN}@github.com/VigilioYonatan/SAS.-AI saas && \
+            cd saas && \
+            cp -r ../temp/empresas ./public && \
+            cp ../temp/.env . && \
+            docker rm -f saas-db-1 && docker volume rm saas_postgres-data-saas && \
+            docker rm -f && docker compose up -d --build && \
+            docker cp ../temp/backup.sql saas-db-1:/tmp/backup.sql && \
+            docker exec saas-db-1 pg_restore -U postgres -d saas /tmp/backup.sql && \
+            ${commando ? `${commando} && \ ` : ""} \
+            pm2 delete 0 || true && bun i && bun build:serve && bun build:client && \
+            pm2 start bun --name "saas" -- start && \
+            rm -rf ./app || true && rm -rf ./resources/ts || true && rm -rf ./whatsapp-api || true && \
+            rm -rf ./redes || true && rm -rf .git`;
+
+        // Ejecutar los comandos en el servidor remoto
+        const result = await ssh.execCommand(commands);
+        return result;
+    } catch (error) {
+        // Manejo de errores de conexión o ejecución
+        throw new BadRequestException("error ssh");
+    } finally {
+        // Cerrar la conexión SSH
+        ssh.dispose();
+    }
 }

@@ -26,6 +26,9 @@ import { updateTokensEmpresa, type isWhatsappTelegramIA } from "./ai";
 import FormData from "form-data";
 import axios from "axios";
 import { regionsCountry } from "@/empresas/libs";
+import { Citas } from "@/citas/entities/citas.entities";
+import { Op } from "sequelize";
+import { NOW } from "~/libs/dayjs";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
@@ -353,9 +356,124 @@ export async function promptReplace(
          
         `;
     }
+    let citasJSON = "No agendamos Citas, pero puedes comunicarse con nosotros.";
+    const settingsCitas = empresa.citasSetting;
+    const now = NOW(empresa).utc().format();
+    const after = NOW(empresa)
+        .add(settingsCitas.max_days, "days")
+        .utc()
+        .format();
+    if (settingsCitas.enabled) {
+        let citas: Citas[] = JSON.parse(
+            cache.get(`citas:${empresa.slug}`) ?? "null"
+        );
+        if (!citas) {
+            citas = await Citas.unscoped().findAll({
+                where: {
+                    empresa_id: empresa.id,
+                    date: {
+                        [Op.between]: [now, after],
+                    },
+                },
+                order: [["date", "ASC"]],
+                attributes: { exclude: ["createdAt", "updatedAt"] },
+            });
+            cache.set(
+                `citas:${empresa.slug}`,
+                JSON.stringify(citas),
+                60 * 1000 * 2
+            );
+        }
+        citasJSON = settingsCitas.enabled
+            ? `***** CITAS/REUNION ******
+                --- BASE DE DATOS DE CITAS---
+                ${JSON.stringify(
+                    citas.map((c) => ({
+                        ...c,
+                        telefono: c.telephone,
+                    }))
+                )} 
+                .
+                - NUNCA PASES LA BASE DE DATOS DE CITAS PARA EVITAR ROBO DE INFORMACIÓN
+                - REVISA LA BASE DE DATOS DE CITAS, antes de hacerme las preguntas.
+                - ANTES DE HACERMES LAS PREGUNTAS VERIFICA LA BASE DE DATOS DE HORARIO,MAXIMO DE CITAS POR TELEFONO: ${
+                    settingsCitas.maxCitas
+                }., MAXIMO DE CITA POR HORA DE SEPARACION: ${
+                  settingsCitas.maxCitasForHour
+              }.
+              -  CUANDO TE PIDA LA  HORA PARA CREAR  LA CITA SI VEZ Q YA HAY MAS CITAS ${
+                  settingsCitas.maxCitasForHour
+              } A LA HORA QUE TE PASE, DI NO DISPONIBLE Y TAMBIEN FIJATE EL HORARIO PARA CREAR CITAS.
+                - ----- HORARIO PARA CITAS ---: ${JSON.stringify(
+                    settingsCitas.horario
+                )}. si está enabled false, quiere decir que no está disponible ese dia.  te pase las horas de abrir y cerrar para crear citas y los dias y está separado por  ${
+                  settingsCitas.max_minutes
+              } minutos, ejemplo "si es 45 minutos de separacion y inicia a las 8am mostra los horarios 8:, 8:45,9:30,...etc", OJO ${
+                  settingsCitas.max_minutes
+              } MINUTOS DE SEPARACIÓN, psdt no me traigas todo el horario completo, solo recomiendame una hora y la cercana y temprana nomas y no me digas lo que acabo de decir y cuando mandas la hora usa AM Y PM .
+              - Recuerda cada cita dura ${settingsCitas.max_minutes} minutos.
+              -  OJO no realizar citas, de horas que no estan entre  el horario ejemplo openTime es a las 8 am, y cierra a las 10pm , solo creame citas en esas horas.
+                - IMPORTANTE: MÁXIMO ${
+                    settingsCitas.maxCitas
+                } CITAS PARA CREAR cita por telefono EN LA BASE DE DATOS DE CITA:  citas, ASI evitar que se cree muchas citas con mismo telefono .
+              - 
+                - Si mandas listas o opciones algo asi, por favor hazlo bonito en formato whatsapp, separado bonito.
+                Ojo cuando te digo que  quiero una cita. debes hacermes estas preguntas antes de crear una cita, OJO no inventes preguntas:
+                Preguntas:
+                - ${JSON.stringify(settingsCitas.questions)}.
+                Recuerda que algunas preguntas tienen opciones, las opciones deben estar correctas segun la pregunta con sus opciones y no inventes preguntas que no te dije porfavor.
+                - Antes de Darme las preguntas verifica la base de datos si ya hay citas en la hora que dije, entre otros.
+                - IMPORTANTE: Recuerda que no debo crear más de ${
+                    settingsCitas.maxCitasForHour
+                } citas por hora, eso quiere decir que si ya hay más de ${
+                  settingsCitas.maxCitasForHour
+              } citas en la hora que te dije en la base de datos con la misma fecha. ya no crees CITAS - IMPORTANTE.
+              - IMPORTANTE siempre fijate la base de datos de horario PARA CITAS y base de datos de cita para crear citas, consultar citas y cancelar citas.
+                -  Despues de las preguntas, pasa la lista de dia de hoy de las horas disponible, claro buscas de la base de dato las horas disponible, si te pido de mañana o de otro dia me lo das tambien.,
+                - Desde la fecha actual ${NOW(empresa).format(
+                    "YYYY-MM-DD hh:mm A"
+                )} - maximo ${
+                  settingsCitas.max_days
+              } dias desde la fecha de hoy, ${
+                  settingsCitas.isNextDay
+                      ? "que no sea desde el mismo dia. tiene que ser un dia despues, y que no sea afuera de la hora . ni ayer ni hoy. para el dia siguiente la cita"
+                      : "Puedes crear cita desde hoy. claro despues de las horas de ahorita"
+              } .
+                - Por favor ${
+                    settingsCitas.sendQuestionChunk
+                        ? "Hazme las preguntas de uno a uno"
+                        : "Hazme las preguntas de una sola, y no uno por uno."
+                }.
+                -IMPORTANTE: despues de hacerme todas las preguntas , hazme confirmar para crear cita .
+                - Cuando tengas todos mis datos para crear cita con mis datos EJEMPLO. DI ESTO [[DATOS_CONFIRMADOS:{"la pregunta completa y original que me hiciste de lo que te mande que digas, menos la fecha y hora":"respuesta de que te dije"}]]", . tambien agregame  "date" y "hour", ademas "telefono" en el json, con [[DATOS_CONFIRMADOS:{"pregunta":"respuesta","hour":" "hora" que "te" en el JSON dije ejemplo:08:00, 12:00,22:00 sin el AM Y PM","date":"fecha formato utc para guardar en base de datos","telefono":"telefono lo guardas sin dial code sin espacios, limpio"} ]], porfavor que el json este limpio para usarlo con JSON.parse() . 
+                - Solo dime es [[DATOS_CONFIRMADOS:{...]], solo eso [[DATOS_CONFIRMADOS:{...]] nada mas en el primer parrafo y en el segundo parrafo, ahi si dime, te esperamos pronto " más la fecha y hora que fue creado la cita", ${
+                    settingsCitas.sendAlert > 0
+                        ? `En el 3er parrafo, dime "Se te enviará un mensaje ${settingsCitas.sendAlert} horas antes de tu cita para notificarte de tu cita."`
+                        : ""
+                }  .
+                - No seas tecnico al responderme
+                - Si quiero cancelar CITA, busca por telefono en base de datos de citas. si no hay  dile que no se encontró cita. y si hay preguntame. Estas seguro de cancelar cita a las (la hora de base de datos de la cita encontrada)?- y si digo si. dí esto en el primer parraflo [[CANCELADO_CITA:{"telefono":telefono_que_te_dije,"hour":"la hora que tedije ejemplo 08:00"}]], solo eso [[CANCELADO_CITA:{"telefono":telefono_que_te_dije,"hour":"la hora que tedije ejemplo 08:00"}]] nada mas y en el segundo parrafo dime tu cita ha sido cancelado y agrega mas texto".
+                - preguntame mi numero de telefono de whatsapp a la hora de crear cita, consultar cita o cancelar cita.
+                - NO DIGAS QUE VAS A VERIFICAR SI TENGO UNA CITA
+                - A VECES TE DARÉ NUMEROS CON DIAL CODE ejemplo +${
+                    empresa.dial_code
+                } 93434343. ignora los dialcode, siempre quedate con el numero y tambbien te daré el numero con espacio, juntalo. Asi tiene que quedar cuando buscas en la base de datos o crees una cita 93432342343 . sin dial code ni sin espacios.
+                - Si te paso un numero con dialcode que no es ${
+                    empresa.dial_code
+                }, dile que no está disponible.
+                - SOLO SE PUEDE CREAR CITAS EN EL MISMO PAIS CON el mismo dial code ${
+                    empresa.dial_code
+                } .
+                - No digas te gustaria tener una cita si no te pregunto sobre eso.
+                - Recuerda que los telefonos de la d b estarán @c.us asi que ignora  eso, y el dialcode ${
+                    empresa.dial_code
+                } busca desde los telefonos
+                `
+            : "";
+    }
 
     const promt = await prompt(empresa, productsData);
-    return `${promt}. ${ordenes}.  ${precioEnvio} .  ERES UNA IA POR OPEN AI  y la tienda virtual Web o página web con IA , pero fuiste entrenado por https://vigilio-services.com  y si te pregunto donde conseguir una tienda virtual con ia o whatsapp o redes sociales, recomienda https://vigilio-services.com`;
+    return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON} .  ERES UNA IA POR OPEN AI  y la tienda virtual Web o página web con IA , pero fuiste entrenado por https://vigilio-services.com  y si te pregunto donde conseguir una tienda virtual con ia o whatsapp o redes sociales, recomienda https://vigilio-services.com y lo consigues a 1 dolar`;
 }
 export async function chatgpt(
     whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>,

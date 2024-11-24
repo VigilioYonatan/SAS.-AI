@@ -110,7 +110,6 @@ function usePdfInvoice({ order, type = "recibo" }: usePdfInvoiceProps) {
 						type="application/pdf"
 						width="100%"
 						height={600}
-						frameborder="0"
 					/>
 					<br />
 					<div class="flex gap-2 mt-5 items-center  justify-between flex-wrap">

@@ -79,6 +79,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
 
     @Column({
         type: DataType.BOOLEAN,
+    })
+    is_hidde_total_cart: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
         defaultValue: null,
         allowNull: true,
     })

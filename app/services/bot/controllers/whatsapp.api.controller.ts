@@ -266,101 +266,6 @@ export class whatsappApiController {
                 );
                 const settingsCitas = empresa.citasSetting;
 
-                let citas: Citas[] = JSON.parse(
-                    cache.get(`citas:${empresa.slug}`) ?? "null"
-                );
-                const now = NOW(empresa).utc().format();
-                const after = NOW(empresa)
-                    .add(settingsCitas.max_days, "days")
-                    .utc()
-                    .format();
-                if (!citas) {
-                    citas = await Citas.unscoped().findAll({
-                        where: {
-                            empresa_id: empresa.id,
-                            date: {
-                                [Op.between]: [now, after],
-                            },
-                        },
-                        attributes: { exclude: ["createdAt", "updatedAt"] },
-                    });
-                    cache.set(
-                        `citas:${empresa.slug}`,
-                        JSON.stringify(citas),
-                        60 * 1000 * 2
-                    );
-                }
-
-                const citasJSON = settingsCitas.enabled
-                    ? `***** CITAS/REUNION ******
-                            --- BASE DE DATOS DE CITAS---
-                            ${JSON.stringify(
-                                citas.map((c) => ({
-                                    ...c,
-                                    telefono: c.telephone,
-                                }))
-                            )} 
-                            .
-                            - REVISA LA BASE DE DATOS DE CITAS, antes de hacerme las preguntas.
-                            - ANTES DE HACERMES LAS PREGUNTAS VERIFICA LA BASE DE DATOS DE HORARIO,MAXIMO DE CITAS POR TELEFONO: ${
-                                settingsCitas.maxCitas
-                            }, MAXIMO DE CITA POR HORA DE SEPARACION: ${
-                          settingsCitas.maxCitasForHour
-                      }.
-                            - ----- HORARIO PARA CITAS ---: ${JSON.stringify(
-                                settingsCitas.horario
-                            )}. si está enabled false, quiere decir que no está disponible ese dia.  te pase las horas de abrir y cerrar para crear citas y los dias y está separado por  ${
-                          settingsCitas.max_minutes
-                      } minutos, ejemplo "si es 45 minutos de separacion y inicia a las 8am mostra los horarios 8:, 8:45,9:30,...etc", OJO ${
-                          settingsCitas.max_minutes
-                      } MINUTOS DE SEPARACIÓN, psdt no me traigas todo el horario completo, solo recomiendame una hora y la cercana y temprana nomas y no me digas lo que acabo de decir y cuando mandas la hora usa AM Y PM .
-                          -  OJO no realizar citas, de horas que no estan entre  el horario ejemplo openTime es a las 8 am, y cierra a las 10pm , solo creame citas en esas horas.
-                            - IMPORTANTE: MÁXIMO ${
-                                settingsCitas.maxCitas
-                            } CITAS PARA CREAR cita por telefono ${userId} EN LA BASE DE DATOS DE CITA:  citas, ASI evitar que se cree muchas citas con mismo telefono ${userId}.
-                          - 
-                            - Si mandas listas o opciones algo asi, por favor hazlo bonito en formato whatsapp, separado bonito.
-                            Ojo cuando te digo que  quiero una cita. debes hacermes estas preguntas antes de crear una cita, OJO no inventes preguntas:
-                            Preguntas:
-                            - ${JSON.stringify(settingsCitas.questions)}.
-                            Recuerda que algunas preguntas tienen opciones, las opciones deben estar correctas segun la pregunta con sus opciones y no inventes preguntas que no te dije porfavor.
-                            - IMPORTANTE: Recuerda que no debo crear más de ${
-                                settingsCitas.maxCitasForHour
-                            } citas por hora, eso quiere decir que si ya hay más de ${
-                          settingsCitas.maxCitasForHour
-                      } citas en la hora que te dije. ya no crees.
-                            -  Despues de las preguntas, pasa la lista de dia de hoy de las horas disponible, claro buscas de la base de dato las horas disponible, si te pido de mañana o de otro dia me lo das tambien.,
-                            - Desde la fecha actual ${NOW(empresa).format(
-                                "YYYY-MM-DD hh:mm A"
-                            )} - maximo ${
-                          settingsCitas.max_days
-                      } dias desde la fecha de hoy, ${
-                          settingsCitas.isNextDay
-                              ? "que no sea desde el mismo dia. tiene que ser un dia despues, y que no sea afuera de la hora . ni ayer ni hoy. para el dia siguiente la cita"
-                              : "Puedes crear cita desde hoy. claro despues de las horas de ahorita"
-                      } .
-                            - Por favor ${
-                                settingsCitas.sendQuestionChunk
-                                    ? "Hazme las preguntas de uno a uno"
-                                    : "Hazme las preguntas de una sola, y no uno por uno."
-                            }.
-                            -IMPORTANTE: despues de hacerme todas las preguntas , hazme confirmar para crear cita .
-                            - Cuando tengas todos mis datos para crear cita con mis datos EJEMPLO. DI ESTO [[DATOS_CONFIRMADOS:{"la pregunta completa y original que me hiciste de lo que te mande que digas, menos la fecha y hora":"respuesta de que te dije"}]]", . tambien agregame  "date" y "hour" en el json, con [[DATOS_CONFIRMADOS:{"pregunta":"respuesta","hour":" "hora" que "te" en el JSON dije ejemplo:08:00, 12:00,22:00 sin el AM Y PM","date":"fecha formato utc para guardar en base de datos"} ]], porfavor que el json este limpio para usarlo con JSON.parse() . 
-                            - Solo dime es [[DATOS_CONFIRMADOS:{...]] en el primer parrafo y en el segundo parrafo, ahi si dime, te esperamos pronto " más la fecha y hora que fue creado la cita", ${
-                                settingsCitas.sendAlert > 0
-                                    ? `En el 3er parrafo, dime "Se te enviará un mensaje ${settingsCitas.sendAlert} horas antes de tu cita para notificarte de tu cita."`
-                                    : ""
-                            }  .
-                            - No seas tecnico al responderme
-                            - Si quiero cancelar CITA, busca este telefono ${userId} en base de datos de citas. dile que no se encontró cita. y si hay preguntame. Estas seguro de cancelar cita a las (la hora de base de datos de la cita encontrada)?- y si digo si. dí esto [[CANCELADO_CITA]]".
-                            - no me preguntes mi telefono cual es por que este es mi telefono ${userId}.
-                            - NO DIGAS QUE VAS A VERIFICAR SI TENGO UNA CITA
-                            **** FORMATO DEL TEXTO ****
-                            -IMPORTANTE: RESPONDEME EN FORMATO DE TEXTO WHATSAPP.
-                            - EN LAS PREGUNTAS O PALABRAS IMPORTANTES QUE DIGAS USA *, EJEMPLO: *PREGUNTA_O_PALABRA_IMPORTANTE*, menos los que estan en [[EJEMPLO:{json}]].
-                            `
-                    : "";
-
                 const completion = await openAis[
                     info.slug
                 ].chat.completions.create({
@@ -372,7 +277,7 @@ export class whatsappApiController {
                         {
                             role: "user",
                             content: `${prompt}.
-                                ${citasJSON}
+                              
                                 por ultimo responde bonito en formato whatsapp y cuando mandes listas separalos en \n format whatsapp para que se vea bien y separados y no se vea todo junto el texto. gracias.`,
                         },
                         {
@@ -394,93 +299,7 @@ export class whatsappApiController {
                 // get message ai
                 const completionText = completion.choices[0].message.content!;
 
-                const regex2 = /\[\{CANCELADO_CITA\}\}/;
-                const match2 = completionText.match(regex2);
-                if (match2) {
-                    const findCita = await Citas.findOne({
-                        where: {
-                            telefono: userId,
-                        },
-                    });
-                    if (findCita) {
-                        await findCita.destroy();
-                        await whatsappSendMessageApi(empresa, {
-                            message: "Se canceló la cita correctamente.",
-                            telephone: userId,
-                            options: opt,
-                            delay: 3,
-                        });
-                        return;
-                    }
-                }
-                const regex = /\[\[DATOS_CONFIRMADOS:(.*?)\]\]/;
-                const match = completionText.match(regex);
-                if (match) {
-                    const { hour, date, ...rest } = JSON.parse(match[1]);
-                    const citas = await Citas.findAll({
-                        where: {
-                            date: {
-                                [Op.between]: [now, after],
-                            },
-                            telephone: userId,
-                        },
-                        attributes: {
-                            exclude: ["createdAt", "updatedAt"],
-                        },
-                    });
-                    if (citas.length > settingsCitas.maxCitas) {
-                        const message =
-                            "Ops, Al parecer ya pasaste el limite para crear citas. Quieres cancelar una cita?";
-                        chats[`${empresa.slug}:${userId}`] = [
-                            ...(chats[`${empresa.slug}:${userId}`] || []),
-                            ["assistant", message],
-                        ];
-                        await whatsappSendMessageApi(empresa, {
-                            message: message,
-                            telephone: userId,
-                            options: opt,
-                            delay: 3,
-                        });
-                        return {
-                            success: true,
-                            message: "Enviado correctamente",
-                        };
-                    }
-
-                    await Citas.create({
-                        telephone: userId,
-                        date,
-                        hour,
-                        answers: rest,
-                        empresa_id: empresa.id,
-                    });
-
-                    // if (settingsCitas.sendAlert > 0) {
-                    //     const fechaUTC5 = new Date(time);
-                    //     fechaUTC5.setHours(
-                    //         fechaUTC5.getHours() - settingsCitas.sendAlert
-                    //     );
-                    //     sendMessageCron({
-                    //         empresa,
-                    //         userId,
-                    //         date: fechaUTC5,
-                    //         name: body.notifyName,
-                    //     });
-                    // }
-                    const message = completionText
-                        .replace(regex, "")
-                        .replace(/\s{2,}/g, "\n");
-                    await whatsappSendMessageApi(empresa, {
-                        message: message,
-                        telephone: userId,
-                        options: opt,
-                        delay: 3,
-                    });
-                    return {
-                        success: true,
-                        message: "Enviado correctamente",
-                    };
-                }
+               
                 const [removeNote, urlExtraidas] = await featuresIA(
                     empresa,
                     completionText,

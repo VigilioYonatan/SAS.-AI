@@ -235,31 +235,105 @@ function Header({ header }: HeaderProps) {
                                                 (category) => {
                                                     const dropdown =
                                                         useDropdown();
+                                                    const isOpen =
+                                                        useSignal(false);
                                                     return (
-                                                        <a
-                                                            href={`/shop/${category.slug}`}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                window.location.href = `/shop/${category.slug}`;
+                                                            }}
                                                             class={`flex gap-2 items-center justify-between p-2   group w-full rounded-md hover:bg-primary ${bgPrimaryHover()}`}
+                                                            onFocus={() => {}}
+                                                            onBlur={() => {}}
                                                             ref={
                                                                 dropdown.dropdown
                                                             }
                                                             key={category.id}
                                                             aria-label="sho category"
+                                                            onMouseOver={() => {
+                                                                isOpen.value =
+                                                                    !isOpen.value;
+                                                            }}
+                                                            onMouseOut={() => {
+                                                                isOpen.value =
+                                                                    false;
+                                                            }}
                                                         >
-                                                            <div class="flex gap-3 items-center dark:text-white">
-                                                                {category.icon ? (
-                                                                    <div
-                                                                        dangerouslySetInnerHTML={{
-                                                                            __html: category.icon,
-                                                                        }}
-                                                                    />
+                                                            <div class="flex gap-3 items-center dark:text-white justify-between w-full">
+                                                                <div class="flex gap-2 w-full">
+                                                                    {category.icon ? (
+                                                                        <div
+                                                                            dangerouslySetInnerHTML={{
+                                                                                __html: category.icon,
+                                                                            }}
+                                                                        />
+                                                                    ) : null}
+                                                                    <span class="font-semibold">
+                                                                        {
+                                                                            category.name
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                                {category
+                                                                    .subcategories
+                                                                    .length &&
+                                                                storageEmpresa
+                                                                    ?.setting
+                                                                    .is_subcategory ? (
+                                                                    <button
+                                                                        type="button"
+                                                                        aria-label="on subcategory"
+                                                                    >
+                                                                        <i class="far fa-chevron-right" />
+                                                                    </button>
                                                                 ) : null}
-                                                                <span class="font-semibold">
-                                                                    {
-                                                                        category.name
-                                                                    }
-                                                                </span>
+                                                                {category
+                                                                    .subcategories
+                                                                    .length &&
+                                                                storageEmpresa
+                                                                    ?.setting
+                                                                    .is_subcategory ? (
+                                                                    <div
+                                                                        class={`flex p-2 min-w-[300px]  bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  left-[19rem]  shadow-lg ${
+                                                                            isOpen.value
+                                                                                ? "max-h-[800px]  opacity-100"
+                                                                                : "max-h-0 overflow-hidden opacity-0"
+                                                                        }`}
+                                                                    >
+                                                                        {category.subcategories.map(
+                                                                            (
+                                                                                sub
+                                                                            ) => {
+                                                                                const dropdown =
+                                                                                    useDropdown();
+                                                                                return (
+                                                                                    <a
+                                                                                        href={`/shop/${category.slug}/${sub.slug}`}
+                                                                                        class={`flex gap-2 items-center justify-between p-2   group w-full rounded-md hover:bg-primary ${bgPrimaryHover()}`}
+                                                                                        ref={
+                                                                                            dropdown.dropdown
+                                                                                        }
+                                                                                        key={
+                                                                                            sub.id
+                                                                                        }
+                                                                                        aria-label="sho category"
+                                                                                    >
+                                                                                        <div class="flex gap-3 items-center dark:text-white justify-between w-full">
+                                                                                            <span class="font-semibold">
+                                                                                                {
+                                                                                                    sub.name
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </a>
+                                                                                );
+                                                                            }
+                                                                        )}
+                                                                    </div>
+                                                                ) : null}
                                                             </div>
-                                                        </a>
+                                                        </button>
                                                     );
                                                 }
                                             )}
@@ -621,17 +695,25 @@ function Header({ header }: HeaderProps) {
                                     {useMediaQuery("(min-width:1025px)") ? (
                                         <WebNotificacion />
                                     ) : null}
-                                    <AuthUserIcon hiddenName={true} />
-                                    <div class="flex flex-col gap-1 ">
-                                        <span class="font-bold tracking-wide text-xs   dark:text-white">
-                                            TOTAL
-                                        </span>
-                                        <span class="font-semibold text-xs dark:text-white">
-                                            {formatMoney(
-                                                cartStore.methods.getTotal()
-                                            )}
-                                        </span>
-                                    </div>
+                                    {storageEmpresa?.setting.header_type ===
+                                    "transparent" ? (
+                                        <AuthUserIcon hiddenName={true} />
+                                    ) : (
+                                        ""
+                                    )}
+                                    {storageEmpresa?.setting
+                                        .is_hidde_total_cart ? (
+                                        <div class="flex flex-col gap-1 ">
+                                            <span class="font-bold tracking-wide text-xs   dark:text-white">
+                                                TOTAL
+                                            </span>
+                                            <span class="font-semibold text-xs dark:text-white">
+                                                {formatMoney(
+                                                    cartStore.methods.getTotal()
+                                                )}
+                                            </span>
+                                        </div>
+                                    ) : null}
                                 </>
                             ) : (
                                 <>
@@ -802,16 +884,18 @@ function HeaderAside({ header, isOpen }: HeaderAsideProps) {
                                 ) : null}
                                 <span>{category.name}</span>
                             </a>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    dropdown2.onOpenClose();
-                                }}
-                                type="button"
-                                class="w-[20px]"
-                            >
-                                <i class="fas fa-caret-right" />
-                            </button>
+                            {category.subcategories.length ? (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        dropdown2.onOpenClose();
+                                    }}
+                                    type="button"
+                                    class="w-[20px]"
+                                >
+                                    <i class="fas fa-caret-right" />
+                                </button>
+                            ) : null}
                         </div>{" "}
                         {dropdown2.dropdownOpen &&
                         category.subcategories.length ? (
@@ -842,7 +926,6 @@ function HeaderAside({ header, isOpen }: HeaderAsideProps) {
                     <div
                         ref={dropdown.dropdown}
                         key={category.id}
-                        type="button"
                         class="bg-background-light dark:bg-paper-dark  dark:border-gray-600 py-2 font-semibold  px-5 w-full border-gray-1 flex justify-between items-center border-b border-gray-100 dark:!text-white hover:text-primary dark:hover:!text-primary  relative"
                     >
                         <button

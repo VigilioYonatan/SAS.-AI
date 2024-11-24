@@ -40,12 +40,16 @@ import { getFilesEdit } from "~/libs/upload";
 import useEmpresastore, { storageEmpresa } from "../stores/empresa.store";
 import { formSelectNumber } from "~/components/form/FormSelect";
 import AlertInfo from "~/components/Alerts/AlertInfo";
-import { DIALCODE } from "../libs/helpers";
+import { DIALCODE, typeFiscal } from "../libs/helpers";
 import { useSignal } from "@preact/signals";
 import { settingsUpdateApi } from "../apis/settings/settings.update.api";
-import { vigilioVersionLatests } from "../apis/vigilio-services.information.api";
+import {
+    updateVps,
+    vigilioVersionLatests,
+} from "../apis/vigilio-services.information.api";
 import Helper from "~/components/Helper";
 import enviroments from "~/config";
+import LoaderSubmit from "~/components/LoaderSubmit";
 
 function empresaUpdate() {
     const { guards } = useAuthstore();
@@ -567,6 +571,10 @@ function empresaUpdate() {
                                                 Se verá la velocidad en los
                                                 productos que se muestran en tu
                                                 web.
+                                                <br />
+                                                Puede que si modifiques tu web
+                                                se tarde en actualizarse 30 - 60
+                                                minutos.
                                             </div>
                                         }
                                     />
@@ -705,6 +713,30 @@ function empresaUpdate() {
                                             Se mostrará los campos dirección y
                                             referencia a la hora de pagar
                                             (carrito).
+                                        </span>
+                                    }
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "enabled_dni_cart" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Habilitar Documento de identidad a la hora de pagar"
+                                    question={
+                                        <span>
+                                            Se mostrará los campos{" "}
+                                            {
+                                                typeFiscal[
+                                                    storageEmpresa?.dial_code as keyof typeof typeFiscal
+                                                ].type_dni
+                                            }
+                                            /
+                                            {
+                                                typeFiscal[
+                                                    storageEmpresa?.dial_code as keyof typeof typeFiscal
+                                                ].type_fiscal
+                                            }{" "}
+                                            a la hora de pagar (carrito).
+                                            <br />
                                         </span>
                                     }
                                 />
@@ -1082,6 +1114,7 @@ function empresaUpdate() {
                                 {(() => {
                                     const vigilioVersionLatestsQuery =
                                         vigilioVersionLatests();
+                                    const updateVpsMutate = updateVps();
                                     return (
                                         <div>
                                             <span>Versión</span>{" "}
@@ -1102,9 +1135,53 @@ function empresaUpdate() {
                                                         class="relative mt-1 bg-black px-4 py-2 rounded-md text-white"
                                                         type="button"
                                                         aria-label="update"
+                                                        onClick={() => {
+                                                            sweetModal({
+                                                                title: "¿Estas seguro actualizar tu web en la ultima version?",
+                                                            }).then(
+                                                                ({
+                                                                    isConfirmed,
+                                                                }) => {
+                                                                    if (
+                                                                        isConfirmed
+                                                                    ) {
+                                                                        updateVpsMutate.mutate(
+                                                                            null,
+                                                                            {
+                                                                                onSuccess() {
+                                                                                    sweetAlert(
+                                                                                        {
+                                                                                            title: "Esto puede tomar unos minutos",
+                                                                                        }
+                                                                                    );
+                                                                                },
+                                                                                onError() {
+                                                                                    sweetAlert(
+                                                                                        {
+                                                                                            title: "Esto puede tomar unos minutos",
+                                                                                        }
+                                                                                    );
+                                                                                },
+                                                                            }
+                                                                        );
+                                                                    }
+                                                                }
+                                                            );
+                                                        }}
+                                                        disabled={
+                                                            updateVpsMutate.isLoading ||
+                                                            false
+                                                        }
                                                     >
-                                                        <i class="far fa-sync-alt" />{" "}
-                                                        Actualizar
+                                                        {updateVpsMutate.isLoading ? (
+                                                            <LoaderSubmit />
+                                                        ) : (
+                                                            <>
+                                                                <i class="far fa-sync-alt" />{" "}
+                                                                Actualizar
+                                                            </>
+                                                        )}
+
                                                         <Helper
                                                             top={0}
                                                             right={9}

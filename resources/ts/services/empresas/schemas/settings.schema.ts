@@ -164,6 +164,7 @@ export const settingsSchema = object({
         custom((val) => ["first", "second"].includes(val)),
     ]),
     is_hover_product: boolean(),
+    is_hidde_total_cart: boolean(),
     type_icons_bars: string([
         custom(
             (val) => ["normal", "light", ""].includes(val),

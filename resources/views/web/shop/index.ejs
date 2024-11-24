@@ -6,6 +6,7 @@
 </head>
 
 <body class="dark:bg-paper-dark  bg-paper-light">
+  <%- include("../components/pixels.ejs")  %>
   <shop-page :header="<%= JSON.stringify(header)  %>" :noticia="<%= JSON.stringify(noticia)  %>" :categories="<%= JSON.stringify(categories)  %>" :productsLatestMapped="<%= JSON.stringify(productsOffertsMapped)  %>" :productsOffertsMapped="<%= JSON.stringify(productsOffertsMapped)  %>" :productLatestMapped="<%= JSON.stringify(productLatestMapped)  %>" :productMostDiscountMapped="<%= JSON.stringify(productMostDiscountMapped)  %>"></shop-page>
 
 </body>

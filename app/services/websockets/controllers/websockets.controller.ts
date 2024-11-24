@@ -27,7 +27,7 @@ import cron from "node-cron";
 import { promptReplace } from "@/bot/libs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 export function HTMLPROMPT(empresa: Empresas) {
-    return `- Por ultimo, cada vez que te pida informacion de un producto  trate de responder con una imagen o link. si envias imagen , que sea en etiqueta image <img width='100' height='100' class='w-[100px] h-[150px] rounded-md object-contain'/>   y si  envias cualquier tipo de link  SIEMPRE por favor etiqueta html <a href='http...link'  class="text-primary font-semibold"corto_mensaje_sobre_el_llink_que_envias</a> , no preguntes porque, responde como si fuera html con espacios usando br en productos o pedidos. para que lea bien.  y no uses ** mejor utiliza la etiqueta <b></b>, y si envias caracterisiticas o algo aso por favor que sea en table ,  thead de la tabla ponlo esta clase de css class='bg-primary  Sí ${empresa.setting.bg_color} es un color oscuro text-white sino text-black',   como el carrito de lo que pide el cliente y la letra 13px . si dices una lista por traelas con etqueta li y  la letra 13px, y cuando use ** traela con etiqueta b class="font-bold", POR ULTIMO. siempre cuando me respondas lista, hacelo con una tabla html porfav. SIEMPRE HTML y no en markdown`;
+    return `- IMPORTANTE: Por ultimo siempre responde con etiquetas html y clases de tailwind, cada vez que te pida informacion de un producto  trate de responder con una imagen o link. si envias imagen , que sea en etiqueta image <img width='100' height='100' class='w-[100px] h-[150px] rounded-md object-contain'/>   y si  envias cualquier tipo de link  SIEMPRE por favor etiqueta html <a href='http...link'  class="text-primary font-semibold"corto_mensaje_sobre_el_llink_que_envias</a> , no preguntes porque, responde como si fuera html con espacios usando br en productos o pedidos. para que lea bien.  IMPORTANTE:  no uses *PALABRA IMPORTANTE* mejor utiliza la etiqueta <b class="font-semibold"></b>, y si envias caracterisiticas o algo aso por favor que sea en table ,  thead de la tabla ponlo esta clase de css class='bg-primary  Sí ${empresa.setting.bg_color} es un color oscuro text-white sino text-black',   como el carrito de lo que pide el cliente y la letra 13px . si dices una lista por traelas con <ul class="list-inside list-disc"></ul> etqueta li y  la letra 13px, y cuando use ** traela con etiqueta b class="font-bold", POR ULTIMO. siempre cuando me respondas lista, hacelo con una tabla html porfav. SIEMPRE HTML y no en markdown y si me haces preguntas separalos bonito usando ul li. SIEMPRE usas clases de tailwind para que se vea bonito. Ny usa <b class="font-semibold"></b> en las palabras importantes. Cuando termines en . ? !  usa <br/>`;
 }
 export let chatAssistantWeb: Record<string, ["user" | "assistant", string][]> =
     {};
@@ -68,6 +68,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
                 ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
             ],
         });
+
         // get message ai
         const completionText = completion.choices[0].message.content!;
 
@@ -77,7 +78,6 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
             ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
             ["assistant", removeNote],
         ];
-
         return removeNote;
     } catch (error) {
         return "Hubo un error al usar ia, posible errores no hay tokens.";

@@ -127,6 +127,7 @@ export class SeedersApiService {
                         is_hover_product: true,
                         type_product_buttons: "first",
                         type_icons_bars: "normal",
+                        is_hidde_total_cart: false,
                     },
                 });
                 await Promise.all([Address.bulkCreate(addressSeeder)]);

@@ -335,6 +335,12 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     enabled_commentario_ia: boolean;
 
     @Column({
+        type: DataType.BOOLEAN,
+        allowNull: false,
+    })
+    enabled_dni_cart: boolean;
+
+    @Column({
         type: DataType.JSON,
     })
     icon: FilesSchema[] | null;

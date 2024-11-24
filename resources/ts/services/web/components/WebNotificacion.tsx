@@ -30,7 +30,9 @@ function WebNotificacion() {
                                                     : "r"
                                             } fa-bell text-lg  lg:dark:text-white`}
                                         />
-                                        <methods.NotificationCountComponent />
+                                        <methods.NotificationCountComponent
+                                            isWeb
+                                        />
                                     </button>
                                 )}
                             >

@@ -158,10 +158,10 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                     class="border-2 absolute border-white rounded-full w-[20px] h-[20px] font-semibold text-[0.7rem]   -right-3 -top-1 flex justify-center items-center   "
                                     style={{
                                         backgroundColor:
-                                            storageEmpresa?.setting
+                                            empresaStore.state?.setting
                                                 .bg_color_secondary,
                                         color: isColorLight(
-                                            storageEmpresa!.setting
+                                            empresaStore.state!.setting
                                                 .bg_color_secondary
                                         )
                                             ? "#000000"
@@ -224,10 +224,10 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                     class="absolute -top-1 -right-2  border-2 text-xs font-bold flex justify-center items-center  w-[20px] h-[20px] rounded-full"
                                     style={{
                                         backgroundColor:
-                                            storageEmpresa?.setting
+                                            empresaStore.state?.setting
                                                 .bg_color_secondary,
                                         color: isColorLight(
-                                            storageEmpresa!.setting
+                                            empresaStore.state!.setting
                                                 .bg_color_secondary
                                         )
                                             ? "#000000"

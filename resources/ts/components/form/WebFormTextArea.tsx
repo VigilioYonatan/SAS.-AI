@@ -8,11 +8,10 @@ import type {
 	RegisterOptions,
 	UseFormReturn,
 } from "react-hook-form";
-import type { HTMLAttributes } from "preact/compat";
 import enviroments from "~/config";
 
 interface WebFormTextAreaLabelProps<T extends object>
-	extends Omit<HTMLAttributes<HTMLTextAreaElement>, "type" | "name"> {
+	extends Omit<JSX.IntrinsicElements["textarea"], "type" | "name"> {
 	title: string;
 	name: keyof T;
 	question?: JSX.Element | JSX.Element[];

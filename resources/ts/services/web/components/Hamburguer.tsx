@@ -10,7 +10,6 @@ function Hamburguer({ isOpen }: HamburguerProps) {
                 class={`hamburger hamburger--collapse ${
                     isOpen ? "is-active" : ""
                 }`}
-                type="button"
             >
                 <i
                     class={`${storageEmpresa?.setting.hamburger.replace(

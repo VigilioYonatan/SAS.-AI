@@ -160,7 +160,9 @@ export class UsersApiService {
                 where: {
                     email: usersProfileDto.email,
                     empresa_id: empresa.id,
-                    id: { [Op.not]: user.id },
+                    [Op.not]: {
+                        id: user.id,
+                    },
                 },
                 raw: true,
             }),

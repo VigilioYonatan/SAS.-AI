@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { valibotVigilio } from "~/libs/valibot";
 import { usersUpdateDto, type UsersUpdateDto } from "../dtos/users.update.dto";
 import { useMemo } from "preact/hooks";
-import { handlerError } from "~/libs/helpers";
+import { handlerError, NOW, restarDays } from "~/libs/helpers";
 import Container from "@/admin/components/Container";
 
 interface UsersShowProps {
@@ -261,6 +261,52 @@ function UsersShow({ params: { slug }, refetch, onClose }: UsersShowProps) {
                                         </div>
                                     ) : (
                                         "no se ingresó"
+                                    )}
+                                </span>
+                            </div>
+                            <div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
+                                <span class="text-primary dark:text-terciary font-bold">
+                                    Compras realizadas:
+                                </span>
+                                <span class="dark:text-secondary-light text-secondary-dark tracking-wide">
+                                    {user.buys?.length ? (
+                                        <div class="flex flex-col gap-1">
+                                            {user.buys.map((buy, i) => (
+                                                <div
+                                                    class="flex gap-1 items-center"
+                                                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                                    key={i}
+                                                >
+                                                    <span class="flex">
+                                                        <a
+                                                            class="hover:text-primary text-xs"
+                                                            href={`/admin/orders/${buy.order}`}
+                                                        >
+                                                            {buy.order}
+                                                        </a>{" "}
+                                                    </span>
+                                                    <span class="flex text-xs">
+                                                        <span>{buy.title}</span>
+                                                    </span>
+                                                    {buy.date ? (
+                                                        <span class="flex text-xs">
+                                                            <span>
+                                                                {restarDays(
+                                                                    NOW(),
+                                                                    buy.date,
+                                                                    "day"
+                                                                )}{" "}
+                                                                días
+                                                            </span>
+                                                        </span>
+                                                    ) : null}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <span class="text-xs">
+                                            No hay compras
+                                        </span>
                                     )}
                                 </span>
                             </div>
