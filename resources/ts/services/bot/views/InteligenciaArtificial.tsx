@@ -311,6 +311,19 @@ function InteligenciaArtificial() {
                                 </div>
                             }
                         />
+                        <Form.control.toggle
+                            name={
+                                "inteligenceArtificial.try_to_sell" as keyof EmpresasIAUpdateDto
+                            }
+                            title="Habilitar Cerrar Ventas"
+                            question={
+                                <div class="w-[200px]">
+                                    La inteligencia Artificial tratará de cerrar
+                                    ventas, forzando a que el cliente vaya al
+                                    carrito de compras.
+                                </div>
+                            }
+                        />
                     </div>
                     <div class="flex gap-2 items-center">
                         <Form.control

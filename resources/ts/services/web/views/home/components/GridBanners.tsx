@@ -29,7 +29,7 @@ function GridBanners({ grid, i }: GridBanners) {
 
                     return (
                         <div
-                            class="w-full relative h-full group"
+                            class="w-full relative h-full group overflow-hidden"
                             ref={divRef}
                             key={banner.id}
                             onClick={() => {
@@ -73,7 +73,7 @@ function GridBanners({ grid, i }: GridBanners) {
                                 </div>
                             ) : (
                                 <div
-                                    class="w-full h-full   bg-cover bg-center group-hover:scale-110 delay-custom-1   bg-no-repeat -z-10 flex items-end"
+                                    class="w-full h-full   bg-cover bg-center group-hover:scale-105 delay-custom-1   bg-no-repeat -z-10 flex items-end"
                                     style={{
                                         backgroundImage: `url(${file})`,
                                     }}
