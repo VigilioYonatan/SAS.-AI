@@ -5,12 +5,14 @@ import {
     coerce,
     custom,
     date,
+    literal,
     maxLength,
     minLength,
     nullable,
     number,
     object,
     string,
+    union,
     type Input,
 } from "@vigilio/valibot";
 import { filesSchema } from "~/libs/upload";
@@ -24,6 +26,7 @@ export const hamburgers = [
     "fas fa-hamburger",
     "fas fa-bars",
 ];
+
 export const hostSchema = object({
     host: nullable(
         string([
@@ -47,39 +50,31 @@ export const settingsSchema = object({
     bg_color_button: string(),
     bg_color_background: string(),
     is_subcategory: boolean(),
-    background_position: string([
-        custom(
-            (val) => ["center", "start", "end"].includes(val),
-            "position no válido"
-        ),
-    ]),
-    background_type: string([
-        custom(
-            (val) => ["first", "second"].includes(val),
-            "Tipo de Background no válido"
-        ),
-    ]),
+    background_position: union(
+        [literal("center"), literal("start"), literal("end")],
+        "position no válido"
+    ),
+    background_type: union(
+        [literal("first"), literal("second")],
+        "Tipo de Background no válido"
+    ),
     bg_color_paper: string(),
-    type_border: string([
-        custom((val) => ["circle", "square"].includes(val), "Border no válido"),
-    ]),
-    font_face: string([
-        custom(
-            (val) => ["Barlow", "Exo", "Poppins"].includes(val),
-            "fuente no válido"
-        ),
-    ]),
-    type_cart: string([
-        custom(
-            (val) =>
-                [
-                    "fas fa-shopping-cart",
-                    "fas fa-shopping-bag",
-                    "fas fa-shopping-basket",
-                ].includes(val),
-            "Border no válido"
-        ),
-    ]),
+    type_border: union(
+        [literal("circle"), literal("square")],
+        "Border no válido"
+    ),
+    font_face: union(
+        [literal("Barlow"), literal("Exo"), literal("Poppins")],
+        "fuente no válido"
+    ),
+    type_cart: union(
+        [
+            literal("fas fa-shopping-cart"),
+            literal("fas fa-shopping-bag"),
+            literal("fas fa-shopping-basket"),
+        ],
+        "Border no válido"
+    ),
     isCoverImage: boolean(),
     isScrolling: boolean(),
 
@@ -90,21 +85,26 @@ export const settingsSchema = object({
         custom((val) => hamburgers.includes(val), "Hamburguesa no válida"),
     ]),
     position_header: boolean(),
-    border_title_type: string(),
-    type_icons: string([
-        custom(
-            (val) =>
-                [
-                    "normal",
-                    "icons",
-                    "premium",
-                    "premium2",
-                    "premium3",
-                    "animation",
-                ].includes(val),
-            "Icono Pack no válido"
-        ),
-    ]),
+    border_title_type: union(
+        [
+            literal("normal"),
+            literal("circle"),
+            literal("border"),
+            literal("null"),
+        ],
+        "Icono Pack no válido"
+    ),
+    type_icons: union(
+        [
+            literal("normal"),
+            literal("icons"),
+            literal("premium"),
+            literal("premium2"),
+            literal("premium3"),
+            literal("animation"),
+        ],
+        "Icono Pack no válido"
+    ),
 
     shows: object({
         map: boolean(),
@@ -115,31 +115,23 @@ export const settingsSchema = object({
         offers_section: boolean(),
         offers_user: boolean(),
     }),
-    type_map: string([
-        custom(
-            (val) => ["normal", "satelite", "secondary"].includes(val),
-            "Mapa no válido"
-        ),
-    ]),
-    type_star: string([
-        custom(
-            (val) => ["heart", "star"].includes(val),
-            "Tipo de estrella no válido"
-        ),
-    ]),
-    header_type: string([
-        custom(
-            (val) => ["normal", "search", "transparent"].includes(val),
-            "Tipo de header no válido"
-        ),
-    ]),
+    type_map: union(
+        [literal("normal"), literal("satelite"), literal("secondary")],
+        "Mapa no válido"
+    ),
+    type_star: union(
+        [literal("heart"), literal("star")],
+        "Tipo de estrella no válido"
+    ),
+    header_type: union(
+        [literal("normal"), literal("search"), literal("transparent")],
+        "Tipo de header no válido"
+    ),
     logo_width: number(),
-    type_card: string([
-        custom(
-            (val) => ["normal", "eccomerce"].includes(val),
-            "card no válido"
-        ),
-    ]),
+    type_card: union(
+        [literal("normal"), literal("eccomerce")],
+        "Tipo de card no válido"
+    ),
     header_position: object({
         logo: number(),
         navbar: number(),
@@ -160,17 +152,17 @@ export const settingsSchema = object({
     type_animation: string(),
     background_auth: array(filesSchema()),
     web_script: nullable(string()),
-    type_product_buttons: string([
-        custom((val) => ["first", "second"].includes(val)),
-    ]),
+    type_product_buttons: union([literal("first"), literal("second")]),
     is_hover_product: boolean(),
     is_hidde_total_cart: boolean(),
-    type_icons_bars: string([
-        custom(
-            (val) => ["normal", "light", ""].includes(val),
-            "Tipo de icono no válido"
-        ),
-    ]),
+    type_icons_bars: union(
+        [literal("normal"), literal("light")],
+        "Tipo de icono no válido"
+    ),
+    type_arrow: union(
+        [literal("first"), literal("second"), literal("third")],
+        "Tipo de arrows no válido"
+    ),
     // position_map: string([
     //     custom(
     //         (val) => ["start", "end"].includes(val),
@@ -179,6 +171,7 @@ export const settingsSchema = object({
     // ]),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;
+
 export type SettingsSchemaFromServer = SettingsSchema & {
     city: CitiesSchemaFromServer;
 };

@@ -138,7 +138,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
         [discount, price]
     );
     useEffect(() => {
-        productsNormalStoreDtoForm.unregister("subcategory_id");
+        productsNormalStoreDtoForm.setValue("subcategory_id", null);
         if (category_id) {
             categoriesSubcategoriesQuery.refetch();
         } else {

@@ -63,7 +63,7 @@ export class SeedersApiService {
                     ...empresa,
                     fullname: "Yonatan Vigilio",
                     password: "123456a",
-                    servicio_id: 3,
+                    servicio_id: 1,
                     gridBanners: [],
                     setting: {
                         host: {
@@ -128,6 +128,7 @@ export class SeedersApiService {
                         type_product_buttons: "first",
                         type_icons_bars: "normal",
                         is_hidde_total_cart: false,
+                        type_arrow: "first",
                     },
                 });
                 await Promise.all([Address.bulkCreate(addressSeeder)]);

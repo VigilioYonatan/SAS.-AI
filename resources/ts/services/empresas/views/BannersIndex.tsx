@@ -325,7 +325,7 @@ function BannersIndex() {
                                                                             showCloseButton:
                                                                                 true,
                                                                             isCloseInBackground:
-                                                                                true,
+                                                                                false,
                                                                         })
                                                                     );
                                                                 }}

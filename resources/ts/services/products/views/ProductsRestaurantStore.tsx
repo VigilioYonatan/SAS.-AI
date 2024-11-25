@@ -147,7 +147,7 @@ function ProductsRestaurantStore({
         }
     }, [name]);
     useEffect(() => {
-        productsRestaurantStoreDtoForm.unregister("subcategory_id");
+        productsRestaurantStoreDtoForm.setValue("subcategory_id",null);
         if (category_id) {
             categoriesSubcategoriesQuery.refetch();
         } else {

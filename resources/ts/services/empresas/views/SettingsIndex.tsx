@@ -48,6 +48,7 @@ import NavTabs from "@/web/components/NavTabs";
 import MapValue, { typeMap } from "~/components/MapValue";
 import AlertWarning from "~/components/Alerts/AlertWarning";
 import { BASE_URL } from "~/config";
+import { SamplePrevArrow } from "@/web/components/ArrowsSlider";
 
 const dominioUpdate = pick(hostSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
@@ -131,6 +132,7 @@ function SettingsIndex() {
         const hamburger = settingsUpdateform.watch("hamburger");
         const isLogoImage = settingsUpdateform.watch("isLogoImage");
         const bg_color = settingsUpdateform.watch("bg_color");
+        const type_arrow = settingsUpdateform.watch("type_arrow");
         const bg_color_background = settingsUpdateform.watch(
             "bg_color_background"
         );
@@ -1625,6 +1627,38 @@ function SettingsIndex() {
                                 ))}
                             </div>
                         </div>
+                        <div>
+                            <span class="text-xs dark:text-white font-semibold">
+                                Tipo Arrow
+                            </span>
+                            <div class="flex gap-2 flex-wrap">
+                                {(
+                                    [
+                                        "first",
+                                        "second",
+                                        "third",
+                                    ] as (typeof type_arrow)[]
+                                ).map((arrow) => (
+                                    <button
+                                        key={arrow}
+                                        class={`min-w-[60px] h-[60px]  rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                            type_arrow === arrow
+                                                ? "bg-paper-light dark:bg-admin-terciary"
+                                                : ""
+                                        }`}
+                                        type="button"
+                                        onClick={() =>
+                                            settingsUpdateform.setValue(
+                                                "type_arrow",
+                                                arrow
+                                            )
+                                        }
+                                    >
+                                        <SamplePrevArrow isSetting={arrow} />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                         <div class="flex flex-col">
                             <div>
                                 <span class="text-xs dark:text-white font-semibold">
@@ -1802,57 +1836,33 @@ function SettingsIndex() {
                                 <div class="flex gap-2 flex-wrap">
                                     <div class="flex flex-col gap-1">
                                         <div class="flex gap-1">
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    border_title_type ===
-                                                    "normal"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "border_title_type",
-                                                        "normal"
-                                                    );
-                                                }}
-                                            >
-                                                Normal
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    border_title_type ===
-                                                    "circle"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "border_title_type",
-                                                        "circle"
-                                                    );
-                                                }}
-                                            >
-                                                Circulares
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    border_title_type ===
-                                                    "ninguno"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "border_title_type",
-                                                        "ninguno"
-                                                    );
-                                                }}
-                                            >
-                                                Ninguno
-                                            </button>
+                                            {(
+                                                [
+                                                    "normal",
+                                                    "circle",
+                                                    "border",
+                                                    "null",
+                                                ] as (typeof border_title_type)[]
+                                            ).map((border) => (
+                                                <button
+                                                    key={border}
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        border_title_type ===
+                                                        border
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "border_title_type",
+                                                            border
+                                                        );
+                                                    }}
+                                                >
+                                                    {border}
+                                                </button>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
@@ -1878,7 +1888,7 @@ function SettingsIndex() {
                                                         onClick={() => {
                                                             settingsUpdateform.setValue(
                                                                 "type_map",
-                                                                key
+                                                                key as typeof type_map
                                                             );
                                                         }}
                                                     >
@@ -1914,39 +1924,42 @@ function SettingsIndex() {
                             <div class="flex gap-2 flex-wrap overflow-auto">
                                 <div class="flex flex-col gap-1">
                                     <div class="grid grid-cols-3 gap-1">
-                                        {Object.entries(icons()).map(
-                                            ([key, val]) => (
-                                                <button
-                                                    key={key}
-                                                    class={`min-w-[120px] h-[120px] grid grid-cols-2 justify-center items-center rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                        type_icons === key
-                                                            ? "bg-paper-light dark:bg-admin-terciary"
-                                                            : ""
-                                                    } font-semibold text-xs dark:text-white relative  p-2`}
-                                                    type="button"
-                                                    onClick={() => {
-                                                        settingsUpdateform.setValue(
-                                                            "type_icons",
-                                                            key
-                                                        );
-                                                    }}
-                                                >
-                                                    {val.map((ic) => (
-                                                        <div
-                                                            key={ic}
-                                                            dangerouslySetInnerHTML={{
-                                                                __html: ic,
-                                                            }}
-                                                            class=" flex justify-center items-center"
-                                                        />
-                                                    ))}
+                                        {Object.entries(
+                                            icons() as Record<
+                                                typeof type_icons,
+                                                string[]
+                                            >
+                                        ).map(([key, val]) => (
+                                            <button
+                                                key={key}
+                                                class={`min-w-[120px] h-[120px] grid grid-cols-2 justify-center items-center rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    type_icons === key
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white relative  p-2`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "type_icons",
+                                                        key as typeof type_icons
+                                                    );
+                                                }}
+                                            >
+                                                {val.map((ic) => (
+                                                    <div
+                                                        key={ic}
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: ic,
+                                                        }}
+                                                        class=" flex justify-center items-center"
+                                                    />
+                                                ))}
 
-                                                    <span class="absolute top-[40%] px-2 py-1 rounded-md right-[25%] bg-black bg-opacity-60 text-white">
-                                                        {key}
-                                                    </span>
-                                                </button>
-                                            )
-                                        )}
+                                                <span class="absolute top-[40%] px-2 py-1 rounded-md right-[25%] bg-black bg-opacity-60 text-white">
+                                                    {key}
+                                                </span>
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
                             </div>

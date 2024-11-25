@@ -90,6 +90,7 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
             enabledHuman: true,
             settings: { enabled_cart: true, enabled_order: true },
             showAllProductsInformation: false,
+            try_to_sell: true,
         },
         dateRelease: new Date(),
         yearFounded: new Date(2012),
@@ -290,6 +291,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
             memory: 9,
             settings: { enabled_cart: true, enabled_order: true },
             showAllProductsInformation: false,
+            try_to_sell: true,
         },
         dateRelease: new Date(),
         whatsapp_mode: {
@@ -387,7 +389,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
             tokens: { tokens: 10000000 },
             finanza: { enabled: true },
         },
-        type_empresa_id: 27, //22 servicio
+        type_empresa_id: 1, //22 servicio
         bancos: [
             {
                 key: "bbva",

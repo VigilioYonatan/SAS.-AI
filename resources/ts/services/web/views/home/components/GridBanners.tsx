@@ -1,6 +1,8 @@
 import { BannerSchema } from "@/empresas/schemas/banner.schema";
 import { GridBannerSchema } from "@/empresas/schemas/grid_banner.schema";
 import TitleSection from "@/web/components/TitleSection";
+import { useSignal } from "@preact/signals";
+import { useEffect, useRef } from "preact/hooks";
 import { printFileWithDimension } from "~/libs/upload";
 
 interface GridBanners {
@@ -18,11 +20,40 @@ function GridBanners({ grid, i }: GridBanners) {
             ) : null}
             <div class={`w-full  grid banner-${i} relative`}>
                 {grid[i].banners.map((banner) => {
-                    const file = printFileWithDimension(banner.file, 1200)[0];
+                    const divRef = useRef<HTMLDivElement | null>(null);
+                    const width = useSignal(0);
+
+                    const selectedSize = [300, 600, 800, 1200].reduce(
+                        (prev, curr) => {
+                            return Math.abs(curr - width.value) <
+                                Math.abs(prev - width.value)
+                                ? curr
+                                : prev;
+                        }
+                    );
+                    const file = printFileWithDimension(
+                        banner.file,
+                        selectedSize
+                    )[0];
+                    useEffect(() => {
+                        if (divRef.current) {
+                            width.value = divRef.current.offsetWidth;
+                        }
+                        const handleResize = () => {
+                            if (divRef.current) {
+                                width.value = divRef.current.offsetWidth;
+                            }
+                        };
+                        window.addEventListener("resize", handleResize);
+                        return () => {
+                            window.removeEventListener("resize", handleResize);
+                        };
+                    }, []);
 
                     return (
                         <div
-                            class="w-full relative h-full"
+                            class="w-full relative h-full group"
+                            ref={divRef}
                             key={banner.id}
                             onClick={() => {
                                 if (banner.link && !banner.button) {
@@ -65,7 +96,7 @@ function GridBanners({ grid, i }: GridBanners) {
                                 </div>
                             ) : (
                                 <div
-                                    class="w-full h-full   bg-cover bg-center   bg-no-repeat -z-10 flex items-end"
+                                    class="w-full h-full   bg-cover bg-center group-hover:scale-110 delay-custom-1   bg-no-repeat -z-10 flex items-end"
                                     style={{
                                         backgroundImage: `url(${file})`,
                                     }}

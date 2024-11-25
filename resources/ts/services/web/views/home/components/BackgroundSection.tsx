@@ -117,7 +117,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
         <section
             id="start"
             // class="max-w-6xl mx-auto px-2 md:px-4 mt-[6.6rem] md:my-10"
-            class="mb-4 mt-[5.5rem] lg:mt-0 relative background-home"
+            class="mb-4 mt-[5.5rem] lg:mt-0 relative background-home group"
         >
             <div
                 class={`flex flex-col lg:flex-row relative ${
@@ -131,7 +131,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                 }`}
             >
                 <AdminEdit uri="/admin/background" />
-                <div class="w-full ">
+                <div class="w-full overflow-hidden">
                     <Slider
                         className="w-full h-full "
                         {...{

@@ -5,6 +5,7 @@ import {
     coerce,
     custom,
     date,
+    literal,
     maxLength,
     minLength,
     nullable,
@@ -12,6 +13,7 @@ import {
     object,
     objectAsync,
     string,
+    union,
     type Input,
 } from "@vigilio/valibot";
 const hamrguers = [
@@ -44,84 +46,75 @@ export const settingsSchema = objectAsync({
     bg_color_secondary: string(),
     bg_color_button: string(),
     isDark: boolean(),
-    type_border: string([
-        custom((val) => ["circle", "square"].includes(val), "Border no válido"),
-    ]),
-    type_cart: string([
-        custom(
-            (val) =>
-                [
-                    "fas fa-shopping-cart",
-                    "fas fa-shopping-bag",
-                    "fas fa-shopping-basket",
-                ].includes(val),
-            "Border no válido"
-        ),
-    ]),
+    type_border: union(
+        [literal("circle"), literal("square")],
+        "Border no válido"
+    ),
+    type_cart: union(
+        [
+            literal("fas fa-shopping-cart"),
+            literal("fas fa-shopping-bag"),
+            literal("fas fa-shopping-basket"),
+        ],
+        "Border no válido"
+    ),
     isCoverImage: boolean(),
     isLogoImage: boolean(),
     isScrolling: boolean(),
     bg_color_footer: string(),
     is_subcategory: boolean(),
-    background_position: string([
-        custom(
-            (val) => ["center", "start", "end"].includes(val),
-            "position no válido"
-        ),
-    ]),
-    background_type: string([
-        custom(
-            (val) => ["first", "second"].includes(val),
-            "Tipo de Background no válido"
-        ),
-    ]),
-    header_type: string([
-        custom(
-            (val) => ["normal", "search", "transparent"].includes(val),
-            "Tipo de header no válido"
-        ),
-    ]),
-    font_face: string([
-        custom(
-            (val) => ["Barlow", "Exo", "Poppins"].includes(val),
-            "fuente no válido"
-        ),
-    ]),
+    background_position: union(
+        [literal("center"), literal("start"), literal("end")],
+        "position no válido"
+    ),
+    background_type: union(
+        [literal("first"), literal("second")],
+        "Tipo de Background no válido"
+    ),
+    header_type: union(
+        [literal("normal"), literal("search"), literal("transparent")],
+        "Tipo de header no válido"
+    ),
+    font_face: union(
+        [literal("Barlow"), literal("Exo"), literal("Poppins")],
+        "fuente no válido"
+    ),
     bg_color_background: string(),
     bg_color_paper: string(),
     logo_width: number(),
-    type_icons_bars: string([
-        custom(
-            (val) => ["normal", "light", ""].includes(val),
-            "Tipo de icono no válido"
-        ),
-    ]),
+    type_icons_bars: union(
+        [literal("normal"), literal("light")],
+        "Tipo de icono no válido"
+    ),
     hamburger: string([
         custom((val) => hamrguers.includes(val), "Hamburguesa no válida"),
     ]),
-    type_star: string([
-        custom(
-            (val) => ["heart", "star"].includes(val),
-            "Tipo de estrella no válido"
-        ),
-    ]),
+    type_star: union(
+        [literal("heart"), literal("star")],
+        "Tipo de estrella no válido"
+    ),
     position_header: boolean(),
     empresa_id: number(),
-    border_title_type: string(),
-    type_icons: string([
-        custom(
-            (val) =>
-                [
-                    "normal",
-                    "icons",
-                    "premium",
-                    "premium2",
-                    "premium3",
-                    "animation",
-                ].includes(val),
-            "Icono Pack no válido"
-        ),
-    ]),
+    border_title_type: union(
+        [
+            literal("normal"),
+            literal("circle"),
+            literal("border"),
+            literal("null"),
+        ],
+        "Icono Pack no válido"
+    ),
+    type_icons: union(
+        [
+            literal("normal"),
+            literal("icons"),
+            literal("premium"),
+            literal("premium2"),
+            literal("premium3"),
+            literal("animation"),
+        ],
+        "Icono Pack no válido"
+    ),
     shows: object({
         map: boolean(),
         about: boolean(),
@@ -147,26 +140,24 @@ export const settingsSchema = objectAsync({
         navbar: number(),
         icons: number(),
     }),
-    type_map: string([
-        custom(
-            (val) => ["normal", "satelite", "secondary"].includes(val),
-            "Mapa no válido"
-        ),
-    ]),
-    type_card: string([
-        custom(
-            (val) => ["normal", "eccomerce"].includes(val),
-            "card no válido"
-        ),
-    ]),
+    type_map: union(
+        [literal("normal"), literal("satelite"), literal("secondary")],
+        "Mapa no válido"
+    ),
+    type_card: union(
+        [literal("normal"), literal("eccomerce")],
+        "Tipo de card no válido"
+    ),
     is_block_aside: boolean(),
     type_animation: string(),
     background_auth: nullable(array(filesSchema([100, 1600]))),
     web_script: nullable(string()),
     is_hidde_total_cart: boolean(),
-    type_product_buttons: string([
-        custom((val) => ["first", "second"].includes(val)),
-    ]),
+    type_product_buttons: union([literal("first"), literal("second")]),
     is_hover_product: boolean(),
+    type_arrow: union(
+        [literal("first"), literal("second"), literal("third")],
+        "Tipo de arrows no válido"
+    ),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;

@@ -54,7 +54,7 @@ function ProductsUsers({
                                         : "r"
                                 } fa-heart`}
                             />{" "}
-                            Productos Más Favoritos
+                            Más Favoritos
                         </>
                     </TitleSectionTwo>
                 </div>
@@ -122,7 +122,7 @@ function ProductsUsers({
                                         : "r"
                                 } fa-${enviroments.TYPE_START}`}
                             />{" "}
-                            Productos Mejor Valorados
+                            Mejor Valorados
                         </>
                     </TitleSectionTwo>
                 </div>
@@ -174,7 +174,7 @@ function ProductsUsers({
                                         : "r"
                                 } fa-comment`}
                             />{" "}
-                            Productos más comentados
+                            más comentados
                         </>
                     </TitleSectionTwo>
                 </div>

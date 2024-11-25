@@ -18,7 +18,7 @@ function BrandsSection({ brands }: BrandsSectionProps) {
                         ? storageEmpresa.setting.type_animation
                         : ""
                 } `}
-                class="max-w-6xl mx-auto my-4  md:my-8 px-4 flex flex-col brand-section"
+                class="max-w-6xl mx-auto my-4  md:my-8 px-4 flex flex-col brand-section group "
             >
                 <div class="flex justify-center items-center">
                     <TitleSection>Nuestras Marcas</TitleSection>

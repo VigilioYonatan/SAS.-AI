@@ -123,7 +123,7 @@ function ProductsNormalUpdate({
         const categoriesSubcategoriesQuery =
             categoriesSubcategoriesApi(category_id);
         useEffect(() => {
-            formProductsNormalUpdate.unregister("subcategory_id");
+            formProductsNormalUpdate.setValue("subcategory_id", null);
             if (category_id) {
                 categoriesSubcategoriesQuery.refetch();
             } else {

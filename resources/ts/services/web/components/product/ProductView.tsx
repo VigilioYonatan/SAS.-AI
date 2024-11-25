@@ -61,7 +61,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
 
     return (
         <div
-            class={`flex gap-6 flex-col md:flex-row  product-card  p-2 ${
+            class={`flex gap-6 flex-col md:flex-row  product-card group  p-2 ${
                 (
                     producto.value as ProductsNormalSchemaFromServer
                 )?.options.filter((option) => option.id !== 1).length

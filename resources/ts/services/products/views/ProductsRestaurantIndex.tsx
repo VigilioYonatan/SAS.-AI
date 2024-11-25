@@ -121,7 +121,6 @@ function ProductsIndex() {
 									>
 										Todas las categorías
 									</option>
-									<>
 										{categoriesIndexQuery.data?.data.map((cat) => (
 											<option
 												key={cat.id}
@@ -131,7 +130,6 @@ function ProductsIndex() {
 												{cat.name}
 											</option>
 										))}
-									</>
 								</select>
 							</div>
 						</div>

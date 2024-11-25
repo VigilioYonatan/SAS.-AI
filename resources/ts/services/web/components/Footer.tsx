@@ -58,11 +58,6 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                     : "#FFFFFF",
             }}
         >
-            <img
-                class="absolute -top-22 lg:-top-36  right-0 left-0 w-full"
-                src="/images/image.png"
-                alt=""
-            />
             <div class="h-[0.5px] bg-gray-300 dark:bg-gray-500 my-2 w-full" />
             <div class="max-w-6xl mx-auto px-2 ">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 py-6">
@@ -86,7 +81,9 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                     : "var(--primary)",
                             }}
                         >
-                            <TitleSectionTwo>Corporación</TitleSectionTwo>
+                            <TitleSectionTwo isFooter>
+                                Corporación
+                            </TitleSectionTwo>
                         </li>
                         <li class=" text-sm  hover:text-primary font-semibold dark:hover:text-primary my-2 ">
                             <a href={"/"}>Inicio</a>
@@ -134,7 +131,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                         : "var(--primary)",
                                 }}
                             >
-                                <TitleSectionTwo>Shop</TitleSectionTwo>
+                                <TitleSectionTwo isFooter>Shop</TitleSectionTwo>
                             </li>
                             {categories.map((category) => (
                                 <li
@@ -169,7 +166,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                         : "var(--primary)",
                                 }}
                             >
-                                <TitleSectionTwo>
+                                <TitleSectionTwo isFooter>
                                     Nuestros Servicios
                                 </TitleSectionTwo>
                             </li>
@@ -219,7 +216,9 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                     : "var(--primary)",
                             }}
                         >
-                            <TitleSectionTwo>¿Necesitas Ayuda?</TitleSectionTwo>
+                            <TitleSectionTwo isFooter>
+                                ¿Necesitas Ayuda?
+                            </TitleSectionTwo>
                         </li>
                         {empresaStore.state!.telephoneFirst ? (
                             <li class="dark:text-white font-semibold  text-sm">
@@ -299,7 +298,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                     : "var(--primary)",
                             }}
                         >
-                            <TitleSectionTwo>
+                            <TitleSectionTwo isFooter>
                                 Horario de atención
                             </TitleSectionTwo>
                         </li>
@@ -349,7 +348,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                     : "var(--primary)",
                             }}
                         >
-                            <TitleSectionTwo>Síguenos</TitleSectionTwo>
+                            <TitleSectionTwo isFooter>Síguenos</TitleSectionTwo>
                         </li>
                         <div class="flex gap-2 items-center  text-sm">
                             {empresaStore.state!.facebook ? (

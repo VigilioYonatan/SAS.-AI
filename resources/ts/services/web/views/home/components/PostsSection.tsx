@@ -24,7 +24,7 @@ function PostsSection({ posts }: PostsSectionProps) {
     if (!posts.length) return null;
     const { ShowImage, state, changeShowImage } = useShowImage();
     return (
-        <section class="max-w-6xl mx-auto  my-4 md:my-8 px-4 flex flex-col gap-4 post-section">
+        <section class="max-w-6xl mx-auto  my-4 md:my-8 px-4 flex flex-col gap-4 post-section group ">
             <TitleSection>Novedades</TitleSection>
             <div class="">
                 {posts.length ? (

@@ -75,7 +75,7 @@ function ServicioPage({
                         ]}
                     />
                 </div>
-                <div class="flex gap-6 flex-col md:flex-row  product-card p-2">
+                <div class="flex gap-6 flex-col md:flex-row  product-card p-2 group">
                     <Slider
                         {...{
                             customPaging: (i) => {

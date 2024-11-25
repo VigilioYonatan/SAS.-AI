@@ -453,12 +453,12 @@ export function FiltersAside({
 }: FiltersAsideProps) {
     return (
         <div class="w-full flex-col gap-4 flex">
-            <div
-                class={`${
-                    enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
-                } overflow-hidden group h-[200px]`}
-            >
-                {subcategory.image ? (
+            {subcategory.image ? (
+                <div
+                    class={`${
+                        enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
+                    } overflow-hidden group h-[200px]`}
+                >
                     <img
                         class="group-hover:scale-110 delay-custom-1 w-full h-full object-cover"
                         src={printFileWithDimension(subcategory.image, 800)[0]}
@@ -466,8 +466,9 @@ export function FiltersAside({
                         height={300}
                         alt={subcategory.name}
                     />
-                ) : null}
-            </div>
+                </div>
+            ) : null}
+
             <div
                 class={`p-4  border border-gray-300 dark:bg-background-dark bg-background-light ${
                     enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""

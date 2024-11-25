@@ -122,7 +122,7 @@ function ProductPage({
                         }
                     />
                 </div>
-                <div class="flex gap-6 flex-col md:flex-row  product-card p-2">
+                <div class="flex gap-6 flex-col md:flex-row  product-card p-2 group">
                     <Slider
                         {...{
                             customPaging: (i) => {
@@ -1100,7 +1100,7 @@ function ProductPage({
                             }
                         </>
                     </TitleSectionTwo>
-                    <div class="w-full">
+                    <div class="w-full group">
                         <Slider
                             {...{
                                 adaptiveHeight: true,
