@@ -100,6 +100,11 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
             ? "URGENTE: Se más humano, y los humanos tienes aveces errores ortograficos. trata de ser así y se más humano."
             : ""
     }.
+    IMPORTANTE: ${
+        empresa.inteligenceArtificial.try_to_sell
+            ? "trata de cerrar ventas nivel profesional"
+            : "No trates de cerrar ventas, no forzar a que el cliente compre nuestros productos o servicios, solo responde a las preguntas."
+    }.
 IMPORTANTE: REVISAR LA BASE DE DATOS, ANTES DE RESPONDER, por ejemplo si una persona te pide información de algo, mira la BASE DE DATOS primero.
 	OBLIGATORIO: RESPONDEME EN EL IDIOMA QUE TE ESCRIBA, si te hablo ingles, respondeme en ingles, etc.
     HORARIO_ATENCION: // si está enabled false quiere decir que no está disponible ese dia y la hora es de 00:00am a 23:59PM ${JSON.stringify(
