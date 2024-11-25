@@ -36,6 +36,7 @@ import {
 } from "../dtos/banner.update.dto";
 import { useEffect } from "preact/hooks";
 import { formSelectNumber } from "~/components/form/FormSelect";
+import useImageWithDimension from "~/hooks/useImageWithDimension";
 
 function BannersIndex() {
     const gridBannerIndexQuery = gridBannerIndexApi();
@@ -137,13 +138,28 @@ function BannersIndex() {
                                                         {banner ? (
                                                             <>
                                                                 {(() => {
+                                                                    const [
+                                                                        selectedSize,
+                                                                        divRef,
+                                                                    ] =
+                                                                        useImageWithDimension(
+                                                                            [
+                                                                                300,
+                                                                                600,
+                                                                                800,
+                                                                                1200,
+                                                                            ]
+                                                                        );
                                                                     const file =
                                                                         printFileWithDimension(
                                                                             banner.file,
-                                                                            null
+                                                                            selectedSize
                                                                         )[0];
                                                                     return (
                                                                         <div
+                                                                            ref={
+                                                                                divRef
+                                                                            }
                                                                             class="w-full relative row-span-1"
                                                                             key={
                                                                                 banner.id
