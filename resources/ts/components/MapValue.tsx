@@ -63,7 +63,7 @@ function MapValue({
             zoomControl={zoomControl}
             attributionControl={false}
         >
-            <LayersControl>
+            <LayersControl >
                 {storageEmpresa?.setting.type_map === "satelite" ? (
                     <>
                         <BaseLayer name="OpenStreetMap">

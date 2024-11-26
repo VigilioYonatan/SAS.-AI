@@ -30,7 +30,7 @@ function ProductHeader({
             {product.images500Variant.length &&
             [1, 3].includes(storageEmpresa!.tipo_empresa.tipo_servicio_id) ? (
                 <>
-                    {product.images500.length > 1 ? (
+                    {product.images500Variant.length > 1 ? (
                         <>
                             <img
                                 class={`w-full ${
@@ -46,10 +46,10 @@ function ProductHeader({
                                 }`}
                                 width={500}
                                 height={500}
-                                src={product.images500[0]}
+                                src={product.images500Variant[0]}
                                 alt={product.producto.value.name}
                             />
-                            {isHover && product.images500[1] ? (
+                            {isHover && product.images500Variant[1] ? (
                                 <img
                                     class={`w-full  hidden group-hover:block   mx-auto group-hover:scale-105 delay-custom-1 ${
                                         isEccomerce

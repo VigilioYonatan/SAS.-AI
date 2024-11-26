@@ -243,7 +243,7 @@ export class WebApiService {
                         product[
                             empresa.tipo_empresa.tipo_servicio_id !== 2
                                 ? "product_normal_id"
-                                : "product_servicio_id"
+                                : "product_restaurant_id"
                         ]
                     );
                     producto = await getProductAll(empresa, producto, user);

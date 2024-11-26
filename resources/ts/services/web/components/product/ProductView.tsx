@@ -64,7 +64,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
             class={`flex gap-6 flex-col md:flex-row  product-card group  p-2 ${
                 (
                     producto.value as ProductsNormalSchemaFromServer
-                )?.options.filter((option) => option.id !== 1).length
+                ).options?.filter((option) => option.id !== 1).length
                     ? "lg:min-h-[600px]"
                     : "lg:min-h-[500px]"
             }`}

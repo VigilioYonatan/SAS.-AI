@@ -204,7 +204,7 @@ function CategoriesPage({
                             </div>
                         </div>
                         <select
-                            class={`py-3 px-4 text-sm bg-paper-light outline-none border  hover:bg-background-light  delay-custom-1 border-gray-200 dark:bg-background-dark dark:text-white hidden sm:block ${
+                            class={`py-3 px-4 text-sm  outline-none border bg-background-light  hover:bg-background-light  delay-custom-1 border-gray-200 dark:bg-background-dark dark:text-white hidden sm:block ${
                                 enviroments.TYPE_BORDER === "circle"
                                     ? "rounded-md"
                                     : ""

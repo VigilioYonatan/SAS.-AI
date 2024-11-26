@@ -68,7 +68,7 @@ function ProductFooter({
                                                   ? " text-white"
                                                   : ""
                                           }`
-                                        : `   py-2 md:py-3   px-4 md:text-sm ${
+                                        : `   py-3 md:py-3   px-4 md:text-sm ${
                                               product.existProductInCart
                                                   ? " text-white"
                                                   : ""
@@ -108,40 +108,37 @@ function ProductFooter({
                                 await product.handleInsertProduct(false);
                             }}
                         >
-                            <>
-                                {product.existProductInCart ? (
-                                    <span>
-                                        {!isEccomerce ? (
-                                            <i
-                                                className={`${storageEmpresa?.setting.type_cart} mr-2 text-md`}
-                                            />
-                                        ) : null}
-                                        Añadido
-                                    </span>
-                                ) : (
-                                    <>
-                                        {product.cartStoreMutation.isLoading ? (
-                                            <LoaderSubmit
-                                                color={
-                                                    useThemeStore().state ===
-                                                    "dark"
-                                                        ? "#fff"
-                                                        : "var(--primary)"
-                                                }
-                                            />
-                                        ) : (
-                                            <span>
-                                                {!isEccomerce ? (
-                                                    <i
-                                                        className={`${storageEmpresa?.setting.type_cart} mr-2 text-md`}
-                                                    />
-                                                ) : null}
-                                                Agregar
-                                            </span>
-                                        )}
-                                    </>
-                                )}
-                            </>
+                            {product.existProductInCart ? (
+                                <span>
+                                    {!isEccomerce ? (
+                                        <i
+                                            className={`${storageEmpresa?.setting.type_cart} mr-2 text-md`}
+                                        />
+                                    ) : null}
+                                    Añadido
+                                </span>
+                            ) : (
+                                <>
+                                    {product.cartStoreMutation.isLoading ? (
+                                        <LoaderSubmit
+                                            color={
+                                                useThemeStore().state === "dark"
+                                                    ? "#fff"
+                                                    : "var(--primary)"
+                                            }
+                                        />
+                                    ) : (
+                                        <span>
+                                            {!isEccomerce ? (
+                                                <i
+                                                    className={`${storageEmpresa?.setting.type_cart} mr-2 text-md`}
+                                                />
+                                            ) : null}
+                                            Agregar
+                                        </span>
+                                    )}
+                                </>
+                            )}
                         </button>
                     ) : (
                         <span class=" font-bold uppercase py-3 px-4 tracking-widest text-sm text-center w-full  dark:text-white absolute bottom-0">

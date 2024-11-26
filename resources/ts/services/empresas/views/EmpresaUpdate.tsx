@@ -1070,10 +1070,12 @@ function empresaUpdate() {
                             />
                             <Form.button.submit
                                 disabled={
-                                    empresaUpdateIconMutation.isLoading || false
+                                    empresaUpdateLogoPWAMutation.isLoading ||
+                                    false
                                 }
                                 isLoading={
-                                    empresaUpdateIconMutation.isLoading || false
+                                    empresaUpdateLogoPWAMutation.isLoading ||
+                                    false
                                 }
                                 title="Guardar Cambios"
                             />

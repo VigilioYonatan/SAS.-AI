@@ -117,7 +117,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
         <section
             id="start"
             // class="max-w-6xl mx-auto px-2 md:px-4 mt-[6.6rem] md:my-10"
-            class="mb-4 mt-[5.5rem] lg:mt-0 relative background-home group"
+            class="mb-4 mt-[4.8dest text-sm  text-center rem] lg:mt-0 relative background-home group"
         >
             <div
                 class={`flex flex-col lg:flex-row relative ${
