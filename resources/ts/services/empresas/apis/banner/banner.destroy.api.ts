@@ -1,26 +1,25 @@
-import { type UseQuery, useQuery } from "@vigilio/preact-fetching";
-import type { NewSchema } from "@/empresas/schemas/new.schema";
+import { useMutation } from "@vigilio/preact-fetching";
 
-export function bannerDestroyApi(
-	id: number,
-): UseQuery<BackupDestroyAPI, BackupDestroyErrorAPI> {
-	return useQuery<BackupDestroyAPI, BackupDestroyErrorAPI>(
-		`/banner/${id}`,
-		async (url) => {
-			const response = await fetch(`/api${url}`);
-			const result = await response.json();
-			if (!result.success) throw result;
-			return result;
-		},
-	);
+export function bannerDestroyApi() {
+    return useMutation<BackupDestroyAPI, number, BackupDestroyErrorAPI>(
+        "/banner",
+        async (url, id) => {
+            const response = await fetch(`/api${url}/${id}`, {
+                method: "DELETE",
+            });
+            const result = await response.json();
+            if (!result.success) throw result;
+            return result;
+        }
+    );
 }
 
 export interface BackupDestroyAPI {
-	success: boolean;
-	banner: NewSchema;
+    success: boolean;
+    message: string;
 }
 
 export interface BackupDestroyErrorAPI {
-	success: boolean;
-	message: string;
+    success: boolean;
+    message: string;
 }

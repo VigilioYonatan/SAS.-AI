@@ -86,7 +86,6 @@ function SettingsIndex() {
                 };
             }, []),
         });
-        console.log(settingsUpdateform.formState.errors);
 
         const formBackgroundUpdateImage =
             useForm<SettingsBackgrounAuthUpdateDto>({

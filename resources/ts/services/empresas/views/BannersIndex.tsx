@@ -37,10 +37,12 @@ import {
 import { useEffect } from "preact/hooks";
 import { formSelectNumber } from "~/components/form/FormSelect";
 import useImageWithDimension from "~/hooks/useImageWithDimension";
+import { bannerDestroyApi } from "../apis/banner/banner.destroy.api";
 
 function BannersIndex() {
     const gridBannerIndexQuery = gridBannerIndexApi();
     const widthResponsive = ResponsiveWidth();
+    const bannerDestroyMutate = bannerDestroyApi();
     let component: JSX.Element | JSX.Element[] | null = null;
     if (gridBannerIndexQuery.isLoading) {
         component = <Loading />;
@@ -269,43 +271,95 @@ function BannersIndex() {
                                                                                     </div>
                                                                                 </div>
                                                                             )}
-                                                                            <button
-                                                                                type="button"
-                                                                                class="top-1 right-1 absolute bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
-                                                                                onClick={() => {
-                                                                                    sweetModal(
-                                                                                        (
-                                                                                            onClose
-                                                                                        ) => ({
-                                                                                            html: reactComponent(
-                                                                                                <BannerUpdate
-                                                                                                    onClose={
-                                                                                                        onClose
-                                                                                                    }
-                                                                                                    banner={
-                                                                                                        banner
-                                                                                                    }
-                                                                                                    g={
-                                                                                                        g
-                                                                                                    }
-                                                                                                    refetch={
-                                                                                                        gridBannerIndexQuery.refetch
-                                                                                                    }
-                                                                                                    grid={
-                                                                                                        grid
-                                                                                                    }
-                                                                                                />
-                                                                                            ),
-                                                                                            showCloseButton:
-                                                                                                true,
-                                                                                            isCloseInBackground:
-                                                                                                false,
-                                                                                        })
-                                                                                    );
-                                                                                }}
-                                                                            >
-                                                                                <i class="fas fa-pen" />
-                                                                            </button>
+                                                                            <div class="flex top-1 right-1 absolute gap-2 ">
+                                                                                <button
+                                                                                    type="button"
+                                                                                    class=" bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
+                                                                                    onClick={() => {
+                                                                                        sweetModal(
+                                                                                            (
+                                                                                                onClose
+                                                                                            ) => ({
+                                                                                                html: reactComponent(
+                                                                                                    <BannerUpdate
+                                                                                                        onClose={
+                                                                                                            onClose
+                                                                                                        }
+                                                                                                        banner={
+                                                                                                            banner
+                                                                                                        }
+                                                                                                        g={
+                                                                                                            g
+                                                                                                        }
+                                                                                                        refetch={
+                                                                                                            gridBannerIndexQuery.refetch
+                                                                                                        }
+                                                                                                        grid={
+                                                                                                            grid
+                                                                                                        }
+                                                                                                    />
+                                                                                                ),
+                                                                                                showCloseButton:
+                                                                                                    true,
+                                                                                                isCloseInBackground:
+                                                                                                    false,
+                                                                                            })
+                                                                                        );
+                                                                                    }}
+                                                                                >
+                                                                                    <i class="fas fa-pen" />
+                                                                                </button>
+                                                                                <button
+                                                                                    type="button"
+                                                                                    class=" bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
+                                                                                    onClick={() => {
+                                                                                        sweetModal(
+                                                                                            {
+                                                                                                title: "¿Estás seguro de eliminar este banner?",
+                                                                                                showCloseButton:
+                                                                                                    true,
+                                                                                                isCloseInBackground:
+                                                                                                    false,
+                                                                                            }
+                                                                                        ).then(
+                                                                                            ({
+                                                                                                isConfirmed,
+                                                                                            }) => {
+                                                                                                if (
+                                                                                                    isConfirmed
+                                                                                                ) {
+                                                                                                    bannerDestroyMutate.mutate(
+                                                                                                        banner.id,
+                                                                                                        {
+                                                                                                            onSuccess() {
+                                                                                                                sweetAlert(
+                                                                                                                    {
+                                                                                                                        icon: "success",
+                                                                                                                        title: "Se eliminó correctamente",
+                                                                                                                    }
+                                                                                                                );
+                                                                                                                gridBannerIndexQuery.refetch(
+                                                                                                                    false
+                                                                                                                );
+                                                                                                            },
+                                                                                                            onError() {
+                                                                                                                sweetAlert(
+                                                                                                                    {
+                                                                                                                        icon: "danger",
+                                                                                                                        title: "No se eliminó",
+                                                                                                                    }
+                                                                                                                );
+                                                                                                            },
+                                                                                                        }
+                                                                                                    );
+                                                                                                }
+                                                                                            }
+                                                                                        );
+                                                                                    }}
+                                                                                >
+                                                                                    <i class="fas fa-trash" />
+                                                                                </button>
+                                                                            </div>
                                                                         </div>
                                                                     );
                                                                 })()}
@@ -443,7 +497,7 @@ export function GridBannerUpdate({
                                 icon: "success",
                             });
                             onClose();
-                            refetch(true);
+                            refetch(false);
                         },
                         onError(error) {
                             handlerError(gridUpdateForm, error);
