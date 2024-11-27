@@ -49,7 +49,9 @@ function useOnCart() {
                     storageEmpresa?.dial_code === DIALCODE.peru
                         ? undefined
                         : "00",
-                identification_number: authStore.state?.identification_number,
+                identification_number: authStore.state?.identification_number
+                    ? authStore.state?.identification_number
+                    : null,
             },
             user_id: authStore.state ? authStore.state.id : null,
             isDelivery: true,
