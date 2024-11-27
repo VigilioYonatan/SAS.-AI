@@ -54,7 +54,9 @@ function CartPage({ cart, header }: CartProps) {
         citiesSelect,
         citiesIndexQuery,
     } = useOnCart();
-
+    const kind_invoice_code = ordersCartStoreDtoForm.watch(
+        "invoice.kind_invoice_code"
+    );
     const empresa = useEmpresastore();
     const map_marker = ordersCartStoreDtoForm.watch("map_marker");
     const authStore = useAuthStore();
@@ -707,7 +709,7 @@ function CartPage({ cart, header }: CartProps) {
                                         disabled={!!authStore.state?.email}
                                     />
                                     {storageEmpresa!.enabled_dni_cart &&
-                                    documentCode === "0" ? (
+                                    kind_invoice_code === "00" ? (
                                         <Form.control.web
                                             title={`${
                                                 typeFiscal[

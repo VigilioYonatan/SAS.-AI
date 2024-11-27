@@ -160,7 +160,9 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
             }
         }
     }, [kindInvoice]);
-
+    const kind_invoice_code = ordersCartStoreDtoForm.watch(
+        "invoice.kind_invoice_code"
+    );
     useEffect(() => {
         if (
             identificationNumber &&
@@ -810,8 +812,8 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                     )}
                     <div
                         class={`${
-                            storageEmpresa!.enabled_dni_cart &&
-                            documentCode === "0"
+                            storageEmpresa?.dial_code !== DIALCODE.peru &&
+                            storageEmpresa!.enabled_dni_cart
                                 ? "grid grid-cols-2"
                                 : "grid grid-cols-1"
                         } gap-2 w-full`}
@@ -823,8 +825,8 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                             placeholder=""
                             disabled={!!authStore.state?.email}
                         />
-                        {storageEmpresa?.dial_code !== DIALCODE.peru &&
-                        storageEmpresa!.enabled_dni_cart ? (
+                        {storageEmpresa!.enabled_dni_cart &&
+                        kind_invoice_code === "00" ? (
                             <Form.control.web
                                 title={`${
                                     typeFiscal[
