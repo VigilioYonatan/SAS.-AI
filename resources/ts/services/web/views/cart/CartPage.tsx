@@ -706,9 +706,8 @@ function CartPage({ cart, header }: CartProps) {
                                         placeholder=""
                                         disabled={!!authStore.state?.email}
                                     />
-                                    {storageEmpresa?.dial_code !==
-                                        DIALCODE.peru &&
-                                    storageEmpresa!.enabled_dni_cart ? (
+                                    {storageEmpresa!.enabled_dni_cart &&
+                                    documentCode === "0" ? (
                                         <Form.control.web
                                             title={`${
                                                 typeFiscal[

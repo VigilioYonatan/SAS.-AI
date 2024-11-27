@@ -810,8 +810,8 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                     )}
                     <div
                         class={`${
-                            storageEmpresa?.dial_code !== DIALCODE.peru &&
-                            storageEmpresa!.enabled_dni_cart
+                            storageEmpresa!.enabled_dni_cart &&
+                            documentCode === "0"
                                 ? "grid grid-cols-2"
                                 : "grid grid-cols-1"
                         } gap-2 w-full`}
