@@ -526,7 +526,7 @@ function Efectivo({
                                             </div>
                                             <div class="text-center">
                                                  <i class="fa-solid fa-circle-check text-green-500 text-6xl"></i>
-                                                <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 w-full">Su orden se realizó correctamente  <b class='block w-full'>${data.order.order_code}</b></p>
+                                                <p class="mt-4 text-lg  w-full">Su orden se realizó correctamente  <b class='block w-full'>${data.order.order_code}</b></p>
                                             </div>
                                             <div class="flex justify-center">
                                                 <a  target='_blank' href='/pedidos?code=${data.order.order_code}' class="px-4 py-2 bg-primary text-white rounded-lg  focus:outline-none mt-3">

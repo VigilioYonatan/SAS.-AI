@@ -7,126 +7,128 @@ import useSocketStore from "~/stores/socket.store";
 import Loading from "@/admin/components/Loading";
 import { PAYMETHOD } from "@/orders/libs";
 import {
-	izipayPaymentApi,
-	izipayPaymentValidateApi,
+    izipayPaymentApi,
+    izipayPaymentValidateApi,
 } from "@/payments/apis/izipay.payment.api";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { OrdersCartStoreDto } from "@/orders/dtos/orders-cart.dto";
 
 interface IzipayFormProps {
-	order: OrdersCartStoreDto;
-	onClose: () => void;
-	ordersCartStoreDtoForm: UseFormReturn<OrdersCartStoreDto>;
+    order: OrdersCartStoreDto;
+    onClose: () => void;
+    ordersCartStoreDtoForm: UseFormReturn<OrdersCartStoreDto>;
 }
 const IzipayForm = ({
-	order,
-	onClose,
-	ordersCartStoreDtoForm,
+    order,
+    onClose,
+    ordersCartStoreDtoForm,
 }: IzipayFormProps) => {
-	const isShow = useSignal<boolean>(false);
-	const error = useSignal<Error | null>(null);
-	const izipayPaymentMutation = izipayPaymentApi();
-	const izipayPaymentValidateMutation = izipayPaymentValidateApi();
-	const { io } = useSocketStore();
+    const isShow = useSignal<boolean>(false);
+    const error = useSignal<Error | null>(null);
+    const izipayPaymentMutation = izipayPaymentApi();
+    const izipayPaymentValidateMutation = izipayPaymentValidateApi();
+    const { io } = useSocketStore();
 
-	useEffect(() => {
-		payment();
-	}, []);
+    useEffect(() => {
+        payment();
+    }, []);
 
-	function payment() {
-		izipayPaymentMutation.mutate(
-			{ ...order, pay_method_id: PAYMETHOD.tarjeta },
-			{
-				onSuccess(data) {
-					KRGlue.loadLibrary(
-						"https://static.micuentaweb.pe",
-						storageEmpresa!.metodos_pago.izipay.izipay_public_key!,
-					)
-						.then(({ KR }) => KR.setFormConfig({ formToken: data.token }))
-						.then(({ KR }) => KR.onSubmit(validatePayment))
-						.then(({ KR }) => KR.renderElements("#form-niubiz"))
-						.then(({ KR, result }) => KR.showForm(result.formId))
-						.then(() => {
-							// que de click al boton
-							const form = document.querySelector(
-								"#form-niubiz .kr-popin-button",
-							) as HTMLButtonElement;
-							isShow.value = true;
-							form?.click();
-						})
-						.catch((err) => {
-							error.value = err;
-							isShow.value = true;
-						});
-				},
-				onError() {
-					isShow.value = true;
-				},
-			},
-		);
-	}
+    function payment() {
+        izipayPaymentMutation.mutate(
+            { ...order, pay_method_id: PAYMETHOD.tarjeta },
+            {
+                onSuccess(data) {
+                    KRGlue.loadLibrary(
+                        "https://static.micuentaweb.pe",
+                        storageEmpresa!.metodos_pago.izipay.izipay_public_key!
+                    )
+                        .then(({ KR }) =>
+                            KR.setFormConfig({ formToken: data.token })
+                        )
+                        .then(({ KR }) => KR.onSubmit(validatePayment))
+                        .then(({ KR }) => KR.renderElements("#form-niubiz"))
+                        .then(({ KR, result }) => KR.showForm(result.formId))
+                        .then(() => {
+                            // que de click al boton
+                            const form = document.querySelector(
+                                "#form-niubiz .kr-popin-button"
+                            ) as HTMLButtonElement;
+                            isShow.value = true;
+                            form?.click();
+                        })
+                        .catch((err) => {
+                            error.value = err;
+                            isShow.value = true;
+                        });
+                },
+                onError() {
+                    isShow.value = true;
+                },
+            }
+        );
+    }
 
-	function validatePayment(body: KRPaymentResponse) {
-		izipayPaymentValidateMutation.mutate(body, {
-			onSuccess(data) {
-				const buttonClose = document.querySelector(
-					"#form-niubiz  .fi-x-circle",
-				) as HTMLButtonElement;
-				buttonClose.click();
-				onClose();
-				ordersCartStoreDtoForm.reset();
-				io?.emit("notifications:order-store", {
-					total: data.order.total,
-					order_code: data.order.order_code,
-					user_id: data.order.user_id ?? null,
-				});
-				sweetModal({
-					icon: "success",
-					html: `<div class="p-3"><div class="flex items-center justify-center mb-2">
+    function validatePayment(body: KRPaymentResponse) {
+        izipayPaymentValidateMutation.mutate(body, {
+            onSuccess(data) {
+                const buttonClose = document.querySelector(
+                    "#form-niubiz  .fi-x-circle"
+                ) as HTMLButtonElement;
+                buttonClose.click();
+                onClose();
+                ordersCartStoreDtoForm.reset();
+                io?.emit("notifications:order-store", {
+                    total: data.order.total,
+                    order_code: data.order.order_code,
+                    user_id: data.order.user_id ?? null,
+                });
+                sweetModal({
+                    icon: "success",
+                    html: `<div class="p-3"><div class="flex items-center justify-center mb-2">
                                 <h2 class="text-2xl font-semibold text-primary dark:text-white text-center">Pago Exitoso</h2>
                             </div>
                             <div class="text-center">
                                  <i class="fa-solid fa-circle-check text-green-500 text-6xl"></i>
-                                <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 w-full">Su pago se realizó correctamente  <b class='block w-full'>${data.order.order_code}</b></p>
+                                <p class="mt-4 text-lg  w-full">Su pago se realizó correctamente  <b class='block w-full'>${data.order.order_code}</b></p>
                             </div>
                             </div>
     `,
-					showCloseButton: true,
-					sweetWidth: "600px",
-				});
-			},
-		});
-	}
+                    showCloseButton: true,
+                    sweetWidth: "600px",
+                });
+            },
+        });
+    }
 
-	return (
-		<div>
-			<h1 class="text-xl font-bold text-center py-3 text-primary dark:text-white">
-				Tarjeta de credito/debito
-			</h1>
-			<div id="form-niubiz" class="w-full">
-				<div class="kr-embedded w-full" kr-popin="kr-popin" />
-				<style jsx>{`
+    return (
+        <div>
+            <h1 class="text-xl font-bold text-center py-3 text-primary dark:text-white">
+                Tarjeta de credito/debito
+            </h1>
+            <div id="form-niubiz" class="w-full">
+                <div class="kr-embedded w-full" kr-popin="kr-popin" />
+                <style jsx>{`
                     #form-niubiz .kr-popin-button {
                         width: 100%;
                         background-color: var(--primary) !important;
                         color: white !important;
                     }
                 `}</style>
-			</div>
-			{izipayPaymentMutation.isLoading || !isShow.value ? (
-				<Loading className="h-[300px]" />
-			) : null}
-			{izipayPaymentMutation.isError ||
-			izipayPaymentValidateMutation.isError ? (
-				<p class="text-xs text-danger font-bold">
-					Error:{" "}
-					{izipayPaymentMutation.error?.message ??
-						izipayPaymentValidateMutation.error?.message ??
-						"Error al hacer pago"}
-				</p>
-			) : null}
-		</div>
-	);
+            </div>
+            {izipayPaymentMutation.isLoading || !isShow.value ? (
+                <Loading className="h-[300px]" />
+            ) : null}
+            {izipayPaymentMutation.isError ||
+            izipayPaymentValidateMutation.isError ? (
+                <p class="text-xs text-danger font-bold">
+                    Error:{" "}
+                    {izipayPaymentMutation.error?.message ??
+                        izipayPaymentValidateMutation.error?.message ??
+                        "Error al hacer pago"}
+                </p>
+            ) : null}
+        </div>
+    );
 };
 
 export default IzipayForm;
