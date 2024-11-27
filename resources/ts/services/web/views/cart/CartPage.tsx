@@ -54,6 +54,7 @@ function CartPage({ cart, header }: CartProps) {
         citiesSelect,
         citiesIndexQuery,
     } = useOnCart();
+    console.log(ordersCartStoreDtoForm.formState.errors);
 
     const empresa = useEmpresastore();
     const map_marker = ordersCartStoreDtoForm.watch("map_marker");
