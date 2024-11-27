@@ -122,47 +122,43 @@ function Local() {
 							>
 								Categorías
 							</option>
-							<>
-								{categoriesIndexQuery.data?.data.map((cat) => (
-									<option
-										key={cat.id}
-										selected={cat.slug === filters.value.category}
-										value={cat.slug}
-									>
-										{cat.name}
-									</option>
-								))}
-							</>
+							{categoriesIndexQuery.data?.data.map((cat) => (
+								<option
+									key={cat.id}
+									selected={cat.slug === filters.value.category}
+									value={cat.slug}
+								>
+									{cat.name}
+								</option>
+							))}
 						</select>
 					</div>
 				</div>
 			</div>
 			<div class="my-6 grid grid-cols-2 gap-4 lg:grid-cols-4   ">
-				<>
-					{productsPaginator.isLoading || productsPaginator.isFetching ? (
-						<div class="flex justify-center min-h-[450px] items-center w-full">
-							<Loader />
-						</div>
-					) : (
-						<>
-							{productsPaginator.data?.results.length ? (
-								<>
-									{productsPaginator.data?.results.map((product) => (
-										<ProductCardAdmin
-											product={product as ProductsNormalSchemaFromServer}
-											key={product.id}
-											refetch={productsPaginator.refetch}
-										/>
-									))}
-								</>
-							) : (
-								<span class="dark:text-white font-bold text-sm  ml-1">
-									No hay productos{" "}
-								</span>
-							)}
-						</>
-					)}
-				</>
+				{productsPaginator.isLoading || productsPaginator.isFetching ? (
+					<div class="flex justify-center min-h-[450px] items-center w-full">
+						<Loader />
+					</div>
+				) : (
+					<>
+						{productsPaginator.data?.results.length ? (
+							<>
+								{productsPaginator.data?.results.map((product) => (
+									<ProductCardAdmin
+										product={product as ProductsNormalSchemaFromServer}
+										key={product.id}
+										refetch={productsPaginator.refetch}
+									/>
+								))}
+							</>
+						) : (
+							<span class="dark:text-white font-bold text-sm  ml-1">
+								No hay productos{" "}
+							</span>
+						)}
+					</>
+				)}
 			</div>
 			{productsPaginator.data?.results.length ? (
 				<PaginationFooter paginator={paginator} />

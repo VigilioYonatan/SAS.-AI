@@ -167,6 +167,10 @@ function App() {
 							component={lazy(() => import("@/empresas/views/SettingsIndex"))}
 						/>
 						<Route
+							path="/files"
+							component={lazy(() => import("@/empresas/views/FilesIndex"))}
+						/>
+						<Route
 							path="/facturacion"
 							component={lazy(
 								() => import("@/facturacion/views/Facturacion.index"),

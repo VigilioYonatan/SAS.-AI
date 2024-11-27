@@ -150,91 +150,89 @@ function ProductCardAdmin({ product, refetch }: ProductCardAdminProps) {
 				{product.variants.length ? (
 					<>
 						<div class="flex flex-col gap-2  items-center w-full  h-[90px] overflow-auto">
-							<>
-								{product.options.map((opt) => (
-									<div key={opt.id} class="flex gap-1 w-full   flex-col">
-										<span class="dark:text-white text-xs font-bold text-center">
-											{opt.name}:
-										</span>
-										<div class="flex gap-2 justify-center flex-wrap w-full items-center">
-											{opt.features.length ? (
-												<>
-													{opt.features.length >= 4 ? (
-														<select
-															onChange={(e) => {
-																changeVariant({
-																	option_id: opt.id,
-																	id: Number(
-																		(e.target as HTMLInputElement).value,
-																	),
-																});
-															}}
-															class="bg-white dark:bg-admin-paper-dark text-xs dark:text-white p-1 rounded-md shadow"
-														>
-															{opt.features.map((feature) => (
-																<option
-																	value={feature.id}
-																	class="font-bold text-xs rounded-md "
-																	key={feature.id}
-																>
-																	{feature.value}
-																	{" | "}
-																	{feature.description}
-																</option>
-															))}
-														</select>
-													) : (
-														<>
-															{" "}
-															{opt.features.map((feature) => {
-																// para checar el boton segun variante
-																const existFeature = variant
-																	.value!.map((feat) => feat.id)
-																	.includes(feature.id)
-																	? "border-2 border-primary"
-																	: "";
+							{product.options.map((opt) => (
+								<div key={opt.id} class="flex gap-1 w-full   flex-col">
+									<span class="dark:text-white text-xs font-bold text-center">
+										{opt.name}:
+									</span>
+									<div class="flex gap-2 justify-center flex-wrap w-full items-center">
+										{opt.features.length ? (
+											<>
+												{opt.features.length >= 4 ? (
+													<select
+														onChange={(e) => {
+															changeVariant({
+																option_id: opt.id,
+																id: Number(
+																	(e.target as HTMLInputElement).value,
+																),
+															});
+														}}
+														class="bg-white dark:bg-admin-paper-dark text-xs dark:text-white p-1 rounded-md shadow"
+													>
+														{opt.features.map((feature) => (
+															<option
+																value={feature.id}
+																class="font-bold text-xs rounded-md "
+																key={feature.id}
+															>
+																{feature.value}
+																{" | "}
+																{feature.description}
+															</option>
+														))}
+													</select>
+												) : (
+													<>
+														{" "}
+														{opt.features.map((feature) => {
+															// para checar el boton segun variante
+															const existFeature = variant
+																.value!.map((feat) => feat.id)
+																.includes(feature.id)
+																? "border-2 border-primary"
+																: "";
 
-																return (
-																	<button
-																		type="button"
-																		aria-label="change button"
-																		key={feature?.id}
-																		onClick={() =>
-																			changeVariant({
-																				option_id: opt.id,
-																				id: feature.id,
-																			})
-																		}
-																	>
-																		{opt.type === 1 ? (
-																			<div
-																				class={`px-3 py-1 text-center rounded-md  bg-white dark:bg-admin-paper-dark dark:text-white text-xs font-bold flex items-center gap-2 shadow ${existFeature}`}
-																			>
-																				{feature?.value}
-																			</div>
-																		) : (
-																			<div
-																				class={`relative w-[30px] h-[30px] rounded-full shadow  flex justify-center items-center group ${existFeature}`}
-																				style={{
-																					backgroundColor: feature?.value,
-																				}}
-																			>
-																				<span class="absolute -bottom-2 left-2 z-10 dark:bg-admin-background-dark shadow dark:text-white bg-white text-[10px] px-2 rounded-md py-1 hidden group-hover:block">
-																					{feature?.description}
-																				</span>
-																			</div>
-																		)}
-																	</button>
-																);
-															})}
-														</>
-													)}
-												</>
-											) : null}
-										</div>
+															return (
+																<button
+																	type="button"
+																	aria-label="change button"
+																	key={feature?.id}
+																	onClick={() =>
+																		changeVariant({
+																			option_id: opt.id,
+																			id: feature.id,
+																		})
+																	}
+																>
+																	{opt.type === 1 ? (
+																		<div
+																			class={`px-3 py-1 text-center rounded-md  bg-white dark:bg-admin-paper-dark dark:text-white text-xs font-bold flex items-center gap-2 shadow ${existFeature}`}
+																		>
+																			{feature?.value}
+																		</div>
+																	) : (
+																		<div
+																			class={`relative w-[30px] h-[30px] rounded-full shadow  flex justify-center items-center group ${existFeature}`}
+																			style={{
+																				backgroundColor: feature?.value,
+																			}}
+																		>
+																			<span class="absolute -bottom-2 left-2 z-10 dark:bg-admin-background-dark shadow dark:text-white bg-white text-[10px] px-2 rounded-md py-1 hidden group-hover:block">
+																				{feature?.description}
+																			</span>
+																		</div>
+																	)}
+																</button>
+															);
+														})}
+													</>
+												)}
+											</>
+										) : null}
 									</div>
-								))}
-							</>
+								</div>
+							))}
 						</div>
 						<div>
 							{varianteChoose!.ilimit ? (

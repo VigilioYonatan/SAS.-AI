@@ -3,15 +3,15 @@ import type { HTMLAttributes } from "preact/compat";
 import { getColorPrimary } from "~/libs/helpers";
 
 export function SampleNextArrow(props: HTMLAttributes<HTMLDivElement>) {
-    const { className, onClick } = props;
-    const typeArrow = storageEmpresa?.setting.type_arrow;
-    return (
-        <div class="group-hover:opacity-100 opacity-0 delay-custom-1">
-            <div className={className} onClick={onClick}>
-                {typeArrow === "first" ? (
-                    <>
-                        <i class="fas fa-caret-right text-xl text-primary" />
-                        <style jsx>{`
+	const { className, onClick } = props;
+	const typeArrow = storageEmpresa?.setting.type_arrow;
+	return (
+		<div class="group-hover:opacity-100 opacity-0 delay-custom-1">
+			<div className={className} onClick={onClick}>
+				{typeArrow === "first" ? (
+					<>
+						<i class="fas fa-caret-right text-xl text-primary" />
+						<style jsx>{`
                             .slick-arrow,
                             .slick-arrow {
                                 display: flex !important;
@@ -43,11 +43,11 @@ export function SampleNextArrow(props: HTMLAttributes<HTMLDivElement>) {
                                     0 2px 4px -2px rgb(0 0 0 / 0.1);
                             }
                         `}</style>
-                    </>
-                ) : typeArrow === "second" ? (
-                    <>
-                        <i class="fal fa-long-arrow-right text-lg text-primary" />
-                        <style jsx>{`
+					</>
+				) : typeArrow === "second" ? (
+					<>
+						<i class="fal fa-long-arrow-right text-lg text-primary" />
+						<style jsx>{`
                             .slick-arrow,
                             .slick-arrow {
                                 display: flex !important;
@@ -57,10 +57,12 @@ export function SampleNextArrow(props: HTMLAttributes<HTMLDivElement>) {
                                 height: 35px !important;
                                 position: absolute !important;
                                 z-index: 10;
-                                ${storageEmpresa?.setting.type_border ===
-                                "circle"
-                                    ? "border-radius: 0.5rem !important;"
-                                    : ""}
+                                ${
+																	storageEmpresa?.setting.type_border ===
+																	"circle"
+																		? "border-radius: 0.5rem !important;"
+																		: ""
+																}
 
                                 border: 1px solid ${getColorPrimary()};
                             }
@@ -75,11 +77,11 @@ export function SampleNextArrow(props: HTMLAttributes<HTMLDivElement>) {
                                 display: none !important;
                             }
                         `}</style>
-                    </>
-                ) : typeArrow === "third" ? (
-                    <>
-                        <i class="far fa-chevron-right text-xl text-primary" />
-                        <style jsx>{`
+					</>
+				) : typeArrow === "third" ? (
+					<>
+						<i class="far fa-chevron-right text-xl text-primary" />
+						<style jsx>{`
                             .slick-arrow,
                             .slick-arrow {
                                 display: flex !important;
@@ -101,38 +103,36 @@ export function SampleNextArrow(props: HTMLAttributes<HTMLDivElement>) {
                                 display: none !important;
                             }
                         `}</style>
-                    </>
-                ) : null}{" "}
-            </div>
-        </div>
-    );
+					</>
+				) : null}{" "}
+			</div>
+		</div>
+	);
 }
 
 export function SamplePrevArrow({
-    isSetting,
-    ...props
+	isSetting,
+	...props
 }: HTMLAttributes<HTMLDivElement> & { isSetting?: string }) {
-    const { className, onClick } = props;
+	const { className, onClick } = props;
 
-    const typeArrow = isSetting
-        ? isSetting
-        : storageEmpresa?.setting.type_arrow;
+	const typeArrow = isSetting ? isSetting : storageEmpresa?.setting.type_arrow;
 
-    return (
-        <div
-            class={`${
-                isSetting ? "" : "opacity-0  group-hover:opacity-100"
-            } delay-custom-1`}
-        >
-            <div className={className} onClick={onClick} style={{}}>
-                {typeArrow === "first" ? (
-                    <i class="fas fa-caret-left text-xl text-primary" />
-                ) : typeArrow === "second" ? (
-                    <i class="fal fa-long-arrow-left text-lg text-primary" />
-                ) : typeArrow === "third" ? (
-                    <i class="far fa-chevron-left text-xl text-primary" />
-                ) : null}
-            </div>
-        </div>
-    );
+	return (
+		<div
+			class={`${
+				isSetting ? "" : "opacity-0  group-hover:opacity-100"
+			} delay-custom-1`}
+		>
+			<div className={className} onClick={onClick} style={{}}>
+				{typeArrow === "first" ? (
+					<i class="fas fa-caret-left text-xl text-primary" />
+				) : typeArrow === "second" ? (
+					<i class="fal fa-long-arrow-left text-lg text-primary" />
+				) : typeArrow === "third" ? (
+					<i class="far fa-chevron-left text-xl text-primary" />
+				) : null}
+			</div>
+		</div>
+	);
 }

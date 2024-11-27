@@ -14,7 +14,10 @@ import {
 	startsWith,
 	boolean,
 } from "@vigilio/valibot";
-import { categoriesImageQualities } from "../libs";
+import {
+	categoriesImageQualities,
+	categoriesWallpaperQualities,
+} from "../libs";
 
 export const categoriesSchema = objectAsync({
 	id: number(),
@@ -35,6 +38,7 @@ export const categoriesSchema = objectAsync({
 		slug,
 	),
 	image: nullable(array(filesSchema(categoriesImageQualities))),
+	wallpaper: nullable(array(filesSchema(categoriesWallpaperQualities))),
 	empresa_id: number(),
 });
 

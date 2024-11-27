@@ -793,34 +793,34 @@ function OrderFormUpdate({
 				<div class="overflow-auto dark:bg-admin-terciary bg-paper-light rounded-md mb-3 w-full dark:border-none ">
 					<TableDetailsOrder order={order} />
 				</div>
-				<>
-					{order.mesa_id ? (
-						<>
+				{order.mesa_id ? (
+					<>
+						<Form.control.select
+							title="Piso"
+							name={"floor_id" as keyof OrdersUpdateDto}
+							placeholder="Seleccionar Piso"
+							array={arrayFloors}
+							options={{
+								setValueAs: formSelectNumber,
+							}}
+							isLoading={floorsIndexQuery.isLoading || false}
+						/>
+						{floorId ? (
 							<Form.control.select
-								title="Piso"
-								name={"floor_id" as keyof OrdersUpdateDto}
-								placeholder="Seleccionar Piso"
-								array={arrayFloors}
+								title="Mesa"
+								name={"mesa_id" as keyof OrdersUpdateDto}
+								placeholder="Seleccionar Mesa"
+								array={arrayMesas}
 								options={{
 									setValueAs: formSelectNumber,
 								}}
-								isLoading={floorsIndexQuery.isLoading || false}
+								isLoading={floorMesasQuery.isLoading || false}
 							/>
-							{floorId ? (
-								<Form.control.select
-									title="Mesa"
-									name={"mesa_id" as keyof OrdersUpdateDto}
-									placeholder="Seleccionar Mesa"
-									array={arrayMesas}
-									options={{
-										setValueAs: formSelectNumber,
-									}}
-									isLoading={floorMesasQuery.isLoading || false}
-								/>
-							) : null}
-						</>
-					) : null}
-				</>
+						) : null}
+					</>
+				) : (
+					<></>
+				)}
 				{/*  */}
 				<Form.control.select
 					name={"status_order_id" as keyof OrdersUpdateDto}
@@ -976,16 +976,14 @@ function OrderFormUpdate({
 								</div>
 							</>
 						) : null}
-						<>
-							{statusOrder === STATUSORDER.pagado ||
-							statusOrder === STATUSORDER.problema ? (
-								<Form.control.area
-									title="Descripcion de esta orden"
-									placeholder=""
-									name={"description" as keyof OrdersUpdateDto}
-								/>
-							) : null}
-						</>
+						{statusOrder === STATUSORDER.pagado ||
+						statusOrder === STATUSORDER.problema ? (
+							<Form.control.area
+								title="Descripcion de esta orden"
+								placeholder=""
+								name={"description" as keyof OrdersUpdateDto}
+							/>
+						) : null}
 					</>
 				</>
 				<div class="flex gap-2 items-center">
@@ -1356,26 +1354,24 @@ function EmpresaForm({
 							) : null}
 
 							<p class="text-black dark:text-white text-center">
-								<>
-									{statusOrder === STATUSORDER.pagado ? (
-										<>
-											{" "}
-											{kindInvoice === "00"
-												? "RECIBO"
-												: kindInvoice === "03"
-													? "BOLETA"
-													: kindInvoice === "01"
-														? "FACTURA ELECTRÓNICA"
-														: null}
-										</>
-									) : (
-										<>
-											{kindInvoiceNote === "07"
-												? "NOTA DE CREDITO"
-												: "NOTA DE DEBITO"}
-										</>
-									)}
-								</>
+								{statusOrder === STATUSORDER.pagado ? (
+									<>
+										{" "}
+										{kindInvoice === "00"
+											? "RECIBO"
+											: kindInvoice === "03"
+												? "BOLETA"
+												: kindInvoice === "01"
+													? "FACTURA ELECTRÓNICA"
+													: null}
+									</>
+								) : (
+									<>
+										{kindInvoiceNote === "07"
+											? "NOTA DE CREDITO"
+											: "NOTA DE DEBITO"}
+									</>
+								)}
 							</p>
 							<span class="font-normal dark:text-white">
 								{statusOrder === STATUSORDER.pagado ? (

@@ -4,6 +4,7 @@ import type { CategoriesSchemaFromServer } from "../../schemas/categories.schema
 import { uploadApi } from "~/libs/upload";
 
 export const categoriesUploadImages = "/uploads/categories/image";
+export const categoriesUploadWallpaper = "/uploads/categories/wallpaper";
 
 export function categoriesStoreApi(): UseMutation<
 	CategoriesStoreAPI,
@@ -12,6 +13,7 @@ export function categoriesStoreApi(): UseMutation<
 > {
 	return useMutation("/categories", async (url, body) => {
 		let image = null;
+		let wallpaper = null;
 		if (body.image) {
 			const result = await uploadApi(`/api${categoriesUploadImages}`, {
 				name: body.name,
@@ -19,8 +21,15 @@ export function categoriesStoreApi(): UseMutation<
 			});
 			image = result.files;
 		}
+		if (body.wallpaper) {
+			const result = await uploadApi(`/api${categoriesUploadWallpaper}`, {
+				name: body.name,
+				file: body.wallpaper,
+			});
+			wallpaper = result.files;
+		}
 		const response = await fetch(`/api${url}`, {
-			body: JSON.stringify({ ...body, image }),
+			body: JSON.stringify({ ...body, image, wallpaper }),
 			method: "POST",
 			headers: {
 				"content-type": "application/json",

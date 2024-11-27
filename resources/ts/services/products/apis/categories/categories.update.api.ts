@@ -1,11 +1,15 @@
 import { type UseMutation, useMutation } from "@vigilio/preact-fetching";
 import {
 	CategoriesUpdateImageDto,
+	CategoriesUpdateWallpaperDto,
 	type CategoriesUpdateDto,
 } from "../../dtos/categories.update.dto";
 import type { CategoriesSchemaFromServer } from "../../schemas/categories.schema";
 import { ResultApiImages, uploadApi } from "~/libs/upload";
-import { categoriesUploadImages } from "./categories.store.api";
+import {
+	categoriesUploadImages,
+	categoriesUploadWallpaper,
+} from "./categories.store.api";
 
 export function categoriesUpdateApi(
 	slug: number | string,
@@ -36,6 +40,19 @@ export function categoriesUpdateImagesApi(slug: string | number) {
 		const result = await uploadApi(`/api${url}`, {
 			name: body.name,
 			file: body.image,
+		});
+		return result;
+	});
+}
+export function categoriesUpdateWallpaperApi(slug: string | number) {
+	return useMutation<
+		ResultApiImages,
+		CategoriesUpdateWallpaperDto & { name: string },
+		categoriesUpdateErrorAPI
+	>(`${categoriesUploadWallpaper}/${slug}`, async (url, body) => {
+		const result = await uploadApi(`/api${url}`, {
+			name: body.name,
+			file: body.wallpaper,
 		});
 		return result;
 	});

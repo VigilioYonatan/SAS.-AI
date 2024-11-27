@@ -16,6 +16,7 @@ import { Empresas } from "../entities/empresas.entity";
 import { bannerSchema } from "../schemas/banner.schema";
 import { gridBannerSchema } from "../schemas/grid_banner.schema";
 import { settingsSchema } from "../schemas/settings.schema";
+import { fileSchema } from "../schemas/file.schema";
 
 export const empresasStoreDto = mergeAsync([
 	omitAsync(
@@ -69,6 +70,8 @@ export const empresasStoreDto = mergeAsync([
 				]),
 			),
 		),
+
+		files: arrayAsync(fileSchema),
 	}),
 ]);
 

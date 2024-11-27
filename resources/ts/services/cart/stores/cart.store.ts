@@ -78,7 +78,7 @@ export function useCartStore() {
 		const incrementProductToCart = [1, 3].includes(
 			storageEmpresa!.tipo_empresa.tipo_servicio_id,
 		)
-			? state.value.cart?.map((cart) => {
+			? (state.value.cart?.map((cart) => {
 					if (
 						cart.id === product.id &&
 						cart.variant!.id === product.variant!.id
@@ -107,8 +107,8 @@ export function useCartStore() {
 						};
 					}
 					return cart;
-				}) ?? []
-			: state.value.cart?.map((cart) => {
+				}) ?? [])
+			: (state.value.cart?.map((cart) => {
 					if (cart.id === product.id) {
 						//  hasta que la cantidad sea hasta el stock y si es ilimitado que siga agregando
 						if (
@@ -138,7 +138,7 @@ export function useCartStore() {
 						};
 					}
 					return cart;
-				}) ?? [];
+				}) ?? []);
 		state.value = { ...state.value, cart: incrementProductToCart };
 		if (!auth.state) {
 			const cart: CartStoreDto[] = incrementProductToCart?.map((cart) => ({
@@ -162,7 +162,7 @@ export function useCartStore() {
 		const decrementProductToCart = [1, 3].includes(
 			storageEmpresa!.tipo_empresa.tipo_servicio_id,
 		)
-			? state.value.cart?.map((prod) => {
+			? (state.value.cart?.map((prod) => {
 					if (
 						prod.id === product.id &&
 						prod.variant!.id === product.variant!.id
@@ -189,8 +189,8 @@ export function useCartStore() {
 						};
 					}
 					return prod;
-				}) ?? []
-			: state.value.cart?.map((prod) => {
+				}) ?? [])
+			: (state.value.cart?.map((prod) => {
 					if (prod.id === product.id) {
 						if (prod.quantity <= 1) return prod;
 						const quantity = prod.quantity - 1;
@@ -214,7 +214,7 @@ export function useCartStore() {
 						};
 					}
 					return prod;
-				}) ?? [];
+				}) ?? []);
 		state.value = { ...state.value, cart: decrementProductToCart };
 		if (!auth.state) {
 			const cart: CartStoreDto[] = decrementProductToCart.map((cart) => ({
@@ -285,7 +285,7 @@ export function useCartStore() {
 	function getTotal() {
 		// filtramos a los que no tienen ningun producto y los que no esán habilitado
 		const total = [1, 3].includes(storageEmpresa!.tipo_empresa.tipo_servicio_id)
-			? state.value.cart
+			? (state.value.cart
 					?.filter(
 						(prod) =>
 							prod.enabled &&
@@ -293,8 +293,8 @@ export function useCartStore() {
 					)
 					.reduce((ins, prod) => {
 						return ins + prod.subtotal;
-					}, 0) ?? 0
-			: state.value.cart
+					}, 0) ?? 0)
+			: (state.value.cart
 					?.filter(
 						(prod) =>
 							prod.enabled &&
@@ -303,7 +303,7 @@ export function useCartStore() {
 					)
 					.reduce((ins, prod) => {
 						return ins + prod.subtotal;
-					}, 0) ?? 0;
+					}, 0) ?? 0);
 		return total;
 	}
 

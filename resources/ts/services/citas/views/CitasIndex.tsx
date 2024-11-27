@@ -14,7 +14,6 @@ import { CitasStoreDto, citasStoreDto } from "../dtos/citas.store.dto";
 import useEmpresastore, {
 	storageEmpresa,
 } from "@/empresas/stores/empresa.store";
-import { Fragment } from "preact/jsx-runtime";
 import Loading from "@/admin/components/Loading";
 import View404 from "@/admin/views/404";
 import { useEffect } from "preact/hooks";
@@ -133,274 +132,165 @@ function CitasIndex() {
 													{hour}
 													{i + 1 > 12 ? "PM" : "AM"}
 												</span>
-												<>
-													{citasFiltered?.length ? (
-														<>
-															{citasFiltered!.length > 1 ? (
-																<>
-																	<div class="flex flex-col gap-2  w-full h-full">
-																		<span class="font-bold text-center dark:text-white">
-																			hay {citasFiltered!.length} Citas
-																		</span>
-																		<div class="grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid justify-center items-center gap-2">
-																			{citasFiltered.map((cita) => (
-																				<div
-																					class="bg-primary p-2 rounded-md"
-																					key={cita.id}
-																					onClick={() =>
-																						sweetModal({
-																							html: reactComponent(
-																								<CitasShow cita={cita} />,
-																							),
-																							showCloseButton: true,
-																							isCloseInBackground: false,
-																						})
-																					}
-																				>
-																					<div class="flex flex-col">
-																						<span class="text-white text-xs font-semibold block text-center">
-																							{cita.telephone}
-																						</span>
-																						<span class="text-white text-xs font-semibold block text-center">
-																							{cita.hour}
-																						</span>
-																					</div>
-
-																					<br />
-																					<div>
-																						<div class="grid grid-cols-3 gap-1  justify-center items-center ">
-																							{cita.contact ? (
-																								<>
-																									{(() => {
-																										const empresaContactsUpdateMutation =
-																											empresaContactsUpdateApi();
-																										return (
-																											<button
-																												class={` border  border-black    px-3 py-1.5 rounded-md ${
-																													cita.contact.ia
-																														? "bg-black text-white"
-																														: "text-black"
-																												}`}
-																												type="button"
-																												aria-label="enabled ia"
-																												onClick={(e) => {
-																													e.stopPropagation();
-																													sweetModal({
-																														title:
-																															"Estas seguro de quitar la IA a  este usuario?",
-																														text: "Este usuario ya no le responderá la IA si lo desactivas.",
-																														icon: "info",
-																														showCancelButton: true,
-																														showCloseButton: true,
-																													}).then(
-																														({
-																															isConfirmed,
-																														}) => {
-																															if (isConfirmed) {
-																																empresaContactsUpdateMutation.mutate(
-																																	{
-																																		...(cita.contact ??
-																																			{}),
-																																		ia:
-																																			!cita
-																																				.contact
-																																				.ia,
-																																	},
-																																	{
-																																		onSuccess:
-																																			(data: {
-																																				message: string;
-																																			}) => {
-																																				query.refetch(
-																																					false,
-																																				);
-																																				sweetAlert(
-																																					{
-																																						icon: "success",
-																																						title:
-																																							data.message,
-																																					},
-																																				);
-																																			},
-																																		onError:
-																																			(error: {
-																																				message: string;
-																																			}) => {
-																																				sweetAlert(
-																																					{
-																																						icon: "danger",
-																																						title: `Hubo un error al realizar esta acción, ${error.message}`,
-																																					},
-																																				);
-																																			},
-																																	},
-																																);
-																															}
-																														},
-																													);
-																												}}
-																											>
-																												<i class="fal fa-user-robot" />
-																											</button>
-																										);
-																									})()}
-																								</>
-																							) : null}
-
-																							<button
-																								type="button"
-																								class="px-2 py-2 rounded-md text-white bg-orange-600"
-																								onClick={(e) => {
-																									e.stopPropagation();
-																									sweetModal((onClose) => ({
-																										html: reactComponent(
-																											<CitasUpdate
-																												cita={cita}
-																												refetch={query.refetch}
-																												onClose={onClose}
-																											/>,
-																										),
-																										showCloseButton: true,
-																										isCloseInBackground: false,
-																									}));
-																								}}
-																							>
-																								<i class="fa-solid fa-pen" />
-																							</button>
-																							<button
-																								type="button"
-																								class="px-2 py-2 rounded-md text-white bg-danger"
-																								onClick={(e) => {
-																									e.stopPropagation();
-																									sweetModal({
-																										title:
-																											"¿Estás seguro de cancelar cita?",
-																										showCancelButton: true,
-																										showCloseButton: true,
-																										isCloseInBackground: false,
-																									}).then(({ isConfirmed }) => {
-																										if (isConfirmed) {
-																											citasDestroyMutation.mutate(
-																												cita.id,
-																												{
-																													onSuccess() {
-																														query.refetch(
-																															false,
-																														);
-																														sweetAlert({
-																															icon: "success",
-																															title:
-																																"Se canceló cita correctamente",
-																														});
-																													},
-																													onError(err) {
-																														sweetAlert({
-																															icon: "danger",
-																															title:
-																																err.message,
-																														});
-																													},
-																												},
-																											);
-																										}
-																									});
-																								}}
-																							>
-																								<i class="fa-solid fa-ban" />
-																							</button>
-																						</div>
-																					</div>
-																				</div>
-																			))}
-																		</div>
-																	</div>
-																</>
-															) : (
-																<div
-																	class="gap-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3  w-full overflow-auto"
-																	onClick={() =>
-																		sweetModal({
-																			html: reactComponent(
-																				<CitasShow cita={citasFiltered![0]} />,
-																			),
-																			showCloseButton: true,
-																			isCloseInBackground: false,
-																		})
-																	}
-																>
-																	<div class="flex flex-col justify-center items-center font-semibold dark:text-white">
-																		<span class="text-center text-xs dark:text-normal">
-																			{citasFiltered![0].telephone}
-																		</span>
-																		<span class="text-center text-xs dark:text-normal">
-																			{citasFiltered![0].hour}
-																		</span>
-																	</div>
-																	<p class="w-[200px] xl:w-[300px] h-[80px]   m-2 font-semibold hidden md:flex overflow-auto dark:text-white  flex-col ">
-																		{Object.entries(
-																			citasFiltered![0].answers,
-																		).map(([key, value]) => (
+												{citasFiltered?.length ? (
+													<>
+														{citasFiltered!.length > 1 ? (
+															<>
+																<div class="flex flex-col gap-2  w-full h-full">
+																	<span class="font-bold text-center dark:text-white">
+																		hay {citasFiltered!.length} Citas
+																	</span>
+																	<div class="grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid justify-center items-center gap-2">
+																		{citasFiltered.map((cita) => (
 																			<div
-																				key={key}
-																				class="flex flex-col gap-1"
+																				class="bg-primary p-2 rounded-md"
+																				key={cita.id}
+																				onClick={() =>
+																					sweetModal({
+																						html: reactComponent(
+																							<CitasShow cita={cita} />,
+																						),
+																						showCloseButton: true,
+																						isCloseInBackground: false,
+																					})
+																				}
 																			>
-																				<span class="font-bold text-primary">
-																					- {key}
-																				</span>{" "}
-																				<span>{value}</span>
-																			</div>
-																		))}
-																	</p>
-																	<div class="grid grid-cols-2 gap-1  justify-center items-center ">
-																		{citasFiltered![0].contact ? (
-																			<>
-																				{(() => {
-																					const empresaContactsUpdateMutation =
-																						empresaContactsUpdateApi();
-																					return (
+																				<div class="flex flex-col">
+																					<span class="text-white text-xs font-semibold block text-center">
+																						{cita.telephone}
+																					</span>
+																					<span class="text-white text-xs font-semibold block text-center">
+																						{cita.hour}
+																					</span>
+																				</div>
+
+																				<br />
+																				<div>
+																					<div class="grid grid-cols-3 gap-1  justify-center items-center ">
+																						{cita.contact ? (
+																							<>
+																								{(() => {
+																									const empresaContactsUpdateMutation =
+																										empresaContactsUpdateApi();
+																									return (
+																										<button
+																											class={` border  border-black    px-3 py-1.5 rounded-md ${
+																												cita.contact.ia
+																													? "bg-black text-white"
+																													: "text-black"
+																											}`}
+																											type="button"
+																											aria-label="enabled ia"
+																											onClick={(e) => {
+																												e.stopPropagation();
+																												sweetModal({
+																													title:
+																														"Estas seguro de quitar la IA a  este usuario?",
+																													text: "Este usuario ya no le responderá la IA si lo desactivas.",
+																													icon: "info",
+																													showCancelButton: true,
+																													showCloseButton: true,
+																												}).then(
+																													({ isConfirmed }) => {
+																														if (isConfirmed) {
+																															empresaContactsUpdateMutation.mutate(
+																																{
+																																	...(cita.contact ??
+																																		{}),
+																																	ia:
+																																		!cita
+																																			.contact
+																																			.ia,
+																																},
+																																{
+																																	onSuccess:
+																																		(data: {
+																																			message: string;
+																																		}) => {
+																																			query.refetch(
+																																				false,
+																																			);
+																																			sweetAlert(
+																																				{
+																																					icon: "success",
+																																					title:
+																																						data.message,
+																																				},
+																																			);
+																																		},
+																																	onError:
+																																		(error: {
+																																			message: string;
+																																		}) => {
+																																			sweetAlert(
+																																				{
+																																					icon: "danger",
+																																					title: `Hubo un error al realizar esta acción, ${error.message}`,
+																																				},
+																																			);
+																																		},
+																																},
+																															);
+																														}
+																													},
+																												);
+																											}}
+																										>
+																											<i class="fal fa-user-robot" />
+																										</button>
+																									);
+																								})()}
+																							</>
+																						) : null}
+
 																						<button
-																							class={` border  border-black    px-3 py-1.5 rounded-md ${
-																								citasFiltered![0].contact.ia
-																									? "bg-black text-white"
-																									: "text-black"
-																							}`}
 																							type="button"
-																							aria-label="enabled ia"
+																							class="px-2 py-2 rounded-md text-white bg-orange-600"
+																							onClick={(e) => {
+																								e.stopPropagation();
+																								sweetModal((onClose) => ({
+																									html: reactComponent(
+																										<CitasUpdate
+																											cita={cita}
+																											refetch={query.refetch}
+																											onClose={onClose}
+																										/>,
+																									),
+																									showCloseButton: true,
+																									isCloseInBackground: false,
+																								}));
+																							}}
+																						>
+																							<i class="fa-solid fa-pen" />
+																						</button>
+																						<button
+																							type="button"
+																							class="px-2 py-2 rounded-md text-white bg-danger"
 																							onClick={(e) => {
 																								e.stopPropagation();
 																								sweetModal({
 																									title:
-																										"Estas seguro de quitar la IA a  este usuario?",
-																									text: "Este usuario ya no le responderá la IA si lo desactivas.",
-																									icon: "info",
+																										"¿Estás seguro de cancelar cita?",
 																									showCancelButton: true,
 																									showCloseButton: true,
+																									isCloseInBackground: false,
 																								}).then(({ isConfirmed }) => {
 																									if (isConfirmed) {
-																										empresaContactsUpdateMutation.mutate(
+																										citasDestroyMutation.mutate(
+																											cita.id,
 																											{
-																												...citasFiltered![0]
-																													.contact,
-																												ia:
-																													!citasFiltered![0]
-																														.contact.ia,
-																											},
-																											{
-																												onSuccess: (data: {
-																													message: string;
-																												}) => {
+																												onSuccess() {
 																													query.refetch(false);
 																													sweetAlert({
 																														icon: "success",
-																														title: data.message,
+																														title:
+																															"Se canceló cita correctamente",
 																													});
 																												},
-																												onError: (error: {
-																													message: string;
-																												}) => {
+																												onError(err) {
 																													sweetAlert({
 																														icon: "danger",
-																														title: `Hubo un error al realizar esta acción, ${error.message}`,
+																														title: err.message,
 																													});
 																												},
 																											},
@@ -409,88 +299,187 @@ function CitasIndex() {
 																								});
 																							}}
 																						>
-																							<i class="fal fa-user-robot" />
+																							<i class="fa-solid fa-ban" />
 																						</button>
-																					);
-																				})()}
-																			</>
-																		) : null}
-
-																		<button
-																			type="button"
-																			class="px-2 py-2 rounded-md text-white bg-danger"
-																			onClick={(e) => {
-																				e.stopPropagation();
-																				sweetModal({
-																					title:
-																						"¿Estás seguro de cancelar cita?",
-																					showCancelButton: true,
-																					showCloseButton: true,
-																					isCloseInBackground: false,
-																				}).then(({ isConfirmed }) => {
-																					if (isConfirmed) {
-																						citasDestroyMutation.mutate(
-																							citasFiltered![0].id,
-																							{
-																								onSuccess() {
-																									query.refetch(false);
-																									sweetAlert({
-																										icon: "success",
-																										title:
-																											"Se canceló cita correctamente",
-																									});
-																								},
-																								onError(err) {
-																									sweetAlert({
-																										icon: "danger",
-																										title: err.message,
-																									});
-																								},
-																							},
-																						);
-																					}
-																				});
-																			}}
-																		>
-																			<i class="fa-solid fa-ban" />
-																		</button>
-																		<button
-																			type="button"
-																			class="px-2 py-2 rounded-md text-white bg-orange-600"
-																			onClick={(e) => {
-																				e.stopPropagation();
-																				sweetModal((onClose) => ({
-																					html: reactComponent(
-																						<CitasUpdate
-																							cita={citasFiltered![0]}
-																							refetch={query.refetch}
-																							onClose={onClose}
-																						/>,
-																					),
-																					showCloseButton: true,
-																					isCloseInBackground: false,
-																					// <CitasStore
-																					//     timer={
-																					//         timer
-																					//     }
-																					// />
-																				}));
-																			}}
-																		>
-																			<i class="fa-solid fa-pen" />
-																		</button>
+																					</div>
+																				</div>
+																			</div>
+																		))}
 																	</div>
 																</div>
-															)}
-														</>
-													) : (
-														<div class="w-full ">
-															<span class="flex justify-center items-center dark:text-white font-bold">
-																No hay Citas
-															</span>
-														</div>
-													)}
-												</>{" "}
+															</>
+														) : (
+															<div
+																class="gap-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3  w-full overflow-auto"
+																onClick={() =>
+																	sweetModal({
+																		html: reactComponent(
+																			<CitasShow cita={citasFiltered![0]} />,
+																		),
+																		showCloseButton: true,
+																		isCloseInBackground: false,
+																	})
+																}
+															>
+																<div class="flex flex-col justify-center items-center font-semibold dark:text-white">
+																	<span class="text-center text-xs dark:text-normal">
+																		{citasFiltered![0].telephone}
+																	</span>
+																	<span class="text-center text-xs dark:text-normal">
+																		{citasFiltered![0].hour}
+																	</span>
+																</div>
+																<p class="w-[200px] xl:w-[300px] h-[80px]   m-2 font-semibold hidden md:flex overflow-auto dark:text-white  flex-col ">
+																	{Object.entries(
+																		citasFiltered![0].answers,
+																	).map(([key, value]) => (
+																		<div key={key} class="flex flex-col gap-1">
+																			<span class="font-bold text-primary">
+																				- {key}
+																			</span>{" "}
+																			<span>{value}</span>
+																		</div>
+																	))}
+																</p>
+																<div class="grid grid-cols-2 gap-1  justify-center items-center ">
+																	{citasFiltered![0].contact ? (
+																		<>
+																			{(() => {
+																				const empresaContactsUpdateMutation =
+																					empresaContactsUpdateApi();
+																				return (
+																					<button
+																						class={` border  border-black    px-3 py-1.5 rounded-md ${
+																							citasFiltered![0].contact.ia
+																								? "bg-black text-white"
+																								: "text-black"
+																						}`}
+																						type="button"
+																						aria-label="enabled ia"
+																						onClick={(e) => {
+																							e.stopPropagation();
+																							sweetModal({
+																								title:
+																									"Estas seguro de quitar la IA a  este usuario?",
+																								text: "Este usuario ya no le responderá la IA si lo desactivas.",
+																								icon: "info",
+																								showCancelButton: true,
+																								showCloseButton: true,
+																							}).then(({ isConfirmed }) => {
+																								if (isConfirmed) {
+																									empresaContactsUpdateMutation.mutate(
+																										{
+																											...citasFiltered![0]
+																												.contact,
+																											ia:
+																												!citasFiltered![0]
+																													.contact.ia,
+																										},
+																										{
+																											onSuccess: (data: {
+																												message: string;
+																											}) => {
+																												query.refetch(false);
+																												sweetAlert({
+																													icon: "success",
+																													title: data.message,
+																												});
+																											},
+																											onError: (error: {
+																												message: string;
+																											}) => {
+																												sweetAlert({
+																													icon: "danger",
+																													title: `Hubo un error al realizar esta acción, ${error.message}`,
+																												});
+																											},
+																										},
+																									);
+																								}
+																							});
+																						}}
+																					>
+																						<i class="fal fa-user-robot" />
+																					</button>
+																				);
+																			})()}
+																		</>
+																	) : null}
+
+																	<button
+																		type="button"
+																		class="px-2 py-2 rounded-md text-white bg-danger"
+																		onClick={(e) => {
+																			e.stopPropagation();
+																			sweetModal({
+																				title:
+																					"¿Estás seguro de cancelar cita?",
+																				showCancelButton: true,
+																				showCloseButton: true,
+																				isCloseInBackground: false,
+																			}).then(({ isConfirmed }) => {
+																				if (isConfirmed) {
+																					citasDestroyMutation.mutate(
+																						citasFiltered![0].id,
+																						{
+																							onSuccess() {
+																								query.refetch(false);
+																								sweetAlert({
+																									icon: "success",
+																									title:
+																										"Se canceló cita correctamente",
+																								});
+																							},
+																							onError(err) {
+																								sweetAlert({
+																									icon: "danger",
+																									title: err.message,
+																								});
+																							},
+																						},
+																					);
+																				}
+																			});
+																		}}
+																	>
+																		<i class="fa-solid fa-ban" />
+																	</button>
+																	<button
+																		type="button"
+																		class="px-2 py-2 rounded-md text-white bg-orange-600"
+																		onClick={(e) => {
+																			e.stopPropagation();
+																			sweetModal((onClose) => ({
+																				html: reactComponent(
+																					<CitasUpdate
+																						cita={citasFiltered![0]}
+																						refetch={query.refetch}
+																						onClose={onClose}
+																					/>,
+																				),
+																				showCloseButton: true,
+																				isCloseInBackground: false,
+																				// <CitasStore
+																				//     timer={
+																				//         timer
+																				//     }
+																				// />
+																			}));
+																		}}
+																	>
+																		<i class="fa-solid fa-pen" />
+																	</button>
+																</div>
+															</div>
+														)}
+													</>
+												) : (
+													<div class="w-full ">
+														<span class="flex justify-center items-center dark:text-white font-bold">
+															No hay Citas
+														</span>
+													</div>
+												)}
 												<div class="flex justify-center items-center">
 													<button
 														type="button"
@@ -535,7 +524,7 @@ interface CitasStoreProps {
 function CitasStore({ date, hour, onClose, refetch }: CitasStoreProps) {
 	const citasStoreMutation = citasStoreApi();
 	const empresaStore = useEmpresastore();
-	const questions = empresaStore.state?.citasSetting.questions;
+	const questions = empresaStore.state!.citasSetting.questions;
 
 	const citasStoreForm = useForm<CitasStoreDto>({
 		resolver: valibotVigilio(citasStoreDto),
@@ -597,11 +586,12 @@ function CitasStore({ date, hour, onClose, refetch }: CitasStoreProps) {
 				/>
 				<br />
 				<span class="text-md font-bold dark:text-white">Respuestas</span>
-				<>
-					{questions?.map((question) => {
+
+				{
+					questions.map((question, i) => {
 						const key = question.question;
 						return (
-							<Fragment key={key}>
+							<div key={`${key}${i + 1}`}>
 								<div>
 									<span class="text-xs dark:text-white font-semibold ">
 										{question.question}
@@ -655,10 +645,11 @@ function CitasStore({ date, hour, onClose, refetch }: CitasStoreProps) {
 								) : (
 									<></>
 								)}
-							</Fragment>
+							</div>
 						);
-					})}
-				</>
+						// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					}) as any
+				}
 
 				<br />
 				<Form.control
@@ -741,11 +732,11 @@ function CitasUpdate({ cita, onClose, refetch }: CitasUpdateProps) {
 				/>
 				<br />
 				<span class="text-md font-bold dark:text-white">Respuestas</span>
-				<>
-					{questions?.map((question) => {
+				{
+					questions?.map((question) => {
 						const key = question.question;
 						return (
-							<Fragment key={key}>
+							<div key={key}>
 								<div>
 									<span class="text-xs dark:text-white font-semibold ">
 										{question.question}
@@ -800,10 +791,11 @@ function CitasUpdate({ cita, onClose, refetch }: CitasUpdateProps) {
 								) : (
 									<></>
 								)}
-							</Fragment>
+							</div>
 						);
-					})}
-				</>
+						// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					}) as any
+				}
 
 				<br />
 				<Form.control

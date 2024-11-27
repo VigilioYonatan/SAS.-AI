@@ -7,12 +7,12 @@ import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import ProductButtons from "./Product.buttons";
 
 const ProductCard = Object.assign(Product, {
-    header: ProductHeader,
-    buttons:
-        storageEmpresa?.setting.type_product_buttons === "first"
-            ? ProductButtons
-            : ProductButtons2,
-    body: ProductBody,
-    footer: ProductFooter,
+	header: ProductHeader,
+	buttons:
+		storageEmpresa?.setting.type_product_buttons === "first"
+			? ProductButtons
+			: ProductButtons2,
+	body: ProductBody,
+	footer: ProductFooter,
 });
 export default ProductCard;

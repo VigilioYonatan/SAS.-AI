@@ -33,6 +33,7 @@ export const categoriesSchema = object({
 		slug,
 	),
 	image: nullable(array(filesSchema())),
+	wallpaper: nullable(array(filesSchema())),
 	empresa_id: number(),
 	isService: boolean(),
 });

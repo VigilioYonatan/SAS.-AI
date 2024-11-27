@@ -316,7 +316,10 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                                 <tr>
                                                     <td align="right"><strong>${empresa.tipo_impuesto
 																											.toUpperCase()
-																											.replaceAll("", ".")}:</strong></td>
+																											.replaceAll(
+																												"",
+																												".",
+																											)}:</strong></td>
                                                     <td width="120" align="right"><span id="ride-importeTotal" class="ride-importeTotal">${formatMoney(
 																											empresa,
 																											igv,

@@ -53,6 +53,7 @@ function FormRadio<T extends object>({
 							class="offscreen"
 							disabled={disabled}
 						/>
+						{/* biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
 						<label for={nameRandom} class="switch" />
 					</div>
 					{question ? (

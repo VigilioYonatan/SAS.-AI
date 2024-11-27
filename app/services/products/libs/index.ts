@@ -24,6 +24,7 @@ export const productsImagesQualities = [100, 500];
 
 //  categories
 export const categoriesImageQualities = [100, 800];
+export const categoriesWallpaperQualities = [100, 1200];
 export const brandsImageQualities = [100, 500];
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>

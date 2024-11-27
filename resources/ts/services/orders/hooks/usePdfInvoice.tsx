@@ -105,12 +105,7 @@ function usePdfInvoice({ order, type = "recibo" }: usePdfInvoiceProps) {
 			}
 			component = (
 				<div>
-					<embed
-						src={pdf}
-						type="application/pdf"
-						width="100%"
-						height={600}
-					/>
+					<embed src={pdf} type="application/pdf" width="100%" height={600} />
 					<br />
 					<div class="flex gap-2 mt-5 items-center  justify-between flex-wrap">
 						<div class="flex gap-2 items-center ">

@@ -37,43 +37,39 @@ function ProductsSearch2() {
 		component = <LoaderSubmit />;
 	}
 	if (productsPaginatorApiQuery.isSuccess) {
-		component = (
+		component = !productsPaginatorApiQuery.data!.results.length ? (
+			<span class=" dark:text-white  text-center text-sm py-12">
+				No se encontró ningun producto con {value.value}
+			</span>
+		) : (
 			<>
-				{!productsPaginatorApiQuery.data!.results.length ? (
-					<span class=" dark:text-white  text-center text-sm py-12">
-						No se encontró ningun producto con {value.value}
-					</span>
-				) : (
-					<>
-						{productsPaginatorApiQuery.data!.results.map((product) => (
-							<button
-								type="button"
-								onClick={() => {
-									window.location.href = `/${product.slug}`;
-								}}
-								key={product.id}
-								class=" block p-3 dark:text-gray-300  duration-200 cursor-default select-none hover:text-primary group  hover:bg-white/5"
-								tabindex={-1}
-							>
-								<div class="flex items-center justify-between my-1 w-full">
-									<div className="flex items-center gap-2">
-										<img
-											class="w-[80px]"
-											width={100}
-											height={100}
-											src={printImagesProduct(product.images, 100)[0]}
-											alt={product.name}
-										/>
-										<span class="text-sm   font-semibold">{product.name}</span>
-									</div>
-									<span class="text-primary font-bold">
-										{formatMoney(subtotalIgv(product))}
-									</span>
-								</div>
-							</button>
-						))}
-					</>
-				)}
+				{productsPaginatorApiQuery.data!.results.map((product) => (
+					<button
+						type="button"
+						onClick={() => {
+							window.location.href = `/${product.slug}`;
+						}}
+						key={product.id}
+						class=" block p-3 dark:text-gray-300  duration-200 cursor-default select-none hover:text-primary group  hover:bg-white/5"
+						tabindex={-1}
+					>
+						<div class="flex items-center justify-between my-1 w-full">
+							<div className="flex items-center gap-2">
+								<img
+									class="w-[80px]"
+									width={100}
+									height={100}
+									src={printImagesProduct(product.images, 100)[0]}
+									alt={product.name}
+								/>
+								<span class="text-sm   font-semibold">{product.name}</span>
+							</div>
+							<span class="text-primary font-bold">
+								{formatMoney(subtotalIgv(product))}
+							</span>
+						</div>
+					</button>
+				))}
 			</>
 		);
 	}

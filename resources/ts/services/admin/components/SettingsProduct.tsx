@@ -54,7 +54,7 @@ function SettingsProduct({
 				<div class="flex flex-col gap-2 ">
 					{description ? (
 						<div class="flex gap-2">
-							<label class="text-xs w-[100px] text-start">Descripción</label>
+							<span class="text-xs w-[100px] text-start">Descripción</span>
 							<input
 								type="checkbox"
 								name="description"
@@ -74,9 +74,7 @@ function SettingsProduct({
 
 					{caracteristicas ? (
 						<div class="flex gap-2">
-							<label class="text-xs w-[100px] text-start">
-								Características
-							</label>
+							<span class="text-xs w-[100px] text-start">Características</span>
 							<input
 								type="checkbox"
 								name="caracteristicas"
@@ -96,7 +94,7 @@ function SettingsProduct({
 					) : null}
 					{images ? (
 						<div class="flex gap-2">
-							<label class="text-xs text-start  w-[100px]">Imagenes</label>
+							<span class="text-xs text-start  w-[100px]">Imagenes</span>
 							<input
 								type="checkbox"
 								name="images"

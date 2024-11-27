@@ -67,7 +67,7 @@ function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
 
 		function onUpdateBackground(body: BackgroundUpdateDto) {
 			sweetModal({
-				title: `¿Estás seguro de editar el background ${background.id}?`,
+				title: "¿Estás seguro de editar el background ?",
 				customIcon:
 					"<i class='fa-solid fa-image text-3xl dark:text-white' ></i>",
 				showCancelButton: true,
@@ -75,10 +75,10 @@ function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
 			}).then(({ isConfirmed }) => {
 				if (isConfirmed) {
 					backgroundUpdateMutation.mutate(body, {
-						onSuccess(data) {
+						onSuccess() {
 							sweetAlert({
 								icon: "success",
-								title: `Se realizó los cambios correctamente ${data.background.id}`,
+								title: "Se realizó los cambios correctament",
 							});
 							onClose();
 							refetch(false);

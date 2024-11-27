@@ -18,6 +18,7 @@ import {
 import {
 	brandsImageQualities,
 	categoriesImageQualities,
+	categoriesWallpaperQualities,
 	productsImagesQualities,
 } from "@/products/libs";
 import {
@@ -48,6 +49,7 @@ import { NewApiService } from "@/empresas/services/new.api.service";
 import { SubCategoriesApiService } from "@/products/services/subcategories.api.service";
 import { BannerApiService } from "@/empresas/services/banner.api.service";
 import { SettingsApiService } from "@/empresas/services/settings.api.service";
+import { FileSchema } from "@/empresas/entities/file.entity";
 
 @Injectable()
 export class UploadsService {
@@ -122,6 +124,7 @@ export class UploadsService {
 						productsImagesQualities,
 					);
 				}
+
 				break;
 			case "suppliers":
 				if (!userAuth || !userAuth.enabled || ![1].includes(userAuth.role_id))
@@ -151,9 +154,42 @@ export class UploadsService {
 						{
 							minFiles: 1,
 							maxFiles: 1,
-							required: true,
+							required: false,
+							typeFile: {
+								value: [
+									"image/jpg",
+									"image/webp",
+									"image/jpeg",
+									"image/gif",
+									"image/png",
+									"video/mp4",
+								],
+							},
+							maxSize: empresa.isFreeVPS ? 25 : 50,
 						},
 						categoriesImageQualities,
+					);
+				}
+				if (property === "wallpaper") {
+					qualities = await this.customUpload(
+						files,
+						{
+							minFiles: 1,
+							maxFiles: 1,
+							required: false,
+							typeFile: {
+								value: [
+									"image/jpg",
+									"image/webp",
+									"image/jpeg",
+									"image/gif",
+									"image/png",
+									"video/mp4",
+								],
+							},
+							maxSize: empresa.isFreeVPS ? 25 : 50,
+						},
+						categoriesWallpaperQualities,
 					);
 				}
 				break;
@@ -214,6 +250,31 @@ export class UploadsService {
 							required: true,
 						},
 						postsImageQualities,
+					);
+				}
+				break;
+			case "files":
+				if (property === "file") {
+					qualities = await this.customUpload(
+						files,
+						{
+							minFiles: 1,
+							maxFiles: 1,
+							required: true,
+							typeFile: {
+								value: [
+									"image/jpg",
+									"image/webp",
+									"image/jpeg",
+									"image/gif",
+									"image/png",
+									"video/mp4",
+									"application/pdf",
+									"text/plain",
+								],
+							},
+						},
+						null,
 					);
 				}
 				break;
@@ -467,6 +528,9 @@ export class UploadsService {
 				if (property === "image" && category.image) {
 					removeFile(empresa.slug, category.image);
 				}
+				if (property === "wallpaper" && category.wallpaper) {
+					removeFile(empresa.slug, category.wallpaper);
+				}
 
 				break;
 			}
@@ -588,6 +652,22 @@ export class UploadsService {
 				}
 				break;
 			}
+			case "files": {
+				if (!userAuth || !userAuth.enabled || ![1].includes(userAuth.role_id))
+					throw new UnauthorizedException(
+						"No tiene permiso para realizar esta acción",
+					);
+				const file = await FileSchema.findOne({
+					where: { id: Number(id), empresa_id: empresa.id },
+				});
+				if (!file) throw new BadRequestException("No se encontró empresa file");
+				entidad = file;
+				if (property === "file") {
+					removeFile(empresa.slug, file.file);
+				}
+				break;
+			}
+
 			case "new": {
 				if (!userAuth || !userAuth.enabled || ![1].includes(userAuth.role_id))
 					throw new UnauthorizedException(

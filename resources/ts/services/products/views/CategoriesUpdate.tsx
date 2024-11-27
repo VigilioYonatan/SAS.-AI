@@ -12,14 +12,17 @@ import View404 from "@/admin/views/404";
 import {
 	categoriesUpdateApi,
 	categoriesUpdateImagesApi,
+	categoriesUpdateWallpaperApi,
 } from "../apis/categories/categories.update.api";
 import {
 	categoriesUpdateDto,
 	CategoriesUpdateDto,
 	CategoriesUpdateImageDto,
 	categoriesUpdateImageDto,
+	CategoriesUpdateWallpaperDto,
 } from "../dtos/categories.update.dto";
 import { getFilesEdit } from "~/libs/upload";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 interface CategoriesUpdateProps {
 	refetch: (clean?: boolean) => Promise<void>;
@@ -61,8 +64,16 @@ function CategoriesUpdate({ id, onClose, refetch }: CategoriesUpdateProps) {
 			mode: "all",
 			resolver: valibotVigilio(categoriesUpdateImageDto),
 		});
+		const formProductsNormalUpdateWallpaper =
+			useForm<CategoriesUpdateWallpaperDto>({
+				mode: "all",
+				resolver: valibotVigilio(categoriesUpdateImageDto),
+			});
 
 		const categoriesUpdateImagesMutate = categoriesUpdateImagesApi(category.id);
+		const categoriesUpdateWallpaperMutate = categoriesUpdateWallpaperApi(
+			category.id,
+		);
 		function onUpdateCategory(body: CategoriesUpdateDto) {
 			sweetModal({
 				icon: "info",
@@ -98,6 +109,12 @@ function CategoriesUpdate({ id, onClose, refetch }: CategoriesUpdateProps) {
 				formProductsNormalUpdateImages.setValue("image", images);
 			}
 		}
+		async function initialUpdateWallpaper() {
+			if (category.wallpaper) {
+				const wallpaper = await getFilesEdit(category.wallpaper, 1200);
+				formProductsNormalUpdateWallpaper.setValue("wallpaper", wallpaper);
+			}
+		}
 		function onUpdateImagesProduct(data: CategoriesUpdateImageDto) {
 			sweetModal({
 				title: "¿Estás seguro de editar las imagenes de esta categoria?",
@@ -128,9 +145,40 @@ function CategoriesUpdate({ id, onClose, refetch }: CategoriesUpdateProps) {
 				}
 			});
 		}
+		function onUpdateWallpaperProduct(data: CategoriesUpdateWallpaperDto) {
+			sweetModal({
+				title: "¿Estás seguro de editar el wallpaper de esta categoria?",
+
+				showCloseButton: true,
+				showCancelButton: true,
+			}).then(({ isConfirmed }) => {
+				if (isConfirmed) {
+					categoriesUpdateWallpaperMutate.mutate(
+						{ ...data, name: category.name },
+						{
+							onSuccess() {
+								sweetAlert({
+									icon: "success",
+									title: "Se actualizó imagenes correctamente",
+								});
+
+								if (refetch) {
+									refetch(false);
+								}
+								query.refetch(false);
+							},
+							onError(error) {
+								handlerError(formProductsNormalUpdateImages, error);
+							},
+						},
+					);
+				}
+			});
+		}
 
 		useEffect(() => {
 			initialUpdateImages();
+			initialUpdateWallpaper();
 		}, []);
 		component = (
 			<div class="p-4">
@@ -218,8 +266,8 @@ function CategoriesUpdate({ id, onClose, refetch }: CategoriesUpdateProps) {
 							name={"image" as keyof CategoriesUpdateImageDto}
 							title="Imagen de categoría"
 							accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
-							typeFile="image"
-							multiple
+							typeFile="image-video"
+							multiple={false}
 							showButonCopy
 							showButtonClean
 						/>
@@ -232,6 +280,43 @@ function CategoriesUpdate({ id, onClose, refetch }: CategoriesUpdateProps) {
 							/>
 						</div>
 					</Form>
+					{storageEmpresa?.setting.isProductWallpaper ? (
+						<>
+							<br />
+							<div class="flex justify-between items-center">
+								<h3 class="dark:text-white  font-bold uppercase text-center flex gap-2 break-words text-wrap ">
+									<i class="fa-solid fa-layer-group" />
+									Editar Wallpaper - {category.name}
+								</h3>
+							</div>
+							<Form
+								{...formProductsNormalUpdateWallpaper}
+								onSubmit={onUpdateWallpaperProduct}
+							>
+								<Form.control.file
+									name={"wallpaper" as keyof CategoriesUpdateWallpaperDto}
+									title="Wallpaper de categoría (300px x 1000px)"
+									accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
+									typeFile="image-video"
+									multiple={false}
+									showButonCopy
+									showButtonClean
+								/>
+								<div class="flex justify-center">
+									<Form.button.submit
+										disabled={
+											categoriesUpdateWallpaperMutate.isLoading || false
+										}
+										isLoading={
+											categoriesUpdateWallpaperMutate.isLoading || false
+										}
+										ico={<i class="fas fa-pen" />}
+										title="Editar"
+									/>
+								</div>
+							</Form>
+						</>
+					) : null}
 				</div>
 			</div>
 		);

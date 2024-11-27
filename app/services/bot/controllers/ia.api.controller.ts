@@ -249,14 +249,7 @@ export class IAApiController {
 	) {
 		try {
 			const { images: imagesClient = null } = query;
-			if (!imagesClient)
-				return {
-					success: true,
-					data: {
-						images: [],
-						description: "",
-					},
-				};
+
 			const whatsapp = await isWhatsappTelegramIA(empresa.slug);
 			if (!whatsapp)
 				throw new NotFoundException(
@@ -299,6 +292,7 @@ export class IAApiController {
 
 			const prompt = `conoces fontawesome? tienes un icon en html <i class='fa' de ${name}? solo traime el html y en string y no en formato y no digas nada. solo traime el ico sin '' al principio ni al final`;
 			const ico = await chatgpt(whatsapp, prompt);
+
 			return {
 				success: true,
 				data: {

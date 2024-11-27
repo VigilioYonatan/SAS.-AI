@@ -561,79 +561,75 @@ function Favorites() {
 		);
 	}
 	if (favoritesPaginator.isSuccess) {
-		component = (
+		component = favoritesPaginator.data!.results.length ? (
 			<>
-				{favoritesPaginator.data!.results.length ? (
-					<>
-						{favoritesPaginator.data!.results.map((product, i) => {
-							const {
-								onFavorite,
-								favoritesStoreMutation,
-								favoritesDestroyMutation,
-								producto,
-							} = useProduct({
-								product,
-								isService: product.category.isService,
-							});
-							if (!producto.value.user?.isFavorite) return null;
-							return (
-								<Fragment key={`${product.id}-${i}`}>
-									<div class="flex gap-2 w-full">
-										<img
-											class="w-[80px] h-[80px] object-cover"
-											width={200}
-											height={200}
-											src={printImagesProduct(product.images, 500)[0]}
-											alt=""
-										/>
-										<div class="flex flex-col w-full">
-											<a
-												href={`/${product.slug}`}
-												class="text-primary dark:text-white font-semibold hover:underline "
-											>
-												{product.name}
-											</a>
-											{product.discount ? (
-												<span class="font-semibold text-terciary  text-xs  line-through">
-													{formatMoney(subtotalIgv(product, false))}
-												</span>
-											) : null}
-											<span class="font-semibold dark:text-white">
-												{formatMoney(subtotalIgv(product))}
-											</span>
-										</div>
-										<div class="flex justify-center items-center">
-											<button
-												type="button"
-												disabled={
-													favoritesStoreMutation.isLoading ||
-													favoritesDestroyMutation.isLoading ||
-													false
-												}
-												class="bg-primary text-white px-2 py-1 rounded-md border-2 border-primary min-w-[50px] "
-												onClick={onFavorite}
-											>
-												{favoritesStoreMutation.isLoading ||
-												favoritesDestroyMutation.isLoading ? (
-													<LoaderSubmit />
-												) : (
-													<i class="fas fa-heart text-2xl " />
-												)}
-											</button>
-										</div>
-									</div>
-									<div class="h-[1px] bg-gray-500 w-full" />
-								</Fragment>
-							);
-						})}
-						<WebPaginationFooter paginator={paginator} />
-					</>
-				) : (
-					<span class="font-semibold text-start text-primary self-start dark:text-white mt-4 ">
-						No tienes ningun producto favorito
-					</span>
-				)}
+				{favoritesPaginator.data!.results.map((product, i) => {
+					const {
+						onFavorite,
+						favoritesStoreMutation,
+						favoritesDestroyMutation,
+						producto,
+					} = useProduct({
+						product,
+						isService: product.category.isService,
+					});
+					if (!producto.value.user?.isFavorite) return null;
+					return (
+						<Fragment key={`${product.id}-${i}`}>
+							<div class="flex gap-2 w-full">
+								<img
+									class="w-[80px] h-[80px] object-cover"
+									width={200}
+									height={200}
+									src={printImagesProduct(product.images, 500)[0]}
+									alt=""
+								/>
+								<div class="flex flex-col w-full">
+									<a
+										href={`/${product.slug}`}
+										class="text-primary dark:text-white font-semibold hover:underline "
+									>
+										{product.name}
+									</a>
+									{product.discount ? (
+										<span class="font-semibold text-terciary  text-xs  line-through">
+											{formatMoney(subtotalIgv(product, false))}
+										</span>
+									) : null}
+									<span class="font-semibold dark:text-white">
+										{formatMoney(subtotalIgv(product))}
+									</span>
+								</div>
+								<div class="flex justify-center items-center">
+									<button
+										type="button"
+										disabled={
+											favoritesStoreMutation.isLoading ||
+											favoritesDestroyMutation.isLoading ||
+											false
+										}
+										class="bg-primary text-white px-2 py-1 rounded-md border-2 border-primary min-w-[50px] "
+										onClick={onFavorite}
+									>
+										{favoritesStoreMutation.isLoading ||
+										favoritesDestroyMutation.isLoading ? (
+											<LoaderSubmit />
+										) : (
+											<i class="fas fa-heart text-2xl " />
+										)}
+									</button>
+								</div>
+							</div>
+							<div class="h-[1px] bg-gray-500 w-full" />
+						</Fragment>
+					);
+				})}
+				<WebPaginationFooter paginator={paginator} />
 			</>
+		) : (
+			<span class="font-semibold text-start text-primary self-start dark:text-white mt-4 ">
+				No tienes ningun producto favorito
+			</span>
 		);
 	}
 

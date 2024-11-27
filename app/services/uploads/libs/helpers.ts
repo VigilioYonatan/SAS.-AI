@@ -28,7 +28,8 @@ export type UploadsEntities =
 	| "suppliers"
 	| "new"
 	| "banner"
-	| "settings";
+	| "settings"
+	| "files";
 
 export const uploadsEntities: UploadsEntities[] = [
 	"products",
@@ -45,6 +46,7 @@ export const uploadsEntities: UploadsEntities[] = [
 	"new",
 	"banner",
 	"settings",
+	"files",
 ];
 
 /**** properties about entities *****/
@@ -237,14 +239,12 @@ export async function uploadFiles({
 		} else {
 			const ext = file.originalFilename?.split(".").at(-1);
 
-			const fileName = `${
-				name ? slug(name) : crypto.randomUUID()
-			}${Date.now().toString(32).substring(4)}.${!ext?.length ? "txt" : ext}`;
-			fs.writeFileSync(
-				path.resolve(dirEntity, fileName),
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				fs.readFileSync(file.filepath) as any,
-			);
+			const fileName = `${name ? slug(name) : crypto.randomUUID()}.${
+				!ext?.length ? "txt" : ext
+			}`;
+			const fileexist = path.resolve(dirEntity, fileName);
+			fs.renameSync(file.filepath, fileexist);
+
 			filesNames = [
 				...filesNames,
 				{ file: `${directory.slice(1)}/${entity}/${fileName}` },

@@ -45,6 +45,11 @@ export class Categories extends Model implements Omit<CategoriesSchema, "id"> {
 	image: FilesSchema[] | null;
 
 	@Column({
+		type: DataType.JSON,
+	})
+	wallpaper: FilesSchema[] | null;
+
+	@Column({
 		type: DataType.STRING(255),
 	})
 	icon: string;

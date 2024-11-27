@@ -1,8 +1,9 @@
-import { array, number, object, string } from "@vigilio/valibot";
+import { array, Input, number, object } from "@vigilio/valibot";
 import { filesSchema } from "~/libs/upload";
 
 export const fileSchema = object({
-    file: array(filesSchema()),
-    name: string(),
-    empresa_id: number(),
+	id: number(),
+	file: array(filesSchema()),
+	empresa_id: number(),
 });
+export type FileSchema = Input<typeof fileSchema>;

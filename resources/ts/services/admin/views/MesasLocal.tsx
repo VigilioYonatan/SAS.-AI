@@ -98,53 +98,49 @@ export function ProductsLocal() {
 								>
 									Todos
 								</option>
-								<>
-									{categoriesIndexQuery.data?.data.map((cat) => (
-										<option
-											key={cat.id}
-											selected={cat.slug === filters.value.category}
-											value={cat.slug}
-										>
-											{cat.name}
-										</option>
-									))}
-								</>
+								{categoriesIndexQuery.data?.data.map((cat) => (
+									<option
+										key={cat.id}
+										selected={cat.slug === filters.value.category}
+										value={cat.slug}
+									>
+										{cat.name}
+									</option>
+								))}
 							</select>
 						</div>
 					</div>
 				</div>
 				<div class="my-6 grid grid-cols-2 justify-center items-center gap-4 md:grid-cols-3 lg:grid-cols-4   ">
-					<>
-						{productsPaginator.isLoading || productsPaginator.isFetching ? (
-							<div class="flex justify-center min-h-[450px] items-center w-full">
-								<Loader />
-							</div>
-						) : (
-							<>
-								{productsPaginator.data?.results.length ? (
-									<>
-										{productsPaginator.data?.results.map((product) => (
-											<ProductCardRestaurant
-												product={product as ProductsRestaurantSchemaFromServer}
-												key={product.id}
-												refetch={productsPaginator.refetch}
-											/>
-										))}
-									</>
-								) : (
-									<span class="dark:text-white font-bold text-sm">
-										No hay productos{" "}
-										<a
-											href="/admin/productos"
-											class="bg-primary text-white px-4 py-2 rounded-md ml-2"
-										>
-											+
-										</a>
-									</span>
-								)}
-							</>
-						)}
-					</>
+					{productsPaginator.isLoading || productsPaginator.isFetching ? (
+						<div class="flex justify-center min-h-[450px] items-center w-full">
+							<Loader />
+						</div>
+					) : (
+						<>
+							{productsPaginator.data?.results.length ? (
+								<>
+									{productsPaginator.data?.results.map((product) => (
+										<ProductCardRestaurant
+											product={product as ProductsRestaurantSchemaFromServer}
+											key={product.id}
+											refetch={productsPaginator.refetch}
+										/>
+									))}
+								</>
+							) : (
+								<span class="dark:text-white font-bold text-sm">
+									No hay productos{" "}
+									<a
+										href="/admin/productos"
+										class="bg-primary text-white px-4 py-2 rounded-md ml-2"
+									>
+										+
+									</a>
+								</span>
+							)}
+						</>
+					)}
 				</div>
 				{productsPaginator.data?.results.length ? (
 					<PaginationFooter paginator={paginator} />

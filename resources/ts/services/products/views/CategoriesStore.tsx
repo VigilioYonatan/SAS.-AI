@@ -195,12 +195,24 @@ function CategoriesStore({
 					<Form.control.file
 						name={"image" as keyof CategoriesStoreDto}
 						accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
-						title="Imagen *No obligatorio"
-						typeFile="image"
+						title="Imagen/video "
+						typeFile="image-video"
 						multiple={false}
 						showButonCopy
 						showButtonClean
 					/>
+					{storageEmpresa?.setting.isProductWallpaper ? (
+						<Form.control.file
+							name={"wallpaper" as keyof CategoriesStoreDto}
+							accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
+							title="Imagen/video Wallpaper  (300px x 1000px)"
+							typeFile="image-video"
+							multiple={false}
+							showButonCopy
+							showButtonClean
+						/>
+					) : null}
+
 					<Form.button.submit
 						isLoading={categoriesStoreMutation.isLoading || false}
 						disabled={categoriesStoreMutation.isLoading || false}
