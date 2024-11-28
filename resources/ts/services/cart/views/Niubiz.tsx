@@ -1216,6 +1216,7 @@ function PaypalPayment({
                     <a
                         class="text-primary hover:underline text-xs"
                         target="_blank"
+                        aria-label="shared"
                         rel="noreferrer"
                         href="https://www.paypal.com/pe/webapps/mpp/business-support/pricing#:~:text=Comisi%C3%B3n%20por%20transacci%C3%B3n%205.40%20%25%20%2B%20USD,para%20solicitar%20nuestras%20tarifas%20preferenciales."
                     >

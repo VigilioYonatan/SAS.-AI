@@ -659,6 +659,8 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         <a
                             target="_self"
                             rel="noreferrer"
+									aria-label="shared"
+
                             href={`mailto:?subject=${encodeURIComponent(
                                 `Más información de ${product.producto.value.name}`
                             )}&amp;body=${BASE_URL}/${
@@ -670,7 +672,8 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </a>
                         <a
                             target="_blank"
-                            rel="noreferrer"
+									aria-label="shared"
+                            rel="noreferrer" 
                             href={`https://x.com/share?url=${BASE_URL}/${
                                 product.producto.value.slug
                             }&amp;text=${encodeURIComponent(
@@ -682,7 +685,8 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </a>
                         <a
                             target="_blank"
-                            rel="noreferrer"
+									aria-label="shared"
+                            rel="noreferrer" 
                             href={`https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                                 `${BASE_URL}/${product.producto.value.slug}`
                             )}`}
@@ -692,7 +696,8 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </a>
                         <a
                             target="_blank"
-                            rel="noreferrer"
+									aria-label="shared"
+                            rel="noreferrer" 
                             href={`https://wa.me/51${
                                 empresaStore.state!.telephoneFirst
                             }?text=Hola, estoy interesado en ${

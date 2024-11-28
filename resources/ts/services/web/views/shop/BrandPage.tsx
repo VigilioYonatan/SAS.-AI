@@ -235,7 +235,7 @@ function BrandPage({
 	}
 	return (
 		<WebLayout header={header}>
-			<section class="max-w-6xl mx-auto min-h-[600px] flex flex-col px-2  mt-28 lg:my-4">
+			<section class="max-w-6xl mx-auto min-h-[600px] flex flex-col px-2  mt-20 lg:my-4">
 				<div class="">
 					<WebBreadCrumb
 						current={brand.name}

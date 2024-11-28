@@ -63,7 +63,7 @@ function ServicioPage({
 	>(commentID ? "reviews" : "description");
 	return (
 		<WebLayout header={header}>
-			<section class="max-w-6xl gap-6 mx-auto mb-6 mt-28  lg:mt-6 lg:flex-row px-4">
+			<section class="max-w-6xl gap-6 mx-auto mb-6 mt-20  lg:mt-6 lg:flex-row px-4">
 				<div class="my-2 md:my-6 overflow-auto">
 					<WebBreadCrumb
 						current={product.name}

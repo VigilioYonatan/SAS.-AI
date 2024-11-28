@@ -97,6 +97,7 @@ function ProductBody({
 
                 <a
                     href={`/${product.producto.value.slug}`}
+                    aria-label={product.producto.value.name}
                     class="line-clamp-2 h-[40px] md:h-[46px]  text-sm   md:text-base font-semibold dark:text-white hover:text-primary dark:hover:text-primary delay-custom-1  text-center "
                 >
                     {product.producto.value.name}{" "}

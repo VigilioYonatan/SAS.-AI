@@ -145,6 +145,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                             prevArrow: <SamplePrevArrow />,
                             arrows: backgrounds.length > 1,
                             swipe: backgrounds.length > 1,
+                            autoplay: backgrounds.length > 1,
                         }}
                     >
                         {backgrounds.map((background, i) => (
@@ -192,19 +193,36 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                                         .background_position,
                                             }}
                                         >
-                                            <h2
-                                                class={`font-bold background-home-title-${
-                                                    i + 1
-                                                } text-2xl md:text-4xl text-white w-8/12 md:w-7/12 ${
-                                                    storageEmpresa?.setting
-                                                        .background_position ===
-                                                    "center"
-                                                        ? "mx-auto"
-                                                        : ""
-                                                } `}
-                                            >
-                                                {background.title}
-                                            </h2>
+                                            {i === 0 ? (
+                                                <h1
+                                                    class={`font-bold background-home-title-${
+                                                        i + 1
+                                                    } text-2xl md:text-4xl text-white w-8/12 md:w-7/12 ${
+                                                        storageEmpresa?.setting
+                                                            .background_position ===
+                                                        "center"
+                                                            ? "mx-auto"
+                                                            : ""
+                                                    } `}
+                                                >
+                                                    {background.title}
+                                                </h1>
+                                            ) : (
+                                                <h2
+                                                    class={`font-bold background-home-title-${
+                                                        i + 1
+                                                    } text-2xl md:text-4xl text-white w-8/12 md:w-7/12 ${
+                                                        storageEmpresa?.setting
+                                                            .background_position ===
+                                                        "center"
+                                                            ? "mx-auto"
+                                                            : ""
+                                                    } `}
+                                                >
+                                                    {background.title}
+                                                </h2>
+                                            )}
+
                                             {background.description ? (
                                                 <p
                                                     class={`font-semibold tracking-wider text-md background-home-description-${
@@ -274,7 +292,24 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                         ))}
                     </Slider>
                 </div>
-
+                <style jsx>{`
+                    .background-home .slick-dots {
+                        position: relative !important;
+                    }
+                    .background-home .slick-dots .slick-active {
+                        border: 2px solid var(--primary);
+                    }
+                    .background-home .slick-slide div {
+                        margin-inline: 8px;
+                        outline: none;
+                    }
+                    .zoom-image {
+                        transition: transform 0.5s ease;
+                    }
+                    .zoom-image:hover {
+                        transform: scale(1.5);
+                    }
+                `}</style>
                 {storageEmpresa?.setting.shows.cards &&
                 storageEmpresa?.setting.background_type === "second" ? (
                     <div
