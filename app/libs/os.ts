@@ -64,7 +64,8 @@ export async function updateVigilioServices(
 cron.schedule("* * * * *", async () => {
     try {
         await terminal(
-            "cd /root/home/temp_db && \
+            "cd /root/home && \
+            mkdir temp_db || true && \
 			rm -f ./temp_db/backup.sql && \
 			docker exec saas-db-1 pg_dump -U postgres -d saas -F c -f /var/lib/postgresql/data/backup.sql && \
             docker cp saas-db-1:/var/lib/postgresql/data/backup.sql ./temp_db/backup.sql"
