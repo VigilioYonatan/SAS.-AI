@@ -99,7 +99,7 @@ function TableDetailsOrder({
 								? formatMoney(detail_order.price / detail_order.quantity)
 								: formatDolares(
 										detail_order.price /
-											detail_order.quantity /
+											detail_order.quantity *
 											order.moneyChange,
 									)}{" "}
 							{detail_order.coupon ? (
@@ -109,7 +109,7 @@ function TableDetailsOrder({
 						<td class="text-center text-xs lg:text-sm">
 							{order.moneyChange === 1
 								? formatMoney(detail_order.price)
-								: formatDolares(detail_order.price / order.moneyChange)}
+								: formatDolares(detail_order.price * order.moneyChange)}
 						</td>
 					</tr>
 				))}
@@ -143,8 +143,8 @@ function TableDetailsOrder({
 													order.city.priceShipping,
 													storageEmpresa!.igv,
 													true,
-												) / order.moneyChange
-											: order.city.priceShipping / order.moneyChange,
+												) * order.moneyChange
+											: order.city.priceShipping* order.moneyChange,
 									)}
 						</td>
 						<td class="text-center text-xs lg:text-sm">
@@ -156,7 +156,7 @@ function TableDetailsOrder({
 													storageEmpresa!.igv,
 													true,
 												)
-											: order.city.priceShipping / order.moneyChange,
+											: order.city.priceShipping * order.moneyChange,
 									)
 								: formatDolares(
 										order.igv
@@ -164,8 +164,8 @@ function TableDetailsOrder({
 													order.city.priceShipping,
 													storageEmpresa!.igv,
 													true,
-												) / order.moneyChange
-											: order.city.priceShipping / order.moneyChange,
+												) * order.moneyChange
+											: order.city.priceShipping * order.moneyChange,
 									)}
 						</td>
 					</tr>
@@ -191,7 +191,7 @@ function TableDetailsOrder({
 						{order.moneyChange === 1 ? (
 							<>{formatMoney(order.total)}</>
 						) : (
-							formatDolares(order.total / order.moneyChange)
+							formatDolares(order.total * order.moneyChange)
 						)}
 						{order.pasarela_comision || order.paypal_token ? (
 							<button
@@ -214,14 +214,14 @@ function TableDetailsOrder({
 														pasarelaComision(
 															order.total,
 															(order.type_pasarela as PASARELA) ?? "normal",
-														) / order.moneyChange,
+														) * order.moneyChange,
 													)}
 										</>
 									) : null}
 									{order.paypal_response
 										? formatDolares(
 												paypalComision(order.total, order.moneyChange) -
-													order.total / order.moneyChange,
+													order.total * order.moneyChange,
 											)
 										: null}{" "}
 									Comision pasarela{" "}

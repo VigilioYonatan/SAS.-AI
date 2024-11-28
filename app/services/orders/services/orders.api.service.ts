@@ -48,7 +48,7 @@ import { Variants } from "@/products/entities/options/variants.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { whatsappSendFileApi, whatsappSendMessageApi } from "@/bot/api";
-import { BASE_URL, DIALCODE } from "@/empresas/libs";
+import { BASE_URL, DIALCODE, type Money } from "@/empresas/libs";
 import { Product, productEntityId } from "@/products/libs";
 import { ticketHTML } from "../libs/ticket";
 import type { PASARELA } from "@/payments/libs";
@@ -420,18 +420,20 @@ export class OrdersApiService {
     // agregar orden
     async store(
         ordersStoreDto: OrdersStoreDto,
-        empresa: Empresas,
+        req: RequestVigilio,
         type: PASARELA = "normal",
-        moneyConverter = 1,
+        moneyConvert: number | null = null,
         comision?: {
             pasarela_comision?: boolean;
         } // to diference paypal o pasarela
     ) {
+        const empresa = req.empresa;
         const { invoice, details_orders, ...rest } = ordersStoreDto;
         const { pasarela_comision = false } = comision || {
             pasarela_comision: false,
         };
         let user: null | Users = null;
+        const moneyConverter = moneyConvert ? moneyConvert : req.moneyConverter;
         if (ordersStoreDto.telephone) {
             user = await Users.findOne({
                 where: {
@@ -831,7 +833,7 @@ export class OrdersApiService {
                 }* - ${detail_order.quantity} UND - *${formatMoney(
                     empresa,
                     detail_order.price,
-                    empresa.money.money
+                    empresa.money.money as Money
                 )}*`;
             })
         );
@@ -850,7 +852,7 @@ export class OrdersApiService {
                               )}.\n\nTotal: *${formatMoney(
                                   empresa,
                                   ordersStoreDto.total,
-                                  empresa.money.money
+                                  empresa.money.money as Money
                               )}*  ${
                                   moneyConverter !== 1
                                       ? `- *${formatMoney(
@@ -1553,9 +1555,9 @@ export class OrdersApiService {
                         }, *Precio Total*: ${formatMoney(
                             empresa,
                             prod.price,
-                            props.order.moneyChange === 1
+                            (props.order.moneyChange === 1
                                 ? empresa.money.money
-                                : "DOLARES"
+                                : "DOLARES") as Money
                         )}, *Cantidad*: ${prod.quantity} UND.\n`;
                     })
                 );

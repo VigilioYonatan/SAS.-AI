@@ -47,6 +47,7 @@
   <%- `<script> 
       localStorage.setItem("empresa", ${JSON.stringify(JSON.stringify(typeof $empresa !== "undefined" ? $empresa  : null))});
       localStorage.setItem("user", ${JSON.stringify(JSON.stringify(typeof $user !== "undefined" ? $user  : null))});
+       localStorage.setItem("money",${JSON.stringify(JSON.stringify(typeof $money !== "undefined" ? $money  : null))});
       </script>` %>
   <%- vite  %>
   <style>
@@ -92,7 +93,7 @@
       <%=$empresa.setting?.type_border==="circle"? 'border-radius: 0.6rem !important;': 'border-radius: 0rem !important;'%>
     }
   </style>
-    <%- include("../components/pixels.ejs")  %>
+  <%- include("../components/pixels.ejs")  %>
   <!-- initial base -->
   <initial></initial>
 </head>

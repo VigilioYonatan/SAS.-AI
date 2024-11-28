@@ -281,7 +281,7 @@ function ProductsRestaurantUpdate({
 								type="number"
 								step={0.1}
 								title="Precio"
-								placeholder={`${formatMoney(10)}`}
+								placeholder={`${formatMoney(10,true)}`}
 								options={{ setValueAs: Number }}
 							/>
 
@@ -300,10 +300,11 @@ function ProductsRestaurantUpdate({
 								/>
 								<div class="flex flex-col gap-1">
 									<span class="text-lg whitespace-nowrap  text-primary">
-										<span class="text-gray-400">{formatMoney(subtotal)}</span>{" "}
+										<span class="text-gray-400">{formatMoney(subtotal,true)}</span>{" "}
 										{empresa.state!.enabled_igv
 											? `- ${formatMoney(
 													subtotalCart(subtotal, empresa.state!.igv, true),
+													true
 												)}`
 											: null}{" "}
 									</span>

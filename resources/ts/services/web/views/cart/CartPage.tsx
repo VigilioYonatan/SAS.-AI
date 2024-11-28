@@ -27,6 +27,7 @@ import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_norm
 import { MetodosDePago } from "@/web/components/product/ProductView";
 import { DIALCODE, typeFiscal } from "@/empresas/libs/helpers";
 import useAuthStore from "@/auth/stores/auth.store";
+import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
 
 interface CartProps {
     cart: { id: number; quantity: number; variant?: number }[] | null;
@@ -160,6 +161,9 @@ function CartPage({ cart, header }: CartProps) {
             ),
             isCloseInBackground: false,
             showCloseButton: true,
+            position: useMediaQueryNoReactive("(min-width:600px)")
+                ? "center"
+                : "start",
         }));
     }
     const password = ordersCartStoreDtoForm.watch("password");

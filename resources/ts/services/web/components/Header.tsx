@@ -25,6 +25,7 @@ import { bgPrimaryHover } from "~/config/settings";
 import WebNotificacion from "./WebNotificacion";
 import useMediaQuery from "~/hooks/useMediaQuery";
 import { iconCart, typeIcon1 } from "@/empresas/schemas/settings.schema";
+import MoneyChange from "./MoneyChange";
 
 interface HeaderProps {
     header: HeaderType;
@@ -648,6 +649,8 @@ function Header({ header }: HeaderProps) {
                                     )}
                                 </button>
                             ) : null}
+
+                            <MoneyChange />
                             {header.totalProducts > 0 ? (
                                 <>
                                     <button

@@ -603,18 +603,18 @@ export async function detailInvoice(
 				}`,
 				unidad: order.isService ? "ZZ" : "NIU",
 				cantidad: prod.quantity, // cantidad de producto
-				mtoValorUnitario: priceWithPasarelaCommission / order.moneyChange, //precio sin igv
+				mtoValorUnitario: priceWithPasarelaCommission * order.moneyChange, //precio sin igv
 				mtoValorVenta:
-					(priceWithPasarelaCommission * prod.quantity) / order.moneyChange, // precio sin igv * cantidad
+					(priceWithPasarelaCommission * prod.quantity) * order.moneyChange, // precio sin igv * cantidad
 				mtoBaseIgv:
-					(priceWithPasarelaCommission * prod.quantity) / order.moneyChange, // mismo mtoValorVenta
+					(priceWithPasarelaCommission * prod.quantity) * order.moneyChange, // mismo mtoValorVenta
 				mtoPrecioUnitario:
-					subtotal(priceWithPasarelaCommission, IGV, true) / order.moneyChange, // MONTO INCLUYENDO IGV
+					subtotal(priceWithPasarelaCommission, IGV, true) * order.moneyChange, // MONTO INCLUYENDO IGV
 				igv:
-					(priceWithPasarelaCommission * prod.quantity * (IGV / 100)) /
+					(priceWithPasarelaCommission * prod.quantity * (IGV / 100)) *
 					order.moneyChange,
 				totalImpuestos:
-					(priceWithPasarelaCommission * prod.quantity * (IGV / 100)) /
+					(priceWithPasarelaCommission * prod.quantity * (IGV / 100)) *
 					order.moneyChange,
 				porcentajeIgv: IGV,
 				factorIcbper: null,
@@ -629,13 +629,13 @@ export async function detailInvoice(
 			descripcion: `Precio de Envio - ${city.name}`,
 			unidad: "NIU",
 			cantidad: 1, // cantidad de producto
-			mtoValorUnitario: city.priceShipping / order.moneyChange, //precio sin igv
-			mtoValorVenta: city.priceShipping / order.moneyChange, // precio sin igv * cantidad
-			mtoBaseIgv: city.priceShipping / order.moneyChange, // mismo mtoValorVenta
+			mtoValorUnitario: city.priceShipping * order.moneyChange, //precio sin igv
+			mtoValorVenta: city.priceShipping * order.moneyChange, // precio sin igv * cantidad
+			mtoBaseIgv: city.priceShipping * order.moneyChange, // mismo mtoValorVenta
 			mtoPrecioUnitario:
-				subtotal(city.priceShipping, IGV, true) / order.moneyChange, // MONTO INCLUYENDO IGV
-			igv: (city.priceShipping * (IGV / 100)) / order.moneyChange,
-			totalImpuestos: (city.priceShipping * (IGV / 100)) / order.moneyChange,
+				subtotal(city.priceShipping, IGV, true) * order.moneyChange, // MONTO INCLUYENDO IGV
+			igv: (city.priceShipping * (IGV / 100)) * order.moneyChange,
+			totalImpuestos: (city.priceShipping * (IGV / 100)) * order.moneyChange,
 			porcentajeIgv: IGV,
 			factorIcbper: null,
 			icbper: null,

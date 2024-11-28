@@ -36,6 +36,7 @@
 <%- `<script> 
     localStorage.setItem("user", ${JSON.stringify(JSON.stringify(typeof $user !== "undefined" ? $user  ?? null : null  ))});
     localStorage.setItem("empresa", ${JSON.stringify(JSON.stringify(typeof $empresa !== "undefined" ? $empresa  : null))});
+    localStorage.setItem("money",${JSON.stringify(JSON.stringify(typeof $money !== "undefined" ? $money  : null))});
     </script>` %>
 
 <style>

@@ -84,7 +84,7 @@ function PedidosPage({ header }: PedidosPageProps) {
 													</>
 												) : (
 													formatDolares(
-														ordersShowMutation.data!.order.total /
+														ordersShowMutation.data!.order.total *
 															ordersShowMutation.data!.order.moneyChange,
 													)
 												)}
