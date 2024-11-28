@@ -28,6 +28,7 @@ import { MetodosDePago } from "@/web/components/product/ProductView";
 import { DIALCODE, typeFiscal } from "@/empresas/libs/helpers";
 import useAuthStore from "@/auth/stores/auth.store";
 import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
+import { isColorLight } from "~/libs/helpers";
 
 interface CartProps {
     cart: { id: number; quantity: number; variant?: number }[] | null;
@@ -45,6 +46,7 @@ function CartPage({ cart, header }: CartProps) {
     if (!cartStore.state.cart) {
         return null;
     }
+    const empresaStore = useEmpresastore();
     const {
         ordersCartStoreDtoForm,
         arrayKindInvoices,
@@ -394,7 +396,15 @@ function CartPage({ cart, header }: CartProps) {
                                                                     <button
                                                                         aria-label="to increment to cart"
                                                                         type="button"
-                                                                        class="md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white dark: dark:hover:text-white bg-primary dark:text-black text-white font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:text-primary delay-custom-1"
+                                                                        class={`md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white  dark:hover:text-white bg-primary ${
+                                                                            isColorLight(
+                                                                                empresaStore.state!
+                                                                                    .setting
+                                                                                    .bg_color
+                                                                            )
+                                                                                ? "!text-black"
+                                                                                : "!text-white"
+                                                                        } dark:text-black  font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:!text-primary delay-custom-1`}
                                                                         onClick={() =>
                                                                             cartStore.methods.onIncrementProductToCart(
                                                                                 product
@@ -416,7 +426,15 @@ function CartPage({ cart, header }: CartProps) {
                                                                         }
                                                                         aria-label="to decrement to cart"
                                                                         type="button"
-                                                                        class="md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white dark: dark:hover:text-white bg-primary dark:text-black text-white font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:text-primary delay-custom-1"
+                                                                        class={`md:w-[35px] md:h-[35px] w-[25px] h-[25px] rounded-md shadow dark:bg-white dark: dark:hover:text-white bg-primary dark:text-black ${
+                                                                            isColorLight(
+                                                                                empresaStore.state!
+                                                                                    .setting
+                                                                                    .bg_color
+                                                                            )
+                                                                                ? "!text-black"
+                                                                                : "!text-white"
+                                                                        } font-bold text-xl hover:bg-opacity-80  hover:bg-transparent border border-primary hover:!text-primary delay-custom-1`}
                                                                     >
                                                                         -
                                                                     </button>

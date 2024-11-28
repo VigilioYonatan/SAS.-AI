@@ -127,7 +127,7 @@ const ordersColumns: Columns<OrdersSchemaFromServer, "actions"> = [
                             formatMoney(props.total)
                         ) : (
                             <>
-                                {formatMoney(props.total)} -{" "}
+                                {formatMoney(props.total, true)} -{" "}
                                 <span class="text-xs">
                                     {formatDolares(
                                         props.total * props.moneyChange

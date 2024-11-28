@@ -287,7 +287,13 @@ export function useNotifications() {
 
     function Notifications(props: { onClose: () => void; isWeb?: boolean }) {
         return (
-            <div class="flex flex-col   justify-center items-center relative bg-background-light dark:bg-admin-paper-dark rounded-md shadow-sm">
+            <div
+                class={`flex flex-col   justify-center items-center relative bg-background-light ${
+                    props.isWeb
+                        ? "dark:bg-paper-dark"
+                        : "dark:bg-admin-paper-dark"
+                }  rounded-md shadow-sm`}
+            >
                 <button
                     class="absolute right-0 mr-2 mt-1 top-0 dark:text-white "
                     type="button"
@@ -304,7 +310,11 @@ export function useNotifications() {
                     {notificationsCountQuery.data?.data! > 0 ? (
                         <button
                             type="button"
-                            class="dark:text-white mx-auto text-xs flex justify-center items-center absolute py-2 bottom-0 w-full "
+                            class={`dark:text-white mx-auto text-xs flex justify-center items-center absolute py-2 bottom-0 w-full ${
+                                props.isWeb
+                                    ? "dark:bg-paper-dark"
+                                    : "dark:bg-admin-paper-dark"
+                            }`}
                             onClick={() => {
                                 notificationsCleanMutation.mutate(null, {
                                     onSuccess: (data) => {
