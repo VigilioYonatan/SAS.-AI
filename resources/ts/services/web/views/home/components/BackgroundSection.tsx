@@ -186,7 +186,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
 											<h2
 												class={`font-bold background-home-title-${
 													i + 1
-												} text-2xl md:text-4xl text-white md:w-8/12 ${
+												} text-2xl md:text-4xl text-white md:w-6/12 ${
 													storageEmpresa?.setting.background_position ===
 													"center"
 														? "mx-auto"
@@ -199,7 +199,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
 												<p
 													class={`font-semibold tracking-wider text-md background-home-description-${
 														i + 1
-													} text-white md:w-8/12 ${
+													} text-white md:w-6/12 ${
 														storageEmpresa?.setting.background_position ===
 														"center"
 															? "mx-auto"

@@ -4,6 +4,7 @@ import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
 import { isColorLight } from "~/libs/helpers";
+import { DIALCODE } from "@/empresas/libs/helpers";
 
 function MoneyChange() {
     const moneyStore = useMoneyStore();
@@ -23,17 +24,17 @@ function MoneyChange() {
                     ) : (
                         <div class="text-xs font-semibold flex flex-col  justify-center items-center">
                             <span>
-                                {
-                                    Number(1).toLocaleString(
-                                        storageEmpresa!.money
-                                            .international_simbolo,
-                                        {
-                                            style: "currency",
-                                            currency:
-                                                storageEmpresa!.money.simbolo,
-                                        }
-                                    )[0]
-                                }
+                                {storageEmpresa?.dial_code === DIALCODE.peru
+                                    ? "S/."
+                                    : Number(1).toLocaleString(
+                                          storageEmpresa!.money
+                                              .international_simbolo,
+                                          {
+                                              style: "currency",
+                                              currency:
+                                                  storageEmpresa!.money.simbolo,
+                                          }
+                                      )[0]}
                             </span>
                             <span>{storageEmpresa?.money.simbolo}</span>
                         </div>

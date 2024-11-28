@@ -200,7 +200,7 @@ export class Server {
                 } = { money: "LOCAL", moneyValue: { DOLARES: 1, LOCAL: 1 } };
                 if (empresa?.isDolar) {
                     const cookie = req.cookies.money ?? MONEYLOCAL;
-                    let DOLARES = JSON.parse(cache.get("money") ?? "null");
+                    let DOLARES = JSON.parse(cache.get(`money:${empresa.slug}`) ?? "null");
                     if (!DOLARES) {
                         const response = await converterMoneyApi({
                             amount: "1",
