@@ -9,7 +9,17 @@ import type { Address } from "@/empresas/entities/address.entity";
 import type { Cities } from "@/ubigeo/entities/cities.entity";
 import { Op } from "sequelize";
 
-export async function prompt(empresa: Empresas, productsData: DataPrompt) {
+export async function prompt(
+    properties: {
+        isSaludo: boolean;
+        isTemaEnvio: boolean;
+        isCita: boolean;
+        isDespedida: boolean;
+        isQuestion: boolean;
+    },
+    empresa: Empresas,
+    productsData: DataPrompt
+) {
     let preguntasIA: Questions[] | null = JSON.parse(
         cache.get(`questions-ia:${empresa.slug}`) ?? "null"
     );
@@ -134,7 +144,7 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
             ? "trata de cerrar ventas nivel profesional"
             : "No trates de cerrar ventas, no forzar a que el cliente compre nuestros productos o servicios, solo responde a las preguntas."
     }.
-IMPORTANTE: REVISAR LA BASE DE DATOS, ANTES DE RESPONDER, por ejemplo si una persona te pide información de algo, mira la BASE DE DATOS primero.
+
 	OBLIGATORIO: RESPONDEME EN EL IDIOMA QUE TE ESCRIBA, si te hablo ingles, respondeme en ingles, etc.
     HORARIO_ATENCION: // si está enabled false quiere decir que no está disponible ese dia y la hora es de 00:00am a 23:59PM ${JSON.stringify(
         empresa.schedule
@@ -151,17 +161,29 @@ IMPORTANTE: REVISAR LA BASE DE DATOS, ANTES DE RESPONDER, por ejemplo si una per
             : ""
     }
     IMPORTANTE: USA MENSAJES ANTERIORES PARA NO PERDER CONTEXTO PARA NO PERDER EL CONTEXTO DE LA CONVERSACIÓN.
-    RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN,ORDENES, NO TRAIGAS NI CONTESTES ERRONEAMENTE, LA CANTIDAD,ETC..
-    SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR.
-    ACTUALIZA SIEMPRE LO QUE VAS A DECIR SI CAMBIA LA BASE DE DATOS.
-    "EN STOCK" significa. cantidad ilimitado.
+   
     NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
 	SI TE ENVIÉ UNA IMAGEN  Y BUSCA EN LA BASE DE DATOS Y RESPONDEME INFORMACIÓN DE ESO.
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
-    ${JSON.stringify(instrucctions)}
+    ${
+        properties.isQuestion
+            ? JSON.stringify([
+                  ...instrucctions,
+                  ` RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN,ORDENES, NO TRAIGAS NI CONTESTES ERRONEAMENTE, LA CANTIDAD,ETC..
+    SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR.
+    ACTUALIZA SIEMPRE LO QUE VAS A DECIR SI CAMBIA LA BASE DE DATOS.
+    "EN STOCK" significa. cantidad ilimitado.`,
+                  "IMPORTANTE: REVISAR LA BASE DE DATOS, ANTES DE RESPONDER, por ejemplo si una persona te pide información de algo, mira la BASE DE DATOS primero.",
+              ])
+            : ""
+    }
     **********         DIRECTRICES PARA RESPONDER AL CLIENTE     ***********:
-    ${JSON.stringify(directrices.map((value) => `- ${value}`))}
+    ${
+        properties.isQuestion
+            ? JSON.stringify(directrices.map((value) => `- ${value}`))
+            : ""
+    }
     **********            OTROS DATOS     ***********:
    ${JSON.stringify(JSON.stringify(otrosDatos))}
    ${
