@@ -372,11 +372,13 @@ export async function promptReplace(
             ),
         ]);
     if (!isQuestion) {
-        if (isSaludo || isTemaEnvio || isCita || isDespedida) {
+        if (isTemaEnvio || isCita) {
             productsData = {} as DataPrompt;
         }
     }
-
+    if (isSaludo || isDespedida) {
+        productsData = {} as DataPrompt;
+    }
     let precioEnvio = "";
 
     if (isTemaEnvio) {
