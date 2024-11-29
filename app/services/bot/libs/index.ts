@@ -266,48 +266,33 @@ export async function promptReplace(
         }
     }
     let productsData = data;
-    const isProduct = await questionGPT(
-        whatsapp,
-        message,
-        `informacion, precio, cantidad de productos, marcas, categorias, o servicios, de mi empresa ${
-            empresa.tipo_empresa.value || empresa.type_empresa_other
-        }, mis categorias ${productsData.categorias
-            .map((cat) => cat.name)
-            .join(", ")} . o si hago una pregunta con un nombre raro`
-    );
-    console.log({ isProduct });
 
-    if (isProduct) {
-        // si no es inteligente que busque
-        if (!empresa.inteligenceArtificial.enabledBotInteligence) {
-            const palabrasEncontradas2 = encontrarPalabrasSimilares(
-                message,
-                data.products.map((prod) => prod.name)
-            );
+    // si no es inteligente que busque
+    if (!empresa.inteligenceArtificial.enabledBotInteligence) {
+        const palabrasEncontradas2 = encontrarPalabrasSimilares(
+            message,
+            data.products.map((prod) => prod.name)
+        );
+        productsData = {
+            ...data,
+            products: data.products.filter((prod) =>
+                palabrasEncontradas2.includes(prod.name)
+            ),
+        };
+    } else {
+        const palabrasEncontradas2 = encontrarPalabrasSimilares(
+            message,
+            data.products.map((prod) => prod.name)
+        );
+
+        if (palabrasEncontradas2.length) {
             productsData = {
                 ...data,
                 products: data.products.filter((prod) =>
                     palabrasEncontradas2.includes(prod.name)
                 ),
             };
-        } else {
-            const palabrasEncontradas2 = encontrarPalabrasSimilares(
-                message,
-                data.products.map((prod) => prod.name)
-            );
-            console.log({ palabrasEncontradas2 });
-
-            if (palabrasEncontradas2.length) {
-                productsData = {
-                    ...data,
-                    products: data.products.filter((prod) =>
-                        palabrasEncontradas2.includes(prod.name)
-                    ),
-                };
-            }
         }
-    } else {
-        productsData = {} as DataPrompt;
     }
 
     const regex = /ord-[0-9]+/g;
@@ -358,26 +343,36 @@ export async function promptReplace(
             ordenes += "no hay pedidos aun";
         }
     }
-    const [isSaludo, isTemaEnvio, isCita, isDespedida] = await Promise.all([
-        questionGPT(whatsapp, message, "agradecimiento, elogio o satisfacción"),
-        questionGPT(
-            whatsapp,
-            message,
-            " querer información como precio  o costo de envio, si solo escribe envio tambien di si, tambien di si, si te menciono un lugar como pais, ciudad, parques, monumentos, zonas de juegos, plaza, etc o un lugar - sitio"
-        ),
-        questionGPT(
-            whatsapp,
-            message,
-            " querer información de querer una cita o agendar reunion o preguntarme de una fecha o hora."
-        ),
-        questionGPT(
-            whatsapp,
-            message,
-            "si es saludo o despedida sin nada más."
-        ),
-    ]);
+    const [isSaludo, isTemaEnvio, isCita, isDespedida, isQuestion] =
+        await Promise.all([
+            questionGPT(
+                whatsapp,
+                message,
+                "agradecimiento, elogio o satisfacción"
+            ),
+            questionGPT(
+                whatsapp,
+                message,
+                " querer información como precio  o costo de envio, si solo escribe envio tambien di si, tambien di si, si te menciono un lugar como pais, ciudad, parques, monumentos, zonas de juegos, plaza, etc o un lugar - sitio"
+            ),
+            questionGPT(
+                whatsapp,
+                message,
+                " querer información de querer una cita o agendar reunion o preguntarme de una fecha o hora."
+            ),
+            questionGPT(
+                whatsapp,
+                message,
+                "si es saludo o despedida sin nada más."
+            ),
+            questionGPT(
+                whatsapp,
+                message,
+                "es pregunta, cualquier tiempo de pregunta."
+            ),
+        ]);
 
-    if (isSaludo || isTemaEnvio || isCita || isDespedida) {
+    if (isSaludo || isTemaEnvio || isCita || isDespedida || !isQuestion) {
         productsData = {} as DataPrompt;
     }
 
@@ -522,7 +517,7 @@ export async function promptReplace(
                 `
                 : "";
     }
-    console.log({ isSaludo, isTemaEnvio, isCita, isDespedida });
+    console.log({ isSaludo, isTemaEnvio, isCita, isDespedida, isQuestion });
 
     console.log({ productsData });
 
