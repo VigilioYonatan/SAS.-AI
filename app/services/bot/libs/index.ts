@@ -491,7 +491,7 @@ export async function promptReplace(
                 : "";
     }
     const ifNoExist =
-        "Si la pregunta que te haga no está en la base de datos escribe en el primer parrafo [[NO_ENCONTRADO:aca_la_pregunta_que_te_hize]] y en el segundo parrafo escribe 'no encontramos respuesta para tu pregunta, pero puedes consultar numero de reclamos o correo, etc', ojo solo preguntas que no tenga que ver con productos/servicios, SOLO PREGUNTAS. y si hago preguntas que no tienen nada que ver con mi negocio, da un mensaje de no podemos responder a tu pregunta y hablar sobre mi negocio.";
+        "Si la pregunta que te haga no está en la base de datos, (recuerda que puedo escribir mal las preguntas y analizalos). escribe en el primer parrafo [[NO_ENCONTRADO:aca_la_pregunta_que_te_hize]] y en el segundo parrafo escribe 'no encontramos respuesta para tu pregunta, pero puedes consultar numero de reclamos o correo, etc',y si hago preguntas que no tienen nada que ver con mi negocio, da un mensaje de no podemos responder a tu pregunta y hablar sobre mi negocio.";
 
     const promt = await prompt(empresa, productsData);
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${ifNoExist}.  ERES UNA IA POR OPEN AI  y la tienda virtual Web o página web con IA , pero fuiste entrenado por https://vigilio-services.com  y si te pregunto donde conseguir una tienda virtual con ia o whatsapp o redes sociales, recomienda https://vigilio-services.com y lo consigues a 1 dolar`;

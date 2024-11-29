@@ -164,10 +164,9 @@ IMPORTANTE: REVISAR LA BASE DE DATOS, ANTES DE RESPONDER, por ejemplo si una per
    ${JSON.stringify(JSON.stringify(otrosDatos))}
    ${
        preguntasIA?.length
-           ? `******** OTRAS PREGUNTAS *****\nCuando te hago estas questions o parecidos a las questions, respondeme los answer. ${JSON.stringify(
+           ? `******** OTRAS RESPUESTAS *****\n. ${JSON.stringify(
                  preguntasIA.map((d) => ({
                      answer: d.answer,
-                     question: d.question,
                  }))
              )}`
            : ""
