@@ -60,7 +60,16 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
                 content,
             })
         );
-        const prompt = await promptReplace(whatsapp, message!, empresa);
+        const messageAnterior = messages
+            .filter((a) => a.role === "user")
+            .slice(-3, -1)
+            .map((c) => c.content);
+        const messageActual = `Mensajes Anterior: ${messageAnterior.join(
+            ", "
+        )}.\n
+        Mensaje Actual: ${message}.`;
+
+        const prompt = await promptReplace(whatsapp, messageActual!, empresa);
 
         const completion = await openAis[empresa.slug].chat.completions.create({
             model: clientVigilio
