@@ -271,7 +271,9 @@ export async function promptReplace(
         message,
         `informacion, precio, cantidad de productos, marcas, categorias, o servicios, de mi empresa ${
             empresa.tipo_empresa.value || empresa.type_empresa_other
-        } . o si hago una pregunta con un nombre raro`
+        }, mis categorias ${productsData.categorias
+            .map((cat) => cat.name)
+            .join(", ")} . o si hago una pregunta con un nombre raro`
     );
     console.log({ isProduct });
 
@@ -304,6 +306,8 @@ export async function promptReplace(
                 };
             }
         }
+    } else {
+        productsData = {} as DataPrompt;
     }
 
     const regex = /ord-[0-9]+/g;
