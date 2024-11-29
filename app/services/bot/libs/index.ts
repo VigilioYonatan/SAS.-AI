@@ -264,19 +264,42 @@ export async function promptReplace(
         }
     }
     let productsData = data;
-    // si no es inteligente que busque
-    if (!empresa.inteligenceArtificial.enabledBotInteligence) {
-        const palabrasEncontradas2 = encontrarPalabrasSimilares(
-            message,
-            data.products.map((prod) => prod.name)
-        );
-        productsData = {
-            ...data,
-            products: data.products.filter((prod) =>
-                palabrasEncontradas2.includes(prod.name)
-            ),
-        };
+    const isProduct = await questionGPT(
+        whatsapp,
+        message,
+        `informacion, precio, cantidad de productos, marcas, categorias, o servicios, de mi empresa ${
+            empresa.tipo_empresa.value || empresa.type_empresa_other
+        } . o si hago una pregunta con un nombre raro`
+    );
+    if (isProduct) {
+        // si no es inteligente que busque
+        if (!empresa.inteligenceArtificial.enabledBotInteligence) {
+            const palabrasEncontradas2 = encontrarPalabrasSimilares(
+                message,
+                data.products.map((prod) => prod.name)
+            );
+            productsData = {
+                ...data,
+                products: data.products.filter((prod) =>
+                    palabrasEncontradas2.includes(prod.name)
+                ),
+            };
+        } else {
+            const palabrasEncontradas2 = encontrarPalabrasSimilares(
+                message,
+                data.products.map((prod) => prod.name)
+            );
+            if (palabrasEncontradas2.length) {
+                productsData = {
+                    ...data,
+                    products: data.products.filter((prod) =>
+                        palabrasEncontradas2.includes(prod.name)
+                    ),
+                };
+            }
+        }
     }
+
     const regex = /ord-[0-9]+/g;
     const coincidencias = message.toLowerCase().match(regex);
     let ordenes = "";
