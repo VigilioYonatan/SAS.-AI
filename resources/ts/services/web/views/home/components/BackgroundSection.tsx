@@ -150,7 +150,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                     >
                         {backgrounds.map((background, i) => (
                             <div
-                                class={`w-full group overflow-hidden  relative background-home-${
+                                class={`w-full group overflow-hidden background-home-container relative background-home-${
                                     i + 1
                                 }`}
                                 key={background.id}
