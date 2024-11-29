@@ -117,7 +117,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
         <section
             id="start"
             // class="max-w-6xl mx-auto px-2 md:px-4 mt-[6.6rem] md:my-10"
-            class="mb-4 mt-[4.8dest text-sm  text-center rem] lg:mt-0 relative background-home group"
+            class="mb-4 mt-[4.8rem] dest text-sm  text-center  lg:mt-0 relative background-home group"
         >
             <div
                 class={`flex flex-col lg:flex-row relative ${
@@ -133,7 +133,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                 <AdminEdit uri="/admin/background" />
                 <div class="w-full overflow-hidden">
                     <Slider
-                        className="w-full h-full "
+                        className="w-full h-full background-section-slider"
                         {...{
                             dots: true,
                             infinite: backgrounds.length > 1,
@@ -193,7 +193,8 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                                         .background_position,
                                             }}
                                         >
-                                            {i === 0 ? (
+                                            {i === 0 &&
+                                            backgrounds.length === 1 ? (
                                                 <h1
                                                     class={`font-bold background-home-title-${
                                                         i + 1
@@ -292,24 +293,6 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                         ))}
                     </Slider>
                 </div>
-                <style jsx>{`
-                    .background-home .slick-dots {
-                        position: relative !important;
-                    }
-                    .background-home .slick-dots .slick-active {
-                        border: 2px solid var(--primary);
-                    }
-                    .background-home .slick-slide div {
-                        margin-inline: 8px;
-                        outline: none;
-                    }
-                    .zoom-image {
-                        transition: transform 0.5s ease;
-                    }
-                    .zoom-image:hover {
-                        transform: scale(1.5);
-                    }
-                `}</style>
                 {storageEmpresa?.setting.shows.cards &&
                 storageEmpresa?.setting.background_type === "second" ? (
                     <div

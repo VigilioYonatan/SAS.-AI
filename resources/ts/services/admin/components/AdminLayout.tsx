@@ -506,10 +506,17 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                         title="Inteligencia Artificial"
                                         Icon={<i class="fas fa-user-robot" />}
                                     />
-                                    {/* solo que aparesca  nuevo solo este año */}
-                                    <span class="absolute font-semibold -right-2 text-[8px] md:-right-2  top-0 md:top-0 bg-orange-600 text-white px-1 py-1 rounded-md md:text-xs">
-                                        Nuevo
-                                    </span>
+                                    {/* solo que aparesca  nuevo solo este año */}{" "}
+                                    {storageEmpresa!.questionCount &&
+                                    storageEmpresa!.questionCount > 0 ? (
+                                        <div class="w-[20px] h-[20px] bg-danger rounded-full flex justify-center items-center absolute right-0 md:right-[10%] top-1 md:top-3 text-white font-bold text-xs">
+                                            {storageEmpresa!.questionCount}
+                                        </div>
+                                    ) : (
+                                        <span class="absolute font-semibold -right-2 text-[8px] md:-right-2  top-0 md:top-0 bg-orange-600 text-white px-1 py-1 rounded-md md:text-xs">
+                                            Nuevo
+                                        </span>
+                                    )}
                                     {!mensual() ? (
                                         <button
                                             class="absolute -top-3 right-0 bg-primary w-[30px] h-[30px] rounded-full flex justify-center items-center text-white"

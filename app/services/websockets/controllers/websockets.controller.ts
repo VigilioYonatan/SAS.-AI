@@ -1,335 +1,368 @@
 import {
-	Args,
-	Connect,
-	SocketController,
-	Disconnect,
-	Event,
-	IO,
-	Socket,
+    Args,
+    Connect,
+    SocketController,
+    Disconnect,
+    Event,
+    IO,
+    Socket,
 } from "@vigilio/express-core";
 // biome-ignore lint/correctness/noUnusedImports: <explanation>
 import * as socket from "socket.io";
 import { WebsocketsService } from "../services/websockets.service";
 import {
-	chatAssistant,
-	cloudeAi,
-	executeCronDate,
-	featuresIA,
-	isWhatsappTelegramIA,
-	updateTokensEmpresa,
+    chatAssistant,
+    cloudeAi,
+    executeCronDate,
+    featuresIA,
+    isWhatsappTelegramIA,
+    updateTokensEmpresa,
 } from "@/bot/libs/ai";
 import { Injectable } from "@vigilio/express-core";
 import {
-	deleteHostCache,
-	openAis,
+    deleteHostCache,
+    openAis,
 } from "@/empresas/services/empresas.api.service";
 import cron from "node-cron";
 import { promptReplace } from "@/bot/libs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 export function HTMLPROMPT(empresa: Empresas) {
-	return `- IMPORTANTE: Por ultimo siempre responde con etiquetas html y clases de tailwind, cada vez que te pida informacion de un producto  trate de responder con una imagen o link. si envias imagen , que sea en etiqueta image <img width='100' height='100' class='w-[100px] h-[150px] rounded-md object-contain'/>   y si  envias cualquier tipo de link  SIEMPRE por favor etiqueta html <a href='http...link'  class="text-primary font-semibold"corto_mensaje_sobre_el_llink_que_envias</a> , no preguntes porque, responde como si fuera html con espacios usando br en productos o pedidos. para que lea bien.  IMPORTANTE:  no uses *PALABRA IMPORTANTE* mejor utiliza la etiqueta <b class="font-semibold"></b>, y si envias caracterisiticas o algo aso por favor que sea en table ,  thead de la tabla ponlo esta clase de css class='bg-primary  Sí ${empresa.setting.bg_color} es un color oscuro text-white sino text-black',   como el carrito de lo que pide el cliente y la letra 13px . si dices una lista por traelas con <ul class="list-inside list-disc"></ul> etqueta li y  la letra 13px, y cuando use ** traela con etiqueta b class="font-bold", POR ULTIMO. siempre cuando me respondas lista, hacelo con una tabla html porfav. SIEMPRE HTML y no en markdown y si me haces preguntas separalos bonito usando ul li. SIEMPRE usas clases de tailwind para que se vea bonito. Ny usa <b class="font-semibold"></b> en las palabras importantes. Cuando termines en . ? !  usa <br/>`;
+    return `- IMPORTANTE: Por ultimo siempre responde con etiquetas html y clases de tailwind, recuerda que el color primary es ${empresa.setting.bg_color}, y recuerda enviar links con estilos de tailwind underline, tablas en caracterisiticas, carrito, etc y usan <b class="font-bold"></b> en palabras importantes y no uses **PALABRA**.por ultimo usa <br></br> para separar parrafos, etc.`;
 }
 export let chatAssistantWeb: Record<string, ["user" | "assistant", string][]> =
-	{};
+    {};
 export let usersInWeb: Record<string, string[]> = {};
 async function cloudeAiWeb(emp: string, token: string, message: string) {
-	try {
-		const whatsapp = await isWhatsappTelegramIA(emp);
-		if (!whatsapp)
-			return "En estos momentos no estoy disponible. Inteligencia Artificial o Token es requerido";
-		const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
+    try {
+        const whatsapp = await isWhatsappTelegramIA(emp);
+        if (!whatsapp)
+            return "En estos momentos no estoy disponible. Inteligencia Artificial o Token es requerido";
 
-		chatAssistantWeb = {
-			...(chatAssistantWeb ?? {}),
-			[`${emp}:${token}`]: [
-				...(chatAssistantWeb[`${emp}:${token}`] ?? []),
-				["user", message],
-			],
-		};
-		// mapped messages to messages cloude
-		const messages = chatAssistantWeb[`${emp}:${token}`].map(
-			([role, content]) => ({
-				role,
-				content,
-			}),
-		);
-		const prompt = await promptReplace(whatsapp, message!, empresa);
+        const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
 
-		const completion = await openAis[empresa.slug].chat.completions.create({
-			model: clientVigilio ? clientVigilio.information.modelai : "gpt-4o-mini",
-			max_tokens: empresa.inteligenceArtificial.max_length,
-			messages: [
-				{
-					role: "user",
-					content: `${prompt} ${HTMLPROMPT(whatsapp.empresa)}`,
-				},
-				...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
-			],
-		});
+        chatAssistantWeb = {
+            ...(chatAssistantWeb ?? {}),
+            [`${emp}:${token}`]: [
+                ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
+                ["user", message],
+            ],
+        };
+        if (
+            chatAssistantWeb[`${emp}:${token}`].length > 30 &&
+            empresa.isTemplate
+        ) {
+            return "Gracias por probar nuestra inteligencia artificial, más información en https://www.vigilio-services.com";
+        }
+        // mapped messages to messages cloude
+        const messages = chatAssistantWeb[`${emp}:${token}`].map(
+            ([role, content]) => ({
+                role,
+                content,
+            })
+        );
+        const prompt = await promptReplace(whatsapp, message!, empresa);
 
-		// get message ai
-		const completionText = completion.choices[0].message.content!;
+        const completion = await openAis[empresa.slug].chat.completions.create({
+            model: clientVigilio
+                ? clientVigilio.information.modelai
+                : "gpt-4o-mini",
+            max_tokens: empresa.inteligenceArtificial.max_length,
+            messages: [
+                {
+                    role: "user",
+                    content: `${prompt} ${HTMLPROMPT(whatsapp.empresa)}`,
+                },
+                ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
+            ],
+        });
 
-		const [removeNote] = await featuresIA(empresa, completionText, false);
-		await updateTokensEmpresa(empresa, latestEmpresaUsage, completion);
-		chatAssistantWeb[`${emp}:${token}`] = [
-			...(chatAssistantWeb[`${emp}:${token}`] ?? []),
-			["assistant", removeNote],
-		];
-		return removeNote;
-	} catch (error) {
-		return "Hubo un error al usar ia, posible errores no hay tokens.";
-	}
+        // get message ai
+        const completionText = completion.choices[0].message.content!;
+
+        const [removeNote] = await featuresIA(empresa, completionText, false);
+        await updateTokensEmpresa(empresa, latestEmpresaUsage, completion);
+        chatAssistantWeb[`${emp}:${token}`] = [
+            ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
+            ["assistant", removeNote],
+        ];
+
+        return removeNote;
+    } catch (error) {
+        return "Hubo un error al usar ia, posible errores no hay tokens.";
+    }
 }
 @Injectable()
 @SocketController("/")
 export class WebsocketsController {
-	constructor(private readonly websocketsService: WebsocketsService) {}
+    constructor(private readonly websocketsService: WebsocketsService) {}
 
-	@Disconnect()
-	async disconnect(@Socket() socket: socket.Socket, @IO() io: socket.Socket) {
-		const token = (socket.handshake.query?.["x-token"] as string) ?? "null";
-		const empresa = (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+    @Disconnect()
+    async disconnect(@Socket() socket: socket.Socket, @IO() io: socket.Socket) {
+        const token = (socket.handshake.query?.["x-token"] as string) ?? "null";
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
 
-		if (token === "null" || empresa === "null") return;
+        if (token === "null" || empresa === "null") return;
 
-		usersInWeb = {
-			...usersInWeb,
-			[empresa]: (usersInWeb[empresa] ?? []).filter((user) => user !== token),
-		};
-		io.emit("users-count:index", usersInWeb.length);
-		const user = await this.websocketsService.index(
-			socket.handshake.query?.["x-user"] as string,
-		);
-		if (user?.isOnline) {
-			// update user
-			await user.update({ isOnline: false });
-		}
-	}
+        usersInWeb = {
+            ...usersInWeb,
+            [empresa]: (usersInWeb[empresa] ?? []).filter(
+                (user) => user !== token
+            ),
+        };
+        io.emit("users-count:index", usersInWeb.length);
+        const user = await this.websocketsService.index(
+            socket.handshake.query?.["x-user"] as string
+        );
+        if (user?.isOnline) {
+            // update user
+            await user.update({ isOnline: false });
+        }
+    }
 
-	@Connect()
-	async index(@Socket() socket: socket.Socket, @IO() io: socket.Socket) {
-		// token localstorage
-		const token = (socket.handshake.query?.["x-token"] as string) ?? "null";
-		const empresa = (socket.handshake.query?.["x-empresa"] as string) ?? "null";
-		// empresa -> id
-		if (token === "null" || empresa === "null") return;
-		socket.join(token);
-		if (!(chatAssistantWeb[`${empresa}:${token}`] ?? []).length) {
-			chatAssistantWeb = {
-				...(chatAssistantWeb ?? {}),
-				[`${empresa}:${token}`]: [
-					...(chatAssistantWeb[`${empresa}:${token}`] ?? []),
-					[
-						"assistant",
-						"Hola, Soy tu asistente virtual 😀. ¿En que le podriamos ayudar?",
-					],
-				],
-			};
-		}
-		io.to(token).emit("chat:ai", chatAssistantWeb[`${empresa}:${token}`]);
-		// user - user auth
-		const user = await this.websocketsService.index(
-			socket.handshake.query?.["x-user"] as string,
-		);
-		// unir en la sala
-		if (user) {
-			// update user
-			if (!user.isOnline) {
-				await user.update({ isOnline: true });
-			}
-			const floors = await this.websocketsService.floorsMesas(empresa, user);
+    @Connect()
+    async index(@Socket() socket: socket.Socket, @IO() io: socket.Socket) {
+        // token localstorage
+        const token = (socket.handshake.query?.["x-token"] as string) ?? "null";
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+        // empresa -> id
+        if (token === "null" || empresa === "null") return;
+        socket.join(token);
+        if (!(chatAssistantWeb[`${empresa}:${token}`] ?? []).length) {
+            chatAssistantWeb = {
+                ...(chatAssistantWeb ?? {}),
+                [`${empresa}:${token}`]: [
+                    ...(chatAssistantWeb[`${empresa}:${token}`] ?? []),
+                    [
+                        "assistant",
+                        "Hola, Soy tu asistente virtual 😀. ¿En que le podriamos ayudar?",
+                    ],
+                ],
+            };
+        }
+        io.to(token).emit("chat:ai", chatAssistantWeb[`${empresa}:${token}`]);
+        // user - user auth
+        const user = await this.websocketsService.index(
+            socket.handshake.query?.["x-user"] as string
+        );
+        // unir en la sala
+        if (user) {
+            // update user
+            if (!user.isOnline) {
+                await user.update({ isOnline: true });
+            }
+            const floors = await this.websocketsService.floorsMesas(
+                empresa,
+                user
+            );
 
-			if (floors) {
-				io.emit("floors_mesas:index", floors);
-			}
-			socket.join(user.id);
-			if (!(chatAssistant[`${empresa}:${user.id}`] ?? [])?.length) {
-				chatAssistant[`${empresa}:${user.id}`] = [
-					[
-						"assistant",
-						`Hola ${user.username}, Soy tu asistente virtual 😀. ¿En que  podriamos ayudarte?`,
-						Date.now(),
-					],
-				];
-			}
-			io.to(user.id).emit(
-				"chat-assistant:ai",
-				chatAssistant[`${empresa}:${user.id}`],
-			);
-		}
-		const existUserInWeb = (usersInWeb[empresa] ?? []).find((tk) => {
-			return tk === token;
-		});
+            if (floors) {
+                io.emit("floors_mesas:index", floors);
+            }
+            socket.join(user.id);
+            if (!(chatAssistant[`${empresa}:${user.id}`] ?? [])?.length) {
+                chatAssistant[`${empresa}:${user.id}`] = [
+                    [
+                        "assistant",
+                        `Hola ${user.username}, Soy tu asistente virtual 😀. ¿En que  podriamos ayudarte?`,
+                        Date.now(),
+                    ],
+                ];
+            }
+            io.to(user.id).emit(
+                "chat-assistant:ai",
+                chatAssistant[`${empresa}:${user.id}`]
+            );
+        }
+        const existUserInWeb = (usersInWeb[empresa] ?? []).find((tk) => {
+            return tk === token;
+        });
 
-		if (!existUserInWeb) {
-			// si no existe usuari con el mismo token que ya no agregre
-			usersInWeb = {
-				...usersInWeb,
-				[empresa]: [...(usersInWeb[empresa] ?? []), token],
-			}; // add user
-		}
-		// si es gratis
-		if (usersInWeb[empresa].length > 30) {
-			const emp = await Empresas.unscoped().findOne({
-				where: {
-					id: empresa,
-					isFreeVPS: true,
-				},
-				attributes: ["enabled_catalogo", "isFreeVPS"],
-			});
-			if (emp?.isFreeVPS && emp?.enabled_catalogo) {
-				await Empresas.update(
-					{ enabled_catalogo: false },
-					{ where: { id: empresa, isFreeVPS: true } },
-				);
-				deleteHostCache();
-				const now = new Date();
-				now.setMinutes(now.getMinutes() + 15);
-				await executeCronDate(now, async () => {
-					await Empresas.update(
-						{ enabled_catalogo: true },
-						{ where: { id: empresa, isFreeVPS: true } },
-					);
-					deleteHostCache();
-				});
-			}
-		}
-		io.emit("users-count:index", usersInWeb[empresa].length);
-	}
+        if (!existUserInWeb) {
+            // si no existe usuari con el mismo token que ya no agregre
+            usersInWeb = {
+                ...usersInWeb,
+                [empresa]: [...(usersInWeb[empresa] ?? []), token],
+            }; // add user
+        }
+        // si es gratis
+        if (usersInWeb[empresa].length > 30) {
+            const emp = await Empresas.unscoped().findOne({
+                where: {
+                    id: empresa,
+                    isFreeVPS: true,
+                },
+                attributes: ["enabled_catalogo", "isFreeVPS"],
+            });
+            if (emp?.isFreeVPS && emp?.enabled_catalogo) {
+                await Empresas.update(
+                    { enabled_catalogo: false },
+                    { where: { id: empresa, isFreeVPS: true } }
+                );
+                deleteHostCache();
+                const now = new Date();
+                now.setMinutes(now.getMinutes() + 15);
+                await executeCronDate(now, async () => {
+                    await Empresas.update(
+                        { enabled_catalogo: true },
+                        { where: { id: empresa, isFreeVPS: true } }
+                    );
+                    deleteHostCache();
+                });
+            }
+        }
+        io.emit("users-count:index", usersInWeb[empresa].length);
+    }
 
-	@Event("notifications:order-store")
-	async orderStore(
-		@Args()
-		body: {
-			user_id: number;
-			order_code: string;
-			total: number;
-		},
-		@IO() io: socket.Socket,
-		@Socket() socket: socket.Socket,
-	) {
-		const empresa = (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+    @Event("notifications:order-store")
+    async orderStore(
+        @Args()
+        body: {
+            user_id: number;
+            order_code: string;
+            total: number;
+        },
+        @IO() io: socket.Socket,
+        @Socket() socket: socket.Socket
+    ) {
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
 
-		if (empresa === "null") return;
-		const result = await this.websocketsService.orderStore(empresa, body);
-		io.emit("notifications:store", result);
-	}
-	@Event("chat:send-message")
-	async sendMessage(
-		@Args() args: { message: string },
-		@Socket() socket: socket.Socket,
-		@IO() io: socket.Socket,
-	) {
-		const token = socket.handshake.query["x-token"] as string;
-		const empresa = (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+        if (empresa === "null") return;
+        const result = await this.websocketsService.orderStore(empresa, body);
+        io.emit("notifications:store", result);
+    }
+    @Event("chat:send-message")
+    async sendMessage(
+        @Args() args: { message: string },
+        @Socket() socket: socket.Socket,
+        @IO() io: socket.Socket
+    ) {
+        const token = socket.handshake.query["x-token"] as string;
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
 
-		if (empresa === "null") return;
-		const message = await cloudeAiWeb(empresa, token, args.message);
-		io.to(token).emit("chat:send-message", ["assistant", message, Date.now()]);
-	}
-	@Event("chat-assistant:send-message")
-	async sendAssistantMessage(
-		@Args() args: { message: string },
-		@Socket() socket: socket.Socket,
-		@IO() io: socket.Socket,
-	) {
-		const token = (socket.handshake.query?.["x-token"] as string) ?? "null";
-		if (!token) return;
-		// user - user auth
-		const user = await this.websocketsService.index(
-			socket.handshake.query?.["x-user"] as string,
-		);
-		if (!user) return;
-		//! aca
-		const message = await cloudeAi(
-			(user!.empresa as Empresas).slug,
-			user.id,
-			args.message,
-		);
-		io.to(token).emit("chat-assistant:send-message", [
-			"assistant",
-			message,
-			Date.now(),
-		]);
-	}
-	@Event("floors_mesas:index")
-	async floorsChange(@Socket() socket: socket.Socket, @IO() io: socket.Socket) {
-		const user = await this.websocketsService.index(
-			socket.handshake.query?.["x-user"] as string,
-		);
-		const empresa = (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+        if (empresa === "null") return;
+        const message = await cloudeAiWeb(empresa, token, args.message);
+        io.to(token).emit("chat:send-message", [
+            "assistant",
+            message,
+            Date.now(),
+        ]);
+    }
+    @Event("chat-assistant:send-message")
+    async sendAssistantMessage(
+        @Args() args: { message: string },
+        @Socket() socket: socket.Socket,
+        @IO() io: socket.Socket
+    ) {
+        const token = (socket.handshake.query?.["x-token"] as string) ?? "null";
+        if (!token) return;
+        // user - user auth
+        const user = await this.websocketsService.index(
+            socket.handshake.query?.["x-user"] as string
+        );
+        if (!user) return;
+        //! aca
+        const message = await cloudeAi(
+            (user!.empresa as Empresas).slug,
+            user.id,
+            args.message
+        );
+        io.to(token).emit("chat-assistant:send-message", [
+            "assistant",
+            message,
+            Date.now(),
+        ]);
+    }
+    @Event("floors_mesas:index")
+    async floorsChange(
+        @Socket() socket: socket.Socket,
+        @IO() io: socket.Socket
+    ) {
+        const user = await this.websocketsService.index(
+            socket.handshake.query?.["x-user"] as string
+        );
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
 
-		if (empresa === "null") return;
-		if (user) {
-			const floors = await this.websocketsService.floorsMesas(empresa, user);
+        if (empresa === "null") return;
+        if (user) {
+            const floors = await this.websocketsService.floorsMesas(
+                empresa,
+                user
+            );
 
-			if (floors) {
-				io.emit("floors_mesas:index", floors);
-			}
-		}
-	}
-	@Event("notifications:auth-register")
-	async authRegister(
-		@Args() body: { user_id: number; username: string; slug: string },
-		@IO() io: socket.Socket,
-		@Socket() socket: socket.Socket,
-	) {
-		const empresa = (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+            if (floors) {
+                io.emit("floors_mesas:index", floors);
+            }
+        }
+    }
+    @Event("notifications:auth-register")
+    async authRegister(
+        @Args() body: { user_id: number; username: string; slug: string },
+        @IO() io: socket.Socket,
+        @Socket() socket: socket.Socket
+    ) {
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
 
-		if (empresa === "null") return;
-		const result = await this.websocketsService.authRegister(empresa, body);
-		io.emit("notifications:store", result);
-	}
-	@Event("notifications:comment-store")
-	async commentStore(
-		@Args()
-		body: {
-			product_id: number;
-			user_id: number;
-			isService: boolean;
-			comment_id: number;
-			content: string;
-		},
-		@IO() io: socket.Socket,
-		@Socket() socket: socket.Socket,
-	) {
-		const empresa = (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+        if (empresa === "null") return;
+        const result = await this.websocketsService.authRegister(empresa, body);
+        io.emit("notifications:store", result);
+    }
+    @Event("notifications:comment-store")
+    async commentStore(
+        @Args()
+        body: {
+            product_id: number;
+            user_id: number;
+            isService: boolean;
+            comment_id: number;
+            content: string;
+        },
+        @IO() io: socket.Socket,
+        @Socket() socket: socket.Socket
+    ) {
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
 
-		if (empresa === "null") return;
-		const result = await this.websocketsService.commentStore(
-			empresa,
-			socket.handshake.query?.["x-user"] as string,
-			body,
-		);
-		io.emit("notifications:store", result);
-	}
-	@Event("notifications:subcomment-store")
-	async subcommentStore(
-		@Args()
-		body: {
-			product_id: number;
-			user_id: number;
-			receptores: number[];
-			comment_id: number;
-			isService: boolean;
-			content: string;
-		},
-		@IO() io: socket.Socket,
-		@Socket() socket: socket.Socket,
-	) {
-		const empresa = (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+        if (empresa === "null") return;
+        const result = await this.websocketsService.commentStore(
+            empresa,
+            socket.handshake.query?.["x-user"] as string,
+            body
+        );
+        io.emit("notifications:store", result);
+    }
+    @Event("notifications:subcomment-store")
+    async subcommentStore(
+        @Args()
+        body: {
+            product_id: number;
+            user_id: number;
+            receptores: number[];
+            comment_id: number;
+            isService: boolean;
+            content: string;
+        },
+        @IO() io: socket.Socket,
+        @Socket() socket: socket.Socket
+    ) {
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
 
-		if (empresa === "null") return;
-		const result = await this.websocketsService.subcommentStore(
-			empresa,
-			socket.handshake.query?.["x-user"] as string,
-			body,
-		);
-		io.emit("notifications:store", result);
-	}
+        if (empresa === "null") return;
+        const result = await this.websocketsService.subcommentStore(
+            empresa,
+            socket.handshake.query?.["x-user"] as string,
+            body
+        );
+        io.emit("notifications:store", result);
+    }
 }
 // cada 24 horas
 cron.schedule("0 0 * * *", () => {
-	chatAssistantWeb = {};
+    chatAssistantWeb = {};
 });

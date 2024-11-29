@@ -4,8 +4,34 @@ import { NOW } from "~/libs/dayjs";
 import type { DataPrompt } from ".";
 import { BASE_URL } from "@/empresas/libs";
 import cache from "@vigilio/express-core/cache";
+import { Questions } from "@/empresas/entities/questions.entity";
+import type { Address } from "@/empresas/entities/address.entity";
+import type { Cities } from "@/ubigeo/entities/cities.entity";
+import { Op } from "sequelize";
 
 export async function prompt(empresa: Empresas, productsData: DataPrompt) {
+    let preguntasIA: Questions[] | null = JSON.parse(
+        cache.get(`questions-ia:${empresa.slug}`) ?? "null"
+    );
+    if (!preguntasIA) {
+        // solo preguntas que tengan respuestas
+        const question = await Questions.findAll({
+            where: {
+                empresa_id: empresa.id,
+                [Op.not]: {
+                    answer: null,
+                },
+            },
+            attributes: ["question", "answer"],
+        });
+        preguntasIA = question;
+        const hour24 = 24 * 60 * 1000;
+        cache.set(
+            `questions-ia:${empresa.slug}`,
+            JSON.stringify(question),
+            hour24
+        );
+    }
     const url =
         (empresa.setting as Settings).host.host &&
         (empresa.setting as Settings).host.enabled
@@ -20,7 +46,7 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
               "Evita reescribir los nombres de los productos ![example] ó [example] omite esos, no hagas imitaciones. y no encierres [] a las palabras.",
               `Si te pido información más detallada de un  producto que no está en la BASE_DE_DATOS enviar ${
                   empresa.web
-                      ? `${empresa.web}/url-producto-o-servicio-de-db`
+                      ? "url-producto-o-servicio-de-db"
                       : `https://www.${url}/aca-pones-el-slug-del-producto-de-db`
               }`,
               "enviamen la imagen ( mandarme la url de la imagen) . no lo pongas como link ejemplo NO ![nombre]  .  solo texto  si te pido una imagen de un producto",
@@ -31,12 +57,12 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
           ]
         : [
               "No especules ni inventes respuestas si la BASE DE DATOS no proporciona la información necesaria.",
-              "PORFAVOR, Verifica bien la BASE DE DATOS, PARA QUE NO SE TE ESCPE NINGUNA INFORMACIÓN.",
+              "PORFAVOR, Verifica bien la BASE DE DATOS, PARA QUE NO SE TE ESCAPE NINGUNA INFORMACIÓN.",
               "URGENTE: Cuando te pida información de un producto o servicio. No me des toda la información del producto solo lo que te pida.",
               ...empresa.inteligenceArtificial.instructions,
           ];
     let directrices = [
-        "NO DES RECOMENDACIONES. NO DES DATOS QUE NO ESTEN EN LA BASE DE DATOS!!!!. NO DES RECOMENDACIONES DE OTROS PRODUCTOS QUE OFRECEMOS SI TE LO PIDA. NO INVENTES COSAS QUE NO ESTEN EN LA BASE DE DATOS!!!",
+        "NO DES RECOMENDACIONES. NO DES DATOS QUE NO ESTEN EN LA BASE DE DATOS!. NO DES RECOMENDACIONES DE OTROS PRODUCTOS QUE OFRECEMOS SI TE LO PIDA. NO INVENTES COSAS QUE NO ESTEN EN LA BASE DE DATOS!",
         ...empresa.inteligenceArtificial.didactrices,
     ];
     if (empresa.inteligenceArtificial.settings.enabled_cart) {
@@ -62,7 +88,7 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
             ];
         }
         directrices = [
-            "No menciones 'carrito' ni 'BASE_DE_DATOS'. no seas muy tecnico!!! y SOLO response las preguntas que te diga y NO sobrecargues mucho tu respuesta. NO me des feedback ni recomendaciones, sin que me lo pidas",
+            "No menciones 'carrito' ni 'BASE_DE_DATOS'. no seas muy tecnico!!! y SOLO response las preguntas que te diga y NO sobrecargues mucho tu respuesta. NO me des feedback ni recomendaciones, sin que te lo pida",
             "No Menciones de que te entregaremos un {{cart?items=URL percent-encoding}}. Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el {{cart?items=URL percent-encoding}}. CUANDO te pida LINK enviame eso {{cart?items=URL percent-encoding}} y que este en buen estado",
             "NO  envies {{cart?items=URL percent-encoding}} si no confirmo el pedido!!! y no sugieras links cuando no haya confirmado el pedido.  SOLO CUANDO  CONFIRME PEDIDO.",
             ...directrices,
@@ -94,8 +120,10 @@ export async function prompt(empresa: Empresas, productsData: DataPrompt) {
             empresa.inteligenceArtificial.max_length
         }.
     NUMERO DE telefono para consultas o  reclamos: ${empresa.telephoneReclamos}.
-    DIRECCION: ${JSON.stringify(empresa.address)}.
-    EMAIL: ${empresa.email}
+    DIRECCION:${(empresa.address as Address).direccion} ${
+        ((empresa.address as Address).city as Cities).name
+    } .
+    EMAIL: ${empresa.email}.
 	${
         empresa.inteligenceArtificial.enabledHuman
             ? "URGENTE: Se más humano, y los humanos tienes aveces errores ortograficos. trata de ser así y se más humano."
@@ -134,6 +162,16 @@ IMPORTANTE: REVISAR LA BASE DE DATOS, ANTES DE RESPONDER, por ejemplo si una per
     ${JSON.stringify(directrices.map((value) => `- ${value}`))}
     **********            OTROS DATOS     ***********:
    ${JSON.stringify(JSON.stringify(otrosDatos))}
+   ${
+       preguntasIA?.length
+           ? `******** OTRAS PREGUNTAS *****\nCuando te hago estas questions o parecidos a las questions, respondeme los answer. ${JSON.stringify(
+                 preguntasIA.map((d) => ({
+                     answer: d.answer,
+                     question: d.question,
+                 }))
+             )}`
+           : ""
+   }
 
     `;
     // -OJO LAS CITAS de lA BASE DE DATOS ESTAN EN HORA FORMATO UNIVERSAL. asi que depende de mi país te fijas que fechas con hora estan ocupados.

@@ -446,6 +446,9 @@ function Header({ header }: HeaderProps) {
                                                                             alt={
                                                                                 brand.name
                                                                             }
+                                                                            title={
+                                                                                brand.name
+                                                                            }
                                                                             src={
                                                                                 printFileWithDimension(
                                                                                     brand.image,
@@ -962,6 +965,7 @@ function AuthUserIcon({ hiddenName }: AuthUserIconProps) {
                                 width={30}
                                 height={30}
                                 class="rounded-full"
+                                title={authStore.state!.username}
                                 alt={authStore.state!.username}
                             />
                             {hiddenName ? (

@@ -55,6 +55,7 @@ import { Banner } from "./banner.entity";
 import { GridBanner } from "./grid_banner.entity";
 import { FileSchema } from "./file.entity";
 import { RedesChat } from "./redes_chat.entity";
+import { Questions } from "./questions.entity";
 
 @DefaultScope(() => ({
     include: [Address, MetodosPago, TipoEmpresa, Settings, CitasSettings],
@@ -503,6 +504,9 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
     @HasMany(() => Finanzas)
     finanzas: unknown[];
+
+    @HasMany(() => Questions)
+    questions: unknown[];
 
     @HasMany(() => CategoriesFinanzas)
     categoriesFinanzas: unknown[];

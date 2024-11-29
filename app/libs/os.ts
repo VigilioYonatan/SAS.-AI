@@ -61,7 +61,7 @@ export async function updateVigilioServices(
     return result;
 }
 
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 0 * * *", async () => {
     try {
         await terminal(
             "cd /root/home && \

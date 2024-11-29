@@ -159,7 +159,8 @@ function ProductPage({
                             slidesToShow: 1,
                             slidesToScroll: 1,
                             adaptiveHeight: true,
-                            className: "w-full  md:w-7/12 relative self-start",
+                            className:
+                                "w-full  md:w-7/12 relative self-start product-page-slide",
                             nextArrow: <SampleNextArrow />,
                             prevArrow: <SamplePrevArrow />,
                         }}
@@ -228,7 +229,7 @@ function ProductPage({
                                             src={image}
                                             width={800}
                                             height={800}
-                                            alt=""
+                                            alt={image}
                                         />
                                     )}
                                 </div>
@@ -275,7 +276,7 @@ function ProductPage({
 
                             <span>{product.category.name}</span>
                         </div>
-                        <h3 class="text-primary font-bold dark:text-white line-clamp-2 text-lg">
+                        <h1 class="text-primary font-bold dark:text-white line-clamp-2 text-lg">
                             {product.name}{" "}
                             {varianteChoose &&
                             (producto.value as ProductsNormalSchemaFromServer)
@@ -293,7 +294,7 @@ function ProductPage({
                                       })
                                       .join(" ")
                                 : null}
-                        </h3>{" "}
+                        </h1>{" "}
                         <Rating
                             defaultValue={product.rating.promedio}
                             shape={enviroments.TYPE_START}

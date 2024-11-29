@@ -50,6 +50,7 @@ function ProductCart({ product }: ProductCartProps) {
                     height={200}
                     src={isImagesLength[0]}
                     alt={product.name}
+                    title={product.name}
                 />
 
                 <div class="flex flex-col justify-between w-full gap-1">

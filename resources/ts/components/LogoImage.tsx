@@ -17,7 +17,8 @@ function LogoImage({ height = "100", width = "100" }: LogoImageProps) {
 					height={height}
 					style={{ width, height }}
 					src={printLogoempresa(state.logo, 300)[0]}
-					alt="auth Logo"
+					alt={state.name_empresa}
+					title={state.name_empresa}
 				/>
 			) : (
 				<span class="text-primary text-4xl font-bold">

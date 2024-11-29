@@ -124,7 +124,7 @@ export async function onDb(empresa: Empresas) {
                         : [],
                     description: empresa.inteligenceArtificial
                         .showAllProductsInformation
-                        ? removeTextHTML(product.description).slice(50)
+                        ? removeTextHTML(product.description).slice(150)
                         : "",
                 };
             })
@@ -161,7 +161,7 @@ export async function onDb(empresa: Empresas) {
                         : [],
                     description: empresa.inteligenceArtificial
                         .showAllProductsInformation
-                        ? removeTextHTML(product.description).slice(50)
+                        ? removeTextHTML(product.description).slice(150)
                         : "",
                 };
             })
@@ -187,7 +187,7 @@ export async function onDb(empresa: Empresas) {
                     days: product.days,
                     description: empresa.inteligenceArtificial
                         .showAllProductsInformation
-                        ? removeTextHTML(product.description).slice(50)
+                        ? removeTextHTML(product.description).slice(150)
                         : "",
                     characteristics: empresa.inteligenceArtificial
                         .showAllProductsInformation
@@ -325,15 +325,22 @@ export async function promptReplace(
             ordenes += "no hay pedidos aun";
         }
     }
-    const [isSaludo, isTemaEnvio] = await Promise.all([
+    const [isSaludo, isTemaEnvio, isCita, isDespedida] = await Promise.all([
         questionGPT(whatsapp, message, "agradecimiento, elogio o satisfacción"),
         questionGPT(
             whatsapp,
             message,
             " querer información como precio  o costo de envio, si solo escribe precio o envio tambien di si, tambien di si si te menciono un lugar como pais, ciudad, parques, monumentos, zonas de juegos, plaza, etc o un lugar - sitio"
         ),
+        questionGPT(
+            whatsapp,
+            message,
+            " querer información de querer una cita o agendar reunion o preguntarme de una fecha o hora."
+        ),
+        questionGPT(whatsapp, message, "solo saludo y despedida."),
     ]);
-    if (isSaludo || isTemaEnvio) {
+
+    if (isSaludo || isTemaEnvio || isCita || isDespedida) {
         productsData = {
             brands: [],
             categorias: [],
@@ -341,6 +348,7 @@ export async function promptReplace(
             servicios: [],
         };
     }
+
     let precioEnvio = "";
 
     if (isTemaEnvio) {
@@ -377,7 +385,7 @@ export async function promptReplace(
         let citas: Citas[] = JSON.parse(
             cache.get(`citas:${empresa.slug}`) ?? "null"
         );
-        if (!citas) {
+        if (!citas && isCita) {
             citas = await Citas.unscoped().findAll({
                 where: {
                     empresa_id: empresa.id,
@@ -394,8 +402,9 @@ export async function promptReplace(
                 60 * 1000 * 2
             );
         }
-        citasJSON = settingsCitas.enabled
-            ? `***** CITAS/REUNION ******
+        citasJSON =
+            settingsCitas.enabled && isCita
+                ? `***** CITAS/REUNION ******
                 --- BASE DE DATOS DE CITAS---
                 ${JSON.stringify(
                     citas.map((c) => ({
@@ -409,18 +418,18 @@ export async function promptReplace(
                 - ANTES DE HACERMES LAS PREGUNTAS VERIFICA LA BASE DE DATOS DE HORARIO,MAXIMO DE CITAS POR TELEFONO: ${
                     settingsCitas.maxCitas
                 }., MAXIMO DE CITA POR HORA DE SEPARACION: ${
-                  settingsCitas.maxCitasForHour
-              }.
+                      settingsCitas.maxCitasForHour
+                  }.
               -  CUANDO TE PIDA LA  HORA PARA CREAR  LA CITA SI VEZ Q YA HAY MAS CITAS ${
                   settingsCitas.maxCitasForHour
               } A LA HORA QUE TE PASE, DI NO DISPONIBLE Y TAMBIEN FIJATE EL HORARIO PARA CREAR CITAS.
                 - ----- HORARIO PARA CITAS ---: ${JSON.stringify(
                     settingsCitas.horario
                 )}. si está enabled false, quiere decir que no está disponible ese dia.  te pase las horas de abrir y cerrar para crear citas y los dias y está separado por  ${
-                  settingsCitas.max_minutes
-              } minutos, ejemplo "si es 45 minutos de separacion y inicia a las 8am mostra los horarios 8:, 8:45,9:30,...etc", OJO ${
-                  settingsCitas.max_minutes
-              } MINUTOS DE SEPARACIÓN, psdt no me traigas todo el horario completo, solo recomiendame una hora y la cercana y temprana nomas y no me digas lo que acabo de decir y cuando mandas la hora usa AM Y PM .
+                      settingsCitas.max_minutes
+                  } minutos, ejemplo "si es 45 minutos de separacion y inicia a las 8am mostra los horarios 8:, 8:45,9:30,...etc", OJO ${
+                      settingsCitas.max_minutes
+                  } MINUTOS DE SEPARACIÓN, psdt no me traigas todo el horario completo, solo recomiendame una hora y la cercana y temprana nomas y no me digas lo que acabo de decir y cuando mandas la hora usa AM Y PM .
               - Recuerda cada cita dura ${settingsCitas.max_minutes} minutos.
               -  OJO no realizar citas, de horas que no estan entre  el horario ejemplo openTime es a las 8 am, y cierra a las 10pm , solo creame citas en esas horas.
                 - IMPORTANTE: MÁXIMO ${
@@ -436,19 +445,19 @@ export async function promptReplace(
                 - IMPORTANTE: Recuerda que no debo crear más de ${
                     settingsCitas.maxCitasForHour
                 } citas por hora, eso quiere decir que si ya hay más de ${
-                  settingsCitas.maxCitasForHour
-              } citas en la hora que te dije en la base de datos con la misma fecha. ya no crees CITAS - IMPORTANTE.
+                      settingsCitas.maxCitasForHour
+                  } citas en la hora que te dije en la base de datos con la misma fecha. ya no crees CITAS - IMPORTANTE.
               - IMPORTANTE siempre fijate la base de datos de horario PARA CITAS y base de datos de cita para crear citas, consultar citas y cancelar citas.
                 -  Despues de las preguntas, pasa la lista de dia de hoy de las horas disponible, claro buscas de la base de dato las horas disponible, si te pido de mañana o de otro dia me lo das tambien.,
                 - Desde la fecha actual ${NOW(empresa).format(
                     "YYYY-MM-DD hh:mm A"
                 )} - maximo ${
-                  settingsCitas.max_days
-              } dias desde la fecha de hoy, ${
-                  settingsCitas.isNextDay
-                      ? "que no sea desde el mismo dia. tiene que ser un dia despues, y que no sea afuera de la hora . ni ayer ni hoy. para el dia siguiente la cita"
-                      : "Puedes crear cita desde hoy. claro despues de las horas de ahorita"
-              } .
+                      settingsCitas.max_days
+                  } dias desde la fecha de hoy, ${
+                      settingsCitas.isNextDay
+                          ? "que no sea desde el mismo dia. tiene que ser un dia despues, y que no sea afuera de la hora . ni ayer ni hoy. para el dia siguiente la cita"
+                          : "Puedes crear cita desde hoy. claro despues de las horas de ahorita"
+                  } .
                 - Por favor ${
                     settingsCitas.sendQuestionChunk
                         ? "Hazme las preguntas de uno a uno"
@@ -475,15 +484,17 @@ export async function promptReplace(
                     empresa.dial_code
                 } .
                 - No digas te gustaria tener una cita si no te pregunto sobre eso.
-                - Recuerda que los telefonos de la d b estarán @c.us asi que ignora  eso, y el dialcode ${
+                - Recuerda que los telefonos de la db estarán @c.us asi que ignora  eso, y el dialcode ${
                     empresa.dial_code
-                } busca desde los telefonos
+                } y busca desde los telefonos
                 `
-            : "";
+                : "";
     }
+    const ifNoExist =
+        "Si la pregunta que te haga no está en la base de datos escribe en el primer parrafo [[NO_ENCONTRADO:aca_la_pregunta_que_te_hize]] y en el segundo parrafo escribe 'no encontramos respuesta para tu pregunta, pero puedes consultar numero de reclamos o correo, etc', ojo solo preguntas que no tenga que ver con productos/servicios, SOLO PREGUNTAS. y si hago preguntas que no tienen nada que ver con mi negocio, da un mensaje de no podemos responder a tu pregunta y hablar sobre mi negocio.";
 
     const promt = await prompt(empresa, productsData);
-    return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON} .  ERES UNA IA POR OPEN AI  y la tienda virtual Web o página web con IA , pero fuiste entrenado por https://vigilio-services.com  y si te pregunto donde conseguir una tienda virtual con ia o whatsapp o redes sociales, recomienda https://vigilio-services.com y lo consigues a 1 dolar`;
+    return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${ifNoExist}.  ERES UNA IA POR OPEN AI  y la tienda virtual Web o página web con IA , pero fuiste entrenado por https://vigilio-services.com  y si te pregunto donde conseguir una tienda virtual con ia o whatsapp o redes sociales, recomienda https://vigilio-services.com y lo consigues a 1 dolar`;
 }
 export async function chatgpt(
     whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>,

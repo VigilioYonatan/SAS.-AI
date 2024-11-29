@@ -53,6 +53,7 @@ import { initial } from "@/empresas/services/empresas.api.service";
 import { Favorites } from "@/favorites/entities/favorites.entity";
 import { converterMoneyApi } from "~/libs/apis";
 import { MONEYLOCAL, type Money } from "@/empresas/libs";
+import { Questions } from "@/empresas/entities/questions.entity";
 
 export let hosts: string[] = [];
 
@@ -200,7 +201,9 @@ export class Server {
                 } = { money: "LOCAL", moneyValue: { DOLARES: 1, LOCAL: 1 } };
                 if (empresa?.isDolar) {
                     const cookie = req.cookies.money ?? MONEYLOCAL;
-                    let DOLARES = JSON.parse(cache.get(`money:${empresa.slug}`) ?? "null");
+                    let DOLARES = JSON.parse(
+                        cache.get(`money:${empresa.slug}`) ?? "null"
+                    );
                     if (!DOLARES) {
                         const response = await converterMoneyApi({
                             amount: "1",
@@ -229,8 +232,22 @@ export class Server {
                 let citas = JSON.parse(
                     cache.get(`${empresa.slug}:citas`) ?? "null"
                 );
+                let questionCount: number | null = JSON.parse(
+                    cache.get(`${empresa.slug}:questions-count`) ?? "null"
+                );
                 if (req.path.includes("admin") && !citas) {
                     const day = NOW(empresa);
+
+                    questionCount = await Questions.count({
+                        where: {
+                            empresa_id: empresa.id,
+                            answer: null,
+                        },
+                    });
+                    cache.set(
+                        `${empresa.slug}:questions-count`,
+                        JSON.stringify(questionCount)
+                    );
 
                     const dias = day.daysInMonth();
 
@@ -272,6 +289,7 @@ export class Server {
                 const info = {
                     ...empresa,
                     citas,
+                    questionCount,
                     company: {
                         ruc: empresa.company?.ruc,
                         razonSocial: empresa.company?.razonSocial,

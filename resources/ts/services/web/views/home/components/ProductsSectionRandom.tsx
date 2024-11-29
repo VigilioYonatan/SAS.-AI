@@ -63,6 +63,11 @@ function ProductsSectionRandom({
                                     class="h-[30px] w-[30px] object-contain"
                                     width={100}
                                     height={100}
+                                    title={
+                                        (
+                                            productlatestmapped as ProductsNormalSchemaFromServer
+                                        ).brand.name
+                                    }
                                     alt={
                                         (
                                             productlatestmapped as ProductsNormalSchemaFromServer

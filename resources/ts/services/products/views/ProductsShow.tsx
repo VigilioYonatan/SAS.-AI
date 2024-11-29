@@ -768,7 +768,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <span class="flex  justify-center items-center text-center text-xs">
+                                                                <span class="flex  justify-center items-center text-center text-xs dark:text-white">
                                                                     {variant.sku
                                                                         ? variant.sku
                                                                         : "no se insertó sku"}
@@ -776,7 +776,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                                             </td>
 
                                                             <td>
-                                                                <span class="flex justify-center items-center">
+                                                                <span class="flex justify-center items-center  dark:text-white">
                                                                     {variant.ilimit
                                                                         ? "Stock"
                                                                         : variant.stock}
@@ -929,7 +929,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                                                 </div>
                                                             </td>
                                                             <td class="">
-                                                                <div class="flex justify-center items-center">
+                                                                <div class="flex justify-center items-center  dark:text-white">
                                                                     {
                                                                         variant.totalSold
                                                                     }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <% 
- const productDescription = product.description ?  product.description.replace(/(<([^>]+)>)/gi, "").slice(0,200) + "...":null;
+ const productDescription = product.description ?  product.description.replace(/(<([^>]+)>)/gi, "").slice(0,200) + "...":product.name;
 %>
 
 <head>
@@ -11,7 +11,7 @@
   <meta name="file-base-url" content="<%= route("/")  %>">
   <meta name="robots" content="index, follow">
   <meta name="description" content="<%= productDescription  %>">
-  <meta name="keywords" content="">
+  <meta name="keywords" content="eccomerce, web, inteligencia artificial, ia, ai">
   <!-- Schema.org markup for Google+ -->
   <meta itemprop="name" content="<%= product.name  %>">
   <meta itemprop="description" content="<%=   %>">

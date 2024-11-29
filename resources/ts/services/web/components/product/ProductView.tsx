@@ -78,6 +78,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                     height={100}
                                     class="w-full h-full object-contain"
                                     alt={product.producto.value.name}
+                                    title={product.producto.value.name}
                                     src={isImagesLength[i]}
                                 />
                             </div>
@@ -91,7 +92,8 @@ function ProductCardView({ product }: ProductCardViewProps) {
                     slidesToShow: 1,
                     slidesToScroll: 1,
                     adaptiveHeight: true,
-                    className: "w-full  md:w-7/12 relative self-start group",
+                    className:
+                        "w-full  md:w-7/12 relative self-start group product-view-slider",
                     nextArrow: <SampleNextArrow />,
                     prevArrow: <SamplePrevArrow />,
                 }}
@@ -118,6 +120,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
 
                         <img
                             alt={product.producto.value.name}
+                            title={product.producto.value.name}
                             class={`h-full object-contain w-full ${
                                 zoom ? "zoom-image" : ""
                             }`}
@@ -155,7 +158,8 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                 src={image}
                                 width={500}
                                 height={500}
-                                alt=""
+                                alt={product.producto.value.name}
+                                title={product.producto.value.name}
                             />
                         </div>
                     ))}
@@ -255,6 +259,12 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             )[0]
                         }
                         alt={
+                            (
+                                product.producto
+                                    .value as ProductsNormalSchemaFromServer
+                            ).brand.name
+                        }
+                        title={
                             (
                                 product.producto
                                     .value as ProductsNormalSchemaFromServer
@@ -659,8 +669,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         <a
                             target="_self"
                             rel="noreferrer"
-									aria-label="shared"
-
+                            aria-label="shared"
                             href={`mailto:?subject=${encodeURIComponent(
                                 `Más información de ${product.producto.value.name}`
                             )}&amp;body=${BASE_URL}/${
@@ -672,8 +681,8 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </a>
                         <a
                             target="_blank"
-									aria-label="shared"
-                            rel="noreferrer" 
+                            aria-label="shared"
+                            rel="noreferrer"
                             href={`https://x.com/share?url=${BASE_URL}/${
                                 product.producto.value.slug
                             }&amp;text=${encodeURIComponent(
@@ -685,8 +694,8 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </a>
                         <a
                             target="_blank"
-									aria-label="shared"
-                            rel="noreferrer" 
+                            aria-label="shared"
+                            rel="noreferrer"
                             href={`https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                                 `${BASE_URL}/${product.producto.value.slug}`
                             )}`}
@@ -696,8 +705,8 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </a>
                         <a
                             target="_blank"
-									aria-label="shared"
-                            rel="noreferrer" 
+                            aria-label="shared"
+                            rel="noreferrer"
                             href={`https://wa.me/51${
                                 empresaStore.state!.telephoneFirst
                             }?text=Hola, estoy interesado en ${
@@ -740,20 +749,22 @@ export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
                         width={80}
                         height={80}
                         alt="visa"
+                        title="visa"
                     />
                 ) : null}
                 {empresaStore.state?.metodos_pago.qrYape ? (
-                    <img src={yapeImage()} width={30} height={30} alt="yape" />
+                    <img src={yapeImage()} width={30} height={30} alt="yape" title="yape" />
                 ) : null}
                 {empresaStore.state?.metodos_pago.qrPlin ? (
-                    <img src={plinImage()} width={30} height={30} alt="yape" />
+                    <img src={plinImage()} width={30} height={30} alt="plin" title="plin"  />
                 ) : null}
                 {empresaStore.state?.metodos_pago.paypal.enabled ? (
                     <img
                         src={paypalICOImage()}
                         width={30}
                         height={30}
-                        alt="yape"
+                        alt="paypal"
+                        title="paypal"
                     />
                 ) : null}
                 {empresaStore.state?.metodos_pago.enable_efectivo &&
@@ -782,6 +793,7 @@ export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
                                             width={40}
                                             src={bank.image}
                                             alt={bank.value}
+                                            title={bank.value}
                                         />
                                     ) : null}
                                 </Fragment>

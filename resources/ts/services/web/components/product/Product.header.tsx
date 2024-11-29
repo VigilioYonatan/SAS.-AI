@@ -46,6 +46,7 @@ function ProductHeader({
 								height={500}
 								src={product.images500Variant[0]}
 								alt={product.producto.value.name}
+								title={product.producto.value.name}
 							/>
 							{isHover && product.images500Variant[1] ? (
 								<img
@@ -62,6 +63,7 @@ function ProductHeader({
 									height={500}
 									src={product.images500[1]}
 									alt={product.producto.value.name}
+									title={product.producto.value.name}
 								/>
 							) : null}
 						</>
@@ -80,6 +82,7 @@ function ProductHeader({
 							height={500}
 							src={product.images500Variant[0]}
 							alt={product.producto.value.name}
+							title={product.producto.value.name}
 						/>
 					)}
 				</>
@@ -103,6 +106,7 @@ function ProductHeader({
 								height={500}
 								src={product.images500[0]}
 								alt={product.producto.value.name}
+								title={product.producto.value.name}
 							/>
 							{isHover && product.images500[1] ? (
 								<img
@@ -119,6 +123,7 @@ function ProductHeader({
 									height={500}
 									src={product.images500[1]}
 									alt={product.producto.value.name}
+									title={product.producto.value.name}
 								/>
 							) : null}
 						</>
@@ -137,6 +142,7 @@ function ProductHeader({
 							height={500}
 							src={product.images500[0]}
 							alt={product.producto.value.name}
+							title={product.producto.value.name}
 						/>
 					)}
 				</>

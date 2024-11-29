@@ -358,6 +358,7 @@ function Aside({
 									class="w-[40px] h-[40px] rounded-full"
 									src={printFileUser(authStore.state!.photo, 100)[0]}
 									alt={authStore.state!.name}
+									title={authStore.state!.name}
 								/>
 								<span class=" dark:text-white ">
 									Hola <b>{authStore.state.username}</b>

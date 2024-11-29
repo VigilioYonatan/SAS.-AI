@@ -32,6 +32,7 @@ function CartProductAlert({ product }: CartProductAlertProps) {
 						height="80"
 						src={printImagesProduct(product.images, 500)[0]}
 						alt={product.name}
+						title={product.name}
 					/>
 					<a
 						href={"/cart"}

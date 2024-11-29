@@ -582,7 +582,7 @@ function Favorites() {
 									width={200}
 									height={200}
 									src={printImagesProduct(product.images, 500)[0]}
-									alt=""
+									alt="profile"
 								/>
 								<div class="flex flex-col w-full">
 									<a
