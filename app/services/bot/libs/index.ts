@@ -360,7 +360,11 @@ export async function promptReplace(
             message,
             " querer información de querer una cita o agendar reunion o preguntarme de una fecha o hora."
         ),
-        questionGPT(whatsapp, message, "solo saludo y despedida."),
+        questionGPT(
+            whatsapp,
+            message,
+            "si es saludo o despedida sin nada más."
+        ),
     ]);
 
     if (isSaludo || isTemaEnvio || isCita || isDespedida) {
@@ -513,6 +517,8 @@ export async function promptReplace(
                 `
                 : "";
     }
+    console.log({ isSaludo, isTemaEnvio, isCita, isDespedida });
+
     console.log({ productsData });
 
     const ifNoExist =
