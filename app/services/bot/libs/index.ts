@@ -371,9 +371,10 @@ export async function promptReplace(
                 "es pregunta, cualquier tiempo de pregunta."
             ),
         ]);
-
-    if (isSaludo || isTemaEnvio || isCita || isDespedida || !isQuestion) {
-        productsData = {} as DataPrompt;
+    if (!isQuestion) {
+        if (isSaludo || isTemaEnvio || isCita || isDespedida) {
+            productsData = {} as DataPrompt;
+        }
     }
 
     let precioEnvio = "";
