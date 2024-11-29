@@ -246,6 +246,8 @@ export async function promptReplace(
     message: string,
     empresa: Empresas
 ) {
+    console.log({ message });
+
     let data: DataPrompt = JSON.parse(
         cache.get(`db-${empresa.slug}`) ?? "null"
     );
@@ -271,6 +273,8 @@ export async function promptReplace(
             empresa.tipo_empresa.value || empresa.type_empresa_other
         } . o si hago una pregunta con un nombre raro`
     );
+    console.log({ isProduct });
+
     if (isProduct) {
         // si no es inteligente que busque
         if (!empresa.inteligenceArtificial.enabledBotInteligence) {
