@@ -367,12 +367,8 @@ export async function promptReplace(
                 "es pregunta, cualquier tiempo de pregunta."
             ),
         ]);
-    if (!isQuestion) {
-        if (isTemaEnvio || isCita) {
-            productsData = {} as DataPrompt;
-        }
-    }
-    if (isSaludo || isDespedida) {
+
+    if (isSaludo || isDespedida || isTemaEnvio || isCita) {
         productsData = {} as DataPrompt;
     }
     let precioEnvio = "";
