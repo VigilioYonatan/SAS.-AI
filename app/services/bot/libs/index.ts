@@ -289,6 +289,8 @@ export async function promptReplace(
                 message,
                 data.products.map((prod) => prod.name)
             );
+            console.log({ palabrasEncontradas2 });
+
             if (palabrasEncontradas2.length) {
                 productsData = {
                     ...data,
@@ -368,12 +370,7 @@ export async function promptReplace(
     ]);
 
     if (isSaludo || isTemaEnvio || isCita || isDespedida) {
-        productsData = {
-            brands: [],
-            categorias: [],
-            products: [],
-            servicios: [],
-        };
+        productsData = {} as DataPrompt;
     }
 
     let precioEnvio = "";
