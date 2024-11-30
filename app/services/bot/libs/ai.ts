@@ -281,7 +281,6 @@ export async function updateTokensEmpresa(
     },
     completion: ChatCompletion
 ) {
-    console.log({ completion });
 
     // actualizamos uso de tokens
     const empresaUpdate = {

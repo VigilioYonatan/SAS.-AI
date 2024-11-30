@@ -94,6 +94,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
             ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
             ["assistant", removeNote],
         ];
+        console.log({ removeNote });
 
         return removeNote;
     } catch (error) {

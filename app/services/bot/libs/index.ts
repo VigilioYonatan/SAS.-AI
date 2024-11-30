@@ -246,8 +246,6 @@ export async function promptReplace(
     message: string,
     empresa: Empresas
 ) {
-    console.log({ message });
-
     let data: DataPrompt = JSON.parse(
         cache.get(`db-${empresa.slug}`) ?? "null"
     );
@@ -327,14 +325,16 @@ export async function promptReplace(
                         order.total,
                         empresa.money.money as Money
                     )}\n*vendedor*:${
-                        order.user ? (order.user as Users)?.username : "-"
+                        order.seller ? (order.seller as Users)?.username : "-"
                     }\n*Metodo de Pago*:${
                         order.pay_method_id
                             ? (order.pay_method as PayMethods).name
                             : null
                     }\n*Direccion*:${order.address}, estado: *${
                         (order.status_order as StatusOrders).name
-                    }*\n*Descripcion*:${order.description}\n`;
+                    }*\n*Descripcion*:${
+                        order.description || "sin descripción"
+                    }\n`;
                 })
             );
             ordenes += `${orden.join(".")}\n`;
