@@ -136,7 +136,7 @@ const ordersColumns: Columns<OrdersSchemaFromServer, "actions"> = [
                             </>
                         )}
                     </span>
-                    {props.pasarela_comision || props.paypal_token ? (
+                    {props.is_pasarela_client ? (
                         <span class="text-[10px] absolute left-2  -top-6 text-white bg-black px-1 py-0.5 rounded-md">
                             pasarela comisión
                         </span>

@@ -111,7 +111,7 @@ export class PaypalService {
             } as OrdersStoreDto,
             req,
             "paypal",
-            to === "EUR" ? 1 : value
+            to === "EUR" ? 1 : value,
         );
 
         return { success: true, result };
