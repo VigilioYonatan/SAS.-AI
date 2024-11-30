@@ -187,6 +187,8 @@ export class EmpresasApiService {
             credentials: { ...data.credentials, open_ai: paymentDto.token },
         });
         deleteHostCache();
+        cache.delete(`EMPRESA:${data.slug}`);
+        cache.delete(`EMPRESA:${slug}`);
         return {
             success: true,
             data,
