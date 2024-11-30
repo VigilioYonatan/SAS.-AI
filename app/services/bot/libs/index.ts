@@ -524,7 +524,7 @@ export async function promptReplace(
     };
     const promt = await prompt(properties, empresa, productsData);
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
-        productsData.products.length ||
+        productsData?.products?.length ||
         !isQuestion ||
         isCita ||
         isTemaEnvio ||
