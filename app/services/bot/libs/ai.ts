@@ -628,7 +628,7 @@ export async function executeCronDate(date: Date, cb: () => void) {
 cron.schedule("0 0 * * *", () => {
     chatsTelegram = {};
 });
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 * * * *", async () => {
     const iaTokens: {
         input_tokens: number;
         output_tokens: number;
