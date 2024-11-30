@@ -34,23 +34,23 @@ export class PaymentApiController {
     @Get("/success")
     async success(
         @Req("empresa") empresa: Empresas,
-        @Query() query: { payment_id: string },
+        @Query() query: { preference_id: string },
         @Res() res: Response
     ) {
-        const { payment_id } = query;
+        const { preference_id } = query;
 
-        if (!payment_id) return res.redirect("/");
+        if (!preference_id) return res.redirect("/");
         try {
             const result = await this.paymentApiService.success(
                 empresa,
-                payment_id
+                preference_id
             );
             return res.render("web/payment/mercado_pago/success", result);
         } catch (error) {
-            console.log((error as Error).message);
-
             return res.redirect(
-                `/payment/mercado_pago/failed?message=${(error as Error).message}`
+                `/payment/mercado_pago/failed?message=${
+                    (error as Error).message
+                }`
             );
         }
     }
@@ -68,10 +68,8 @@ export class PaymentApiController {
     async cancel(
         @Req("empresa") empresa: Empresas,
         @Res() res: Response,
-        @Query() query: { payment_id: string }
+        @Query() query: { preference_id: string }
     ) {
-        console.log({ query });
-
         return res.render("web/payment/mercado_pago/cancel", {
             empresa,
             title: "Este pago ha sido cancelado.",
@@ -83,13 +81,12 @@ export class PaymentApiController {
     async failed(
         @Req() req: RequestVigilio,
         @Res() res: Response,
-        @Query() query: { payment_id: string }
+        @Query() query: { preference_id: string }
     ) {
-        const { payment_id, ...rest } = query;
-        console.log({ rest });
+        const { preference_id, ...rest } = query;
 
-        if (!payment_id) throw new BadRequestException("unauthorized");
-        const result = await this.paymentApiService.failed(req, payment_id);
+        if (!preference_id) throw new BadRequestException("unauthorized");
+        const result = await this.paymentApiService.failed(req, preference_id);
 
         return res.render("web/payment/mercado_pago/failed", {
             title: "Pago no realizado correctamente",

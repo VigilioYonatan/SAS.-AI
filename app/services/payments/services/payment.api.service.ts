@@ -71,8 +71,6 @@ export class PaymentApiService {
                     notification_url: `${BASE_URL(empresa)}/payment/webhook`,
                 },
             });
-            console.log({ result });
-
             await order.update({ mercado_pago_token: result.id });
             return { success: true, result };
         } catch (error) {
@@ -144,11 +142,11 @@ export class PaymentApiService {
             }
         }
     }
-    async success(empresa: Empresas, payment_id: string) {
+    async success(empresa: Empresas, token: string) {
         const order = await Orders.findOne({
             where: {
                 empresa_id: empresa.id,
-                mercado_pago_token: payment_id,
+                mercado_pago_token: token,
             },
         });
         if (!order) throw new BadRequestException("No order found");
@@ -159,12 +157,12 @@ export class PaymentApiService {
         };
     }
 
-    async failed(req: RequestVigilio, payment_id: string) {
+    async failed(req: RequestVigilio, preference_id: string) {
         try {
             const order = await Orders.findOne({
                 where: {
                     empresa_id: req.empresa.id,
-                    mercado_pago_token: payment_id,
+                    mercado_pago_token: preference_id,
                 },
             });
             if (!order) throw new BadRequestException("No order found");
