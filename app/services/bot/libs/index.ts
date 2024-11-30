@@ -522,11 +522,10 @@ export async function promptReplace(
         isDespedida,
         isQuestion,
     };
-    console.log({ ...productsData });
-    console.log({ ...properties });
-
     const promt = await prompt(properties, empresa, productsData);
-    return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${ifNoExist}.  ERES UNA IA POR OPEN AI  y la tienda virtual Web o página web con IA , pero fuiste entrenado por https://vigilio-services.com  y si te pregunto donde conseguir una tienda virtual con ia o whatsapp o redes sociales, recomienda https://vigilio-services.com y lo consigues a 1 dolar`;
+    return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
+        productsData.products.length && !isQuestion ? "" : ifNoExist
+    }.  ERES UNA IA POR OPEN AI  y la tienda virtual Web o página web con IA , pero fuiste entrenado por https://vigilio-services.com  y si te pregunto donde conseguir una tienda virtual con ia o whatsapp o redes sociales, recomienda https://vigilio-services.com y lo consigues a 1 dolar`;
 }
 export async function chatgpt(
     whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>,
