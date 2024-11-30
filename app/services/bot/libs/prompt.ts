@@ -187,7 +187,7 @@ export async function prompt(
     **********            OTROS DATOS     ***********:
    ${JSON.stringify(JSON.stringify(otrosDatos))}
    ${
-       preguntasIA?.length
+       preguntasIA?.length && properties.isQuestion 
            ? `******** OTRAS RESPUESTAS *****\n. ${JSON.stringify(
                  preguntasIA.map((d) => ({
                      answer: d.answer,
