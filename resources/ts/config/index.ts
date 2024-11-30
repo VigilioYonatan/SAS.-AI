@@ -6,7 +6,6 @@ const enviroments = {
 	VITE_VIGILIO_WEB: import.meta.env.VITE_VIGILIO_WEB,
 	VITE_VIGILIO_TOKEN: import.meta.env.VITE_VIGILIO_TOKEN,
 	VITE_VIGILIO_SUNAT: import.meta.env.VITE_VIGILIO_SUNAT,
-	VITE_SUNAT_TOKEN: import.meta.env.VITE_SUNAT_TOKEN,
 	VITE_IGV: import.meta.env.VITE_IGV,
 	VITE_DIASFACTURASBOLETA: import.meta.env.VITE_DIASFACTURASBOLETA,
 	VITE_PASARELA_COMISION: storageEmpresa!.mercado_pago_comision.comision,

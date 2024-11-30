@@ -45,7 +45,6 @@ function QuestionsIndex() {
         );
     }
     if (questionsPaginator.isSuccess) {
-        const questionsDestroyMutate = questionsDestroyApi();
         component = (
             <>
                 <div class="flex justify-between w-full items-center">
@@ -89,97 +88,113 @@ function QuestionsIndex() {
                 </div>
                 <div class="flex flex-col gap-4 my-6">
                     {questionsPaginator.data?.results.length ? (
-                        questionsPaginator.data?.results.map((question) => (
-                            <Fragment key={question.id}>
-                                <div class="flex justify-between gap-2">
-                                    <div class="flex flex-col">
-                                        <span class="line-clamp-2 font-semibold">
-                                            {question.question}
-                                        </span>
-                                        <p
-                                            class={`line-clamp-2 ${
-                                                !question.answer
-                                                    ? "text-danger"
-                                                    : ""
-                                            }`}
-                                        >
-                                            {question.answer ||
-                                                "no hay respuesta"}
-                                        </p>
-                                    </div>
-                                    <div class="flex flex-col gap-2">
-                                        <button
-                                            class="px-2 py-1 rounded-md bg-orange-600"
-                                            onClick={() => {
-                                                sweetModal((onClose) => ({
-                                                    html: reactComponent(
-                                                        <QuestionsUpdate
-                                                            refetch={
-                                                                questionsPaginator.refetch
+                        questionsPaginator.data?.results.map((question) => {
+                            const questionsDestroyMutate =
+                                questionsDestroyApi();
+                            return (
+                                <Fragment key={question.id}>
+                                    <div class="flex justify-between gap-2">
+                                        <div class="flex flex-col">
+                                            <span class="line-clamp-2 font-semibold">
+                                                {question.question}
+                                            </span>
+                                            <p
+                                                class={`line-clamp-2 ${
+                                                    !question.answer
+                                                        ? "text-danger"
+                                                        : ""
+                                                }`}
+                                            >
+                                                {question.answer ||
+                                                    "no hay respuesta"}
+                                            </p>
+                                        </div>
+                                        <div class="flex flex-col gap-2">
+                                            <button
+                                                class="px-2 py-1 rounded-md bg-orange-600"
+                                                onClick={() => {
+                                                    sweetModal((onClose) => ({
+                                                        html: reactComponent(
+                                                            <QuestionsUpdate
+                                                                refetch={
+                                                                    questionsPaginator.refetch
+                                                                }
+                                                                onClose={
+                                                                    onClose
+                                                                }
+                                                                question={
+                                                                    question
+                                                                }
+                                                            />
+                                                        ),
+                                                        showCancelButton: true,
+                                                        showCloseButton: true,
+                                                        isCloseInBackground:
+                                                            false,
+                                                    }));
+                                                }}
+                                                type="button"
+                                            >
+                                                <i class="fas fa-pen" />
+                                            </button>
+                                            <button
+                                                class="px-2 py-1 rounded-md bg-danger"
+                                                onClick={() => {
+                                                    sweetModal({
+                                                        title: "¿Estas seguro de editar esta pregunta?",
+                                                        showCancelButton: true,
+                                                        showCloseButton: true,
+                                                        isCloseInBackground:
+                                                            false,
+                                                    }).then(
+                                                        ({ isConfirmed }) => {
+                                                            if (isConfirmed) {
+                                                                questionsDestroyMutate.mutate(
+                                                                    question.id,
+                                                                    {
+                                                                        onSuccess() {
+                                                                            sweetAlert(
+                                                                                {
+                                                                                    icon: "success",
+                                                                                    title: "Eliminado correctamente correctamente",
+                                                                                }
+                                                                            );
+                                                                            questionsPaginator.refetch(
+                                                                                false
+                                                                            );
+                                                                        },
+                                                                        onError() {
+                                                                            sweetAlert(
+                                                                                {
+                                                                                    icon: "danger",
+                                                                                    title: "No se eliminó correctamente",
+                                                                                }
+                                                                            );
+                                                                        },
+                                                                    }
+                                                                );
                                                             }
-                                                            onClose={onClose}
-                                                            question={question}
-                                                        />
-                                                    ),
-                                                    showCancelButton: true,
-                                                    showCloseButton: true,
-                                                    isCloseInBackground: false,
-                                                }));
-                                            }}
-                                            type="button"
-                                        >
-                                            <i class="fas fa-pen" />
-                                        </button>
-                                        <button
-                                            class="px-2 py-1 rounded-md bg-danger"
-                                            onClick={() => {
-                                                sweetModal({
-                                                    title: "¿Estas seguro de editar esta pregunta?",
-                                                    showCancelButton: true,
-                                                    showCloseButton: true,
-                                                    isCloseInBackground: false,
-                                                }).then(({ isConfirmed }) => {
-                                                    if (isConfirmed) {
-                                                        questionsDestroyMutate.mutate(
-                                                            question.id,
-                                                            {
-                                                                onSuccess() {
-                                                                    sweetAlert({
-                                                                        icon: "success",
-                                                                        title: "Eliminado correctamente correctamente",
-                                                                    });
-                                                                    questionsPaginator.refetch(
-                                                                        false
-                                                                    );
-                                                                },
-                                                                onError() {
-                                                                    sweetAlert({
-                                                                        icon: "danger",
-                                                                        title: "No se eliminó correctamente",
-                                                                    });
-                                                                },
-                                                            }
-                                                        );
-                                                    }
-                                                });
-                                            }}
-                                            type="button"
-                                            disabled={
-                                                questionsDestroyMutate.isLoading ||
-                                                false
-                                            }
-                                        >
-                                            {questionsDestroyMutate.isLoading ? (
-                                                <LoaderSubmit />
-                                            ) : (
-                                                <i class="fas fa-trash" />
-                                            )}
-                                        </button>
+                                                        }
+                                                    );
+                                                }}
+                                                type="button"
+                                                disabled={
+                                                    questionsDestroyMutate.isLoading ||
+                                                    false
+                                                }
+                                            >
+                                                {questionsDestroyMutate.isLoading ? (
+                                                    <LoaderSubmit />
+                                                ) : (
+                                                    <i class="fas fa-trash" />
+                                                )}
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="w-full h-[1px] bg-gray-400" />
-                            </Fragment>
-                        ))
+                                    <div class="w-full h-[1px] bg-gray-400" />
+                                </Fragment>
+                            );
+                        })
                     ) : (
                         <p class="dark:text-white block text-center">
                             No hay preguntas aún

@@ -81,6 +81,8 @@ export class PaymentApiService {
     }
 
     async webhook(req: RequestVigilio, id: string, type: string) {
+        console.log({ type, id });
+
         if (type === "payment") {
             const empresa = req.empresa;
             const metodosPago = await MetodosPago.findOne({
@@ -104,6 +106,7 @@ export class PaymentApiService {
                     empresa,
                     code
                 );
+                console.log({ status: pago.status });
 
                 if (pago.status === "approved") {
                     await this.ordersApiService.update({

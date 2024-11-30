@@ -20,7 +20,6 @@ export async function prompt(
     empresa: Empresas,
     productsData: DataPrompt
 ) {
-    console.log({ productsData });
 
     let preguntasIA: Questions[] | null = JSON.parse(
         cache.get(`questions-ia:${empresa.slug}`) ?? "null"
@@ -173,7 +172,7 @@ export async function prompt(
             ? JSON.stringify([
                   ...instrucctions,
                   ` RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN,ORDENES, NO TRAIGAS NI CONTESTES ERRONEAMENTE, LA CANTIDAD,ETC..
-    SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR.
+    SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR y DAME BIEN EL PRECIO, NO INVENTES PRECIOS, ETC.
     ACTUALIZA SIEMPRE LO QUE VAS A DECIR SI CAMBIA LA BASE DE DATOS.
     "EN STOCK" significa. cantidad ilimitado.`,
                   "IMPORTANTE: REVISAR LA BASE DE DATOS, ANTES DE RESPONDER, por ejemplo si una persona te pide información de algo, mira la BASE DE DATOS primero.",
