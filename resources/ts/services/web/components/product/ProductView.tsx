@@ -500,7 +500,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                                                                                 feature?.value,
                                                                                         }}
                                                                                     >
-                                                                                        <span class="absolute -bottom-2 left-2 z-10 dark:bg-admin-background-dark shadow dark:text-white bg-white text-[10px] px-2 rounded-md py-1 hidden group-hover:block ">
+                                                                                        <span class="absolute -bottom-2 left-2 z-10 dark:bg-admin-background-dark shadow dark:text-white bg-white text-[10px] !text-black px-2 rounded-md py-1 hidden group-hover:block ">
                                                                                             {
                                                                                                 feature?.description
                                                                                             }
@@ -753,10 +753,22 @@ export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
                     />
                 ) : null}
                 {empresaStore.state?.metodos_pago.qrYape ? (
-                    <img src={yapeImage()} width={30} height={30} alt="yape" title="yape" />
+                    <img
+                        src={yapeImage()}
+                        width={30}
+                        height={30}
+                        alt="yape"
+                        title="yape"
+                    />
                 ) : null}
                 {empresaStore.state?.metodos_pago.qrPlin ? (
-                    <img src={plinImage()} width={30} height={30} alt="plin" title="plin"  />
+                    <img
+                        src={plinImage()}
+                        width={30}
+                        height={30}
+                        alt="plin"
+                        title="plin"
+                    />
                 ) : null}
                 {empresaStore.state?.metodos_pago.paypal.enabled ? (
                     <img

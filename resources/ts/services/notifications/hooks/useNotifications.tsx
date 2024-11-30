@@ -218,7 +218,7 @@ export function useNotifications() {
                                                                 storageEmpresa
                                                                     ?.setting
                                                                     .bg_color_background
-                                                                    ? "bg-gray-200"
+                                                                    ? "bg-gray-200 !text-black"
                                                                     : "bg-paper-light"
                                                             }  `
                                                           : "dark:bg-admin-terciary  bg-paper-light"

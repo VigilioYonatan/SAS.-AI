@@ -39,7 +39,7 @@ function ProductCart({ product }: ProductCartProps) {
 
     return (
         <>
-            <div class="flex gap-2 items-center justify-center h-[120px] w-full">
+            <div class="flex gap-2 items-center justify-center h-[150px] w-full">
                 <img
                     class={`min-w-[150px] max-w-[150px] h-[120px] ${
                         storageEmpresa?.setting.isCoverImage

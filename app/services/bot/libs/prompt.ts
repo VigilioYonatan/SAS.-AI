@@ -20,6 +20,8 @@ export async function prompt(
     empresa: Empresas,
     productsData: DataPrompt
 ) {
+    console.log({ productsData });
+
     let preguntasIA: Questions[] | null = JSON.parse(
         cache.get(`questions-ia:${empresa.slug}`) ?? "null"
     );
@@ -187,7 +189,7 @@ export async function prompt(
     **********            OTROS DATOS     ***********:
    ${JSON.stringify(JSON.stringify(otrosDatos))}
    ${
-       preguntasIA?.length && properties.isQuestion 
+       preguntasIA?.length && properties.isQuestion
            ? `******** OTRAS RESPUESTAS *****\n. ${JSON.stringify(
                  preguntasIA.map((d) => ({
                      answer: d.answer,

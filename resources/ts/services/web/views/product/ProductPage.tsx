@@ -548,7 +548,7 @@ function ProductPage({
                                                                                                         feature?.value,
                                                                                                 }}
                                                                                             >
-                                                                                                <span class="absolute -bottom-2 left-2 z-10 dark:bg-admin-background-dark shadow dark:text-white bg-white text-[10px] px-2 rounded-md py-1 hidden group-hover:block ">
+                                                                                                <span class="absolute -bottom-2 left-2 z-10 dark:bg-admin-background-dark shadow dark:text-white bg-white text-[10px] text-black px-2 rounded-md py-1 hidden group-hover:block ">
                                                                                                     {
                                                                                                         feature?.description
                                                                                                     }
