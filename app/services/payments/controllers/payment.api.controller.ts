@@ -33,10 +33,11 @@ export class PaymentApiController {
 
     @Get("/success")
     async success(
-        @Req("empresa") empresa: Empresas,
+        @Req() req: RequestVigilio,
         @Query() query: { preference_id: string },
         @Res() res: Response
     ) {
+        const empresa = req.empresa;
         const { preference_id } = query;
 
         if (!preference_id) return res.redirect("/");

@@ -15,6 +15,7 @@ import { BASE_URL, DIALCODE } from "@/empresas/libs";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import cache from "@vigilio/express-core/cache";
 import { subtotal } from "@/cart/libs/helpers";
+import { Cart } from "@/cart/entites/cart.entity";
 
 @Injectable()
 export class PaypalService {
@@ -180,7 +181,14 @@ export class PaypalService {
             } as OrdersUpdateDto,
             req,
         });
-
+        if (orderShow.user_id) {
+            await Cart.destroy({
+                where: {
+                    user_id: orderShow.user_id,
+                    empresa_id: empresa.id,
+                },
+            });
+        }
         // aca el pago realizado
         return {
             title: "Pago realizado correctamente.",

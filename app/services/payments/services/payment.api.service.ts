@@ -15,6 +15,7 @@ import { STATUSORDER } from "@/orders/libs";
 import type { OrdersUpdateDto } from "@/orders/dtos/orders.update.dto";
 import type { RequestVigilio } from "~/config/types";
 import { Orders } from "@/orders/entities/orders.entity";
+import { Cart } from "@/cart/entites/cart.entity";
 
 @Injectable()
 export class PaymentApiService {
@@ -125,6 +126,14 @@ export class PaymentApiService {
                         req,
                     });
                     ord = o;
+                    if (o.user_id) {
+                        await Cart.destroy({
+                            where: {
+                                user_id: o.user_id,
+                                empresa_id: empresa.id,
+                            },
+                        });
+                    }
                 }
                 // porseacazo
                 await this.ordersApiService.update({
