@@ -5,7 +5,8 @@
   <%- include('../../components/webHead.ejs') %>
 </head>
 
-<body class="dark:bg-background-dark bg-background-light"><clear-cart-paypal-success :order="<%= JSON.stringify(order) %>"></clear-cart-paypal-success>
+<body class="dark:bg-background-dark bg-background-light">
+  <clear-cart-paypal-success :order="<%= JSON.stringify(order) %>"></clear-cart-paypal-success>
   <div class="bg-white dark:bg-paper-dark p-6 rounded-lg shadow-lg m-2 mt-16 max-w-[500px] mx-auto">
     <i class="fab fa-paypal text-3xl dark:text-white"></i>
     <h2 class="text-2xl font-bold text-primary">EL PAGO SE HA REALIZADO CORRECTAMENTE</h2>
