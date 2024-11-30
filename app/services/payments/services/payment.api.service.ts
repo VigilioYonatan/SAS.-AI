@@ -144,11 +144,11 @@ export class PaymentApiService {
             }
         }
     }
-    async success(empresa: Empresas, token: string) {
+    async success(empresa: Empresas, payment_id: string) {
         const order = await Orders.findOne({
             where: {
                 empresa_id: empresa.id,
-                mercado_pago_token: token,
+                mercado_pago_token: payment_id,
             },
         });
         if (!order) throw new BadRequestException("No order found");
@@ -159,12 +159,12 @@ export class PaymentApiService {
         };
     }
 
-    async failed(req: RequestVigilio, preference_id: string) {
+    async failed(req: RequestVigilio, payment_id: string) {
         try {
             const order = await Orders.findOne({
                 where: {
                     empresa_id: req.empresa.id,
-                    mercado_pago_token: preference_id,
+                    mercado_pago_token: payment_id,
                 },
             });
             if (!order) throw new BadRequestException("No order found");

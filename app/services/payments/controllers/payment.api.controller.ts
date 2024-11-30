@@ -34,17 +34,16 @@ export class PaymentApiController {
     @Get("/success")
     async success(
         @Req("empresa") empresa: Empresas,
-        @Query() query: { preference_id: string },
+        @Query() query: { payment_id: string },
         @Res() res: Response
     ) {
-        const { preference_id, ...rest } = query;
-        console.log({ rest });
+        const { payment_id } = query;
 
-        if (!preference_id) return res.redirect("/");
+        if (!payment_id) return res.redirect("/");
         try {
             const result = await this.paymentApiService.success(
                 empresa,
-                preference_id
+                payment_id
             );
             return res.render("web/payment/paypal/success", result);
         } catch (error) {
@@ -76,10 +75,10 @@ export class PaymentApiController {
     async failed(
         @Req() req: RequestVigilio,
         @Res() res: Response,
-        @Query("preference_id") preference_id: string
+        @Query("payment_id") payment_id: string
     ) {
-        if (!preference_id) throw new BadRequestException("unauthorized");
-        const result = await this.paymentApiService.failed(req, preference_id);
+        if (!payment_id) throw new BadRequestException("unauthorized");
+        const result = await this.paymentApiService.failed(req, payment_id);
 
         return res.render("web/payment/mercado_pago/failed", {
             title: "Pago no realizado correctamente",
