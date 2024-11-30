@@ -307,7 +307,7 @@ export async function updateTokensEmpresa(
         "IA_TOKENS",
         JSON.stringify({ ...empresaUpdate, slug: empresa.slug })
     );
-    await Empresas.update(empresaUpdate, { where: { slug: empresa.slug } });
+    // await Empresas.update(empresaUpdate, { where: { slug: empresa.slug } });
     cache.set(
         `EMPRESA:${empresa.id}`,
         JSON.stringify({ ...empresa, ...empresaUpdate })
