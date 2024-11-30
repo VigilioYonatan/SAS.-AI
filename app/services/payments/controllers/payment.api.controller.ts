@@ -34,9 +34,12 @@ export class PaymentApiController {
     @Get("/success")
     async success(
         @Req("empresa") empresa: Empresas,
-        @Query("token") token: string,
+        @Query() query: { token: string },
         @Res() res: Response
     ) {
+        const { token, ...rest } = query;
+        console.log({ rest });
+
         if (!token) return res.redirect("/");
         try {
             const result = await this.paymentApiService.success(empresa, token);

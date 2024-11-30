@@ -106,10 +106,10 @@ export class PaymentApiService {
                     empresa,
                     code
                 );
-                console.log(pago.status);
+                let ord = order;
 
                 if (pago.status === "approved") {
-                    await this.ordersApiService.update({
+                    const { order: o } = await this.ordersApiService.update({
                         order_code: order.order_code,
                         ordersUpdateDto: {
                             ...order.toJSON(),
@@ -126,12 +126,13 @@ export class PaymentApiService {
                         } as OrdersUpdateDto,
                         req,
                     });
+                    ord = o;
                 }
                 // porseacazo
                 await this.ordersApiService.update({
                     order_code: order.order_code,
                     ordersUpdateDto: {
-                        ...order.toJSON(),
+                        ...ord.toJSON(),
                         paypal_response: pago,
                     } as OrdersUpdateDto,
                     req,
