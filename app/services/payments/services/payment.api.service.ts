@@ -43,12 +43,11 @@ export class PaymentApiService {
         const typePasarela = "mercado_pago";
         try {
             const { order } = await this.ordersApiService.store(
-                {
-                    ...orderStore,
-                    pasarela_comision: empresa.enabledClientPayComision, //obligatorio
-                } as OrdersStoreDto,
+                orderStore,
                 req,
-                typePasarela
+                typePasarela,
+                1,
+                { pasarela_comision: empresa.enabledClientPayComision }
             );
 
             const total = empresa.enabledClientPayComision

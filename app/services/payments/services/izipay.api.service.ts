@@ -45,7 +45,7 @@ export class IzipayApiService {
                 "izipay",
                 1,
                 {
-                    pasarela_comision: true,
+                    pasarela_comision:  empresa.enabledClientPayComision,
                 }
             );
             const amount = empresa.enabledClientPayComision
