@@ -179,7 +179,10 @@ export class PaymentApiService {
                 } as OrdersUpdateDto,
                 req,
             });
-            return { order: order.order_code, description };
+            return {
+                order: order.order_code,
+                description,
+            };
         } catch (error) {
             throw new InternalServerErrorException("Error ");
         }

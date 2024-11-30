@@ -11,7 +11,7 @@
   <div class="bg-white dark:bg-paper-dark p-6 rounded-lg shadow-lg m-2 mt-16 max-w-[500px] mx-auto">
     <i class="fab fa-paypal text-3xl dark:text-white"></i>
     <h2 class="text-2xl font-bold text-primary">EL PAGO SE HA REALIZADO CORRECTAMENTE</h2>
-    <p class="mt-4 dark:text-white text-terciary-light">Tu pago ha sido procesado exitosamente. Gracias por tu compra. N° de orden: <b><%= order_code  %></b> </p>
+    <p class="mt-4 dark:text-white text-terciary-light">Tu pago ha sido procesado exitosamente. Gracias por tu compra. N° de orden: <b><%= order.order_code  %></b> </p>
     <div class="flex gap-2">
       <a href="<%= `/pedidos?code=${order.order_code}`  %>" class="underline mt-4 block dark:text-white">Ver pedido</a>
       <a href="/" class="underline mt-4 block dark:text-white">Ir a inicio</a>

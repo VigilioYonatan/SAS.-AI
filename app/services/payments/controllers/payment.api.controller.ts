@@ -48,9 +48,7 @@ export class PaymentApiController {
             return res.render("web/payment/mercado_pago/success", result);
         } catch (error) {
             return res.redirect(
-                `/payment/mercado_pago/failed?message=${
-                    (error as Error).message
-                }`
+                `/payment/failure?message=${(error as Error).message}`
             );
         }
     }
@@ -79,7 +77,7 @@ export class PaymentApiController {
         @Res() res: Response,
         @Query() query: { preference_id: string }
     ) {
-        const { preference_id, ...rest } = query;
+        const { preference_id } = query;
 
         if (!preference_id) throw new BadRequestException("unauthorized");
         const result = await this.paymentApiService.failed(req, preference_id);
