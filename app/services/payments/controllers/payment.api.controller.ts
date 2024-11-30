@@ -47,8 +47,10 @@ export class PaymentApiController {
             );
             return res.render("web/payment/paypal/success", result);
         } catch (error) {
+            console.log((error as Error).message);
+
             return res.redirect(
-                `/paypal/failed?message=${(error as Error).message}`
+                `/payment/paypal/failed?message=${(error as Error).message}`
             );
         }
     }
@@ -63,7 +65,13 @@ export class PaymentApiController {
     }
 
     @Get("/cancel")
-    async cancel(@Req("empresa") empresa: Empresas, @Res() res: Response) {
+    async cancel(
+        @Req("empresa") empresa: Empresas,
+        @Res() res: Response,
+        @Query() query: { payment_id: string }
+    ) {
+        console.log({ query });
+
         return res.render("web/payment/mercado_pago/cancel", {
             empresa,
             title: "Este pago ha sido cancelado.",
@@ -75,8 +83,11 @@ export class PaymentApiController {
     async failed(
         @Req() req: RequestVigilio,
         @Res() res: Response,
-        @Query("payment_id") payment_id: string
+        @Query() query: { payment_id: string }
     ) {
+        const { payment_id, ...rest } = query;
+        console.log({ rest });
+
         if (!payment_id) throw new BadRequestException("unauthorized");
         const result = await this.paymentApiService.failed(req, payment_id);
 
