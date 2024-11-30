@@ -637,9 +637,7 @@ cron.schedule("* * * * *", async () => {
     } = JSON.parse(cache.get("IA_TOKENS") ?? "null");
     if (iaTokens) {
         const { slug, ...rest } = iaTokens;
-        console.log("aca");
-        console.log({ ...rest });
-
         await Empresas.update(rest, { where: { slug } });
+        cache.delete("IA_TOKENS");
     }
 });
