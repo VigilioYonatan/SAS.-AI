@@ -34,15 +34,18 @@ export class PaymentApiController {
     @Get("/success")
     async success(
         @Req("empresa") empresa: Empresas,
-        @Query() query: { token: string },
+        @Query() query: { preference_id: string },
         @Res() res: Response
     ) {
-        const { token, ...rest } = query;
+        const { preference_id, ...rest } = query;
         console.log({ rest });
 
-        if (!token) return res.redirect("/");
+        if (!preference_id) return res.redirect("/");
         try {
-            const result = await this.paymentApiService.success(empresa, token);
+            const result = await this.paymentApiService.success(
+                empresa,
+                preference_id
+            );
             return res.render("web/payment/paypal/success", result);
         } catch (error) {
             return res.redirect(

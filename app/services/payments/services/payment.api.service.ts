@@ -71,6 +71,8 @@ export class PaymentApiService {
                     notification_url: `${BASE_URL(empresa)}/payment/webhook`,
                 },
             });
+            console.log({ result });
+
             await order.update({ mercado_pago_token: result.id });
             return { success: true, result };
         } catch (error) {
@@ -81,8 +83,6 @@ export class PaymentApiService {
     }
 
     async webhook(req: RequestVigilio, id: string, type: string) {
-        console.log({ type, id });
-
         if (type === "payment") {
             const empresa = req.empresa;
             const metodosPago = await MetodosPago.findOne({
