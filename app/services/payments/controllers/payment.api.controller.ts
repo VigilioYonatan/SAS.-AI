@@ -45,12 +45,12 @@ export class PaymentApiController {
                 empresa,
                 payment_id
             );
-            return res.render("web/payment/paypal/success", result);
+            return res.render("web/payment/mercado_pago/success", result);
         } catch (error) {
             console.log((error as Error).message);
 
             return res.redirect(
-                `/payment/paypal/failed?message=${(error as Error).message}`
+                `/payment/mercado_pago/failed?message=${(error as Error).message}`
             );
         }
     }
