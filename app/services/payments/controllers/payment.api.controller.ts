@@ -65,11 +65,7 @@ export class PaymentApiController {
     }
 
     @Get("/cancel")
-    async cancel(
-        @Req("empresa") empresa: Empresas,
-        @Res() res: Response,
-        @Query() query: { preference_id: string }
-    ) {
+    async cancel(@Req("empresa") empresa: Empresas, @Res() res: Response) {
         return res.render("web/payment/mercado_pago/cancel", {
             empresa,
             title: "Este pago ha sido cancelado.",
