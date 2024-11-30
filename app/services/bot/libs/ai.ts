@@ -281,8 +281,6 @@ export async function updateTokensEmpresa(
     },
     completion: ChatCompletion
 ) {
-
-    // actualizamos uso de tokens
     const empresaUpdate = {
         inteligenceArtificial: {
             ...empresa.inteligenceArtificial,
@@ -305,6 +303,10 @@ export async function updateTokensEmpresa(
             },
         },
     };
+    cache.set(
+        "IA_TOKENS",
+        JSON.stringify({ ...empresaUpdate, slug: empresa.slug })
+    );
     await Empresas.update(empresaUpdate, { where: { slug: empresa.slug } });
     cache.set(
         `EMPRESA:${empresa.id}`,
@@ -625,4 +627,19 @@ export async function executeCronDate(date: Date, cb: () => void) {
 }
 cron.schedule("0 0 * * *", () => {
     chatsTelegram = {};
+});
+cron.schedule("* * * * *", async () => {
+    const iaTokens: {
+        input_tokens: number;
+        output_tokens: number;
+        tokens: number;
+        slug: string;
+    } = JSON.parse(cache.get("IA_TOKENS") ?? "null");
+    if (iaTokens) {
+        const { slug, ...rest } = iaTokens;
+        console.log("aca");
+        console.log({ ...rest });
+
+        await Empresas.update(rest, { where: { slug } });
+    }
 });

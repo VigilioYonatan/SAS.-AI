@@ -320,21 +320,19 @@ export async function promptReplace(
                     if (!order)
                         return `${code.toUpperCase()} - no se encontró.\n`;
 
-                    return `*Codigo: ${code.toUpperCase()}*\n*Total*:  ${formatMoney(
+                    return `*Codigo: ${code.toUpperCase()}\nTotal:  ${formatMoney(
                         empresa,
                         order.total,
                         empresa.money.money as Money
-                    )}\n*vendedor*:${
+                    )}\nvendedor:${
                         order.seller ? (order.seller as Users)?.username : "-"
-                    }\n*Metodo de Pago*:${
+                    }\nMetodo de Pago:${
                         order.pay_method_id
                             ? (order.pay_method as PayMethods).name
                             : null
-                    }\n*Direccion*:${order.address}, estado: *${
+                    }\nDireccion:${order.address}, estado: ${
                         (order.status_order as StatusOrders).name
-                    }*\n*Descripcion*:${
-                        order.description || "sin descripción"
-                    }\n`;
+                    }\nDescripcion:${order.description || "sin descripción"}\n`;
                 })
             );
             ordenes += `${orden.join(".")}\n`;
