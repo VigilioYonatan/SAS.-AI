@@ -505,7 +505,7 @@ export class OrdersApiService {
                     empresa,
                     {
                         telephone: ordersStoreDto.telephone,
-                        enabled: true,
+                        enabled: false,
                         username: userName,
                         name: ordersStoreDto.fullName!,
                         address: ordersStoreDto.address || null,
@@ -526,6 +526,7 @@ export class OrdersApiService {
                         speciality: null,
                     } as UsersStoreDto
                 );
+                user = usuario;
                 await usuario.update({ token });
                 try {
                     await whatsappSendMessageApi(empresa, {

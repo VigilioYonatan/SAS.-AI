@@ -106,7 +106,7 @@ export class PaymentApiService {
                     empresa,
                     code
                 );
-                console.log({ status: pago.status });
+                console.log(pago.status);
 
                 if (pago.status === "approved") {
                     await this.ordersApiService.update({
@@ -154,7 +154,7 @@ export class PaymentApiService {
         return {
             title: `${order.order_code} Se realizo el pago correctamente`,
             description: "Se realizo el pago correctamente",
-            order: order.order_code,
+            order,
         };
     }
 
