@@ -103,12 +103,12 @@ export function useNotifications() {
                     html: reactComponent(
                         <div
                             onClick={() => redirect(notification)}
-                            class="flex flex-col py-1"
+                            class="flex flex-col py-1 bg-background-light dark:bg-background-dark shadow"
                         >
                             <div class="flex gap-2 justify-between">
                                 <picture class="relative h-[40px] mr-2">
                                     <img
-                                        class="w-[30px] h-[30px] rounded-full mx-2"
+                                        class="min-w-[30px] min-h-[30px] max-w-[30px] max-h-[30px] rounded-full mx-2"
                                         src={
                                             notification.user_id
                                                 ? printFileUser(
@@ -122,7 +122,7 @@ export function useNotifications() {
                                         alt=""
                                     />
                                     <div
-                                        class={`absolute bottom-0 right-0 [&>i]:text-xs rounded-full w-[20px] h-[20px] flex justify-center items-center text-white ${colorByNotificationType(
+                                        class={`absolute bottom-0 right-0 [&>i]:text-xs rounded-full min-w-[20px] min-h-[20px] max-w-[20px] max-h-[20px] flex justify-center items-center dark:text-white ${colorByNotificationType(
                                             notification.type as NotifcationType
                                         )} `}
                                         dangerouslySetInnerHTML={{
@@ -135,12 +135,12 @@ export function useNotifications() {
 
                                 <div class="flex flex-col text-start dark:text-secondary-light">
                                     <div
-                                        class="text-xs"
+                                        class="text-xs dark:text-white"
                                         dangerouslySetInnerHTML={{
                                             __html: notification.content,
                                         }}
                                     />
-                                    <span class="text-xs font-semibold text-gray-400">
+                                    <span class="text-xs font-semibold text-gray-400 ">
                                         {showTime(notification.createdAt!)}
                                     </span>
                                 </div>

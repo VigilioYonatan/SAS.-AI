@@ -188,7 +188,7 @@ export class EmpresasApiService {
         });
         deleteHostCache();
         cache.delete(`EMPRESA:${data.slug}`);
-        cache.delete(`EMPRESA:${slug}`);
+        cache.delete(`EMPRESA:${slug}`); 
         return {
             success: true,
             data,

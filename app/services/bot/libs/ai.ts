@@ -154,6 +154,8 @@ export async function isRedesIA(empresa: string) {
         emp.payments.redes.date!,
         "day"
     );
+    console.log({ tokens: emp.payments.tokens.tokens });
+
     // si se vencio la fecha y no hay tokens
     if (isDateNow < 1 || emp.payments.tokens.tokens < 1) return null;
     return {

@@ -12,6 +12,10 @@ import {
 } from "@/payments/apis/izipay.payment.api";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { OrdersCartStoreDto } from "@/orders/dtos/orders-cart.dto";
+import useAuthStore from "@/auth/stores/auth.store";
+import useCartStore from "../stores/cart.store";
+import { productOBJ } from "@/products/libs/helpers";
+import { cartDestroyApi } from "../apis/cart.destroy.api";
 
 interface IzipayFormProps {
     order: OrdersCartStoreDto;
@@ -28,6 +32,9 @@ const IzipayForm = ({
     const izipayPaymentMutation = izipayPaymentApi();
     const izipayPaymentValidateMutation = izipayPaymentValidateApi();
     const { io } = useSocketStore();
+    const authStore = useAuthStore();
+    const cartStore = useCartStore();
+    const cartDestroyMutation = cartDestroyApi();
 
     useEffect(() => {
         payment();
@@ -70,7 +77,7 @@ const IzipayForm = ({
 
     function validatePayment(body: KRPaymentResponse) {
         izipayPaymentValidateMutation.mutate(body, {
-            onSuccess(data) {
+            async onSuccess(data) {
                 const buttonClose = document.querySelector(
                     "#form-niubiz  .fi-x-circle"
                 ) as HTMLButtonElement;
@@ -82,6 +89,19 @@ const IzipayForm = ({
                     order_code: data.order.order_code,
                     user_id: data.order.user_id ?? null,
                 });
+                if (authStore.state) {
+                    await Promise.all(
+                        cartStore.state.cart!.map(
+                            async (cart) =>
+                                await cartDestroyMutation.mutateAsync({
+                                    ...productOBJ(cart.id),
+                                    variant_id: cart.variant
+                                        ? cart.variant.id
+                                        : null,
+                                })
+                        )
+                    );
+                }
                 sweetModal({
                     icon: "success",
                     html: `<div class="p-3"><div class="flex items-center justify-center mb-2">
