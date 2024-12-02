@@ -19,6 +19,7 @@ function GridBanners({ grid, i }: GridBanners) {
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             <div class={`w-full  grid banner-${i} relative`}>
                 {gr.banners.map((banner) => {
+                    if (!banner.enabled) return null;
                     let file = null;
                     // let script = null;
                     const [selectedSize, divRef] = useImageWithDimension([
@@ -169,6 +170,7 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             <div class={`w-full  grid banner-${i} relative`}>
                 {gr.banners.map((banner) => {
+                    if (!banner.enabled) return null;
                     let file = null;
                     // let script = null;
                     const [selectedSize, divRef] = useImageWithDimension([
