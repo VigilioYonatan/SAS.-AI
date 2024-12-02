@@ -1,43 +1,47 @@
 import {
-	Table,
-	Model,
-	Column,
-	DataType,
-	ForeignKey,
-	BelongsTo,
-	HasMany,
+    Table,
+    Model,
+    Column,
+    DataType,
+    ForeignKey,
+    BelongsTo,
+    HasMany,
 } from "sequelize-typescript";
 import { Empresas } from "./empresas.entity";
 import type { GridBannerSchema } from "../schemas/grid_banner.schema";
 import { Banner } from "./banner.entity";
+import { GridBannerService } from "./grid_banner_service.entity";
 
 @Table
 export class GridBanner extends Model implements Omit<GridBannerSchema, "id"> {
-	@Column({ type: DataType.JSON })
-	responsive: {
-		width: number;
-		cols: number;
-		rows: number;
-		height: number;
-		gap: number;
-	}[];
+    @Column({ type: DataType.JSON })
+    responsive: {
+        width: number;
+        cols: number;
+        rows: number;
+        height: number;
+        gap: number;
+    }[];
 
-	@Column({ type: DataType.STRING(60) })
-	title: string;
+    @Column({ type: DataType.STRING(60) })
+    title: string;
 
-	@Column({ type: DataType.BOOLEAN })
-	enabled: boolean;
+    @Column({ type: DataType.BOOLEAN })
+    enabled: boolean;
 
-	@HasMany(() => Banner)
-	banners: unknown[];
+    @HasMany(() => Banner)
+    banners: unknown[];
 
-	@ForeignKey(() => Empresas)
-	@Column({
-		type: DataType.INTEGER,
-		allowNull: false,
-	})
-	empresa_id: number;
+    @HasMany(() => GridBannerService)
+    grid_banner_services: unknown[];
 
-	@BelongsTo(() => Empresas)
-	empresa: unknown;
+    @ForeignKey(() => Empresas)
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: false,
+    })
+    empresa_id: number;
+
+    @BelongsTo(() => Empresas)
+    empresa: unknown;
 }

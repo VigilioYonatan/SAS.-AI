@@ -8,7 +8,9 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Alpine from "alpinejs";
 
+Alpine.start();
 AOS.init({
     duration: 1200, // Duración de la animación
     once: false, // Si quieres que la animación ocurra solo una vez
@@ -106,6 +108,10 @@ render(
 render(
     "TerminosPage",
     lazy(() => import("@/web/views/politica/TerminosPage"))
+);
+render(
+    "ServiciosPage",
+    lazy(() => import("@/web/views/servicios/ServiciosPage"))
 );
 
 render(

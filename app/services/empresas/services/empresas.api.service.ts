@@ -53,6 +53,7 @@ import { Banner } from "../entities/banner.entity";
 import { Users } from "@/users/entities/users.entity";
 import { usersSeeder } from "@/users/seeders/users.seeder";
 import { FileSchema } from "../entities/file.entity";
+import { GridBannerService } from "../entities/grid_banner_service.entity";
 
 export function deleteHostCache() {
     for (const host of hosts) {
@@ -118,15 +119,40 @@ export class EmpresasApiService {
             },
             include: [Banner],
         });
+        const gridBannersServices = await GridBannerService.findAll({
+            where: {
+                empresa_id: empresa.id,
+            },
+            include: [Banner],
+        });
         const grid = gridBanners.map((banner) => {
             const bannersMapped = (banner.banners as Banner[]).map((b) => ({
                 ...b.toJSON(),
-                file: b.file.map((f) => ({
-                    ...f,
-                    file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
-                        f.file
-                    }`,
-                })),
+                file: b.file
+                    ? b.file.map((f) => ({
+                          ...f,
+                          file: `${BASE_URL(empresa)}/empresas/${
+                              empresa.slug
+                          }/${f.file}`,
+                      }))
+                    : null,
+            }));
+            return {
+                ...banner.toJSON(),
+                banners: bannersMapped,
+            };
+        });
+        const gridService = gridBannersServices.map((banner) => {
+            const bannersMapped = (banner.banners as Banner[]).map((b) => ({
+                ...b.toJSON(),
+                file: b.file
+                    ? b.file.map((f) => ({
+                          ...f,
+                          file: `${BASE_URL(empresa)}/empresas/${
+                              empresa.slug
+                          }/${f.file}`,
+                      }))
+                    : null,
             }));
             return {
                 ...banner.toJSON(),
@@ -157,6 +183,7 @@ export class EmpresasApiService {
                 setting,
                 gridBanners: grid,
                 files,
+                gridBannersService: gridService,
             },
         };
     }
@@ -188,7 +215,7 @@ export class EmpresasApiService {
         });
         deleteHostCache();
         cache.delete(`EMPRESA:${data.slug}`);
-        cache.delete(`EMPRESA:${slug}`); 
+        cache.delete(`EMPRESA:${slug}`);
         return {
             success: true,
             data,
@@ -425,8 +452,9 @@ export class EmpresasApiService {
                     ],
                 }),
             ]);
+            let gridBannersMap = null;
             if (body.gridBanners?.length) {
-                await Promise.all(
+                gridBannersMap = await Promise.all(
                     body.gridBanners.map(async (grid) => {
                         const { banners, id, ...rest } = grid;
                         const g = await GridBanner.create({
@@ -442,6 +470,10 @@ export class EmpresasApiService {
                                 });
                             })
                         );
+                        return {
+                            ...g.toJSON(),
+                            id_test: id,
+                        };
                     })
                 );
             } else {
@@ -463,6 +495,63 @@ export class EmpresasApiService {
                     },
                     {
                         responsive: gridEmpresa(bannersQualities),
+                        enabled: true,
+                        empresa_id: empresa.id,
+                    },
+                ]);
+            }
+
+            if (body.gridBannerServices?.length && gridBannersMap) {
+                await Promise.all(
+                    body.gridBannerServices.map(async (grid) => {
+                        const { banners, id, grid_banner_id, ...rest } = grid;
+
+                        const findBannerTest = gridBannersMap.find(
+                            (grid) => grid.id_test === grid_banner_id
+                        );
+
+                        const gridBanner = findBannerTest
+                            ? await GridBanner.findByPk(findBannerTest.id)
+                            : null;
+                        const g = await GridBannerService.create({
+                            ...rest,
+                            empresa_id: empresa.id,
+                            grid_banner_id: gridBanner ? gridBanner.id : null,
+                        });
+                        await Promise.all(
+                            banners.map(async (banner) => {
+                                const { id, ...rest } = banner;
+                                await g.$create("banner", {
+                                    ...rest,
+                                    empresa_id: empresa.id,
+                                });
+                            })
+                        );
+                    })
+                );
+            } else {
+                await GridBannerService.bulkCreate([
+                    {
+                        responsive: gridEmpresa(bannersQualities),
+                        enabled: true,
+                        empresa_id: empresa.id,
+                        grid_banner_id: null,
+                    },
+                    {
+                        responsive: gridEmpresa(bannersQualities),
+                        enabled: true,
+                        grid_banner_id: null,
+                        empresa_id: empresa.id,
+                    },
+                    {
+                        responsive: gridEmpresa(bannersQualities),
+                        enabled: true,
+                        empresa_id: empresa.id,
+                        grid_banner_id: null,
+                    },
+                    {
+                        responsive: gridEmpresa(bannersQualities),
+                        grid_banner_id: null,
                         enabled: true,
                         empresa_id: empresa.id,
                     },

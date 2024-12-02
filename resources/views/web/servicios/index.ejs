@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../components/webHead.ejs") %>
+</head>
+
+<body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
+  <servicios-page :header="<%= JSON.stringify(header)  %>" :gridBannersServicios="<%=JSON.stringify(gridBannersServicios)  %>"></servicios-page>
+</body>
+
+</html>

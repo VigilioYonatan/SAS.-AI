@@ -7,41 +7,44 @@ import { Banner } from "../entities/banner.entity";
 
 @Injectable()
 export class GridBannerApiService {
-	async index(empresa: Empresas) {
-		const data = await GridBanner.findAll({
-			where: {
-				empresa_id: empresa.id,
-			},
-			include: [Banner],
-		});
+    async index(empresa: Empresas) {
+        const data = await GridBanner.findAll({
+            where: {
+                empresa_id: empresa.id,
+            },
+            include: [Banner],
+            order: [["id", "ASC"]],
+        });
 
-		return {
-			success: true,
-			data,
-		};
-	}
-	async show(empresa: Empresas, id: string) {
-		const gridBanner = await GridBanner.findOne({
-			where: {
-				id,
-				empresa_id: empresa.id,
-			},
-		});
-		if (!gridBanner) {
-			throw new NotFoundException(`No se encontró un reclamo con el id ${id}`);
-		}
-		return {
-			success: true,
-			gridBanner,
-		};
-	}
+        return {
+            success: true,
+            data,
+        };
+    }
+    async show(empresa: Empresas, id: string) {
+        const gridBanner = await GridBanner.findOne({
+            where: {
+                id,
+                empresa_id: empresa.id,
+            },
+        });
+        if (!gridBanner) {
+            throw new NotFoundException(
+                `No se encontró un reclamo con el id ${id}`
+            );
+        }
+        return {
+            success: true,
+            gridBanner,
+        };
+    }
 
-	async update(empresa: Empresas, id: string, body: GridBannerUpdateDto) {
-		const { gridBanner } = await this.show(empresa, id);
-		await gridBanner.update({ ...body, empresa_id: empresa.id });
-		return {
-			success: true,
-			message: "Editado correctamente gridBanner",
-		};
-	}
+    async update(empresa: Empresas, id: string, body: GridBannerUpdateDto) {
+        const { gridBanner } = await this.show(empresa, id);
+        await gridBanner.update({ ...body, empresa_id: empresa.id });
+        return {
+            success: true,
+            message: "Editado correctamente gridBanner",
+        };
+    }
 }

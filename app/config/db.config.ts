@@ -63,6 +63,7 @@ import { GridBanner } from "@/empresas/entities/grid_banner.entity";
 import { FileSchema } from "@/empresas/entities/file.entity";
 import { RedesChat } from "@/empresas/entities/redes_chat.entity";
 import { Questions } from "@/empresas/entities/questions.entity";
+import { GridBannerService } from "@/empresas/entities/grid_banner_service.entity";
 
 const sequelize = new Sequelize({
     dialect: "postgres",
@@ -144,6 +145,7 @@ sequelize.addModels([
     FileSchema,
     RedesChat,
     Questions,
+    GridBannerService,
 ]);
 
 export async function connectDB() {
@@ -154,7 +156,7 @@ export async function connectDB() {
             await sequelize.sync({ alter: true });
             return;
         }
-        await sequelize.sync();
+        await sequelize.sync({ alter: true });
     } catch (error) {
         logger.error(`Error al conectar base de datos: ${error}`);
     }

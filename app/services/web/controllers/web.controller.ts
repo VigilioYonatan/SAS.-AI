@@ -81,6 +81,11 @@ export class WebController {
         const result = await this.webService.shop(empresa, user);
         return res.render("web/shop", result);
     }
+    @Get("/servicios", [webEnabledMiddleware])
+    async servicios(@Res() res: Response, @Req("empresa") empresa: Empresas) {
+        const result = await this.webService.servicios(empresa);
+        return res.render("web/servicios", result);
+    }
 
     @Get("/shop/:category_slug", [webEnabledMiddleware])
     async categories(

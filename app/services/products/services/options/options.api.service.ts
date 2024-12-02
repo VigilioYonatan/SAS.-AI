@@ -5,43 +5,48 @@ import type { Features } from "@/products/entities/options/features.entity";
 
 @Injectable()
 export class OptionsApiService {
-	async index() {
-		const data = await Options.findAll({});
-		return {
-			success: true,
-			data,
-		};
-	}
+    async index() {
+        const data = await Options.findAll({ order: [["id", "ASC"]] });
+        return {
+            success: true,
+            data,
+        };
+    }
 
-	async features(empresa: Empresas) {
-		const { data } = await this.index();
-		const features = await Promise.all(
-			data.map(async (option) => {
-				let features = (await option.$get("features")) as Features[];
-				if (option.name === "Calzado") {
-					if (empresa.dial_code === "52") {
-						features = features.filter((f) => f.description.endsWith("MX"));
-					}
+    async features(empresa: Empresas) {
+        const { data } = await this.index();
+        const features = await Promise.all(
+            data.map(async (option) => {
+                let features = (await option.$get("features")) as Features[];
+                if (option.name === "Calzado") {
+                    if (empresa.dial_code === "52") {
+                        features = features.filter((f) =>
+                            f.description.endsWith("MX")
+                        );
+                    }
 
-					if (empresa.dial_code === "55")
-						features = features.filter((f) => f.description.endsWith("BR"));
-					if (!["52", "55"].includes(empresa.dial_code)) {
-						features = features.filter(
-							(f) =>
-								!f.description.endsWith("BR") && !f.description.endsWith("MX"),
-						);
-					}
-				}
+                    if (empresa.dial_code === "55")
+                        features = features.filter((f) =>
+                            f.description.endsWith("BR")
+                        );
+                    if (!["52", "55"].includes(empresa.dial_code)) {
+                        features = features.filter(
+                            (f) =>
+                                !f.description.endsWith("BR") &&
+                                !f.description.endsWith("MX")
+                        );
+                    }
+                }
 
-				return {
-					...option.toJSON(),
-					features,
-				};
-			}),
-		);
-		return {
-			success: true,
-			data: features,
-		};
-	}
+                return {
+                    ...option.toJSON(),
+                    features,
+                };
+            })
+        );
+        return {
+            success: true,
+            data: features,
+        };
+    }
 }

@@ -191,14 +191,16 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 ),
                 to: "/banners",
             },
-            {
-                title: (
-                    <span>
-                        <i class="far fa-newspaper" /> Noticia
-                    </span>
-                ),
-                to: "/noticia",
-            },
+            storageEmpresa?.setting.is_service_page
+                ? {
+                      title: (
+                          <span>
+                              <i class="fal fa-building" /> Servicios
+                          </span>
+                      ),
+                      to: "/servicios_page",
+                  }
+                : null,
             {
                 title: (
                     <span>
@@ -223,7 +225,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 ),
                 to: "/reclamaciones",
             },
-        ];
+        ].filter(Boolean);
     }
     function onCloseAside() {
         isOpen.value = false;
