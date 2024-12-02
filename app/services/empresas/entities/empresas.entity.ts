@@ -56,6 +56,7 @@ import { GridBanner } from "./grid_banner.entity";
 import { FileSchema } from "./file.entity";
 import { RedesChat } from "./redes_chat.entity";
 import { Questions } from "./questions.entity";
+import { GridBannerService } from "./grid_banner_service.entity";
 
 @DefaultScope(() => ({
     include: [Address, MetodosPago, TipoEmpresa, Settings, CitasSettings],
@@ -552,4 +553,10 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
     @HasOne(() => RedesChat)
     redes_chat: unknown;
+
+    @HasMany(() => GridBanner)
+    grid_banners: GridBanner[];
+
+    @HasMany(() => GridBannerService)
+    grid_banner_services: GridBannerService[];
 }

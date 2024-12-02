@@ -18,9 +18,7 @@ export class GridBannerServiceApiService {
                 {
                     model: GridBanner,
                     include: [{ model: Banner, order: [["order", "ASC"]] }],
-                    where: {
-                        empresa_id: empresa.id,
-                    },
+                   
                 },
             ],
             order: [["id", "ASC"]],
