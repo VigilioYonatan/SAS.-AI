@@ -498,6 +498,11 @@ export class EmpresasApiService {
                         enabled: true,
                         empresa_id: empresa.id,
                     },
+                    {
+                        responsive: gridEmpresa(bannersQualities),
+                        enabled: true,
+                        empresa_id: empresa.id,
+                    },
                 ]);
             }
 
@@ -548,6 +553,12 @@ export class EmpresasApiService {
                         enabled: true,
                         empresa_id: empresa.id,
                         grid_banner_id: null,
+                    },
+                    {
+                        responsive: gridEmpresa(bannersQualities),
+                        grid_banner_id: null,
+                        enabled: true,
+                        empresa_id: empresa.id,
                     },
                     {
                         responsive: gridEmpresa(bannersQualities),
