@@ -892,7 +892,6 @@ function BannerUpdate({ g, refetch, onClose, banner }: BannerUpdateProps) {
                                 title: "Se actualizó imagenes correctamente",
                             });
                             refetch(false);
-                            onClose();
                         },
                         onError() {
                             sweetAlert({
