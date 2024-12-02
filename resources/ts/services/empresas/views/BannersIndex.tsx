@@ -829,7 +829,6 @@ function BannerUpdate({ g, refetch, onClose, banner }: BannerUpdateProps) {
                     bannerUpdateMutation.mutate(body, {
                         onSuccess() {
                             refetch(false);
-                            onClose();
                             sweetAlert({
                                 icon: "success",
                                 title: "Banner editado correctamente.",
