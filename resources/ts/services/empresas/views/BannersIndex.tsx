@@ -668,7 +668,7 @@ function BannerStore({ grid, i, refetch, onClose }: BannerStoreProps) {
                 <Form.control.editorJS
                     type="html"
                     title="HTML"
-                    question="Customiza el banner agregando html"
+                    question="Customiza el banner agregando html, data-label='1',, para customizar texto"
                     name={"script" as keyof BannerStoreDto}
                 />
 
@@ -930,7 +930,7 @@ function BannerUpdate({ g, refetch, onClose, banner }: BannerUpdateProps) {
                 <Form.control.editorJS
                     type="html"
                     title="HTML"
-                    question="Customiza el banner agregando html"
+                    question="Customiza el banner agregando html, data-label='1',, para customizar texto"
                     name={"script" as keyof BannerStoreDto}
                 />
                 <Form.control.toggle
