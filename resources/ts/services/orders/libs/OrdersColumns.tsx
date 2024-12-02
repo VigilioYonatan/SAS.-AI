@@ -12,7 +12,7 @@ import { ordersUpdateApi } from "../apis/orders.update.api";
 import { sweetAlert } from "@vigilio/sweet";
 
 const ordersColumns: Columns<OrdersSchemaFromServer, "actions"> = [
-    { key: "id", isSort: true },
+    { key: "id", cell: (_, i) => i + 1, isSort: true },
     { key: "order_code", header: "código" },
     {
         key: "status_order_id",

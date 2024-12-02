@@ -8,7 +8,7 @@ import { PdfImage } from "~/config/settings";
 import usePdfInvoice from "../hooks/usePdfInvoice";
 
 const ordersUserColumns: Columns<OrdersSchemaFromServer, "actions"> = [
-    { key: "id", isSort: true },
+    { key: "id", cell: (_, i) => i + 1, isSort: true },
     { key: "order_code", header: "código" },
     {
         key: "status_order_id",

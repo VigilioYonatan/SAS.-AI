@@ -10,7 +10,7 @@ const usersColumns: Columns<
     UsersSchemaFromServer,
     UsersIndexSecondaryPaginator
 > = [
-    { key: "id", isSort: true },
+    { key: "id", cell: (_, i) => i + 1, isSort: true },
     {
         key: "user_code",
         header: "código",

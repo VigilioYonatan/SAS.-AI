@@ -16,7 +16,7 @@ const productsColumns: Columns<
     ProductsNormalSchemaFromServer,
     ProductsIndexSecondaryPaginator
 > = [
-    { key: "id", isSort: true },
+    { key: "id", cell: (_, i) => i + 1, isSort: true },
     {
         key: "product_code",
         header: "código",
