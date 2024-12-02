@@ -42,6 +42,12 @@ function GridBanners({ grid, i }: GridBanners) {
                                     window.location.href = banner.link;
                                 }
                             }}
+                            style={{
+                                "grid-column": `span ${banner.col} / span ${banner.col}`,
+                                "grid-row": `span ${banner.row} / span ${banner.row}`,
+                                order:
+                                    banner.order === 0 ? "auto" : banner.order,
+                            }}
                         >
                             {banner.script ? (
                                 <div
@@ -185,7 +191,13 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
 
                     return (
                         <div
-                            class="w-full relative h-full group overflow-hidden"
+                            class="w-full relative h-full group overflow-hidden col-span-1 row-span-1"
+                            style={{
+                                "grid-column": `span ${banner.col} / span ${banner.col}`,
+                                "grid-row": `span ${banner.col} / span ${banner.row}`,
+                                order:
+                                    banner.order === 0 ? "auto" : banner.order,
+                            }}
                             ref={divRef}
                             key={banner.id}
                             onClick={() => {

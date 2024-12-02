@@ -12,7 +12,7 @@ export class GridBannerApiService {
             where: {
                 empresa_id: empresa.id,
             },
-            include: [Banner],
+            include: [{ model: Banner, order: [["order", "ASC"]] }],
             order: [["id", "ASC"]],
         });
 

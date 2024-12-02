@@ -137,6 +137,14 @@ function BannersIndex() {
                                             return (
                                                 <div
                                                     class="w-full relative h-full group overflow-hidden"
+                                                    style={{
+                                                        "grid-column": `span ${banner.col} / span ${banner.col}`,
+                                                        "grid-row": `span ${banner.row} / span ${banner.row}`,
+                                                        order:
+                                                            banner.order === 0
+                                                                ? "auto"
+                                                                : banner.order,
+                                                    }}
                                                     ref={divRef}
                                                     key={banner.id}
                                                     onClick={() => {
@@ -149,7 +157,7 @@ function BannersIndex() {
                                                         }
                                                     }}
                                                 >
-                                                    <div class="flex top-1 right-1 absolute gap-2 ">
+                                                    <div class="flex top-1 right-1 absolute gap-2  z-[9]">
                                                         <button
                                                             type="button"
                                                             class=" bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
