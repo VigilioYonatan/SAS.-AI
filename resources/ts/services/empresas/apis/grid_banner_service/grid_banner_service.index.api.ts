@@ -2,7 +2,7 @@ import { GridBannerServicechemaFromServer } from "@/empresas/schemas/grid-banner
 import { useQuery } from "@vigilio/preact-fetching";
 
 export function gridBannerServiceIndexApi() {
-    return useQuery("/grid_banner", async (url) => {
+    return useQuery("/grid_banner_service", async (url) => {
         const response = await fetch(`/api${url}`);
         const result: GridBannerServiceIndexAPI = await response.json();
         if (!result.success) throw result;

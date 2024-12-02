@@ -39,6 +39,7 @@ import {
     GridBannerServiceUpdateDto,
 } from "../dtos/grid_banner_service.update.dto";
 import { gridBannerServiceUpdateApi } from "../apis/grid_banner_service/grid_banner_service.update.api";
+import { gridBannerIndexApi } from "../apis/grid_banner/grid_banner.index.api";
 export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
 function ServiciosPageIndex() {
     const gridBannerIndexQuery = gridBannerServiceIndexApi();
@@ -470,7 +471,7 @@ export function GridBannerUpdate({
 }: GridBannerEditProps) {
     const gridUpdateMutation = gridBannerServiceUpdateApi(grid.id);
 
-    const gridBannerIndexQuery = gridBannerServiceIndexApi();
+    const gridBannerIndexQuery = gridBannerIndexApi();
     const gridUpdateForm = useForm<GridBannerServiceUpdateDto>({
         resolver: valibotVigilio(gridBannerServiceUpdateDto),
         defaultValues: grid,
