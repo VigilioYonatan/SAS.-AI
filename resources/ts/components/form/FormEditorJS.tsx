@@ -264,7 +264,7 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
         );
     };
 
-    return <div class="relative min-h-[100px]">{parseHtml()}</div>;
+    return <div class="relative min-h-[250px] overflow-auto">{parseHtml()}</div>;
 }
 
 export default FormEditorJSControl;
