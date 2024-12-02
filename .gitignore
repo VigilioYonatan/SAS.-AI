@@ -149,3 +149,4 @@ dist
 .wwebjs_cache
 .env*
 bun.lockb
+public/empresas/
