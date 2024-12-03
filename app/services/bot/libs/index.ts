@@ -381,7 +381,7 @@ export async function promptReplace(
             questionGPT(
                 whatsapp,
                 message,
-                " querer información como (si pongo solo precio de envio di no, tiene que estar con un lugar acompañado), si solo escribe envio tambien di si, tambien di si, si te menciono un lugar como pais, ciudad, parques, monumentos, zonas de juegos, plaza, etc o un lugar - sitio"
+                " querer información como precio o costo de envio, si solo escribe envio tambien di si, tambien di si, si te menciono un lugar como pais, ciudad, parques, monumentos, zonas de juegos, plaza, etc o un lugar - sitio"
             ),
             questionGPT(
                 whatsapp,
