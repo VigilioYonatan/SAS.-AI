@@ -121,7 +121,7 @@ function BannersIndex() {
                                 {grid.banners.length ? (
                                     <>
                                         {" "}
-                                        {grid.banners.map((banner) => {
+                                        {grid.banners.map((banner, u) => {
                                             let file = null;
                                             const [selectedSize, divRef] =
                                                 useImageWithDimension([
@@ -136,7 +136,7 @@ function BannersIndex() {
 
                                             return (
                                                 <div
-                                                    class="w-full relative h-full group overflow-hidden"
+                                                    class={`w-full relative h-full group overflow-hidden grid-banner-${g}-${u}`}
                                                     style={{
                                                         "grid-column": `span ${banner.col} / span ${banner.col}`,
                                                         "grid-row": `span ${banner.row} / span ${banner.row}`,
@@ -205,9 +205,12 @@ function BannersIndex() {
                                                             onClick={() => {
                                                                 sweetModal({
                                                                     title: "¿Estás seguro de eliminar este banner?",
-                                                                    isCloseInBackground: false,
-                                                                    showCancelButton: true,
-                                                                    showCloseButton: true,
+                                                                    isCloseInBackground:
+                                                                        false,
+                                                                    showCancelButton:
+                                                                        true,
+                                                                    showCloseButton:
+                                                                        true,
                                                                 }).then(
                                                                     ({
                                                                         isConfirmed,

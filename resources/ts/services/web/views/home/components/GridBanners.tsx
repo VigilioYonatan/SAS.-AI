@@ -18,7 +18,7 @@ function GridBanners({ grid, i }: GridBanners) {
         >
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             <div class={`w-full  grid banner-${i} relative`}>
-                {gr.banners.map((banner) => {
+                {gr.banners.map((banner, u) => {
                     if (!banner.enabled) return null;
                     let file = null;
                     // let script = null;
@@ -34,7 +34,7 @@ function GridBanners({ grid, i }: GridBanners) {
 
                     return (
                         <div
-                            class="w-full relative h-full group overflow-hidden"
+                            class={`w-full relative h-full group overflow-hidden grid-banner-${i}-${u}`}
                             ref={divRef}
                             key={banner.id}
                             onClick={() => {
@@ -175,7 +175,7 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
         >
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             <div class={`w-full  grid banner-${i} relative`}>
-                {gr.banners.map((banner) => {
+                {gr.banners.map((banner, u) => {
                     if (!banner.enabled) return null;
                     let file = null;
                     // let script = null;
@@ -191,7 +191,7 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
 
                     return (
                         <div
-                            class="w-full relative h-full group overflow-hidden col-span-1 row-span-1"
+                            class={`w-full relative h-full group overflow-hidden grid-banner-${i}-${u}`}
                             style={{
                                 "grid-column": `span ${banner.col} / span ${banner.col}`,
                                 "grid-row": `span ${banner.col} / span ${banner.row}`,
