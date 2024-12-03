@@ -174,7 +174,7 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
             class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}  `}
         >
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
-            <div class={`w-full  grid banner-${i} relative`}>
+            <div class={"w-full  grid relative"}>
                 {gr.banners.map((banner) => {
                     if (!banner.enabled) return null;
                     let file = null;

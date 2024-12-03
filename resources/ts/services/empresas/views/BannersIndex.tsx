@@ -57,7 +57,7 @@ function BannersIndex() {
             <Fragment>
                 {gridBannerIndexQuery.data?.data.map((grid, g) => {
                     return (
-                        <div key={grid.id}>
+                        <div key={grid.id} class={`grid-banner-${g} relative`}>
                             <div class="flex justify-between w-full mb-1 items-center">
                                 <span class="font-semibold text-sm">
                                     Banner {g + 1}
@@ -116,7 +116,9 @@ function BannersIndex() {
                             </div>
 
                             <div
-                                class={`dark:bg-admin-terciary w-full  grid grid-banner-${g} relative  `}
+                                class={
+                                    "dark:bg-admin-terciary w-full  grid  relative  "
+                                }
                             >
                                 {grid.banners.length ? (
                                     <>
