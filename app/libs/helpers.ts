@@ -57,29 +57,31 @@ export function removeTextHTML(value: string) {
 /* dolar */
 
 export function distanciaDeLevenshtein(a: string, b: string) {
-    const matrix = [];
-    for (let i = 0; i <= b.length; i++) {
-        matrix[i] = [i];
-    }
-    for (let j = 0; j <= a.length; j++) {
-        matrix[0][j] = j;
-    }
-    // Llenamos la matriz
-    for (let i = 1; i <= b.length; i++) {
-        for (let j = 1; j <= a.length; j++) {
-            if (b.charAt(i - 1) === a.charAt(j - 1)) {
-                matrix[i][j] = matrix[i - 1][j - 1];
-            } else {
-                matrix[i][j] = Math.min(
-                    matrix[i - 1][j - 1] + 1, // sustitución
-                    matrix[i][j - 1] + 1, // inserción
-                    matrix[i - 1][j] + 1 // eliminación
-                );
-            }
-        }
+    const lenA = a.length;
+    const lenB = b.length;
+    const matrix = Array(lenA + 1);
+    for (let i = 0; i <= lenA; i++) {
+        matrix[i] = Array(lenB + 1).fill(0);
     }
 
-    return matrix[b.length][a.length];
+    for (let i = 0; i <= lenA; i++) {
+        matrix[i][0] = i;
+    }
+    for (let j = 0; j <= lenB; j++) {
+        matrix[0][j] = j;
+    }
+
+    for (let i = 1; i <= lenA; i++) {
+        for (let j = 1; j <= lenB; j++) {
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            matrix[i][j] = Math.min(
+                matrix[i - 1][j] + 1, // Eliminación
+                matrix[i][j - 1] + 1, // Inserción
+                matrix[i - 1][j - 1] + cost // Sustitución
+            );
+        }
+    }
+    return matrix[lenA][lenB];
 }
 // nos trae 0,5,10 depende de cuantos numeros hay
 export function createIncrementArray(numbers: number[]): number[] {
