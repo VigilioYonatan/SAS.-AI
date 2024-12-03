@@ -208,7 +208,7 @@ export class WebApiService {
                     where: { empresa_id: empresa.id, enabled: true },
                 }),
                 GridBanner.findAll({
-                    include: [Banner],
+                    include: [{ model: Banner, order: [["order", "ASC"]] }],
                     where: { empresa_id: empresa.id },
                 }),
             ]);
@@ -341,8 +341,11 @@ export class WebApiService {
                     empresa_id: empresa.id,
                 },
                 include: [
-                    { model: Banner },
-                    { model: GridBanner, include: [Banner] },
+                    { model: Banner, order: [["order", "ASC"]] },
+                    {
+                        model: GridBanner,
+                        include: [{ model: Banner, order: [["order", "ASC"]] }],
+                    },
                 ],
                 order: [["id", "ASC"]],
             }),

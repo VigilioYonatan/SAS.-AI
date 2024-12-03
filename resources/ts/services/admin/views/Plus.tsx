@@ -30,7 +30,6 @@ import { useQuery } from "@vigilio/preact-fetching";
 import { colorByOrdersId } from "@/orders/libs";
 import { PdfImage } from "~/config/settings";
 import LoaderSubmit from "~/components/LoaderSubmit";
-
 export type TypePayment =
     | "mensual"
     | "tienda"
