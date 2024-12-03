@@ -120,9 +120,7 @@ function ServiciosPageIndex() {
                             </div>
 
                             <div
-                                class={
-                                    "dark:bg-admin-terciary w-full  grid  relative  "
-                                }
+                                class={`dark:bg-admin-terciary w-full  grid banners-${g}  relative  `}
                             >
                                 {grid!.banners!.length ? (
                                     <>
@@ -389,7 +387,7 @@ function ServiciosPageIndex() {
                                         .map(
                                             (responsive) => `
                     @media screen and (min-width:${responsive.width}px){
-                        .banner-${g}{
+                        .grid-banner-${g} .banners-${g} {
                             height: ${
                                 responsive.height === 0
                                     ? "auto"

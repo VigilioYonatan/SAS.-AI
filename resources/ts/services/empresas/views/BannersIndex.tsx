@@ -117,7 +117,7 @@ function BannersIndex() {
 
                             <div
                                 class={
-                                    "dark:bg-admin-terciary w-full  grid  relative  "
+                                    `dark:bg-admin-terciary w-full  grid  relative banners-${g}  `
                                 }
                             >
                                 {grid.banners.length ? (
@@ -391,7 +391,7 @@ function BannersIndex() {
                                         .map(
                                             (responsive) => `
                     @media screen and (min-width:${responsive.width}px){
-                        .banner-${g}{
+                        .grid-banner-${g} .banners-${g}{
                             height: ${
                                 responsive.height === 0
                                     ? "auto"

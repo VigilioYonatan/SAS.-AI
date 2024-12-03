@@ -17,7 +17,7 @@ function GridBanners({ grid, i }: GridBanners) {
             class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}  `}
         >
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
-            <div class={`w-full  grid grid-banner-${i} relative`}>
+            <div class={`w-full  grid banners-${i} relative`}>
                 {gr.banners.map((banner) => {
                     if (!banner.enabled) return null;
                     let file = null;
@@ -136,7 +136,7 @@ function GridBanners({ grid, i }: GridBanners) {
                         .map(
                             (responsive) => `
                             @media screen and (min-width:${responsive.width}px){
-                                .grid-banner-${i} .banner-${i}{
+                                .grid-banner-${i} .banners-${i}{
                                      height: ${
                                          responsive.height === 0
                                              ? "auto"
