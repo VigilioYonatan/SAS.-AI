@@ -294,7 +294,7 @@ export async function promptReplace(
         const fuse = new Fuse(
             data.products.map((prod) => prod.name.toLowerCase()),
             {
-                threshold: 0.5,
+                threshold: 0.7,
                 includeScore: true,
                 keys: [],
             }
@@ -303,7 +303,6 @@ export async function promptReplace(
         const resultados = fuse
             .search(message.toLowerCase().replace(/[^a-z0-9\s]/g, ""))
             .map((result) => result.item);
-        console.log({ resultados });
 
         if (resultados.length) {
             productsData = {
