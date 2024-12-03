@@ -318,7 +318,7 @@ export class WebsocketsService {
                             {
                                 role: "user",
                                 content: `
-                                - Ignora esto:  ${product.name}.\n
+                                - Ignora y estamos en: ${product.name}.\n
                                 ${body.content}`,
                             },
                         ],
@@ -526,7 +526,7 @@ export class WebsocketsService {
                         {
                             role: "user",
                             content: `
-                            - Ignora esto:  ${product.name}.\n
+                            - Estamos en y ignora eso: ${product.name}.\n
                             ${body.content}`,
                         },
                     ],
