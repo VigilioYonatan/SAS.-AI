@@ -309,17 +309,18 @@ export class WebsocketsService {
                                 role: "user",
                                 content: `${prompt} . ${HTMLPROMPT(
                                     whatsapp.empresa
-                                )} - IMPORTANTE estamos en la pagina del ${
-                                    body.isService ? "servicio" : "producto"
-                                }   con el id ${
-                                    product.slug
-                                }, cualquier información que te pida dale de ese.`,
+                                )} `,
                             },
                             {
                                 role: "assistant",
                                 content: "Entendido, Empezemos.",
                             },
-                            { role: "user", content: body.content },
+                            {
+                                role: "user",
+                                content: `
+                                - Ignora esto:  ${product.name}.\n
+                                ${body.content}`,
+                            },
                         ],
                     });
                     const completionText =
@@ -513,11 +514,7 @@ export class WebsocketsService {
                             role: "user",
                             content: `${prompt} . ${HTMLPROMPT(
                                 whatsapp.empresa
-                            )} - IMPORTANTE estamos en la pagina del ${
-                                body.isService ? "servicio" : "producto"
-                            }   con el id ${
-                                product.slug
-                            }, cualquier información que te pida dale de ese.`,
+                            )}`,
                         },
                         {
                             role: "assistant",
@@ -526,7 +523,12 @@ export class WebsocketsService {
                         ...messages.slice(
                             -(whatsapp.empresa.inteligenceArtificial.memory - 1)
                         ),
-                        { role: "user", content: body.content },
+                        {
+                            role: "user",
+                            content: `
+                            - Ignora esto:  ${product.name}.\n
+                            ${body.content}`,
+                        },
                     ],
                 });
                 const completionText = completion.choices[0].message.content!;
