@@ -156,6 +156,14 @@ function ServiciosPageIndex() {
                                                         }
                                                     }}
                                                 >
+                                                    {" "}
+                                                    {banner.script ? (
+                                                        <div
+                                                            dangerouslySetInnerHTML={{
+                                                                __html: banner.script,
+                                                            }}
+                                                        />
+                                                    ) : null}
                                                     {f.grid_banner_id ? null : (
                                                         <div class="flex top-1 right-1 absolute gap-2 ">
                                                             <button
@@ -249,14 +257,6 @@ function ServiciosPageIndex() {
                                                             </button>
                                                         </div>
                                                     )}
-
-                                                    {banner.script ? (
-                                                        <div
-                                                            dangerouslySetInnerHTML={{
-                                                                __html: banner.script,
-                                                            }}
-                                                        />
-                                                    ) : null}
                                                     {file ? (
                                                         <>
                                                             {" "}

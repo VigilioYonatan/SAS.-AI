@@ -34,7 +34,7 @@ function GridBanners({ grid, i }: GridBanners) {
 
                     return (
                         <div
-                            class={`w-full relative h-full group overflow-hidden grid-banner-${i}-${u}`}
+                            class={`w-full relative h-full group overflow-hidden grid-banner-${i}-${banner.order}`}
                             ref={divRef}
                             key={banner.id}
                             onClick={() => {
