@@ -174,6 +174,7 @@ function SettingsIndex() {
         function onUpdateempresa(body: SettingsUpdateDto) {
             sweetModal({
                 title: "¿Estas seguro de realizar estos cambios en tu web?",
+                isCloseInBackground: false,
                 showCancelButton: true,
                 showCloseButton: true,
             }).then(({ isConfirmed }) => {
@@ -196,6 +197,7 @@ function SettingsIndex() {
             sweetModal({
                 title: "¿Estas seguro de agregar un dominio?",
                 text: "",
+                isCloseInBackground: false,
                 showCancelButton: true,
                 showCloseButton: true,
             }).then(({ isConfirmed }) => {
@@ -463,8 +465,9 @@ function SettingsIndex() {
                                                     icon: "info",
                                                     title: "¿Estas seguro eliminar tu dominio?",
                                                     text: "",
-                                                    showCloseButton: true,
+                                                    isCloseInBackground: false,
                                                     showCancelButton: true,
+                                                    showCloseButton: true,
                                                 }).then(({ isConfirmed }) => {
                                                     if (isConfirmed) {
                                                         settingsDominioDeleteServerUpdateMutation.mutate(

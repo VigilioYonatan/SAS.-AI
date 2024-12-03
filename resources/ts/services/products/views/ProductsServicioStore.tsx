@@ -170,8 +170,9 @@ function ProductsServicioStore({
             title: "¿Estas seguro de agregar este servicio?",
             customIcon:
                 "<i class='fas fa-phone-laptop text-3xl dark:text-white' /> </i>",
-            showCancelButton: true,
-            showCloseButton: true,
+                isCloseInBackground: false,
+                showCancelButton: true,
+                showCloseButton: true,
         }).then(({ isConfirmed }) => {
             if (isConfirmed) {
                 productsServicioStoreMutation.mutate(body, {

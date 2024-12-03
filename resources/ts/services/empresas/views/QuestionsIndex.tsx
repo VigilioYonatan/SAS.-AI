@@ -229,6 +229,7 @@ function QuestionsStore({ refetch, onClose }: QuestionsStoreProps) {
     function onQuestionStore(body: QuestionsStoreDto) {
         sweetModal({
             title: "¿Estás seguro de agregar una nueva pregunta?",
+            isCloseInBackground: false,
             showCancelButton: true,
             showCloseButton: true,
         }).then(({ isConfirmed }) => {
@@ -288,6 +289,7 @@ function QuestionsUpdate({ refetch, onClose, question }: QuestionsUpdateProps) {
     function onQuestionUpdate(body: QuestionsUpdateDto) {
         sweetModal({
             title: "¿Estás seguro de agregar una nueva pregunta?",
+            isCloseInBackground: false,
             showCancelButton: true,
             showCloseButton: true,
         }).then(({ isConfirmed }) => {

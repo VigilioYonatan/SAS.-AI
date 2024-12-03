@@ -172,6 +172,7 @@ function ProductsRestaurantStore({
             title: "¿Estas seguro de agregar este producto?",
             customIcon:
                 "<i class='fas fa-phone-laptop text-3xl dark:text-white' /> </i>",
+            isCloseInBackground: false,
             showCancelButton: true,
             showCloseButton: true,
         }).then(({ isConfirmed }) => {

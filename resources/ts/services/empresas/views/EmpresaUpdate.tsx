@@ -127,6 +127,7 @@ function empresaUpdate() {
         function onUpdateIconEmpresa(body: EmpresasIconUpdateDto) {
             sweetModal({
                 title: "¿Estas seguro de cambiar el icono de tu web?",
+                isCloseInBackground: false,
                 showCancelButton: true,
                 showCloseButton: true,
             }).then(({ isConfirmed }) => {
@@ -158,6 +159,7 @@ function empresaUpdate() {
         function onUpdatePhotoempresa(body: EmpresasPhotoUpdateDto) {
             sweetModal({
                 title: "¿Estas seguro de cambiar el photo de tu web?",
+                isCloseInBackground: false,
                 showCancelButton: true,
                 showCloseButton: true,
             }).then(({ isConfirmed }) => {
@@ -189,6 +191,7 @@ function empresaUpdate() {
         function onUpdateempresa(body: EmpresasUpdateDto) {
             sweetModal({
                 title: "¿Estas seguro de realizar estos cambios en tu web?",
+                isCloseInBackground: false,
                 showCancelButton: true,
                 showCloseButton: true,
             }).then(({ isConfirmed }) => {
@@ -260,6 +263,7 @@ function empresaUpdate() {
             colorError.value = null;
             sweetModal({
                 title: "¿Estas seguro de cambiar el logo de tu web?",
+                isCloseInBackground: false,
                 showCancelButton: true,
                 showCloseButton: true,
             }).then(async ({ isConfirmed }) => {
@@ -294,6 +298,7 @@ function empresaUpdate() {
         function onUpdateLogoPWASetting(body: EmpresasLogoPWAUpdateDto) {
             sweetModal({
                 title: "¿Estas seguro de cambiar el logo de tu web?",
+                isCloseInBackground: false,
                 showCancelButton: true,
                 showCloseButton: true,
             }).then(async ({ isConfirmed }) => {
@@ -1159,6 +1164,12 @@ function empresaUpdate() {
                                                         onClick={() => {
                                                             sweetModal({
                                                                 title: "¿Estas seguro actualizar tu web en la ultima version?",
+                                                                isCloseInBackground:
+                                                                    false,
+                                                                showCancelButton:
+                                                                    true,
+                                                                showCloseButton:
+                                                                    true,
                                                             }).then(
                                                                 ({
                                                                     isConfirmed,

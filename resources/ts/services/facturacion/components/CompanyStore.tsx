@@ -53,6 +53,7 @@ function CompaniesStore({ onClose }: CompaniesStoreProps) {
 		function onEmpresaFacturacionUpdate(data: EmpresasFacturacionUpdateDto) {
 			sweetModal({
 				title: "¿Estas seguro de realizar estos cambios?",
+				isCloseInBackground: false,
 				showCancelButton: true,
 				showCloseButton: true,
 			}).then(({ isConfirmed }) => {
@@ -91,6 +92,7 @@ function CompaniesStore({ onClose }: CompaniesStoreProps) {
 		) {
 			sweetModal({
 				title: "¿Estas seguro de realizar estos cambios?",
+				isCloseInBackground: false,
 				showCancelButton: true,
 				showCloseButton: true,
 			}).then(({ isConfirmed }) => {

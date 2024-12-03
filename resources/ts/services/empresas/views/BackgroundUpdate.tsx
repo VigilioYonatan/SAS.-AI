@@ -70,8 +70,9 @@ function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
 				title: "¿Estás seguro de editar el background ?",
 				customIcon:
 					"<i class='fa-solid fa-image text-3xl dark:text-white' ></i>",
-				showCancelButton: true,
-				showCloseButton: true,
+					isCloseInBackground: false,
+					showCancelButton: true,
+					showCloseButton: true,
 			}).then(({ isConfirmed }) => {
 				if (isConfirmed) {
 					backgroundUpdateMutation.mutate(body, {

@@ -78,8 +78,9 @@ function NewStore({ refetch }: NewStoreProps) {
 		sweetModal({
 			icon: "info",
 			title: "¿Estas seguro de agregar una nueva noticia?",
-			showCloseButton: true,
-			showCancelButton: true,
+			isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
 		}).then(({ isConfirmed }) => {
 			if (isConfirmed) {
 				newStoreMutate.mutate(body, {
@@ -173,8 +174,9 @@ function NewUpdate({ noticia }: NewUpdateProps) {
 		sweetModal({
 			title: "¿Estás seguro de editar la imagen de esta noticia?",
 			customIcon: "<i class='fas fa-news text-3xl dark:text-white' /> </i>",
-			showCloseButton: true,
-			showCancelButton: true,
+			isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
 		}).then(({ isConfirmed }) => {
 			if (isConfirmed) {
 				mutateProductsNormalUpdateImagesApi.mutate(

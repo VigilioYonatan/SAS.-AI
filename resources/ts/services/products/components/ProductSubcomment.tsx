@@ -82,7 +82,9 @@ function ProductSubcomment({
 		sweetModal({
 			title: "Estas seguro de realizar esta acción",
 			text: "Se eliminará tu comentario",
-			showCancelButton: true,
+			isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
 		}).then(({ isConfirmed }) => {
 			if (isConfirmed) {
 				subcommentsDestroyMutation.mutate(id, {

@@ -57,8 +57,9 @@ function EmpresaAddressUpdate() {
 		const { ubigeo, region, ...rest } = data;
 		sweetModal({
 			title: "¿Estás seguro de editar la dirección?",
-			showCancelButton: true,
-			showCloseButton: true,
+			isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
 		}).then(({ isConfirmed }) => {
 			if (isConfirmed) {
 				EmpresaAddressUpdateMutation.mutate(rest, {

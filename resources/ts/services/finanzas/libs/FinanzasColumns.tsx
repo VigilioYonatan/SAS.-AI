@@ -111,6 +111,9 @@ const finanzasColumns: Columns<
             function onDelete() {
                 sweetModal({
                     title: "¿Estás seguro de eliminar esta finanza?",
+                    isCloseInBackground: false,
+                    showCancelButton: true,
+                    showCloseButton: true,
                 }).then(({ isConfirmed }) => {
                     if (isConfirmed) {
                         finanzasDestroyMutation.mutate(props.id, {

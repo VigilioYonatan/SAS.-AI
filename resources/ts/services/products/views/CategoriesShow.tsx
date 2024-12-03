@@ -143,7 +143,9 @@ function CategoriesShow({ id, onClose, refetch }: CategoriesShowProps) {
 													title: "Estas seguro?",
 													text: `Quieres eliminar esta categoría <b>${category.name}</b>`,
 													icon: "danger",
+													isCloseInBackground: false,
 													showCancelButton: true,
+													showCloseButton: true,
 													confirmButtonText: "Si, Eliminar!",
 												}).then((result) => {
 													if (result.isConfirmed) {

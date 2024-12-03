@@ -42,8 +42,9 @@ function CouponsStore({ refetch }: CouponStoreProps) {
 			title: "¿Estás seguro de agregar un cupón?",
 			customIcon:
 				"<i class='fa-solid fa-ticket text-3xl dark:text-white' ></i>",
-			showCloseButton: true,
-			showCancelButton: true,
+				isCloseInBackground: false,
+				showCancelButton: true,
+				showCloseButton: true,
 		}).then(({ isConfirmed }) => {
 			if (isConfirmed) {
 				couponsStoreMutation.mutate(body, {

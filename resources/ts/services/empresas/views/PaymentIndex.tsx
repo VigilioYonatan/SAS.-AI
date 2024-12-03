@@ -67,6 +67,7 @@ function PaymentIndex() {
 		function onUpdate(data: MetodosPagoUpdateDto) {
 			sweetModal({
 				title: "¿Estas seguro de realizar estos cambios?",
+				isCloseInBackground: false,
 				showCancelButton: true,
 				showCloseButton: true,
 			}).then(({ isConfirmed }) => {
@@ -91,6 +92,7 @@ function PaymentIndex() {
 		function onUpdateQrYapeempresa(body: empresaQrYapeUpdateDto) {
 			sweetModal({
 				title: "¿Estas seguro de cambiar el qr Yape de tu web?",
+				isCloseInBackground: false,
 				showCancelButton: true,
 				showCloseButton: true,
 			}).then(({ isConfirmed }) => {
@@ -112,6 +114,7 @@ function PaymentIndex() {
 		function onUpdateQrPlinempresa(body: empresaQrPlinUpdateDto) {
 			sweetModal({
 				title: "¿Estas seguro de cambiar el qr Plin de tu web?",
+				isCloseInBackground: false,
 				showCancelButton: true,
 				showCloseButton: true,
 			}).then(({ isConfirmed }) => {

@@ -167,8 +167,9 @@ function ProductsNormalUpdate({
                 title: "¿Estás seguro de editar este producto?",
                 customIcon:
                     "<i class='fas fa-phone-laptop text-3xl dark:text-white' /> </i>",
-                showCloseButton: true,
+                isCloseInBackground: false,
                 showCancelButton: true,
+                showCloseButton: true,
             }).then(({ isConfirmed }) => {
                 if (isConfirmed) {
                     mutateProductsNormalUpdateApi.mutate(data, {
@@ -197,8 +198,9 @@ function ProductsNormalUpdate({
                 title: "¿Estás seguro de editar las imagenes de este producto?",
                 customIcon:
                     "<i class='fas fa-phone-laptop text-3xl dark:text-white' /> </i>",
-                showCloseButton: true,
+                isCloseInBackground: false,
                 showCancelButton: true,
+                showCloseButton: true,
             }).then(({ isConfirmed }) => {
                 if (isConfirmed) {
                     mutateProductsNormalUpdateImagesApi.mutate(

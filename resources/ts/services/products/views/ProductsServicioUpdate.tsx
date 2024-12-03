@@ -140,8 +140,9 @@ function ProductsServicioUpdate({
                 title: "¿Estás seguro de editar este servicio?",
                 customIcon:
                     "<i class='fa-regular fa-handshake text-3xl dark:text-white' /> </i>",
-                showCloseButton: true,
+                isCloseInBackground: false,
                 showCancelButton: true,
+                showCloseButton: true,
             }).then(({ isConfirmed }) => {
                 if (isConfirmed) {
                     mutateProductsServicioUpdateApi.mutate(body, {
@@ -170,8 +171,9 @@ function ProductsServicioUpdate({
                 title: "¿Estás seguro de editar las imagenes de este servicio?",
                 customIcon:
                     "<i class='fa-regular fa-handshake text-3xl dark:text-white' /> </i>",
-                showCloseButton: true,
+                isCloseInBackground: false,
                 showCancelButton: true,
+                showCloseButton: true,
             }).then(({ isConfirmed }) => {
                 if (isConfirmed) {
                     mutateProductsServicioUpdateImagesApi.mutate(

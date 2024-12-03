@@ -188,6 +188,7 @@ function CitasIndex() {
 																														"Estas seguro de quitar la IA a  este usuario?",
 																													text: "Este usuario ya no le responderá la IA si lo desactivas.",
 																													icon: "info",
+																													isCloseInBackground: false,
 																													showCancelButton: true,
 																													showCloseButton: true,
 																												}).then(
@@ -363,6 +364,7 @@ function CitasIndex() {
 																									"Estas seguro de quitar la IA a  este usuario?",
 																								text: "Este usuario ya no le responderá la IA si lo desactivas.",
 																								icon: "info",
+																								isCloseInBackground: false,
 																								showCancelButton: true,
 																								showCloseButton: true,
 																							}).then(({ isConfirmed }) => {

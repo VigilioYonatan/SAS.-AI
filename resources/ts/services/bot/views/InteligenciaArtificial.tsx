@@ -69,8 +69,9 @@ function InteligenciaArtificial() {
                 title: "¿Estás seguro de realizar estos cambios?",
                 customIcon:
                     "<i class='fas fa-user-robot text-3xl dark:text-white' ></i>",
-                showCloseButton: true,
-                showCancelButton: true,
+                    isCloseInBackground: false,
+                    showCancelButton: true,
+                    showCloseButton: true,
             }).then(({ isConfirmed }) => {
                 if (isConfirmed) {
                     empresaPromptUpdateMutation.mutate(data, {

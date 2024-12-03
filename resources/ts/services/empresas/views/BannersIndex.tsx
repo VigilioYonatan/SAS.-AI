@@ -205,10 +205,9 @@ function BannersIndex() {
                                                             onClick={() => {
                                                                 sweetModal({
                                                                     title: "¿Estás seguro de eliminar este banner?",
-                                                                    showCloseButton:
-                                                                        true,
-                                                                    isCloseInBackground:
-                                                                        false,
+                                                                    isCloseInBackground: false,
+                                                                    showCancelButton: true,
+                                                                    showCloseButton: true,
                                                                 }).then(
                                                                     ({
                                                                         isConfirmed,
@@ -478,25 +477,28 @@ export function GridBannerUpdate({
         defaultValues: grid,
     });
     function onGridBannerUpdate(data: GridBannerUpdateDto) {
-        sweetModal({ title: "¿Estas seguro de editar tu banner?" }).then(
-            ({ isConfirmed }) => {
-                if (isConfirmed) {
-                    gridUpdateMutation.mutate(data, {
-                        onSuccess() {
-                            sweetAlert({
-                                title: "Editado correctamente",
-                                icon: "success",
-                            });
-                            onClose();
-                            refetch(false);
-                        },
-                        onError(error) {
-                            handlerError(gridUpdateForm, error);
-                        },
-                    });
-                }
+        sweetModal({
+            title: "¿Estas seguro de editar tu banner?",
+            isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                gridUpdateMutation.mutate(data, {
+                    onSuccess() {
+                        sweetAlert({
+                            title: "Editado correctamente",
+                            icon: "success",
+                        });
+                        onClose();
+                        refetch(false);
+                    },
+                    onError(error) {
+                        handlerError(gridUpdateForm, error);
+                    },
+                });
             }
-        );
+        });
     }
     const responseArray = useFieldArray({
         control: gridUpdateForm.control,
@@ -597,25 +599,28 @@ function BannerStore({ grid, i, refetch, onClose }: BannerStoreProps) {
     });
 
     function onBannerStore(body: BannerStoreDto) {
-        sweetModal({ title: "¿Estas seguro de agregar un banner?" }).then(
-            ({ isConfirmed }) => {
-                if (isConfirmed) {
-                    bannerStoreMutation.mutate(body, {
-                        onSuccess() {
-                            refetch(false);
-                            onClose();
-                            sweetAlert({
-                                icon: "success",
-                                title: "Banner agregado correctamente.",
-                            });
-                        },
-                        onError(error) {
-                            handlerError(bannerStoreForm, error);
-                        },
-                    });
-                }
+        sweetModal({
+            title: "¿Estas seguro de agregar un banner?",
+            isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                bannerStoreMutation.mutate(body, {
+                    onSuccess() {
+                        refetch(false);
+                        onClose();
+                        sweetAlert({
+                            icon: "success",
+                            title: "Banner agregado correctamente.",
+                        });
+                    },
+                    onError(error) {
+                        handlerError(bannerStoreForm, error);
+                    },
+                });
             }
-        );
+        });
     }
     return (
         <div class="dark:text-white">
@@ -831,24 +836,27 @@ function BannerUpdate({ g, refetch, onClose, banner }: BannerUpdateProps) {
     });
 
     function onBannerUpdate(body: BannerUpdateDto) {
-        sweetModal({ title: "¿Estas seguro de editar este banner?" }).then(
-            ({ isConfirmed }) => {
-                if (isConfirmed) {
-                    bannerUpdateMutation.mutate(body, {
-                        onSuccess() {
-                            refetch(false);
-                            sweetAlert({
-                                icon: "success",
-                                title: "Banner editado correctamente.",
-                            });
-                        },
-                        onError(error) {
-                            handlerError(bannerUpdateForm, error);
-                        },
-                    });
-                }
+        sweetModal({
+            title: "¿Estas seguro de editar este banner?",
+            isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                bannerUpdateMutation.mutate(body, {
+                    onSuccess() {
+                        refetch(false);
+                        sweetAlert({
+                            icon: "success",
+                            title: "Banner editado correctamente.",
+                        });
+                    },
+                    onError(error) {
+                        handlerError(bannerUpdateForm, error);
+                    },
+                });
             }
-        );
+        });
     }
     function onBannerUpdateFile(body: BannerUpdateFileDto) {
         sweetModal({

@@ -28,8 +28,9 @@ function UsersStore({ refetch, onClose }: UsersStoreProps) {
 		sweetModal({
 			title: `¿Estás seguro de agregar un nuevo usuario ${body.username}?`,
 			customIcon: "<i class='fas fa-user text-3xl dark:text-white' ></i>",
-			showCancelButton: true,
-			showCloseButton: true,
+			isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
 		}).then(({ isConfirmed }) => {
 			if (isConfirmed) {
 				usersStoreApiMutation.mutate(body, {

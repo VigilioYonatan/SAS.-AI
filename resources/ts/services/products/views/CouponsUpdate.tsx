@@ -64,8 +64,9 @@ function CouponsUpdate({ id, refetch }: CouponUpdateProps) {
 				title: `¿Estás seguro de editar el cupón ${coupon.coupon}?`,
 				customIcon:
 					"<i class='fa-solid fa-ticket dark:text-white text-3xl' ></i>",
-				showCancelButton: true,
-				showCloseButton: true,
+					isCloseInBackground: false,
+					showCancelButton: true,
+					showCloseButton: true,
 			}).then(({ isConfirmed }) => {
 				if (isConfirmed) {
 					couponsUpdateMutation.mutate(data, {

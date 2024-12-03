@@ -135,8 +135,9 @@ function ProductsRestaurantUpdate({
 				title: "¿Estás seguro de editar este producto?",
 				customIcon:
 					"<i class='fas fa-phone-laptop text-3xl dark:text-white' /> </i>",
-				showCloseButton: true,
-				showCancelButton: true,
+					isCloseInBackground: false,
+					showCancelButton: true,
+					showCloseButton: true,
 			}).then(({ isConfirmed }) => {
 				if (isConfirmed) {
 					mutateProductsRestaurantUpdateApi.mutate(data, {
@@ -165,8 +166,9 @@ function ProductsRestaurantUpdate({
 				title: "¿Estás seguro de editar las imagenes de este producto?",
 				customIcon:
 					"<i class='fas fa-phone-laptop text-3xl dark:text-white' /> </i>",
-				showCloseButton: true,
-				showCancelButton: true,
+					isCloseInBackground: false,
+					showCancelButton: true,
+					showCloseButton: true,
 			}).then(({ isConfirmed }) => {
 				if (isConfirmed) {
 					mutateProductsRestaurantUpdateImagesApi.mutate(
