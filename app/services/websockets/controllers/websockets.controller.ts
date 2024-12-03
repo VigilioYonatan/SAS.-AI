@@ -96,6 +96,8 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         ];
         return removeNote;
     } catch (error) {
+        console.log({ m: (error as Error).message });
+
         return "Hubo un error al usar ia, posible errores no hay tokens.";
     }
 }
