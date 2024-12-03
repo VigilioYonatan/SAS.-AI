@@ -223,10 +223,9 @@ function encontrarPalabrasSimilares(texto: string, array: string[]) {
                 palabraMin.includes(palabraTexto) ||
                 distanciaDeLevenshtein(palabraMin, palabraTexto) <= umbral
             ) {
-                // Agregamos solo si hay una coincidencia exacta o muy cercana con alguna palabra en el texto
                 if (palabraMin.includes(palabraTexto)) {
                     palabrasEncontradas.push(palabra);
-                    break; // Rompemos el bucle interno si encontramos una coincidencia para evitar duplicados
+                    break;
                 }
             }
         }
@@ -282,6 +281,7 @@ export async function promptReplace(
             message,
             data.products.map((prod) => prod.name)
         );
+        console.log({ palabrasEncontradas2 });
 
         if (palabrasEncontradas2.length) {
             productsData = {

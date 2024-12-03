@@ -39,7 +39,7 @@ export class WebsocketsService {
         if (token === "null") return null;
         const user = await Users.findByPk(token, {
             attributes: ["id", "username", "role_id", "isOnline", "empresa_id"],
-            include: [Empresas],
+            include: [{ model: Empresas, attributes: ["name", "slug", "id"] }],
         });
         return user;
     }
