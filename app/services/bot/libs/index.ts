@@ -261,9 +261,7 @@ export async function promptReplace(
     }
     let productsData = data;
     const fuse = new Fuse(
-        data.products.map((prod) =>
-            prod.name.toLowerCase().replace(/[^a-z0-9\s]/g, "")
-        ),
+        data.products.map((prod) => prod.name),
         {
             threshold: 0.7,
             includeScore: true,
