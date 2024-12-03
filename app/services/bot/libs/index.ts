@@ -30,6 +30,7 @@ import { Citas } from "@/citas/entities/citas.entities";
 import { Op } from "sequelize";
 import { NOW } from "~/libs/dayjs";
 import { removeTextHTML } from "../../../libs/helpers";
+import Fuse from "fuse.js";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
@@ -292,17 +293,23 @@ export async function promptReplace(
     } else {
         console.log({ message });
 
-        const palabrasEncontradas2 = encontrarPalabrasSimilares(
-            message,
-            data.products.map((prod) => prod.name)
+        const fuse = new Fuse(
+            data.products.map((prod) => prod.name),
+            {
+                threshold: 0.3,
+                includeScore: true,
+                keys: [],
+            }
         );
-        console.log({ palabrasEncontradas2 });
 
-        if (palabrasEncontradas2.length) {
+        const resultados = fuse.search(message).map((result) => result.item);
+        console.log({ resultados });
+
+        if (resultados.length) {
             productsData = {
                 ...data,
                 products: data.products.filter((prod) =>
-                    palabrasEncontradas2.includes(prod.name)
+                    resultados.includes(prod.name)
                 ),
             };
         } else {
