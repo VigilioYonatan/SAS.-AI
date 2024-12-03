@@ -294,15 +294,17 @@ export async function promptReplace(
         console.log({ message });
 
         const fuse = new Fuse(
-            data.products.map((prod) => prod.name),
+            data.products.map((prod) => prod.name.toLowerCase()),
             {
-                threshold: 0.3,
+                threshold: 0.4,
                 includeScore: true,
                 keys: [],
             }
         );
 
-        const resultados = fuse.search(message).map((result) => result.item);
+        const resultados = fuse
+            .search(message.toLowerCase().replace(/[^a-z0-9\s]/g, ""))
+            .map((result) => result.item);
         console.log({ resultados });
 
         if (resultados.length) {
