@@ -289,6 +289,7 @@ export async function promptReplace(
                 ),
             };
         }
+        console.log({ productsData });
     }
 
     const regex = /ord-[0-9]+/g;
