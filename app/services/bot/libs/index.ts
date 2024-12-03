@@ -292,6 +292,9 @@ export async function promptReplace(
         }
     } else {
         console.log({ message });
+        console.log({
+            products: data.products.map((prod) => prod.name.toLowerCase()),
+        });
 
         const fuse = new Fuse(
             data.products.map((prod) => prod.name.toLowerCase()),
