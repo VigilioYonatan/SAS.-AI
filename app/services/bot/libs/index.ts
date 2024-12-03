@@ -273,6 +273,8 @@ export async function promptReplace(
             ),
         };
     } else {
+        console.log({ message });
+
         const palabrasEncontradas2 = encontrarPalabrasSimilares(
             message,
             data.products.map((prod) => prod.name)
