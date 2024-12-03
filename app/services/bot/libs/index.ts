@@ -277,6 +277,7 @@ export async function promptReplace(
             message,
             data.products.map((prod) => prod.name)
         );
+        console.log({ palabrasEncontradas2 });
 
         if (palabrasEncontradas2.length) {
             productsData = {
