@@ -275,6 +275,7 @@ export async function promptReplace(
     const resultados = fuse
         .search(cleantext(message))
         .map((result) => result.item);
+    console.log({ resultados });
 
     // si no es inteligente que busque
     if (!empresa.inteligenceArtificial.enabledBotInteligence) {
