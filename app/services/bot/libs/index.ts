@@ -395,6 +395,7 @@ export async function promptReplace(
                 "es pregunta, cualquier tiempo de pregunta."
             ),
         ]);
+    console.log({ isSaludo, isDespedida, isTemaEnvio, isCita });
 
     if (isSaludo || isDespedida || isTemaEnvio || isCita) {
         productsData = {} as DataPrompt;
@@ -550,6 +551,8 @@ export async function promptReplace(
         isDespedida,
         isQuestion,
     };
+    console.log({ productsData });
+
     const promt = await prompt(properties, empresa, productsData);
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
         productsData?.products?.length ||
