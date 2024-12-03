@@ -263,7 +263,7 @@ export async function promptReplace(
     const fuse = new Fuse(
         data.products.map((prod) => prod.name),
         {
-            threshold: 0.6,
+            threshold: 0.5,
             includeScore: true,
             keys: [],
         }
