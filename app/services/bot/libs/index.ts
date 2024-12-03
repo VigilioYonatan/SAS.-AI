@@ -261,7 +261,9 @@ export async function promptReplace(
     }
     let productsData = data;
     const fuse = new Fuse(
-        data.products.map((prod) => prod.name.toLowerCase()),
+        data.products.map((prod) =>
+            prod.name.toLowerCase().replace(/[^a-z0-9\s]/g, "")
+        ),
         {
             threshold: 0.7,
             includeScore: true,
@@ -272,6 +274,7 @@ export async function promptReplace(
     const resultados = fuse
         .search(message.toLowerCase().replace(/[^a-z0-9\s]/g, ""))
         .map((result) => result.item);
+    console.log({ resultados });
 
     // si no es inteligente que busque
     if (!empresa.inteligenceArtificial.enabledBotInteligence) {
