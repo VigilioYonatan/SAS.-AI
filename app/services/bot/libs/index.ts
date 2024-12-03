@@ -259,9 +259,12 @@ export async function promptReplace(
             );
         }
     }
+    function cleantext(t: string) {
+        return t.toLowerCase().replace(/[^a-z0-9\s]/g, "");
+    }
     let productsData = data;
     const fuse = new Fuse(
-        data.products.map((prod) => prod.name),
+        data.products.map((prod) => cleantext(prod.name)),
         {
             threshold: 0.5,
             includeScore: true,
@@ -270,9 +273,8 @@ export async function promptReplace(
     );
 
     const resultados = fuse
-        .search(message.toLowerCase().replace(/[^a-z0-9\s]/g, ""))
+        .search(cleantext(message))
         .map((result) => result.item);
-    console.log({ resultados });
 
     // si no es inteligente que busque
     if (!empresa.inteligenceArtificial.enabledBotInteligence) {
@@ -280,7 +282,7 @@ export async function promptReplace(
             productsData = {
                 ...data,
                 products: data.products.filter((prod) =>
-                    resultados.includes(prod.name)
+                    resultados.includes(cleantext(prod.name))
                 ),
             };
         } else {
@@ -291,7 +293,7 @@ export async function promptReplace(
             productsData = {
                 ...data,
                 products: data.products.filter((prod) =>
-                    resultados.includes(prod.name)
+                    resultados.includes(cleantext(prod.name))
                 ),
             };
         } else {
