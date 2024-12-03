@@ -266,7 +266,7 @@ export async function promptReplace(
     const fuse = new Fuse(
         data.products.map((prod) => cleantext(prod.name)),
         {
-            threshold: 0.5,
+            threshold: 0.6,
             includeScore: true,
             keys: [],
         }
@@ -398,7 +398,6 @@ export async function promptReplace(
                 "es pregunta, cualquier tiempo de pregunta."
             ),
         ]);
-    console.log({ isSaludo, isDespedida, isTemaEnvio, isCita });
 
     if (
         isSaludo ||

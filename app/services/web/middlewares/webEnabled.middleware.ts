@@ -38,7 +38,9 @@ export async function webEnabledMiddleware(
                                 </div>
 								 - MAXIMO ${
                                      emp.isFreeVPS
-                                         ? `MAXIMO ${enviroments.MAX_USERS} personas en línea, Vuelva en unos minutos`
+                                         ? `MAXIMO ${
+                                               enviroments.MAX_USERS || 30
+                                           } personas en línea, Vuelva en unos minutos`
                                          : ""
                                  }
 								`;
@@ -46,7 +48,7 @@ export async function webEnabledMiddleware(
             return res.send(html);
         }
     } catch (error) {
-        console.log((error as Error).message);
+        return res.send("error");
     }
 
     next();
