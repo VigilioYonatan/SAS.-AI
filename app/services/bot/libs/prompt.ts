@@ -20,7 +20,6 @@ export async function prompt(
     empresa: Empresas,
     productsData: DataPrompt
 ) {
-
     let preguntasIA: Questions[] | null = JSON.parse(
         cache.get(`questions-ia:${empresa.slug}`) ?? "null"
     );
@@ -161,6 +160,7 @@ export async function prompt(
               )}. Traeme el precio tambien en dólares si te pido PRECIO_DE_PRODUCTO_SERVICIO * DOLAR_HOY`
             : ""
     }
+    - Los decimales máximo un toFixed(2), incluye precioS, etc.
     IMPORTANTE: USA MENSAJES ANTERIORES PARA NO PERDER CONTEXTO PARA NO PERDER EL CONTEXTO DE LA CONVERSACIÓN.
    
     NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
