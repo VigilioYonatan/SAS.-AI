@@ -212,6 +212,8 @@ export async function onDb(empresa: Empresas) {
 }
 
 function encontrarPalabrasSimilares(texto: string, array: string[]) {
+    console.log({ array });
+
     const textoLower = texto.toLowerCase(); // Convertir el texto del cliente a minúsculas
     const umbralLevenshtein = 3; // Umbral máximo de distancia Levenshtein permitido (puedes ajustarlo)
 
