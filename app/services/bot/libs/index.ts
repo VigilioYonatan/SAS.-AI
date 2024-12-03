@@ -212,6 +212,8 @@ export async function onDb(empresa: Empresas) {
 }
 
 function encontrarPalabrasSimilares(texto: string, array: string[]) {
+    console.log({ array });
+
     const textoNormalizado = texto.toLowerCase().replace(/[^a-z0-9\s]/g, ""); // Normalizamos el texto del cliente
     const umbralLevenshtein = 5; // Umbral máximo de distancia Levenshtein permitido (puedes ajustarlo)
 
