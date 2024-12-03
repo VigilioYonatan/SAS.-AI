@@ -212,17 +212,15 @@ export async function onDb(empresa: Empresas) {
 }
 
 function encontrarPalabrasSimilares(texto: string, array: string[]) {
-    console.log({ array });
-
-    const textoLower = texto.toLowerCase(); // Convertir el texto del cliente a minúsculas
-    const umbralLevenshtein = 3; // Umbral máximo de distancia Levenshtein permitido (puedes ajustarlo)
+    const textoNormalizado = texto.toLowerCase().replace(/[^a-z0-9\s]/g, ""); // Normalizamos el texto del cliente
+    const umbralLevenshtein = 5; // Umbral máximo de distancia Levenshtein permitido (puedes ajustarlo)
 
     // Filtrar productos que tengan una distancia de Levenshtein razonable con el texto del cliente
     const productosEncontrados = array.filter((producto) => {
         // Calcular la distancia de Levenshtein
         const distancia = distanciaDeLevenshtein(
-            textoLower,
-            producto.toLowerCase()
+            textoNormalizado,
+            producto.toLowerCase().replace(/[^a-z0-9\s]/g, "")
         );
 
         // Considerar el producto si la distancia es menor o igual al umbral
@@ -233,7 +231,7 @@ function encontrarPalabrasSimilares(texto: string, array: string[]) {
 }
 
 export interface DataPrompt {
-    products: { name: string }[];
+    products: { name: string; category_id: number }[];
     categorias: CategoriesSchemaFromServe[];
     brands: BrandsSchemaFromServe[];
     servicios: CategoriesSchemaFromServe[];
@@ -290,6 +288,26 @@ export async function promptReplace(
                     palabrasEncontradas2.includes(prod.name)
                 ),
             };
+        } else {
+            const searchProduct = await chatgpt(
+                whatsapp,
+                `Esto son mis categorias ${JSON.stringify(
+                    data.categorias
+                )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mande, respondeme [id_de_categorias_encontrados_en_el_mensaje]. solo responde [], por que usare en JSON.parse([])`
+            );
+            const categoriesFound = JSON.parse(searchProduct || "[]");
+            console.log({ categoriesFound });
+
+            if (categoriesFound.length) {
+                productsData = {
+                    ...data,
+                    products: data.products.filter((prod) =>
+                        categoriesFound.includes(prod.category_id)
+                    ),
+                };
+            } else {
+                productsData = {} as DataPrompt;
+            }
         }
         console.log({ productsData });
     }

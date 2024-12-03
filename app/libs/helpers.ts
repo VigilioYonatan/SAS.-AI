@@ -60,6 +60,7 @@ export function distanciaDeLevenshtein(a: string, b: string) {
     const lenA = a.length;
     const lenB = b.length;
     const matrix = Array(lenA + 1);
+
     for (let i = 0; i <= lenA; i++) {
         matrix[i] = Array(lenB + 1).fill(0);
     }
@@ -81,6 +82,7 @@ export function distanciaDeLevenshtein(a: string, b: string) {
             );
         }
     }
+
     return matrix[lenA][lenB];
 }
 // nos trae 0,5,10 depende de cuantos numeros hay
