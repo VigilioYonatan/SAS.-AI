@@ -175,7 +175,7 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
         >
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             <div class={`w-full  grid banner-${i} relative`}>
-                {gr.banners.map((banner, u) => {
+                {gr.banners.map((banner) => {
                     if (!banner.enabled) return null;
                     let file = null;
                     // let script = null;
@@ -191,7 +191,7 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
 
                     return (
                         <div
-                            class={`w-full relative h-full group overflow-hidden grid-banner-${i}-${u}`}
+                            class={`w-full relative h-full group overflow-hidden grid-banner-${i}-${banner.order}`}
                             style={{
                                 "grid-column": `span ${banner.col} / span ${banner.col}`,
                                 "grid-row": `span ${banner.col} / span ${banner.row}`,

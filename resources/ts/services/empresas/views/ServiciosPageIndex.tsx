@@ -125,7 +125,7 @@ function ServiciosPageIndex() {
                                 {grid!.banners!.length ? (
                                     <>
                                         {" "}
-                                        {grid!.banners?.map((banner, u) => {
+                                        {grid!.banners?.map((banner) => {
                                             let file = null;
 
                                             const [selectedSize, divRef] =
@@ -141,7 +141,7 @@ function ServiciosPageIndex() {
 
                                             return (
                                                 <div
-                                                    class={`w-full relative h-full group overflow-hidden grid-banner-${g}-${u}`}
+                                                    class={`w-full relative h-full group overflow-hidden grid-banner-${g}-${banner.order}`}
                                                     ref={divRef}
                                                     key={banner.id}
                                                     onClick={() => {

@@ -121,7 +121,7 @@ function BannersIndex() {
                                 {grid.banners.length ? (
                                     <>
                                         {" "}
-                                        {grid.banners.map((banner, u) => {
+                                        {grid.banners.map((banner) => {
                                             let file = null;
                                             const [selectedSize, divRef] =
                                                 useImageWithDimension([
@@ -136,7 +136,7 @@ function BannersIndex() {
 
                                             return (
                                                 <div
-                                                    class={`w-full relative h-full group overflow-hidden grid-banner-${g}-${u}`}
+                                                    class={`w-full relative h-full group overflow-hidden grid-banner-${g}-${banner.order}`}
                                                     style={{
                                                         "grid-column": `span ${banner.col} / span ${banner.col}`,
                                                         "grid-row": `span ${banner.row} / span ${banner.row}`,
