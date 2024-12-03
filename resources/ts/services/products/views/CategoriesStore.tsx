@@ -44,6 +44,7 @@ function CategoriesStore({
             wallpaper: null,
         },
     });
+    console.log(categoriesStoreDtoForm.formState.errors);
 
     const categoriesStoreMutation = categoriesStoreApi();
     const aiCategoryMutation = aiCategoryApi();
