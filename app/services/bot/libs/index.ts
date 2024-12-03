@@ -214,16 +214,19 @@ export async function onDb(empresa: Empresas) {
 function encontrarPalabrasSimilares(texto: string, array: string[]) {
     const textoLower = texto.toLowerCase(); // Convertir el texto del cliente a minúsculas
     const umbralLevenshtein = 3; // Umbral máximo de distancia Levenshtein permitido (puedes ajustarlo)
-  
+
     // Filtrar productos que tengan una distancia de Levenshtein razonable con el texto del cliente
-    const productosEncontrados = array.filter(producto => {
-      // Calcular la distancia de Levenshtein
-      const distancia = distanciaDeLevenshtein(textoLower, producto.toLowerCase());
-      
-      // Considerar el producto si la distancia es menor o igual al umbral
-      return distancia <= umbralLevenshtein;
+    const productosEncontrados = array.filter((producto) => {
+        // Calcular la distancia de Levenshtein
+        const distancia = distanciaDeLevenshtein(
+            textoLower,
+            producto.toLowerCase()
+        );
+
+        // Considerar el producto si la distancia es menor o igual al umbral
+        return distancia <= umbralLevenshtein;
     });
-  
+
     return productosEncontrados;
 }
 
@@ -274,7 +277,6 @@ export async function promptReplace(
             message,
             data.products.map((prod) => prod.name)
         );
-        console.log({ palabrasEncontradas2 });
 
         if (palabrasEncontradas2.length) {
             productsData = {

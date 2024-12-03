@@ -293,9 +293,10 @@ export class WebsocketsService {
                         `'${body.content}', Solo agradece. muy corto y usa emojis.`
                     );
                 } else {
+                    const contenido = `- Ignora y estamos en: ${product.name}.\n${body.content}`;
                     const prompt = await promptReplace(
                         whatsapp,
-                        body.content,
+                        contenido,
                         whatsapp.empresa!
                     );
 
@@ -319,9 +320,7 @@ export class WebsocketsService {
                             },
                             {
                                 role: "user",
-                                content: `
-                                - Ignora y estamos en: ${product.name}.\n
-                                ${body.content}`,
+                                content: contenido,
                             },
                         ],
                     });
@@ -491,9 +490,10 @@ export class WebsocketsService {
                     `'${body.content}', Solo agradece. muy corto y usa emojis.`
                 );
             } else {
+                const contenido = `- Ignora y estamos en: ${product.name}.\n${body.content}`;
                 const prompt = await promptReplace(
                     whatsapp,
-                    body.content,
+                    contenido,
                     whatsapp.empresa!
                 );
 
@@ -527,9 +527,7 @@ export class WebsocketsService {
                         ),
                         {
                             role: "user",
-                            content: `
-                            - Estamos en y ignora eso: ${product.name}.\n
-                            ${body.content}`,
+                            content: contenido,
                         },
                     ],
                 });
