@@ -293,7 +293,7 @@ export class WebsocketsService {
                         `'${body.content}', Solo agradece. muy corto y usa emojis.`
                     );
                 } else {
-                    const contenido = `- Ignora y estamos en: ${product.name}.\n${body.content}`;
+                    const contenido = `${product.name} <- estamos en ese producto/servicio y ingoralo: .\n${body.content}`;
                     const prompt = await promptReplace(
                         whatsapp,
                         contenido,
@@ -490,7 +490,7 @@ export class WebsocketsService {
                     `'${body.content}', Solo agradece. muy corto y usa emojis.`
                 );
             } else {
-                const contenido = `- Ignora y estamos en: ${product.name}.\n${body.content}`;
+                const contenido = `${product.name} <- estamos en ese producto/servicio y Ignora: .\n${body.content}`;
                 const prompt = await promptReplace(
                     whatsapp,
                     contenido,
