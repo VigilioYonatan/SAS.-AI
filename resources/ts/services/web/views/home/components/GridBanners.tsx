@@ -18,7 +18,7 @@ function GridBanners({ grid, i }: GridBanners) {
         >
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             <div class={`w-full  grid grid-banner-${i} relative`}>
-                {gr.banners.map((banner, u) => {
+                {gr.banners.map((banner) => {
                     if (!banner.enabled) return null;
                     let file = null;
                     // let script = null;
