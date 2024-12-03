@@ -212,10 +212,8 @@ export async function onDb(empresa: Empresas) {
 }
 
 function encontrarPalabrasSimilares(texto: string, array: string[]) {
-    console.log({ array });
-
     const textoNormalizado = texto.toLowerCase().replace(/[^a-z0-9\s]/g, ""); // Normalizamos el texto del cliente
-    const umbralLevenshtein = 5; // Umbral máximo de distancia Levenshtein permitido (puedes ajustarlo)
+    const umbralLevenshtein = 8; // Umbral máximo de distancia Levenshtein permitido (puedes ajustarlo)
 
     // Filtrar productos que tengan una distancia de Levenshtein razonable con el texto del cliente
     const productosEncontrados = array.filter((producto) => {
@@ -268,12 +266,29 @@ export async function promptReplace(
             message,
             data.products.map((prod) => prod.name)
         );
-        productsData = {
-            ...data,
-            products: data.products.filter((prod) =>
-                palabrasEncontradas2.includes(prod.name)
-            ),
-        };
+        if (palabrasEncontradas2.length) {
+            productsData = {
+                ...data,
+                products: data.products.filter((prod) =>
+                    palabrasEncontradas2.includes(prod.name)
+                ),
+            };
+        } else {
+            const palabrasEncontradas2 = encontrarPalabrasSimilares(
+                message,
+                data.products.map((prod) =>
+                    prod.name.split(" ").slice(0, 2).join(" ")
+                )
+            );
+            productsData = {
+                ...data,
+                products: data.products.filter((prod) =>
+                    palabrasEncontradas2.includes(
+                        prod.name.split(" ").slice(0, 2).join(" ")
+                    )
+                ),
+            };
+        }
     } else {
         console.log({ message });
 
@@ -291,24 +306,42 @@ export async function promptReplace(
                 ),
             };
         } else {
-            const searchProduct = await chatgpt(
-                whatsapp,
-                `Esto son mis categorias ${JSON.stringify(
-                    data.categorias
-                )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mande, respondeme [id_de_categorias_encontrados_en_el_mensaje]. solo responde [], por que usare en JSON.parse([])`
+            const palabrasEncontradas2 = encontrarPalabrasSimilares(
+                message,
+                data.products.map((prod) =>
+                    prod.name.split(" ").slice(0, 2).join(" ")
+                )
             );
-            const categoriesFound = JSON.parse(searchProduct || "[]");
-            console.log({ categoriesFound });
+            console.log({ palabrasEncontradas2 });
 
-            if (categoriesFound.length) {
-                productsData = {
-                    ...data,
-                    products: data.products.filter((prod) =>
-                        categoriesFound.includes(prod.category_id)
-                    ),
-                };
-            } else {
-                productsData = {} as DataPrompt;
+            productsData = {
+                ...data,
+                products: data.products.filter((prod) =>
+                    palabrasEncontradas2.includes(
+                        prod.name.split(" ").slice(0, 2).join(" ")
+                    )
+                ),
+            };
+            if (!palabrasEncontradas2.length) {
+                const searchProduct = await chatgpt(
+                    whatsapp,
+                    `Esto son mis categorias ${JSON.stringify(
+                        data.categorias
+                    )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mande, respondeme [id_de_categorias_encontrados_en_el_mensaje]. solo responde [], por que usare en JSON.parse([])`
+                );
+                const categoriesFound = JSON.parse(searchProduct || "[]");
+                console.log({ categoriesFound });
+
+                if (categoriesFound.length) {
+                    productsData = {
+                        ...data,
+                        products: data.products.filter((prod) =>
+                            categoriesFound.includes(prod.category_id)
+                        ),
+                    };
+                } else {
+                    productsData = {} as DataPrompt;
+                }
             }
         }
         console.log({ productsData });
