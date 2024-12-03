@@ -116,7 +116,7 @@ function BannersIndex() {
                             </div>
 
                             <div
-                                class={`dark:bg-admin-terciary w-full  grid banner-${g} relative  `}
+                                class={`dark:bg-admin-terciary w-full  grid grid-banner-${g} relative  `}
                             >
                                 {grid.banners.length ? (
                                     <>
