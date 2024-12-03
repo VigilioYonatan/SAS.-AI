@@ -299,7 +299,7 @@ export async function promptReplace(
                 whatsapp,
                 `Esto son mis categorias ${JSON.stringify(
                     data.categorias
-                )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mandé, respondeme [ids_de_categorias_encontrados_en_el_mensaje]. SOLO responde [] en json.stringify, por que usare en JSON.parse([] en json.stringify)`
+                )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mandé, respondeme [ids_de_categorias_encontrados_en_el_mensaje]. SOLO responde [] en json.stringify no markdown, por que usare en JSON.parse([] en json.stringify)`
             );
             console.log({ searchProduct });
 
