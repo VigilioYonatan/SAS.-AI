@@ -37,10 +37,13 @@ export class WebsocketsService {
     ) {}
     async index(token: string) {
         if (token === "null") return null;
-        const user = await Users.findByPk(token, {
+        const user = await Users.unscoped().findByPk(token, {
             attributes: ["id", "username", "role_id", "isOnline", "empresa_id"],
             include: [
-                { model: Empresas, attributes: ["name_empresa", "slug", "id"] },
+                {
+                    model: Empresas.unscoped(),
+                    attributes: ["name_empresa", "slug", "id"],
+                },
             ],
         });
         return user;

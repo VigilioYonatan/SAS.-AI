@@ -403,9 +403,8 @@ export async function promptReplace(
     if (
         isSaludo ||
         isDespedida ||
-        isTemaEnvio ||
         isCita ||
-        !productsData.products.length
+        (isTemaEnvio && !productsData.products.length)
     ) {
         productsData = {} as DataPrompt;
     }
