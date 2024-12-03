@@ -67,7 +67,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         const messageActual = `Mensajes Anterior: ${messageAnterior.join(
             ", "
         )}.\n
-        Mensaje Actual: ${message}. escribe en html no mkdown`;
+        Mensaje Actual: ${message}.`;
 
         const prompt = await promptReplace(whatsapp, messageActual!, empresa);
 
@@ -96,6 +96,8 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         ];
         return removeNote;
     } catch (error) {
+        console.log((error as Error).message);
+
         return "Hubo un error al usar ia, posible errores no hay tokens.";
     }
 }
