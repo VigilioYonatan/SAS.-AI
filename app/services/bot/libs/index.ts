@@ -312,45 +312,30 @@ export async function promptReplace(
                 ),
             };
         } else {
-            const palabrasEncontradas2 = encontrarPalabrasSimilares(
-                message,
-                data.products.map((prod) =>
-                    prod.name.split(" ").slice(0, 2).join(" ")
-                )
+            const searchProduct = await chatgpt(
+                whatsapp,
+                `Esto son mis categorias ${JSON.stringify(
+                    data.categorias
+                )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mande, respondeme [id_de_categorias_encontrados_en_el_mensaje]. SOLO responde [], por que usare en JSON.parse([])`
             );
-            console.log({ palabrasEncontradas2 });
+            const categoriesFound = JSON.parse(searchProduct || "[]");
 
-            productsData = {
-                ...data,
-                products: data.products.filter((prod) =>
-                    palabrasEncontradas2.includes(
-                        prod.name.split(" ").slice(0, 2).join(" ")
-                    )
-                ),
-            };
-            if (!palabrasEncontradas2.length) {
-                const searchProduct = await chatgpt(
-                    whatsapp,
-                    `Esto son mis categorias ${JSON.stringify(
-                        data.categorias
-                    )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mande, respondeme [id_de_categorias_encontrados_en_el_mensaje]. solo responde [], por que usare en JSON.parse([])`
-                );
-                const categoriesFound = JSON.parse(searchProduct || "[]");
-                console.log({ categoriesFound });
-
-                if (categoriesFound.length) {
-                    productsData = {
-                        ...data,
-                        products: data.products.filter((prod) =>
-                            categoriesFound.includes(prod.category_id)
-                        ),
-                    };
-                } else {
-                    productsData = {} as DataPrompt;
-                }
+            if (categoriesFound.length) {
+                productsData = {
+                    ...data,
+                    products: data.products.filter((prod) =>
+                        categoriesFound.includes(prod.category_id)
+                    ),
+                };
+            } else {
+                productsData = empresa.isTemplate
+                    ? {
+                          ...data,
+                          products: data.products,
+                      }
+                    : ({} as DataPrompt);
             }
         }
-        console.log({ productsData });
     }
 
     const regex = /ord-[0-9]+/g;
