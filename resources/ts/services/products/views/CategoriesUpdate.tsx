@@ -19,6 +19,7 @@ import {
 	CategoriesUpdateDto,
 	CategoriesUpdateImageDto,
 	categoriesUpdateImageDto,
+	categoriesUpdateWallpaperDto,
 	CategoriesUpdateWallpaperDto,
 } from "../dtos/categories.update.dto";
 import { getFilesEdit } from "~/libs/upload";
@@ -67,7 +68,7 @@ function CategoriesUpdate({ id, onClose, refetch }: CategoriesUpdateProps) {
 		const formProductsNormalUpdateWallpaper =
 			useForm<CategoriesUpdateWallpaperDto>({
 				mode: "all",
-				resolver: valibotVigilio(categoriesUpdateImageDto),
+				resolver: valibotVigilio(categoriesUpdateWallpaperDto),
 			});
 
 		const categoriesUpdateImagesMutate = categoriesUpdateImagesApi(category.id);
@@ -117,8 +118,7 @@ function CategoriesUpdate({ id, onClose, refetch }: CategoriesUpdateProps) {
 		}
 		function onUpdateImagesProduct(data: CategoriesUpdateImageDto) {
 			sweetModal({
-				title: "¿Estás seguro de editar las imagenes de esta categoria?",
-
+				title: "¿Estás seguro de editar la imagen de esta categoria?",
 				showCloseButton: true,
 				showCancelButton: true,
 			}).then(({ isConfirmed }) => {
