@@ -260,50 +260,32 @@ export async function promptReplace(
         }
     }
     let productsData = data;
+    const fuse = new Fuse(
+        data.products.map((prod) => prod.name.toLowerCase()),
+        {
+            threshold: 0.7,
+            includeScore: true,
+            keys: [],
+        }
+    );
+
+    const resultados = fuse
+        .search(message.toLowerCase().replace(/[^a-z0-9\s]/g, ""))
+        .map((result) => result.item);
 
     // si no es inteligente que busque
     if (!empresa.inteligenceArtificial.enabledBotInteligence) {
-        const palabrasEncontradas2 = encontrarPalabrasSimilares(
-            message,
-            data.products.map((prod) => prod.name)
-        );
-        if (palabrasEncontradas2.length) {
+        if (resultados.length) {
             productsData = {
                 ...data,
                 products: data.products.filter((prod) =>
-                    palabrasEncontradas2.includes(prod.name)
+                    resultados.includes(prod.name)
                 ),
             };
         } else {
-            const palabrasEncontradas2 = encontrarPalabrasSimilares(
-                message,
-                data.products.map((prod) =>
-                    prod.name.split(" ").slice(0, 2).join(" ")
-                )
-            );
-            productsData = {
-                ...data,
-                products: data.products.filter((prod) =>
-                    palabrasEncontradas2.includes(
-                        prod.name.split(" ").slice(0, 2).join(" ")
-                    )
-                ),
-            };
+            productsData = {} as DataPrompt;
         }
     } else {
-        const fuse = new Fuse(
-            data.products.map((prod) => prod.name.toLowerCase()),
-            {
-                threshold: 0.7,
-                includeScore: true,
-                keys: [],
-            }
-        );
-
-        const resultados = fuse
-            .search(message.toLowerCase().replace(/[^a-z0-9\s]/g, ""))
-            .map((result) => result.item);
-
         if (resultados.length) {
             productsData = {
                 ...data,
@@ -316,7 +298,7 @@ export async function promptReplace(
                 whatsapp,
                 `Esto son mis categorias ${JSON.stringify(
                     data.categorias
-                )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mande, respondeme [id_de_categorias_encontrados_en_el_mensaje]. SOLO responde [], por que usare en JSON.parse([])`
+                )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mandé, respondeme [ids_de_categorias_encontrados_en_el_mensaje]. SOLO responde [] en json.stringify, por que usare en JSON.parse([])`
             );
             const categoriesFound = JSON.parse(searchProduct || "[]");
 
