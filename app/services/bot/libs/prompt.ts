@@ -157,7 +157,7 @@ export async function prompt(
         empresa.isDolar
             ? `DOLAR HOY:${cache.get(
                   `money:${empresa.slug}`
-              )}. Traeme el precio tambien en dólares si te pido PRECIO_DE_PRODUCTO_SERVICIO * DOLAR_HOY`
+              )}. Si te PIDO en dolares, Traeme el precio tambien en dólares  PRECIO_DE_PRODUCTO_SERVICIO * DOLAR_HOY y `
             : ""
     }
     - Los decimales máximo un toFixed(2), incluye precioS, etc.
