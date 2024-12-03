@@ -398,6 +398,7 @@ export async function promptReplace(
                 "es pregunta, cualquier tiempo de pregunta."
             ),
         ]);
+    console.log({ isSaludo, isDespedida, isTemaEnvio, isCita });
 
     if (
         isSaludo ||
