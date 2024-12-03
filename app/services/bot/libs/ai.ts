@@ -217,8 +217,20 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
                     content,
                 })
             );
+            const messageAnterior = messages
+                .filter((a) => a.role === "user")
+                .slice(-3, -1)
+                .map((c) => c.content);
+            const messageActual = `Mensajes Anterior: ${messageAnterior.join(
+                ", "
+            )}.\n
+        Mensaje Actual: ${message}. escribe formato telegram`;
             // Si el primer mensaje en lastMessages no es del role
-            const prompt = await promptReplace(telegram, body!, empresa);
+            const prompt = await promptReplace(
+                telegram,
+                messageActual,
+                empresa
+            );
 
             const completion = await openAis[
                 empresa.slug

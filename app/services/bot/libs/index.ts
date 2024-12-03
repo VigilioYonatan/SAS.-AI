@@ -275,7 +275,6 @@ export async function promptReplace(
     const resultados = fuse
         .search(cleantext(message))
         .map((result) => result.item);
-    console.log({ resultados });
 
     // si no es inteligente que busque
     if (!empresa.inteligenceArtificial.enabledBotInteligence) {
@@ -304,8 +303,6 @@ export async function promptReplace(
                     data.categorias
                 )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mandé, respondeme [ids_de_categorias_encontrados_en_el_mensaje]. SOLO responde [] en json.stringify no markdown, por que usare en JSON.parse([] en json.stringify)`
             );
-            console.log({ searchProduct });
-
             const categoriesFound = JSON.parse(searchProduct || "[]");
 
             if (categoriesFound.length) {
