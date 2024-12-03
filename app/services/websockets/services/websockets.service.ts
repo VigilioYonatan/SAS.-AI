@@ -27,6 +27,8 @@ import { openAis } from "@/empresas/services/empresas.api.service";
 import { HTMLPROMPT } from "../controllers/websockets.controller";
 import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import { TipoEmpresa } from "@/empresas/entities/tipo_empresa.entity";
+import cache from "@vigilio/express-core/cache";
 
 @Injectable()
 export class WebsocketsService {
@@ -589,6 +591,21 @@ export class WebsocketsService {
         // solo modificadores,trabajadores y admin
 
         if (!user) return null;
+        let isEmpresaRestaurant = JSON.parse(
+            cache.get(`isRestaurant:${empresa}`) || "null"
+        );
+        if (!isEmpresaRestaurant) {
+            const empresas = await Empresas.unscoped().findByPk(empresa, {
+                include: [TipoEmpresa.unscoped()],
+            });
+            isEmpresaRestaurant = empresas;
+            cache.set(`isRestaurant:${empresa}`, JSON.stringify(empresas));
+        }
+
+        if (isEmpresaRestaurant?.tipo_empresa.tipo_servicio_id !== 2)
+            return null;
+        if (![ROLES.trabajador, ROLES.admin].includes(user.role_id))
+            return null;
         const floors = await Floors.findAll({
             include: [
                 {
