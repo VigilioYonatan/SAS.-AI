@@ -12,7 +12,7 @@ function TitleSection({ children, titleExample }: TitleSectionProps) {
 	storageEmpresa?.setting.border_title_type;
 	return (
 		<div
-			class={`w-full flex      ${
+			class={`w-full flex  title-section     ${
 				title === "border" ? "title-container-1" : " justify-center"
 			} items-center`}
 		>

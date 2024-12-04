@@ -1,33 +1,33 @@
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 interface TitleSectionProps {
-	children: JSX.Element | JSX.Element[] | string;
-	isFooter?: boolean;
+    children: JSX.Element | JSX.Element[] | string;
+    isFooter?: boolean;
 }
 function TitleSectionTwo({ children, isFooter = false }: TitleSectionProps) {
-	const title = storageEmpresa?.setting.border_title_type;
-	return (
-		<div
-			class={`w-full flex      ${
-				title === "border" && !isFooter
-					? "title-container-2"
-					: `${isFooter ? "" : "justify-center"} `
-			} items-center`}
-		>
-			<h3
-				class={`uppercase inline-block dark:text-white  font-bold my-4  ${
-					title === "border"
-						? "border-b-[3px] border-primary mb-2 self-start "
-						: title === "normal"
-							? "title-container-2"
-							: ""
-				}`}
-			>
-				{children}
-			</h3>
-			{title === "normal" ? (
-				<style jsx>
-					{`
+    const title = storageEmpresa?.setting.border_title_type;
+    return (
+        <div
+            class={`w-full flex   title-section-2    ${
+                title === "border" && !isFooter
+                    ? "title-container-2"
+                    : `${isFooter ? "" : "justify-center"} `
+            } items-center`}
+        >
+            <h3
+                class={`uppercase inline-block dark:text-white  font-bold my-4  ${
+                    title === "border"
+                        ? "border-b-[3px] border-primary mb-2 self-start "
+                        : title === "normal"
+                        ? "title-container-2"
+                        : ""
+                }`}
+            >
+                {children}
+            </h3>
+            {title === "normal" ? (
+                <style jsx>
+                    {`
                         .title-container-2 {
                             position: relative;
                         }
@@ -43,10 +43,10 @@ function TitleSectionTwo({ children, isFooter = false }: TitleSectionProps) {
                             background-color: var(--primary);
                         }
                     `}
-				</style>
-			) : title === "border" ? (
-				<style jsx>
-					{`
+                </style>
+            ) : title === "border" ? (
+                <style jsx>
+                    {`
                         .title-container-2 {
                             position: relative;
                         }
@@ -63,10 +63,10 @@ function TitleSectionTwo({ children, isFooter = false }: TitleSectionProps) {
                             background-color: #ebebeb;
                         }
                     `}
-				</style>
-			) : null}
-		</div>
-	);
+                </style>
+            ) : null}
+        </div>
+    );
 }
 
 export default TitleSectionTwo;
