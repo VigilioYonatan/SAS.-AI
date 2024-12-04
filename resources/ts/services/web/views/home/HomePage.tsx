@@ -107,20 +107,21 @@ function HomePage({
                     productmostdiscountmapped={productmostdiscountmapped}
                 />
                 <ServiciosSection servicios={header.categoriesServices} />
+                <GridBanners grid={gridbanners} i={2} />
                 <CategoriesProductSection
                     getProductsByCategories={getproductsbycategories}
                 />
-                <GridBanners grid={gridbanners} i={2} />
+
                 <ProductsUsers
                     productsmostreactionmapped={productsmostreactionmapped}
                     productsmostratingmapped={productsmostratingmapped}
                     productsmostcommentsmapped={productsmostcommentsmapped}
                 />
-
+                <GridBanners grid={gridbanners} i={3} />
                 <BrandsSection brands={brands} />
                 <PostsSection posts={posts} />
                 <UsersSection users={users} />
-                <GridBanners grid={gridbanners} i={3} />
+                <GridBanners grid={gridbanners} i={4} />
                 <FindSection />
             </WebLayout>
         </>
