@@ -1,6 +1,7 @@
 import { BannerSchema } from "@/empresas/schemas/banner.schema";
 import { GridBannerServicechemaFromServer } from "@/empresas/schemas/grid-banner-service.schema";
 import { GridBannerSchema } from "@/empresas/schemas/grid_banner.schema";
+import AdminEdit from "@/web/components/AdminEdit";
 import TitleSection from "@/web/components/TitleSection";
 import useImageWithDimension from "~/hooks/useImageWithDimension";
 import { printFileWithDimension } from "~/libs/upload";
@@ -13,9 +14,10 @@ function GridBanners({ grid, i }: GridBanners) {
     const gr = grid[i];
     if (!gr?.banners.length || !gr.enabled) return null;
     return (
-        <div
+        <section
             class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}  `}
         >
+            <AdminEdit uri={`/admin/banners?banner=${i + 1}`} />
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             <div class={`w-full  grid banners-${i} relative`}>
                 {gr.banners.map((banner) => {
@@ -159,7 +161,7 @@ function GridBanners({ grid, i }: GridBanners) {
                         .join("")}
                 `}</style>
             </div>
-        </div>
+        </section>
     );
 }
 interface GridBannersServiciosProps {
@@ -170,9 +172,11 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
     const gr = grid.grid_banner_id ? grid.grid_banner : grid;
     if (!gr?.banners.length || !gr.enabled) return null;
     return (
-        <div
+        <section
             class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}  `}
         >
+            {" "}
+            <AdminEdit uri={`/admin/banners?banner=${i + 1}`} />
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             <div class={"w-full  grid relative"}>
                 {gr.banners.map((banner) => {
@@ -316,7 +320,7 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
                         .join("")}
                 `}</style>
             </div>
-        </div>
+        </section>
     );
 }
 

@@ -30,6 +30,7 @@ function ServiciosSection({ servicios }: serviciosSectionProps) {
             } `}
             id="servicios"
         >
+            
             <TitleSection>Nuestros Servicios</TitleSection>
             <div class="flex flex-col gap-6">
                 <div class="w-full flex flex-col md:flex-row gap-3 max-h-[410px] overflow-auto">

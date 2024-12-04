@@ -16,7 +16,7 @@ import { gridBannerUpdateApi } from "../apis/grid_banner/grid_banner.update.api"
 import Form from "~/components/form";
 import Hr from "@/web/components/Hr";
 import { Fragment } from "preact/jsx-runtime";
-import { handlerError } from "~/libs/helpers";
+import { getParams, handlerError } from "~/libs/helpers";
 import { getFilesEdit, printFileWithDimension } from "~/libs/upload";
 import useMediaQuery, { ResponsiveWidth } from "~/hooks/useMediaQuery";
 import AlertInfo from "~/components/Alerts/AlertInfo";
@@ -46,6 +46,8 @@ function BannersIndex() {
     const bannerDestroyMutate = bannerDestroyApi();
     const showHtml = useSignal(HTMLSHOW);
     let component: JSX.Element | JSX.Element[] | null = null;
+    const bannerParams = getParams().get("banner");
+
     if (gridBannerIndexQuery.isLoading) {
         component = <Loading />;
     }
@@ -57,7 +59,14 @@ function BannersIndex() {
             <Fragment>
                 {gridBannerIndexQuery.data?.data.map((grid, g) => {
                     return (
-                        <div key={grid.id} class={`grid-banner-${g} relative`}>
+                        <div
+                            key={grid.id}
+                            class={`grid-banner-${g}  ${
+                                Number(bannerParams) === g + 1
+                                    ? "border-4 border-primary shadow"
+                                    : ""
+                            } relative`}
+                        >
                             <div class="flex justify-between w-full mb-1 items-center">
                                 <span class="font-semibold text-sm">
                                     Banner {g + 1}
@@ -116,9 +125,7 @@ function BannersIndex() {
                             </div>
 
                             <div
-                                class={
-                                    `dark:bg-admin-terciary w-full  grid  relative banners-${g}  `
-                                }
+                                class={`dark:bg-admin-terciary w-full  grid  relative banners-${g}  `}
                             >
                                 {grid.banners.length ? (
                                     <>

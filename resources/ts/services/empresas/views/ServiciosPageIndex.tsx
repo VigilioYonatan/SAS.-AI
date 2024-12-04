@@ -10,7 +10,7 @@ import { valibotVigilio } from "~/libs/valibot";
 import Form from "~/components/form";
 import Hr from "@/web/components/Hr";
 import { Fragment } from "preact/jsx-runtime";
-import { handlerError } from "~/libs/helpers";
+import { getParams, handlerError } from "~/libs/helpers";
 import { getFilesEdit, printFileWithDimension } from "~/libs/upload";
 import useMediaQuery, { ResponsiveWidth } from "~/hooks/useMediaQuery";
 import AlertInfo from "~/components/Alerts/AlertInfo";
@@ -46,6 +46,7 @@ function ServiciosPageIndex() {
     const widthResponsive = ResponsiveWidth();
     const bannerDestroyMutate = bannerDestroyApi();
     const showHtml = useSignal(HTMLSHOW);
+    const bannerParams = getParams().get("banner");
     let component: JSX.Element | JSX.Element[] | null = null;
     if (gridBannerIndexQuery.isLoading) {
         component = <Loading />;
@@ -60,7 +61,14 @@ function ServiciosPageIndex() {
                     const grid = f.grid_banner_id ? f.grid_banner : f;
 
                     return (
-                        <div key={grid!.id} class={`grid-banner-${g} relative`}>
+                        <div
+                            key={grid!.id}
+                            class={`grid-banner-${g} relative ${
+                                Number(bannerParams) === g + 1
+                                    ? "border-4 border-primary shadow"
+                                    : ""
+                            }`}
+                        >
                             <div class="flex justify-between w-full mb-1 items-center">
                                 <span class="font-semibold text-sm">
                                     Banner {g + 1}
