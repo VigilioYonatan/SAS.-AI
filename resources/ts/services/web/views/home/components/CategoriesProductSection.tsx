@@ -45,7 +45,7 @@ function CategoriesProductSection({
                                     : "rounded-md"
                             } `}
                             style={{
-                                order: i % 2 === 0 ? 1 : 2,
+                                order: i % 2 === 0 ? 0 : 1,
                             }}
                         >
                             <img
