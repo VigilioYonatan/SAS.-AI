@@ -327,8 +327,8 @@ export class WebApiService {
                 productsMostCommentsMapped,
                 gridBanners,
             };
-
-            const hora = 60 * 60 * 1000;
+            const max = empresa.isTemplate ? 10000 : 1;
+            const hora = 60 * 60 * 1000 * max;
             cache.set(`home-${empresa.slug}`, JSON.stringify(cacheHome), hora);
         }
         return cacheHome;

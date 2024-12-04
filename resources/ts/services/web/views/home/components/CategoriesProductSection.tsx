@@ -24,7 +24,7 @@ function CategoriesProductSection({
             } `}
         >
             <TitleSection>Nuestros Productos</TitleSection>
-            {getProductsByCategories.map((category) => (
+            {getProductsByCategories.map((category, i) => (
                 <div
                     key={category.id}
                     class="flex lg:flex-row gap-6  overflow-hidden"
@@ -44,6 +44,7 @@ function CategoriesProductSection({
                                     ? ""
                                     : "rounded-md"
                             } `}
+                            style={{ order: i % 2 === 0 ? 1 : 2 }}
                         >
                             <img
                                 class="w-[150px] object-cover lg:w-[300px] h-full  group-hover:scale-105 delay-custom-1"
@@ -85,7 +86,7 @@ function CategoriesProductSection({
                                         class="overflow-hidden group"
                                     >
                                         <img
-                                            class="w-full h-[400px] object-contain lg:w-[300px] lg:h-[700px] group-hover:scale-105 delay-custom-1"
+                                            class="w-full h-[400px] object-cover md:object-contain lg:w-[300px] lg:h-[700px] group-hover:scale-105 delay-custom-1"
                                             width={300}
                                             height={1200}
                                             src={
