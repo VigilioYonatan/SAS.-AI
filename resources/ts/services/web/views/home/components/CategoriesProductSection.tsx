@@ -44,6 +44,9 @@ function CategoriesProductSection({
                                     ? ""
                                     : "rounded-md"
                             } `}
+                            style={{
+                                order: i % 2 === 0 ? 1 : 2,
+                            }}
                         >
                             <img
                                 class="w-[150px] object-cover lg:w-[300px] h-full  group-hover:scale-105 delay-custom-1"
@@ -82,9 +85,6 @@ function CategoriesProductSection({
                                 useMediaQuery("(max-width: 1024px)") ? (
                                     <a
                                         href={`/shop/${category.slug}`}
-                                        style={{
-                                            order: (i + 1) % 2 === 0 ? 1 : 2,
-                                        }}
                                         class="overflow-hidden group"
                                     >
                                         <img
