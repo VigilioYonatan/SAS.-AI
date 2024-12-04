@@ -146,7 +146,7 @@ export class WebApiService {
                     where: { empresa_id: empresa.id },
                     group: [key],
                     order: [[Sequelize.literal("favoritescount"), "DESC"]],
-                    limit: 6,
+                    limit: 4,
                     raw: true,
                 }),
                 Ratings.findAll({
@@ -156,7 +156,7 @@ export class WebApiService {
                     ],
                     group: ["ratingsable_id"],
                     order: [[Sequelize.literal("stars"), "DESC"]], // Ordena por el promedio en orden descendente
-                    limit: 6, // Limita a los 5 productos con mejor promedio de rating
+                    limit: 4, // Limita a los 5 productos con mejor promedio de rating
                     where: {
                         empresa_id: empresa.id,
                         ratingsable_type: keys,
@@ -177,7 +177,7 @@ export class WebApiService {
                     },
                     group: ["commentsable_id"],
                     order: [[Sequelize.literal("commentscount"), "DESC"]],
-                    limit: 6,
+                    limit: 4,
                     raw: true,
                 }),
                 Users.findAll({
