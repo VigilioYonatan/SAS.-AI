@@ -850,7 +850,7 @@ function HeaderAside({ header, isOpen }: HeaderAsideProps) {
     const empresaStore = useEmpresastore();
     return (
         <div
-            class={`flex absolute right-0 dark:bg-paper-dark dark:text-white z-[99] delay-custom-1 left-0 flex-col ${
+            class={`flex absolute right-0  dark:bg-paper-dark dark:text-white z-[99] delay-custom-1 left-0 flex-col ${
                 storageEmpresa?.setting.is_block_aside && isActive("/", false)
                     ? "max-h-[450px]"
                     : isOpen

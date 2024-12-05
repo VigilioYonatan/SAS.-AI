@@ -35,6 +35,12 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
 
     @Column({
         type: DataType.STRING(60),
+        defaultValue: "transparent",
+    })
+    bg_color_aside: string;
+
+    @Column({
+        type: DataType.STRING(60),
     })
     bg_color_background: string;
 
