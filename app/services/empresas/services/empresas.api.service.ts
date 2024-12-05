@@ -75,11 +75,13 @@ export async function initial() {
         }
         // tipos finanzas
         // const finanzas = await TipoFinanza.findAll();
-        const setting = await empresa.$get("setting", {
-            attributes: ["bg_color_header"],
+        const [setting, created] = await Settings.findOrCreate({
+            where: { empresa_id: empresa.id },
+            defaults: { bg_color_header: "transparent" }, // Valores predeterminados si se crea
         });
-        if (!setting?.bg_color_header) {
-            await setting?.update({ bg_color_header: "transparent" });
+        if (!created && !setting.bg_color_header) {
+            // Si ya existía el registro pero el valor está vacío, actualizarlo
+            await setting.update({ bg_color_header: "transparent" });
         }
         openAis = { ...openAis, [empresa.slug]: openAiClient };
     }
