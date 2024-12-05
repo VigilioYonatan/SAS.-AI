@@ -266,7 +266,7 @@ export async function getProductAll(
     product.dataValues.rating = rated;
     if (!isNecesaryAllDescription) {
         const desc = removeTextHTML(product.dataValues.description);
-        product.dataValues.description = desc ? desc.slice(0, 300) : null;
+        product.dataValues.description = desc ? desc.slice(0, 600) : null;
     }
 
     return product;

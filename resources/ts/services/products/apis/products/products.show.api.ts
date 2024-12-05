@@ -4,30 +4,51 @@ import { ProductsServicioSchemaFromServer } from "@/products/schemas/products_se
 import { type UseQuery, useQuery } from "@vigilio/preact-fetching";
 
 export function productsShowApi(
-	slug: number | string,
-	isService: boolean,
+    slug: number | string,
+    isService: boolean
 ): UseQuery<ProductsShowAPI, ProductsShowErrorAPI> {
-	return useQuery<ProductsShowAPI, ProductsShowErrorAPI>(
-		`/products/${slug}${isService ? "?type=service" : ""}`,
-		productShowFetch,
-	);
+    return useQuery<ProductsShowAPI, ProductsShowErrorAPI>(
+        `/products/${slug}${isService ? "?type=service" : ""}`,
+        productShowFetch
+    );
 }
 export async function productShowFetch(url: string) {
-	const response = await fetch(`/api${url}`);
-	const result: ProductsShowAPI = await response.json();
-	if (!result.success) throw result;
-	return result;
+    const EXPIRATION_TIME = 15 * 60 * 1000;
+
+    let result = JSON.parse(localStorage.getItem(url) ?? "null");
+
+    if (!result || Date.now() - result.timestamp > EXPIRATION_TIME) {
+        const response = await fetch(`/api${url}`);
+        result = await response.json();
+        if (!result.success) throw result;
+        const { description, ...rest } = result.product;
+        localStorage.setItem(
+            url,
+            JSON.stringify({
+                timestamp: Date.now(),
+                data: {
+                    success: true,
+                    product: rest,
+                },
+            })
+        );
+
+        return result;
+    }
+
+    // If cache is still valid, return cached data
+    return result;
 }
 
 export interface ProductsShowAPI {
-	success: boolean;
-	product:
-		| ProductsNormalSchemaFromServer
-		| ProductsRestaurantSchemaFromServer
-		| ProductsServicioSchemaFromServer;
+    success: boolean;
+    product:
+        | ProductsNormalSchemaFromServer
+        | ProductsRestaurantSchemaFromServer
+        | ProductsServicioSchemaFromServer;
 }
 
 export interface ProductsShowErrorAPI {
-	success: boolean;
-	message: string;
+    success: boolean;
+    message: string;
 }
