@@ -35,9 +35,8 @@ export async function productShowFetch(url: string) {
 
         return result;
     }
-
     // If cache is still valid, return cached data
-    return result;
+    return result.data;
 }
 
 export interface ProductsShowAPI {
