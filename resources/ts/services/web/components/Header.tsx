@@ -108,6 +108,13 @@ function Header({ header }: HeaderProps) {
                         ? "color: #000000 !important"
                         : "color: #FFFFFF !important"};
                 }
+                .bg-header-custom {
+                    ${themeStore.state === "dark"
+                        ? "color: #FFFFFF !important"
+                        : isColorLight(storageEmpresa!.setting.bg_color_header)
+                        ? "color: #000000 !important"
+                        : "color: #FFFFFF !important"};
+                }
                 .bg-primary {
                     ${isColorLight(empresaStore.state!.setting.bg_color)
                         ? "color: #000000 !important"
@@ -154,7 +161,12 @@ function Header({ header }: HeaderProps) {
                         ? "bg-background-light dark:bg-background-dark sticky shadow"
                         : `  ${
                               !isTop.value
-                                  ? "sticky bg-background-light dark:bg-background-dark"
+                                  ? `sticky ${
+                                        storageEmpresa?.setting
+                                            .bg_color_header === "transparent"
+                                            ? "bg-background-light"
+                                            : "bg-header-custom"
+                                    }  dark:bg-background-dark`
                                   : ` ${
                                         isActive("/", false)
                                             ? "absolute"
