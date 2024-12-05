@@ -67,7 +67,10 @@ function ProductBody({
                                     product.producto
                                         .value as ProductsRestaurantSchemaFromServer
                                 ).ilimit
-                                    ? "En stock"
+                                    ? storageEmpresa!.tipo_empresa
+                                          .tipo_servicio_id === 2
+                                        ? "Cantidad Ilimitada"
+                                        : "En stock"
                                     : `${
                                           (
                                               product.producto
@@ -81,7 +84,10 @@ function ProductBody({
                         ) ? (
                             <>
                                 {product.varianteChoose!.ilimit
-                                    ? "En stock"
+                                    ? storageEmpresa!.tipo_empresa
+                                          .tipo_servicio_id === 2
+                                        ? "Cantidad Ilimitada"
+                                        : "En stock"
                                     : `${
                                           product.varianteChoose!.stock! > 0
                                               ? `${
