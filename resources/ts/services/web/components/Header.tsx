@@ -108,7 +108,7 @@ function Header({ header }: HeaderProps) {
                         ? "color: #000000 !important"
                         : "color: #FFFFFF !important"};
                 }
-                .bg-custom-header {
+                .bg-custom-header  > div, .bg-custom-header  > nav,{
                     ${themeStore.state === "dark"
                         ? "color: #FFFFFF !important"
                         : isColorLight(storageEmpresa!.setting.bg_color_header)
