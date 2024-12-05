@@ -24,6 +24,7 @@ function BackgroundStore({ onClose, refetch }: PoststoreProps) {
     const backgroundStoreDtoForm = useForm<BackgroundStoreDto>({
         resolver: valibotVigilio(backgroundStoreDto),
         mode: "all",
+        defaultValues: { html: null },
     });
     const backgroundStoreMutation = backgroundStoreApi();
 
