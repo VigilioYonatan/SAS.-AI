@@ -153,8 +153,10 @@ export function isActive(uri: string, include = true) {
 }
 export function removeTextHTML(value: string) {
     return value
-        .replace(/<img[^>]*src="[^"]*"[^>]*>/gi, "")
-        .replace(/(<([^>]+)>)/gi, "");
+        ? value
+              .replace(/<img[^>]*src="[^"]*"[^>]*>/gi, "")
+              .replace(/(<([^>]+)>)/gi, "")
+        : "";
 }
 
 export function formatTelephoneNumber(telephone: string) {
