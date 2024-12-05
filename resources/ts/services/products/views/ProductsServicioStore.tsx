@@ -73,6 +73,7 @@ function ProductsServicioStore({
     const name = productsServicioStoreDtoForm.watch("name");
     const discount = productsServicioStoreDtoForm.watch("discount");
     const price = productsServicioStoreDtoForm.watch("price");
+    const description = useSignal<string | null>(null);
 
     useEffect(() => {
         if (name) {
@@ -170,9 +171,9 @@ function ProductsServicioStore({
             title: "¿Estas seguro de agregar este servicio?",
             customIcon:
                 "<i class='fas fa-phone-laptop text-3xl dark:text-white' /> </i>",
-                isCloseInBackground: false,
-                showCancelButton: true,
-                showCloseButton: true,
+            isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
         }).then(({ isConfirmed }) => {
             if (isConfirmed) {
                 productsServicioStoreMutation.mutate(body, {
@@ -495,10 +496,11 @@ function ProductsServicioStore({
                         <></>
                     )}
 
-                    <Form.control.area
+                    <Form.control.editor
                         name={"description" as keyof ProductsServicioStoreDto}
                         title="Descripción"
-                        placeholder="Descripción del servicio"
+                        isShow
+                        change={description.value}
                     />
                     {storageEmpresa!.web ? (
                         <Form.control

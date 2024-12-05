@@ -98,6 +98,7 @@ function ProductsServicioUpdate({
             }
             return [];
         }, [categoriesIndexQuery.data, categoriesIndexQuery.isSuccess]);
+        const description = useSignal<string | null>(product.description);
         const formProductsServicioUpdateImages =
             useForm<ProductsUpdateImagesDto>({
                 mode: "all",
@@ -510,13 +511,12 @@ function ProductsServicioUpdate({
                         ) : (
                             <></>
                         )}
-
-                        <Form.control.area
+                        <Form.control.editor
                             name={
                                 "description" as keyof ProductsServicioUpdateDto
                             }
                             title="Descripción"
-                            placeholder="Descripción del servicio"
+                            change={description.value}
                         />
                         {storageEmpresa!.web ? (
                             <Form.control

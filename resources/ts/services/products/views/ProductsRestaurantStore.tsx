@@ -46,6 +46,7 @@ function ProductsRestaurantStore({
     }
     const isImageLoading = useSignal(false);
     const empresa = useEmpresastore();
+    const description = useSignal<string | null>(null);
     const productsRestaurantStoreDtoForm = useForm<ProductsRestaurantStoreDto>({
         resolver: valibotVigilio(productsRestaurantStoreDto),
         mode: "all",
@@ -432,11 +433,12 @@ function ProductsRestaurantStore({
                             </div>
                         ) : null}
                     </div>
-                    <Form.control.area
+                    <Form.control.editor
                         name={"description" as keyof ProductsRestaurantStoreDto}
                         title="Descripción"
-                        placeholder="Descripción de producto"
-                    />{" "}
+                        isShow
+                        change={description.value}
+                    />
                     {storageEmpresa!.web ? (
                         <Form.control
                             name={"url" as keyof ProductsRestaurantStoreDto}
