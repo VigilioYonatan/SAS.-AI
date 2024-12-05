@@ -120,6 +120,7 @@ export class SeedersApiService {
                             subcategories: true,
                         },
                         bg_color_header: "transparent",
+                        bg_color_aside: "transparent",
                         background_auth: null,
                         bg_color_secondary: "#dc2626",
                         type_animation: "fade-up",
