@@ -262,7 +262,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         telephoneReclamos: "9282828282",
         telephoneThird: "9282828282",
         enabled_igv: true,
-        igv: 21,
+        igv: 10,
         credentials: {
             open_ai:
                 "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",
@@ -390,7 +390,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
             tokens: { tokens: 10000000 },
             finanza: { enabled: true },
         },
-        type_empresa_id: 1, //22 servicio
+        type_empresa_id: 22, //22 restaurant
         bancos: [
             {
                 key: "bbva",

@@ -63,7 +63,7 @@ export class SeedersApiService {
                     ...empresa,
                     fullname: "Yonatan Vigilio",
                     password: "123456a",
-                    servicio_id: 1,
+                    servicio_id: 2,
                     setting: {
                         host: {
                             host: null,

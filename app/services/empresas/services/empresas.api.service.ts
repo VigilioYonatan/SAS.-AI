@@ -354,26 +354,33 @@ export class EmpresasApiService {
                 empresa.$create("metodos_pago", {
                     transferencias,
                     enable_efectivo: true,
-                    mercado_pago: { token: null, enabled: body.isTemplate },
+                    mercado_pago: {
+                        token: body.isTemplate ? "test-key" : null,
+                        enabled: body.isTemplate,
+                    },
                     qrYape: null,
                     qrPlin: null,
                     paypal: {
                         enabled: body.isTemplate,
-                        paypal_client_id: null,
-                        paypal_secret_key: null,
+                        paypal_client_id: body.isTemplate ? "test-key" : null,
+                        paypal_secret_key: body.isTemplate ? "test-key" : null,
                     },
                     izipay: {
                         enabled: body.isTemplate,
-                        izipay_client_id: null,
-                        izipay_client_secret: null,
-                        izipay_hash_key: null,
-                        izipay_public_key: null,
-                        izipay_url: null,
+                        izipay_client_id: body.isTemplate ? "test-key" : null,
+                        izipay_client_secret: body.isTemplate
+                            ? "test-key"
+                            : null,
+                        izipay_hash_key: body.isTemplate ? "test-key" : null,
+                        izipay_public_key: body.isTemplate ? "test-key" : null,
+                        izipay_url: body.isTemplate ? "test-key" : null,
                     },
                     stripe: {
                         enabled: body.isTemplate,
-                        stripe_client_secret: null,
-                        stripe_secret_key: null,
+                        stripe_client_secret: body.isTemplate
+                            ? "test-key"
+                            : null,
+                        stripe_secret_key: body.isTemplate ? "test-key" : null,
                     },
                 } as Omit<MetodosPagoSchema, "empresa_id">),
                 empresa.$create("address", {
