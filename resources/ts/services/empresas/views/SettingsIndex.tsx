@@ -682,6 +682,8 @@ function SettingsIndex() {
                                 }
                                 title="Color Secundario"
                             />
+                        </div>
+                        <div class="w-[120px]">
                             <Form.control.color
                                 name={
                                     "bg_color_header" as keyof SettingsUpdateDto

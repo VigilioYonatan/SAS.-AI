@@ -109,6 +109,8 @@ function Header({ header }: HeaderProps) {
                         : "color: #FFFFFF !important"};
                 }
                 .bg-header-custom {
+                    background-color: ${storageEmpresa!.setting
+                        .bg_color_header};
                     ${themeStore.state === "dark"
                         ? "color: #FFFFFF !important"
                         : isColorLight(storageEmpresa!.setting.bg_color_header)
