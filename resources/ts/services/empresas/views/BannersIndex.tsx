@@ -934,7 +934,7 @@ function BannerUpdate({ g, refetch, onClose, banner }: BannerUpdateProps) {
                 </div>
                 <Form.control
                     title="Orden"
-                    type="numberr"
+                    type="number"
                     name={"order" as keyof BannerStoreDto}
                     options={{ setValueAs: Number }}
                     placeholder="Orden"
