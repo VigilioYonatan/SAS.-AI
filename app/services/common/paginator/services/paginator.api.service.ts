@@ -40,7 +40,6 @@ import { Finanzas } from "@/finanzas/entities/finanzas.entity";
 import { Favorites } from "@/favorites/entities/favorites.entity";
 import { Subcategories } from "@/products/entities/subcategories.entity";
 import { Questions } from "@/empresas/entities/questions.entity";
-import { removeTextHTML } from "~/libs/helpers";
 
 @Injectable()
 export class PaginatorApiServices {
@@ -239,9 +238,7 @@ export class PaginatorApiServices {
                                 user,
                                 false
                             );
-                            producto.dataValues.description = removeTextHTML(
-                                product.dataValues.description
-                            ).slice(300);
+
                             return producto;
                         })
                     );

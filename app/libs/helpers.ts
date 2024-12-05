@@ -55,7 +55,7 @@ export function removeTextHTML(value: string) {
         ? value
               .replace(/<img[^>]*src="[^"]*"[^>]*>/gi, "")
               .replace(/(<([^>]+)>)/gi, "")
-        : "";
+        : null;
 }
 
 /* dolar */

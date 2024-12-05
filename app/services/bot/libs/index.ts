@@ -130,7 +130,7 @@ export async function onDb(empresa: Empresas) {
                         : [],
                     description: empresa.inteligenceArtificial
                         .showAllProductsInformation
-                        ? removeTextHTML(product.description).slice(150)
+                        ? removeTextHTML(product.description)?.slice(150)
                         : "",
                 };
             })
@@ -167,7 +167,7 @@ export async function onDb(empresa: Empresas) {
                         : [],
                     description: empresa.inteligenceArtificial
                         .showAllProductsInformation
-                        ? removeTextHTML(product.description).slice(150)
+                        ? removeTextHTML(product.description)?.slice(150)
                         : "",
                 };
             })
@@ -193,7 +193,7 @@ export async function onDb(empresa: Empresas) {
                     days: product.days,
                     description: empresa.inteligenceArtificial
                         .showAllProductsInformation
-                        ? removeTextHTML(product.description).slice(150)
+                        ? removeTextHTML(product.description)?.slice(500)
                         : "",
                     characteristics: empresa.inteligenceArtificial
                         .showAllProductsInformation

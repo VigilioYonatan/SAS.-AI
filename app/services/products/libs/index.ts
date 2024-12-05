@@ -265,9 +265,8 @@ export async function getProductAll(
     };
     product.dataValues.rating = rated;
     if (!isNecesaryAllDescription) {
-        product.dataValues.description = removeTextHTML(
-            product.dataValues.description
-        ).slice(0, 300);
+        const desc = removeTextHTML(product.dataValues.description);
+        product.dataValues.description = desc ? desc.slice(0, 300) : null;
     }
 
     return product;

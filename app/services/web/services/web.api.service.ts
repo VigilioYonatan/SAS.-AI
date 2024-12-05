@@ -597,7 +597,7 @@ export class WebApiService {
             title: product.name,
             description: `${product.name} - ${
                 product.description
-                    ? removeTextHTML(product.description).slice(0, 100)
+                    ? removeTextHTML(product.description)?.slice(0, 100)
                     : ""
             }...`,
             product,
@@ -657,7 +657,7 @@ export class WebApiService {
             title: product.name,
             description: `${product.name} - ${
                 product.description
-                    ? removeTextHTML(product.description).slice(0, 100)
+                    ? removeTextHTML(product.description)?.slice(0, 100)
                     : ""
             }...`,
             product,
