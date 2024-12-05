@@ -83,7 +83,7 @@ function SettingsIndex() {
                 const { ...rest } = setting;
                 return {
                     ...rest,
-                    bg_color_footer: rest.bg_color_header || "transparent",
+                    bg_color_footer: "transparent",
                 };
             }, []),
         });
@@ -683,12 +683,12 @@ function SettingsIndex() {
                                 }
                                 title="Color Secundario"
                             />
-                            <Form.control.color
+                            {/* <Form.control.color
                                 name={
                                     "bg_color_header" as keyof SettingsUpdateDto
                                 }
                                 title="Color Header Background"
-                            />
+                            /> */}
                         </div>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4">
