@@ -108,10 +108,13 @@ function Header({ header }: HeaderProps) {
                         ? "color: #000000 !important"
                         : "color: #FFFFFF !important"};
                 }
-                .bg-custom-header  > div, .bg-custom-header  > nav,{
-                    ${themeStore.state === "dark"
-                        ? "color: #FFFFFF !important"
-                        : isColorLight(storageEmpresa!.setting.bg_color_header)
+                .bg-custom-header {
+                    background-color: ${storageEmpresa!.setting
+                        .bg_color_header} !important;
+                }
+                .bg-custom-header > div,
+                .bg-custom-header > nav {
+                    ${isColorLight(storageEmpresa!.setting.bg_color_header)
                         ? "color: #000000 !important"
                         : "color: #FFFFFF !important"};
                 }
@@ -161,22 +164,30 @@ function Header({ header }: HeaderProps) {
                         ? "bg-background-light dark:bg-background-dark sticky shadow"
                         : `  ${
                               !isTop.value
-                                  ? "sticky bg-background-light dark:bg-background-dark"
+                                  ? `sticky  ${
+                                        storageEmpresa?.setting
+                                            .bg_color_header !== "transparent"
+                                            ? "bg-custom-header"
+                                            : ""
+                                    } bg-background-light dark:bg-background-dark`
                                   : ` ${
                                         isActive("/", false)
                                             ? "absolute"
-                                            : "sticky bg-background-light dark:bg-background-dark"
+                                            : `sticky ${
+                                                  storageEmpresa?.setting
+                                                      .bg_color_header !==
+                                                  "transparent"
+                                                      ? "bg-custom-header"
+                                                      : ""
+                                              } dark:bg-background-dark`
                                     }`
                           }`
                 }`}
             >
                 <div
-                    class={`max-w-6xl   mx-auto flex gap-4 justify-between items-center px-2 py-4  ${
-                        storageEmpresa?.setting.bg_color_header !==
-                        "transparent"
-                            ? "bg-custom-header"
-                            : ""
-                    }`}
+                    class={
+                        "max-w-6xl   mx-auto flex gap-4 justify-between items-center px-2 py-4  "
+                    }
                 >
                     <div
                         style={{
