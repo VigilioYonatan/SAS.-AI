@@ -592,8 +592,8 @@ export class EmpresasApiService {
                 );
                 await empresa.update({
                     telephoneFirst: "990317888",
-                    telephoneReclamos: "990317888",
-                    telephoneThird: "990317888",
+                    telephoneReclamos: "99045238",
+                    telephoneThird: "9903145843",
                     facebook: "https://www.facebook.com/",
                     tiktok: "https://www.tiktok.com/",
                     instagram: "https://www.instagram.com/",
