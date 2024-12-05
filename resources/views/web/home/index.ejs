@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,9 @@
   <meta name="description" content="<%= description  %>  <%= locals.$empresa?.about ? locals.$empresa?.about.slice(0,100): ''  %>">
   <!-- METAS -->
   <meta name="robots" content="index, follow">
+  <meta name="author" content="<%= locals.$empresa?.name_empresa %>, Vigilio Services">
   <meta name="keywords" content="sistema web, tienda online, ecommerce">
+  <meta name="published" content="<%= locals.$empresa?.name_empresa %>">
 
   <!-- Schema.org markup for Google+ -->
   <meta itemprop="name" content="<%= locals.$empresa ? $empresa.name_empresa:''   %> <%= locals.$empresa ? $empresa.header_cart:'Los mejores productos en un solo lugar'   %> ">
