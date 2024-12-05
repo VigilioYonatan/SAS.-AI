@@ -235,7 +235,12 @@ export class WebApiService {
                     products = await Promise.all(
                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                         products.map(async (product: any) => {
-                            return await getProductAll(empresa, product, user);
+                            return await getProductAll(
+                                empresa,
+                                product,
+                                user,
+                                false
+                            );
                         })
                     );
                     return {
@@ -254,7 +259,12 @@ export class WebApiService {
                                 : "product_restaurant_id"
                         ]
                     );
-                    producto = await getProductAll(empresa, producto, user);
+                    producto = await getProductAll(
+                        empresa,
+                        producto,
+                        user,
+                        false
+                    );
                     return {
                         ...producto.toJSON(),
                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -268,7 +278,12 @@ export class WebApiService {
                     let producto = await Product(empresa, false).findByPk(
                         product.ratingsable_id
                     );
-                    producto = await getProductAll(empresa, producto, user);
+                    producto = await getProductAll(
+                        empresa,
+                        producto,
+                        user,
+                        false
+                    );
                     return producto;
                 })
             );
@@ -277,7 +292,12 @@ export class WebApiService {
                     let producto = await Product(empresa, false).findByPk(
                         product.commentsable_id
                     );
-                    producto = await getProductAll(empresa, producto, user);
+                    producto = await getProductAll(
+                        empresa,
+                        producto,
+                        user,
+                        false
+                    );
                     return {
                         ...producto.toJSON(),
                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -298,10 +318,15 @@ export class WebApiService {
             const [productMostDiscountMapped, productLatestMapped] =
                 await Promise.all([
                     productMostDiscount
-                        ? getProductAll(empresa, productMostDiscount, user)
+                        ? getProductAll(
+                              empresa,
+                              productMostDiscount,
+                              user,
+                              false
+                          )
                         : null,
                     productLatest
-                        ? getProductAll(empresa, productLatest, user)
+                        ? getProductAll(empresa, productLatest, user, false)
                         : null,
                 ]);
 
@@ -475,10 +500,10 @@ export class WebApiService {
         const [productMostDiscountMapped, productLatestMapped] =
             await Promise.all([
                 productMostDiscount
-                    ? getProductAll(empresa, productMostDiscount, user)
+                    ? getProductAll(empresa, productMostDiscount, user, false)
                     : null,
                 productLatest
-                    ? getProductAll(empresa, productLatest, user)
+                    ? getProductAll(empresa, productLatest, user, false)
                     : null,
             ]);
 
@@ -523,7 +548,12 @@ export class WebApiService {
                         | ProductsServicio
                         | ProductsRestaurant
                 ) => {
-                    const prod = await getProductAll(empresa, product, user);
+                    const prod = await getProductAll(
+                        empresa,
+                        product,
+                        user,
+                        true
+                    );
                     return prod;
                 }
             )
@@ -545,7 +575,12 @@ export class WebApiService {
             });
             productByBrands = await Promise.all(
                 productByBrands.map(async (product: ProductsNormal) => {
-                    const prod = await getProductAll(empresa, product, user);
+                    const prod = await getProductAll(
+                        empresa,
+                        product,
+                        user,
+                        false
+                    );
                     return prod;
                 })
             );
@@ -601,7 +636,12 @@ export class WebApiService {
                         | ProductsServicio
                         | ProductsRestaurant
                 ) => {
-                    const prod = await getProductAll(empresa, product, user);
+                    const prod = await getProductAll(
+                        empresa,
+                        product,
+                        user,
+                        true
+                    );
                     return prod;
                 }
             )
@@ -932,7 +972,9 @@ export class WebApiService {
             products: (ProductsNormal | ProductsServicio | ProductsRestaurant)[]
         ) {
             return await Promise.all(
-                products.map((product) => getProductAll(empresa, product, user))
+                products.map((product) =>
+                    getProductAll(empresa, product, user, false)
+                )
             );
         }
         return splitResults(allProductsMapped, arraysLengths);

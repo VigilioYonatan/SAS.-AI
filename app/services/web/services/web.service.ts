@@ -165,7 +165,7 @@ export class WebService {
         ) {
             return await Promise.all(
                 products.map((product) =>
-                    getProductAll(empresa, product, users)
+                    getProductAll(empresa, product, users, false)
                 )
             );
         }

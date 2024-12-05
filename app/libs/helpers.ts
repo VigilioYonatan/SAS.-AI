@@ -51,7 +51,9 @@ export function randomNumber(start: number, end: number) {
 }
 
 export function removeTextHTML(value: string) {
-    return value.replace(/(<([^>]+)>)/gi, "");
+    return value
+        .replace(/<img[^>]*src="[^"]*"[^>]*>/gi, "")
+        .replace(/(<([^>]+)>)/gi, "");
 }
 
 /* dolar */

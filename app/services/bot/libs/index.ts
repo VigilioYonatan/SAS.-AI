@@ -81,7 +81,12 @@ export async function onDb(empresa: Empresas) {
         });
         products = await Promise.all(
             (pr as ProductsNormal[]).map(async (product) => {
-                const producto = await getProductAll(empresa, product, null);
+                const producto = await getProductAll(
+                    empresa,
+                    product,
+                    null,
+                    false
+                );
                 const variantes = await Promise.all(
                     (producto.dataValues.variants as Variants[]).map(
                         async (variant) => {

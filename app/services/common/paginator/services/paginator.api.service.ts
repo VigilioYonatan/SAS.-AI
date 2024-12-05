@@ -40,6 +40,7 @@ import { Finanzas } from "@/finanzas/entities/finanzas.entity";
 import { Favorites } from "@/favorites/entities/favorites.entity";
 import { Subcategories } from "@/products/entities/subcategories.entity";
 import { Questions } from "@/empresas/entities/questions.entity";
+import { removeTextHTML } from "~/libs/helpers";
 
 @Injectable()
 export class PaginatorApiServices {
@@ -181,7 +182,8 @@ export class PaginatorApiServices {
                                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                         (data as any)
                                             .productsNormal as ProductsNormal,
-                                        user
+                                        user,
+                                        false
                                     )
                             )
                         );
@@ -208,7 +210,8 @@ export class PaginatorApiServices {
                                 return await getProductAll(
                                     empresa as Empresas,
                                     product,
-                                    user
+                                    user,
+                                    false
                                 );
                             })
                         );
@@ -230,11 +233,16 @@ export class PaginatorApiServices {
                     data[0] = await Promise.all(
                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                         data[0].map(async (product: any) => {
-                            return await getProductAll(
+                            const producto = await getProductAll(
                                 empresa as Empresas,
                                 product,
-                                user
+                                user,
+                                false
                             );
+                            producto.dataValues.description = removeTextHTML(
+                                product.dataValues.description
+                            ).slice(300);
+                            return producto;
                         })
                     );
                 }
@@ -896,7 +904,12 @@ export class PaginatorApiServices {
                         );
                         if (!product)
                             throw new NotFoundException("no found product");
-                        return await getProductAll(empresa, product, user);
+                        return await getProductAll(
+                            empresa,
+                            product,
+                            user,
+                            false
+                        );
                     })
                 );
                 break;
