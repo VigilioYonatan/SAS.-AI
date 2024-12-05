@@ -170,7 +170,13 @@ function Header({ header }: HeaderProps) {
                                   : ` ${
                                         isActive("/", false)
                                             ? "absolute"
-                                            : "sticky bg-background-light dark:bg-background-dark"
+                                            : `sticky ${
+                                                  storageEmpresa?.setting
+                                                      .bg_color_header ===
+                                                  "transparent"
+                                                      ? "bg-background-light"
+                                                      : "bg-header-custom"
+                                              }  dark:bg-background-dark`
                                     }`
                           }`
                 }`}
