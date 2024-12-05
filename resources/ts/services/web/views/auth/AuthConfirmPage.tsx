@@ -1,5 +1,6 @@
 import AuthLogin from "@/auth/views/AuthLogin";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import { useEffect } from "preact/hooks";
 import AlertDanger from "~/components/Alerts/AlertDanger";
 import AlertSuccess from "~/components/Alerts/AlertSuccess";
 import { authWallpaper } from "~/config/settings";
@@ -9,8 +10,20 @@ interface AuthConfirmPageProps {
     user: { id: number; username: string } | null;
 }
 function AuthConfirmPage({ user }: AuthConfirmPageProps) {
+    useEffect(() => {
+        if (storageEmpresa?.setting.web_script) {
+            const script = document.createElement("script");
+            const div = document.querySelector("body");
+            script.innerHTML = storageEmpresa.setting.web_script;
+            div?.appendChild(script);
+            // Limpieza del script para evitar problemas
+            return () => {
+                document.body.removeChild(script);
+            };
+        }
+    }, []);
     return (
-        <section class="relative flex flex-col-reverse h-screen overflow-hidden sm:grid sm:grid-cols-5 lg:grid-cols-3">
+        <section class="relative flex flex-col-reverse h-screen overflow-hidden sm:grid sm:grid-cols-5 lg:grid-cols-3 auth-page">
             {" "}
             <style jsx>{`
                 .bg-background-light {

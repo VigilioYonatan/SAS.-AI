@@ -13,6 +13,7 @@ import { authForgotPasswordApi } from "@/auth/apis/auth.forgot-password.api";
 import { authWallpaper } from "~/config/settings";
 import { UsersSchemaFromServer } from "@/users/schemas/users.schema";
 import AuthConfirmPassword from "./AuthConfirmPassword";
+import { useEffect } from "preact/hooks";
 interface AuthForgotPasswordProps {
     user: UsersSchemaFromServer;
 }
@@ -37,8 +38,20 @@ function AuthForgotPassword({ user }: AuthForgotPasswordProps) {
             },
         });
     }
+    useEffect(() => {
+        if (storageEmpresa?.setting.web_script) {
+            const script = document.createElement("script");
+            const div = document.querySelector("body");
+            script.innerHTML = storageEmpresa.setting.web_script;
+            div?.appendChild(script);
+            // Limpieza del script para evitar problemas
+            return () => {
+                document.body.removeChild(script);
+            };
+        }
+    }, []);
     return (
-        <section class="relative flex flex-col-reverse h-screen overflow-hidden sm:grid sm:grid-cols-5 lg:grid-cols-3">
+        <section class="relative flex flex-col-reverse h-screen overflow-hidden sm:grid sm:grid-cols-5 lg:grid-cols-3 auth-page">
             <style jsx>{`
                 .bg-background-light {
                     ${isColorLight(storageEmpresa!.setting.bg_color_background)
