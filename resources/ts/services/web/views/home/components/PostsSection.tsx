@@ -74,7 +74,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                     enviroments.TYPE_BORDER === "circle"
                                         ? "rounded-md"
                                         : ""
-                                } bg-background-light dark:bg-background-dark`}
+                                } bg-background-light dark:bg-background-dark min-h-[400px]`}
                                 onClick={() => {
                                     changeShowImage(i + 1);
                                 }}
