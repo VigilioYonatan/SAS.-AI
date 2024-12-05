@@ -83,6 +83,7 @@ function SettingsIndex() {
                 const { ...rest } = setting;
                 return {
                     ...rest,
+                    bg_color_footer: rest.bg_color_header || "transparent",
                 };
             }, []),
         });
