@@ -110,12 +110,12 @@ function Header({ header }: HeaderProps) {
                 }
                 .bg-header-custom {
                     background-color: ${storageEmpresa!.setting
-                        .bg_color_header};
+                        .bg_color_header} !important;
                     ${themeStore.state === "dark"
                         ? "color: #FFFFFF !important"
                         : isColorLight(storageEmpresa!.setting.bg_color_header)
                         ? "color: #000000 !important"
-                        : "color: #FFFFFF !important"};
+                        : "color: #FFFFFF !important"} !important;
                 }
                 .bg-primary {
                     ${isColorLight(empresaStore.state!.setting.bg_color)
@@ -163,7 +163,7 @@ function Header({ header }: HeaderProps) {
                         ? "bg-background-light dark:bg-background-dark sticky shadow"
                         : `  ${
                               !isTop.value
-                                  ? `sticky ${
+                                  ? `sticky bg-background-light ${
                                         storageEmpresa?.setting
                                             .bg_color_header === "transparent"
                                             ? "bg-background-light"
@@ -172,7 +172,7 @@ function Header({ header }: HeaderProps) {
                                   : ` ${
                                         isActive("/", false)
                                             ? "absolute"
-                                            : `sticky ${
+                                            : `sticky bg-background-light ${
                                                   storageEmpresa?.setting
                                                       .bg_color_header ===
                                                   "transparent"
