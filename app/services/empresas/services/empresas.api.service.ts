@@ -71,17 +71,16 @@ export async function initial() {
             apiKey: empresa.credentials.open_ai,
         });
         if (empresa.telegram_token) {
-            const setting = await empresa.$get("setting", {
-                attributes: ["bg_color_header"],
-            });
-            if (!setting?.bg_color_header) {
-                await setting?.update({ bg_color_header: "transparent" });
-            }
             await initializeBot(empresa, empresa.telegram_token);
         }
         // tipos finanzas
         // const finanzas = await TipoFinanza.findAll();
-
+        const setting = await empresa.$get("setting", {
+            attributes: ["bg_color_header"],
+        });
+        if (!setting?.bg_color_header) {
+            await setting?.update({ bg_color_header: "transparent" });
+        }
         openAis = { ...openAis, [empresa.slug]: openAiClient };
     }
 }
