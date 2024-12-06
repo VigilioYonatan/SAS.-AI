@@ -74,7 +74,6 @@ const usersColumns: Columns<
     {
         key: "role_id",
         header: "Rol",
-        isSort: true,
         cell: (user) => (
             <span
                 class={`${icoRoleColor(

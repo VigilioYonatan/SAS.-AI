@@ -194,6 +194,7 @@ export class WebApiService {
                         "birthday",
                     ],
                     limit: empresa.isTemplate ? 5 : 20,
+                    order: [["id", "ASC"]],
                 }),
                 Brands.findAll({
                     where: {
