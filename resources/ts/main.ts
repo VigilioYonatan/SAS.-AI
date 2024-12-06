@@ -9,6 +9,7 @@ import "aos/dist/aos.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Alpine from "alpinejs";
+import "tiny-slider/dist/tiny-slider.css";
 
 Alpine.start();
 AOS.init({
