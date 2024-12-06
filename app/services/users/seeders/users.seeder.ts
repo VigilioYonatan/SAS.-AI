@@ -15,7 +15,7 @@ export const usersSeeder: Omit<UsersSchema, "id">[] = Array.from({
     email: `test${i}@gmail.com`,
     password: bcryptjs.hashSync("123456a", bcryptjs.genSaltSync(10)),
     telephone: `12345678${i}`,
-    user_code: "USER-1000",
+    user_code: `USER-${i + 1}`,
     username: "Vigilio1000",
     enabled: true,
     address: null,

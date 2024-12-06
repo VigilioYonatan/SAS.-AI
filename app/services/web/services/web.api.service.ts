@@ -184,9 +184,7 @@ export class WebApiService {
                     where: {
                         empresa_id: empresa.id,
                         enabled: true,
-                        [Op.not]: {
-                            role_id: ROLES.user,
-                        },
+                        role_id: ROLES.trabajador,
                     },
                     attributes: [
                         "id",
@@ -195,6 +193,7 @@ export class WebApiService {
                         "photo",
                         "birthday",
                     ],
+                    limit: empresa.isTemplate ? 5 : 20,
                 }),
                 Brands.findAll({
                     where: {
