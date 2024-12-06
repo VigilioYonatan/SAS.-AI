@@ -5,19 +5,20 @@ import { type UseQuery, useQuery } from "@vigilio/preact-fetching";
 
 export function productsShowApi(
     slug: number | string,
-    isService: boolean
+    isService: boolean,
+    isCart = false
 ): UseQuery<ProductsShowAPI, ProductsShowErrorAPI> {
     return useQuery<ProductsShowAPI, ProductsShowErrorAPI>(
         `/products/${slug}${isService ? "?type=service" : ""}`,
-        productShowFetch
+        (url) => productShowFetch(url, isCart)
     );
 }
-export async function productShowFetch(url: string) {
+export async function productShowFetch(url: string, isCart = false) {
     const EXPIRATION_TIME = 15 * 60 * 1000;
 
     let result = JSON.parse(localStorage.getItem(url) ?? "null");
 
-    if (!result || Date.now() - result.timestamp > EXPIRATION_TIME) {
+    if (!result || Date.now() - result.timestamp > EXPIRATION_TIME || isCart) {
         const response = await fetch(`/api${url}`);
         result = await response.json();
         if (!result.success) throw result;

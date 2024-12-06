@@ -338,7 +338,7 @@ export function useCartStore() {
 			cart.map(async (cart) => {
 				try {
 					const { product } = await productShowFetch(
-						`/products/${cart[productEntityId(false) as keyof typeof cart]}`,
+						`/products/${cart[productEntityId(false) as keyof typeof cart]}`,true
 					);
 					if (!product) {
 						onRemoveProductToCart(
