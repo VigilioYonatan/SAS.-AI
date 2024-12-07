@@ -123,7 +123,7 @@ interface HtmlEditorProps {
     htmlString: string;
     onChange: (content: string | null) => void;
 }
-function HtmlEditor({ htmlString, onChange, }: HtmlEditorProps) {
+function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
     const [content, setContent] = useState<string>(htmlString);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [inputValue, setInputValue] = useState<string>("");
@@ -301,9 +301,7 @@ function HtmlEditor({ htmlString, onChange, }: HtmlEditorProps) {
     };
 
     return (
-        <div
-            class="relative min-h-[250px] w-full overflow-auto max-w-[300px]"
-        >
+        <div class="relative min-h-[250px] w-full overflow-auto max-h-[300px]">
             {parseHtml()}
         </div>
     );
