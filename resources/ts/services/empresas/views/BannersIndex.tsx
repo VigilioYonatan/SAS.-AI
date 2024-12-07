@@ -696,6 +696,7 @@ function BannerStore({ grid, i, refetch, onClose }: BannerStoreProps) {
                     title="HTML"
                     question="Customiza el banner agregando html, data-label='1',, para customizar texto"
                     name={"script" as keyof BannerStoreDto}
+                    className={`grid-banner-${i}`}
                 />
 
                 <Form.control.file
@@ -961,6 +962,7 @@ function BannerUpdate({ g, refetch, onClose, banner }: BannerUpdateProps) {
                     title="HTML"
                     question="Customiza el banner agregando html, data-label='1',, para customizar texto"
                     name={"script" as keyof BannerStoreDto}
+                    className={`grid-banner-${g}`}
                 />
                 <Form.control.toggle
                     title="Habilitar"
