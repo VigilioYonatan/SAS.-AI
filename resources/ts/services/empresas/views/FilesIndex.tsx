@@ -164,7 +164,7 @@ function FilesIndex() {
             <div>
                 <button
                     onClick={() => {
-                        if (filesIndexQuery.data!.files.length > 20) {
+                        if (filesIndexQuery.data!.files.length > 60) {
                             sweetAlert({
                                 title: "No se puede agregar más archivo",
                                 icon: "danger",
