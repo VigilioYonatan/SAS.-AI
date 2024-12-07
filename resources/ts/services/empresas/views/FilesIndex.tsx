@@ -248,7 +248,7 @@ function FilesStore({ refetch }: FilesStoreProps) {
                 <Form.control.file
                     typeFile="image-video"
                     multiple={false}
-                    accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, video/mp4"
+                    accept="image/webp, image/gif, video/mp4"
                     title="Archivo"
                     name={"file" as keyof FileStoreDto}
                     showButonCopy
@@ -343,7 +343,7 @@ function FilesUpdate({ refetch, file }: FilesUpdateProps) {
                 <Form.control.file
                     typeFile="image-video"
                     multiple={false}
-                    accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, video/mp4"
+                    accept="image/webp, image/gif, video/mp4"
                     title="Archivo"
                     name={"file" as keyof FileStoreDto}
                     showButonCopy
