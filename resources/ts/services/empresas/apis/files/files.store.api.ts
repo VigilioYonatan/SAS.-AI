@@ -24,11 +24,7 @@ export const filesStoreDto = merge([
 				min: 1,
 				max: 1,
 				types: [
-					"image/jpg",
 					"image/webp",
-					"image/jpeg",
-					"image/gif",
-					"image/png",
 					"video/mp4",
 					"application/pdf",
 					"text/plain",
