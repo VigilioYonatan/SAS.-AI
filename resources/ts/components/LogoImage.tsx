@@ -11,15 +11,22 @@ function LogoImage({ height = "100", width = "100" }: LogoImageProps) {
     return (
         <a href="/">
             {state?.logo ? (
-                <img
-                    class="object-contain image-logo"
-                    width={width}
-                    height={height}
-                    style={{ width, height }}
-                    src={printLogoempresa(state.logo, 300)[0]}
-                    alt={state.name_empresa}
-                    title={state.name_empresa}
-                />
+                <>
+                    <img
+                        class="object-contain image-logo"
+                        width={width}
+                        height={height}
+                        style={{ width, height }}
+                        src={printLogoempresa(state.logo, 300)[0]}
+                        alt={state.name_empresa}
+                        title={state.name_empresa}
+                    />
+                    <style jsx>{`
+                        .auth-page .image-logo {
+                            filter: drop-shadow(1px 1px black);
+                        }
+                    `}</style>
+                </>
             ) : (
                 <span class="text-primary text-4xl font-bold">
                     {state?.name_empresa[0]}
