@@ -306,8 +306,15 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
     };
 
     return (
-        <div class="relative min-h-[250px] w-full overflow-auto max-h-[300px]">
+        <div class="relative min-h-[250px] w-full overflow-auto max-h-[300px] form-html-editor">
             {parseHtml()}
+            <style jsx>{`
+                .form-html-editor .my-slider {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 1rem;
+                    width: 100%;
+                }
+            `}</style>
         </div>
     );
 }
