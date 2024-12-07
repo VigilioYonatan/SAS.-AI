@@ -220,7 +220,7 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
             ) {
                 if (element.tagName.toLowerCase() === "img") {
                     const imageName = element
-                        .getAttribute("src")
+                        .getAttribute(":src")
                         ?.split("/")
                         .pop();
                     return (
