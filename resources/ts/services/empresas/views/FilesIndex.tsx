@@ -219,22 +219,7 @@ function FilesStore({ refetch }: FilesStoreProps) {
     return (
         <div class="dark:text-white">
             <AlertInfo>
-                <div class="flex flex-col">
-                    Se recomienda subir archivos que estarán en su web.
-                    <br />
-                    <span>
-                        Solo imagenes en formato{" "}
-                        <a
-                            class="underline text-primary"
-                            target="_blank"
-                            rel="noreferrer"
-                            href="https://cloudinary.com/tools/png-to-webp"
-                        >
-                            .webp
-                        </a>
-                    </span>{" "}
-                    <span>y videos en formato .mp4</span>
-                </div>
+                Se recomienda subir archivos que estarán en su web.
             </AlertInfo>
             <span class="font-semibold text-xl mb-2 block">
                 Agregar Archivo
@@ -248,7 +233,7 @@ function FilesStore({ refetch }: FilesStoreProps) {
                 <Form.control.file
                     typeFile="image-video"
                     multiple={false}
-                    accept="image/webp, image/gif, video/mp4"
+                    accept="image/jpeg, image/png, image/jpg, image/jpeg, image/webp, image/gif, video/mp4"
                     title="Archivo"
                     name={"file" as keyof FileStoreDto}
                     showButonCopy
@@ -321,20 +306,7 @@ function FilesUpdate({ refetch, file }: FilesUpdateProps) {
     return (
         <div class="dark:text-white">
             <AlertInfo>
-                <>
-                    Se recomienda subir archivos que estarán en su web.
-                    <br />
-                    Solo imagenes en formato{" "}
-                    <a
-                        class="underline text-primary"
-                        target="_blank"
-                        rel="noreferrer"
-                        href="https://convertio.co/es/jpg-webp/"
-                    >
-                        .webp
-                    </a>{" "}
-                    y videos en formato .mp4
-                </>
+                Se recomienda subir archivos que estarán en su web.
             </AlertInfo>
             <span class="font-semibold text-xl mb-2 block">
                 Agregar Archivo
@@ -343,7 +315,7 @@ function FilesUpdate({ refetch, file }: FilesUpdateProps) {
                 <Form.control.file
                     typeFile="image-video"
                     multiple={false}
-                    accept="image/webp, image/gif, video/mp4"
+                    accept="image/jpeg, image/png, image/jpg, image/jpeg, image/webp, image/gif, video/mp4"
                     title="Archivo"
                     name={"file" as keyof FileStoreDto}
                     showButonCopy
