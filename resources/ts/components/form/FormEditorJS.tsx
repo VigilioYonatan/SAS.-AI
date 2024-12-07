@@ -218,6 +218,37 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                     "col",
                 ].includes(element.tagName.toLowerCase())
             ) {
+                if (element.tagName.toLowerCase() === "img") {
+                    const imageName = element
+                        .getAttribute("src")
+                        ?.split("/")
+                        .pop();
+                    return (
+                        <div className="relative inline-block">
+                            {/* biome-ignore lint/a11y/useAltText: <explanation> */}
+                            <img
+                                {...Array.from(element.attributes).reduce(
+                                    (attrs, attr) => {
+                                        attrs[attr.name as keyof typeof attrs] =
+                                            attr.value;
+                                        return attrs;
+                                    },
+                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                    {} as React.HTMLProps<any>
+                                )}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    window.open(`/admin/files?file=${imageName}`, "_blank")
+                                }}
+                                className="absolute top-2 right-2 bg-blue-500 text-white p-1 rounded"
+                            >
+                                <i className="fas fa-pen" />
+                            </button>
+                        </div>
+                    );
+                }
                 return createElement(
                     element.tagName.toLowerCase() as keyof JSX.IntrinsicElements,
                     Array.from(element.attributes).reduce((attrs, attr) => {

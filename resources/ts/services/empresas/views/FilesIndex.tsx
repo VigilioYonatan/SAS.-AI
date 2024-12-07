@@ -23,9 +23,11 @@ import {
 } from "../apis/files/files.update.api";
 import { FileSchema } from "../schemas/file.schema";
 import { useEffect } from "preact/hooks";
+import { getParams } from "~/libs/helpers";
 
 function FilesIndex() {
     const filesIndexQuery = filesIndexApi();
+    const params = getParams();
     let component: JSX.Element | JSX.Element[] | null = null;
     if (filesIndexQuery.isLoading) {
         component = <Loading />;
@@ -40,9 +42,17 @@ function FilesIndex() {
             <div class="grid grid-cols-4 gap-2">
                 {files?.map((file) => {
                     const filed = printFileWithDimension(file.file, null);
+                    const getUltimo = filed[0]?.split("/").pop();
 
                     return (
-                        <div class="relative" key={file.id}>
+                        <div
+                            class={`relative ${
+                                getUltimo === params.get("file")
+                                    ? "border-2 border-primary"
+                                    : ""
+                            }`}
+                            key={file.id}
+                        >
                             {[".jpg", ".jpeg", ".webp", ".jpeg", "png"].some(
                                 (ext) => filed[0]?.endsWith(ext)
                             ) ? (
@@ -209,20 +219,22 @@ function FilesStore({ refetch }: FilesStoreProps) {
     return (
         <div class="dark:text-white">
             <AlertInfo>
-                <>
+                <div class="flex flex-col">
                     Se recomienda subir archivos que estarán en su web.
                     <br />
-                    Solo imagenes en formato{" "}
-                    <a
-                        class="underline text-primary"
-                        target="_blank"
-                        rel="noreferrer"
-                        href="https://convertio.co/es/jpg-webp/"
-                    >
-                        .webp
-                    </a>{" "}
-                    y videos en formato .mp4
-                </>
+                    <span>
+                        Solo imagenes en formato{" "}
+                        <a
+                            class="underline text-primary"
+                            target="_blank"
+                            rel="noreferrer"
+                            href="https://cloudinary.com/tools/png-to-webp"
+                        >
+                            .webp
+                        </a>
+                    </span>{" "}
+                    <span>y videos en formato .mp4</span>
+                </div>
             </AlertInfo>
             <span class="font-semibold text-xl mb-2 block">
                 Agregar Archivo
