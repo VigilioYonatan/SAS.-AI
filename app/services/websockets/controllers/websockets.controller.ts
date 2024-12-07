@@ -44,7 +44,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
             ...(chatAssistantWeb ?? {}),
             [`${emp}:${token}`]: [
                 ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
-                ["user", `${message}. escribe en html,limpio ,no markdown `],
+                ["user", `${message}.`],
             ],
         };
         if (

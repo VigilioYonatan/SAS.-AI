@@ -110,9 +110,9 @@ export async function prompt(
         ...empresa.inteligenceArtificial.datos,
     ];
 
-    return `Como ${empresa.inteligenceArtificial.type} para ${
-        empresa.name_empresa
-    }, ${
+    return `
+    - IMPORTANTE: LEE primero estás reglas ANTES DE RESPONDERME SIEMPRE.
+    Como ${empresa.inteligenceArtificial.type} para ${empresa.name_empresa}, ${
         empresa.type_empresa_id
             ? empresa.tipo_empresa.value
             : empresa.type_empresa_other
@@ -161,7 +161,7 @@ export async function prompt(
             : ""
     }
     - Los decimales máximo un toFixed(2), incluye precioS, etc.
-    IMPORTANTE: USA MENSAJES ANTERIORES PARA NO PERDER CONTEXTO PARA NO PERDER EL CONTEXTO DE LA CONVERSACIÓN.
+   - IMPORTANTE: USA MENSAJES ANTERIORES PARA NO PERDER CONTEXTO PARA NO PERDER EL CONTEXTO DE LA CONVERSACIÓN.
    
     NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
     BASE DE DATOS: ${JSON.stringify(productsData)} \n

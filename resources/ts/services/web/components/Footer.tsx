@@ -274,7 +274,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
 
                         {empresaStore.state!.address.direccion ? (
                             <li class="dark:text-white font-semibold  text-sm">
-                                <i class="far fa-map-marker-alt  text-xl" />{" "}
+                                <i class="far fa-map-marker-alt  text-xl mr-2" />{" "}
                                 {empresaStore.state!.address.direccion}
                             </li>
                         ) : null}
@@ -410,7 +410,6 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             src="/images/settings/holidays/christmas.hat2.webp"
                                             alt="hat christmas"
                                             title="hat christmas"
-
                                         />
                                     ) : null}
                                 </a>
@@ -432,7 +431,6 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             src="/images/settings/holidays/christmas.hat2.webp"
                                             alt="hat christmas"
                                             title="hat christmas"
-
                                         />
                                     ) : null}
                                 </a>
@@ -454,7 +452,6 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             src="/images/settings/holidays/christmas.hat2.webp"
                                             alt="hat christmas"
                                             title="hat christmas"
-                                            
                                         />
                                     ) : null}
                                 </a>
