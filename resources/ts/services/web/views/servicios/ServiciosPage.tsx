@@ -17,11 +17,7 @@ function HomePage({ header, gridbannersservicios }: HomePageProps) {
                 </div>
                 <Fragment>
                     {gridbannersservicios.map((grid, i) => (
-                        <GridBannersServicios
-                            key={grid.id}
-                            grid={grid}
-                            i={i + 1}
-                        />
+                        <GridBannersServicios key={grid.id} grid={grid} i={i} />
                     ))}
                 </Fragment>
             </WebLayout>
