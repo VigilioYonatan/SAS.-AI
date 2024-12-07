@@ -306,15 +306,24 @@ export async function promptReplace(
                 whatsapp,
                 `Esto son mis categorias ${JSON.stringify(
                     data.categorias
-                )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mandé, respondeme [ids_de_categorias_encontrados_en_el_mensaje]. SOLO responde [] en json.stringify no markdown, por que usare en JSON.parse([] en json.stringify)`
+                )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mandé, respondeme json [id_de_categorias_de_productosservicios_encontrados] . solo traeme el json, no digas nada mas`
             );
-            const categoriesFound = JSON.parse(searchProduct || "[]");
+            const cleanProducts = searchProduct
+                ? searchProduct!
+                      .split("\n")
+                      .slice(1)
+                      .join("\n")
+                      .replace(/\\n/g, "")
+                      .replace(/^\s*json\s*\n/, "")
+                      .slice(0, -4)
+                : "[]";
+            const categoriesFound = JSON.parse(cleanProducts);
 
             if (categoriesFound.length) {
                 productsData = {
                     ...data,
                     products: data.products.filter((prod) =>
-                        categoriesFound.includes(prod.category_id)
+                        categoriesFound.map(Number).includes(prod.category_id)
                     ),
                 };
             } else {
