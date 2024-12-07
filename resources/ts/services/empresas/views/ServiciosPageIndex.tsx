@@ -64,14 +64,14 @@ function ServiciosPageIndex() {
                         <div
                             key={grid!.id}
                             class={`grid-banner-${g} relative ${
-                                Number(bannerParams) === g + 1
+                                Number(bannerParams) === g
                                     ? "border-4 border-primary shadow"
                                     : ""
                             }`}
                         >
                             <div class="flex justify-between w-full mb-1 items-center">
                                 <span class="font-semibold text-sm">
-                                    Banner {g + 1}
+                                    Banner {g}
                                 </span>
 
                                 <div class="flex gap-2 items-center">
@@ -108,7 +108,7 @@ function ServiciosPageIndex() {
                                                 html: reactComponent(
                                                     <GridBannerUpdate
                                                         grid={f}
-                                                        i={g + 1}
+                                                        i={g}
                                                         onClose={onClose}
                                                         refetch={
                                                             gridBannerIndexQuery.refetch
@@ -374,7 +374,7 @@ function ServiciosPageIndex() {
                                                     html: reactComponent(
                                                         <BannerStore
                                                             grid={f}
-                                                            i={g + 1}
+                                                            i={g}
                                                             onClose={onClose}
                                                             refetch={
                                                                 gridBannerIndexQuery.refetch
@@ -753,7 +753,7 @@ function Banners({ banners, g, grid, refetch }: BannersProps) {
     return (
         <div class="dark:text-white">
             <div class="flex gap-2 justify-between">
-                <span class="font-bold">Banner {g + 1}</span>
+                <span class="font-bold">Banner {g}</span>
                 <button
                     type="button"
                     class="bg-primary px-4 py-2 rounded-md"
@@ -762,7 +762,7 @@ function Banners({ banners, g, grid, refetch }: BannersProps) {
                             html: reactComponent(
                                 <BannerStore
                                     grid={grid}
-                                    i={g + 1}
+                                    i={g}
                                     onClose={onClose}
                                     refetch={refetch}
                                 />

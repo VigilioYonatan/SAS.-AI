@@ -22,6 +22,7 @@ interface FormControlLabelProps<T extends object> {
     name: string;
     question?: JSX.Element | JSX.Element[] | string;
     options?: RegisterOptions<T, Path<T>>;
+    className?: string;
     type?: "html" | "javascript";
 }
 function FormEditorJSControl<T extends object>({
@@ -29,6 +30,7 @@ function FormEditorJSControl<T extends object>({
     title,
     question,
     type = "javascript",
+    className = "",
 }: FormControlLabelProps<T>) {
     const mode = useSignal(true);
     const {
@@ -61,7 +63,7 @@ function FormEditorJSControl<T extends object>({
                     </button>
                 ) : null}
             </label>
-            <div class="flex items-center gap-2 w-full border-2">
+            <div class={`flex items-center gap-2 w-full border-2 ${className}`}>
                 {mode.value && type === "html" && HTMLSHOW ? (
                     value ? (
                         <HtmlEditor
@@ -121,7 +123,7 @@ interface HtmlEditorProps {
     htmlString: string;
     onChange: (content: string | null) => void;
 }
-function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
+function HtmlEditor({ htmlString, onChange, }: HtmlEditorProps) {
     const [content, setContent] = useState<string>(htmlString);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [inputValue, setInputValue] = useState<string>("");
@@ -240,7 +242,10 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    window.open(`/admin/files?file=${imageName}`, "_blank")
+                                    window.open(
+                                        `/admin/files?file=${imageName}`,
+                                        "_blank"
+                                    );
                                 }}
                                 className="absolute top-2 right-2 bg-blue-500 text-white p-1 rounded"
                             >
@@ -296,7 +301,9 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
     };
 
     return (
-        <div class="relative min-h-[250px] w-full overflow-auto">
+        <div
+            class="relative min-h-[250px] w-full overflow-auto max-w-[300px]"
+        >
             {parseHtml()}
         </div>
     );

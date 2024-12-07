@@ -17,7 +17,7 @@ function GridBanners({ grid, i }: GridBanners) {
         <section
             class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}  `}
         >
-            <AdminEdit uri={`/admin/banners?banner=${i + 1}`} />
+            <AdminEdit uri={`/admin/banners?banner=${i}`} />
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             <div class={`w-full  grid banners-${i} relative`}>
                 {gr.banners.map((banner) => {
@@ -176,7 +176,7 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
             class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}  `}
         >
             {" "}
-            <AdminEdit uri={`/admin/banners?banner=${i + 1}`} />
+            <AdminEdit uri={`/admin/banners?banner=${i}`} />
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             <div class={"w-full  grid relative"}>
                 {gr.banners.map((banner) => {
