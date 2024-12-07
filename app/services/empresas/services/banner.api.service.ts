@@ -37,25 +37,20 @@ export class BannerApiService {
     }
 
     async store(empresa: Empresas, body: BannerStoreDto) {
-        try {
-            const exist = await Banner.findOne({
-                where: {
-                    empresa_id: empresa.id,
-                    grid_banner_id: body.grid_banner_id,
-                    order: body.order,
-                },
-            });
-            if (exist)
-                throw new BadRequestException("Ya hay banner en ese orden");
-            const banner = new Banner({ ...body, empresa_id: empresa.id });
-            await banner.save();
-            return {
-                success: true,
-                banner,
-            };
-        } catch (error) {
-            console.log({ message: (error as Error).message });
-        }
+        const exist = await Banner.findOne({
+            where: {
+                empresa_id: empresa.id,
+                grid_banner_id: body.grid_banner_id,
+                order: body.order,
+            },
+        });
+        if (exist) throw new BadRequestException("Ya hay banner en ese orden");
+        const banner = new Banner({ ...body, empresa_id: empresa.id });
+        await banner.save();
+        return {
+            success: true,
+            banner,
+        };
     }
     async update(empresa: Empresas, id: number, body: BannerUpdateDto) {
         const { banner } = await this.show(empresa, id);

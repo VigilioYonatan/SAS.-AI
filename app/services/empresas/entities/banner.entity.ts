@@ -51,7 +51,7 @@ export class Banner extends Model implements Omit<BannerSchema, "id"> {
     @Column({
         type: DataType.INTEGER,
     })
-    grid_banner_id: number;
+    grid_banner_id: number | null;
 
     @BelongsTo(() => GridBanner)
     gridBanner: unknown;

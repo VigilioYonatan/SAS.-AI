@@ -171,7 +171,6 @@ interface GridBannersServiciosProps {
 export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
     const gr = grid.grid_banner_id ? grid.grid_banner : grid;
     if (!gr?.banners.length || !gr.enabled) return null;
-    console.log(gr);
 
     return (
         <section
@@ -182,7 +181,6 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
             <div class={`w-full  grid relative banners-${i}`}>
                 {gr.banners.map((banner) => {
                     if (!banner.enabled) return null;
-                    console.log({ banner });
 
                     let file = null;
                     // let script = null;

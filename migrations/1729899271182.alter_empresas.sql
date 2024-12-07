@@ -34,5 +34,7 @@ FOREIGN KEY ("variant_id") REFERENCES "Variants" ("id")
 ON DELETE CASCADE
 ON UPDATE CASCADE;
 
-
+-- convertir a null una columna si tuvo foreing not null
+ALTER TABLE "Banners"
+ALTER COLUMN grid_banner_id DROP NOT NULL;
 -------- END EXAMPLES --------------

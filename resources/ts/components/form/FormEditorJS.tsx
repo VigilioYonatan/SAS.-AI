@@ -313,7 +313,7 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                     grid-template-columns: repeat(2, minmax(0, 1fr));
                     gap: 1rem;
                     width: 100%;
-                    height: 200px;
+                    height: 200px !important;
                 }
             `}</style>
         </div>
