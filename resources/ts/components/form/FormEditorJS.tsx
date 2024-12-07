@@ -243,7 +243,7 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                                 type="button"
                                 onClick={() => {
                                     window.open(
-                                        `/admin/files?file=${imageName}`,
+                                        `/admin/files?file=${imageName?.replaceAll("\`","")}`,
                                         "_blank"
                                     );
                                 }}
