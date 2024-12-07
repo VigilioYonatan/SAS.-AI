@@ -175,10 +175,9 @@ export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
         <section
             class={`max-w-6xl mx-auto my-4 md:my-8 relative grid-banner-${i}  `}
         >
-            {" "}
             <AdminEdit uri={`/admin/banners?banner=${i}`} />
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
-            <div class={"w-full  grid relative"}>
+            <div class={`w-full  grid relative banners-${i}`}>
                 {gr.banners.map((banner) => {
                     if (!banner.enabled) return null;
                     let file = null;

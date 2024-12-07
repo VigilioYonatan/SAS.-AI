@@ -62,7 +62,7 @@ function BannersIndex() {
                         <div
                             key={grid.id}
                             class={`grid-banner-${g}  ${
-                                Number(bannerParams) === g
+                                bannerParams && Number(bannerParams) === g
                                     ? "border-4 border-primary shadow"
                                     : ""
                             } relative`}
