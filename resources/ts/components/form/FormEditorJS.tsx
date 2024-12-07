@@ -177,7 +177,7 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                         value={inputValue}
                         onChange={handleInputChange}
                         onBlur={stopEditing}
-                        class="dark:bg-admin-paper-dark dark:text-white text-black"
+                        class="dark:bg-admin-paper-dark dark:text-white text-black border border-black"
                     />
                 );
             }
@@ -221,12 +221,14 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                 ].includes(element.tagName.toLowerCase())
             ) {
                 if (element.tagName.toLowerCase() === "img") {
-                    const imageName = element
-                        .getAttribute(":src")
+                    const imageName = (
+                        element.getAttribute(":src") ||
+                        element.getAttribute("src")
+                    )
                         ?.split("/")
                         .pop();
                     return (
-                        <div className="relative inline-block">
+                        <div className="relative inline-block min-w-[100px] min-h-[100px]">
                             {/* biome-ignore lint/a11y/useAltText: <explanation> */}
                             <img
                                 {...Array.from(element.attributes).reduce(
@@ -243,7 +245,10 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                                 type="button"
                                 onClick={() => {
                                     window.open(
-                                        `/admin/files?file=${imageName?.replaceAll("\`","")}`,
+                                        `/admin/files?file=${imageName?.replaceAll(
+                                            "`",
+                                            ""
+                                        )}`,
                                         "_blank"
                                     );
                                 }}
