@@ -132,6 +132,7 @@ export async function onDb(empresa: Empresas) {
                         .showAllProductsInformation
                         ? removeTextHTML(product.description)?.slice(150)
                         : "",
+                    tipo: "producto",
                 };
             })
         );
@@ -169,6 +170,7 @@ export async function onDb(empresa: Empresas) {
                         .showAllProductsInformation
                         ? removeTextHTML(product.description)?.slice(150)
                         : "",
+                    tipo: "producto",
                 };
             })
         );
@@ -204,6 +206,7 @@ export async function onDb(empresa: Empresas) {
                     category_id: product.category_id ?? null,
                     slug: product.slug,
                     url: product.url ?? null,
+                    tipo: "servicio",
                 };
             })
         );
