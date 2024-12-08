@@ -67,7 +67,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         const messageActual = `Mensajes Anterior: ${messageAnterior.join(
             ", "
         )}.\n
-        Mensaje Actual: ${message}.  'y pasa en formato html'`;
+        Mensaje Actual: ${message}.  'y pasa en formato html como te dije al principio ordenado'`;
 
         const prompt = await promptReplace(whatsapp, messageActual!, empresa);
 
