@@ -65,7 +65,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
             .slice(-5, -1)
             .map((c) => c.content);
         const messageActual = `Mensajes Anterior: ${[
-            "trae formato html",
+            "siempre traeme en formato html.",
             ...messageAnterior,
         ].join(", ")}.\n
         Mensaje Actual: ${message}.`;
