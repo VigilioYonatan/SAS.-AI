@@ -332,7 +332,6 @@ export class EmpresasApiService {
                     },
                 ],
                 url: `${BASE_URL(empresa)}/`,
-                html: null,
             });
             const transferencias = {} as Record<
                 keyof typeof empresa.bancos,
