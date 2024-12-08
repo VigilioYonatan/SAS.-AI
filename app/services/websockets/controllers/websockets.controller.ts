@@ -64,9 +64,10 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
             .filter((a) => a.role === "user")
             .slice(-5, -1)
             .map((c) => c.content);
-        const messageActual = `Mensajes Anterior: ${messageAnterior.join(
-            ", "
-        )}.\n
+        const messageActual = `Mensajes Anterior: ${[
+            "trae formato html",
+            ...messageAnterior,
+        ].join(", ")}.\n
         Mensaje Actual: ${message}.`;
 
         const prompt = await promptReplace(whatsapp, messageActual!, empresa);
