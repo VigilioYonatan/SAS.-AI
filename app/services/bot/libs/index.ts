@@ -308,6 +308,8 @@ export async function promptReplace(
                     data.categorias
                 )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mandé, respondeme json [id_de_categorias_de_productosservicios_encontrados] . solo traeme el json, no digas nada mas`
             );
+            console.log({ searchProduct });
+
             const cleanProducts = searchProduct
                 ? searchProduct!
                       .split("\n")
