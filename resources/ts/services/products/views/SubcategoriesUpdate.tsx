@@ -136,8 +136,10 @@ function SubcategoriesUpdate({
         };
 
         async function initial() {
-            const image = await getFilesEdit(subcategory.image, 800);
-            subcategoriesUpdateImageForm.setValue("image", image);
+            if (subcategory.image) {
+                const image = await getFilesEdit(subcategory.image, 800);
+                subcategoriesUpdateImageForm.setValue("image", image);
+            }
         }
 
         useEffect(() => {

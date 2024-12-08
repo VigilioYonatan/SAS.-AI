@@ -6,6 +6,7 @@ import { reactComponent } from "~/libs/preact";
 import CategoriesUpdate from "../views/CategoriesUpdate";
 import CategoriesShow from "../views/CategoriesShow";
 import { printFileWithDimension } from "~/libs/upload";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 const categoriesColumns: Columns<CategoriesSchemaFromServer, "acciones"> = [
     { key: "id", cell: (_, i) => i + 1, isSort: true },
@@ -35,7 +36,32 @@ const categoriesColumns: Columns<CategoriesSchemaFromServer, "acciones"> = [
             </div>
         ),
     },
-
+    storageEmpresa!.setting.isProductWallpaper
+        ? {
+              key: "wallpaper",
+              header: "wallpaper",
+              cell: (props) => (
+                  <div class="flex justify-center">
+                      {props.wallpaper ? (
+                          <img
+                              src={
+                                  printFileWithDimension(
+                                      props.wallpaper,
+                                      100
+                                  )[0]
+                              }
+                              width={40}
+                              alt={props.name}
+                              class="object-contain"
+                              height={40}
+                          />
+                      ) : (
+                          "No image"
+                      )}
+                  </div>
+              ),
+          }
+        : null,
     {
         key: "acciones",
         cell: (props, _index, methods) => {
@@ -98,5 +124,5 @@ const categoriesColumns: Columns<CategoriesSchemaFromServer, "acciones"> = [
             );
         },
     },
-];
+] as Columns<CategoriesSchemaFromServer, "acciones">;
 export default categoriesColumns;

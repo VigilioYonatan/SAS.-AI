@@ -20,6 +20,9 @@ const subcategoriesColumns: Columns<SubcategoriesSchemaFromServer, "acciones"> =
             key: "image",
             header: "imagen",
             cell: (props) => {
+                if (!props.image) {
+                    return null;
+                }
                 const images = printFileWithDimension(props.image, 100);
                 return (
                     <img
