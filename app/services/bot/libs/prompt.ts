@@ -57,7 +57,7 @@ export async function prompt(
               `Si te pido información más detallada de un  producto que no está en la BASE_DE_DATOS enviar ${
                   empresa.web
                       ? "url-producto-o-servicio-de-db"
-                      : `https://www.${url}/aca-pones-el-slug-del-producto-de-db`
+                      : `producto https://www.${url}/aca-pones-el-slug-del-producto-de-db y si es servicio https://www.${url}/servicio/slug_servicio`
               }`,
               "enviamen la imagen ( mandarme la url de la imagen) . no lo pongas como link ejemplo NO ![nombre]  .  solo texto  si te pido una imagen de un producto",
               empresa.telephoneReclamos
