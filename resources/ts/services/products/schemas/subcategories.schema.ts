@@ -9,6 +9,7 @@ import {
 	toTrimmed,
 	object,
 	array,
+	nullable,
 } from "@vigilio/valibot";
 import type { CategoriesSchemaFromServer } from "./categories.schema";
 import { filesSchema } from "~/libs/upload";
@@ -17,7 +18,7 @@ export const subcategoriesSchema = object({
 	id: number(),
 	subcategory_code: string([minLength(1), maxLength(30)]),
 	name: string([toTrimmed(), minLength(1), minLength(3), maxLength(200)]),
-	image: array(filesSchema()),
+	image: nullable(array(filesSchema())),
 	slug: transform(
 		string([toTrimmed(), minLength(1), minLength(3), maxLength(200)]),
 		slug,
