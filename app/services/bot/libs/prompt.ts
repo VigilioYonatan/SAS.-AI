@@ -96,6 +96,7 @@ export async function prompt(
                     empresa
                 )}/cart/servicio/:slug_de_servicio , :slug_de_servicio es dinamico segun BASE DE DATOS`,
                 "Ojo: (days) recuerda que el precio del servicio es multiplicado por la cantidad, asi que si te pido precio traime el precio multiplicado. OJO: no me traigas la cantidad, y si showHorario es true: mandame el HORARIO de CITAS si te pido horario o algo asi.",
+                "ojo y traeme servicio y product por separado links o {{cart?items=} si te pido juntos",
             ];
         }
         directrices = [
