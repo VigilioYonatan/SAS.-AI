@@ -170,7 +170,9 @@ export async function prompt(
 	SI TE ENVIÉ UNA IMAGEN  Y BUSCA EN LA BASE DE DATOS Y RESPONDEME INFORMACIÓN DE ESO.
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
     ${
-        properties.isQuestion
+        properties.isQuestion ||
+        productsData.servicios.length > 0 ||
+        productsData.products.length > 0
             ? JSON.stringify([
                   ...instrucctions,
                   ` RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN,ORDENES, NO TRAIGAS NI CONTESTES ERRONEAMENTE, LA CANTIDAD,ETC..

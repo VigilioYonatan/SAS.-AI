@@ -270,8 +270,7 @@ export async function promptReplace(
     function cleantext(t: string) {
         return t.toLowerCase().replace(/[^a-z0-9\s]/g, "");
     }
-    const { servicios, ...rest } = data;
-    let productsData = rest;
+    let productsData = data;
     const fuse = new Fuse(
         data.products.map((prod) => cleantext(prod.name)),
         {
@@ -578,12 +577,8 @@ export async function promptReplace(
         isDespedida,
         isQuestion,
     };
-    console.log({ properties });
 
-    const promt = await prompt(properties, empresa, {
-        ...productsData,
-        servicios,
-    });
+    const promt = await prompt(properties, empresa, productsData);
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
         productsData?.products?.length ||
         !isQuestion ||
