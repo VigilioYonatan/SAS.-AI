@@ -112,7 +112,7 @@ export async function prompt(
     ];
 
     return `
-    - IMPORTANTE: LEE primero estás reglas ANTES DE RESPONDERME SIEMPRE.
+    - IMPORTANTE: LEE primero estas reglas ANTES DE RESPONDERME SIEMPRE y no inventes datos que no estan en la BASES DE DATOS.
     Como ${empresa.inteligenceArtificial.type} para ${empresa.name_empresa}, ${
         empresa.type_empresa_id
             ? empresa.tipo_empresa.value
@@ -146,7 +146,7 @@ export async function prompt(
             : "No trates de cerrar ventas, no forzar a que el cliente compre nuestros productos o servicios, solo responde a las preguntas."
     }.
 
-	OBLIGATORIO: RESPONDEME EN EL IDIOMA QUE TE ESCRIBA, si te hablo ingles, respondeme en ingles, etc.
+	OBLIGATORIO: SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA, si te hablo ingles, respondeme en ingles, etc.
     HORARIO_ATENCION: // si está enabled false quiere decir que no está disponible ese dia y la hora es de 00:00am a 23:59PM ${JSON.stringify(
         empresa.schedule
     )} . cuando te escriba en horario de atencion que no esté. decime no estamos disponible en este momento pero te puedo ayudar.
