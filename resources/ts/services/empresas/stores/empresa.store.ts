@@ -53,6 +53,7 @@ function useEmpresastore() {
             ...empresa.value,
             ...(info as empresaStore),
         };
+        return empresa.value
     }
 
     return {

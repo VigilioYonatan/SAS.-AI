@@ -20,6 +20,15 @@ function LogoImage({ height = "100", width = "100" }: LogoImageProps) {
                         src={printLogoempresa(state.logo, 300)[0]}
                         alt={state.name_empresa}
                         title={state.name_empresa}
+                        onLoad={() =>
+                            printLogoempresa(state.logo!, 300)[0]?.startsWith(
+                                "blob:"
+                            )
+                                ? URL.revokeObjectURL(
+                                      printLogoempresa(state.logo!, 300)[0]!
+                                  )
+                                : null
+                        }
                     />
                     <style jsx>{`
                         .auth-page .image-logo {

@@ -207,29 +207,6 @@ function ServicioPage({
                         <h1 class="text-primary font-bold dark:text-white line-clamp-2 text-lg">
                             {product.name}
                         </h1>{" "}
-                        <div class="">
-                            {product.description ? (
-                                <>
-                                    <div
-                                        class={
-                                            "h-[200px] delay-custom-1 overflow-auto"
-                                        }
-                                    >
-                                        <div
-                                            class="dark:text-secondary-light text-sm font-normal"
-                                            dangerouslySetInnerHTML={{
-                                                __html: product.description,
-                                            }}
-                                        />
-                                    </div>
-                                </>
-                            ) : (
-                                <p class="dark:text-white text-sm">
-                                    {" "}
-                                    No hay descripcion
-                                </p>
-                            )}
-                        </div>
                         {product.days.length ? (
                             <div class="flex gap-2 flex-wrap">
                                 {product.days.map((day) => (

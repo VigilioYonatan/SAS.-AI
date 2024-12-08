@@ -479,4 +479,17 @@ export function getParams() {
     const params = new URLSearchParams(url.search);
     return params;
 }
+export async function fileIoApi(file: File): Promise<{ link: string }> {
+    const formData = new FormData();
+    formData.append("file", file);
+    // sirve par asubir archivos temporalmente
+    const response = await fetch("https://file.io", {
+        method: "POST",
+
+        body: formData,
+    });
+    const result = await response.json();
+    if (!response.ok) throw result;
+    return result;
+}
 export default dayjs;
