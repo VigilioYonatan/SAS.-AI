@@ -414,7 +414,7 @@ export async function promptReplace(
             questionGPT(
                 whatsapp,
                 message,
-                "es pregunta, cualquier tiempo de pregunta."
+                "es pregunta, cualquier tiempo de pregunta (recuerda que tambien es válido preguntas que no tengan ¿?!)."
             ),
         ]);
 
@@ -577,6 +577,8 @@ export async function promptReplace(
         isDespedida,
         isQuestion,
     };
+    console.log({ properties });
+
     const promt = await prompt(properties, empresa, productsData);
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
         productsData?.products?.length ||
