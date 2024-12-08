@@ -201,7 +201,7 @@ function ProductCart({ product }: ProductCartProps) {
                                         <button
                                             aria-label="to increment to cart"
                                             type="button"
-                                            class={`w-[25px] h-[25px] dark:bg-white bg-primary dark:text-black ${
+                                            class={`w-[25px] h-[25px]  bg-primary dark:text-black ${
                                                 isColorLight(
                                                     empresaStore.state!.setting
                                                         .bg_color
@@ -228,7 +228,7 @@ function ProductCart({ product }: ProductCartProps) {
                                             }
                                             aria-label="to decrement to cart"
                                             type="button"
-                                            class={`w-[25px] h-[25px] dark:bg-white bg-primary dark:text-black ${
+                                            class={`w-[25px] h-[25px]  bg-primary dark:text-black ${
                                                 isColorLight(
                                                     empresaStore.state!.setting
                                                         .bg_color
