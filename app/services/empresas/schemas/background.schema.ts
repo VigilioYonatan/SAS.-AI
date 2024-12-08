@@ -2,7 +2,6 @@ import { filesSchema } from "@/uploads/schemas/uploads.schema";
 import {
     array,
     maxLength,
-    minLength,
     nullable,
     number,
     objectAsync,
@@ -18,7 +17,6 @@ export const backgroundSchema = objectAsync({
     title: string([maxLength(40)]),
     description: nullable(string([maxLength(60)])),
     url: string([startsWith("http")]),
-    html: nullable(string([minLength(5)])),
     empresa_id: number(),
 });
 export type BackgroundSchema = Input<typeof backgroundSchema>;

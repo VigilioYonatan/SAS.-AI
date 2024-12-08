@@ -155,13 +155,6 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                 }`}
                                 key={background.id}
                             >
-                                {background.html ? (
-                                    <div
-                                        dangerouslySetInnerHTML={{
-                                            __html: background.html,
-                                        }}
-                                    />
-                                ) : null}
                                 {/* <div class="bg-[#16474A] absolute inset-0 bg-opacity-60 z-10" /> */}
                                 <div
                                     class={`bg-cover bg-center   ${

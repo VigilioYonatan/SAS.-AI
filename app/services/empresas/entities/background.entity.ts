@@ -24,11 +24,6 @@ export class Background extends Model implements Omit<BackgroundSchema, "id"> {
     description: string | null;
 
     @Column({
-        type: DataType.TEXT,
-    })
-    html: string | null;
-
-    @Column({
         allowNull: false,
         type: DataType.STRING(255),
     })

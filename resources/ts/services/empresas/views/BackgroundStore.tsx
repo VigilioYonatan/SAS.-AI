@@ -24,7 +24,6 @@ function BackgroundStore({ onClose, refetch }: PoststoreProps) {
     const backgroundStoreDtoForm = useForm<BackgroundStoreDto>({
         resolver: valibotVigilio(backgroundStoreDto),
         mode: "all",
-        defaultValues: { html: null },
     });
     const backgroundStoreMutation = backgroundStoreApi();
 
@@ -78,12 +77,6 @@ function BackgroundStore({ onClose, refetch }: PoststoreProps) {
                     title="Contenido"
                     name={"description" as keyof BackgroundStoreDto}
                 />
-                <Form.control.editorJS
-                    type="html"
-                    title="Html"
-                    name={"html" as keyof BackgroundStoreDto}
-                />
-
                 <Form.control.file
                     name={"image" as keyof BackgroundStoreDto}
                     accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, video/mp4"

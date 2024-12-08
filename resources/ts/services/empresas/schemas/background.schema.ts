@@ -1,7 +1,6 @@
 import {
     array,
     maxLength,
-    minLength,
     nullable,
     number,
     object,
@@ -17,7 +16,6 @@ export const backgroundSchema = object({
     title: string([maxLength(40)]),
     description: nullable(string([maxLength(60)])),
     url: string([startsWith("https")]),
-    html: nullable(string([minLength(5)])),
     empresa_id: number(),
 });
 export type BackgroundSchema = Input<typeof backgroundSchema>;
