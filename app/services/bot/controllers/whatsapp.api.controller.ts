@@ -258,7 +258,7 @@ export class whatsappApiController {
                 // Si el primer mensaje en lastMessages no es del role
                 const messageAnterior = messages
                     .filter((a) => a.role === "user")
-                    .slice(-3, -1)
+                    .slice(-5, -1)
                     .map((c) => c.content);
                 const messageActual = `Mensajes Anterior: ${messageAnterior.join(
                     ", "

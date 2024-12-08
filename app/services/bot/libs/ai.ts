@@ -217,7 +217,7 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
             );
             const messageAnterior = messages
                 .filter((a) => a.role === "user")
-                .slice(-3, -1)
+                .slice(-5, -1)
                 .map((c) => c.content);
             const messageActual = `Mensajes Anterior: ${messageAnterior.join(
                 ", "

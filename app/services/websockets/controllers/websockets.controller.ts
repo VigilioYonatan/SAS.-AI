@@ -62,7 +62,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         );
         const messageAnterior = messages
             .filter((a) => a.role === "user")
-            .slice(-3, -1)
+            .slice(-5, -1)
             .map((c) => c.content);
         const messageActual = `Mensajes Anterior: ${messageAnterior.join(
             ", "
