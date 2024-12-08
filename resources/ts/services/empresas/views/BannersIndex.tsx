@@ -387,6 +387,7 @@ function BannersIndex() {
                                                     showCloseButton: true,
                                                     sweetWidth: "700px",
                                                     position: "start",
+                                                    isCloseInBackground: false,
                                                 }));
                                             }}
                                         >
@@ -746,6 +747,7 @@ function Banners({ banners, g, grid, refetch }: BannersProps) {
                             showCloseButton: true,
                             sweetWidth: "700px",
                             position: "start",
+                            isCloseInBackground: false,
                         }));
                     }}
                 >
