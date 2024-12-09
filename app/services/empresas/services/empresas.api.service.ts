@@ -137,13 +137,15 @@ export class EmpresasApiService {
                 where: {
                     empresa_id: empresa.id,
                 },
-                include: [Banner],
+                include: [{ model: Banner, order: [["order", "ASC"]] }],
+                order: [["id", "ASC"]],
             });
             const gridBannersServices = await GridBannerService.findAll({
                 where: {
                     empresa_id: empresa.id,
                 },
-                include: [Banner],
+                include: [{ model: Banner, order: [["order", "ASC"]] }],
+                order: [["id", "ASC"]],
             });
             const grid = gridBanners.map((banner) => {
                 const bannersMapped = (banner.banners as Banner[]).map((b) => ({
@@ -163,17 +165,19 @@ export class EmpresasApiService {
                 };
             });
             const gridService = gridBannersServices.map((banner) => {
-                const bannersMapped = (banner.banners as Banner[]).map((b) => ({
-                    ...b.toJSON(),
-                    file: b.file
-                        ? b.file.map((f) => ({
-                              ...f,
-                              file: `${BASE_URL(empresa)}/empresas/${
-                                  empresa.slug
-                              }/${f.file}`,
-                          }))
-                        : null,
-                }));
+                const bannersMapped = (banner.banners as Banner[]).map((b) => {
+                    return {
+                        ...b.toJSON(),
+                        file: b.file
+                            ? b.file.map((f) => ({
+                                  ...f,
+                                  file: `${BASE_URL(empresa)}/empresas/${
+                                      empresa.slug
+                                  }/${f.file}`,
+                              }))
+                            : null,
+                    };
+                });
 
                 return {
                     ...banner.toJSON(),
@@ -508,7 +512,27 @@ export class EmpresasApiService {
                 await Promise.all(
                     body.backgrounds.map(async (background) => {
                         const { empresa_id, id, ...rest } = background;
-                        await this.backgroundApiService.store(empresa, rest);
+                        const image = await Promise.all(
+                            background.image.map(async (f) => {
+                                const file = f.file.substring(
+                                    f.file.indexOf("/images")
+                                );
+                                const dirEmpresa = `${pathUploads()}/${
+                                    empresa.slug
+                                }`;
+                                const dirEntity = `${dirEmpresa}/${file}`;
+                                await downloadAndSaveFile(f.file, dirEntity);
+
+                                return {
+                                    ...f,
+                                    file,
+                                };
+                            })
+                        );
+                        await this.backgroundApiService.store(empresa, {
+                            ...rest,
+                            image,
+                        });
                     })
                 );
             } else {
@@ -673,9 +697,34 @@ export class EmpresasApiService {
                         await Promise.all(
                             banners.map(async (banner) => {
                                 const { id, ...rest } = banner;
+                                let file = null;
+                                if (banner.file) {
+                                    file = await Promise.all(
+                                        banner.file.map(async (f) => {
+                                            const file = f.file.substring(
+                                                f.file.indexOf("/images")
+                                            );
+                                            const dirEmpresa = `${pathUploads()}/${
+                                                empresa.slug
+                                            }`;
+                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            await downloadAndSaveFile(
+                                                f.file,
+                                                dirEntity
+                                            );
+
+                                            return {
+                                                ...f,
+                                                file,
+                                            };
+                                        })
+                                    );
+                                }
+
                                 await g.$create("banner", {
                                     ...rest,
                                     empresa_id: empresa.id,
+                                    file,
                                 });
                             })
                         );
@@ -715,9 +764,9 @@ export class EmpresasApiService {
                 ]);
             }
 
-            if (body.gridBannerServices?.length && gridBannersMap) {
+            if (body.gridBannersService?.length && gridBannersMap) {
                 await Promise.all(
-                    body.gridBannerServices.map(async (grid) => {
+                    body.gridBannersService.map(async (grid) => {
                         const { banners, id, grid_banner_id, ...rest } = grid;
 
                         const findBannerTest = gridBannersMap.find(
@@ -747,13 +796,10 @@ export class EmpresasApiService {
                                                 empresa.slug
                                             }`;
                                             const dirEntity = `${dirEmpresa}/${file}`;
-                                            console.log({ file: f.file });
-                                            try {
-                                                await downloadAndSaveFile(
-                                                    f.file,
-                                                    dirEntity
-                                                );
-                                            } catch (error) {}
+                                            await downloadAndSaveFile(
+                                                f.file,
+                                                dirEntity
+                                            );
 
                                             return {
                                                 ...f,
@@ -824,13 +870,31 @@ export class EmpresasApiService {
                 });
             }
 
-            await FileSchema.bulkCreate(
-                body.files.map((file) => {
-                    const { id, ...rest } = file;
-                    return {
+            await Promise.all(
+                body.files.map(async (f) => {
+                    const { id, ...rest } = f;
+                    const file = await Promise.all(
+                        f.file.map(async (f) => {
+                            const file = f.file.substring(
+                                f.file.indexOf("/images")
+                            );
+                            const dirEmpresa = `${pathUploads()}/${
+                                empresa.slug
+                            }`;
+                            const dirEntity = `${dirEmpresa}/${file}`;
+                            await downloadAndSaveFile(f.file, dirEntity);
+
+                            return {
+                                ...f,
+                                file,
+                            };
+                        })
+                    );
+                    await FileSchema.create({
                         ...rest,
                         empresa_id: empresa.id,
-                    };
+                        file,
+                    });
                 })
             );
             let brands: (Brands & { id_test: number })[] = [];
@@ -842,7 +906,31 @@ export class EmpresasApiService {
                             ...rest,
                             empresa_id: empresa.id,
                         });
-                        return { ...br, id_test: brand.id };
+                        let image = null;
+                        if (brand.image) {
+                            image = await Promise.all(
+                                brand.image.map(async (f) => {
+                                    const file = f.file.substring(
+                                        f.file.indexOf("/images")
+                                    );
+                                    const dirEmpresa = `${pathUploads()}/${
+                                        empresa.slug
+                                    }`;
+                                    const dirEntity = `${dirEmpresa}/${file}`;
+                                    await downloadAndSaveFile(
+                                        f.file,
+                                        dirEntity
+                                    );
+
+                                    return {
+                                        ...f,
+                                        file,
+                                    };
+                                })
+                            );
+                        }
+
+                        return { ...br, id_test: brand.id, image };
                     })
                 )) as (Brands & { id_test: number })[];
             }
@@ -865,11 +953,36 @@ export class EmpresasApiService {
                         const subcategorias = await Promise.all(
                             subcategories.map(async (sub) => {
                                 const { empresa_id, id, ...rest } = sub;
+                                let image = null;
+                                if (sub.image) {
+                                    image = await Promise.all(
+                                        sub.image.map(async (f) => {
+                                            const file = f.file.substring(
+                                                f.file.indexOf("/images")
+                                            );
+                                            const dirEmpresa = `${pathUploads()}/${
+                                                empresa.slug
+                                            }`;
+                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            await downloadAndSaveFile(
+                                                f.file,
+                                                dirEntity
+                                            );
+
+                                            return {
+                                                ...f,
+                                                file,
+                                            };
+                                        })
+                                    );
+                                }
+
                                 const subcategoria = await Subcategories.create(
                                     {
                                         ...rest,
                                         empresa_id: empresa.id,
                                         category_id: categoria.id,
+                                        image,
                                     }
                                 );
                                 return {
@@ -892,8 +1005,6 @@ export class EmpresasApiService {
                                 if (images) {
                                     result = await Promise.all(
                                         images.map(async (f) => {
-                                            console.log({ f: f.file });
-
                                             const file = f.file.substring(
                                                 f.file.indexOf("/images")
                                             );
@@ -940,10 +1051,34 @@ export class EmpresasApiService {
                         await Promise.all(
                             productsRestaurants.map(async (prod) => {
                                 const { id, ...rest } = prod;
+                                let images = null;
+                                if (prod.images) {
+                                    images = await Promise.all(
+                                        prod.images.map(async (f) => {
+                                            const file = f.file.substring(
+                                                f.file.indexOf("/images")
+                                            );
+                                            const dirEmpresa = `${pathUploads()}/${
+                                                empresa.slug
+                                            }`;
+                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            await downloadAndSaveFile(
+                                                f.file,
+                                                dirEntity
+                                            );
+
+                                            return {
+                                                ...f,
+                                                file,
+                                            };
+                                        })
+                                    );
+                                }
                                 await ProductsRestaurant.create({
                                     ...rest,
                                     category_id: categoria.id,
                                     empresa_id: empresa.id,
+                                    images,
                                 });
                             })
                         );

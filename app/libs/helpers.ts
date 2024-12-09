@@ -134,8 +134,6 @@ export function datetime() {
 }
 
 export async function downloadAndSaveFile(url: string, outputPath: string) {
-    console.log({ url, outputPath });
-
     try {
         // Realiza la petición con fetch
         const response = await fetch(url);

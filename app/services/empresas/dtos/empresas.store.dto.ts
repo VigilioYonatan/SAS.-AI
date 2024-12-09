@@ -81,7 +81,7 @@ export const empresasStoreDto = mergeAsync([
                 ])
             )
         ),
-        gridBannerServices: nullableAsync(
+        gridBannersService: nullableAsync(
             arrayAsync(
                 mergeAsync([
                     gridBannerServicechema,

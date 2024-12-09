@@ -993,94 +993,66 @@ function BannerUpdate({ g, refetch, onClose, banner }: BannerUpdateProps) {
                 Banner {g} - Carta {banner.order}
             </span>
             <Form {...bannerUpdateForm} onSubmit={onBannerUpdate}>
-                {!storageEmpresa?.isTemplate && banner.link?.length ? (
-                    <Form.control
-                        title="Link"
-                        placeholder={BASE_URL}
-                        name={"link" as keyof BannerStoreDto}
-                        question="Este campo no es obligatorio. El link cuando el usuario presione."
-                    />
-                ) : (
-                    <></>
-                )}
+                <Form.control
+                    title="Link"
+                    placeholder={BASE_URL}
+                    name={"link" as keyof BannerStoreDto}
+                    question="Este campo no es obligatorio. El link cuando el usuario presione."
+                />
+
                 <div class="grid grid-cols-2 gap-2">
-                    {!storageEmpresa?.isTemplate && banner.title?.length ? (
-                        <Form.control
-                            title="Titulo"
-                            name={"title" as keyof BannerStoreDto}
-                        />
-                    ) : (
-                        <></>
-                    )}
-                    {!storageEmpresa?.isTemplate && banner.subtitle?.length ? (
-                        <Form.control
-                            title="Subtitulo"
-                            name={"subtitle" as keyof BannerStoreDto}
-                        />
-                    ) : (
-                        <></>
-                    )}
-                </div>
-                {!storageEmpresa?.isTemplate && banner.order ? (
                     <Form.control
-                        title="Orden"
+                        title="Titulo"
+                        name={"title" as keyof BannerStoreDto}
+                    />
+
+                    <Form.control
+                        title="Subtitulo"
+                        name={"subtitle" as keyof BannerStoreDto}
+                    />
+                </div>
+                <Form.control
+                    title="Orden"
+                    type="number"
+                    name={"order" as keyof BannerStoreDto}
+                    options={{ setValueAs: Number }}
+                    placeholder="Orden"
+                    question="Orden - Lugar donde se ubicará esta carta"
+                />
+
+                <div class="grid grid-cols-2 gap-2">
+                    <Form.control
                         type="number"
-                        name={"order" as keyof BannerStoreDto}
+                        title="Columna"
+                        name={"col" as keyof BannerStoreDto}
                         options={{ setValueAs: Number }}
-                        placeholder="Orden"
-                        question="Orden - Lugar donde se ubicará esta carta"
                     />
-                ) : (
-                    <></>
-                )}
-                <div class="grid grid-cols-2 gap-2">
-                    {!storageEmpresa?.isTemplate && banner.col ? (
-                        <Form.control
-                            type="number"
-                            title="Columna"
-                            name={"col" as keyof BannerStoreDto}
-                            options={{ setValueAs: Number }}
-                        />
-                    ) : (
-                        <></>
-                    )}
-                    {!storageEmpresa?.isTemplate && banner.row ? (
-                        <Form.control
-                            type="number"
-                            title="Fila"
-                            options={{ setValueAs: Number }}
-                            name={"row" as keyof BannerStoreDto}
-                        />
-                    ) : (
-                        <></>
-                    )}
+
+                    <Form.control
+                        type="number"
+                        title="Fila"
+                        options={{ setValueAs: Number }}
+                        name={"row" as keyof BannerStoreDto}
+                    />
                 </div>
-                {!storageEmpresa?.isTemplate && banner.script?.length ? (
-                    <Form.control.editorJS
-                        type="html"
-                        title="HTML"
-                        question="Customiza el banner agregando html, data-label='1',, para customizar texto"
-                        name={"script" as keyof BannerStoreDto}
-                        className={`grid-banner-${g}`}
-                    />
-                ) : (
-                    <></>
-                )}
+                <Form.control.editorJS
+                    type="html"
+                    title="HTML"
+                    question="Customiza el banner agregando html, data-label='1',, para customizar texto"
+                    name={"script" as keyof BannerStoreDto}
+                    className={`grid-banner-${g}`}
+                />
 
                 <Form.control.toggle
                     title="Habilitar"
                     name={"enabled" as keyof BannerStoreDto}
                     question="¿Quieres mostrar este banner a tu web?"
                 />
-                {!storageEmpresa?.isTemplate && banner.button?.length ? (
-                    <Form.control
-                        title="Botón"
-                        name={"button" as keyof BannerStoreDto}
-                        question="Si el campo es vació, no se mostrará."
-                    />
-                ) : (
-                    <></>
-                )}
+                <Form.control
+                    title="Botón"
+                    name={"button" as keyof BannerStoreDto}
+                    question="Si el campo es vació, no se mostrará."
+                />
                 <Form.button.submit
                     title="Actualizar"
                     disabled={bannerUpdateMutation.isLoading || false}

@@ -1018,13 +1018,11 @@ export const test = {
             image: [
                 {
                     dimension: 100,
-                    file: "images/categories/suplementos-de-protenaskcifkx100.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/categories/suplementos-de-protenaskcifkx100.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/categories/suplementos-de-protenaskcifkx100.webp",
                 },
                 {
                     dimension: 800,
-                    file: "images/categories/suplementos-de-protenaskcifox800.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/categories/suplementos-de-protenaskcifox800.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/categories/suplementos-de-protenaskcifox800.webp",
                 },
             ],
             icon: '\u003Ci class="fas fa-jug"\u003E\u003C/i\u003E',
@@ -1047,13 +1045,11 @@ export const test = {
                     images: [
                         {
                             dimension: 100,
-                            file: "images/products/muscleblaze-whey-gold-100-whey-protein-isolatekoup6x100.webp",
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/muscleblaze-whey-gold-100-whey-protein-isolatekoup6x100.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/muscleblaze-whey-gold-100-whey-protein-isolatekoup6x100.webp",
                         },
                         {
                             dimension: 500,
-                            file: "images/products/muscleblaze-whey-gold-100-whey-protein-isolatekoupbx500.webp",
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/muscleblaze-whey-gold-100-whey-protein-isolatekoupbx500.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/muscleblaze-whey-gold-100-whey-protein-isolatekoupbx500.webp",
                         },
                     ],
                     slug: "muscleblaze-whey-gold-100-whey-protein-isolate",
@@ -1254,13 +1250,11 @@ export const test = {
                     images: [
                         {
                             dimension: 100,
-                            file: "images/products/advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kgkkkopx100.webp",
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kgkkkopx100.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kgkkkopx100.webp",
                         },
                         {
                             dimension: 500,
-                            file: "images/products/advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kgkkkosx500.webp",
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kgkkkosx500.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kgkkkosx500.webp",
                         },
                     ],
                     slug: "advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kg",
@@ -1481,13 +1475,11 @@ export const test = {
                     images: [
                         {
                             dimension: 100,
-                            file: "images/products/ripped-up-nutrition-whey-pro-rich-chocolateknju0x100.webp",
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/ripped-up-nutrition-whey-pro-rich-chocolateknju0x100.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/ripped-up-nutrition-whey-pro-rich-chocolateknju0x100.webp",
                         },
                         {
                             dimension: 500,
-                            file: "images/products/ripped-up-nutrition-whey-pro-rich-chocolateknju2x500.webp",
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/ripped-up-nutrition-whey-pro-rich-chocolateknju2x500.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/ripped-up-nutrition-whey-pro-rich-chocolateknju2x500.webp",
                         },
                     ],
                     slug: "ripped-up-nutrition-whey-pro-rich-chocolate",
@@ -1691,13 +1683,11 @@ export const test = {
                     images: [
                         {
                             dimension: 100,
-                            file: "images/products/musclexp-instantized-bcaa-6000-with-l-alanine-taurinekmdsfx100.webp",
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/musclexp-instantized-bcaa-6000-with-l-alanine-taurinekmdsfx100.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/musclexp-instantized-bcaa-6000-with-l-alanine-taurinekmdsfx100.webp",
                         },
                         {
                             dimension: 500,
-                            file: "images/products/musclexp-instantized-bcaa-6000-with-l-alanine-taurinekmdshx500.webp",
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/musclexp-instantized-bcaa-6000-with-l-alanine-taurinekmdshx500.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/musclexp-instantized-bcaa-6000-with-l-alanine-taurinekmdshx500.webp",
                         },
                     ],
                     slug: "musclexp-instantized-bcaa-6000-with-l-alanine-taurine",
@@ -1896,14 +1886,12 @@ export const test = {
                     enabled: true,
                     images: [
                         {
-                            file: "images/products/advance-musclemass-bcaa-211-energy-drink-for-workout-76-g-bcaa-38-g-leucine-19-g-iso-leucine-19-g-valine-instantized-with-sunflowerl29jex100.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-bcaa-211-energy-drink-for-workout-76-g-bcaa-38-g-leucine-19-g-iso-leucine-19-g-valine-instantized-with-sunflowerl29jex100.webp",
                             dimension: 100,
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-bcaa-211-energy-drink-for-workout-76-g-bcaa-38-g-leucine-19-g-iso-leucine-19-g-valine-instantized-with-sunflowerl29jex100.webp",
                         },
                         {
-                            file: "images/products/advance-musclemass-bcaa-211-energy-drink-for-workout-76-g-bcaa-38-g-leucine-19-g-iso-leucine-19-g-valine-instantized-with-sunflowerl29jhx500.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-bcaa-211-energy-drink-for-workout-76-g-bcaa-38-g-leucine-19-g-iso-leucine-19-g-valine-instantized-with-sunflowerl29jhx500.webp",
                             dimension: 500,
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-bcaa-211-energy-drink-for-workout-76-g-bcaa-38-g-leucine-19-g-iso-leucine-19-g-valine-instantized-with-sunflowerl29jhx500.webp",
                         },
                     ],
                     slug: "advance-musclemass",
@@ -2104,13 +2092,11 @@ export const test = {
                     images: [
                         {
                             dimension: 100,
-                            file: "images/products/fitspire-100-plant-protein-based-with-pea-with-shaker-lean-proteinmisn9x100.webp",
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/fitspire-100-plant-protein-based-with-pea-with-shaker-lean-proteinmisn9x100.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/fitspire-100-plant-protein-based-with-pea-with-shaker-lean-proteinmisn9x100.webp",
                         },
                         {
                             dimension: 500,
-                            file: "images/products/fitspire-100-plant-protein-based-with-pea-with-shaker-lean-proteinmisnfx500.webp",
-                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/fitspire-100-plant-protein-based-with-pea-with-shaker-lean-proteinmisnfx500.webp",
+                            file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/fitspire-100-plant-protein-based-with-pea-with-shaker-lean-proteinmisnfx500.webp",
                         },
                     ],
                     slug: "fitspire-100-plant-protein-based-with-pea-with-shaker-lean-protein",
@@ -2353,13 +2339,11 @@ export const test = {
             image: [
                 {
                     dimension: 100,
-                    file: "images/brands/optimum-nutritionkfv4ox100.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/optimum-nutritionkfv4ox100.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/optimum-nutritionkfv4ox100.webp",
                 },
                 {
                     dimension: 500,
-                    file: "images/brands/optimum-nutritionkfv4sx500.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/optimum-nutritionkfv4sx500.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/optimum-nutritionkfv4sx500.webp",
                 },
             ],
             slug: "optimum-nutrition",
@@ -2374,13 +2358,11 @@ export const test = {
             image: [
                 {
                     dimension: 100,
-                    file: "images/brands/myproteingl18lx100.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/myproteingl18lx100.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/myproteingl18lx100.webp",
                 },
                 {
                     dimension: 500,
-                    file: "images/brands/myproteingl19bx500.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/myproteingl19bx500.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/myproteingl19bx500.webp",
                 },
             ],
             slug: "myprotein",
@@ -2395,13 +2377,11 @@ export const test = {
             image: [
                 {
                     dimension: 100,
-                    file: "images/brands/dymatizegnv6qx100.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/dymatizegnv6qx100.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/dymatizegnv6qx100.webp",
                 },
                 {
                     dimension: 500,
-                    file: "images/brands/dymatizegnv71x500.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/dymatizegnv71x500.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/dymatizegnv71x500.webp",
                 },
             ],
             slug: "dymatize",
@@ -2416,13 +2396,11 @@ export const test = {
             image: [
                 {
                     dimension: 100,
-                    file: "images/brands/muscletetechgqftox100.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/muscletetechgqftox100.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/muscletetechgqftox100.webp",
                 },
                 {
                     dimension: 500,
-                    file: "images/brands/muscletetechgqftqx500.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/muscletetechgqftqx500.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/muscletetechgqftqx500.webp",
                 },
             ],
             slug: "muscletetech",
@@ -2437,13 +2415,11 @@ export const test = {
             image: [
                 {
                     dimension: 100,
-                    file: "images/brands/bsngs32ex100.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/bsngs32ex100.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/bsngs32ex100.webp",
                 },
                 {
                     dimension: 500,
-                    file: "images/brands/bsngs32nx500.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/bsngs32nx500.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/bsngs32nx500.webp",
                 },
             ],
             slug: "bsn",
@@ -2458,13 +2434,11 @@ export const test = {
             image: [
                 {
                     dimension: 100,
-                    file: "images/brands/isopuregu6opx100.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/isopuregu6opx100.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/isopuregu6opx100.webp",
                 },
                 {
                     dimension: 500,
-                    file: "images/brands/isopuregu6p4x500.webp",
-                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/isopuregu6p4x500.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/isopuregu6p4x500.webp",
                 },
             ],
             slug: "isopure",
