@@ -56,7 +56,9 @@ import { FileSchema } from "../entities/file.entity";
 import { GridBannerService } from "../entities/grid_banner_service.entity";
 import { Background } from "../entities/background.entity";
 import { Categories } from "@/products/entities/categories.entity";
-import type { Subcategories } from "@/products/entities/subcategories.entity";
+import { Subcategories } from "@/products/entities/subcategories.entity";
+import { ProductsNormal } from "@/products/entities/products_normal.entity";
+import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 
 export function deleteHostCache() {
     for (const host of hosts) {
@@ -447,13 +449,47 @@ export class EmpresasApiService {
                             ...rest,
                             empresa_id: empresa.id,
                         });
-                        productsNormals.map((prod) => {
-                            return {
-                                ...prod,
-                                empresa_id: empresa.id,
-                            };
-                        });
-                        // await category.
+                        const subcategorias = await Promise.all(
+                            subcategories.map(async (sub) => {
+                                const { empresa_id, id, ...rest } = sub;
+                                const subcategoria = await Subcategories.create(
+                                    {
+                                        ...rest,
+                                        empresa_id: empresa.id,
+                                        category_id: categoria.id,
+                                    }
+                                );
+                                return { ...subcategoria.toJSON(), id_sub: id };
+                            })
+                        );
+
+                        await Promise.all(
+                            productsNormals.map(async (prod) => {
+                                const subcategory_id = subcategorias.find(
+                                    (sub) => sub.id_sub === prod.subcategory_id
+                                );
+                                const { id, ...rest } = prod;
+                                await ProductsNormal.create({
+                                    ...rest,
+                                    category_id: categoria.id,
+                                    empresa_id: empresa.id,
+                                    subcategory_id: subcategory_id
+                                        ? subcategory_id.id
+                                        : null,
+                                });
+                            })
+                        );
+
+                        await Promise.all(
+                            productsRestaurants.map(async (prod) => {
+                                const { id, ...rest } = prod;
+                                await ProductsRestaurant.create({
+                                    ...rest,
+                                    category_id: categoria.id,
+                                    empresa_id: empresa.id,
+                                });
+                            })
+                        );
                     })
                 );
             }
