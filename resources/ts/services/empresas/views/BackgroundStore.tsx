@@ -77,6 +77,12 @@ function BackgroundStore({ onClose, refetch }: PoststoreProps) {
                     title="Contenido"
                     name={"description" as keyof BackgroundStoreDto}
                 />
+                <Form.control.editorJS
+                    title="Contenido"
+                    type="html"
+                    
+                    name={"html" as keyof BackgroundStoreDto}
+                />
                 <Form.control.file
                     name={"image" as keyof BackgroundStoreDto}
                     accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, video/mp4"

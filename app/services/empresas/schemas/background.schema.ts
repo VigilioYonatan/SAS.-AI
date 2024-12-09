@@ -17,6 +17,7 @@ export const backgroundSchema = objectAsync({
     title: string([maxLength(40)]),
     description: nullable(string([maxLength(60)])),
     url: string([startsWith("http")]),
+    html: nullable(string()),
     empresa_id: number(),
 });
 export type BackgroundSchema = Input<typeof backgroundSchema>;

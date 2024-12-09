@@ -39,6 +39,7 @@ import { formSelectNumber } from "~/components/form/FormSelect";
 import useImageWithDimension from "~/hooks/useImageWithDimension";
 import { bannerDestroyApi } from "../apis/banner/banner.destroy.api";
 import { useSignal } from "@preact/signals";
+import { storageEmpresa } from "../stores/empresa.store";
 export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
 function BannersIndex() {
     const gridBannerIndexQuery = gridBannerIndexApi();
@@ -169,7 +170,7 @@ function BannersIndex() {
                                                     <div class="flex top-1 right-1 absolute gap-2  z-[9]">
                                                         <button
                                                             type="button"
-                                                            class=" bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
+                                                            class=" bg-black text-white bg-opacity-70 text-xs px-2 py-1 rounded-md"
                                                             onClick={() => {
                                                                 sweetModal(
                                                                     (
@@ -208,56 +209,58 @@ function BannersIndex() {
                                                         >
                                                             <i class="fas fa-pen" />
                                                         </button>
-                                                        <button
-                                                            type="button"
-                                                            class=" bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
-                                                            onClick={() => {
-                                                                sweetModal({
-                                                                    title: "¿Estás seguro de eliminar este banner?",
-                                                                    isCloseInBackground:
-                                                                        false,
-                                                                    showCancelButton:
-                                                                        true,
-                                                                    showCloseButton:
-                                                                        true,
-                                                                }).then(
-                                                                    ({
-                                                                        isConfirmed,
-                                                                    }) => {
-                                                                        if (
-                                                                            isConfirmed
-                                                                        ) {
-                                                                            bannerDestroyMutate.mutate(
-                                                                                banner.id,
-                                                                                {
-                                                                                    onSuccess() {
-                                                                                        sweetAlert(
-                                                                                            {
-                                                                                                icon: "success",
-                                                                                                title: "Se eliminó correctamente",
-                                                                                            }
-                                                                                        );
-                                                                                        gridBannerIndexQuery.refetch(
-                                                                                            false
-                                                                                        );
-                                                                                    },
-                                                                                    onError() {
-                                                                                        sweetAlert(
-                                                                                            {
-                                                                                                icon: "danger",
-                                                                                                title: "No se eliminó",
-                                                                                            }
-                                                                                        );
-                                                                                    },
-                                                                                }
-                                                                            );
+                                                        {storageEmpresa?.isTemplate ? (
+                                                            <button
+                                                                type="button"
+                                                                class=" bg-black text-white bg-opacity-70 text-xs px-2 py-1 rounded-md"
+                                                                onClick={() => {
+                                                                    sweetModal({
+                                                                        title: "¿Estás seguro de eliminar este banner?",
+                                                                        isCloseInBackground:
+                                                                            false,
+                                                                        showCancelButton:
+                                                                            true,
+                                                                        showCloseButton:
+                                                                            true,
+                                                                    }).then(
+                                                                        ({
+                                                                            isConfirmed,
+                                                                        }) => {
+                                                                            if (
+                                                                                isConfirmed
+                                                                            ) {
+                                                                                bannerDestroyMutate.mutate(
+                                                                                    banner.id,
+                                                                                    {
+                                                                                        onSuccess() {
+                                                                                            sweetAlert(
+                                                                                                {
+                                                                                                    icon: "success",
+                                                                                                    title: "Se eliminó correctamente",
+                                                                                                }
+                                                                                            );
+                                                                                            gridBannerIndexQuery.refetch(
+                                                                                                false
+                                                                                            );
+                                                                                        },
+                                                                                        onError() {
+                                                                                            sweetAlert(
+                                                                                                {
+                                                                                                    icon: "danger",
+                                                                                                    title: "No se eliminó",
+                                                                                                }
+                                                                                            );
+                                                                                        },
+                                                                                    }
+                                                                                );
+                                                                            }
                                                                         }
-                                                                    }
-                                                                );
-                                                            }}
-                                                        >
-                                                            <i class="fas fa-trash" />
-                                                        </button>
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <i class="fas fa-trash" />
+                                                            </button>
+                                                        ) : null}
                                                     </div>
                                                     {banner.script ? (
                                                         <div
@@ -727,6 +730,8 @@ interface BannersProps {
     refetch: (clean?: boolean) => void;
 }
 function Banners({ banners, g, grid, refetch }: BannersProps) {
+    const bannerDestroyMutate = bannerDestroyApi();
+
     return (
         <div class="dark:text-white">
             <div class="flex gap-2 justify-between">
@@ -802,29 +807,96 @@ function Banners({ banners, g, grid, refetch }: BannersProps) {
                                         </>
                                     ) : null}
 
-                                    <button
-                                        type="button"
-                                        class="top-1 right-1 absolute bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
-                                        onClick={() => {
-                                            sweetModal((onClose) => ({
-                                                html: reactComponent(
-                                                    <BannerUpdate
-                                                        onClose={onClose}
-                                                        banner={banner}
-                                                        g={g}
-                                                        refetch={refetch}
-                                                        grid={grid}
-                                                    />
-                                                ),
-                                                showCloseButton: true,
-                                                isCloseInBackground: false,
-                                                position: "start",
-                                                sweetWidth: "700px",
-                                            }));
-                                        }}
-                                    >
-                                        <i class="fas fa-pen" />
-                                    </button>
+                                    <div>
+                                        {storageEmpresa?.isTemplate ? (
+                                            <div class="top-1 right-1 absolute flex gap-1 items-center">
+                                                <button
+                                                    type="button"
+                                                    class=" bg-black text-white bg-opacity-70 text-xs px-2 py-1 rounded-md"
+                                                    onClick={() => {
+                                                        sweetModal({
+                                                            title: "¿Estás seguro de eliminar este banner?",
+                                                            isCloseInBackground:
+                                                                false,
+                                                            showCancelButton:
+                                                                true,
+                                                            showCloseButton:
+                                                                true,
+                                                        }).then(
+                                                            ({
+                                                                isConfirmed,
+                                                            }) => {
+                                                                if (
+                                                                    isConfirmed
+                                                                ) {
+                                                                    bannerDestroyMutate.mutate(
+                                                                        banner.id,
+                                                                        {
+                                                                            onSuccess() {
+                                                                                sweetAlert(
+                                                                                    {
+                                                                                        icon: "success",
+                                                                                        title: "Se eliminó correctamente",
+                                                                                    }
+                                                                                );
+                                                                            },
+                                                                            onError() {
+                                                                                sweetAlert(
+                                                                                    {
+                                                                                        icon: "danger",
+                                                                                        title: "No se eliminó",
+                                                                                    }
+                                                                                );
+                                                                            },
+                                                                        }
+                                                                    );
+                                                                }
+                                                            }
+                                                        );
+                                                    }}
+                                                >
+                                                    <i class="fas fa-trash" />
+                                                </button>{" "}
+                                                <button
+                                                    type="button"
+                                                    class=" bg-black bg-opacity-70 text-xs px-2 py-1 rounded-md"
+                                                    onClick={() => {
+                                                        sweetModal(
+                                                            (onClose) => ({
+                                                                html: reactComponent(
+                                                                    <BannerUpdate
+                                                                        onClose={
+                                                                            onClose
+                                                                        }
+                                                                        banner={
+                                                                            banner
+                                                                        }
+                                                                        g={g}
+                                                                        refetch={
+                                                                            refetch
+                                                                        }
+                                                                        grid={
+                                                                            grid
+                                                                        }
+                                                                    />
+                                                                ),
+                                                                showCloseButton:
+                                                                    true,
+                                                                isCloseInBackground:
+                                                                    false,
+                                                                position:
+                                                                    "start",
+                                                                sweetWidth:
+                                                                    "700px",
+                                                            })
+                                                        );
+                                                    }}
+                                                >
+                                                    <i class="fas fa-pen" />
+                                                </button>
+                                            </div>
+                                        ) : null}
+                                    </div>
                                 </div>
                             );
                         })()}
@@ -921,61 +993,94 @@ function BannerUpdate({ g, refetch, onClose, banner }: BannerUpdateProps) {
                 Banner {g} - Carta {banner.order}
             </span>
             <Form {...bannerUpdateForm} onSubmit={onBannerUpdate}>
-                <Form.control
-                    title="Link"
-                    placeholder={BASE_URL}
-                    name={"link" as keyof BannerStoreDto}
-                    question="Este campo no es obligatorio. El link cuando el usuario presione."
-                />
+                {!storageEmpresa?.isTemplate && banner.link?.length ? (
+                    <Form.control
+                        title="Link"
+                        placeholder={BASE_URL}
+                        name={"link" as keyof BannerStoreDto}
+                        question="Este campo no es obligatorio. El link cuando el usuario presione."
+                    />
+                ) : (
+                    <></>
+                )}
                 <div class="grid grid-cols-2 gap-2">
-                    <Form.control
-                        title="Titulo"
-                        name={"title" as keyof BannerStoreDto}
-                    />
-                    <Form.control
-                        title="Subtitulo"
-                        name={"subtitle" as keyof BannerStoreDto}
-                    />
+                    {!storageEmpresa?.isTemplate && banner.title?.length ? (
+                        <Form.control
+                            title="Titulo"
+                            name={"title" as keyof BannerStoreDto}
+                        />
+                    ) : (
+                        <></>
+                    )}
+                    {!storageEmpresa?.isTemplate && banner.subtitle?.length ? (
+                        <Form.control
+                            title="Subtitulo"
+                            name={"subtitle" as keyof BannerStoreDto}
+                        />
+                    ) : (
+                        <></>
+                    )}
                 </div>
-                <Form.control
-                    title="Orden"
-                    type="number"
-                    name={"order" as keyof BannerStoreDto}
-                    options={{ setValueAs: Number }}
-                    placeholder="Orden"
-                    question="Orden - Lugar donde se ubicará esta carta"
-                />
+                {!storageEmpresa?.isTemplate && banner.order ? (
+                    <Form.control
+                        title="Orden"
+                        type="number"
+                        name={"order" as keyof BannerStoreDto}
+                        options={{ setValueAs: Number }}
+                        placeholder="Orden"
+                        question="Orden - Lugar donde se ubicará esta carta"
+                    />
+                ) : (
+                    <></>
+                )}
                 <div class="grid grid-cols-2 gap-2">
-                    <Form.control
-                        type="number"
-                        title="Columna"
-                        name={"col" as keyof BannerStoreDto}
-                        options={{ setValueAs: Number }}
-                    />
-                    <Form.control
-                        type="number"
-                        title="Fila"
-                        options={{ setValueAs: Number }}
-                        name={"row" as keyof BannerStoreDto}
-                    />
+                    {!storageEmpresa?.isTemplate && banner.col ? (
+                        <Form.control
+                            type="number"
+                            title="Columna"
+                            name={"col" as keyof BannerStoreDto}
+                            options={{ setValueAs: Number }}
+                        />
+                    ) : (
+                        <></>
+                    )}
+                    {!storageEmpresa?.isTemplate && banner.row ? (
+                        <Form.control
+                            type="number"
+                            title="Fila"
+                            options={{ setValueAs: Number }}
+                            name={"row" as keyof BannerStoreDto}
+                        />
+                    ) : (
+                        <></>
+                    )}
                 </div>
-                <Form.control.editorJS
-                    type="html"
-                    title="HTML"
-                    question="Customiza el banner agregando html, data-label='1',, para customizar texto"
-                    name={"script" as keyof BannerStoreDto}
-                    className={`grid-banner-${g}`}
-                />
+                {!storageEmpresa?.isTemplate && banner.script?.length ? (
+                    <Form.control.editorJS
+                        type="html"
+                        title="HTML"
+                        question="Customiza el banner agregando html, data-label='1',, para customizar texto"
+                        name={"script" as keyof BannerStoreDto}
+                        className={`grid-banner-${g}`}
+                    />
+                ) : (
+                    <></>
+                )}
+
                 <Form.control.toggle
                     title="Habilitar"
                     name={"enabled" as keyof BannerStoreDto}
                     question="¿Quieres mostrar este banner a tu web?"
                 />
-                <Form.control
-                    title="Botón"
-                    name={"button" as keyof BannerStoreDto}
-                    question="Si el campo es vació, no se mostrará."
-                />
+                {!storageEmpresa?.isTemplate && banner.button?.length ? (
+                    <Form.control
+                        title="Botón"
+                        name={"button" as keyof BannerStoreDto}
+                        question="Si el campo es vació, no se mostrará."
+                    />
+                ) : (
+                    <></>
+                )}
                 <Form.button.submit
                     title="Actualizar"
                     disabled={bannerUpdateMutation.isLoading || false}
@@ -985,23 +1090,27 @@ function BannerUpdate({ g, refetch, onClose, banner }: BannerUpdateProps) {
             <br />
             <br />
             <br />
-            <Form {...bannerUpdateFormFile} onSubmit={onBannerUpdateFile}>
-                <Form.control.file
-                    name={"file" as keyof BannerUpdateFileDto}
-                    accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, video/mp4"
-                    typeFile="image-video"
-                    title="Imagenes/video"
-                    typesText="JPG, PNG, WEBP, GIF, MP4, OGG Ó JPEG"
-                    multiple
-                    showButonCopy
-                    showButtonClean
-                />
-                <Form.button.submit
-                    title="Actualizar"
-                    disabled={bannerUpdatFileMutation.isLoading || false}
-                    isLoading={bannerUpdatFileMutation.isLoading || false}
-                />
-            </Form>
+            {!storageEmpresa?.isTemplate && banner.file ? (
+                <Form {...bannerUpdateFormFile} onSubmit={onBannerUpdateFile}>
+                    <Form.control.file
+                        name={"file" as keyof BannerUpdateFileDto}
+                        accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, video/mp4"
+                        typeFile="image-video"
+                        title="Imagenes/video"
+                        typesText="JPG, PNG, WEBP, GIF, MP4, OGG Ó JPEG"
+                        multiple
+                        showButonCopy
+                        showButtonClean
+                    />
+                    <Form.button.submit
+                        title="Actualizar"
+                        disabled={bannerUpdatFileMutation.isLoading || false}
+                        isLoading={bannerUpdatFileMutation.isLoading || false}
+                    />
+                </Form>
+            ) : (
+                <></>
+            )}
         </div>
     );
 }

@@ -16,6 +16,7 @@ export const backgroundSchema = object({
     title: string([maxLength(40)]),
     description: nullable(string([maxLength(60)])),
     url: string([startsWith("https")]),
+    html: nullable(string()),
     empresa_id: number(),
 });
 export type BackgroundSchema = Input<typeof backgroundSchema>;

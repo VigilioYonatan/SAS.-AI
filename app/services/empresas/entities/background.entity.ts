@@ -30,6 +30,11 @@ export class Background extends Model implements Omit<BackgroundSchema, "id"> {
     url: string;
 
     @Column({
+        type: DataType.TEXT,
+    })
+    html: string;
+
+    @Column({
         allowNull: false,
         type: DataType.JSON,
     })

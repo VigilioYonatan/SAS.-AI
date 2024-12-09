@@ -143,6 +143,11 @@ function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
                         title="Contenido"
                         name={"description" as keyof BackgroundUpdateDto}
                     />
+                    <Form.control.editorJS
+                        title="Contenido"
+                        type="html"
+                        name={"html" as keyof BackgroundUpdateDto}
+                    />
                     <div class="flex justify-center">
                         <Form.button.submit
                             ico={null}

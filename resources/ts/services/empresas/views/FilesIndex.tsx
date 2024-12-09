@@ -24,6 +24,7 @@ import {
 import { FileSchema } from "../schemas/file.schema";
 import { useEffect } from "preact/hooks";
 import { getParams } from "~/libs/helpers";
+import { storageEmpresa } from "../stores/empresa.store";
 
 function FilesIndex() {
     const filesIndexQuery = filesIndexApi();
@@ -109,45 +110,47 @@ function FilesIndex() {
                                     >
                                         <i class="fas fa-pen" />
                                     </button>
-                                    <button
-                                        type="button"
-                                        class="bg-danger w-[25px] h-[25px] flex justify-center items-center rounded-md text-white"
-                                        onClick={() => {
-                                            sweetModal({
-                                                title: "¿Estas seguro de eliminar este archivo?",
-                                                text: "Puede que tu web falle al borrar algunos archivos",
-                                                showCancelButton: true,
-                                                isCloseInBackground: false,
-                                                showCloseButton: true,
-                                            }).then(({ isConfirmed }) => {
-                                                if (isConfirmed) {
-                                                    filesDestroyMutate.mutate(
-                                                        file.id,
-                                                        {
-                                                            onSuccess() {
-                                                                sweetAlert({
-                                                                    icon: "success",
-                                                                    title: "Eliminado correctamente",
-                                                                });
-                                                                filesIndexQuery.refetch(
-                                                                    false
-                                                                );
-                                                            },
-                                                            onError(data) {
-                                                                sweetAlert({
-                                                                    icon: "danger",
-                                                                    title: data.message,
-                                                                });
-                                                            },
-                                                        }
-                                                    );
-                                                }
-                                            });
-                                        }}
-                                    >
-                                        {" "}
-                                        <i class="fas fa-trash text-xs" />
-                                    </button>
+                                    {storageEmpresa?.isTemplate ? (
+                                        <button
+                                            type="button"
+                                            class="bg-danger w-[25px] h-[25px] flex justify-center items-center rounded-md text-white"
+                                            onClick={() => {
+                                                sweetModal({
+                                                    title: "¿Estas seguro de eliminar este archivo?",
+                                                    text: "Puede que tu web falle al borrar algunos archivos",
+                                                    showCancelButton: true,
+                                                    isCloseInBackground: false,
+                                                    showCloseButton: true,
+                                                }).then(({ isConfirmed }) => {
+                                                    if (isConfirmed) {
+                                                        filesDestroyMutate.mutate(
+                                                            file.id,
+                                                            {
+                                                                onSuccess() {
+                                                                    sweetAlert({
+                                                                        icon: "success",
+                                                                        title: "Eliminado correctamente",
+                                                                    });
+                                                                    filesIndexQuery.refetch(
+                                                                        false
+                                                                    );
+                                                                },
+                                                                onError(data) {
+                                                                    sweetAlert({
+                                                                        icon: "danger",
+                                                                        title: data.message,
+                                                                    });
+                                                                },
+                                                            }
+                                                        );
+                                                    }
+                                                });
+                                            }}
+                                        >
+                                            {" "}
+                                            <i class="fas fa-trash text-xs" />
+                                        </button>
+                                    ) : null}
                                 </div>
                             </div>
                         </div>
