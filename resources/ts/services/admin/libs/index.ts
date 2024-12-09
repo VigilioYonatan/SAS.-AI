@@ -1,6 +1,7 @@
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import { isColorLight } from "~/libs/helpers";
 
 export function driverInitial() {
     const driverA = driver({
@@ -9,95 +10,188 @@ export function driverInitial() {
         steps: [
             {
                 popover: {
-                    title: storageEmpresa!.name_empresa.toUpperCase(),
-                    description:
-                        "Bienvenido a su <b>negocio digital con Inteligencia Artificial</b> 😀.",
+                    title: `<p  class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>${storageEmpresa!.name_empresa.toUpperCase()}</p>`,
+                    description: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Bienvenido a su <b>negocio digital con Inteligencia Artificial</b> 😀.</p>`,
                 },
             },
             {
                 element: "#Dashboard", // Elemento a resaltar
                 popover: {
-                    title: "Dashboard",
-                    description:
-                        "Aquí encontrarás la resumen sobre tus <b>empresa</b>.",
-                },
-            },
-            [1, 2].includes(storageEmpresa!.tipo_empresa.tipo_servicio_id)
-                ? {
-                      element: "#Productos",
-                      popover: {
-                          title: "Productos",
-                          description:
-                              "Aquí encontrarás la información sobre tus <b>productos</b>.",
-                      },
-                  }
-                : {},
-            {
-                element: "#Local",
-                popover: {
-                    title: "Local",
-                    description:
-                        "Aquí encontrarás la información sobre tus  <b>ordenes o pedidos hechas en tu local</b>.",
-                },
-            },
-            {
-                element: "#Delivery",
-                popover: {
-                    title: "Delivery",
-                    description:
-                        "Aquí encontrarás la información sobre tus <b>ordenes o pedidos hechas en la aplicación web</b>.",
+                    title: `<p  class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Dashboard</p>`,
+                    description: `<p  class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Aquí encontrarás la resumen sobre tus <b>empresa</b>.</p>`,
                 },
             },
             storageEmpresa?.tipo_empresa.tipo_servicio_id === 3
                 ? {
                       element: "#Servicios",
                       popover: {
-                          title: "Servicios",
-                          description:
-                              "Aquí encontrarás la información sobre tus <b>Servicios</b>.",
+                          title: `<p  class='${
+                              isColorLight(storageEmpresa!.setting.bg_color)
+                                  ? "text-black"
+                                  : "text-white"
+                          }'>Servicios</p>`,
+                          description: `<p  class='${
+                              isColorLight(storageEmpresa!.setting.bg_color)
+                                  ? "text-black"
+                                  : "text-white"
+                          }'>Aquí encontrarás la información sobre tus <b>Servicios</b>.</p>`,
                       },
                   }
-                : {},
+                : null,
+            [1, 2, 3].includes(storageEmpresa!.tipo_empresa.tipo_servicio_id)
+                ? {
+                      element: "#Productos",
+                      popover: {
+                          title: `<p  class='${
+                              isColorLight(storageEmpresa!.setting.bg_color)
+                                  ? "text-black"
+                                  : "text-white"
+                          }'>Productos</p>`,
+                          description: `<p class='${
+                              isColorLight(storageEmpresa!.setting.bg_color)
+                                  ? "text-black"
+                                  : "text-white"
+                          }'>Aquí encontrarás la información sobre tus <b>productos</b>.</p>`,
+                      },
+                  }
+                : null,
+
             {
-                element: "#MetodosdePago",
+                element: "#Local",
                 popover: {
-                    title: "Metodos de Pago",
-                    description:
-                        "Actualiza la información de tus métodos de pago.",
+                    title: `<p  class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Local</p>`,
+                    description: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Aquí encontrarás la información sobre tus  <b>ordenes o pedidos hechas en tu local</b>.</p>`,
                 },
             },
             {
-                element: "#Whatsapp",
+                element: "#Delivery",
                 popover: {
-                    title: "Whatsapp",
-                    description:
-                        "Aquí podrás usar <b>Whatsapp - Whatsapp CRM</b> al máximo.",
+                    title: `<p  class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Delivery</p>`,
+                    description: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Aquí encontrarás la información sobre tus <b>ordenes o pedidos hechas en la aplicación web</b>.</p>`,
+                },
+            },
+
+            {
+                element: "#MetodosdePago",
+                popover: {
+                    title: `<p  class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Metodos de Pago</p>`,
+                    description: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Actualiza la información de tus métodos de pago.</p>`,
                 },
             },
             {
                 element: "#InteligenciaArtificial",
                 popover: {
-                    title: "Inteligencia Artificial",
-                    description:
-                        "Aquí encontrarás la información y <b>configuración de tu Inteligencia Artificial</b>.",
+                    title: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Inteligencia Artificial</p>`,
+                    description: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Aquí encontrarás la información y <b>configuración de tu Inteligencia Artificial</b>.</p>`,
                 },
             },
             {
+                element: "#Citas\\/MeetingsAI",
+                popover: {
+                    title: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Citas/MeetingsAI</p>`,
+                    description: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Aquí encontrarás  información tus citas realizad que la I.A almacenó.</p>`,
+                },
+            },
+            {
+                element: "#Whatsapp",
+                popover: {
+                    title: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Whatsapp</p>`,
+                    description: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Aquí podrás usar <b>Whatsapp - Whatsapp CRM</b> al máximo.</p>`,
+                },
+            },
+
+            {
                 element: "#Usuarios",
                 popover: {
-                    title: "Usuarios",
-                    description:
-                        "Aquí encontrarás la <b>información tus usuarios</b>.",
+                    title: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Usuarios</p>`,
+                    description: `<p  class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Aquí encontrarás la <b>información tus usuarios</b>.</p>`,
                 },
             },
             {
                 element: "#herramientas",
                 popover: {
-                    title: "Herramientas",
-                    description: "Más herramientas para tu web.",
+                    title: "<p>Herramientas",
+                    description: `<p class='${
+                        isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "text-black"
+                            : "text-white"
+                    }'>Más herramientas para tu web.</p>`,
                 },
             },
-        ].filter((a) => Object.keys(a).length),
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        ].filter(Boolean) as any,
         allowClose: false,
     });
 

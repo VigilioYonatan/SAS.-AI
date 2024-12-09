@@ -462,20 +462,6 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                 ) : null}
                             </div>
                         ) : null}
-                        <div class="relative">
-                            {" "}
-                            <NavLink
-                                onClick={onCloseAside}
-                                to="/meeting"
-                                title="Citas/Meetings A.I"
-                                Icon={<i class="fas fa-handshake-alt" />}
-                            />
-                            {storageEmpresa!.citas[NOW().get("date")] > 0 ? (
-                                <div class="w-[20px] h-[20px] bg-danger rounded-full flex justify-center items-center absolute right-0 md:right-[10%] top-1 md:top-3 text-white font-bold text-xs">
-                                    {storageEmpresa?.citas[NOW().get("date")]}
-                                </div>
-                            ) : null}
-                        </div>
 
                         {authStore.guards.permissionAdminGuard() ? (
                             <>
@@ -500,7 +486,6 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                         } w-[15px] h-[15px] rounded-full absolute right-2 md:right-[30%] top-1 md:top-3`}
                                     />
                                 </div>
-
                                 <div class="relative">
                                     <NavLink
                                         onClick={onCloseAside}
@@ -535,6 +520,27 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                         >
                                             <i class="fas fa-lock-alt" />
                                         </button>
+                                    ) : null}
+                                </div>{" "}
+                                <div class="relative">
+                                    {" "}
+                                    <NavLink
+                                        onClick={onCloseAside}
+                                        to="/meeting"
+                                        title="Citas/Meetings A.I"
+                                        Icon={
+                                            <i class="fas fa-handshake-alt" />
+                                        }
+                                    />
+                                    {storageEmpresa!.citas[NOW().get("date")] >
+                                    0 ? (
+                                        <div class="w-[20px] h-[20px] bg-danger rounded-full flex justify-center items-center absolute right-0 md:right-[10%] top-1 md:top-3 text-white font-bold text-xs">
+                                            {
+                                                storageEmpresa?.citas[
+                                                    NOW().get("date")
+                                                ]
+                                            }
+                                        </div>
                                     ) : null}
                                 </div>
                             </>

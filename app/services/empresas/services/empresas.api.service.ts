@@ -17,7 +17,7 @@ import type {
 } from "../schemas/empresas.schema";
 import type { EmpresasAddressUpdateDto } from "../dtos/empresas.address.update.dto";
 import { Address } from "../entities/address.entity";
-import { pathUploads } from "@/uploads/libs/helpers";
+import { pathUploads, uploadsEntities } from "@/uploads/libs/helpers";
 import fs from "node:fs";
 import type { EmpresasStoreDto } from "../dtos/empresas.store.dto";
 import type { MetodosPagoUpdateDto } from "../dtos/metodosPago.update.dto";
@@ -454,6 +454,7 @@ export class EmpresasApiService {
                 // Maneja el caso donde el slug ya existe
                 throw new Error("El slug ya está en uso");
             }
+
             const empresa = new Empresas({
                 ...rest,
                 enabled_booster: false,
@@ -486,6 +487,28 @@ export class EmpresasApiService {
                 logo_pwa: null,
             });
             await empresa.save();
+            //    crear carpetas si no existe
+            for (const entity of uploadsEntities) {
+                const dirEmpresa = `${pathUploads()}/${empresa.slug}`;
+                const dir = `${dirEmpresa}/images`;
+                const dirEntity = `${dir}/${entity}`;
+                if (!fs.existsSync(dirEmpresa)) {
+                    fs.mkdirSync(dirEmpresa);
+                    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                    console.log("Creado directorio correctamente");
+                }
+                if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir);
+                    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                    console.log("Creado directorio correctamente");
+                }
+                if (!fs.existsSync(dirEntity)) {
+                    fs.mkdirSync(dirEntity);
+                    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                    console.log("Creado directorio correctamente");
+                }
+            }
+
             if (body.servicio_id === 2) {
                 await Promise.all(
                     mesasSeeder.map(async (floor) => {
@@ -564,6 +587,7 @@ export class EmpresasApiService {
             }
             const am8 = "09:00";
             const pm8 = "18:00";
+
             // como hacer qeu sea {[bank.key]:{titular:null}}
             await Promise.all([
                 empresa.$create("metodos_pago", {

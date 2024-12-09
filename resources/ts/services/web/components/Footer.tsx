@@ -196,7 +196,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         </ul>
                     ) : null}
 
-                    <ul class=" flex flex-col ">
+                    <ul class=" flex flex-col gap-2">
                         <li
                             class="font-bold"
                             style={{
@@ -228,7 +228,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             .type_icons_bars === "normal"
                                             ? "s"
                                             : "r"
-                                    } fa-phone mr-2  text-xl`}
+                                    } fa-phone mr-2  text-primary text-xl`}
                                 />{" "}
                                 +{empresaStore.state!.dial_code}{" "}
                                 {empresaStore.state!.telephoneFirst.replace(
@@ -245,7 +245,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             .type_icons_bars === "normal"
                                             ? "s"
                                             : "r"
-                                    } fa-phone mr-2  text-xl`}
+                                    } fa-phone mr-2  text-primary text-xl`}
                                 />{" "}
                                 +{empresaStore.state!.dial_code}{" "}
                                 {empresaStore.state!.telephoneReclamos.replace(
@@ -262,7 +262,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             .type_icons_bars === "normal"
                                             ? "s"
                                             : "r"
-                                    } fa-phone mr-2  text-xl`}
+                                    } fa-phone mr-2   text-primary text-xl`}
                                 />{" "}
                                 +{empresaStore.state!.dial_code}{" "}
                                 {empresaStore.state!.telephoneThird.replace(
@@ -274,7 +274,14 @@ function Footer({ categories, categoriesServices }: FooterProps) {
 
                         {empresaStore.state!.address.direccion ? (
                             <li class="dark:text-white font-semibold  text-sm">
-                                <i class="far fa-map-marker-alt  text-xl mr-2" />{" "}
+                                <i
+                                    class={`fa${
+                                        storageEmpresa?.setting
+                                            .type_icons_bars === "normal"
+                                            ? "s"
+                                            : "r"
+                                    } text-primary fa-map-marker-alt  text-xl mr-2`}
+                                />{" "}
                                 {empresaStore.state!.address.direccion}
                             </li>
                         ) : null}
@@ -310,7 +317,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             .type_icons_bars === "normal"
                                             ? "s"
                                             : "r"
-                                    } fa-alarm-clock text-3xl mb-1`}
+                                    } fa-alarm-clock  text-primary text-3xl mb-1`}
                                 />
                                 {agruparHorarios().map((horario) => (
                                     <div

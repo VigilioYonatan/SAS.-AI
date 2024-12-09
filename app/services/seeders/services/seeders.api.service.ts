@@ -92,6 +92,7 @@ export class SeedersApiService {
             // await Promise.all([Posts.bulkCreate(postsSeeder)]);
             return { success: true, message: "Seed executed" };
         } catch (error) {
+            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
             console.log((error as Error).message);
             return {
                 success: false,
