@@ -114,7 +114,6 @@ export async function prompt(
     ];
 
     return `
-    - IMPORTANTE: LEE primero estas reglas ANTES DE RESPONDERME SIEMPRE y no inventes datos,citas,pagos, etc que no estan en la BASES DE DATOS.
     Como ${empresa.inteligenceArtificial.type} para ${empresa.name_empresa}, ${
         empresa.type_empresa_id
             ? empresa.tipo_empresa.value
@@ -201,7 +200,7 @@ export async function prompt(
              )}`
            : ""
    }
-
+- IMPORTANTE: LEE primero estas reglas ANTES DE RESPONDERME SIEMPRE y no inventes datos,citas,pagos, etc que no estan en la BASES DE DATOS.
     `;
     // -OJO LAS CITAS de lA BASE DE DATOS ESTAN EN HORA FORMATO UNIVERSAL. asi que depende de mi país te fijas que fechas con hora estan ocupados.
 }

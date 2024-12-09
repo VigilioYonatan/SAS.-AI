@@ -309,7 +309,7 @@ export async function promptReplace(
                 whatsapp,
                 `Esto son mis categorias ${JSON.stringify(
                     data.categorias
-                )}.\n Si en el texto '${message}' ves algun producto o servicio que esta en mis categorías que te mandé, respondeme json [id_de_categorias_de_productosservicios_encontrados] . solo traeme el json, no digas nada mas`
+                )}.\n Si en el texto '${message}', ves algun producto o servicio que puede estar en mis categorías que te mandé (ejemplo en el mensaje samsung galaxy s7 y tengo en mi categorias celulares, me traes [id_category_celulares], etc), respondeme json [id_de_categorias_de_productosservicios_encontrados] . solo traeme el json, no digas nada mas`
             );
 
             const cleanProducts =

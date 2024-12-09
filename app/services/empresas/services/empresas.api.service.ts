@@ -54,6 +54,9 @@ import { Users } from "@/users/entities/users.entity";
 import { usersSeeder } from "@/users/seeders/users.seeder";
 import { FileSchema } from "../entities/file.entity";
 import { GridBannerService } from "../entities/grid_banner_service.entity";
+import { Background } from "../entities/background.entity";
+import { Categories } from "@/products/entities/categories.entity";
+import type { Subcategories } from "@/products/entities/subcategories.entity";
 
 export function deleteHostCache() {
     for (const host of hosts) {
@@ -161,6 +164,7 @@ export class EmpresasApiService {
                       }))
                     : null,
             }));
+
             return {
                 ...banner.toJSON(),
                 banners: bannersMapped,
@@ -184,6 +188,86 @@ export class EmpresasApiService {
                 file,
             };
         }) as FileSchema[];
+        let backgrounds = await Background.findAll({
+            where: { empresa_id: empresa.id },
+        });
+        backgrounds = backgrounds.map((f) => {
+            const image = f.image?.map((file) => {
+                return {
+                    ...file,
+                    file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
+                        file.file
+                    }`,
+                };
+            });
+            return {
+                ...f.toJSON(),
+                image,
+            };
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        }) as any;
+
+        let categories = await Categories.findAll({
+            where: { empresa_id: empresa.id },
+            limit: 2,
+        });
+        categories = await Promise.all(
+            categories.map(async (category) => {
+                const image = category.image?.map((file) => {
+                    return {
+                        ...file,
+                        image: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
+                            file.file
+                        }`,
+                    };
+                });
+                const wallpaper = category.wallpaper?.map((file) => {
+                    return {
+                        ...file,
+                        image: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
+                            file.file
+                        }`,
+                    };
+                });
+                let subcategories = (await category.$get(
+                    "subcategories"
+                )) as Subcategories[];
+                subcategories = subcategories.map((sub) => {
+                    const image = sub.image?.map((file) => {
+                        return {
+                            ...file,
+                            image: `${BASE_URL(empresa)}/empresas/${
+                                empresa.slug
+                            }/${file.file}`,
+                        };
+                    });
+
+                    return {
+                        ...sub.toJSON(),
+                        image,
+                    };
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                }) as any;
+                const productsNormals = await category.$get("productsNormals");
+                const productsRestaurants = await category.$get(
+                    "productsRestaurants"
+                );
+                const productsServicios = await category.$get(
+                    "productsServicios"
+                );
+                return {
+                    ...category.toJSON(),
+                    image,
+                    wallpaper,
+                    subcategories,
+                    productsNormals,
+                    productsRestaurants,
+                    productsServicios,
+                };
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            }) as any
+        );
+
         return {
             success: true,
             data: {
@@ -191,6 +275,8 @@ export class EmpresasApiService {
                 gridBanners: grid,
                 files,
                 gridBannersService: gridService,
+                backgrounds,
+                categories,
             },
         };
     }
@@ -320,19 +406,58 @@ export class EmpresasApiService {
                     })
                 );
             }
-            await this.backgroundApiService.store(empresa, {
-                title: "Los Mejores Precios",
-                description: "Bienvenido a nuestra Tienda Online",
-                image: [
-                    {
-                        file: `${BASE_URL(
-                            empresa
-                        )}/images/settings/others/slider.jpg`,
-                        dimension: 1000,
-                    },
-                ],
-                url: `${BASE_URL(empresa)}/`,
-            });
+            //! background here
+            if (body.backgrounds) {
+                await Promise.all(
+                    body.backgrounds.map(async (background) => {
+                        const { empresa_id, id, ...rest } = background;
+                        await this.backgroundApiService.store(empresa, rest);
+                    })
+                );
+            } else {
+                await this.backgroundApiService.store(empresa, {
+                    title: "Los Mejores Precios",
+                    description: "Bienvenido a nuestra Tienda Online",
+                    image: [
+                        {
+                            file: `${BASE_URL(
+                                empresa
+                            )}/images/settings/others/slider.jpg`,
+                            dimension: 1000,
+                        },
+                    ],
+                    url: `${BASE_URL(empresa)}/`,
+                    html: null,
+                });
+            }
+
+            if (body.categories) {
+                await Promise.all(
+                    body.categories.map(async (category) => {
+                        const {
+                            id,
+                            productsNormals,
+                            productsRestaurants,
+                            productsServicios,
+                            subcategories,
+                            empresa_id,
+                            ...rest
+                        } = category;
+                        const categoria = await Categories.create({
+                            ...rest,
+                            empresa_id: empresa.id,
+                        });
+                        productsNormals.map((prod) => {
+                            return {
+                                ...prod,
+                                empresa_id: empresa.id,
+                            };
+                        });
+                        // await category.
+                    })
+                );
+            }
+
             const transferencias = {} as Record<
                 keyof typeof empresa.bancos,
                 { titular: null | string; dolares: null | string }

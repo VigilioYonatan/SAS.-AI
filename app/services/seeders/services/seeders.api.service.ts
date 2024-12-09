@@ -136,6 +136,9 @@ export class SeedersApiService {
                     gridBanners: null,
                     files: [],
                     gridBannerServices: null,
+                    backgrounds: [],
+                    categories: [],
+                    
                 });
                 await Promise.all([Address.bulkCreate(addressSeeder)]);
                 await Promise.all([Users.bulkCreate(usersSeeder)]);

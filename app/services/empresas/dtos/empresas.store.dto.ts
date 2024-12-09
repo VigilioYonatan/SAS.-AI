@@ -18,6 +18,11 @@ import { gridBannerSchema } from "../schemas/grid_banner.schema";
 import { settingsSchema } from "../schemas/settings.schema";
 import { fileSchema } from "../schemas/file.schema";
 import { gridBannerServicechema } from "../schemas/grid-banner-service.schema";
+import { backgroundSchema } from "../schemas/background.schema";
+import { categoriesSchema } from "@/products/schemas/categories.schema";
+import { productsNormalSchema } from "@/products/schemas/products_normal.schema";
+import { productsRestaurantSchema } from "../../products/schemas/products_restaurant.schema";
+import { productsServicioSchema } from "@/products/schemas/products_servicio.schema";
 
 export const empresasStoreDto = mergeAsync([
     omitAsync(
@@ -83,8 +88,19 @@ export const empresasStoreDto = mergeAsync([
                 ])
             )
         ),
-
+        backgrounds: arrayAsync(backgroundSchema),
         files: arrayAsync(fileSchema),
+        categories: arrayAsync(
+            mergeAsync([
+                objectAsync({
+                    subcategories: arrayAsync(categoriesSchema),
+                    productsNormals: arrayAsync(productsNormalSchema),
+                    productsRestaurants: arrayAsync(productsRestaurantSchema),
+                    productsServicios: arrayAsync(productsServicioSchema),
+                }),
+                categoriesSchema,
+            ])
+        ),
     }),
 ]);
 

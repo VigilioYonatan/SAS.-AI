@@ -34,7 +34,6 @@ export class Subcategories
     @Index
     @Column({
         allowNull: false,
-        unique: true,
         type: DataType.STRING(255),
     })
     name: string;
@@ -42,12 +41,11 @@ export class Subcategories
     @Column({
         type: DataType.JSON,
     })
-    image: FilesSchema[];
+    image: FilesSchema[] | null;
 
     @Index
     @Column({
         allowNull: false,
-        unique: true,
         type: DataType.STRING(255),
     })
     slug: string;
