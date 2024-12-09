@@ -1048,10 +1048,12 @@ export const test = {
                         {
                             dimension: 100,
                             file: "images/products/muscleblaze-whey-gold-100-whey-protein-isolatekoup6x100.webp",
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/muscleblaze-whey-gold-100-whey-protein-isolatekoup6x100.webp",
                         },
                         {
                             dimension: 500,
                             file: "images/products/muscleblaze-whey-gold-100-whey-protein-isolatekoupbx500.webp",
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/muscleblaze-whey-gold-100-whey-protein-isolatekoupbx500.webp",
                         },
                     ],
                     slug: "muscleblaze-whey-gold-100-whey-protein-isolate",
@@ -1253,10 +1255,12 @@ export const test = {
                         {
                             dimension: 100,
                             file: "images/products/advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kgkkkopx100.webp",
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kgkkkopx100.webp",
                         },
                         {
                             dimension: 500,
                             file: "images/products/advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kgkkkosx500.webp",
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kgkkkosx500.webp",
                         },
                     ],
                     slug: "advance-musclemass-mass-gainer-supplement-powder-chocolate-flavour-3-kg",
@@ -1478,10 +1482,12 @@ export const test = {
                         {
                             dimension: 100,
                             file: "images/products/ripped-up-nutrition-whey-pro-rich-chocolateknju0x100.webp",
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/ripped-up-nutrition-whey-pro-rich-chocolateknju0x100.webp",
                         },
                         {
                             dimension: 500,
                             file: "images/products/ripped-up-nutrition-whey-pro-rich-chocolateknju2x500.webp",
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/ripped-up-nutrition-whey-pro-rich-chocolateknju2x500.webp",
                         },
                     ],
                     slug: "ripped-up-nutrition-whey-pro-rich-chocolate",
@@ -1686,10 +1692,12 @@ export const test = {
                         {
                             dimension: 100,
                             file: "images/products/musclexp-instantized-bcaa-6000-with-l-alanine-taurinekmdsfx100.webp",
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/musclexp-instantized-bcaa-6000-with-l-alanine-taurinekmdsfx100.webp",
                         },
                         {
                             dimension: 500,
                             file: "images/products/musclexp-instantized-bcaa-6000-with-l-alanine-taurinekmdshx500.webp",
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/musclexp-instantized-bcaa-6000-with-l-alanine-taurinekmdshx500.webp",
                         },
                     ],
                     slug: "musclexp-instantized-bcaa-6000-with-l-alanine-taurine",
@@ -1890,10 +1898,12 @@ export const test = {
                         {
                             file: "images/products/advance-musclemass-bcaa-211-energy-drink-for-workout-76-g-bcaa-38-g-leucine-19-g-iso-leucine-19-g-valine-instantized-with-sunflowerl29jex100.webp",
                             dimension: 100,
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-bcaa-211-energy-drink-for-workout-76-g-bcaa-38-g-leucine-19-g-iso-leucine-19-g-valine-instantized-with-sunflowerl29jex100.webp",
                         },
                         {
                             file: "images/products/advance-musclemass-bcaa-211-energy-drink-for-workout-76-g-bcaa-38-g-leucine-19-g-iso-leucine-19-g-valine-instantized-with-sunflowerl29jhx500.webp",
                             dimension: 500,
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/advance-musclemass-bcaa-211-energy-drink-for-workout-76-g-bcaa-38-g-leucine-19-g-iso-leucine-19-g-valine-instantized-with-sunflowerl29jhx500.webp",
                         },
                     ],
                     slug: "advance-musclemass",
@@ -2095,10 +2105,12 @@ export const test = {
                         {
                             dimension: 100,
                             file: "images/products/fitspire-100-plant-protein-based-with-pea-with-shaker-lean-proteinmisn9x100.webp",
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/fitspire-100-plant-protein-based-with-pea-with-shaker-lean-proteinmisn9x100.webp",
                         },
                         {
                             dimension: 500,
                             file: "images/products/fitspire-100-plant-protein-based-with-pea-with-shaker-lean-proteinmisnfx500.webp",
+                            images: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/products/fitspire-100-plant-protein-based-with-pea-with-shaker-lean-proteinmisnfx500.webp",
                         },
                     ],
                     slug: "fitspire-100-plant-protein-based-with-pea-with-shaker-lean-protein",
@@ -2235,7 +2247,6 @@ export const test = {
                         },
                     ],
                     enabled: true,
-                    images: null,
                     slug: "one-day-training",
                     category_id: 14,
                     empresa_id: 5,
@@ -2278,7 +2289,6 @@ export const test = {
                         },
                     ],
                     enabled: true,
-                    images: null,
                     slug: "regular-member",
                     category_id: 14,
                     empresa_id: 5,
@@ -2321,7 +2331,6 @@ export const test = {
                         },
                     ],
                     enabled: true,
-                    images: null,
                     slug: "vip-member",
                     category_id: 14,
                     empresa_id: 5,

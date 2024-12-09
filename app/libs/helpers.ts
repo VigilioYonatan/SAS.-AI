@@ -136,21 +136,20 @@ export function datetime() {
 export async function downloadAndSaveFile(url: string, outputPath: string) {
     console.log({ url, outputPath });
 
-    // try {
-
-    //     // Realiza la petición con fetch
-    //     const response = await fetch(url);
-    //     if (!response.ok)
-    //         throw new Error(`HTTP error! status: ${response.status}`);
-    //     const body = response.body;
-    //     if (!body) {
-    //         throw new Error("La respuesta no contiene un cuerpo legible.");
-    //     }
-    //     // Usa pipeline para manejar el flujo de datos y escribir en un archivo
-    //     await pipelineAsync(response.body, fs.createWriteStream(outputPath));
-    //     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-    //     console.log("Archivo descargado y guardado exitosamente.");
-    // } catch (error) {
-    //     console.error("Error al descargar el archivo:", error);
-    // }
+    try {
+        // Realiza la petición con fetch
+        const response = await fetch(url);
+        if (!response.ok)
+            throw new Error(`HTTP error! status: ${response.status}`);
+        const body = response.body;
+        if (!body) {
+            throw new Error("La respuesta no contiene un cuerpo legible.");
+        }
+        // Usa pipeline para manejar el flujo de datos y escribir en un archivo
+        await pipelineAsync(response.body, fs.createWriteStream(outputPath));
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log("Archivo descargado y guardado exitosamente.");
+    } catch (error) {
+        console.error("Error al descargar el archivo:", error);
+    }
 }

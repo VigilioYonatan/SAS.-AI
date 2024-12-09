@@ -229,7 +229,7 @@ export class EmpresasApiService {
                     const image = brand.image?.map((file) => {
                         return {
                             ...file,
-                            image: `${BASE_URL(empresa)}/empresas/${
+                            file: `${BASE_URL(empresa)}/empresas/${
                                 empresa.slug
                             }/${file.file}`,
                         };
@@ -245,7 +245,7 @@ export class EmpresasApiService {
                     const image = category.image?.map((file) => {
                         return {
                             ...file,
-                            image: `${BASE_URL(empresa)}/empresas/${
+                            file: `${BASE_URL(empresa)}/empresas/${
                                 empresa.slug
                             }/${file.file}`,
                         };
@@ -253,7 +253,7 @@ export class EmpresasApiService {
                     const wallpaper = category.wallpaper?.map((file) => {
                         return {
                             ...file,
-                            image: `${BASE_URL(empresa)}/empresas/${
+                            file: `${BASE_URL(empresa)}/empresas/${
                                 empresa.slug
                             }/${file.file}`,
                         };
@@ -265,7 +265,7 @@ export class EmpresasApiService {
                         const image = sub.image?.map((file) => {
                             return {
                                 ...file,
-                                image: `${BASE_URL(empresa)}/empresas/${
+                                file: `${BASE_URL(empresa)}/empresas/${
                                     empresa.slug
                                 }/${file.file}`,
                             };
@@ -291,7 +291,7 @@ export class EmpresasApiService {
                             const images = prod.images?.map((file) => {
                                 return {
                                     ...file,
-                                    images: `${BASE_URL(empresa)}/empresas/${
+                                    file: `${BASE_URL(empresa)}/empresas/${
                                         empresa.slug
                                     }/${file.file}`,
                                 };
@@ -319,7 +319,7 @@ export class EmpresasApiService {
                         const images = prod.images?.map((file) => {
                             return {
                                 ...file,
-                                images: `${BASE_URL(empresa)}/empresas/${
+                                file: `${BASE_URL(empresa)}/empresas/${
                                     empresa.slug
                                 }/${file.file}`,
                             };
@@ -337,7 +337,7 @@ export class EmpresasApiService {
                         const images = prod.images?.map((file) => {
                             return {
                                 ...file,
-                                images: `${BASE_URL(empresa)}/empresas/${
+                                file: `${BASE_URL(empresa)}/empresas/${
                                     empresa.slug
                                 }/${file.file}`,
                             };
