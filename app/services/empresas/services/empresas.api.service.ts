@@ -64,7 +64,7 @@ import { Options } from "@/products/entities/options/options.entity";
 import type { Features } from "@/products/entities/options/features.entity";
 import { Brands } from "@/products/entities/brands.entitiy";
 import { ProductsApiService } from "@/products/services/products.api.service";
-import type { ProductsServicio } from "@/products/entities/products_servicio.entity";
+import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 
 export function deleteHostCache() {
     for (const host of hosts) {
@@ -130,25 +130,42 @@ export class EmpresasApiService {
         };
     }
     async settingsTemplate(slug: string) {
-        try {
-            const { data: setting } = await this.settings(slug);
-            const { empresa } = await this.show(slug);
-            const gridBanners = await GridBanner.findAll({
-                where: {
-                    empresa_id: empresa.id,
-                },
-                include: [{ model: Banner, order: [["order", "ASC"]] }],
-                order: [["id", "ASC"]],
-            });
-            const gridBannersServices = await GridBannerService.findAll({
-                where: {
-                    empresa_id: empresa.id,
-                },
-                include: [{ model: Banner, order: [["order", "ASC"]] }],
-                order: [["id", "ASC"]],
-            });
-            const grid = gridBanners.map((banner) => {
-                const bannersMapped = (banner.banners as Banner[]).map((b) => ({
+        const { data: setting } = await this.settings(slug);
+        const { empresa } = await this.show(slug);
+        const gridBanners = await GridBanner.findAll({
+            where: {
+                empresa_id: empresa.id,
+            },
+            include: [{ model: Banner, order: [["order", "ASC"]] }],
+            order: [["id", "ASC"]],
+        });
+        const gridBannersServices = await GridBannerService.findAll({
+            where: {
+                empresa_id: empresa.id,
+            },
+            include: [{ model: Banner, order: [["order", "ASC"]] }],
+            order: [["id", "ASC"]],
+        });
+        const grid = gridBanners.map((banner) => {
+            const bannersMapped = (banner.banners as Banner[]).map((b) => ({
+                ...b.toJSON(),
+                file: b.file
+                    ? b.file.map((f) => ({
+                          ...f,
+                          file: `${BASE_URL(empresa)}/empresas/${
+                              empresa.slug
+                          }/${f.file}`,
+                      }))
+                    : null,
+            }));
+            return {
+                ...banner.toJSON(),
+                banners: bannersMapped,
+            };
+        });
+        const gridService = gridBannersServices.map((banner) => {
+            const bannersMapped = (banner.banners as Banner[]).map((b) => {
+                return {
                     ...b.toJSON(),
                     file: b.file
                         ? b.file.map((f) => ({
@@ -158,228 +175,208 @@ export class EmpresasApiService {
                               }/${f.file}`,
                           }))
                         : null,
-                }));
-                return {
-                    ...banner.toJSON(),
-                    banners: bannersMapped,
                 };
             });
-            const gridService = gridBannersServices.map((banner) => {
-                const bannersMapped = (banner.banners as Banner[]).map((b) => {
-                    return {
-                        ...b.toJSON(),
-                        file: b.file
-                            ? b.file.map((f) => ({
-                                  ...f,
-                                  file: `${BASE_URL(empresa)}/empresas/${
-                                      empresa.slug
-                                  }/${f.file}`,
-                              }))
-                            : null,
-                    };
-                });
-
-                return {
-                    ...banner.toJSON(),
-                    banners: bannersMapped,
-                };
-            });
-
-            let files = await FileSchema.findAll({
-                where: { empresa_id: empresa.id },
-            });
-            files = files.map((f) => {
-                const file = f.file?.map((file) => {
-                    return {
-                        ...file,
-                        file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
-                            file.file
-                        }`,
-                    };
-                });
-                return {
-                    ...f.toJSON(),
-                    file,
-                };
-            }) as FileSchema[];
-            let backgrounds = await Background.findAll({
-                where: { empresa_id: empresa.id },
-            });
-            backgrounds = backgrounds.map((f) => {
-                const image = f.image?.map((file) => {
-                    return {
-                        ...file,
-                        file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
-                            file.file
-                        }`,
-                    };
-                });
-                return {
-                    ...f.toJSON(),
-                    image,
-                };
-                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            }) as any;
-
-            let categories = await Categories.findAll({
-                where: { empresa_id: empresa.id },
-                limit: 2,
-            });
-            let brands = await Brands.findAll({
-                where: { empresa_id: empresa.id },
-            });
-            brands = (await Promise.all(
-                brands.map(async (brand) => {
-                    const image = brand.image?.map((file) => {
-                        return {
-                            ...file,
-                            file: `${BASE_URL(empresa)}/empresas/${
-                                empresa.slug
-                            }/${file.file}`,
-                        };
-                    });
-                    return {
-                        ...brand.toJSON(),
-                        image,
-                    };
-                })
-            )) as Brands[];
-            categories = await Promise.all(
-                categories.map(async (category) => {
-                    const image = category.image?.map((file) => {
-                        return {
-                            ...file,
-                            file: `${BASE_URL(empresa)}/empresas/${
-                                empresa.slug
-                            }/${file.file}`,
-                        };
-                    });
-                    const wallpaper = category.wallpaper?.map((file) => {
-                        return {
-                            ...file,
-                            file: `${BASE_URL(empresa)}/empresas/${
-                                empresa.slug
-                            }/${file.file}`,
-                        };
-                    });
-                    let subcategories = (await category.$get(
-                        "subcategories"
-                    )) as Subcategories[];
-                    subcategories = subcategories.map((sub) => {
-                        const image = sub.image?.map((file) => {
-                            return {
-                                ...file,
-                                file: `${BASE_URL(empresa)}/empresas/${
-                                    empresa.slug
-                                }/${file.file}`,
-                            };
-                        });
-
-                        return {
-                            ...sub.toJSON(),
-                            image,
-                        };
-                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    }) as any;
-                    let productsNormals = (await category.$get(
-                        "productsNormals"
-                    )) as ProductsNormal[];
-                    productsNormals = (await Promise.all(
-                        productsNormals.map(async (prod) => {
-                            const product = await getProductAll(
-                                empresa,
-                                prod,
-                                null,
-                                false
-                            );
-                            const images = prod.images?.map((file) => {
-                                return {
-                                    ...file,
-                                    file: `${BASE_URL(empresa)}/empresas/${
-                                        empresa.slug
-                                    }/${file.file}`,
-                                };
-                            });
-                            return {
-                                ...prod.toJSON(),
-                                images,
-                                options: (
-                                    product.dataValues.options as Options[]
-                                ).map((opt) => ({
-                                    option_id: opt.id,
-                                    features: (opt.features as Features[]).map(
-                                        (feat) => feat.id
-                                    ),
-                                })),
-                            };
-                        })
-                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    )) as any;
-                    // options: [{ features: [1], option_id: 1 }],
-                    let productsRestaurants = (await category.$get(
-                        "productsRestaurants"
-                    )) as ProductsRestaurant[];
-                    productsRestaurants = productsRestaurants.map((prod) => {
-                        const images = prod.images?.map((file) => {
-                            return {
-                                ...file,
-                                file: `${BASE_URL(empresa)}/empresas/${
-                                    empresa.slug
-                                }/${file.file}`,
-                            };
-                        });
-                        return {
-                            ...prod.toJSON(),
-                            images,
-                        };
-                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    }) as any;
-                    let productsServicios = (await category.$get(
-                        "productsServicios"
-                    )) as ProductsServicio[];
-                    productsServicios = productsServicios.map((prod) => {
-                        const images = prod.images?.map((file) => {
-                            return {
-                                ...file,
-                                file: `${BASE_URL(empresa)}/empresas/${
-                                    empresa.slug
-                                }/${file.file}`,
-                            };
-                        });
-                        return {
-                            ...prod.toJSON(),
-                            images,
-                        };
-                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    }) as any;
-                    return {
-                        ...category.toJSON(),
-                        image,
-                        wallpaper,
-                        subcategories,
-                        productsNormals,
-                        productsRestaurants,
-                        productsServicios,
-                    };
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                }) as any
-            );
 
             return {
-                success: true,
-                data: {
-                    setting,
-                    gridBanners: grid,
-                    files,
-                    gridBannersService: gridService,
-                    backgrounds,
-                    categories,
-                    brands,
-                },
+                ...banner.toJSON(),
+                banners: bannersMapped,
             };
-        } catch (error) {
-            console.log({ error: (error as Error).message });
-        }
+        });
+
+        let files = await FileSchema.findAll({
+            where: { empresa_id: empresa.id },
+        });
+        files = files.map((f) => {
+            const file = f.file?.map((file) => {
+                return {
+                    ...file,
+                    file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
+                        file.file
+                    }`,
+                };
+            });
+            return {
+                ...f.toJSON(),
+                file,
+            };
+        }) as FileSchema[];
+        let backgrounds = await Background.findAll({
+            where: { empresa_id: empresa.id },
+        });
+        backgrounds = backgrounds.map((f) => {
+            const image = f.image?.map((file) => {
+                return {
+                    ...file,
+                    file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
+                        file.file
+                    }`,
+                };
+            });
+            return {
+                ...f.toJSON(),
+                image,
+            };
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        }) as any;
+
+        let categories = await Categories.findAll({
+            where: { empresa_id: empresa.id },
+            limit: 2,
+        });
+        let brands = await Brands.findAll({
+            where: { empresa_id: empresa.id },
+        });
+        brands = (await Promise.all(
+            brands.map(async (brand) => {
+                const image = brand.image?.map((file) => {
+                    return {
+                        ...file,
+                        file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
+                            file.file
+                        }`,
+                    };
+                });
+                return {
+                    ...brand.toJSON(),
+                    image,
+                };
+            })
+        )) as Brands[];
+        categories = await Promise.all(
+            categories.map(async (category) => {
+                const image = category.image?.map((file) => {
+                    return {
+                        ...file,
+                        file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
+                            file.file
+                        }`,
+                    };
+                });
+                const wallpaper = category.wallpaper?.map((file) => {
+                    return {
+                        ...file,
+                        file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
+                            file.file
+                        }`,
+                    };
+                });
+                let subcategories = (await category.$get(
+                    "subcategories"
+                )) as Subcategories[];
+                subcategories = subcategories.map((sub) => {
+                    const image = sub.image?.map((file) => {
+                        return {
+                            ...file,
+                            file: `${BASE_URL(empresa)}/empresas/${
+                                empresa.slug
+                            }/${file.file}`,
+                        };
+                    });
+
+                    return {
+                        ...sub.toJSON(),
+                        image,
+                        wallpaper,
+                    };
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                }) as any;
+                let productsNormals = (await category.$get(
+                    "productsNormals"
+                )) as ProductsNormal[];
+                productsNormals = (await Promise.all(
+                    productsNormals.map(async (prod) => {
+                        const product = await getProductAll(
+                            empresa,
+                            prod,
+                            null,
+                            false
+                        );
+                        const images = prod.images?.map((file) => {
+                            return {
+                                ...file,
+                                file: `${BASE_URL(empresa)}/empresas/${
+                                    empresa.slug
+                                }/${file.file}`,
+                            };
+                        });
+                        return {
+                            ...prod.toJSON(),
+                            images,
+                            options: (
+                                product.dataValues.options as Options[]
+                            ).map((opt) => ({
+                                option_id: opt.id,
+                                features: (opt.features as Features[]).map(
+                                    (feat) => feat.id
+                                ),
+                            })),
+                        };
+                    })
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                )) as any;
+                // options: [{ features: [1], option_id: 1 }],
+                let productsRestaurants = (await category.$get(
+                    "productsRestaurants"
+                )) as ProductsRestaurant[];
+                productsRestaurants = productsRestaurants.map((prod) => {
+                    const images = prod.images?.map((file) => {
+                        return {
+                            ...file,
+                            file: `${BASE_URL(empresa)}/empresas/${
+                                empresa.slug
+                            }/${file.file}`,
+                        };
+                    });
+                    return {
+                        ...prod.toJSON(),
+                        images,
+                    };
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                }) as any;
+                let productsServicios = (await category.$get(
+                    "productsServicios"
+                )) as ProductsServicio[];
+                productsServicios = productsServicios.map((prod) => {
+                    const images = prod.images?.map((file) => {
+                        return {
+                            ...file,
+                            file: `${BASE_URL(empresa)}/empresas/${
+                                empresa.slug
+                            }/${file.file}`,
+                        };
+                    });
+                    return {
+                        ...prod.toJSON(),
+                        images,
+                    };
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                }) as any;
+                return {
+                    ...category.toJSON(),
+                    image,
+                    wallpaper,
+                    subcategories,
+                    productsNormals,
+                    productsRestaurants,
+                    productsServicios,
+                };
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            }) as any
+        );
+
+        return {
+            success: true,
+            data: {
+                setting,
+                gridBanners: grid,
+                files,
+                gridBannersService: gridService,
+                backgrounds,
+                categories,
+                brands,
+            },
+        };
     }
     async updateSettings(slug: string, body: SettingsUpdateDto) {
         const { empresa } = await this.show(slug);
@@ -1075,6 +1072,40 @@ export class EmpresasApiService {
                                     );
                                 }
                                 await ProductsRestaurant.create({
+                                    ...rest,
+                                    category_id: categoria.id,
+                                    empresa_id: empresa.id,
+                                    images,
+                                });
+                            })
+                        );
+                        await Promise.all(
+                            productsServicios.map(async (prod) => {
+                                const { id, ...rest } = prod;
+                                let images = null;
+                                if (prod.images) {
+                                    images = await Promise.all(
+                                        prod.images.map(async (f) => {
+                                            const file = f.file.substring(
+                                                f.file.indexOf("/images")
+                                            );
+                                            const dirEmpresa = `${pathUploads()}/${
+                                                empresa.slug
+                                            }`;
+                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            await downloadAndSaveFile(
+                                                f.file,
+                                                dirEntity
+                                            );
+
+                                            return {
+                                                ...f,
+                                                file,
+                                            };
+                                        })
+                                    );
+                                }
+                                await ProductsServicio.create({
                                     ...rest,
                                     category_id: categoria.id,
                                     empresa_id: empresa.id,
