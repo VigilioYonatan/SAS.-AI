@@ -33,7 +33,7 @@ import { BackgroundApiService } from "./background.api.service";
 import { bannersQualities, BASE_URL, gridEmpresa } from "../libs";
 import { mesasSeeder } from "../seeders/mesas.seeder";
 import { Floors } from "@/orders/entities/floors.entity";
-import { terminal } from "~/libs/helpers";
+import { downloadAndSaveFile, terminal } from "~/libs/helpers";
 import enviroments from "~/config/enviroments.config";
 import { Settings } from "../entities/settings.entity";
 import type { SettingsSchema } from "../schemas/settings.schema";
@@ -64,6 +64,7 @@ import { Options } from "@/products/entities/options/options.entity";
 import type { Features } from "@/products/entities/options/features.entity";
 import { Brands } from "@/products/entities/brands.entitiy";
 import { ProductsApiService } from "@/products/services/products.api.service";
+import type { ProductsServicio } from "@/products/entities/products_servicio.entity";
 
 export function deleteHostCache() {
     for (const host of hosts) {
@@ -286,8 +287,17 @@ export class EmpresasApiService {
                             null,
                             false
                         );
+                        const images = prod.images?.map((file) => {
+                            return {
+                                ...file,
+                                images: `${BASE_URL(empresa)}/empresas/${
+                                    empresa.slug
+                                }/${file.file}`,
+                            };
+                        });
                         return {
                             ...prod.toJSON(),
+                            images,
                             options: (
                                 product.dataValues.options as Options[]
                             ).map((opt) => ({
@@ -301,12 +311,42 @@ export class EmpresasApiService {
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 )) as any;
                 // options: [{ features: [1], option_id: 1 }],
-                const productsRestaurants = await category.$get(
+                let productsRestaurants = (await category.$get(
                     "productsRestaurants"
-                );
-                const productsServicios = await category.$get(
+                )) as ProductsRestaurant[];
+                productsRestaurants = productsRestaurants.map((prod) => {
+                    const images = prod.images?.map((file) => {
+                        return {
+                            ...file,
+                            images: `${BASE_URL(empresa)}/empresas/${
+                                empresa.slug
+                            }/${file.file}`,
+                        };
+                    });
+                    return {
+                        ...prod,
+                        images,
+                    };
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                }) as any;
+                let productsServicios = (await category.$get(
                     "productsServicios"
-                );
+                )) as ProductsServicio[];
+                productsServicios = productsServicios.map((prod) => {
+                    const images = prod.images?.map((file) => {
+                        return {
+                            ...file,
+                            images: `${BASE_URL(empresa)}/empresas/${
+                                empresa.slug
+                            }/${file.file}`,
+                        };
+                    });
+                    return {
+                        ...prod,
+                        images,
+                    };
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                }) as any;
                 return {
                     ...category.toJSON(),
                     image,
@@ -688,12 +728,40 @@ export class EmpresasApiService {
                             empresa_id: empresa.id,
                             grid_banner_id: gridBanner ? gridBanner.id : null,
                         });
+
                         await Promise.all(
                             banners.map(async (banner) => {
-                                const { id, ...rest } = banner;
+                                const { id, file, ...rest } = banner;
+                                let result = null;
+                                if (file) {
+                                    result = await Promise.all(
+                                        file.map(async (f) => {
+                                            const file = f.file.substring(
+                                                f.file.indexOf("/images")
+                                            );
+                                            const dirEmpresa = `${pathUploads()}/${
+                                                empresa.slug
+                                            }`;
+                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            console.log({ file: f.file });
+                                            try {
+                                                await downloadAndSaveFile(
+                                                    f.file,
+                                                    dirEntity
+                                                );
+                                            } catch (error) {}
+
+                                            return {
+                                                ...f,
+                                                file,
+                                            };
+                                        })
+                                    );
+                                }
                                 await g.$create("banner", {
                                     ...rest,
                                     empresa_id: empresa.id,
+                                    file: result,
                                 });
                             })
                         );
@@ -761,7 +829,19 @@ export class EmpresasApiService {
                     };
                 })
             );
-
+            let brands: (Brands & { id_test: number })[] = [];
+            if (body.brands) {
+                brands = (await Promise.all(
+                    body.brands.map(async (brand) => {
+                        const { id, empresa_id, ...rest } = brand;
+                        const br = await Brands.create({
+                            ...rest,
+                            empresa_id: empresa.id,
+                        });
+                        return { ...br, id_test: brand.id };
+                    })
+                )) as (Brands & { id_test: number })[];
+            }
             if (body.categories) {
                 await Promise.all(
                     body.categories.map(async (category) => {
@@ -788,18 +868,55 @@ export class EmpresasApiService {
                                         category_id: categoria.id,
                                     }
                                 );
-                                return { ...subcategoria.toJSON(), id_sub: id };
+                                return {
+                                    ...subcategoria.toJSON(),
+                                    id_test: id,
+                                };
                             })
                         );
 
                         await Promise.all(
                             productsNormals.map(async (prod) => {
                                 const subcategory_id = subcategorias.find(
-                                    (sub) => sub.id_sub === prod.subcategory_id
+                                    (sub) => sub.id_test === prod.subcategory_id
                                 );
-                                const { ...rest } = prod;
+                                const brand_id = brands.find(
+                                    (br) => br.id_test === prod.brand_id
+                                );
+                                const { images, ...rest } = prod;
+                                let result = null;
+                                if (images) {
+                                    result = await Promise.all(
+                                        images.map(async (f) => {
+                                            console.log({ f: f.file });
+
+                                            const file = f.file.substring(
+                                                f.file.indexOf("/images")
+                                            );
+                                            const dirEmpresa = `${pathUploads()}/${
+                                                empresa.slug
+                                            }`;
+                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            await downloadAndSaveFile(
+                                                f.file,
+                                                dirEntity
+                                            );
+
+                                            return {
+                                                ...f,
+                                                file,
+                                            };
+                                        })
+                                    );
+                                }
                                 await this.productsApiService.store(
-                                    empresa,
+                                    {
+                                        ...empresa.toJSON(),
+                                        tipo_empresa: {
+                                            tipo_servicio_id: body.servicio_id,
+                                        },
+                                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                    } as any,
                                     {
                                         ...rest,
                                         category_id: categoria.id,
@@ -807,6 +924,8 @@ export class EmpresasApiService {
                                         subcategory_id: subcategory_id
                                             ? subcategory_id.id
                                             : null,
+                                        brand_id: brand_id ? brand_id.id : null,
+                                        images: result,
                                     },
                                     true,
                                     false

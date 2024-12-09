@@ -58,13 +58,31 @@ export class SeedersApiService {
             );
             await ubigeoSeeder();
 
+            // if (enviroments.NODE_ENV === "production") {
+
+            // await Promise.all([Suppliers.bulkCreate(suppliersSeeder)]);
+            await Promise.all(
+                optionsSeeder.map(async (prod) => {
+                    const { features, ...rest } = prod;
+                    const option = await Options.create(rest);
+                    await Promise.all(
+                        features.map(async (feature) => {
+                            await option.$create("feature", {
+                                id: feature.id,
+                                value: feature.value,
+                                description: feature.description,
+                            });
+                        })
+                    );
+                })
+            );
             if (enviroments.NODE_ENV === "development") {
                 const empresa = await empresasSeeder2();
                 await this.empresasApiService.store({
                     ...empresa,
                     fullname: "Yonatan Vigilio",
                     password: "123456a",
-                    servicio_id: 2,
+                    servicio_id: 1,
                     // setting: {
                     //     host: {
                     //         host: null,
@@ -140,32 +158,11 @@ export class SeedersApiService {
                     // backgrounds: [],
                     // categories: [],
                     ...test,
-                    gridBannerServices: [],
-                    brands: [],
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 } as any);
                 await Promise.all([Address.bulkCreate(addressSeeder)]);
                 await Promise.all([Users.bulkCreate(usersSeeder)]);
             }
-
-            // if (enviroments.NODE_ENV === "production") {
-
-            // await Promise.all([Suppliers.bulkCreate(suppliersSeeder)]);
-            await Promise.all(
-                optionsSeeder.map(async (prod) => {
-                    const { features, ...rest } = prod;
-                    const option = await Options.create(rest);
-                    await Promise.all(
-                        features.map(async (feature) => {
-                            await option.$create("feature", {
-                                id: feature.id,
-                                value: feature.value,
-                                description: feature.description,
-                            });
-                        })
-                    );
-                })
-            );
-
             // await Promise.all([Posts.bulkCreate(postsSeeder)]);
             return { success: true, message: "Seed executed" };
         } catch (error) {

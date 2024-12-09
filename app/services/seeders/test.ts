@@ -1041,8 +1041,7 @@ export const test = {
                     product_code: "PROD-000005",
                     name: "MuscleBlaze Whey Gold 100% Whey Protein Isolate",
                     url: null,
-                    description:
-                        "\u003Cp\u003Ethis is a description\u003C/p\u003E",
+                    description: "this is a description",
                     characteristics: [],
                     enabled: true,
                     images: [
@@ -1086,6 +1085,77 @@ export const test = {
                         createdAt: "2024-12-06T09:23:27.213Z",
                         updatedAt: "2024-12-06T09:23:27.213Z",
                     },
+                    options: [
+                        {
+                            option_id: 3,
+                            features: [24],
+                        },
+                    ],
+                    variants: [
+                        {
+                            id: 38,
+                            sku: "000002",
+                            stock: 0,
+                            ilimit: true,
+                            images: [1],
+                            product_normal_id: 35,
+                            empresa_id: 5,
+                            createdAt: "2024-12-06T09:28:21.679Z",
+                            updatedAt: "2024-12-06T09:28:40.506Z",
+                            features: [
+                                {
+                                    id: 24,
+                                    value: "#808080",
+                                    description: "Gris",
+                                    option_id: 3,
+                                    createdAt: "2024-11-28T10:16:44.538Z",
+                                    updatedAt: "2024-11-28T10:16:44.538Z",
+                                    VariantsFeatures: {
+                                        variant_id: 38,
+                                        feature_id: 24,
+                                        empresa_id: 5,
+                                    },
+                                },
+                            ],
+                            totalSold: 0,
+                        },
+                    ],
+                    rating: {
+                        quantity: 0,
+                        promedio: null,
+                        ratings: [
+                            {
+                                rating: 5,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 4,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 3,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 2,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 1,
+                                percentage: 0,
+                                length: 0,
+                            },
+                        ],
+                        stars5: 0,
+                        stars4: 0,
+                        stars3: 0,
+                        stars2: 0,
+                        stars1: 0,
+                    },
                 },
                 {
                     price: 20,
@@ -1095,7 +1165,7 @@ export const test = {
                     name: "Advance Musclemass Mass Gainer Supplement Powder (Chocolate Flavour | 3 Kg",
                     url: null,
                     description:
-                        "\u003Cp\u003EAdvance Musclemass Mass Gainer Supplement Powder es un suplemento en polvo de alta calidad diseñado para ayudar a aumentar la masa muscular de manera efectiva. Con un delicioso sabor a chocolate, este gainer de 3 kg proporciona una mezcla equilibrada de proteínas, carbohidratos y grasas, ideal para quienes buscan desarrollar su masa muscular y mejorar su rendimiento físico. Su fórmula está enriquecida con vitaminas y minerales esenciales que favorecen una recuperación óptima después del ejercicio. Perfecto para quienes tienen un alto requerimiento energético, este producto es ideal para ser consumido como batido post-entrenamiento o en cualquier momento del día para complementar la ingesta calórica.\u003C/p\u003E",
+                        "Advance Musclemass Mass Gainer Supplement Powder es un suplemento en polvo de alta calidad diseñado para ayudar a aumentar la masa muscular de manera efectiva. Con un delicioso sabor a chocolate, este gainer de 3 kg proporciona una mezcla equilibrada de proteínas, carbohidratos y grasas, ideal para quienes buscan desarrollar su masa muscular y mejorar su rendimiento físico. Su fórmula está enriquecida con vitaminas y minerales esenciales que favorecen una recuperación óptima después del ejercicio. Perfecto para quienes tienen un alto requerimiento energético, este producto es ideal para ser co",
                     characteristics: [
                         {
                             name: "Nombre",
@@ -1220,6 +1290,77 @@ export const test = {
                         createdAt: "2024-12-06T09:23:27.213Z",
                         updatedAt: "2024-12-06T09:23:27.213Z",
                     },
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
+                    variants: [
+                        {
+                            id: 35,
+                            sku: "0000078",
+                            stock: 8,
+                            ilimit: false,
+                            images: [1],
+                            product_normal_id: 32,
+                            empresa_id: 5,
+                            createdAt: "2024-12-06T09:26:00.453Z",
+                            updatedAt: "2024-12-06T09:29:42.566Z",
+                            features: [
+                                {
+                                    id: 1,
+                                    value: "-",
+                                    description: "-",
+                                    option_id: 1,
+                                    createdAt: "2024-11-28T10:16:44.590Z",
+                                    updatedAt: "2024-11-28T10:16:44.590Z",
+                                    VariantsFeatures: {
+                                        variant_id: 35,
+                                        feature_id: 1,
+                                        empresa_id: 5,
+                                    },
+                                },
+                            ],
+                            totalSold: 0,
+                        },
+                    ],
+                    rating: {
+                        quantity: 0,
+                        promedio: null,
+                        ratings: [
+                            {
+                                rating: 5,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 4,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 3,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 2,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 1,
+                                percentage: 0,
+                                length: 0,
+                            },
+                        ],
+                        stars5: 0,
+                        stars4: 0,
+                        stars3: 0,
+                        stars2: 0,
+                        stars1: 0,
+                    },
                 },
                 {
                     price: 76,
@@ -1229,7 +1370,7 @@ export const test = {
                     name: "Ripped Up Nutrition Whey Pro – Rich Chocolate",
                     url: null,
                     description:
-                        "\u003Cp\u003ERipped Up Nutrition Whey Pro – Rich Chocolate es un deliciousísimo suplemento de proteína de suero que ofrece una fórmula de alta calidad diseñada para apoyar tus objetivos de fitness y aumentar tu ingesta de proteínas de manera efectiva. Con un sabor intenso a chocolate rico, cada porción te proporciona una excelente fuente de proteínas para ayudar en la construcción y recuperación muscular. Su preparada mezcla se disuelve fácilmente en agua o leche, permitiéndote disfrutar de un batido suave y cremoso en cualquier momento del día. Ideal para atletas, personas activas o cualquier persona que busque mejorar su nutrición diaria, este producto sin azúcares añadidos ni ingredientes artificiales, se convierte en una opción saludable y deliciosa para complementar tu dieta.\u003C/p\u003E",
+                        "Ripped Up Nutrition Whey Pro – Rich Chocolate es un deliciousísimo suplemento de proteína de suero que ofrece una fórmula de alta calidad diseñada para apoyar tus objetivos de fitness y aumentar tu ingesta de proteínas de manera efectiva. Con un sabor intenso a chocolate rico, cada porción te proporciona una excelente fuente de proteínas para ayudar en la construcción y recuperación muscular. Su preparada mezcla se disuelve fácilmente en agua o leche, permitiéndote disfrutar de un batido suave y cremoso en cualquier momento del día. Ideal para atletas, personas activas o cualquier persona que ",
                     characteristics: [
                         {
                             name: "product_name",
@@ -1374,6 +1515,77 @@ export const test = {
                         createdAt: "2024-12-06T09:23:27.213Z",
                         updatedAt: "2024-12-06T09:23:27.213Z",
                     },
+                    options: [
+                        {
+                            option_id: 3,
+                            features: [28],
+                        },
+                    ],
+                    variants: [
+                        {
+                            id: 37,
+                            sku: "000009",
+                            stock: 0,
+                            ilimit: true,
+                            images: [1],
+                            product_normal_id: 34,
+                            empresa_id: 5,
+                            createdAt: "2024-12-06T09:27:37.925Z",
+                            updatedAt: "2024-12-06T09:28:58.713Z",
+                            features: [
+                                {
+                                    id: 28,
+                                    value: "#800000",
+                                    description: "Granate",
+                                    option_id: 3,
+                                    createdAt: "2024-11-28T10:16:44.538Z",
+                                    updatedAt: "2024-11-28T10:16:44.538Z",
+                                    VariantsFeatures: {
+                                        variant_id: 37,
+                                        feature_id: 28,
+                                        empresa_id: 5,
+                                    },
+                                },
+                            ],
+                            totalSold: 0,
+                        },
+                    ],
+                    rating: {
+                        quantity: 0,
+                        promedio: null,
+                        ratings: [
+                            {
+                                rating: 5,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 4,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 3,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 2,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 1,
+                                percentage: 0,
+                                length: 0,
+                            },
+                        ],
+                        stars5: 0,
+                        stars4: 0,
+                        stars3: 0,
+                        stars2: 0,
+                        stars1: 0,
+                    },
                 },
                 {
                     price: 45,
@@ -1382,8 +1594,7 @@ export const test = {
                     product_code: "PROD-000003",
                     name: "MuscleXP Instantized BCAA 6000 with L-Alanine & Taurine",
                     url: null,
-                    description:
-                        "\u003Cp\u003Ethis is a description\u003C/p\u003E",
+                    description: "this is a description",
                     characteristics: [
                         {
                             name: "Nombre",
@@ -1512,6 +1723,77 @@ export const test = {
                         createdAt: "2024-12-06T09:23:27.213Z",
                         updatedAt: "2024-12-06T09:23:27.213Z",
                     },
+                    options: [
+                        {
+                            option_id: 3,
+                            features: [27],
+                        },
+                    ],
+                    variants: [
+                        {
+                            id: 36,
+                            sku: "000007",
+                            stock: 5,
+                            ilimit: false,
+                            images: [1],
+                            product_normal_id: 33,
+                            empresa_id: 5,
+                            createdAt: "2024-12-06T09:26:58.921Z",
+                            updatedAt: "2024-12-06T09:29:27.886Z",
+                            features: [
+                                {
+                                    id: 27,
+                                    value: "#008000",
+                                    description: "Verde Oscuro",
+                                    option_id: 3,
+                                    createdAt: "2024-11-28T10:16:44.538Z",
+                                    updatedAt: "2024-11-28T10:16:44.538Z",
+                                    VariantsFeatures: {
+                                        variant_id: 36,
+                                        feature_id: 27,
+                                        empresa_id: 5,
+                                    },
+                                },
+                            ],
+                            totalSold: 0,
+                        },
+                    ],
+                    rating: {
+                        quantity: 0,
+                        promedio: null,
+                        ratings: [
+                            {
+                                rating: 5,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 4,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 3,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 2,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 1,
+                                percentage: 0,
+                                length: 0,
+                            },
+                        ],
+                        stars5: 0,
+                        stars4: 0,
+                        stars3: 0,
+                        stars2: 0,
+                        stars1: 0,
+                    },
                 },
                 {
                     price: 75,
@@ -1520,8 +1802,7 @@ export const test = {
                     product_code: "PROD-000001",
                     name: "Advance MuscleMass",
                     url: null,
-                    description:
-                        "\u003Cp\u003Ethis is a description\u003C/p\u003E",
+                    description: "this is a description",
                     characteristics: [
                         {
                             name: "Nombre del producto",
@@ -1646,6 +1927,77 @@ export const test = {
                         createdAt: "2024-12-06T09:23:27.213Z",
                         updatedAt: "2024-12-06T09:23:27.213Z",
                     },
+                    options: [
+                        {
+                            option_id: 3,
+                            features: [20],
+                        },
+                    ],
+                    variants: [
+                        {
+                            id: 34,
+                            sku: "000003",
+                            stock: 5,
+                            ilimit: false,
+                            images: [1],
+                            product_normal_id: 31,
+                            empresa_id: 5,
+                            createdAt: "2024-12-06T09:23:57.815Z",
+                            updatedAt: "2024-12-06T09:56:18.429Z",
+                            features: [
+                                {
+                                    id: 20,
+                                    value: "#ffff00",
+                                    description: "Amarillo",
+                                    option_id: 3,
+                                    createdAt: "2024-11-28T10:16:44.538Z",
+                                    updatedAt: "2024-11-28T10:16:44.538Z",
+                                    VariantsFeatures: {
+                                        variant_id: 34,
+                                        feature_id: 20,
+                                        empresa_id: 5,
+                                    },
+                                },
+                            ],
+                            totalSold: 0,
+                        },
+                    ],
+                    rating: {
+                        quantity: 0,
+                        promedio: null,
+                        ratings: [
+                            {
+                                rating: 5,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 4,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 3,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 2,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 1,
+                                percentage: 0,
+                                length: 0,
+                            },
+                        ],
+                        stars5: 0,
+                        stars4: 0,
+                        stars3: 0,
+                        stars2: 0,
+                        stars1: 0,
+                    },
                 },
                 {
                     price: 98,
@@ -1655,7 +2007,7 @@ export const test = {
                     name: "Fitspire 100% Plant Protein Based With Pea With Shaker, Lean Protein",
                     url: null,
                     description:
-                        "\u003Cp\u003EProteína vegetal Fitspire 100% basada en guisante, ideal para quienes buscan una opción saludable y efectiva para complementar su dieta. Este producto es perfecto para promover la recuperación muscular y el desarrollo de una masa muscular magra. Su fórmula limpia y natural es rica en aminoácidos esenciales, lo que la convierte en una excelente alternativa para veganos y vegetarianos. Además, viene con un práctico shaker que facilita su preparación en cualquier momento. Su delicioso sabor y fácil disolución lo hacen ideal para batidos, smoothies o mezclas en tus recetas favoritas. Mejora tu rendimiento y cuida tu salud con Fitspire 100 Plant Protein.\u003C/p\u003E",
+                        "Proteína vegetal Fitspire 100% basada en guisante, ideal para quienes buscan una opción saludable y efectiva para complementar su dieta. Este producto es perfecto para promover la recuperación muscular y el desarrollo de una masa muscular magra. Su fórmula limpia y natural es rica en aminoácidos esenciales, lo que la convierte en una excelente alternativa para veganos y vegetarianos. Además, viene con un práctico shaker que facilita su preparación en cualquier momento. Su delicioso sabor y fácil disolución lo hacen ideal para batidos, smoothies o mezclas en tus recetas favoritas. Mejora tu ren",
                     characteristics: [
                         {
                             name: "Nombre del producto",
@@ -1762,6 +2114,77 @@ export const test = {
                         icon: '\u003Ci class="fas fa-jug"\u003E\u003C/i\u003E',
                     },
                     brand: null,
+                    options: [
+                        {
+                            option_id: 3,
+                            features: [31],
+                        },
+                    ],
+                    variants: [
+                        {
+                            id: 39,
+                            sku: "000005",
+                            stock: 0,
+                            ilimit: true,
+                            images: [1],
+                            product_normal_id: 36,
+                            empresa_id: 5,
+                            createdAt: "2024-12-06T10:00:00.206Z",
+                            updatedAt: "2024-12-06T10:00:15.395Z",
+                            features: [
+                                {
+                                    id: 31,
+                                    value: "#4b0082",
+                                    description: "Índigo",
+                                    option_id: 3,
+                                    createdAt: "2024-11-28T10:16:44.538Z",
+                                    updatedAt: "2024-11-28T10:16:44.538Z",
+                                    VariantsFeatures: {
+                                        variant_id: 39,
+                                        feature_id: 31,
+                                        empresa_id: 5,
+                                    },
+                                },
+                            ],
+                            totalSold: 0,
+                        },
+                    ],
+                    rating: {
+                        quantity: 0,
+                        promedio: null,
+                        ratings: [
+                            {
+                                rating: 5,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 4,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 3,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 2,
+                                percentage: 0,
+                                length: 0,
+                            },
+                            {
+                                rating: 1,
+                                percentage: 0,
+                                length: 0,
+                            },
+                        ],
+                        stars5: 0,
+                        stars4: 0,
+                        stars3: 0,
+                        stars2: 0,
+                        stars1: 0,
+                    },
                 },
             ],
             productsRestaurants: [],
@@ -1911,6 +2334,134 @@ export const test = {
                     },
                 },
             ],
+        },
+    ],
+    brands: [
+        {
+            id: 11,
+            name: "Optimum Nutrition",
+            brand_code: "BRAND-000001",
+            image: [
+                {
+                    dimension: 100,
+                    file: "images/brands/optimum-nutritionkfv4ox100.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/optimum-nutritionkfv4ox100.webp",
+                },
+                {
+                    dimension: 500,
+                    file: "images/brands/optimum-nutritionkfv4sx500.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/optimum-nutritionkfv4sx500.webp",
+                },
+            ],
+            slug: "optimum-nutrition",
+            empresa_id: 5,
+            createdAt: "2024-12-06T09:23:27.213Z",
+            updatedAt: "2024-12-06T09:23:27.213Z",
+        },
+        {
+            id: 12,
+            name: "MyProtein",
+            brand_code: "BRAND-000002",
+            image: [
+                {
+                    dimension: 100,
+                    file: "images/brands/myproteingl18lx100.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/myproteingl18lx100.webp",
+                },
+                {
+                    dimension: 500,
+                    file: "images/brands/myproteingl19bx500.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/myproteingl19bx500.webp",
+                },
+            ],
+            slug: "myprotein",
+            empresa_id: 5,
+            createdAt: "2024-12-07T12:14:02.618Z",
+            updatedAt: "2024-12-07T12:14:02.618Z",
+        },
+        {
+            id: 13,
+            name: "Dymatize",
+            brand_code: "BRAND-000003",
+            image: [
+                {
+                    dimension: 100,
+                    file: "images/brands/dymatizegnv6qx100.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/dymatizegnv6qx100.webp",
+                },
+                {
+                    dimension: 500,
+                    file: "images/brands/dymatizegnv71x500.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/dymatizegnv71x500.webp",
+                },
+            ],
+            slug: "dymatize",
+            empresa_id: 5,
+            createdAt: "2024-12-07T12:15:38.649Z",
+            updatedAt: "2024-12-07T12:15:38.649Z",
+        },
+        {
+            id: 14,
+            name: "Muscletetech",
+            brand_code: "BRAND-000004",
+            image: [
+                {
+                    dimension: 100,
+                    file: "images/brands/muscletetechgqftox100.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/muscletetechgqftox100.webp",
+                },
+                {
+                    dimension: 500,
+                    file: "images/brands/muscletetechgqftqx500.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/muscletetechgqftqx500.webp",
+                },
+            ],
+            slug: "muscletetech",
+            empresa_id: 5,
+            createdAt: "2024-12-07T12:17:01.097Z",
+            updatedAt: "2024-12-07T12:17:01.097Z",
+        },
+        {
+            id: 15,
+            name: "BSN",
+            brand_code: "BRAND-000005",
+            image: [
+                {
+                    dimension: 100,
+                    file: "images/brands/bsngs32ex100.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/bsngs32ex100.webp",
+                },
+                {
+                    dimension: 500,
+                    file: "images/brands/bsngs32nx500.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/bsngs32nx500.webp",
+                },
+            ],
+            slug: "bsn",
+            empresa_id: 5,
+            createdAt: "2024-12-07T12:17:53.438Z",
+            updatedAt: "2024-12-07T12:17:53.438Z",
+        },
+        {
+            id: 16,
+            name: "Isopure",
+            brand_code: "BRAND-000006",
+            image: [
+                {
+                    dimension: 100,
+                    file: "images/brands/isopuregu6opx100.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/isopuregu6opx100.webp",
+                },
+                {
+                    dimension: 500,
+                    file: "images/brands/isopuregu6p4x500.webp",
+                    image: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/brands/isopuregu6p4x500.webp",
+                },
+            ],
+            slug: "isopure",
+            empresa_id: 5,
+            createdAt: "2024-12-07T12:19:02.884Z",
+            updatedAt: "2024-12-07T12:19:02.884Z",
         },
     ],
 };

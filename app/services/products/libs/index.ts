@@ -54,7 +54,6 @@ export function productEntityId(empresa: Empresas, isService: boolean) {
     };
     return pr[empresa.tipo_empresa.tipo_servicio_id as keyof typeof pr];
 }
-
 /** combinar para crear variantes */
 export function combinacionesVariants(
     arrays: number[][],

@@ -2,7 +2,10 @@ import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { InternalServerErrorException } from "@vigilio/express-core";
 import { custom, string, type DateSchema } from "@vigilio/valibot";
 import { exec } from "node:child_process";
-import util from "node:util";
+import { pipeline } from "node:stream";
+import util, { promisify } from "node:util";
+import * as fs from "node:fs";
+const pipelineAsync = promisify(pipeline);
 
 /* PRO-00001 */
 export async function generateCodeEntity(
@@ -128,4 +131,26 @@ export function datetime() {
             );
         }, "Fecha no válida"),
     ]) as unknown as DateSchema;
+}
+
+export async function downloadAndSaveFile(url: string, outputPath: string) {
+    console.log({ url, outputPath });
+
+    // try {
+
+    //     // Realiza la petición con fetch
+    //     const response = await fetch(url);
+    //     if (!response.ok)
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     const body = response.body;
+    //     if (!body) {
+    //         throw new Error("La respuesta no contiene un cuerpo legible.");
+    //     }
+    //     // Usa pipeline para manejar el flujo de datos y escribir en un archivo
+    //     await pipelineAsync(response.body, fs.createWriteStream(outputPath));
+    //     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+    //     console.log("Archivo descargado y guardado exitosamente.");
+    // } catch (error) {
+    //     console.error("Error al descargar el archivo:", error);
+    // }
 }
