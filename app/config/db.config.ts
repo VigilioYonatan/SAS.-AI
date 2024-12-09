@@ -156,7 +156,7 @@ export async function connectDB() {
             await sequelize.sync({ alter: true });
             return;
         }
-        await sequelize.sync({ alter: true });
+        await sequelize.sync({ force: true });
     } catch (error) {
         logger.error(`Error al conectar base de datos: ${error}`);
     }

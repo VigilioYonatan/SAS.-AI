@@ -59,6 +59,11 @@ import { Categories } from "@/products/entities/categories.entity";
 import { Subcategories } from "@/products/entities/subcategories.entity";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
+import { getProductAll } from "@/products/libs";
+import { Options } from "@/products/entities/options/options.entity";
+import type { Features } from "@/products/entities/options/features.entity";
+import { Brands } from "@/products/entities/brands.entitiy";
+import { ProductsApiService } from "@/products/services/products.api.service";
 
 export function deleteHostCache() {
     for (const host of hosts) {
@@ -96,7 +101,8 @@ export async function initial() {
 export class EmpresasApiService {
     constructor(
         private readonly UsersApiService: UsersApiService,
-        private readonly backgroundApiService: BackgroundApiService
+        private readonly backgroundApiService: BackgroundApiService,
+        private readonly productsApiService: ProductsApiService
     ) {}
     async payment(slug: string) {
         const data = await Empresas.findOne({
@@ -213,6 +219,25 @@ export class EmpresasApiService {
             where: { empresa_id: empresa.id },
             limit: 2,
         });
+        let brands = await Brands.findAll({
+            where: { empresa_id: empresa.id },
+        });
+        brands = (await Promise.all(
+            brands.map(async (brand) => {
+                const image = brand.image?.map((file) => {
+                    return {
+                        ...file,
+                        image: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
+                            file.file
+                        }`,
+                    };
+                });
+                return {
+                    ...brand.toJSON(),
+                    image,
+                };
+            })
+        )) as Brands[];
         categories = await Promise.all(
             categories.map(async (category) => {
                 const image = category.image?.map((file) => {
@@ -250,7 +275,32 @@ export class EmpresasApiService {
                     };
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 }) as any;
-                const productsNormals = await category.$get("productsNormals");
+                let productsNormals = (await category.$get(
+                    "productsNormals"
+                )) as ProductsNormal[];
+                productsNormals = (await Promise.all(
+                    productsNormals.map(async (prod) => {
+                        const product = await getProductAll(
+                            empresa,
+                            prod,
+                            null,
+                            false
+                        );
+                        return {
+                            ...prod.toJSON(),
+                            options: (
+                                product.dataValues.options as Options[]
+                            ).map((opt) => ({
+                                option_id: opt.id,
+                                features: (opt.features as Features[]).map(
+                                    (feat) => feat.id
+                                ),
+                            })),
+                        };
+                    })
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                )) as any;
+                // options: [{ features: [1], option_id: 1 }],
                 const productsRestaurants = await category.$get(
                     "productsRestaurants"
                 );
@@ -279,6 +329,7 @@ export class EmpresasApiService {
                 gridBannersService: gridService,
                 backgrounds,
                 categories,
+                brands,
             },
         };
     }
@@ -431,67 +482,6 @@ export class EmpresasApiService {
                     url: `${BASE_URL(empresa)}/`,
                     html: null,
                 });
-            }
-
-            if (body.categories) {
-                await Promise.all(
-                    body.categories.map(async (category) => {
-                        const {
-                            id,
-                            productsNormals,
-                            productsRestaurants,
-                            productsServicios,
-                            subcategories,
-                            empresa_id,
-                            ...rest
-                        } = category;
-                        const categoria = await Categories.create({
-                            ...rest,
-                            empresa_id: empresa.id,
-                        });
-                        const subcategorias = await Promise.all(
-                            subcategories.map(async (sub) => {
-                                const { empresa_id, id, ...rest } = sub;
-                                const subcategoria = await Subcategories.create(
-                                    {
-                                        ...rest,
-                                        empresa_id: empresa.id,
-                                        category_id: categoria.id,
-                                    }
-                                );
-                                return { ...subcategoria.toJSON(), id_sub: id };
-                            })
-                        );
-
-                        await Promise.all(
-                            productsNormals.map(async (prod) => {
-                                const subcategory_id = subcategorias.find(
-                                    (sub) => sub.id_sub === prod.subcategory_id
-                                );
-                                const { id, ...rest } = prod;
-                                await ProductsNormal.create({
-                                    ...rest,
-                                    category_id: categoria.id,
-                                    empresa_id: empresa.id,
-                                    subcategory_id: subcategory_id
-                                        ? subcategory_id.id
-                                        : null,
-                                });
-                            })
-                        );
-
-                        await Promise.all(
-                            productsRestaurants.map(async (prod) => {
-                                const { id, ...rest } = prod;
-                                await ProductsRestaurant.create({
-                                    ...rest,
-                                    category_id: categoria.id,
-                                    empresa_id: empresa.id,
-                                });
-                            })
-                        );
-                    })
-                );
             }
 
             const transferencias = {} as Record<
@@ -772,6 +762,71 @@ export class EmpresasApiService {
                 })
             );
 
+            if (body.categories) {
+                await Promise.all(
+                    body.categories.map(async (category) => {
+                        const {
+                            id,
+                            productsNormals,
+                            productsRestaurants,
+                            productsServicios,
+                            subcategories,
+                            empresa_id,
+                            ...rest
+                        } = category;
+                        const categoria = await Categories.create({
+                            ...rest,
+                            empresa_id: empresa.id,
+                        });
+                        const subcategorias = await Promise.all(
+                            subcategories.map(async (sub) => {
+                                const { empresa_id, id, ...rest } = sub;
+                                const subcategoria = await Subcategories.create(
+                                    {
+                                        ...rest,
+                                        empresa_id: empresa.id,
+                                        category_id: categoria.id,
+                                    }
+                                );
+                                return { ...subcategoria.toJSON(), id_sub: id };
+                            })
+                        );
+
+                        await Promise.all(
+                            productsNormals.map(async (prod) => {
+                                const subcategory_id = subcategorias.find(
+                                    (sub) => sub.id_sub === prod.subcategory_id
+                                );
+                                const { ...rest } = prod;
+                                await this.productsApiService.store(
+                                    empresa,
+                                    {
+                                        ...rest,
+                                        category_id: categoria.id,
+                                        empresa_id: empresa.id,
+                                        subcategory_id: subcategory_id
+                                            ? subcategory_id.id
+                                            : null,
+                                    },
+                                    true,
+                                    false
+                                );
+                            })
+                        );
+
+                        await Promise.all(
+                            productsRestaurants.map(async (prod) => {
+                                const { id, ...rest } = prod;
+                                await ProductsRestaurant.create({
+                                    ...rest,
+                                    category_id: categoria.id,
+                                    empresa_id: empresa.id,
+                                });
+                            })
+                        );
+                    })
+                );
+            }
             const username = `${fullname}${Math.random()
                 .toString(32)
                 .slice(3, 4)}`;
