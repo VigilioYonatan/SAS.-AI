@@ -172,8 +172,8 @@ export async function prompt(
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
     ${
         properties.isQuestion ||
-        productsData.servicios.length > 0 ||
-        productsData.products.length > 0
+        productsData.servicios?.length > 0 ||
+        productsData.products?.length > 0
             ? JSON.stringify([
                   ...instrucctions,
                   ` RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN,ORDENES, NO TRAIGAS NI CONTESTES ERRONEAMENTE, LA CANTIDAD,ETC..

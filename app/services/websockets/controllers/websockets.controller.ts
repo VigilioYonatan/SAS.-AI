@@ -79,7 +79,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
             messages: [
                 {
                     role: "user",
-                    content: `${prompt} ${HTMLPROMPT(whatsapp.empresa)}`,
+                    content: `${prompt}`,
                 },
                 ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
             ],
