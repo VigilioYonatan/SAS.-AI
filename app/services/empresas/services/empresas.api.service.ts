@@ -325,7 +325,7 @@ export class EmpresasApiService {
                             };
                         });
                         return {
-                            ...prod,
+                            ...prod.toJSON(),
                             images,
                         };
                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -343,7 +343,7 @@ export class EmpresasApiService {
                             };
                         });
                         return {
-                            ...prod,
+                            ...prod.toJSON(),
                             images,
                         };
                         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
