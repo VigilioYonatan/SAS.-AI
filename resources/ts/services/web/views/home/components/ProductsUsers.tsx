@@ -71,7 +71,7 @@ function ProductsUsers({
                             >
                                 <ProductCard.header
                                     isShowVariants={false}
-                                    className="[&>img]:!h-auto"
+                                    className="[&>img]:!h-full"
                                     isShowOffer={false}
                                 />
                                 <div class="py-3 w-full  flex flex-col  items-center justify-center">
@@ -142,7 +142,7 @@ function ProductsUsers({
                             >
                                 <ProductCard.header
                                     isShowVariants={false}
-                                    className="[&>img]:!h-auto"
+                                    className="[&>img]:!h-full"
                                     isShowOffer={false}
                                 />
                                 <div class="py-3 w-full  flex flex-col items-center justify-center">
@@ -195,7 +195,7 @@ function ProductsUsers({
                             >
                                 <ProductCard.header
                                     isShowVariants={false}
-                                    className="[&>img]:!h-auto"
+                                    className="[&>img]:!h-full"
                                     isShowOffer={false}
                                 />
                                 <div class="py-3 w-full  flex flex-col items-center justify-center">
