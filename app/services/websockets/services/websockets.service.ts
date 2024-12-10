@@ -298,7 +298,7 @@ export class WebsocketsService {
                         `'${body.content}', Solo agradece. muy corto y usa emojis.`
                     );
                 } else {
-                    const contenido = `${product.name} <- estamos en ese producto/servicio y ingoralo: .\n${body.content}`;
+                    const contenido = `${product.name} <- estamos en ese producto/servicio y No vendas solo responde la pregunta y ingoralo: .\n${body.content}`;
                     const prompt = await promptReplace(
                         whatsapp,
                         contenido,
