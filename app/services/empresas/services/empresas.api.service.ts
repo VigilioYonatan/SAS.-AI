@@ -546,7 +546,7 @@ export class EmpresasApiService {
                                 const dirEmpresa = `${pathUploads()}/${
                                     empresa.slug
                                 }`;
-                                const dirEntity = `${dirEmpresa}/${file}`;
+                                const dirEntity = `${dirEmpresa}${file}`;
                                 await downloadAndSaveFile(f.file, dirEntity);
 
                                 return {
@@ -634,10 +634,16 @@ export class EmpresasApiService {
                     direccion: "",
                     codLocal: "0000",
                 }),
-                empresa.$create(
-                    "setting",
-                    body.setting as Omit<SettingsSchema, "id" | "empresa_id">
-                ),
+                empresa.$create("setting", {
+                    ...body.setting,
+                    host: {
+                        enabled: false,
+                        host: null,
+                        nameserver_one: null,
+                        nameserver_two: null,
+                        time: null,
+                    },
+                } as Omit<SettingsSchema, "id" | "empresa_id">),
 
                 await empresa.$create("citasSetting", {
                     max_days: 14,
@@ -734,7 +740,7 @@ export class EmpresasApiService {
                                             const dirEmpresa = `${pathUploads()}/${
                                                 empresa.slug
                                             }`;
-                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            const dirEntity = `${dirEmpresa}${file}`;
                                             await downloadAndSaveFile(
                                                 f.file,
                                                 dirEntity
@@ -791,22 +797,25 @@ export class EmpresasApiService {
                 ]);
             }
 
-            if (body.gridBannersService?.length && gridBannersMap) {
+            if (body.gridBannersService?.length) {
                 await Promise.all(
                     body.gridBannersService.map(async (grid) => {
                         const { banners, id, grid_banner_id, ...rest } = grid;
 
-                        const findBannerTest = gridBannersMap.find(
+                        const findBannerTest = gridBannersMap?.find(
                             (grid) => grid.id_test === grid_banner_id
                         );
 
                         const gridBanner = findBannerTest
                             ? await GridBanner.findByPk(findBannerTest.id)
                             : null;
+
                         const g = await GridBannerService.create({
                             ...rest,
                             empresa_id: empresa.id,
-                            grid_banner_id: gridBanner ? gridBanner.id : null,
+                            grid_banner_id: gridBanner
+                                ? findBannerTest.id
+                                : null,
                         });
 
                         await Promise.all(
@@ -822,7 +831,7 @@ export class EmpresasApiService {
                                             const dirEmpresa = `${pathUploads()}/${
                                                 empresa.slug
                                             }`;
-                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            const dirEntity = `${dirEmpresa}${file}`;
                                             await downloadAndSaveFile(
                                                 f.file,
                                                 dirEntity
@@ -908,7 +917,7 @@ export class EmpresasApiService {
                             const dirEmpresa = `${pathUploads()}/${
                                 empresa.slug
                             }`;
-                            const dirEntity = `${dirEmpresa}/${file}`;
+                            const dirEntity = `${dirEmpresa}${file}`;
                             await downloadAndSaveFile(f.file, dirEntity);
 
                             return {
@@ -943,7 +952,7 @@ export class EmpresasApiService {
                                     const dirEmpresa = `${pathUploads()}/${
                                         empresa.slug
                                     }`;
-                                    const dirEntity = `${dirEmpresa}/${file}`;
+                                    const dirEntity = `${dirEmpresa}${file}`;
                                     await downloadAndSaveFile(
                                         f.file,
                                         dirEntity
@@ -990,7 +999,7 @@ export class EmpresasApiService {
                                             const dirEmpresa = `${pathUploads()}/${
                                                 empresa.slug
                                             }`;
-                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            const dirEntity = `${dirEmpresa}${file}`;
                                             await downloadAndSaveFile(
                                                 f.file,
                                                 dirEntity
@@ -1038,7 +1047,7 @@ export class EmpresasApiService {
                                             const dirEmpresa = `${pathUploads()}/${
                                                 empresa.slug
                                             }`;
-                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            const dirEntity = `${dirEmpresa}${file}`;
                                             await downloadAndSaveFile(
                                                 f.file,
                                                 dirEntity
@@ -1088,7 +1097,7 @@ export class EmpresasApiService {
                                             const dirEmpresa = `${pathUploads()}/${
                                                 empresa.slug
                                             }`;
-                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            const dirEntity = `${dirEmpresa}${file}`;
                                             await downloadAndSaveFile(
                                                 f.file,
                                                 dirEntity
@@ -1122,7 +1131,7 @@ export class EmpresasApiService {
                                             const dirEmpresa = `${pathUploads()}/${
                                                 empresa.slug
                                             }`;
-                                            const dirEntity = `${dirEmpresa}/${file}`;
+                                            const dirEntity = `${dirEmpresa}${file}`;
                                             await downloadAndSaveFile(
                                                 f.file,
                                                 dirEntity

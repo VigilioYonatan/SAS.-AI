@@ -32,7 +32,7 @@ function ProductsUsers({
                     ? storageEmpresa.setting.type_animation
                     : ""
             } `}
-            class="max-w-6xl mx-auto my-4 md:my-8 px-4  gap-4 grid grid-cols-1 lg:grid-cols-3 product-users-section"
+            class="max-w-6xl mx-auto my-4  md:my-8 px-4  gap-4 grid grid-cols-1 lg:grid-cols-3 product-users-section"
         >
             <div
                 class={`bg-background-light dark:bg-background-dark ${
@@ -44,11 +44,19 @@ function ProductsUsers({
                     enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                 }`}
             >
-                <div class="flex items-center justify-center md:justify-between">
+                <div class="flex [&>div]:md:justify-start">
                     <TitleSectionTwo>
                         <>
-                            <i class={`fa${typeIcon1} fa-heart`} /> Más
-                            Favoritos
+                            <span>
+                                <i class={`fa${typeIcon1} fa-heart`} /> Más
+                                Favoritos
+                            </span>
+                            <a
+                                href="/shop"
+                                class="bg-primary text-xs px-2 py-1 rounded-md ml-2"
+                            >
+                                Ver más
+                            </a>
                         </>
                     </TitleSectionTwo>
                 </div>
@@ -63,7 +71,7 @@ function ProductsUsers({
                             >
                                 <ProductCard.header
                                     isShowVariants={false}
-                                    className="  "
+                                    className="[&>img]:!h-auto"
                                     isShowOffer={false}
                                 />
                                 <div class="py-3 w-full  flex flex-col  items-center justify-center">
@@ -105,13 +113,21 @@ function ProductsUsers({
                     enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                 }`}
             >
-                <div class="flex items-center justify-center md:justify-between">
+                <div class="flex [&>div]:md:justify-start">
                     <TitleSectionTwo>
                         <>
-                            <i
-                                class={`fa${typeIcon1} fa-${enviroments.TYPE_START}`}
-                            />{" "}
-                            Mejores Valorados
+                            <span>
+                                <i
+                                    class={`fa${typeIcon1} fa-${enviroments.TYPE_START}`}
+                                />{" "}
+                                Mejores Valorados
+                            </span>{" "}
+                            <a
+                                href="/shop"
+                                class="bg-primary text-xs px-2 py-1 rounded-md ml-2"
+                            >
+                                Ver más
+                            </a>
                         </>
                     </TitleSectionTwo>
                 </div>
@@ -126,7 +142,7 @@ function ProductsUsers({
                             >
                                 <ProductCard.header
                                     isShowVariants={false}
-                                    className=""
+                                    className="[&>img]:!h-auto"
                                     isShowOffer={false}
                                 />
                                 <div class="py-3 w-full  flex flex-col items-center justify-center">
@@ -152,11 +168,19 @@ function ProductsUsers({
                     enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
                 }`}
             >
-                <div class="flex items-center justify-center md:justify-between">
+                <div class="flex [&>div]:md:justify-start">
                     <TitleSectionTwo>
                         <>
-                            <i class={`fa${typeIcon1} fa-comment`} /> más
-                            comentados
+                            <span>
+                                <i class={`fa${typeIcon1} fa-comment`} /> más
+                                comentados
+                            </span>{" "}
+                            <a
+                                href="/shop"
+                                class="bg-primary text-xs px-2 py-1 rounded-md ml-2"
+                            >
+                                Ver más
+                            </a>
                         </>
                     </TitleSectionTwo>
                 </div>
@@ -171,7 +195,7 @@ function ProductsUsers({
                             >
                                 <ProductCard.header
                                     isShowVariants={false}
-                                    className="  "
+                                    className="[&>img]:!h-auto"
                                     isShowOffer={false}
                                 />
                                 <div class="py-3 w-full  flex flex-col items-center justify-center">

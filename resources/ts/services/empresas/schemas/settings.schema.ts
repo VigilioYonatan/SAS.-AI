@@ -118,6 +118,7 @@ export const settingsSchema = object({
         cards: boolean(),
         android: boolean(),
         brands: boolean(),
+        categories_slider: boolean(),
         offers_section: boolean(),
         offers_user: boolean(),
     }),

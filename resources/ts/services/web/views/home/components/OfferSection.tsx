@@ -5,68 +5,68 @@ import ProductCard from "@/web/components/product";
 import TitleSection from "@/web/components/TitleSection";
 
 interface OfferSectionProps {
-	productsoffert8mapped:
-		| ProductsNormalSchemaFromServer[]
-		| ProductsRestaurantSchemaFromServer[];
-	productlatestmapped:
-		| ProductsNormalSchemaFromServer
-		| ProductsRestaurantSchemaFromServer
-		| null;
+    productsoffert8mapped:
+        | ProductsNormalSchemaFromServer[]
+        | ProductsRestaurantSchemaFromServer[];
+    productlatestmapped:
+        | ProductsNormalSchemaFromServer
+        | ProductsRestaurantSchemaFromServer
+        | null;
 }
 function OfferSection({
-	productsoffert8mapped,
-	productlatestmapped,
+    productsoffert8mapped,
+    productlatestmapped,
 }: OfferSectionProps) {
-	if (!productsoffert8mapped) return null;
-	if (!productlatestmapped) return null;
-	if (!productlatestmapped) return null;
-	const isEccomerce = storageEmpresa?.setting.type_card === "eccomerce";
-	return (
-		<section
-			class="max-w-6xl mx-auto px-4  flex flex-col gap-4 my-4  md:my-8 offer-section"
-			data-aos={`${
-				storageEmpresa?.setting.isScrolling
-					? storageEmpresa.setting.type_animation
-					: ""
-			} `}
-		>
-			<TitleSection>Nuestros Ultimas ofertas</TitleSection>{" "}
-			<div class=" flex flex-col sm:flex-row gap-4 ">
-				<div class="min-w-[300px]">
-					{productlatestmapped ? (
-						<ProductCard product={productlatestmapped}>
-							<ProductCard.header className="[&>img]:w-full [&>img]:h-[300px!important] [&>img]:object-cover">
-								<ProductCard.buttons isAbsolute />
-							</ProductCard.header>
-							<ProductCard.body showDescription={false} />
-							<ProductCard.footer showButtonCart />
-						</ProductCard>
-					) : null}
-				</div>
-				{productsoffert8mapped.length ? (
-					<div
-						class={`w-full grid ${
-							isEccomerce
-								? "grid-cols-2 lg:grid-cols-4"
-								: "grid-cols-2 lg:grid-cols-3"
-						}  gap-4`}
-					>
-						{productsoffert8mapped.map((product) => (
-							<ProductCard product={product} key={product.id}>
-								<ProductCard.header>
-									<ProductCard.buttons isAbsolute />
-								</ProductCard.header>
-								<ProductCard.body showDescription={false} />
-								<ProductCard.footer showButtonCart />
-							</ProductCard>
-						))}
-					</div>
-				) : null}
+    if (!productsoffert8mapped) return null;
+    if (!productlatestmapped) return null;
+    if (!productlatestmapped) return null;
+    const isEccomerce = storageEmpresa?.setting.type_card === "eccomerce";
+    return (
+        <section
+            class="max-w-6xl mx-auto px-4  flex flex-col gap-4 my-4  md:my-8 offer-section"
+            data-aos={`${
+                storageEmpresa?.setting.isScrolling
+                    ? storageEmpresa.setting.type_animation
+                    : ""
+            } `}
+        >
+            <TitleSection>Nuestros Ultimas ofertas</TitleSection>{" "}
+            <div class=" flex flex-col sm:flex-row gap-4 ">
+                <div class="min-w-[300px]">
+                    {productlatestmapped ? (
+                        <ProductCard product={productlatestmapped}>
+                            <ProductCard.header className="[&>img]:w-full [&>img]:h-[300px!important] [&>img]:object-cover">
+                                <ProductCard.buttons isAbsolute />
+                            </ProductCard.header>
+                            <ProductCard.body showDescription={false} />
+                            <ProductCard.footer showButtonCart />
+                        </ProductCard>
+                    ) : null}
+                </div>
+                {productsoffert8mapped.length ? (
+                    <div
+                        class={`w-full grid ${
+                            isEccomerce
+                                ? "grid-cols-2 lg:grid-cols-4"
+                                : "grid-cols-2 lg:grid-cols-3"
+                        }  gap-4`}
+                    >
+                        {productsoffert8mapped.map((product) => (
+                            <ProductCard product={product} key={product.id}>
+                                <ProductCard.header>
+                                    <ProductCard.buttons isAbsolute />
+                                </ProductCard.header>
+                                <ProductCard.body showDescription={false} />
+                                <ProductCard.footer showButtonCart />
+                            </ProductCard>
+                        ))}
+                    </div>
+                ) : null}
 
-				{/* <ProductCardAdmin product={} /> */}
-			</div>
-		</section>
-	);
+                {/* <ProductCardAdmin product={} /> */}
+            </div>
+        </section>
+    );
 }
 
 export default OfferSection;

@@ -16,7 +16,7 @@ function CategoriesProductSection({
 
     return (
         <section
-            class="max-w-6xl mx-auto  px-4 flex flex-col gap-4 md:gap-[4rem]  my-4 md:my-8  categories-products-section"
+            class="max-w-6xl mx-auto  px-4 flex flex-col gap-4   my-4 md:my-8  categories-products-section"
             data-aos={`${
                 storageEmpresa?.setting.isScrolling
                     ? storageEmpresa.setting.type_animation

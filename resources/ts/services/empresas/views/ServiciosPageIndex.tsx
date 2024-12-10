@@ -491,7 +491,7 @@ export function GridBannerUpdate({
         if (gridBannerIndexQuery.isSuccess && gridBannerIndexQuery.data) {
             return gridBannerIndexQuery.data.data.map((value, i) => ({
                 key: value.id,
-                value: `Banner-${i + 1}`,
+                value: `Banner-${i}`,
             }));
         }
         return [];

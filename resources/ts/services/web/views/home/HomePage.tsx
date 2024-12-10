@@ -111,13 +111,13 @@ function HomePage({
                 <CategoriesProductSection
                     getProductsByCategories={getproductsbycategories}
                 />
-
+                <GridBanners grid={gridbanners} i={3} />
                 <ProductsUsers
                     productsmostreactionmapped={productsmostreactionmapped}
                     productsmostratingmapped={productsmostratingmapped}
                     productsmostcommentsmapped={productsmostcommentsmapped}
                 />
-                <GridBanners grid={gridbanners} i={3} />
+
                 <BrandsSection brands={brands} />
                 <PostsSection posts={posts} />
                 <UsersSection users={users} />

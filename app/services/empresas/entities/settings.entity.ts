@@ -269,6 +269,7 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
         android: boolean;
         offers_section: boolean;
         offers_user: boolean;
+        categories_slider: boolean;
     };
 
     @ForeignKey(() => Empresas)

@@ -12,7 +12,8 @@ interface categoriesSectionProps {
     categories: CategoriesSchema[];
 }
 function CategoriesSection({ categories }: categoriesSectionProps) {
-    if (!categories.length) return null;
+    if (!categories.length || !storageEmpresa?.setting.shows.categories_slider)
+        return null;
 
     return (
         <section

@@ -126,6 +126,7 @@ export const settingsSchema = objectAsync({
         android: boolean(),
         offers_section: boolean(),
         offers_user: boolean(),
+        categories_slider: boolean(),
     }),
     header: object({
         home: boolean(),
