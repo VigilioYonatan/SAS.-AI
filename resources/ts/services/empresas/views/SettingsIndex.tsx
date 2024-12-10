@@ -2087,6 +2087,12 @@ function SettingsIndex() {
                                 title="Slider Marcas"
                             />
                             <Form.control.toggle
+                                name={
+                                    "shows.categories_slider" as keyof SettingsUpdateDto
+                                }
+                                title="Categorias Slider"
+                            />
+                            <Form.control.toggle
                                 name={"shows.about" as keyof SettingsUpdateDto}
                                 title="Sección Nosotros"
                             />
