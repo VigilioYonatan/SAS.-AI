@@ -143,7 +143,13 @@ export class EmpresasApiService {
             where: {
                 empresa_id: empresa.id,
             },
-            include: [{ model: Banner, order: [["order", "ASC"]] }],
+            include: [
+                { model: Banner, order: [["order", "ASC"]] },
+                {
+                    model: GridBanner,
+                    include: [{ model: Banner, order: [["order", "ASC"]] }],
+                },
+            ],
             order: [["id", "ASC"]],
         });
         const grid = gridBanners.map((banner) => {

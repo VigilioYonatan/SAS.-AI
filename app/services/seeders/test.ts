@@ -1015,7 +1015,6 @@ export const test = {
             category_code: "CAT-000001",
             name: "Suplementos de Proteínas",
             isService: false,
-            wallpaper: null,
             image: [
                 {
                     dimension: 100,
@@ -2194,7 +2193,6 @@ export const test = {
             category_code: "CAT-000002",
             name: "Membresía",
             isService: true,
-            wallpaper: null,
             icon: '\u003Ci class="fa-solid fa-dumbbell"\u003E\u003C/i\u003E',
             slug: "membresa",
             empresa_id: 5,

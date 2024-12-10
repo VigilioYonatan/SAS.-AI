@@ -26,7 +26,6 @@ import { addressSeeder } from "@/empresas/seeders/address.seeder";
 import { Users } from "@/users/entities/users.entity";
 import { usersSeeder } from "@/users/seeders/users.seeder";
 import { test } from "../test";
-import type { EmpresasStoreDto } from "@/empresas/dtos/empresas.store.dto";
 
 @Injectable()
 export class SeedersApiService {
@@ -85,7 +84,8 @@ export class SeedersApiService {
                     password: "123456a",
                     servicio_id: 1,
                     ...test,
-                } as EmpresasStoreDto);
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                } as any);
                 await Promise.all([Address.bulkCreate(addressSeeder)]);
                 await Promise.all([Users.bulkCreate(usersSeeder)]);
             }
