@@ -326,7 +326,8 @@ export async function promptReplace(
             try {
                 categoriesFound = JSON.parse(cleanProducts);
             } catch (error) {}
-
+            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+            console.log({ categoriesFound });
             if (categoriesFound.length) {
                 productsData = {
                     ...data,
