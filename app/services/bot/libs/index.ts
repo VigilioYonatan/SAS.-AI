@@ -383,7 +383,7 @@ export async function promptReplace(
                         order.pay_method_id
                             ? (order.pay_method as PayMethods).name
                             : null
-                    }\nDireccion:${order.address}, estado: ${
+                    }\nDireccion:${order.address || "-"}, estado: ${
                         (order.status_order as StatusOrders).name
                     }\nDescripcion:${order.description || "sin descripción"}\n`;
                 })

@@ -27,7 +27,7 @@ import cron from "node-cron";
 import { promptReplace } from "@/bot/libs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 export function HTMLPROMPT(empresa: Empresas) {
-    return `- IMPORTANTE: Por ultimo siempre responde con etiquetas html y clases de tailwind, recuerda que el color primary es ${empresa.setting.bg_color}, y recuerda enviar links con estilos de tailwind underline, (tablas solo carrito de compra ) , etc y usan <b class="font-bold"></b> en palabras importantes y no uses **PALABRA**.por ultimo usa solo un <br></br> para separar parrafos, usa etiqueta a <a href="url" class='text-primary underline'>text</a> para links o enlaces, etc. usa <ul class="list-disc list-inside"><li></li></ul>  para listas, pedidos, información, etc. html limpio no markdown`;
+    return `- IMPORTANTE: Por ultimo siempre responde con etiquetas html y clases de tailwind, recuerda que el color primary es ${empresa.setting.bg_color}, y recuerda enviar links con estilos de tailwind underline, (tablas solo carrito de compra ) , etc y usa <b class="font-bold"></b> en palabras importantes y no uses ** en las palabras.por ultimo usa solo un <br></br> para separar parrafos, usa etiqueta a <a href="url" class='text-primary underline'>text</a> para links o enlaces, etc. usa <ul class="list-disc list-inside"><li></li></ul>  para listas, pedidos, información, etc. html limpio no markdown`;
 }
 export let chatAssistantWeb: Record<string, ["user" | "assistant", string][]> =
     {};
