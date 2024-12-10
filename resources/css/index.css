@@ -131,6 +131,6 @@
     scrollbar-width: none; /* Firefox */
 }
 
-.slick-slide > div {
+.background-section-slider .slick-slide > div {
     margin: 0 !important;
 }
