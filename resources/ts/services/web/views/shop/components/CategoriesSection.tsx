@@ -13,7 +13,8 @@ interface categoriesSectionProps {
     categories: CategoriesSchema[];
 }
 function CategoriesSection({ categories }: categoriesSectionProps) {
-    if (!categories.length) return null;
+    if (!categories.length || !storageEmpresa?.setting.shows.categories_slider)
+        return null;
     return (
         <section
             class="max-w-6xl mx-auto px-4 my-2 categories-section flex flex-col gap-4 group"
