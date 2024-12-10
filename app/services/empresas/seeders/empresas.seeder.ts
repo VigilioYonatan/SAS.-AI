@@ -390,7 +390,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
             tokens: { tokens: 10000000 },
             finanza: { enabled: true },
         },
-        type_empresa_id: 24, //22 restaurant // 24 gym
+        type_empresa_id: 22, //22 restaurant // 24 gym
         bancos: [
             {
                 key: "bbva",

@@ -117,10 +117,10 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
         <section
             id="start"
             // class="max-w-6xl mx-auto px-2 md:px-4 mt-[6.6rem] md:my-10"
-            class="mb-4 mt-[4.8rem] dest text-sm  text-center  lg:mt-0 relative background-home group"
+            class="mb-4 mt-[4.8rem] dest text-sm  text-center  lg:mt-0 relative background-home group "
         >
             <div
-                class={`flex flex-col lg:flex-row relative ${
+                class={`flex flex-col lg:flex-row relative  ${
                     storageEmpresa?.setting.header_type === "transparent"
                         ? " lg:h-[750px]"
                         : " lg:h-[550px]"
@@ -131,7 +131,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                 }`}
             >
                 <AdminEdit uri="/admin/background" />
-                <div class="w-full overflow-hidden">
+                <div class="w-full overflow-hidden ">
                     <Slider
                         className="w-full h-full background-section-slider"
                         {...{
@@ -422,6 +422,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                     />
                 </div>
             ) : null}
+            
         </section>
     );
 }

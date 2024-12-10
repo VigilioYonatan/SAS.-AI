@@ -130,3 +130,7 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
 }
+
+.slick-slide > div {
+    margin: 0 !important;
+}
