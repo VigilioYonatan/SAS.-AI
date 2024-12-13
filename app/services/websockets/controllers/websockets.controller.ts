@@ -44,7 +44,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
             ...(chatAssistantWeb ?? {}),
             [`${emp}:${token}`]: [
                 ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
-                ["user", `${message}.`],
+                ["user", `${message}.'en html'`],
             ],
         };
         if (
@@ -53,6 +53,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         ) {
             return "Gracias por probar nuestra inteligencia artificial, más información en https://www.vigilio-services.com";
         }
+
         // mapped messages to messages cloude
         const messages = chatAssistantWeb[`${emp}:${token}`].map(
             ([role, content]) => ({

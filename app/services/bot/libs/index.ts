@@ -109,6 +109,8 @@ export async function onDb(empresa: Empresas) {
                         }
                     )
                 );
+                console.log({ variantes });
+
                 return {
                     id: product.id,
                     name: product.name.toLowerCase(),
@@ -568,7 +570,6 @@ export async function promptReplace(
                 `
                 : "";
     }
-    console.log({ productsData });
 
     const ifNoExist =
         "Si la pregunta que te haga no está en la base de datos, (recuerda que puedo escribir mal las preguntas y analizalos). escribe en el primer parrafo [[NO_ENCONTRADO:aca_la_pregunta_que_te_hize]] y en el segundo parrafo escribe 'no encontramos respuesta para tu pregunta, pero puedes consultar numero de reclamos o correo, etc',y si hago preguntas que no tienen nada que ver con mi negocio, da un mensaje de no podemos responder a tu pregunta y hablar sobre mi negocio.";

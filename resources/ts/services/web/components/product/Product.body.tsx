@@ -3,8 +3,6 @@ import { removeTextHTML } from "~/libs/helpers";
 import { productContext } from "./Product";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
-import { printProductVariant } from "@/products/libs/helpers";
-import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 import { Rating } from "react-custom-rating-component";
 import enviroments from "~/config";
 
@@ -106,25 +104,7 @@ function ProductBody({
                     aria-label={product.producto.value.name}
                     class="line-clamp-2 h-[40px] md:h-[46px]  text-sm   md:text-base font-semibold dark:text-white hover:text-primary dark:hover:text-primary delay-custom-1  text-center "
                 >
-                    {product.producto.value.name}{" "}
-                    {product.varianteChoose &&
-                    [1, 3].includes(
-                        storageEmpresa!.tipo_empresa.tipo_servicio_id
-                    )
-                        ? printProductVariant(
-                              product.producto
-                                  .value as ProductsNormalSchemaFromServer,
-                              product.varianteChoose
-                          )
-                              .filter((opt) => opt?.id !== 1)
-                              .map((variant) => {
-                                  // si es color que muestre el color, sino solo el valor
-                                  return variant?.features.map(
-                                      (feature) => feature?.description
-                                  );
-                              })
-                              .join(" ")
-                        : null}
+                    {product.producto.value.name}
                 </a>
                 {isShowRating ? (
                     <Rating
