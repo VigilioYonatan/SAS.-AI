@@ -102,12 +102,13 @@ export async function newVersionVPS({
     ip,
     password,
     commando,
-    GIT_TOKEN,
+    GIT_TOKEN,version
 }: {
     commando: string | null;
     password: string;
     ip: string;
     GIT_TOKEN: string;
+    version: string;
 }) {
     const ssh = new NodeSSH();
 
@@ -130,15 +131,16 @@ export async function newVersionVPS({
             cp ./saas/.env ./temp/.env && \
             rm -rf saas && \
             git clone https://${GIT_TOKEN}@github.com/VigilioYonatan/SAS.-AI saas && \
-            cd saas && \
+            cd saas &&  \ git checkout tags/${version} && \
             cp -r ../temp/empresas ./public && \
             cp ../temp/.env . && \
             docker rm -f saas-db-1 && docker volume rm saas_postgres-data-saas && \
             docker rm -f && docker compose up -d --build && \
             docker cp ../temp/backup.sql saas-db-1:/tmp/backup.sql && \
+            sleet 15 && \
             docker exec saas-db-1 pg_restore -U postgres -d saas /tmp/backup.sql && \
             ${commando ? `${commando} && \ ` : ""} \
-            pm2 delete 0 || true && bun i && bun build:serve && bun build:client && \
+            pm2 delete all || true && bun i && bun build:serve && bun build:client && \
             pm2 start bun --name "saas" -- start && \
             rm -rf ./app || true && rm -rf ./resources/ts || true && rm -rf ./whatsapp-api || true && \
             rm -rf ./redes || true && rm -rf .git`;
