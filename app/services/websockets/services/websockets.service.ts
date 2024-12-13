@@ -298,7 +298,7 @@ export class WebsocketsService {
                         `'${body.content}', Solo agradece. muy corto y usa emojis.`
                     );
                 } else {
-                    const contenido = `${product.name} <- estamos en ese producto/servicio y No vendas solo responde la pregunta y ingoralo: .\n${body.content}`;
+                    const contenido = `${product.name} <- estamos en ese producto/servicio, No vendas solo responde la pregunta y ingoralo: .\n${body.content}`;
                     const prompt = await promptReplace(
                         whatsapp,
                         contenido,
@@ -506,7 +506,7 @@ export class WebsocketsService {
                     subcomentarios.map((sub) => {
                         return {
                             role: sub.id !== userBot!.id ? "user" : "assistant",
-                            content: sub.content,
+                            content: `${sub.content}. 'en html y no mkdown'`,
                         };
                     });
                 const completion = await openAis[
