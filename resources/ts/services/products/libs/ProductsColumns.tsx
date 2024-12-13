@@ -4,7 +4,9 @@ import { reactComponent } from "~/libs/preact";
 import { printImagesProduct } from "./helpers";
 import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
 import useAuthstore from "@/auth/stores/auth.store";
-import useEmpresastore from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import ProductsUpdate from "../views/ProductsNormalUpdate";
 import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schema";
 import { Fragment } from "preact/jsx-runtime";
@@ -190,7 +192,10 @@ const productsColumns: Columns<
                                         id={props.id}
                                         onClose={onClose}
                                         refetch={methods.refetch}
-                                        isService={true}
+                                        isService={
+                                            storageEmpresa?.tipo_empresa
+                                                .tipo_servicio_id === 3
+                                        }
                                     />
                                 ),
                                 showCloseButton: true,

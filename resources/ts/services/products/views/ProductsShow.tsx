@@ -160,7 +160,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                     <div>
                                         {(
                                             product as ProductsServicioSchemaFromServer
-                                        ).days.length ? (
+                                        ).days?.length ? (
                                             <div class="flex flex-col gap-1">
                                                 {(
                                                     product as ProductsServicioSchemaFromServer
