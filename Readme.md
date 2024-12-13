@@ -297,3 +297,11 @@ export function gridEmpresa(width: number[]): {
     },
 ];
 ```
+
+{# nueva version #}
+git add .
+git commit -m "new changes"
+git push origin main
+git tag -a v1.0 -m "Versión 1.0"
+git push origin v1.0
+

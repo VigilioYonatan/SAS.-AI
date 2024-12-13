@@ -1,5 +1,5 @@
+import { GridBannerServicechema } from "@/empresas/schemas/grid-banner-service.schema";
 import { type UseQuery, useQuery } from "@vigilio/preact-fetching";
-import type { BannerSchema } from "@/empresas/schemas/banner.schema";
 
 export function gridBannerServiceShowApi(
 	id: number,
@@ -17,7 +17,7 @@ export function gridBannerServiceShowApi(
 
 export interface GridBannerServiceShowAPI {
 	success: boolean;
-	banner: BannerSchema;
+	gridBanner: GridBannerServicechema;
 }
 
 export interface GridBannerServiceShowErrorAPI {

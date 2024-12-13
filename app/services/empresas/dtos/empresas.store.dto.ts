@@ -13,7 +13,6 @@ import {
 } from "@vigilio/valibot";
 import { empresasSchema } from "../schemas/empresas.schema";
 import { Empresas } from "../entities/empresas.entity";
-import { bannerSchema } from "../schemas/banner.schema";
 import { gridBannerSchema } from "../schemas/grid_banner.schema";
 import { settingsSchema } from "../schemas/settings.schema";
 import { fileSchema } from "../schemas/file.schema";
@@ -73,22 +72,8 @@ export const empresasStoreDto = mergeAsync([
     }),
     objectAsync({
         setting: omitAsync(settingsSchema, ["id", "empresa_id"]),
-        gridBanners: nullableAsync(
-            arrayAsync(
-                mergeAsync([
-                    gridBannerSchema,
-                    objectAsync({ banners: arrayAsync(bannerSchema) }),
-                ])
-            )
-        ),
-        gridBannersService: nullableAsync(
-            arrayAsync(
-                mergeAsync([
-                    gridBannerServicechema,
-                    objectAsync({ banners: arrayAsync(bannerSchema) }),
-                ])
-            )
-        ),
+        gridBanners: nullableAsync(arrayAsync(gridBannerSchema)),
+        gridBannersService: nullableAsync(arrayAsync(gridBannerServicechema)),
         backgrounds: arrayAsync(backgroundSchema),
         files: arrayAsync(fileSchema),
         brands: arrayAsync(brandsSchema),

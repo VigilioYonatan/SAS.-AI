@@ -117,7 +117,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
         <section
             id="start"
             // class="max-w-6xl mx-auto px-2 md:px-4 mt-[6.6rem] md:my-10"
-            class="mb-4 mt-[4.8rem] dest text-sm  text-center  lg:mt-0 relative background-home group "
+            class="background-home mb-4 mt-[4.8rem] dest text-sm  text-center  lg:mt-0 relative  group "
         >
             <div
                 class={`flex flex-col lg:flex-row relative  ${
@@ -133,7 +133,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                 <AdminEdit uri="/admin/background" />
                 <div class="w-full overflow-hidden ">
                     <Slider
-                        className="w-full h-full background-section-slider"
+                        className="background-section-slider w-full h-full "
                         {...{
                             dots: true,
                             infinite: backgrounds.length > 1,
@@ -150,7 +150,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                     >
                         {backgrounds.map((background, i) => (
                             <div
-                                class={`w-full group overflow-hidden background-home-container relative background-home-${
+                                class={`background-home-container w-full group overflow-hidden relative background-home-${
                                     i + 1
                                 }`}
                                 key={background.id}
@@ -186,9 +186,9 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                                         storageEmpresa?.setting
                                                             .background_position,
                                                 }}
-                                                class={`max-w-6xl mx-auto w-full flex    h-full z-20 relative background-home-container-${
+                                                class={` background-home-container-${
                                                     i + 1
-                                                }`}
+                                                } max-w-6xl mx-auto w-full flex    h-full z-20 relative`}
                                             >
                                                 <div
                                                     class="flex flex-col gap-4  p-2 md:p-6   justify-center"
@@ -206,9 +206,9 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                                     {i === 0 &&
                                                     backgrounds.length === 1 ? (
                                                         <h1
-                                                            class={`font-bold background-home-title-${
+                                                            class={`background-home-title-${
                                                                 i + 1
-                                                            } text-2xl md:text-4xl text-white w-8/12 md:w-7/12 ${
+                                                            } font-bold  text-2xl md:text-4xl text-white w-8/12 md:w-7/12 ${
                                                                 storageEmpresa
                                                                     ?.setting
                                                                     .background_position ===
@@ -422,7 +422,6 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                     />
                 </div>
             ) : null}
-            
         </section>
     );
 }

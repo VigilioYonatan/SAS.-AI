@@ -22,7 +22,7 @@ function ServiciosSection({ servicios }: serviciosSectionProps) {
     }, []);
     return (
         <section
-            class="max-w-6xl mx-auto  px-4 flex flex-col gap-4  my-4 md:my-8 servicios-section"
+            class=" servicios-section max-w-6xl mx-auto  px-4 flex flex-col gap-4  my-4 md:my-8"
             data-aos={`${
                 storageEmpresa?.setting.isScrolling
                     ? storageEmpresa.setting.type_animation
@@ -30,7 +30,6 @@ function ServiciosSection({ servicios }: serviciosSectionProps) {
             } `}
             id="servicios"
         >
-            
             <TitleSection>Nuestros Servicios</TitleSection>
             <div class="flex flex-col gap-6">
                 <div class="w-full flex flex-col md:flex-row gap-3 max-h-[410px] overflow-auto">

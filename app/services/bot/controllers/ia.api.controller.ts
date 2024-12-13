@@ -136,7 +136,9 @@ export class IAApiController {
                     .slice(0, 8);
             }
 
-            const desc = `Dame solo la "descripcion" y no otro en formato de tienda virtual de producto de ${name} en español  y no traer fuentes y no menciones otra cosa que no sea la descripción, y sin comillas "" por favor y información más actualizada`;
+            const desc = `Dame solo la "descripcion" y no otro en formato de tienda virtual sobre ${
+                empresa.type_empresa_other || empresa.tipo_empresa.value
+            } de producto de ${name} en español  y no traer fuentes y no menciones otra cosa que no sea la descripción, y sin comillas "" por favor y información más actualizada`;
             const caract = `traeme las caracterisiticas del ${name}, valor y descripcion en un json [{key:"",value:""}] minimo 10 maximo 25,. solo traemw el json, no digas nada mas  y información más actualizada y no traigas precio`;
             //             const claveSat = `rame la clave catalog producto sat del "${name}", solo di la clave!! , no digas nada mas. ejemplo 292929292
             // `;

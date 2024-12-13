@@ -51,7 +51,6 @@ import { Favorites } from "@/favorites/entities/favorites.entity";
 import { Comments } from "@/polymorphism/entities/comments.entity";
 import { Reactions } from "@/polymorphism/entities/reactions.entity";
 import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
-import { Banner } from "./banner.entity";
 import { GridBanner } from "./grid_banner.entity";
 import { FileSchema } from "./file.entity";
 import { RedesChat } from "./redes_chat.entity";
@@ -493,9 +492,6 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
     @HasMany(() => GridBanner)
     gridBanners: unknown[];
-
-    @HasMany(() => Banner)
-    banners: unknown[];
 
     @HasMany(() => Urls)
     urls: unknown[];

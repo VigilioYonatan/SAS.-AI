@@ -16,6 +16,9 @@ import { isColorLight } from "~/libs/helpers";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ChangeEvent, HTMLProps } from "preact/compat";
 import { HTMLSHOW } from "@/empresas/views/BannersIndex";
+import { sweetModal } from "@vigilio/sweet";
+import { reactComponent } from "~/libs/preact";
+import FilesIndex from "@/empresas/views/FilesIndex";
 
 interface FormControlLabelProps<T extends object> {
     title: string;
@@ -49,18 +52,37 @@ function FormEditorJSControl<T extends object>({
             >
                 {title}{" "}
                 {type === "html" ? (
-                    <button
-                        type="button"
-                        onClick={() => {
-                            mode.value = !mode.value;
-                        }}
-                    >
-                        {mode.value ? (
-                            <i class="fas fa-eye" />
-                        ) : (
-                            <i class="fas fa-eye-slash" />
-                        )}
-                    </button>
+                    <div class="flex gap-2 items-center">
+                        {" "}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                sweetModal({
+                                    html: reactComponent(
+                                        <FilesIndex params={{}} />
+                                    ),
+                                    sweetWidth: "800px",
+                                    position: "start",
+                                    showCloseButton: true,
+                                    isCloseInBackground: false,
+                                });
+                            }}
+                        >
+                            <i class="fas fa-image text-lg" />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                mode.value = !mode.value;
+                            }}
+                        >
+                            {mode.value ? (
+                                <i class="fas fa-eye text-lg" />
+                            ) : (
+                                <i class="fas fa-eye-slash text-lg" />
+                            )}
+                        </button>
+                    </div>
                 ) : null}
             </label>
             <div class={`flex items-center gap-2 w-full border-2 ${className}`}>
@@ -161,16 +183,62 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
         setInputValue((e.target as HTMLInputElement).value);
     };
+    function handleArrayAddition(arrayId: string) {
+        const div = document.createElement("div");
 
-    // Función recursiva para renderizar los elementos HTML
+        div.innerHTML = content;
+
+        // Find the element with the data-array attribute
+        const arrayContainer = div.querySelector(`[data-array="${arrayId}"]`);
+        if (arrayContainer) {
+            const lastChild = arrayContainer.lastElementChild;
+
+            if (lastChild) {
+                const clonedElement = lastChild?.cloneNode(true) as HTMLElement;
+                const lastLabels =
+                    arrayContainer.querySelectorAll("[data-label]");
+                Array.from(lastLabels).map((label) => {
+                    if (label) {
+                        label.setAttribute(
+                            "data-label",
+                            Math.random().toString(32).slice(3)
+                        );
+                    }
+                });
+
+                arrayContainer.appendChild(clonedElement);
+                setContent(div.innerHTML);
+                addDeleteButton(clonedElement);
+            }
+        }
+    }
+
+    function addDeleteButton(element: HTMLElement) {
+        if (!element) {
+            console.error("Elemento no válido proporcionado.");
+            return;
+        }
+        element.classList.add("relative");
+
+        const deleteButton = document.createElement("p");
+        const icon = document.createElement("i");
+        icon.classList.add("fas", "fa-trash");
+        deleteButton.appendChild(icon);
+        deleteButton.className = " ";
+        deleteButton.addEventListener("click", () => {
+            sweetModal({});
+            // e.preventDefault(); // Prevenimos cualquier comportamiento por defecto
+            // element.remove(); // Eliminamos el contenedor
+        });
+        element.appendChild(deleteButton);
+    }
+
     const renderElement = (el: Node) => {
         if (el.nodeType === 1) {
-            // Si es un nodo de tipo elemento
             const element = el as HTMLElement;
             const elementId = element.getAttribute("data-label");
 
             if (elementId && editingId === elementId) {
-                // Si es el elemento que estamos editando, renderizamos un input
                 return (
                     <input
                         type="text"
@@ -181,7 +249,38 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                     />
                 );
             }
+            const dataArray = element.getAttribute("data-array");
+            if (dataArray) {
+                const arrayId = dataArray;
 
+                for (const child of Array.from(element.children)) {
+                    addDeleteButton(child as HTMLElement);
+                }
+                const validAttributes = Array.from(element.attributes)
+                    .filter((attr) => /^[a-zA-Z_][\w\-]*$/.test(attr.name))
+                    .reduce((attrs, attr) => {
+                        attrs[attr.name] = attr.value;
+                        return attrs;
+                    }, {} as Record<string, string>);
+                return (
+                    <div {...validAttributes} class="relative">
+                        {Array.from(element.childNodes).map((child, index) => (
+                            // Render child nodes recursively
+                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                            <Fragment key={index}>
+                                {renderElement(child)}
+                            </Fragment>
+                        ))}
+                        <button
+                            type="button"
+                            onClick={() => handleArrayAddition(arrayId)}
+                            class="mt-2 px-2 py-1 bg-blue-500 text-white absolute -bottom-0 rounded-md font-bold"
+                        >
+                            +
+                        </button>
+                    </div>
+                );
+            }
             // Si tiene un data-label, lo hacemos editable al hacer clic
             if (elementId) {
                 const elementText = element.textContent?.trim() || ""; // El texto del elemento
@@ -244,13 +343,22 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    window.open(
-                                        `/admin/files?file=${imageName?.replaceAll(
-                                            "`",
-                                            ""
-                                        )}`,
-                                        "_blank"
-                                    );
+                                    sweetModal({
+                                        html: reactComponent(
+                                            <FilesIndex
+                                                params={{
+                                                    file: imageName?.replaceAll(
+                                                        "`",
+                                                        ""
+                                                    ),
+                                                }}
+                                            />
+                                        ),
+                                        sweetWidth: "800px",
+                                        position: "start",
+                                        showCloseButton: true,
+                                        isCloseInBackground: false,
+                                    });
                                 }}
                                 className="absolute top-2 right-2 bg-blue-500 text-white p-1 rounded"
                             >

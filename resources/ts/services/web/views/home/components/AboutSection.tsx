@@ -24,7 +24,7 @@ function AboutSection({
     );
     return (
         <section
-            class="max-w-6xl about-section mx-auto px-2  my-4  md:my-8  bg-background-light dark:bg-background-dark relative md:my-8"
+            class="about-section max-w-6xl  mx-auto px-2  my-4  md:my-8  bg-background-light dark:bg-background-dark relative"
             data-aos={`${
                 storageEmpresa?.setting.isScrolling
                     ? storageEmpresa.setting.type_animation

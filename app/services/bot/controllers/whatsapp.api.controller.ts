@@ -534,10 +534,10 @@ export class whatsappApiController {
                                 } -e VITE_TOKEN_VIGILIO_SERVICES=${
                                     enviroments.VITE_TOKEN_VIGILIO_SERVICES
                                 } --restart always --memory="${
-                                    result.vps.whatsapp_ram || "1000"
-                                }m" --memory-swap="${
-                                    result.vps.whatsapp_ram || "1000"
-                                }m" --cpus="${
+                                    result.vps.whatsapp_ram || "1"
+                                }g" --memory-swap="${
+                                    result.vps.whatsapp_ram || "1"
+                                }g" --cpus="${
                                     result.vps.whatsapp_cpu_max || "1"
                                 }" -p ${empresa.port}:5000 -v ${
                                     empresa.slug

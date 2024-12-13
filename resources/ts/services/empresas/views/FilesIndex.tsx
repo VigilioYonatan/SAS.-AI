@@ -26,9 +26,14 @@ import { useEffect } from "preact/hooks";
 import { getParams } from "~/libs/helpers";
 import { storageEmpresa } from "../stores/empresa.store";
 
-function FilesIndex() {
+interface FilesIndexProps {
+    params: {
+        file?: string;
+    };
+}
+function FilesIndex({ params }: FilesIndexProps) {
     const filesIndexQuery = filesIndexApi();
-    const params = getParams();
+    const param = getParams();
     let component: JSX.Element | JSX.Element[] | null = null;
     if (filesIndexQuery.isLoading) {
         component = <Loading />;
@@ -40,7 +45,7 @@ function FilesIndex() {
         const files = filesIndexQuery.data?.files;
         const filesDestroyMutate = filesDestroyApi();
         component = (
-            <div class="grid grid-cols-4 gap-2">
+            <div class="grid grid-cols-3 md:grid-cols-4 gap-4">
                 {files?.map((file) => {
                     const filed = printFileWithDimension(file.file, null);
                     const getUltimo = filed[0]?.split("/").pop();
@@ -48,7 +53,7 @@ function FilesIndex() {
                     return (
                         <div
                             class={`relative ${
-                                getUltimo === params.get("file")
+                                getUltimo === params.file || param.get("file")
                                     ? "border-2 border-primary"
                                     : ""
                             }`}
@@ -60,7 +65,7 @@ function FilesIndex() {
                                 <img
                                     width={200}
                                     alt=""
-                                    class="w-full h-[200px] object-contain"
+                                    class="w-full h-[160px] object-contain "
                                     src={filed[0]}
                                 />
                             ) : [".mp4"].some((ext) =>

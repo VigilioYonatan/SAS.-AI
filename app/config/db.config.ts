@@ -58,7 +58,6 @@ import { Comments } from "@/polymorphism/entities/comments.entity";
 import { Reactions } from "@/polymorphism/entities/reactions.entity";
 import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
 import { Subcategories } from "@/products/entities/subcategories.entity";
-import { Banner } from "@/empresas/entities/banner.entity";
 import { GridBanner } from "@/empresas/entities/grid_banner.entity";
 import { FileSchema } from "@/empresas/entities/file.entity";
 import { RedesChat } from "@/empresas/entities/redes_chat.entity";
@@ -141,7 +140,6 @@ sequelize.addModels([
     Subcomments,
     Subcategories,
     GridBanner,
-    Banner,
     FileSchema,
     RedesChat,
     Questions,
@@ -156,7 +154,7 @@ export async function connectDB() {
             await sequelize.sync({ alter: true });
             return;
         }
-        await sequelize.sync();
+        await sequelize.sync({ alter: true });
     } catch (error) {
         logger.error(`Error al conectar base de datos: ${error}`);
     }

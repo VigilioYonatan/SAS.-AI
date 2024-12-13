@@ -278,6 +278,9 @@ function ProductsRestaurantStore({
                                 )}{" "}
                                 <Helper top={0} right={0}>
                                     <span class="text-black dark:text-white text-xs  block">
+                                        {" "}
+                                        Esto puede tomar unos segundos para
+                                        completar toda la información. <br />
                                         Te sugerimos que revises el contenido
                                         generado por la inteligencia artificial.
                                     </span>

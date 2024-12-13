@@ -25,7 +25,6 @@ import { Ratings } from "@/polymorphism/entities/ratings.entity";
 import { Comments } from "@/polymorphism/entities/comments.entity";
 import { SubCategoriesApiService } from "@/products/services/subcategories.api.service";
 import { GridBanner } from "@/empresas/entities/grid_banner.entity";
-import { Banner } from "@/empresas/entities/banner.entity";
 import { ROLES } from "@/users/libs";
 import { GridBannerService } from "@/empresas/entities/grid_banner_service.entity";
 
@@ -208,7 +207,6 @@ export class WebApiService {
                     where: { empresa_id: empresa.id, enabled: true },
                 }),
                 GridBanner.findAll({
-                    include: [{ model: Banner, order: [["order", "ASC"]] }],
                     where: { empresa_id: empresa.id },
                     order: [["id", "ASC"]],
                 }),
@@ -367,10 +365,8 @@ export class WebApiService {
                     empresa_id: empresa.id,
                 },
                 include: [
-                    { model: Banner, order: [["order", "ASC"]] },
                     {
                         model: GridBanner,
-                        include: [{ model: Banner, order: [["order", "ASC"]] }],
                     },
                 ],
                 order: [["id", "ASC"]],

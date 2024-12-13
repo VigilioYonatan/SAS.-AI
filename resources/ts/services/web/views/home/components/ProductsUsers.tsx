@@ -32,7 +32,7 @@ function ProductsUsers({
                     ? storageEmpresa.setting.type_animation
                     : ""
             } `}
-            class="max-w-6xl mx-auto my-4  md:my-8 px-4  gap-4 grid grid-cols-1 lg:grid-cols-3 product-users-section"
+            class="product-users-section max-w-6xl mx-auto my-4  md:my-8 px-4  gap-4 grid grid-cols-1 lg:grid-cols-3"
         >
             <div
                 class={`bg-background-light dark:bg-background-dark ${

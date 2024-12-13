@@ -3,7 +3,6 @@ import { NotFoundException } from "@vigilio/express-core";
 import { Empresas } from "../entities/empresas.entity";
 import { GridBanner } from "../entities/grid_banner.entity";
 import type { GridBannerUpdateDto } from "../dtos/grid_banner.update.dto";
-import { Banner } from "../entities/banner.entity";
 
 @Injectable()
 export class GridBannerApiService {
@@ -12,7 +11,6 @@ export class GridBannerApiService {
             where: {
                 empresa_id: empresa.id,
             },
-            include: [{ model: Banner, order: [["order", "ASC"]] }],
             order: [["id", "ASC"]],
         });
 

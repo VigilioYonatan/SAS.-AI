@@ -27,7 +27,6 @@ export type UploadsEntities =
     | "subcategories"
     | "suppliers"
     | "new"
-    | "banner"
     | "settings"
     | "files";
 
@@ -44,7 +43,6 @@ export const uploadsEntities: UploadsEntities[] = [
     "brands",
     "suppliers",
     "new",
-    "banner",
     "settings",
     "files",
 ];

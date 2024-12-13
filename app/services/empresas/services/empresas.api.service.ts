@@ -30,7 +30,7 @@ import { Regions } from "@/ubigeo/entities/regions.entity";
 import { RegionsEmpresa } from "@/ubigeo/entities/regions_empresa.entity";
 import { Countries } from "@/ubigeo/entities/countries.entity";
 import { BackgroundApiService } from "./background.api.service";
-import { bannersQualities, BASE_URL, gridEmpresa } from "../libs";
+import { BASE_URL } from "../libs";
 import { mesasSeeder } from "../seeders/mesas.seeder";
 import { Floors } from "@/orders/entities/floors.entity";
 import { downloadAndSaveFile, terminal } from "~/libs/helpers";
@@ -49,7 +49,6 @@ import { CategoriesFinanzas } from "@/finanzas/entities/categories.entity";
 import cache from "@vigilio/express-core/cache";
 import { hosts } from "~/config/server";
 import { GridBanner } from "../entities/grid_banner.entity";
-import { Banner } from "../entities/banner.entity";
 import { Users } from "@/users/entities/users.entity";
 import { usersSeeder } from "@/users/seeders/users.seeder";
 import { FileSchema } from "../entities/file.entity";
@@ -136,7 +135,6 @@ export class EmpresasApiService {
             where: {
                 empresa_id: empresa.id,
             },
-            include: [{ model: Banner, order: [["order", "ASC"]] }],
             order: [["id", "ASC"]],
         });
         const gridBannersServices = await GridBannerService.findAll({
@@ -144,50 +142,11 @@ export class EmpresasApiService {
                 empresa_id: empresa.id,
             },
             include: [
-                { model: Banner, order: [["order", "ASC"]] },
                 {
                     model: GridBanner,
-                    include: [{ model: Banner, order: [["order", "ASC"]] }],
                 },
             ],
             order: [["id", "ASC"]],
-        });
-        const grid = gridBanners.map((banner) => {
-            const bannersMapped = (banner.banners as Banner[]).map((b) => ({
-                ...b.toJSON(),
-                file: b.file
-                    ? b.file.map((f) => ({
-                          ...f,
-                          file: `${BASE_URL(empresa)}/empresas/${
-                              empresa.slug
-                          }/${f.file}`,
-                      }))
-                    : null,
-            }));
-            return {
-                ...banner.toJSON(),
-                banners: bannersMapped,
-            };
-        });
-        const gridService = gridBannersServices.map((banner) => {
-            const bannersMapped = (banner.banners as Banner[]).map((b) => {
-                return {
-                    ...b.toJSON(),
-                    file: b.file
-                        ? b.file.map((f) => ({
-                              ...f,
-                              file: `${BASE_URL(empresa)}/empresas/${
-                                  empresa.slug
-                              }/${f.file}`,
-                          }))
-                        : null,
-                };
-            });
-
-            return {
-                ...banner.toJSON(),
-                banners: bannersMapped,
-            };
         });
 
         let files = await FileSchema.findAll({
@@ -370,14 +329,13 @@ export class EmpresasApiService {
                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             }) as any
         );
-
         return {
             success: true,
             data: {
                 setting,
-                gridBanners: grid,
+                gridBanners: gridBanners,
                 files,
-                gridBannersService: gridService,
+                gridBannersService: gridBannersServices,
                 backgrounds,
                 categories,
                 brands,
@@ -722,45 +680,12 @@ export class EmpresasApiService {
             if (body.gridBanners?.length) {
                 gridBannersMap = await Promise.all(
                     body.gridBanners.map(async (grid) => {
-                        const { banners, id, ...rest } = grid;
+                        const { id, ...rest } = grid;
                         const g = await GridBanner.create({
                             ...rest,
                             empresa_id: empresa.id,
                         });
-                        await Promise.all(
-                            banners.map(async (banner) => {
-                                const { id, ...rest } = banner;
-                                let file = null;
-                                if (banner.file) {
-                                    file = await Promise.all(
-                                        banner.file.map(async (f) => {
-                                            const file = f.file.substring(
-                                                f.file.indexOf("/images")
-                                            );
-                                            const dirEmpresa = `${pathUploads()}/${
-                                                empresa.slug
-                                            }`;
-                                            const dirEntity = `${dirEmpresa}${file}`;
-                                            await downloadAndSaveFile(
-                                                f.file,
-                                                dirEntity
-                                            );
 
-                                            return {
-                                                ...f,
-                                                file,
-                                            };
-                                        })
-                                    );
-                                }
-
-                                await g.$create("banner", {
-                                    ...rest,
-                                    empresa_id: empresa.id,
-                                    file,
-                                });
-                            })
-                        );
                         return {
                             ...g.toJSON(),
                             id_test: id,
@@ -770,28 +695,28 @@ export class EmpresasApiService {
             } else {
                 await GridBanner.bulkCreate([
                     {
-                        responsive: gridEmpresa(bannersQualities),
-                        enabled: true,
+                        html: "",
+                        enabled: false,
                         empresa_id: empresa.id,
                     },
                     {
-                        responsive: gridEmpresa(bannersQualities),
-                        enabled: true,
+                        html: "",
+                        enabled: false,
                         empresa_id: empresa.id,
                     },
                     {
-                        responsive: gridEmpresa(bannersQualities),
-                        enabled: true,
+                        html: "",
+                        enabled: false,
                         empresa_id: empresa.id,
                     },
                     {
-                        responsive: gridEmpresa(bannersQualities),
-                        enabled: true,
+                        html: "",
+                        enabled: false,
                         empresa_id: empresa.id,
                     },
                     {
-                        responsive: gridEmpresa(bannersQualities),
-                        enabled: true,
+                        html: "",
+                        enabled: false,
                         empresa_id: empresa.id,
                     },
                 ]);
@@ -800,7 +725,7 @@ export class EmpresasApiService {
             if (body.gridBannersService?.length) {
                 await Promise.all(
                     body.gridBannersService.map(async (grid) => {
-                        const { banners, id, grid_banner_id, ...rest } = grid;
+                        const { id, grid_banner_id, ...rest } = grid;
 
                         const findBannerTest = gridBannersMap?.find(
                             (grid) => grid.id_test === grid_banner_id
@@ -810,77 +735,43 @@ export class EmpresasApiService {
                             ? await GridBanner.findByPk(findBannerTest.id)
                             : null;
 
-                        const g = await GridBannerService.create({
+                        await GridBannerService.create({
                             ...rest,
                             empresa_id: empresa.id,
                             grid_banner_id: gridBanner
                                 ? findBannerTest.id
                                 : null,
                         });
-
-                        await Promise.all(
-                            banners.map(async (banner) => {
-                                const { id, file, ...rest } = banner;
-                                let result = null;
-                                if (file) {
-                                    result = await Promise.all(
-                                        file.map(async (f) => {
-                                            const file = f.file.substring(
-                                                f.file.indexOf("/images")
-                                            );
-                                            const dirEmpresa = `${pathUploads()}/${
-                                                empresa.slug
-                                            }`;
-                                            const dirEntity = `${dirEmpresa}${file}`;
-                                            await downloadAndSaveFile(
-                                                f.file,
-                                                dirEntity
-                                            );
-
-                                            return {
-                                                ...f,
-                                                file,
-                                            };
-                                        })
-                                    );
-                                }
-                                await g.$create("banner", {
-                                    ...rest,
-                                    empresa_id: empresa.id,
-                                    file: result,
-                                });
-                            })
-                        );
                     })
                 );
             } else {
                 await GridBannerService.bulkCreate([
                     {
-                        responsive: gridEmpresa(bannersQualities),
-                        enabled: true,
+                        html: "",
+                        enabled: false,
                         empresa_id: empresa.id,
                         grid_banner_id: null,
                     },
                     {
-                        responsive: gridEmpresa(bannersQualities),
-                        enabled: true,
-                        grid_banner_id: null,
-                        empresa_id: empresa.id,
-                    },
-                    {
-                        responsive: gridEmpresa(bannersQualities),
-                        enabled: true,
+                        html: "",
+                        enabled: false,
                         empresa_id: empresa.id,
                         grid_banner_id: null,
                     },
                     {
-                        responsive: gridEmpresa(bannersQualities),
+                        html: "",
+                        enabled: false,
+                        grid_banner_id: null,
+                        empresa_id: empresa.id,
+                    },
+                    {
+                        html: "",
                         grid_banner_id: null,
                         enabled: true,
                         empresa_id: empresa.id,
                     },
                     {
-                        responsive: gridEmpresa(bannersQualities),
+                        html: "",
                         grid_banner_id: null,
                         enabled: true,
                         empresa_id: empresa.id,
@@ -1332,22 +1223,29 @@ export class EmpresasApiService {
                             console.log("Conectado correctamente a vps");
                             const commands = `
                 # Asegúrate de que dpkg no esté interrumpido
-                sudo dpkg --configure -a || true; \
+                dpkg --configure -a || true;
+
                 # Configurar debconf para la instalación de GRUB
-                echo 'grub-pc grub-pc/bootdev select /dev/sda' | sudo debconf-set-selections; \
-                echo 'grub-pc grub-pc/install_devices multiselect /dev/sda' | sudo debconf-set-selections; \
+                echo 'grub-pc grub-pc/bootdev select /dev/sda' | debconf-set-selections;
+                echo 'grub-pc grub-pc/install_devices multiselect /dev/sda' | debconf-set-selections;
+
                 # Actualizar el sistema
-                sudo apt update -y; \
-                sudo apt upgrade -y; \
+                apt update -y;
+                apt upgrade -y;
+
                 # Instalar dependencias necesarias
-                sudo apt install -y apt-transport-https ca-certificates curl software-properties-common; \
+                apt-get install -y git nginx sudo nano curl;
+                apt install -y apt-transport-https ca-certificates software-properties-common;
+
                 # Agregar la clave GPG de Docker
-                curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -; \
+                curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -;
+
                 # Agregar el repositorio de Docker
-                echo "deb [arch=amd64] https://download.docker.com/linux/debian \$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list; \
+                echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list;
+
                 # Instalar Docker
-                sudo apt update -y; \
-                sudo apt install -y docker-ce; \
+                apt update -y;
+                apt install -y docker-ce;\
                 # Verificar si existe un contenedor y eliminarlo
                 if sudo docker ps -a -q --filter "name=${empresa.slug}"; then \
                     sudo docker stop ${empresa.slug} || true; \
@@ -1373,9 +1271,9 @@ export class EmpresasApiService {
                         enviroments.VITE_TOKEN_VIGILIO_SERVICES
                     } \
                     --restart always \
-                    --memory="${Number(body.whatsapp_mode.memory!) - 1}g" \
-                    --memory-swap="${Number(body.whatsapp_mode.memory!) - 1}g" \
-                    --cpus="${Number(body.whatsapp_mode.cpu!) - 1}" \
+                    --memory="${Number(body.whatsapp_mode.memory!)}g" \
+                    --memory-swap="${Number(body.whatsapp_mode.memory!)}g" \
+                    --cpus="${Number(body.whatsapp_mode.cpu!)}" \
                     -p ${empresa.port}:5000 \
                     -v ${empresa.slug}:/app/data \
                     ${enviroments.DOCKER_IMAGE_WHATSAPP}

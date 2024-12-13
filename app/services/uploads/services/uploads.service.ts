@@ -23,7 +23,6 @@ import {
 } from "@/products/libs";
 import {
     backgroundQualities,
-    bannersQualities,
     empresasLogoPWAQualities,
     empresasLogoQualities,
 } from "@/empresas/libs";
@@ -47,7 +46,6 @@ import { suppliersLogoQualities } from "@/suppliers/libs";
 import { SuppliersApiService } from "@/suppliers/services/suppliers.api.service";
 import { NewApiService } from "@/empresas/services/new.api.service";
 import { SubCategoriesApiService } from "@/products/services/subcategories.api.service";
-import { BannerApiService } from "@/empresas/services/banner.api.service";
 import { SettingsApiService } from "@/empresas/services/settings.api.service";
 import { FileSchema } from "@/empresas/entities/file.entity";
 
@@ -64,7 +62,6 @@ export class UploadsService {
         private readonly brandsApiService: BrandsApiService,
         private readonly suppliersApiService: SuppliersApiService,
         private readonly newApiService: NewApiService,
-        private readonly bannerApiService: BannerApiService,
         private readonly settingsApiService: SettingsApiService
     ) {}
     async store(props: {
@@ -367,30 +364,7 @@ export class UploadsService {
                     );
                 }
                 break;
-            case "banner":
-                if (property === "file") {
-                    qualities = await this.customUpload(
-                        files,
-                        {
-                            minFiles: 1,
-                            maxFiles: 1,
-                            required: true,
-                            typeFile: {
-                                value: [
-                                    "image/jpg",
-                                    "image/webp",
-                                    "image/jpeg",
-                                    "image/gif",
-                                    "image/png",
-                                    "video/mp4",
-                                ],
-                            },
-                            maxSize: empresa.isFreeVPS ? 35 : 100,
-                        },
-                        [...bannersQualities.filter((val) => val !== 0), 100]
-                    );
-                }
-                break;
+
             case "settings":
                 if (property === "background_auth") {
                     qualities = await this.customUpload(
@@ -707,25 +681,7 @@ export class UploadsService {
                 }
                 break;
             }
-            case "banner": {
-                if (
-                    !userAuth ||
-                    !userAuth.enabled ||
-                    ![1].includes(userAuth.role_id)
-                )
-                    throw new UnauthorizedException(
-                        "No tiene permiso para realizar esta acción"
-                    );
-                const { banner } = await this.bannerApiService.show(
-                    empresa,
-                    Number(id)
-                );
-                entidad = banner;
-                if (property === "file" && banner.file) {
-                    removeFile(empresa.slug, banner.file);
-                }
-                break;
-            }
+
             case "files": {
                 if (
                     !userAuth ||

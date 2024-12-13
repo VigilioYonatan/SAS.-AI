@@ -126,7 +126,7 @@ function Header({ header }: HeaderProps) {
             `}</style>
             {storageEmpresa?.setting.header_type !== "transparent" ? (
                 <>
-                    <div class="     text-sm px-2  dark:bg-background-dark hidden lg:block bg-background-light">
+                    <div class="header-one     text-sm px-2   dark:bg-background-dark hidden lg:block bg-background-light">
                         <div class="max-w-6xl  mx-auto justify-between py-2 flex font-semibold">
                             <div class="flex gap-3 items-center font-semibold">
                                 <span class="dark:text-white">
@@ -159,7 +159,7 @@ function Header({ header }: HeaderProps) {
             ) : null}
 
             <header
-                class={`  hidden lg:block z-[99]   top-0 right-0 left-0 ${
+                class={`header  hidden lg:block z-[99]   top-0 right-0 left-0 ${
                     storageEmpresa?.setting.header_type !== "transparent"
                         ? "bg-background-light dark:bg-background-dark sticky shadow"
                         : `  ${
@@ -190,6 +190,7 @@ function Header({ header }: HeaderProps) {
                     }
                 >
                     <div
+                        class="header-logo"
                         style={{
                             order: storageEmpresa?.setting.header_position.logo,
                         }}
@@ -201,7 +202,7 @@ function Header({ header }: HeaderProps) {
                     </div>
 
                     <nav
-                        class={`gap-6 items-center hidden lg:flex  relative ${
+                        class={`header-nav gap-6 items-center hidden lg:flex  relative ${
                             storageEmpresa?.setting.header_type ===
                                 "transparent" && isActive("/", false)
                                 ? `${isTop.value ? "text-white" : ""}`
@@ -624,7 +625,7 @@ function Header({ header }: HeaderProps) {
                         ) : null}
                     </nav>
                     <div
-                        class={`flex items-center gap-3 ${
+                        class={`header-icons flex items-center gap-3 ${
                             storageEmpresa?.setting.header_type ===
                                 "transparent" && isActive("/", false)
                                 ? `${isTop.value ? "text-white " : ""}`

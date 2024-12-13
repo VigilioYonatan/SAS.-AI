@@ -1,9 +1,7 @@
 import {
-    array,
     boolean,
     nullable,
     number,
-    object,
     objectAsync,
     string,
     type Input,
@@ -11,18 +9,10 @@ import {
 
 export const gridBannerServicechema = objectAsync({
     id: number(),
-    enabled: boolean(),
-    responsive: array(
-        object({
-            width: number(),
-            cols: number(),
-            rows: nullable(number()),
-            gap: number(),
-            height: number(),
-        })
-    ),
-    empresa_id: number(),
     title: nullable(string()),
+    enabled: boolean(),
+    html: nullable(string()),
+    empresa_id: number(),
     grid_banner_id: nullable(number()),
 });
 export type GridBannerServicechema = Input<typeof gridBannerServicechema>;

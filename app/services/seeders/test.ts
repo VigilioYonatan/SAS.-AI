@@ -1,8 +1,17 @@
-export const test = {
+import type { EmpresasStoreDto } from "@/empresas/dtos/empresas.store.dto";
+
+export const test: Pick<
+    EmpresasStoreDto,
+    | "setting"
+    | "gridBanners"
+    | "files"
+    | "gridBannersService"
+    | "backgrounds"
+    | "categories"
+    | "brands"
+> = {
     setting: {
         logo_width: 120,
-        id: 4,
-        web: null,
         host: {
             host: null,
             nameserver_one: null,
@@ -43,7 +52,7 @@ export const test = {
         type_map: "satelite",
         web_script:
             '/*\r\n\r\n    NO MODIFICAR ESTO, SI NO ERES DESARROLLADOR\r\n\r\n*/\r\n\r\nconst style = document.createElement("style")\r\nconst h1 = document.querySelector(\r\n    ".background-home-container > div > div > div > h1"\r\n);\r\nif (h1) {\r\n    const text = h1.textContent.trim(); // Elimina espacios al inicio o final\r\n    const words = text.split(" "); // Divide el texto en palabras\r\n    const lastWord = words.pop(); // Extrae la última palabra\r\n    const newText = words.join(" ") + ` <span style="color: red;">${lastWord}</span>`; // Reconstruye el texto con la última palabra en un span\r\n    h1.innerHTML = newText; // Actualiza el contenido del h1\r\n}\r\nstyle.innerHTML = `\r\n.background-home .slick-slide > div{\r\n    padding: 0px 0px !important;\r\n}\r\n.background-home-container > div > div > div {\r\n    gap: 2.5rem;\r\n}\r\n.background-home-container > div > div > div > h1{\r\n    font-size: 4.5rem;\r\n    line-height: 4.5rem;\r\n}\r\n.background-home-container > div > div > div > p{\r\n    color: white;\r\n    font-size: 1rem;\r\n    line-height: 1.5rem;\r\n    width:90%;\r\n}\r\n.background-home-container > div > div > div > a{\r\n    border-radius: 0.3rem;\r\n    padding: 0.8rem 2rem;\r\n}\r\n.background-home-container > div > div > div > a:hover{\r\n    transform: scale(1.1);\r\n    background-color: white;\r\n    color: var(--primary) !important;\r\n}\r\n\r\n.grid-banner-0 {\r\n    padding: 0rem 1.2rem;\r\n    transform: translateY(-10rem);\r\n}\r\n@media screen and (max-width:700px){\r\n    \r\n    .background-home-container > div > div > div {\r\n        gap: 1.5rem;\r\n    }\r\n    .background-home-container > div > div > div > h1{\r\n        font-size: 3.5rem;\r\n        line-height: 3.5rem;\r\n    }\r\n    .background-home-container > div > div > div > p{\r\n        color: white;\r\n        font-size: 1rem;\r\n        line-height: 1.5rem;\r\n        width:90%;\r\n    }\r\n    .background-home-container > div > div > div > a{\r\n        border-radius: 0.3rem;\r\n        padding: 0.8rem 2rem;\r\n    }\r\n    .grid-banner-0 {\r\n        padding: 0rem 1.2rem;\r\n        transform: translateY(-5rem);\r\n    }\r\n    .grid-banner-0 > div > .grid-banner-0-1 {\r\n       grid-area: span 2 / span 1 / span 2 / span 1 !important;\r\n    }\r\n    .grid-banner-0 > div > .grid-banner-0-3 {\r\n       grid-area: span 3 / span 1 / span 3 / span 1 !important;\r\n    }\r\n    .grid-banner-0 > div > div {\r\n        grid-area: span 1 / span 1 / span 1 / span 1 !important;\r\n    }\r\n}\r\n\r\n.grid-banner-0 .banners-0 > div {\r\n    border-radius: 0.5rem;\r\n\r\n}\r\n.grid-banner-0 .banners-0 > .grid-banner-0-1 > div, .grid-banner-0 .banners-0 > .grid-banner-0-3 > div {\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items:center;\r\n}\r\n.grid-banner-0 .banners-0 > .grid-banner-0-1 > div > div, .grid-banner-0 .banners-0 > .grid-banner-0-3 > div > div{\r\n    align-self: auto;\r\n}\r\n.grid-banner-0 .banners-0 > div > div > div > a {\r\n    border-radius: 0.5rem;\r\n}\r\n\r\n\r\n .product-card {\r\n    border: 1px solid #e2e2e2;\r\n}\r\n.product-card header{\r\n    padding: 0.5rem;\r\n    border-radius: 0.5rem !important;\r\n    overflow: hidden !important;\r\n}\r\n.product-card header img{\r\n    border-radius: 0.5rem !important;\r\n    overflow: hidden !important;\r\n}\r\n\r\n.product-card a{\r\n   font-family: Font-Bold, serif;\r\n   height: auto !important;\r\n}\r\n.product-card header img{\r\n    width: 100%;\r\n}\r\n.product-card .md-rating-star--full img{\r\n    width: 15px;\r\n    height: 15px;\r\n}\r\n\r\n.product-users-section .product-card {\r\n    border: 0px solid #e2e2e2;\r\n}\r\n\r\n.title-section h3{\r\n    text-transform: capitalize !important;\r\n    font-family: Helvetica !important;\r\n    font-size: 2rem !important;\r\n    font-weight: bold;\r\n}\r\n\r\n.categories-section-slide .slick-slide > div > a{\r\n border: 1px solid #e2e2e2;\r\n}\r\n\r\n.product-users-section > div{\r\n    border: 1px solid #e2e2e2;\r\n}\r\n\r\n.post-section .slick-slide > div > div{\r\n    border: 1px solid #e2e2e2;\r\n}\r\n\r\nhome-page .offer-section{\r\n  position: relative;\r\n    top: -6rem;\r\n}\r\nhome-page .categories-section{\r\n  position: relative;\r\n    top: -4rem;\r\n}\r\n\r\n.auth-page .image-logo{\r\n    filter: drop-shadow(1px 1px black);\r\n}\r\n\r\n.grid-banner-2{\r\n    max-width: none !important;\r\n}\r\n.post-section{\r\n    color: white;\r\n}\r\n.post-section::after{\r\n    content:"";\r\n    position: absolute;\r\n    width:100%;\r\n    left:0;\r\n    right:0;\r\n    height:300px;\r\n    background-color: black;\r\n    z-index:-1;\r\n}\r\n`\r\n\r\n\r\n// quitar efecto de hover productcard\r\nconst productCardheaderImg  = document.querySelectorAll(".product-card header img")\r\nArray.from(productCardheaderImg).map((card)=>{\r\n    card.classList.remove("group-hover:scale-105")\r\n})\r\n\r\n// agregar efecto\r\nconst backgroundHomeContainer = document.querySelectorAll(".banners-0 div a")\r\nArray.from(backgroundHomeContainer).map((card)=>{\r\n    card.classList.add("animation-brightness")\r\n    card.style.cssText = `--brightness-delay: 6s;`;\r\n})\r\n\r\n\r\ndocument.head.appendChild(style)',
-        sc: null,
+
         header_position: {
             logo: 1,
             navbar: 2,
@@ -76,786 +85,329 @@ export const test = {
             offers_user: true,
             categories_slider: false,
         },
-        empresa_id: 4,
-        createdAt: "2024-12-04T13:32:00.437Z",
-        updatedAt: "2024-12-10T15:47:47.663Z",
     },
     gridBanners: [
         {
             id: 15,
-            responsive: [
-                {
-                    width: 0,
-                    cols: 1,
-                    rows: 7,
-                    height: 1350,
-                    gap: 1,
-                },
-                {
-                    width: 300,
-                    cols: 1,
-                    rows: 7,
-                    height: 1350,
-                    gap: 1,
-                },
-                {
-                    width: 600,
-                    cols: 1,
-                    rows: 7,
-                    height: 1350,
-                    gap: 1,
-                },
-                {
-                    width: 800,
-                    cols: 5,
-                    rows: 2,
-                    height: 450,
-                    gap: 1,
-                },
-                {
-                    width: 1200,
-                    cols: 5,
-                    rows: 2,
-                    height: 450,
-                    gap: 1,
-                },
-            ],
             title: null,
             enabled: true,
             empresa_id: 4,
-            createdAt: "2024-12-04T13:32:00.472Z",
-            updatedAt: "2024-12-05T04:04:55.084Z",
-            banners: [
-                {
-                    id: 25,
-                    title: "New Recipe",
-                    order: 4,
-                    row: 1,
-                    col: 2,
-                    link: "https://www.demo-4.vigilio-services.com/",
-                    button: "Order Now",
-                    subtitle: "Extra-virgin olive oil, garlic,",
-                    script: null,
-                    enabled: true,
-                    file: [
-                        {
-                            dimension: 300,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/ac9d4a4a-2800-4e08-842d-715180b5666c1oip5x300.webp",
-                        },
-                        {
-                            dimension: 600,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/fb4c028d-b9bb-4615-9fed-6b7ef32436401oip5x600.webp",
-                        },
-                        {
-                            dimension: 800,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/8692e5ba-1feb-4139-aa8f-8f17de4db40a1oip7x800.webp",
-                        },
-                        {
-                            dimension: 1200,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/488872fd-28eb-4cd1-b8d2-6a141eadb47b1oip9x1200.webp",
-                        },
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/870cf361-a652-468b-bd47-7692bb47da371oip9x100.webp",
-                        },
-                    ],
-                    date: null,
-                    grid_banner_id: 15,
-                    grid_banner_service_id: null,
-                    empresa_id: 4,
-                    createdAt: "2024-12-04T14:39:08.948Z",
-                    updatedAt: "2024-12-05T01:52:26.839Z",
-                },
-                {
-                    id: 23,
-                    title: null,
-                    order: 1,
-                    row: 2,
-                    col: 2,
-                    link: "https://www.demo-4.vigilio-services.com/",
-                    button: "Order Now",
-                    subtitle: null,
-                    script: null,
-                    enabled: true,
-                    file: [
-                        {
-                            dimension: 300,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/1f0a37bc-323e-4b36-b1c9-235e72fe4cf51lr92x300.webp",
-                        },
-                        {
-                            dimension: 600,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/7b24ae20-61e5-4b97-a958-cd70a5bb15e61lr95x600.webp",
-                        },
-                        {
-                            dimension: 800,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/c9fb40da-9c75-4004-89f5-62fd79f710701lr96x800.webp",
-                        },
-                        {
-                            dimension: 1200,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/351d427d-a79e-4f71-b9d9-68f33ac647b01lr99x1200.webp",
-                        },
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/9ffa384a-eff7-4672-8589-4dce720e2f831lr99x100.webp",
-                        },
-                    ],
-                    date: null,
-                    grid_banner_id: 15,
-                    grid_banner_service_id: null,
-                    empresa_id: 4,
-                    createdAt: "2024-12-04T14:37:39.909Z",
-                    updatedAt: "2024-12-04T14:44:08.443Z",
-                },
-                {
-                    id: 24,
-                    title: "Special Combo",
-                    order: 2,
-                    row: 1,
-                    col: 2,
-                    link: "https://www.demo-4.vigilio-services.com/",
-                    button: "Order Now",
-                    subtitle: "This combo for online",
-                    script: null,
-                    enabled: true,
-                    file: [
-                        {
-                            dimension: 300,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/44a9ee0c-d5d2-42e3-9d56-0a5b1dc282061nmu9x300.webp",
-                        },
-                        {
-                            dimension: 600,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/a2ab242f-fce7-4cbb-b9c7-65bfe1a9f4121nmucx600.webp",
-                        },
-                        {
-                            dimension: 800,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/6a972cf8-4b15-4a4c-81c5-2a84ee2b4b6e1nmudx800.webp",
-                        },
-                        {
-                            dimension: 1200,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/9794c729-d46b-4acc-a24d-48ed17473dbb1nmulx1200.webp",
-                        },
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/ecc51768-205d-426b-a526-addde81e4fa71nmumx100.webp",
-                        },
-                    ],
-                    date: null,
-                    grid_banner_id: 15,
-                    grid_banner_service_id: null,
-                    empresa_id: 4,
-                    createdAt: "2024-12-04T14:38:40.413Z",
-                    updatedAt: "2024-12-04T14:48:20.545Z",
-                },
-                {
-                    id: 26,
-                    title: null,
-                    order: 3,
-                    row: 2,
-                    col: 1,
-                    link: "https://www.demo-4.vigilio-services.com/",
-                    button: "Order Now",
-                    subtitle: null,
-                    script: null,
-                    enabled: true,
-                    file: [
-                        {
-                            dimension: 300,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/7c9891cc-b95a-4709-854c-165e98cb3d7d1qf6ax300.webp",
-                        },
-                        {
-                            dimension: 600,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/0de19fce-815b-4d1e-9950-ebd47c9d5ad01qf6gx600.webp",
-                        },
-                        {
-                            dimension: 800,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/90d8a395-c953-4e54-aa22-1e938e657ad01qf6hx800.webp",
-                        },
-                        {
-                            dimension: 1200,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/9aa03480-f173-4cdf-bbad-6cbc93c955491qf6kx1200.webp",
-                        },
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/banner/161e0031-412c-480c-91e6-402ec2899fd01qf6kx100.webp",
-                        },
-                    ],
-                    date: null,
-                    grid_banner_id: 15,
-                    grid_banner_service_id: null,
-                    empresa_id: 4,
-                    createdAt: "2024-12-04T14:40:12.017Z",
-                    updatedAt: "2024-12-04T14:41:27.227Z",
-                },
-            ],
+            html: '\u003Cdiv x-data="{\r\n   header: JSON.parse(((document.querySelector(\'home-page\') || document.querySelector(\'servicios-page\'))?.getAttribute(\':header\')) || \'{}\'),\r\n   subtotalIgv(product, showWithDiscount = true, moreDiscount = null) {\r\n        const empresaStore = JSON.parse(localStorage.getItem(\'empresa\'));\r\n        const prod = JSON.parse(JSON.stringify(product));\r\n        let price = prod.price;\r\n\r\n        function formatMoney(value, forceLocal = false) {\r\n            const moneyStore = JSON.parse(localStorage.getItem(\'money\'));\r\n            function subtotalDolar(value) {\r\n                const converter = moneyStore.moneyValue[moneyStore.money];\r\n                return value * converter;\r\n            }\r\n\r\n            function formatDolares(number) {\r\n                return number.toLocaleString(\'en-US\', {\r\n                    style: \'currency\',\r\n                    currency: \'USD\',\r\n                });\r\n            }\r\n\r\n            return moneyStore.money === \'LOCAL\' || forceLocal\r\n                ? `${empresaStore.isDolar ? `${empresaStore.money.simbolo} ` : \'\'}${\r\n                    value.toLocaleString(empresaStore.money.international_simbolo, {\r\n                        style: \'currency\',\r\n                        currency: empresaStore.money.simbolo,\r\n                    })\r\n                }`\r\n                : formatDolares(subtotalDolar(value));\r\n        }\r\n\r\n        function subtotal(price, discount, increase = false) {\r\n            if (increase) {\r\n                return price + (discount * price) / 100;\r\n            }\r\n            return price - (discount * price) / 100;\r\n        }\r\n\r\n        if (showWithDiscount) {\r\n            price = subtotal(price, prod.discount ?? 0);\r\n        }\r\n        if (moreDiscount) {\r\n            price = subtotal(price, moreDiscount);\r\n        }\r\n\r\n        return formatMoney(\r\n            empresaStore.enabled_igv\r\n                ? subtotal(price, empresaStore.igv, true)\r\n                : price\r\n        );\r\n    }\r\n}" class="grid grid-cols-1 md:grid-cols-3 shadow " style="gap: 2rem; min-height: 300px;"\u003E\r\n    \u003Ctemplate x-if="header.categoriesServices"\u003E\r\n       \u003Ctemplate  x-for="servicio of (header.categoriesServices)[0].products"\u003E\r\n            \u003Cdiv class="flex flex-col gap-2 card"\u003E\r\n                \u003Cspan class="text-black text-2xl font-bold text-center block uppercase" x-text="`${subtotalIgv(servicio)}/${servicio.days[0].name}`"\u003E\u003C/span\u003E\r\n                \u003Ch3 class="bg-black py-3 px-4 text-center text-white font-bold text-xl" x-text="servicio.name"\u003E\u003C/h3\u003E\r\n                \u003Cul class="flex flex-col justify-center items-center w-full  px-6 py-4"\u003E\r\n                    \u003Ctemplate x-for="char of servicio.characteristics"\u003E\r\n                        \u003Cli class="py-3 border-b border-gray-400 w-full text-center font-semibold" x-text="char.value||\'\'"\u003E\u003C/li\u003E\r\n                    \u003C/template\u003E\r\n                \u003C/ul\u003E\r\n                \u003Ca :href="`/servicio/${servicio.slug}`"  class="uppercase font-bold" data-label="0"\u003EMás información\u003C/span\u003E\r\n            \u003C/div\u003E\r\n        \u003C/template\u003E     \r\n    \u003C/template\u003E\r\n    \r\n\u003C/div\u003E\r\n\u003Cstyle\u003E\r\n\r\n    .grid-banner-4 .card{\r\n        background-color:#FBFBFB; \r\n        padding: 2rem 1rem;\r\n        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra para efecto 3D */\r\n        clip-path: polygon(\r\n            0% 0%,       \r\n            90% 0%,      \r\n            100% 15%,    \r\n            100% 100%,   \r\n            15% 100%,    \r\n            0% 85%       \r\n        );\r\n    }\r\n    @media screen and(min-width:800px){   padding: 4rem 2rem;}\r\n    .grid-banner-4 .banners-4 a {\r\n        position: relative;\r\n        position: relative;\r\n        display: inline-block;\r\n        padding: 0.8rem 2rem;\r\n        background-color: black; /* Fondo del botón */\r\n        color: white; /* Color del texto */\r\n        text-decoration: none;\r\n        text-tranform: uppercase;\r\n        font-weight: bold;\r\n        text-align: center;\r\n        border: none;\r\n        align-self: center;\r\n        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra para efecto 3D */\r\n        clip-path: polygon(\r\n            0% 0%,       \r\n            90% 0%,      \r\n            100% 15%,    \r\n            100% 100%,   \r\n            15% 100%,    \r\n            0% 85%       \r\n        );\r\n        transition: all 0.5s ease;\r\n    }\r\n    .grid-banner-4 .banners-4 a:hover {\r\n        background-color:#EAEAEA; \r\n        color:black;\r\n    }\r\n\r\n\u003C/style\u003E',
         },
         {
             id: 16,
-            responsive: [
-                {
-                    width: 0,
-                    cols: 1,
-                    rows: 1,
-                    height: 0,
-                    gap: 1,
-                },
-                {
-                    width: 300,
-                    cols: 1,
-                    rows: 1,
-                    height: 0,
-                    gap: 1,
-                },
-                {
-                    width: 600,
-                    cols: 1,
-                    rows: 1,
-                    height: 0,
-                    gap: 1,
-                },
-                {
-                    width: 800,
-                    cols: 1,
-                    rows: 1,
-                    height: 0,
-                    gap: 1,
-                },
-                {
-                    width: 1200,
-                    cols: 1,
-                    rows: 1,
-                    height: 0,
-                    gap: 1,
-                },
-            ],
             title: null,
             enabled: true,
             empresa_id: 4,
-            createdAt: "2024-12-04T13:32:00.472Z",
-            updatedAt: "2024-12-05T09:52:25.279Z",
-            banners: [
-                {
-                    id: 27,
-                    title: null,
-                    order: 0,
-                    row: 1,
-                    col: 1,
-                    link: null,
-                    button: null,
-                    subtitle: null,
-                    script: '<!--  NO MODIFICAR ESTO, SI NO ERES DESARROLLADOR -->\r\n\r\n<div x-data="{slug: JSON.parse(localStorage.getItem(\'empresa\')).slug}" class="grid  banner-1-container px-2">\r\n    <div style="padding: 2rem 2rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n        <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-1" \r\n             alt="ico-1" \r\n            :src="`/empresas/${slug}/images/files/icon-1.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center  dark:text-white" data-label="1">Envio Rápido</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center  dark:text-white" data-label="2">On all orders over $49.00</p>\r\n    </div>\r\n    <div style="padding: 0rem 2rem 4rem 0rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n        <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-1" \r\n             alt="ico-1" \r\n            :src="`/empresas/${slug}/images/files/ico-2.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center  dark:text-white" data-label="3">Envio gratuito</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center  dark:text-white" data-label="4">¡Aprovecha el envío gratuito en tu pedido!</p>\r\n    </div>\r\n    <div style="padding: 0rem 2rem 4rem 0rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n         <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-3" \r\n             alt="ico-3" \r\n            :src="`/empresas/${slug}/images/files/ico-3.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center dark:text-white"  data-label="5">Compra segura</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center dark:text-white" data-label="6">100% protegido</p>\r\n    </div>\r\n    <div style="padding: 0rem 2rem 4rem 0rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n         <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-4" \r\n             alt="ico-4" \r\n            :src="`/empresas/${slug}/images/files/ico-4.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center dark:text-white" data-label="7">Garantía 100%</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center dark:text-white" data-label="8">Garantía de devolución de dinero</p>\r\n    </div>\r\n    \r\n</div>\r\n\r\n<style>\r\n    .grid-banner-1{\r\n        padding:0rem 1.5rem;\r\n        position: relative;\r\n        top: -5rem;\r\n    }\r\n    .banner-1-container div:hover{\r\n        border-bottom: 2px solid var(--primary);\r\n\r\n    }\r\n    .banner-1-container{\r\n        grid-template-columns: repeat(2, minmax(0, 1fr));\r\n        gap: 0rem;\r\n    }\r\n    @media screen and (min-width:800px){\r\n        .banner-1-container{\r\n            padding: 2rem 0rem;\r\n            grid-template-columns: repeat(4, minmax(0, 1fr));\r\n            \r\n        }\r\n\r\n    }\r\n    \r\n</style>',
-                    enabled: true,
-                    file: null,
-                    date: null,
-                    grid_banner_id: 16,
-                    grid_banner_service_id: null,
-                    empresa_id: 4,
-                    createdAt: "2024-12-05T09:50:56.125Z",
-                    updatedAt: "2024-12-05T10:31:27.016Z",
-                },
-            ],
+            html: '<!--  NO MODIFICAR ESTO, SI NO ERES DESARROLLADOR -->\r\n\r\n<div x-data="{slug: JSON.parse(localStorage.getItem(\'empresa\')).slug}" class="grid  banner-1-container px-2">\r\n    <div style="padding: 2rem 2rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n        <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-1" \r\n             alt="ico-1" \r\n            :src="`/empresas/${slug}/images/files/icon-1.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center  dark:text-white" data-label="1">Envio Rápido</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center  dark:text-white" data-label="2">On all orders over $49.00</p>\r\n    </div>\r\n    <div style="padding: 0rem 2rem 4rem 0rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n        <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-1" \r\n             alt="ico-1" \r\n            :src="`/empresas/${slug}/images/files/ico-2.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center  dark:text-white" data-label="3">Envio gratuito</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center  dark:text-white" data-label="4">¡Aprovecha el envío gratuito en tu pedido!</p>\r\n    </div>\r\n    <div style="padding: 0rem 2rem 4rem 0rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n         <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-3" \r\n             alt="ico-3" \r\n            :src="`/empresas/${slug}/images/files/ico-3.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center dark:text-white"  data-label="5">Compra segura</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center dark:text-white" data-label="6">100% protegido</p>\r\n    </div>\r\n    <div style="padding: 0rem 2rem 4rem 0rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n         <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-4" \r\n             alt="ico-4" \r\n            :src="`/empresas/${slug}/images/files/ico-4.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center dark:text-white" data-label="7">Garantía 100%</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center dark:text-white" data-label="8">Garantía de devolución de dinero</p>\r\n    </div>\r\n    \r\n</div>\r\n\r\n<style>\r\n    .grid-banner-1{\r\n        padding:0rem 1.5rem;\r\n        position: relative;\r\n        top: -5rem;\r\n    }\r\n    .banner-1-container div:hover{\r\n        border-bottom: 2px solid var(--primary);\r\n\r\n    }\r\n    .banner-1-container{\r\n        grid-template-columns: repeat(2, minmax(0, 1fr));\r\n        gap: 0rem;\r\n    }\r\n    @media screen and (min-width:800px){\r\n        .banner-1-container{\r\n            padding: 2rem 0rem;\r\n            grid-template-columns: repeat(4, minmax(0, 1fr));\r\n            \r\n        }\r\n\r\n    }\r\n    \r\n</style>',
         },
         {
             id: 17,
-            responsive: [
-                {
-                    width: 0,
-                    cols: 1,
-                    rows: 1,
-                    height: 0,
-                    gap: 1,
-                },
-                {
-                    width: 300,
-                    cols: 1,
-                    rows: 1,
-                    height: 0,
-                    gap: 1,
-                },
-                {
-                    width: 600,
-                    cols: 1,
-                    rows: 1,
-                    height: 0,
-                    gap: 1,
-                },
-                {
-                    width: 800,
-                    cols: 1,
-                    rows: 1,
-                    height: 0,
-                    gap: 1,
-                },
-                {
-                    width: 1200,
-                    cols: 1,
-                    rows: 1,
-                    height: 0,
-                    gap: 1,
-                },
-            ],
             title: null,
             enabled: true,
+            html: '<div  x-data="{slug: JSON.parse(localStorage.getItem(\'empresa\')).slug}" class=""   :style="`background-image: url(\'/empresas/${slug}/images/files/wallpaper-1.webp\'); height: 600px; background-size: cover; background-repeat: no-repeat; width: 100%`">\r\n    <div\r\n        class="grid grid-cols-1 md:grid-cols-2 max-w-6xl mx-auto h-full"\r\n    >\r\n        <div class="flex justify-center items-center">\r\n            <div class="relative">\r\n                <img class=" mb-2" width="300" height="300" alt="offer" title="offer" :src="`/empresas/${slug}/images/files/offer.png`"/>\r\n                <span class="font-bold text-primary absolute top" style="transform: rotate(30deg);top: 45px;left: 120px;font-size: 2.5rem;" data-label="0">50%</span>\r\n            </div>\r\n        </div>\r\n        <div class="flex flex-col gap-4 justify-center items-center w-6/12">\r\n            <span class="text-primary font-semibold text-3xl"  data-label="1">Delicious Taste</span>\r\n            <h3 class="text-white text-6xl font-bold text-center" data-label="2">Fast Food</h3>\r\n            <p class="text-white font-semibold text-center"" data-label="3">You are feeling hungry! Let order your favorite food.</p>\r\n            <a href="/shop" style="--brightness-delay: 8s;" class="bg-primary animation-brightness rounded-md   text-sm md:text-base background-home-button-1  text-white hover:text-primary border delay-custom-1 border-primary px-4 py-2   font-semibold tracking-wider" data-label="4">Order Now</a>\r\n        </div>\r\n    </div>\r\n</div>\r\n',
             empresa_id: 4,
-            createdAt: "2024-12-04T13:32:00.472Z",
-            updatedAt: "2024-12-05T16:53:29.095Z",
-            banners: [
-                {
-                    id: 28,
-                    title: null,
-                    order: 0,
-                    row: 1,
-                    col: 1,
-                    link: null,
-                    button: null,
-                    subtitle: null,
-                    script: '<div  x-data="{slug: JSON.parse(localStorage.getItem(\'empresa\')).slug}" class=""   :style="`background-image: url(\'/empresas/${slug}/images/files/wallpaper-1.webp\'); height: 600px; background-size: cover; background-repeat: no-repeat; width: 100%`">\r\n    <div\r\n        class="grid grid-cols-1 md:grid-cols-2 max-w-6xl mx-auto h-full"\r\n    >\r\n        <div class="flex justify-center items-center">\r\n            <div class="relative">\r\n                <img class=" mb-2" width="300" height="300" alt="offer" title="offer" :src="`/empresas/${slug}/images/files/offer.png`"/>\r\n                <span class="font-bold text-primary absolute top" style="transform: rotate(30deg);top: 45px;left: 120px;font-size: 2.5rem;" data-label="0">50%</span>\r\n            </div>\r\n        </div>\r\n        <div class="flex flex-col gap-4 justify-center items-center w-6/12">\r\n            <span class="text-primary font-semibold text-3xl"  data-label="1">Delicious Taste</span>\r\n            <h3 class="text-white text-6xl font-bold text-center" data-label="2">Fast Food</h3>\r\n            <p class="text-white font-semibold text-center"" data-label="3">You are feeling hungry! Let order your favorite food.</p>\r\n            <a href="/shop" style="--brightness-delay: 8s;" class="bg-primary animation-brightness rounded-md   text-sm md:text-base background-home-button-1  text-white hover:text-primary border delay-custom-1 border-primary px-4 py-2   font-semibold tracking-wider" data-label="4">Order Now</a>\r\n        </div>\r\n    </div>\r\n</div>\r\n',
-                    enabled: true,
-                    file: null,
-                    date: null,
-                    grid_banner_id: 17,
-                    grid_banner_service_id: null,
-                    empresa_id: 4,
-                    createdAt: "2024-12-05T20:07:47.002Z",
-                    updatedAt: "2024-12-10T15:42:12.447Z",
-                },
-            ],
         },
         {
             id: 18,
-            responsive: [
-                {
-                    width: 0,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 300,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 600,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 800,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 1200,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-            ],
             title: null,
             enabled: true,
             empresa_id: 4,
-            createdAt: "2024-12-04T13:32:00.472Z",
-            updatedAt: "2024-12-04T13:32:00.472Z",
-            banners: [],
+            html: null,
         },
         {
             id: 19,
-            responsive: [
-                {
-                    width: 0,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 300,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 600,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 800,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 1200,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-            ],
             title: null,
             enabled: true,
             empresa_id: 4,
-            createdAt: "2024-12-04T13:32:00.472Z",
-            updatedAt: "2024-12-04T13:32:00.472Z",
-            banners: [],
+            html: null,
         },
     ],
     files: [
         {
-            id: 2,
+            id: 8,
             file: [
                 {
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/files/icon-1.png",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-1.webp",
                 },
             ],
-            empresa_id: 4,
-            createdAt: "2024-12-05T09:56:42.388Z",
-            updatedAt: "2024-12-05T09:56:42.388Z",
+            empresa_id: 5,
         },
         {
-            id: 3,
+            id: 9,
             file: [
                 {
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/files/ico-2.png",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-2.webp",
                 },
             ],
-            empresa_id: 4,
-            createdAt: "2024-12-05T09:57:05.485Z",
-            updatedAt: "2024-12-05T09:57:05.485Z",
+            empresa_id: 5,
         },
         {
-            id: 4,
+            id: 10,
             file: [
                 {
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/files/ico-3.png",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-3.webp",
                 },
             ],
-            empresa_id: 4,
-            createdAt: "2024-12-05T09:57:28.631Z",
-            updatedAt: "2024-12-05T09:57:28.631Z",
+            empresa_id: 5,
         },
         {
-            id: 5,
+            id: 11,
             file: [
                 {
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/files/ico-4.png",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-4.webp",
                 },
             ],
-            empresa_id: 4,
-            createdAt: "2024-12-05T09:57:36.539Z",
-            updatedAt: "2024-12-05T09:57:36.539Z",
+            empresa_id: 5,
         },
         {
-            id: 6,
+            id: 12,
             file: [
                 {
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/files/wallpaper-1.webp",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-5.webp",
                 },
             ],
-            empresa_id: 4,
-            createdAt: "2024-12-05T20:04:24.521Z",
-            updatedAt: "2024-12-05T20:04:24.521Z",
+            empresa_id: 5,
         },
         {
-            id: 7,
+            id: 13,
             file: [
                 {
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/files/offer.png",
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-6.webp",
                 },
             ],
-            empresa_id: 4,
-            createdAt: "2024-12-05T20:17:06.736Z",
-            updatedAt: "2024-12-05T20:17:06.736Z",
+            empresa_id: 5,
+        },
+        {
+            id: 14,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-7.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 15,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-8.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 16,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-9.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 17,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-10.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 19,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-1.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 20,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-2.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 21,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-3.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 22,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-4.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 23,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-1.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 24,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-2.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 25,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-3.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 26,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-4.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 27,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-5.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 28,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-6.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 29,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-1.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 30,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-2.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 31,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-3.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 32,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-5.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 33,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-4.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 34,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-6.webp",
+                },
+            ],
+            empresa_id: 5,
+        },
+        {
+            id: 35,
+            file: [
+                {
+                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/servicio-1.webp",
+                },
+            ],
+            empresa_id: 5,
         },
     ],
     gridBannersService: [
         {
             id: 11,
-            responsive: [
-                {
-                    width: 0,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 300,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 600,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 800,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 1200,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-            ],
+            html: null,
             title: null,
             enabled: true,
             empresa_id: 4,
-            createdAt: "2024-12-04T13:32:00.500Z",
-            updatedAt: "2024-12-04T13:32:00.500Z",
             grid_banner_id: null,
-            banners: [],
-            grid_banner: null,
         },
         {
             id: 12,
-            responsive: [
-                {
-                    width: 0,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 300,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 600,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 800,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 1200,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-            ],
             title: null,
+            html: null,
             enabled: true,
             empresa_id: 4,
-            createdAt: "2024-12-04T13:32:00.500Z",
-            updatedAt: "2024-12-04T13:32:00.500Z",
             grid_banner_id: null,
-            banners: [],
-            grid_banner: null,
         },
         {
             id: 13,
-            responsive: [
-                {
-                    width: 0,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 300,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 600,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 800,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 1200,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-            ],
+            html: null,
             title: null,
             enabled: true,
             empresa_id: 4,
-            createdAt: "2024-12-04T13:32:00.500Z",
-            updatedAt: "2024-12-04T13:32:00.500Z",
             grid_banner_id: null,
-            banners: [],
-            grid_banner: null,
         },
         {
             id: 14,
-            responsive: [
-                {
-                    width: 0,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 300,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 600,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 800,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 1200,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-            ],
             title: null,
+            html: null,
             enabled: true,
             empresa_id: 4,
-            createdAt: "2024-12-04T13:32:00.500Z",
-            updatedAt: "2024-12-04T13:32:00.500Z",
             grid_banner_id: null,
-            banners: [],
-            grid_banner: null,
         },
         {
             id: 15,
-            responsive: [
-                {
-                    width: 0,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 300,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 600,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 800,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-                {
-                    width: 1200,
-                    height: 200,
-                    rows: 1,
-                    cols: 3,
-                    gap: 1,
-                    title: null,
-                },
-            ],
             title: null,
             enabled: true,
             empresa_id: 4,
-            createdAt: "2024-12-04T13:32:00.500Z",
-            updatedAt: "2024-12-04T13:32:00.500Z",
             grid_banner_id: null,
-            banners: [],
-            grid_banner: null,
+            html: null,
         },
     ],
     backgrounds: [
@@ -877,8 +429,6 @@ export const test = {
                 },
             ],
             empresa_id: 4,
-            createdAt: "2024-12-04T13:32:00.422Z",
-            updatedAt: "2024-12-04T14:15:17.832Z",
         },
     ],
     categories: [
@@ -900,10 +450,9 @@ export const test = {
             icon: '<i class="fa fa-pizza-slice"></i>',
             slug: "pizza",
             empresa_id: 4,
-            createdAt: "2024-12-05T04:18:50.753Z",
-            updatedAt: "2024-12-05T04:18:50.753Z",
             subcategories: [],
             productsNormals: [],
+            wallpaper: [],
             productsRestaurants: [
                 {
                     price: 33,
@@ -931,13 +480,6 @@ export const test = {
                     category_id: 11,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T12:08:54.106Z",
-                    updatedAt: "2024-12-05T12:08:54.106Z",
-                    category: {
-                        name: "Pizza",
-                        slug: "pizza",
-                        icon: '<i class="fa fa-pizza-slice"></i>',
-                    },
                 },
                 {
                     price: 23,
@@ -1043,13 +585,6 @@ export const test = {
                     category_id: 11,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T12:10:07.973Z",
-                    updatedAt: "2024-12-05T12:10:26.184Z",
-                    category: {
-                        name: "Pizza",
-                        slug: "pizza",
-                        icon: '<i class="fa fa-pizza-slice"></i>',
-                    },
                 },
                 {
                     price: 69,
@@ -1147,13 +682,6 @@ export const test = {
                     category_id: 11,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T15:42:08.420Z",
-                    updatedAt: "2024-12-05T15:42:08.420Z",
-                    category: {
-                        name: "Pizza",
-                        slug: "pizza",
-                        icon: '<i class="fa fa-pizza-slice"></i>',
-                    },
                 },
                 {
                     price: 78,
@@ -1279,13 +807,6 @@ export const test = {
                     category_id: 11,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T15:44:09.926Z",
-                    updatedAt: "2024-12-05T15:44:09.926Z",
-                    category: {
-                        name: "Pizza",
-                        slug: "pizza",
-                        icon: '<i class="fa fa-pizza-slice"></i>',
-                    },
                 },
             ],
             productsServicios: [],
@@ -1308,9 +829,8 @@ export const test = {
             icon: "<i class='fa fa-burger'></i>",
             slug: "burguer",
             empresa_id: 4,
-            createdAt: "2024-12-05T03:35:22.830Z",
-            updatedAt: "2024-12-05T04:21:53.229Z",
             subcategories: [],
+            wallpaper: [],
             productsNormals: [],
             productsRestaurants: [
                 {
@@ -1421,13 +941,6 @@ export const test = {
                     category_id: 10,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T03:41:03.417Z",
-                    updatedAt: "2024-12-05T03:41:03.417Z",
-                    category: {
-                        name: "Burguer",
-                        slug: "burguer",
-                        icon: "<i class='fa fa-burger'></i>",
-                    },
                 },
                 {
                     price: 34,
@@ -1455,13 +968,6 @@ export const test = {
                     category_id: 10,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T03:42:13.364Z",
-                    updatedAt: "2024-12-05T03:42:13.364Z",
-                    category: {
-                        name: "Burguer",
-                        slug: "burguer",
-                        icon: "<i class='fa fa-burger'></i>",
-                    },
                 },
                 {
                     price: 34,
@@ -1489,13 +995,6 @@ export const test = {
                     category_id: 10,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T03:42:40.599Z",
-                    updatedAt: "2024-12-05T12:06:24.468Z",
-                    category: {
-                        name: "Burguer",
-                        slug: "burguer",
-                        icon: "<i class='fa fa-burger'></i>",
-                    },
                 },
                 {
                     price: 45,
@@ -1593,13 +1092,6 @@ export const test = {
                     category_id: 10,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T03:41:41.893Z",
-                    updatedAt: "2024-12-05T11:55:45.584Z",
-                    category: {
-                        name: "Burguer",
-                        slug: "burguer",
-                        icon: "<i class='fa fa-burger'></i>",
-                    },
                 },
                 {
                     price: 290,
@@ -1713,13 +1205,6 @@ export const test = {
                     category_id: 10,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T03:35:52.023Z",
-                    updatedAt: "2024-12-05T11:55:45.589Z",
-                    category: {
-                        name: "Burguer",
-                        slug: "burguer",
-                        icon: "<i class='fa fa-burger'></i>",
-                    },
                 },
                 {
                     price: 66,
@@ -1833,13 +1318,6 @@ export const test = {
                     category_id: 10,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T12:05:31.073Z",
-                    updatedAt: "2024-12-05T12:05:31.073Z",
-                    category: {
-                        name: "Burguer",
-                        slug: "burguer",
-                        icon: "<i class='fa fa-burger'></i>",
-                    },
                 },
                 {
                     price: 23,
@@ -1949,13 +1427,6 @@ export const test = {
                     category_id: 10,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T15:39:34.760Z",
-                    updatedAt: "2024-12-05T15:39:34.760Z",
-                    category: {
-                        name: "Burguer",
-                        slug: "burguer",
-                        icon: "<i class='fa fa-burger'></i>",
-                    },
                 },
                 {
                     price: 76,
@@ -2081,13 +1552,6 @@ export const test = {
                     category_id: 10,
                     subcategory_id: null,
                     empresa_id: 4,
-                    createdAt: "2024-12-05T15:40:37.799Z",
-                    updatedAt: "2024-12-05T15:40:37.799Z",
-                    category: {
-                        name: "Burguer",
-                        slug: "burguer",
-                        icon: "<i class='fa fa-burger'></i>",
-                    },
                 },
             ],
             productsServicios: [],

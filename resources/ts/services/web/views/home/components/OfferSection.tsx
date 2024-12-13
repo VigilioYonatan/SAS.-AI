@@ -23,7 +23,7 @@ function OfferSection({
     const isEccomerce = storageEmpresa?.setting.type_card === "eccomerce";
     return (
         <section
-            class="max-w-6xl mx-auto px-4  flex flex-col gap-4 my-4  md:my-8 offer-section"
+            class="offer-section max-w-6xl mx-auto px-4  flex flex-col gap-4 my-4  md:my-8"
             data-aos={`${
                 storageEmpresa?.setting.isScrolling
                     ? storageEmpresa.setting.type_animation

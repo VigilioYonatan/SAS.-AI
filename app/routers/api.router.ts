@@ -50,7 +50,6 @@ import { ReactionsApiController } from "@/polymorphism/controllers/reactions.api
 import { SubcommentsApiController } from "@/polymorphism/controllers/subcomments.api.controller";
 import { FavoritesApiController } from "@/favorites/controllers/favorites.api.controller";
 import { SubcategoriesApiController } from "@/products/controllers/subcategories.api.controller";
-import { BannerApiController } from "@/empresas/controllers/banner.api.controller";
 import { GridBannerApiController } from "@/empresas/controllers/grid_banner.api.controller";
 import { FilesApiServiceApiController } from "@/empresas/controllers/files.api.controller";
 import { QuestionsApiController } from "@/empresas/controllers/questions.api.controller";
@@ -108,7 +107,6 @@ export const apiRouters: Type[] = [
     SubcommentsApiController,
     FavoritesApiController,
     SubcategoriesApiController,
-    BannerApiController,
     GridBannerApiController,
     FilesApiServiceApiController,
     QuestionsApiController,

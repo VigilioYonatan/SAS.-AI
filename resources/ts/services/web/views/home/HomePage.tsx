@@ -22,7 +22,6 @@ import { BrandsSchemaFromServer } from "@/products/schemas/brands.schema";
 import ServiciosSection from "./components/ServiciosSection";
 import ProductsUsers from "./components/ProductsUsers";
 import { GridBannerSchema } from "@/empresas/schemas/grid_banner.schema";
-import { BannerSchema } from "@/empresas/schemas/banner.schema";
 import GridBanners from "./components/GridBanners";
 
 export interface HomePageProps {
@@ -65,7 +64,7 @@ export interface HomePageProps {
         "id" | "name" | "speciality" | "photo" | "birthday"
     >[];
     brands: Pick<BrandsSchemaFromServer, "id" | "image">[];
-    gridbanners: (GridBannerSchema & { banners: BannerSchema[] })[];
+    gridbanners: GridBannerSchema[];
 }
 function HomePage({
     header,

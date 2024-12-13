@@ -35,7 +35,7 @@ function Noticia({ noticia }: NoticiaProps) {
                         return (
                             <div
                                 onClick={onClose}
-                                class="fixed inset-0 bg-black bg-opacity-80 z-[999] flex justify-center items-center  "
+                                class="noticia fixed inset-0 bg-black bg-opacity-80 z-[999] flex justify-center items-center"
                             >
                                 <div
                                     onClick={(e) => {

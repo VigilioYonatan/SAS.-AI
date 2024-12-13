@@ -28,7 +28,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
     return (
         <header
             class={
-                " w-full px-4    py-4 shadow  fixed z-[999] top-0 right-0 left-0 lg:hidden  delay-custom-1 "
+                "header-mobile w-full px-4    py-4 shadow  fixed z-[999] top-0 right-0 left-0 lg:hidden  delay-custom-1 "
             }
             style={{
                 background: empresaStore.state!.setting.bg_color_responsive,

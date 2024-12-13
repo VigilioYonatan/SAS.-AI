@@ -17,7 +17,7 @@ function CategoriesSection({ categories }: categoriesSectionProps) {
 
     return (
         <section
-            class="max-w-6xl mx-auto px-4  my-4 md:my-8 overflow-hidden flex flex-col gap-4 categories-section group"
+            class="categories-section max-w-6xl mx-auto px-4  my-4 md:my-8 overflow-hidden flex flex-col gap-4  group"
             data-aos={`${
                 storageEmpresa?.setting.isScrolling
                     ? storageEmpresa.setting.type_animation
