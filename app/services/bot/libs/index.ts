@@ -109,7 +109,6 @@ export async function onDb(empresa: Empresas) {
                         }
                     )
                 );
-                console.log({ variantes });
 
                 return {
                     id: product.id,

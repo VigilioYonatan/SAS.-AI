@@ -26,8 +26,8 @@ import {
 import cron from "node-cron";
 import { promptReplace } from "@/bot/libs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
-export function HTMLPROMPT(empresa: Empresas) {
-    return `- IMPORTANTE: Por ultimo siempre responde con etiquetas html y clases de tailwind, recuerda que el color primary es ${empresa.setting.bg_color}, y recuerda enviar links con estilos de tailwind underline, (tablas solo carrito de compra ) , etc y usa <b class="font-bold"></b> en vez de **   en palabras importantes. Por ultimo usa solo un <br></br> para separar parrafos, usa etiqueta a <a href="url" class='text-primary underline'>text</a> para links o enlaces, etc. usa <ul class="list-disc list-inside"><li></li></ul>  para listas, pedidos, información, etc. html limpio no markdown`;
+export function HTMLPROMPT(_empresa: Empresas) {
+    return `- IMPORTANTE: Por ultimo siempre responde con etiquetas html y clases de tailwind,  y recuerda enviar links con estilos de tailwind underline, (tablas solo carrito de compra ) , etc y usa <b class="font-bold"></b> en vez de **   en palabras importantes. Por ultimo usa solo un <br></br> para separar parrafos, usa etiqueta a <a href="url" class='text-primary underline'>text</a> para links o enlaces, etc. usa <ul class="list-disc list-inside"><li></li></ul>  para listas, pedidos, información, etc. html limpio no markdown`;
 }
 export let chatAssistantWeb: Record<string, ["user" | "assistant", string][]> =
     {};
@@ -44,7 +44,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
             ...(chatAssistantWeb ?? {}),
             [`${emp}:${token}`]: [
                 ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
-                ["user", `${message}.'en html'`],
+                ["user", `${message}.'en html no mkdown'`],
             ],
         };
         if (
