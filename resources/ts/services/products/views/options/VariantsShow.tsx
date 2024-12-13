@@ -74,7 +74,7 @@ function VariantsShow({
 				<Form {...variantUpdateForm} onSubmit={onUpdateVariant}>
 					<Form.control
 						title="SKU"
-						placeholder="SKU-00223"
+						placeholder="0000001"
 						name={"sku" as keyof VariantsUpdateDto}
 					/>
 					<div class="w-full flex flex-row gap-2">
