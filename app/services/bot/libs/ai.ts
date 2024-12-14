@@ -365,7 +365,7 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
                     role: "user",
                     content: `${promptAssitant(
                         empresa!
-                    )}. - respondeme en formato html, usa table, links y usa clases de tailwind, font-size 13px porfa y usa br para separar parrafos,etc.`,
+                    )}. - respondeme en formato html no MKDOWN, usa table, links y usa clases de tailwind, font-size 13px porfa y usa br para separar parrafos,etc.`,
                 },
                 ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
             ],

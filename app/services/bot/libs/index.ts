@@ -593,15 +593,12 @@ export async function promptReplace(
 }
 export async function chatgpt(
     whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>,
-    content: string,
-    isEmbedding = false
+    content: string
 ) {
     const completion = await openAis[
         whatsapp!.empresa.slug
     ].chat.completions.create({
-        model: isEmbedding
-            ? "text-embedding-3-small"
-            : whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
+        model: whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
         max_tokens: 5000,
         messages: [
             {

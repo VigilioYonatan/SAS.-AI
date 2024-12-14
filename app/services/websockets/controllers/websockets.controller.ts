@@ -96,7 +96,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         await updateTokensEmpresa(empresa, latestEmpresaUsage, completion);
         chatAssistantWeb[`${emp}:${token}`] = [
             ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
-            ["assistant", removeNote],
+            ["assistant", removeNote.replace(/\[\[([^\]]+)\]\]/g, "")],
         ];
         return removeNote.replace(/\[\[([^\]]+)\]\]/g, "");
     } catch (error) {
