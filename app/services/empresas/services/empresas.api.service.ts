@@ -217,7 +217,7 @@ export class EmpresasApiService {
         categories = await Promise.all(
             categories.map(async (category) => {
                 const image = category.image
-                    ? category.image?.map((file) => {
+                    ? category.image.map((file) => {
                           return {
                               ...file,
                               file: `${BASE_URL(empresa)}/empresas/${
@@ -239,7 +239,7 @@ export class EmpresasApiService {
                 )) as Subcategories[];
                 subcategories = subcategories.map((sub) => {
                     const image = sub.image
-                        ? sub.image?.map((file) => {
+                        ? sub.image.map((file) => {
                               return {
                                   ...file,
                                   file: `${BASE_URL(empresa)}/empresas/${
