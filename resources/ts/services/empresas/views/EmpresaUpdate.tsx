@@ -390,6 +390,19 @@ function empresaUpdate() {
                                     value={empresa.tipo_empresa.value}
                                     disabled
                                 />
+                                {storageEmpresa?.type_empresa_other ? (
+                                    <Form.control
+                                        name={
+                                            "other" as keyof EmpresasUpdateDto
+                                        }
+                                        placeholder="empresa"
+                                        title="Empresa"
+                                        value={
+                                            storageEmpresa?.type_empresa_other
+                                        }
+                                        disabled
+                                    />
+                                ) : null}
 
                                 {empresa.web ? (
                                     <Form.control

@@ -8,7 +8,7 @@ export interface HomePageProps {
     header: HeaderType;
     gridbannersservicios: GridBannerServicechemaFromServer[];
 }
-function HomePage({ header, gridbannersservicios }: HomePageProps) {
+function ServiciosPage({ header, gridbannersservicios }: HomePageProps) {
     return (
         <>
             <WebLayout header={header}>
@@ -25,4 +25,4 @@ function HomePage({ header, gridbannersservicios }: HomePageProps) {
     );
 }
 
-export default HomePage;
+export default ServiciosPage;
