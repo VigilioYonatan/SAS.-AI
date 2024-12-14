@@ -152,7 +152,11 @@ export class whatsappApiController {
                         ia: true,
                     },
                 ];
-                await empresa.update({ contacts: mappedcontacts });
+                await Empresas.update(
+                    { contacts: mappedcontacts },
+                    { where: { slug: empresa.slug } }
+                );
+            
                 cache.delete(`EMPRESA:${empresa.id}`);
                 cache.delete(`EMPRESA:${empresa.slug}`);
             }
