@@ -129,7 +129,7 @@ export class whatsappApiController {
                             "No se pudo analizar esta imagen o no se encontró 😢.",
                         telephone: userId,
                         options: opt,
-                        delay: 3,
+                        delay: 1,
                     });
                     return {
                         success: true,
@@ -325,7 +325,7 @@ export class whatsappApiController {
                             message: chunk,
                             telephone: userId,
                             options: opt,
-                            delay: 3,
+                            delay: 2,
                         });
                     }
                 } else {
@@ -333,7 +333,7 @@ export class whatsappApiController {
                         message: removeNote,
                         telephone: userId,
                         options: opt,
-                        delay: 3,
+                        delay: 2,
                     });
                 }
 
@@ -347,7 +347,7 @@ export class whatsappApiController {
                             telephone: userId,
                             url,
                             options,
-                            delay: 3,
+                            delay: 1,
                         });
                     }
                 }
