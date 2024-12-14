@@ -65,6 +65,8 @@ export class whatsappApiController {
             await empresa.update({ contacts: mappedcontacts });
         }
         await empresa?.update({ enabledBot: true });
+        cache.delete(`EMPRESA:${empresa!.id}`);
+        cache.delete(`EMPRESA:${empresa.slug}`);
 
         return {
             success: true,
@@ -438,6 +440,8 @@ export class whatsappApiController {
             { enabledBot: false },
             { where: { slug: emp.slug } }
         );
+        cache.delete(`EMPRESA:${emp!.id}`);
+        cache.delete(`EMPRESA:${emp.slug}`);
         return {
             success: true,
             message: "OK",
@@ -488,7 +492,8 @@ export class whatsappApiController {
             // biome-ignore lint/suspicious/noConsoleLog: <explanation>
             console.log("Ejecutó correctamente");
         }
-
+        cache.delete(`EMPRESA:${empresa!.id}`);
+        cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
             message: "Se reinició correctamente.",
@@ -609,6 +614,8 @@ export class whatsappApiController {
                 },
             }
         );
+        cache.delete(`EMPRESA:${empresa!.id}`);
+        cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
             message: "Se reinició correctamente.",
@@ -702,7 +709,8 @@ export class whatsappApiController {
                 );
             }
         }
-
+        cache.delete(`EMPRESA:${empresa!.id}`);
+        cache.delete(`EMPRESA:${empresa.slug}`);
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`Ejecutando comando: ${comando}`);
         return {

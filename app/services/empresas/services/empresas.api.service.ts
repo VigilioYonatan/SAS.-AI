@@ -1232,92 +1232,100 @@ export class EmpresasApiService {
         }
         if (body.whatsapp_mode.type === "VPS") {
             // instalar whatsapp en nginx
-            function onSSH() {
-                return new Promise((res, _) => {
-                    const ssh = new NodeSSH();
-                    // Función para conectar por SSH
-                    ssh.connect({
-                        host: body.whatsapp_mode.ip!,
-                        username: "root",
-                        password: body.whatsapp_mode.password!,
-                    })
-                        .then(() => {
-                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-                            console.log("Conectado correctamente a vps");
-                            const commands = `
-                # Asegúrate de que dpkg no esté interrumpido
-                dpkg --configure -a || true;
-
-                # Configurar debconf para la instalación de GRUB
-                echo 'grub-pc grub-pc/bootdev select /dev/sda' | debconf-set-selections;
-                echo 'grub-pc grub-pc/install_devices multiselect /dev/sda' | debconf-set-selections;
-
-                # Actualizar el sistema
-                apt update -y;
-                apt upgrade -y;
-
-                # Instalar dependencias necesarias
-                apt-get install -y git nginx sudo nano curl;
-                apt install -y apt-transport-https ca-certificates software-properties-common;
-
-                # Agregar la clave GPG de Docker
-                curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -;
-
-                # Agregar el repositorio de Docker
-                echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list;
-
-                # Instalar Docker
-                apt update -y;
-                apt install -y docker-ce;\
-                # Verificar si existe un contenedor y eliminarlo
-                if sudo docker ps -a -q --filter "name=${empresa.slug}"; then \
-                    sudo docker stop ${empresa.slug} || true; \
-                    sudo docker rm ${empresa.slug} || true; \
-                    sudo docker volume rm ${empresa.slug} || true; \
-                fi; \
-                # Borrar imagen si existe
-                if sudo docker images -q "${
-                    enviroments.DOCKER_IMAGE_WHATSAPP
-                }"; then \
-                    sudo docker rmi "${
-                        enviroments.DOCKER_IMAGE_WHATSAPP
-                    }" || true; \
-                fi; \
-                # Crear un volumen para el contenedor
-                sudo docker volume create ${empresa.slug}; \
-                # Ejecutar el contenedor
-                sudo docker run -d --name ${empresa.slug} \
-                    -e PORT=5000 \
-                    -e NODE_ENV=production \
-                    -e SESSION_NAME=${empresa.slug} \
-                    -e VITE_TOKEN_VIGILIO_SERVICES=${
-                        enviroments.VITE_TOKEN_VIGILIO_SERVICES
-                    } \
-                    --restart always \
-                    --memory="${Number(body.whatsapp_mode.memory!)}g" \
-                    --memory-swap="${Number(body.whatsapp_mode.memory!)}g" \
-                    --cpus="${Number(body.whatsapp_mode.cpu!)}" \
-                    -p ${empresa.port}:5000 \
-                    -v ${empresa.slug}:/app/data \
-                    ${enviroments.DOCKER_IMAGE_WHATSAPP}
-            `;
-                            return ssh.execCommand(commands);
-                        })
-                        .then((result) => {
-                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-                            console.log(`STDOUT: ${result.stdout}`);
-                            console.error(`STDERR: ${result.stderr}`);
-                            res(true);
-                        })
-                        .catch(() => {
-                            res(true);
-                        })
-                        .finally(() => {
-                            ssh.dispose();
-                        });
+            const ssh = new NodeSSH();
+            try {
+                // Intentar conectar por SSH
+                await ssh.connect({
+                    host: body.whatsapp_mode.ip!,
+                    username: "root",
+                    password: body.whatsapp_mode.password!,
                 });
+                // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                console.log("Conectado correctamente a vps");
+                const commands = `
+                    # Asegúrate de que dpkg no esté interrumpido
+                    dpkg --configure -a || true;
+        
+                    # Configurar debconf para la instalación de GRUB
+                    echo 'grub-pc grub-pc/bootdev select /dev/sda' | debconf-set-selections;
+                    echo 'grub-pc grub-pc/install_devices multiselect /dev/sda' | debconf-set-selections;
+        
+                    # Actualizar el sistema
+                    apt update -y;
+                    apt upgrade -y;
+        
+                    # Instalar dependencias necesarias
+                    apt-get install -y git nginx sudo nano curl;
+                    apt install -y apt-transport-https ca-certificates software-properties-common;
+        
+                    # Agregar la clave GPG de Docker
+                    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -;
+        
+                    # Agregar el repositorio de Docker
+                    echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list;
+        
+                    # Instalar Docker
+                    apt update -y;
+                    apt install -y docker-ce;
+        
+                    # Verificar si existe un contenedor y eliminarlo
+                    if sudo docker ps -a -q --filter "name=${
+                        empresa.slug
+                    }"; then \
+                        sudo docker stop ${empresa.slug} || true; \
+                        sudo docker rm ${empresa.slug} || true; \
+                        sudo docker volume rm ${empresa.slug} || true; \
+                    fi; 
+        
+                    # Borrar imagen si existe
+                    if sudo docker images -q "${
+                        enviroments.DOCKER_IMAGE_WHATSAPP
+                    }"; then \
+                        sudo docker rmi "${
+                            enviroments.DOCKER_IMAGE_WHATSAPP
+                        }" || true; \
+                    fi; 
+        
+                    # Crear un volumen para el contenedor
+                    sudo docker volume create ${empresa.slug}; 
+        
+                    # Ejecutar el contenedor
+                    sudo docker run -d --name ${empresa.slug} \
+                        -e PORT=5000 \
+                        -e NODE_ENV=production \
+                        -e SESSION_NAME=${empresa.slug} \
+                        -e VITE_TOKEN_VIGILIO_SERVICES=${
+                            enviroments.VITE_TOKEN_VIGILIO_SERVICES
+                        } \
+                        --restart always \
+                        --memory="${
+                            Number(body.whatsapp_mode.memory!) - 0.2
+                        }g" \
+                        --memory-swap="${
+                            Number(body.whatsapp_mode.memory!) - 0.2
+                        }g" \
+                        --cpus="${Number(body.whatsapp_mode.cpu!) - 0.2}" \
+                        -p ${empresa.port}:5000 \
+                        -v ${empresa.slug}:/app/data \
+                        ${enviroments.DOCKER_IMAGE_WHATSAPP}
+                `;
+
+                // Ejecutar los comandos en el servidor remoto
+                const result = await ssh.execCommand(commands);
+                // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                console.log(`STDOUT: ${result.stdout}`);
+                console.error(`STDERR: ${result.stderr}`);
+            } catch (error) {
+                console.error(
+                    "Error al conectar o ejecutar los comandos:",
+                    error
+                );
+                throw new BadRequestException(
+                    `error ${(error as Error).message}`
+                );
+            } finally {
+                ssh.dispose();
             }
-            await onSSH();
         }
 
         await Empresas.update(body, {
@@ -1335,6 +1343,8 @@ export class EmpresasApiService {
                 },
             }
         );
+        cache.delete(`EMPRESA:${empresa!.id}`);
+        cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
             message: "whatsapp mode cambiado correctamente",
