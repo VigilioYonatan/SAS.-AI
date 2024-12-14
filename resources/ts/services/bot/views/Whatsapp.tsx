@@ -950,6 +950,11 @@ export function QrWhatsapp() {
                                         </div>
                                     </div>
                                 )}
+                                {qrCodeQuery.isError ? (
+                                    <span class="dark:text-white font-bold">
+                                        No tiene WhatsApp instalado
+                                    </span>
+                                ) : null}
                                 <ul class="list-image-none flex flex-col gap-2">
                                     {/* <a
                                         target="_blank"
@@ -1488,6 +1493,7 @@ function MessagesWhatsappSettings() {
                             icon: "success",
                             title: data.message,
                         });
+                        window.location.reload();
                     },
                     onError(error) {
                         handlerError(whatsappConfigForm, error);

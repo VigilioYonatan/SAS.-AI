@@ -231,7 +231,7 @@ export class whatsappApiController {
                     message: buenas,
                     telephone: userId,
                     options: opt,
-                    delay: 3,
+                    delay: 1,
                 });
                 return {
                     success: true,
@@ -243,7 +243,7 @@ export class whatsappApiController {
                     message: thanks,
                     telephone: userId,
                     options: opt,
-                    delay: 3,
+                    delay: 1,
                 });
 
                 return {
