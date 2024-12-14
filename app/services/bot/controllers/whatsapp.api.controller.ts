@@ -161,7 +161,10 @@ export class whatsappApiController {
             // imporante que esto este acá
             chats[`${info.slug}:${userId}`] = [
                 ...(chats[`${info.slug}:${userId}`] ?? []),
-                ["user", `${content}. escribe formato whatsapp` as string],
+                [
+                    "user",
+                    `${content}.'[[en formato whatsapp y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA.]]` as string,
+                ],
             ];
             chatsWait[`${info.slug}:${userId}`] = [
                 ...(chatsWait[`${info.slug}:${userId}`] ?? []),

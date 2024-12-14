@@ -146,8 +146,6 @@ export async function prompt(
             ? "trata de cerrar ventas nivel profesional"
             : "No trates de cerrar ventas, no forzar a que el cliente compre nuestros productos o servicios, solo responde a las preguntas."
     }.
-
-	OBLIGATORIO: SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA, si te hablo ingles, respondeme en ingles, etc.
     HORARIO_ATENCION: // si está enabled false quiere decir que no está disponible ese dia y la hora es de 00:00am a 23:59PM ${JSON.stringify(
         empresa.schedule
     )} . cuando te escriba en horario de atencion que no esté. decime no estamos disponible en este momento pero te puedo ayudar.

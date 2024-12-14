@@ -44,7 +44,10 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
             ...(chatAssistantWeb ?? {}),
             [`${emp}:${token}`]: [
                 ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
-                ["user", `${message}.'en html no mkdown'`],
+                [
+                    "user",
+                    `${message}.'[[en html no mkdown y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA.]]'`,
+                ],
             ],
         };
         if (
@@ -95,7 +98,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
             ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
             ["assistant", removeNote],
         ];
-        return removeNote;
+        return removeNote.replace(/\[\[([^\]]+)\]\]/g, "");
     } catch (error) {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log((error as Error).message);
