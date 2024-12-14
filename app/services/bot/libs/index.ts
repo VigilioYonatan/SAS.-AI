@@ -310,7 +310,8 @@ export async function promptReplace(
                 whatsapp,
                 `Estos son mis productos db: ${JSON.stringify(
                     productsData.products
-                )}. En este mensaje '${message}' si ves el nombre de algun producto de mi productos db trae un array con los ids encontrado . ejemplo  [2,4] . Trame solo el array y no digas nada más. solo di [], recuerda que puedo escribir mal algun nombre asi que igual trae si e escrito algun parecido.`
+                )}. En este mensaje '${message}' si ves el nombre de algun producto de mi productos db trae un array con los ids encontrado . ejemplo  [2,4] . Trame solo el array y no digas nada más. solo di [], recuerda que puedo escribir mal algun nombre asi que igual trae si e escrito algun parecido.`,
+                true
             );
             console.log({ searchProduct });
 
