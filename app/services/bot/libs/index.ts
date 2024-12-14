@@ -337,12 +337,13 @@ export async function promptReplace(
                     ),
                 };
             } else {
-                productsData = empresa.isTemplate
-                    ? {
-                          ...data,
-                          products: data.products,
-                      }
-                    : ({} as DataPrompt);
+                productsData =
+                    empresa.isTemplate || data.products.length < 30
+                        ? {
+                              ...data,
+                              products: data.products,
+                          }
+                        : ({} as DataPrompt);
             }
         }
     }
@@ -579,6 +580,7 @@ export async function promptReplace(
         isDespedida,
         isQuestion,
     };
+    console.log({ products: productsData?.products });
 
     const promt = await prompt(properties, empresa, productsData);
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
