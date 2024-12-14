@@ -425,7 +425,7 @@ export async function featuresIA(
     const baseURL = `${BASE_URL(empresa)}/empresas/${
         empresa.slug
     }/images/products`;
-    const urlPattern = new RegExp(`${baseURL}[^\\s]*`, "g");
+    const urlPattern = new RegExp(`${baseURL}[^\\s"<>]*`, "g");
     const match = completionText.match(urlPattern);
 
     const urlExtraidas = [];
