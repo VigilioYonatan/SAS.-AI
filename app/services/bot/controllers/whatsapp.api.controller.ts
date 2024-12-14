@@ -358,9 +358,8 @@ export class whatsappApiController {
                 message: "OK",
             };
         } catch (error) {
-            console.log((error as Error).message);
-
             chats[`${info.slug}:${userId}`] = [];
+            throw new BadRequestException((error as Error).message);
         }
     }
     @Post("/send-message")

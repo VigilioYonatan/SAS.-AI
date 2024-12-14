@@ -308,12 +308,10 @@ export async function promptReplace(
         } else {
             const searchProduct = await chatgpt(
                 whatsapp,
-                `Estos son mis productos db: ${JSON.stringify(
-                    productsData.products
-                )}. En este mensaje '${message}' si ves el nombre de algun producto de mi productos db trae un array con los ids encontrado . ejemplo  [2,4] . Trame solo el array y no digas nada más. solo di [], recuerda que puedo escribir mal algun nombre asi que igual trae si e escrito algun parecido.`,
-                true
+                `Esto son mis categorias ${JSON.stringify(
+                    data.categorias
+                )}.\n Si en el texto '${message}', ves algun producto o servicio que puede estar en mis categorías que te mandé (ejemplo en el mensaje samsung galaxy s7 y tengo en mi categorias celulares, me traes [id_category_celulares], etc), respondeme json [id_de_categorias_de_productosservicios_encontrados] . solo traeme el json, no digas nada mas`
             );
-            console.log({ searchProduct });
 
             const cleanProducts =
                 searchProduct && searchProduct !== "[]"
@@ -582,8 +580,6 @@ export async function promptReplace(
         isDespedida,
         isQuestion,
     };
-    console.log({ products: productsData?.products });
-
     const promt = await prompt(properties, empresa, productsData);
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
         productsData?.products?.length ||
