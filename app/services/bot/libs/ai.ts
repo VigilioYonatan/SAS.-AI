@@ -316,8 +316,8 @@ export async function updateTokensEmpresa(
         },
     };
     cache.set(
-        "IA_TOKENS",
-        JSON.stringify({ ...empresaUpdate, slug: empresa.slug })
+        `IA_TOKENS:${empresa.slug}`,
+        JSON.stringify({ ...empresaUpdate })
     );
     // await Empresas.update(empresaUpdate, { where: { slug: empresa.slug } });
     cache.set(
@@ -640,16 +640,19 @@ export async function executeCronDate(date: Date, cb: () => void) {
 cron.schedule("0 0 * * *", () => {
     chatsTelegram = {};
 });
-cron.schedule("0 * * * *", async () => {
-    const iaTokens: {
-        input_tokens: number;
-        output_tokens: number;
-        tokens: number;
-        slug: string;
-    } = JSON.parse(cache.get("IA_TOKENS") ?? "null");
-    if (iaTokens) {
-        const { slug, ...rest } = iaTokens;
-        await Empresas.update(rest, { where: { slug } });
-        cache.delete("IA_TOKENS");
+cron.schedule("*/4 * * * *", async () => {
+    console.log({ hola: "executed" });
+
+    const empresas = await Empresas.unscoped().findAll({
+        attributes: ["id", "slug"],
+    });
+    for (const empresa of empresas) {
+        const iaTokens = JSON.parse(
+            cache.get(`IA_TOKENS:${empresa.slug}`) ?? "null"
+        );
+        if (iaTokens) {
+            await empresa.update(iaTokens);
+            cache.delete(`IA_TOKENS:${empresa.slug}`);
+        }
     }
 });

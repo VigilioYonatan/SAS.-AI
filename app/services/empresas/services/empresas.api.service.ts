@@ -105,6 +105,11 @@ export class EmpresasApiService {
         private readonly productsApiService: ProductsApiService
     ) {}
     async payment(slug: string) {
+        const iaTokens = JSON.parse(cache.get(`IA_TOKENS:${slug}`) ?? "null");
+        if (iaTokens) {
+            await Empresas.update(iaTokens, { where: { slug } });
+            cache.delete(`IA_TOKENS:${slug}`);
+        }
         const data = await Empresas.findOne({
             where: { slug },
             attributes: ["payments", "slug", "id", "credentials"],
@@ -378,6 +383,7 @@ export class EmpresasApiService {
     ) {
         if (paymentDto.secure !== "dokixd123")
             throw new BadRequestException("Error");
+
         const { data } = await this.payment(slug);
         const { token, secure, ...rest } = paymentDto;
         await data.update({
