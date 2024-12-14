@@ -102,7 +102,8 @@ export async function newVersionVPS({
     ip,
     password,
     commando,
-    GIT_TOKEN,version
+    GIT_TOKEN,
+    version,
 }: {
     commando: string | null;
     password: string;
@@ -131,13 +132,13 @@ export async function newVersionVPS({
             cp ./saas/.env ./temp/.env && \
             rm -rf saas && \
             git clone https://${GIT_TOKEN}@github.com/VigilioYonatan/SAS.-AI saas && \
-            cd saas &&  \ git checkout tags/${version} && \
+            cd saas &&   git checkout tags/${version} && \
             cp -r ../temp/empresas ./public && \
             cp ../temp/.env . && \
             docker rm -f saas-db-1 && docker volume rm saas_postgres-data-saas && \
             docker rm -f && docker compose up -d --build && \
             docker cp ../temp/backup.sql saas-db-1:/tmp/backup.sql && \
-            sleet 15 && \
+            sleep 15 && \
             docker exec saas-db-1 pg_restore -U postgres -d saas /tmp/backup.sql && \
             ${commando ? `${commando} && \ ` : ""} \
             pm2 delete all || true && bun i && bun build:serve && bun build:client && \

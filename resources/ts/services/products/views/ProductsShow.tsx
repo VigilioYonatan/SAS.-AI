@@ -330,7 +330,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                                         (characterisitc) => {
                                                             return (
                                                                 <tr
-                                                                    class={`border-b bg-white dark:bg-transparent dark:border-admin-terciary border-paper-light  text-black hover:bg-primary ${bgPrimaryHover()}`}
+                                                                    class={`border-b bg-white dark:bg-transparent dark:border-admin-terciary border-paper-light  text-black dark:text-white hover:bg-primary ${bgPrimaryHover()}`}
                                                                     key={
                                                                         characterisitc.name
                                                                     }
