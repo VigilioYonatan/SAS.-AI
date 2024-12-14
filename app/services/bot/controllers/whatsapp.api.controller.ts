@@ -102,7 +102,8 @@ export class whatsappApiController {
             if (body.isGroup)
                 throw new BadRequestException("whatsapp no permited"); //no se admite grupos
             // message.type: chat,sticker,ptt,image,document
-            if (!["ptt", "chat", "image"].includes(body.type)) return;
+            if (!["ptt", "chat", "image"].includes(body.type))
+                throw new BadRequestException("no audio o other");
             const opt: WAWebJS.MessageSendOptions =
                 Math.random() < 0.5
                     ? {
@@ -156,7 +157,7 @@ export class whatsappApiController {
                     { contacts: mappedcontacts },
                     { where: { slug: empresa.slug } }
                 );
-            
+
                 cache.delete(`EMPRESA:${empresa.id}`);
                 cache.delete(`EMPRESA:${empresa.slug}`);
             }

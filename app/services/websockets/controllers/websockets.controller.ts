@@ -96,8 +96,15 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         await updateTokensEmpresa(empresa, latestEmpresaUsage, completion);
         chatAssistantWeb[`${emp}:${token}`] = [
             ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
-            ["assistant", removeNote.replace(/\[\[([^\]]+)\]\]/g, "")],
+            ["assistant", removeNote],
         ];
+        chatAssistantWeb[`${emp}:${token}`] = chatAssistantWeb[
+            `${emp}:${token}`
+        ].map((val) =>
+            val[0] === "user"
+                ? [val[0], val[1].replace(/\[\[([^\]]+)\]\]/g, "")]
+                : val
+        );
         return removeNote.replace(/\[\[([^\]]+)\]\]/g, "");
     } catch (error) {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
