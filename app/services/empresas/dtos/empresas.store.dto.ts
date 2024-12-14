@@ -23,6 +23,7 @@ import { productsRestaurantSchema } from "../../products/schemas/products_restau
 import { productsServicioSchema } from "@/products/schemas/products_servicio.schema";
 import { brandsSchema } from "@/products/schemas/brands.schema";
 import { productsNormalStoreDto } from "@/products/dtos/products_normal.dto";
+import { subcategoriesSchema } from "@/products/schemas/subcategories.schema";
 
 export const empresasStoreDto = mergeAsync([
     omitAsync(
@@ -80,7 +81,7 @@ export const empresasStoreDto = mergeAsync([
         categories: arrayAsync(
             mergeAsync([
                 objectAsync({
-                    subcategories: arrayAsync(categoriesSchema),
+                    subcategories: arrayAsync(subcategoriesSchema),
                     productsNormals: arrayAsync(productsNormalStoreDto),
                     productsRestaurants: arrayAsync(productsRestaurantSchema),
                     productsServicios: arrayAsync(productsServicioSchema),
