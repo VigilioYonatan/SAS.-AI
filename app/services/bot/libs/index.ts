@@ -109,6 +109,10 @@ export async function onDb(empresa: Empresas) {
                         }
                     )
                 );
+                console.log({
+                    name: product.name,
+                    variantes: JSON.stringify(variantes),
+                });
 
                 return {
                     id: product.id,
