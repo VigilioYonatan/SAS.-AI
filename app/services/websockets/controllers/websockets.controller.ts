@@ -46,7 +46,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
                 ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
                 [
                     "user",
-                    `${message}.'[[en html no mkdown y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA.]]'`,
+                    `${message}.'[[en html no mkdown y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA!!!.]]'`,
                 ],
             ],
         };
