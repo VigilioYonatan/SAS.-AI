@@ -24,17 +24,6 @@ function ProductsIndex() {
     });
 
     const categoriesIndexQuery = categoriesIndexApi(false);
-
-    const table = useTable({
-        columns: productsRestaurantColumns,
-    });
-    const query = productsPaginatorApi(
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        table as any,
-        filters,
-        false
-    );
-
     function handleOpenProduct(product: ProductsNormalSchemaFromServer) {
         return sweetModal((onClose) => ({
             html: reactComponent(
@@ -51,6 +40,17 @@ function ProductsIndex() {
             isCloseInBackground: false,
         }));
     }
+
+    const table = useTable({
+        columns: productsRestaurantColumns,
+        methods: { onOpenProduct: handleOpenProduct },
+    });
+    const query = productsPaginatorApi(
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        table as any,
+        filters,
+        false
+    );
 
     function onProductsStore() {
         sweetModal((onClose) => ({
