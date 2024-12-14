@@ -641,7 +641,6 @@ cron.schedule("0 0 * * *", () => {
     chatsTelegram = {};
 });
 cron.schedule("*/4 * * * *", async () => {
-    console.log({ hola: "executed" });
 
     const empresas = await Empresas.unscoped().findAll({
         attributes: ["id", "slug"],
@@ -650,6 +649,7 @@ cron.schedule("*/4 * * * *", async () => {
         const iaTokens = JSON.parse(
             cache.get(`IA_TOKENS:${empresa.slug}`) ?? "null"
         );
+
         if (iaTokens) {
             await empresa.update(iaTokens);
             cache.delete(`IA_TOKENS:${empresa.slug}`);
