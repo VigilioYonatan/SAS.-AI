@@ -86,7 +86,7 @@ export async function initial() {
         // tipos finanzas
         // const finanzas = await TipoFinanza.findAll();
         const [setting, created] = await Settings.findOrCreate({
-            where: { empresa_id: empresa.id },
+            where: { empresa_id: empresa!.id },
             defaults: { bg_color_header: "transparent" }, // Valores predeterminados si se crea
         });
         if (!created && !setting.bg_color_header) {
@@ -119,7 +119,7 @@ export class EmpresasApiService {
         const { empresa } = await this.show(slug);
         const data = await Settings.findOne({
             where: {
-                empresa_id: empresa.id,
+                empresa_id: empresa!.id,
             },
         });
         if (!data) throw new NotFoundException("no se encontró settings");
@@ -133,13 +133,13 @@ export class EmpresasApiService {
         const { empresa } = await this.show(slug);
         const gridBanners = await GridBanner.findAll({
             where: {
-                empresa_id: empresa.id,
+                empresa_id: empresa!.id,
             },
             order: [["id", "ASC"]],
         });
         const gridBannersServices = await GridBannerService.findAll({
             where: {
-                empresa_id: empresa.id,
+                empresa_id: empresa!.id,
             },
             include: [
                 {
@@ -150,7 +150,7 @@ export class EmpresasApiService {
         });
 
         let files = await FileSchema.findAll({
-            where: { empresa_id: empresa.id },
+            where: { empresa_id: empresa!.id },
         });
         files = files.map((f) => {
             const file = f.file
@@ -169,7 +169,7 @@ export class EmpresasApiService {
             };
         }) as FileSchema[];
         let backgrounds = await Background.findAll({
-            where: { empresa_id: empresa.id },
+            where: { empresa_id: empresa!.id },
         });
         backgrounds = backgrounds.map((f) => {
             const image = f.image
@@ -190,11 +190,11 @@ export class EmpresasApiService {
         }) as any;
 
         let categories = await Categories.findAll({
-            where: { empresa_id: empresa.id },
+            where: { empresa_id: empresa!.id },
             limit: 2,
         });
         let brands = await Brands.findAll({
-            where: { empresa_id: empresa.id },
+            where: { empresa_id: empresa!.id },
         });
         brands = (await Promise.all(
             brands.map(async (brand) => {
@@ -327,8 +327,6 @@ export class EmpresasApiService {
                               };
                           })
                         : null;
-                    console.log({ images });
-
                     return {
                         ...prod.toJSON(),
                         images,
@@ -364,7 +362,7 @@ export class EmpresasApiService {
         const { empresa } = await this.show(slug);
         const data = await Settings.findOne({
             where: {
-                empresa_id: empresa.id,
+                empresa_id: empresa!.id,
             },
         });
         await data!.update(body);
@@ -427,6 +425,7 @@ export class EmpresasApiService {
     }
 
     async store(body: EmpresasStoreDto) {
+        let empresa: Empresas | null = null;
         try {
             const { password, fullname, ...rest } = body;
             const existingEmpresa = await Empresas.findOne({
@@ -437,7 +436,7 @@ export class EmpresasApiService {
                 throw new Error("El slug ya está en uso");
             }
 
-            const empresa = new Empresas({
+            empresa = new Empresas({
                 ...rest,
                 enabled_booster: false,
                 enabledBot: true,
@@ -467,18 +466,25 @@ export class EmpresasApiService {
                 ],
                 icon: null,
                 logo_pwa: null,
-            });
+            }) as Empresas;
             await empresa.save();
+
+            const dirEmpresa = `${pathUploads()}/${empresa.slug}`;
+            if (!fs.existsSync(pathUploads())) {
+                fs.mkdirSync(pathUploads());
+                // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                console.log("Creado directorio correctamente");
+            }
+            if (!fs.existsSync(dirEmpresa)) {
+                fs.mkdirSync(dirEmpresa);
+                // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                console.log("Creado directorio correctamente");
+            }
             //    crear carpetas si no existe
             for (const entity of uploadsEntities) {
-                const dirEmpresa = `${pathUploads()}/${empresa.slug}`;
                 const dir = `${dirEmpresa}/images`;
                 const dirEntity = `${dir}/${entity}`;
-                if (!fs.existsSync(dirEmpresa)) {
-                    fs.mkdirSync(dirEmpresa);
-                    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-                    console.log("Creado directorio correctamente");
-                }
+
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir);
                     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
@@ -496,13 +502,13 @@ export class EmpresasApiService {
                     mesasSeeder.map(async (floor) => {
                         const newFloor = await Floors.create({
                             name: floor.name,
-                            empresa_id: empresa.id,
+                            empresa_id: empresa!.id,
                         });
                         await Promise.all(
                             floor.mesas.map(async (mesa) => {
                                 await newFloor.$create("mesa", {
                                     mesa_code: mesa.mesa_code,
-                                    empresa_id: empresa.id,
+                                    empresa_id: empresa!.id,
                                 });
                             })
                         );
@@ -520,7 +526,7 @@ export class EmpresasApiService {
                                     f.file.indexOf("/images")
                                 );
                                 const dirEmpresa = `${pathUploads()}/${
-                                    empresa.slug
+                                    empresa!.slug
                                 }`;
                                 const dirEntity = `${dirEmpresa}${file}`;
                                 await downloadAndSaveFile(f.file, dirEntity);
@@ -531,7 +537,7 @@ export class EmpresasApiService {
                                 };
                             })
                         );
-                        await this.backgroundApiService.store(empresa, {
+                        await this.backgroundApiService.store(empresa!, {
                             ...rest,
                             image,
                         });
@@ -701,7 +707,7 @@ export class EmpresasApiService {
                         const { id, ...rest } = grid;
                         const g = await GridBanner.create({
                             ...rest,
-                            empresa_id: empresa.id,
+                            empresa_id: empresa!.id,
                         });
 
                         return {
@@ -715,27 +721,27 @@ export class EmpresasApiService {
                     {
                         html: "",
                         enabled: false,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                     },
                     {
                         html: "",
                         enabled: false,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                     },
                     {
                         html: "",
                         enabled: false,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                     },
                     {
                         html: "",
                         enabled: false,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                     },
                     {
                         html: "",
                         enabled: false,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                     },
                 ]);
             }
@@ -755,7 +761,7 @@ export class EmpresasApiService {
 
                         await GridBannerService.create({
                             ...rest,
-                            empresa_id: empresa.id,
+                            empresa_id: empresa!.id,
                             grid_banner_id: gridBanner
                                 ? findBannerTest.id
                                 : null,
@@ -767,32 +773,32 @@ export class EmpresasApiService {
                     {
                         html: "",
                         enabled: false,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                         grid_banner_id: null,
                     },
                     {
                         html: "",
                         enabled: false,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                         grid_banner_id: null,
                     },
                     {
                         html: "",
                         enabled: false,
                         grid_banner_id: null,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                     },
                     {
                         html: "",
                         grid_banner_id: null,
                         enabled: true,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                     },
                     {
                         html: "",
                         grid_banner_id: null,
                         enabled: true,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                     },
                 ]);
             }
@@ -800,7 +806,7 @@ export class EmpresasApiService {
                 await Users.bulkCreate(
                     usersSeeder.map((user) => ({
                         ...user,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                     }))
                 );
                 await empresa.update({
@@ -824,7 +830,7 @@ export class EmpresasApiService {
                                 f.file.indexOf("/images")
                             );
                             const dirEmpresa = `${pathUploads()}/${
-                                empresa.slug
+                                empresa!.slug
                             }`;
                             const dirEntity = `${dirEmpresa}${file}`;
                             await downloadAndSaveFile(f.file, dirEntity);
@@ -837,7 +843,7 @@ export class EmpresasApiService {
                     );
                     await FileSchema.create({
                         ...rest,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                         file,
                     });
                 })
@@ -849,7 +855,7 @@ export class EmpresasApiService {
                         const { id, empresa_id, ...rest } = brand;
                         const br = await Brands.create({
                             ...rest,
-                            empresa_id: empresa.id,
+                            empresa_id: empresa!.id,
                         });
                         let image = null;
                         if (brand.image) {
@@ -859,7 +865,7 @@ export class EmpresasApiService {
                                         f.file.indexOf("/images")
                                     );
                                     const dirEmpresa = `${pathUploads()}/${
-                                        empresa.slug
+                                        empresa!.slug
                                     }`;
                                     const dirEntity = `${dirEmpresa}${file}`;
                                     await downloadAndSaveFile(
@@ -893,7 +899,7 @@ export class EmpresasApiService {
                         } = category;
                         const categoria = await Categories.create({
                             ...rest,
-                            empresa_id: empresa.id,
+                            empresa_id: empresa!.id,
                         });
                         const subcategorias = await Promise.all(
                             subcategories.map(async (sub) => {
@@ -906,7 +912,7 @@ export class EmpresasApiService {
                                                 f.file.indexOf("/images")
                                             );
                                             const dirEmpresa = `${pathUploads()}/${
-                                                empresa.slug
+                                                empresa!.slug
                                             }`;
                                             const dirEntity = `${dirEmpresa}${file}`;
                                             await downloadAndSaveFile(
@@ -925,7 +931,7 @@ export class EmpresasApiService {
                                 const subcategoria = await Subcategories.create(
                                     {
                                         ...rest,
-                                        empresa_id: empresa.id,
+                                        empresa_id: empresa!.id,
                                         category_id: categoria.id,
                                         image,
                                     }
@@ -954,7 +960,7 @@ export class EmpresasApiService {
                                                 f.file.indexOf("/images")
                                             );
                                             const dirEmpresa = `${pathUploads()}/${
-                                                empresa.slug
+                                                empresa!.slug
                                             }`;
                                             const dirEntity = `${dirEmpresa}${file}`;
                                             await downloadAndSaveFile(
@@ -971,7 +977,7 @@ export class EmpresasApiService {
                                 }
                                 await this.productsApiService.store(
                                     {
-                                        ...empresa.toJSON(),
+                                        ...empresa!.toJSON(),
                                         tipo_empresa: {
                                             tipo_servicio_id: body.servicio_id,
                                         },
@@ -980,7 +986,7 @@ export class EmpresasApiService {
                                     {
                                         ...rest,
                                         category_id: categoria.id,
-                                        empresa_id: empresa.id,
+                                        empresa_id: empresa!.id,
                                         subcategory_id: subcategory_id
                                             ? subcategory_id.id
                                             : null,
@@ -1004,7 +1010,7 @@ export class EmpresasApiService {
                                                 f.file.indexOf("/images")
                                             );
                                             const dirEmpresa = `${pathUploads()}/${
-                                                empresa.slug
+                                                empresa!.slug
                                             }`;
                                             const dirEntity = `${dirEmpresa}${file}`;
                                             await downloadAndSaveFile(
@@ -1022,7 +1028,7 @@ export class EmpresasApiService {
                                 await ProductsRestaurant.create({
                                     ...rest,
                                     category_id: categoria.id,
-                                    empresa_id: empresa.id,
+                                    empresa_id: empresa!.id,
                                     images,
                                 });
                             })
@@ -1038,7 +1044,7 @@ export class EmpresasApiService {
                                                 f.file.indexOf("/images")
                                             );
                                             const dirEmpresa = `${pathUploads()}/${
-                                                empresa.slug
+                                                empresa!.slug
                                             }`;
                                             const dirEntity = `${dirEmpresa}${file}`;
                                             await downloadAndSaveFile(
@@ -1056,7 +1062,7 @@ export class EmpresasApiService {
                                 await ProductsServicio.create({
                                     ...rest,
                                     category_id: categoria.id,
-                                    empresa_id: empresa.id,
+                                    empresa_id: empresa!.id,
                                     images,
                                 });
                             })
@@ -1080,7 +1086,7 @@ export class EmpresasApiService {
                 birthday: new Date(),
                 slug: slug(username),
                 role_id: 1,
-                empresa_id: empresa.id,
+                empresa_id: empresa!.id,
                 speciality: null,
                 buys: [],
                 identification_number: null,
@@ -1108,7 +1114,7 @@ export class EmpresasApiService {
                 regions.map(async (region) => {
                     await RegionsEmpresa.create({
                         region_id: region.id,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                         days: 3,
                         enabled: true,
                         priceShipping: 0,
@@ -1119,7 +1125,7 @@ export class EmpresasApiService {
                 finanzasSeeder.map(async (tipo) => {
                     const tipoFinanza = await TipoFinanza.create({
                         name: tipo.name,
-                        empresa_id: empresa.id,
+                        empresa_id: empresa!.id,
                     });
                     await Promise.all(
                         tipo.categories.map(async (cat) => {
@@ -1127,7 +1133,7 @@ export class EmpresasApiService {
                                 value: cat.value,
                                 icon: cat.icon,
                                 tipo_finanza_id: tipoFinanza.id,
-                                empresa_id: empresa.id,
+                                empresa_id: empresa!.id,
                             });
                         })
                     );
@@ -1176,6 +1182,9 @@ export class EmpresasApiService {
         } catch (error) {
             // biome-ignore lint/suspicious/noConsoleLog: <explanation>
             console.log((error as Error).message);
+            if (empresa) {
+                empresa.destroy();
+            }
             throw new InternalServerErrorException("Error al agregar empresa");
         }
     }
@@ -1352,7 +1361,7 @@ export class EmpresasApiService {
         const { empresa } = await this.show(slug);
         const metodo = await MetodosPago.findOne({
             where: {
-                empresa_id: empresa.id,
+                empresa_id: empresa!.id,
             },
         });
 
@@ -1403,7 +1412,7 @@ export class EmpresasApiService {
             }
 
             deleteHostCache();
-            cache.delete(`EMPRESA:${empresa.id}`);
+            cache.delete(`EMPRESA:${empresa!.id}`);
             cache.delete(`EMPRESA:${empresa.slug}`);
             await empresa.update(empresasUpdateDto);
             return {
@@ -1420,7 +1429,7 @@ export class EmpresasApiService {
             attributes: ["id", "whatsappconfig", "slug"],
         });
         if (!empresa) throw new NotFoundException("Error empresas.");
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         deleteHostCache();
         await empresa.update({ whatsappconfig });
@@ -1435,7 +1444,7 @@ export class EmpresasApiService {
     ) {
         const { empresa } = await this.show(emp.slug);
         // to reutilize if company no update certificado
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         deleteHostCache();
         await empresa.update({
@@ -1460,7 +1469,7 @@ export class EmpresasApiService {
         await empresa.update({
             inteligenceArtificial: empresasIAUpdateDto.inteligenceArtificial,
         });
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
@@ -1491,10 +1500,10 @@ export class EmpresasApiService {
 
     async address(empresa: Empresas, body: EmpresasAddressUpdateDto) {
         const address = await Address.findOne({
-            where: { empresa_id: empresa.id },
+            where: { empresa_id: empresa!.id },
         });
         deleteHostCache();
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await address!.update(body);
         return {
@@ -1522,7 +1531,7 @@ export class EmpresasApiService {
             }
             return contacto;
         });
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({
             contacts: newChanges,
@@ -1567,7 +1576,7 @@ export class EmpresasApiService {
                     body: "telephone",
                 }
             );
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({
             contacts: [
@@ -1600,7 +1609,7 @@ export class EmpresasApiService {
         await empresa.update({
             contacts: filtered,
         });
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
@@ -1639,12 +1648,12 @@ export class EmpresasApiService {
         }
         const setting = await Settings.findOne({
             where: {
-                empresa_id: empresa.id,
+                empresa_id: empresa!.id,
             },
         });
         const time = NOW(empresa).add(4, "minute");
         deleteHostCache();
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await setting?.update({
             host: {
@@ -1682,7 +1691,7 @@ export class EmpresasApiService {
         );
         const setting = await Settings.findOne({
             where: {
-                empresa_id: empresa.id,
+                empresa_id: empresa!.id,
             },
         });
         await onNginx({
@@ -1697,7 +1706,7 @@ export class EmpresasApiService {
             },
         });
         deleteHostCache();
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         cache.delete("CACHE_HOST");
         return {
@@ -1721,11 +1730,11 @@ export class EmpresasApiService {
         );
         const setting = await Settings.findOne({
             where: {
-                empresa_id: empresa.id,
+                empresa_id: empresa!.id,
             },
         });
         const time = NOW(empresa).add(4, "minute");
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         cache.delete("CACHE_HOST");
         await setting?.update({
@@ -1791,7 +1800,7 @@ export class EmpresasApiService {
                 { body: "name" }
             );
         const groupWhatsapp = [...(empresa.groupWhatsapp || []), body];
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({ groupWhatsapp });
         return {
@@ -1816,7 +1825,7 @@ export class EmpresasApiService {
                 ? { name: body.name, members: body.members }
                 : group
         );
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({ groupWhatsapp });
         return {
@@ -1831,7 +1840,7 @@ export class EmpresasApiService {
             attributes: ["id", "contacts", "groupWhatsapp"],
         });
         if (!empresa) throw new NotFoundException("Error empresas.");
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({ contacts: [], groupWhatsapp: [] });
         return {
@@ -1848,7 +1857,7 @@ export class EmpresasApiService {
         const groupWhatsapp = empresa!.groupWhatsapp.filter(
             (gro) => gro.name !== group
         );
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({ groupWhatsapp });
         return {
@@ -1880,7 +1889,7 @@ export class EmpresasApiService {
             }
             return group;
         });
-        cache.delete(`EMPRESA:${empresa.id}`);
+        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa!.update({ groupWhatsapp });
         return {
@@ -1898,7 +1907,7 @@ export class EmpresasApiService {
                 fs.rmdirSync(dir, { recursive: true });
             }
             deleteHostCache();
-            cache.delete(`EMPRESA:${empresa.id}`);
+            cache.delete(`EMPRESA:${empresa!.id}`);
             cache.delete(`EMPRESA:${empresa.slug}`);
             await empresa.destroy({ force: true });
             await terminal(`docker container stop ${empresa.slug} || true`);
