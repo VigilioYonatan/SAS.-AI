@@ -327,6 +327,8 @@ export class EmpresasApiService {
                               };
                           })
                         : null;
+                    console.log({ images });
+
                     return {
                         ...prod.toJSON(),
                         images,
