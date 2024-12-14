@@ -308,10 +308,11 @@ export async function promptReplace(
         } else {
             const searchProduct = await chatgpt(
                 whatsapp,
-                `Esto son mis categorias ${JSON.stringify(
-                    data.categorias
-                )}.\n Si en el texto '${message}', ves algun producto o servicio que puede estar en mis categorías que te mandé (ejemplo en el mensaje samsung galaxy s7 y tengo en mi categorias celulares, me traes [id_category_celulares], etc), respondeme json [id_de_categorias_de_productosservicios_encontrados] . solo traeme el json, no digas nada mas`
+                `Estos son mis productos db: ${JSON.stringify(
+                    productsData.products
+                )}. En este mensaje '${message}' si ves el nombre de algun producto de mi productos db trae un array con los ids encontrado . ejemplo  [2,4] . Trame solo el array y no digas nada más. solo di [], recuerda que puedo escribir mal algun nombre asi que igual trae si e escrito algun parecido.`
             );
+            console.log({ searchProduct });
 
             const cleanProducts =
                 searchProduct && searchProduct !== "[]"
@@ -595,12 +596,15 @@ export async function promptReplace(
 }
 export async function chatgpt(
     whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>,
-    content: string
+    content: string,
+    isEmbedding = false
 ) {
     const completion = await openAis[
         whatsapp!.empresa.slug
     ].chat.completions.create({
-        model: whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
+        model: isEmbedding
+            ? "text-embedding-3-small"
+            : whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
         max_tokens: 5000,
         messages: [
             {
