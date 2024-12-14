@@ -153,14 +153,16 @@ export class EmpresasApiService {
             where: { empresa_id: empresa.id },
         });
         files = files.map((f) => {
-            const file = f.file?.map((file) => {
-                return {
-                    ...file,
-                    file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
-                        file.file
-                    }`,
-                };
-            });
+            const file = f.file
+                ? f.file?.map((file) => {
+                      return {
+                          ...file,
+                          file: `${BASE_URL(empresa)}/empresas/${
+                              empresa.slug
+                          }/${file.file}`,
+                      };
+                  })
+                : null;
             return {
                 ...f.toJSON(),
                 file,
@@ -170,14 +172,16 @@ export class EmpresasApiService {
             where: { empresa_id: empresa.id },
         });
         backgrounds = backgrounds.map((f) => {
-            const image = f.image?.map((file) => {
-                return {
-                    ...file,
-                    file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
-                        file.file
-                    }`,
-                };
-            });
+            const image = f.image
+                ? f.image?.map((file) => {
+                      return {
+                          ...file,
+                          file: `${BASE_URL(empresa)}/empresas/${
+                              empresa.slug
+                          }/${file.file}`,
+                      };
+                  })
+                : null;
             return {
                 ...f.toJSON(),
                 image,
@@ -194,14 +198,16 @@ export class EmpresasApiService {
         });
         brands = (await Promise.all(
             brands.map(async (brand) => {
-                const image = brand.image?.map((file) => {
-                    return {
-                        ...file,
-                        file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
-                            file.file
-                        }`,
-                    };
-                });
+                const image = brand.image
+                    ? brand.image?.map((file) => {
+                          return {
+                              ...file,
+                              file: `${BASE_URL(empresa)}/empresas/${
+                                  empresa.slug
+                              }/${file.file}`,
+                          };
+                      })
+                    : null;
                 return {
                     ...brand.toJSON(),
                     image,
@@ -210,14 +216,16 @@ export class EmpresasApiService {
         )) as Brands[];
         categories = await Promise.all(
             categories.map(async (category) => {
-                const image = category.image?.map((file) => {
-                    return {
-                        ...file,
-                        file: `${BASE_URL(empresa)}/empresas/${empresa.slug}/${
-                            file.file
-                        }`,
-                    };
-                });
+                const image = category.image
+                    ? category.image?.map((file) => {
+                          return {
+                              ...file,
+                              file: `${BASE_URL(empresa)}/empresas/${
+                                  empresa.slug
+                              }/${file.file}`,
+                          };
+                      })
+                    : null;
                 const wallpaper = category.wallpaper?.map((file) => {
                     return {
                         ...file,
@@ -230,14 +238,16 @@ export class EmpresasApiService {
                     "subcategories"
                 )) as Subcategories[];
                 subcategories = subcategories.map((sub) => {
-                    const image = sub.image?.map((file) => {
-                        return {
-                            ...file,
-                            file: `${BASE_URL(empresa)}/empresas/${
-                                empresa.slug
-                            }/${file.file}`,
-                        };
-                    });
+                    const image = sub.image
+                        ? sub.image?.map((file) => {
+                              return {
+                                  ...file,
+                                  file: `${BASE_URL(empresa)}/empresas/${
+                                      empresa.slug
+                                  }/${file.file}`,
+                              };
+                          })
+                        : null;
 
                     return {
                         ...sub.toJSON(),
@@ -257,14 +267,16 @@ export class EmpresasApiService {
                             null,
                             false
                         );
-                        const images = prod.images?.map((file) => {
-                            return {
-                                ...file,
-                                file: `${BASE_URL(empresa)}/empresas/${
-                                    empresa.slug
-                                }/${file.file}`,
-                            };
-                        });
+                        const images = prod.images
+                            ? prod.images?.map((file) => {
+                                  return {
+                                      ...file,
+                                      file: `${BASE_URL(empresa)}/empresas/${
+                                          empresa.slug
+                                      }/${file.file}`,
+                                  };
+                              })
+                            : null;
                         return {
                             ...prod.toJSON(),
                             images,
@@ -285,14 +297,16 @@ export class EmpresasApiService {
                     "productsRestaurants"
                 )) as ProductsRestaurant[];
                 productsRestaurants = productsRestaurants.map((prod) => {
-                    const images = prod.images?.map((file) => {
-                        return {
-                            ...file,
-                            file: `${BASE_URL(empresa)}/empresas/${
-                                empresa.slug
-                            }/${file.file}`,
-                        };
-                    });
+                    const images = prod.images
+                        ? prod.images?.map((file) => {
+                              return {
+                                  ...file,
+                                  file: `${BASE_URL(empresa)}/empresas/${
+                                      empresa.slug
+                                  }/${file.file}`,
+                              };
+                          })
+                        : null;
                     return {
                         ...prod.toJSON(),
                         images,
@@ -303,14 +317,16 @@ export class EmpresasApiService {
                     "productsServicios"
                 )) as ProductsServicio[];
                 productsServicios = productsServicios.map((prod) => {
-                    const images = prod.images?.map((file) => {
-                        return {
-                            ...file,
-                            file: `${BASE_URL(empresa)}/empresas/${
-                                empresa.slug
-                            }/${file.file}`,
-                        };
-                    });
+                    const images = prod.images
+                        ? prod.images.map((file) => {
+                              return {
+                                  ...file,
+                                  file: `${BASE_URL(empresa)}/empresas/${
+                                      empresa.slug
+                                  }/${file.file}`,
+                              };
+                          })
+                        : null;
                     return {
                         ...prod.toJSON(),
                         images,
@@ -319,8 +335,8 @@ export class EmpresasApiService {
                 }) as any;
                 return {
                     ...category.toJSON(),
-                    image,
-                    wallpaper,
+                    image: category.image ? image : null,
+                    wallpaper: category.wallpaper ? wallpaper : null,
                     subcategories,
                     productsNormals,
                     productsRestaurants,
