@@ -150,6 +150,7 @@ export async function prompt(
         empresa.schedule
     )} . cuando te escriba en horario de atencion que no esté. decime no estamos disponible en este momento pero te puedo ayudar.
     IGNORA MENSAJE ANTERIOR, SOLO Para no perder contexto.
+    IMPORTANTE: NO USES MARKDOWN y no encierres los links []().
     HORA Y FECHA_ACTUAL: ${NOW(empresa).format("DD-MM-YYYY hh:mm")}
 	MAXIMO_DE_PALABRAS_QUE_DIRAS: ${empresa.inteligenceArtificial.max_length}.
 	TIPO_MONEDA: ${empresa.money.money}.
