@@ -115,7 +115,7 @@ function BackgroundIndex() {
                                                                     showCloseButton:
                                                                         true,
                                                                     sweetWidth:
-                                                                        "700px",
+                                                                        "1300px",
                                                                     isCloseInBackground:
                                                                         false,
                                                                 })
@@ -219,7 +219,7 @@ function BackgroundIndex() {
                                         refetch={backgroundIndexQuery.refetch}
                                     />
                                 ),
-                                sweetWidth: "600px",
+                                sweetWidth: "1300px",
                                 isCloseInBackground: false,
                                 showCloseButton: true,
                                 position: "start",

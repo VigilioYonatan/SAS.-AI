@@ -74,7 +74,7 @@ function ServiciosPageIndex() {
                                                 ),
                                                 showCloseButton: true,
                                                 isCloseInBackground: false,
-                                                sweetWidth: "600px",
+                                                sweetWidth: "1200px",
                                                 position: "start",
                                             }));
                                         }}
