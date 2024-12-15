@@ -212,7 +212,7 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
             const messages = chatsTelegram[`${empresa.slug}:${userId}`].map(
                 ([role, content]) => ({
                     role,
-                    content: `${content}.'[[en formato telegram, revisa base de datos y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA.]]`,
+                    content: `${content}.'[[en formato telegram, no markdown, revisa base de datos y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA.]]`,
                 })
             );
             const messageAnterior = messages
@@ -422,7 +422,7 @@ export async function featuresIA(
     const baseURL = `${BASE_URL(empresa)}/empresas/${
         empresa.slug
     }/images/products`;
-    const urlPattern = new RegExp(`${baseURL}[^\\s"<>]*`, "g");
+    const urlPattern = new RegExp(`${baseURL}[^\\s]*`, "g");
     const match = completionText.match(urlPattern);
 
     const urlExtraidas = [];
