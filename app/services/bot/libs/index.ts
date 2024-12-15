@@ -581,7 +581,6 @@ export async function promptReplace(
         isQuestion,
     };
     const promt = await prompt(properties, empresa, productsData);
-    console.log({ productsData });
 
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
         productsData?.products?.length ||

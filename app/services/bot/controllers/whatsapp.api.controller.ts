@@ -316,6 +316,7 @@ export class whatsappApiController {
                     completionText,
                     true
                 );
+                console.log({ urlExtraidas });
 
                 chats[`${info.slug}:${userId}`] = [
                     ...(chats[`${info.slug}:${userId}`] || []),
