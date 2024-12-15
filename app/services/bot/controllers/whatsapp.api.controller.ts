@@ -175,6 +175,9 @@ export class whatsappApiController {
                 ...(chatsWait[`${info.slug}:${userId}`] ?? []),
                 content as string,
             ];
+            if (chatsWait[`${info.slug}:${userId}`].length > 70) {
+                throw new BadRequestException("Limite de conversación");
+            }
             await delay(random);
 
             const isSimilar =
