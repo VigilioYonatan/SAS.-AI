@@ -1,6 +1,5 @@
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { InternalServerErrorException } from "@vigilio/express-core";
-import { log } from "node:console";
 import type WAWebJS from "whatsapp-web.js";
 import type { MessageSendOptions } from "whatsapp-web.js";
 import enviroments from "~/config/enviroments.config";
@@ -50,8 +49,6 @@ export async function whatsappSendFileApi(
 ): Promise<{ success: boolean; message: string }> {
     const { telephone, ...rest } = body;
     const formdata = new FormData();
-    console.log({ opt: JSON.stringify(JSON.stringify(rest.options)) });
-
     if (rest.name) {
         formdata.append("name", rest.name);
     }

@@ -110,7 +110,7 @@ export class IAApiController {
             let images: { image: string; preview: string }[] = [];
             if (imagesClient) {
                 const response = await fetch(
-                    `https://www.bing.com/images/search?q=${`${name} fondo blanco`.replaceAll(
+                    `https://www.bing.com/images/search?q=${name.replaceAll(
                         " ",
                         "+"
                     )}&form=HDRSC3&first=1&cw=1202&ch=935`
