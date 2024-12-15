@@ -429,7 +429,9 @@ export async function featuresIA(
     if (match?.length) {
         for (const m of match) {
             if (hiddeImage) {
-                textoNormal = completionText.replace(m, "").trim();
+                if (match.length < 2) {
+                    textoNormal = completionText.replace(m, "").trim();
+                }
                 urlExtraidas.push(m);
             }
         }

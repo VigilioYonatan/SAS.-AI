@@ -343,7 +343,7 @@ export class whatsappApiController {
                 }
 
                 // enviar imagen
-                if (urlExtraidas.length) {
+                if (urlExtraidas.length < 2) {
                     for (const url of urlExtraidas) {
                         const options = {
                             sendMediaAsSticker: true,
