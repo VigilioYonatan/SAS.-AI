@@ -166,6 +166,7 @@ export async function prompt(
     NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
 	SI TE ENVIÉ UNA IMAGEN  Y BUSCA EN LA BASE DE DATOS Y RESPONDEME INFORMACIÓN DE ESO.
+    CANTIDAD/UNIDADES si está agotado no vendas y hazmelo saber.
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
     ${
         properties.isQuestion ||
@@ -177,7 +178,7 @@ export async function prompt(
     SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR y DAME BIEN EL PRECIO, NO INVENTES PRECIOS, ETC.
     ACTUALIZA SIEMPRE LO QUE VAS A DECIR SI CAMBIA LA BASE DE DATOS.
     0 unidades/cantidad quiere decir que no hay producto/servicio.
-    "EN STOCK" significa. cantidad ilimitado. ${
+    ${
         empresa.tipo_empresa.tipo_servicio_id === 2
             ? "NO USES STOCK, usa muchas unidades. para restaurantes y bares"
             : ""
