@@ -520,7 +520,7 @@ export class whatsappApiController {
                 console.log("Conectado correctamente a vps");
                 // Eliminar la imagen de Docker
                 await ssh.execCommand(
-                    `docker ps -a -q --filter ancestor=${enviroments.DOCKER_IMAGE_WHATSAPP} | xargs -I {} docker rm -f {} && docker rmi -f ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+                    `docker ps -a -q --filter ancestor=${enviroments.DOCKER_IMAGE_WHATSAPP} | xargs -I {} docker rm -f {} || true && docker rmi -f ${enviroments.DOCKER_IMAGE_WHATSAPP}|| true`
                 );
 
                 // Crear el volumen y ejecutar el contenedor Docker

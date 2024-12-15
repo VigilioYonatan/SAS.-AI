@@ -18,7 +18,7 @@ export async function productShowFetch(url: string, isCart = false) {
 
     let result = JSON.parse(localStorage.getItem(url) ?? "null");
 
-    if (!result || Date.now() - result.timestamp > EXPIRATION_TIME || !isCart) {
+    if (!result || Date.now() - result.timestamp > EXPIRATION_TIME) {
         localStorage.removeItem(url);
         const response = await fetch(`/api${url}`);
         result = await response.json();
