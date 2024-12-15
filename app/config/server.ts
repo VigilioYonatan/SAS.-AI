@@ -169,7 +169,6 @@ export class Server {
                     ...where,
                     attributes: {
                         exclude: [
-                            "contacts",
                             "groupWhatsapp",
                             "credentials",
                             "token",
