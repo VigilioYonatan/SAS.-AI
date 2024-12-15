@@ -98,7 +98,6 @@ export class whatsappApiController {
                 throw new BadRequestException("whatsapp desabilitado");
 
             const { clientVigilio, latestEmpresaUsage, empresa } = whatsapp;
-            console.log({ body });
             if (body.isGroup)
                 throw new BadRequestException("whatsapp no permited"); //no se admite grupos
             // message.type: chat,sticker,ptt,image,document
@@ -505,70 +504,51 @@ export class whatsappApiController {
     @Post("/update")
     async update(@Req("empresa") empresa: Empresas) {
         if (empresa.whatsapp_mode.type === "VPS") {
-            function onSSH() {
-                return new Promise((res, _) => {
-                    const ssh = new NodeSSH();
-                    // Función para conectar por SSH
-                    ssh.connect({
-                        host: empresa.whatsapp_mode.ip!,
-                        username: "root",
-                        password: empresa.whatsapp_mode.password!,
-                    })
-                        .then(async () => {
-                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-                            console.log("Conectado correctamente a vps");
-                            // Eliminar la imagen de Docker
-                            await ssh.execCommand(
-                                `docker rmi ${enviroments.DOCKER_IMAGE_WHATSAPP} || true`
-                            );
-
-                            // Crear el volumen y ejecutar el contenedor Docker
-                            await ssh.execCommand(
-                                `docker volume create ${
-                                    empresa.slug
-                                } && docker run -d --name ${
-                                    empresa.slug
-                                } -e PORT=5000 -e NODE_ENV=${
-                                    enviroments.NODE_ENV
-                                } -e SESSION_NAME=${
-                                    empresa.slug
-                                } -e VITE_TOKEN_VIGILIO_SERVICES=${
-                                    enviroments.VITE_TOKEN_VIGILIO_SERVICES
-                                } --restart always --memory="${
-                                    Number(empresa.whatsapp_mode.memory) -
-                                        0.2 || "1"
-                                }g" --memory-swap="${
-                                    Number(empresa.whatsapp_mode.memory) -
-                                        0.2 || "1"
-                                }g" --cpus="${
-                                    Number(empresa.whatsapp_mode.cpu) - 0.2 ||
-                                    "1"
-                                }" -p ${empresa.port}:5000 -v ${
-                                    empresa.slug
-                                }:/app/data ${
-                                    enviroments.DOCKER_IMAGE_WHATSAPP
-                                }`
-                            );
-                        })
-                        .then(() => {
-                            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-                            console.log(
-                                "STDOUT:error bash a la hora de reiniciar"
-                            );
-                            console.error(
-                                "STDERR: error bash a la hora de reiniciar"
-                            );
-                            res(true);
-                        })
-                        .catch(() => {
-                            res(true);
-                        })
-                        .finally(() => {
-                            ssh.dispose();
-                        });
+            const ssh = new NodeSSH();
+            try {
+                // Conectar por SSH
+                await ssh.connect({
+                    host: empresa.whatsapp_mode.ip!,
+                    username: "root",
+                    password: empresa.whatsapp_mode.password!,
                 });
+
+                // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                console.log("Conectado correctamente a vps");
+                // Eliminar la imagen de Docker
+                await ssh.execCommand(
+                    `docker ps -a -q --filter ancestor=${enviroments.DOCKER_IMAGE_WHATSAPP} | xargs -I {} docker rm -f {} && docker rmi -f ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+                );
+
+                // Crear el volumen y ejecutar el contenedor Docker
+                await ssh.execCommand(
+                    `docker volume create ${
+                        empresa.slug
+                    } && docker run -d --name ${
+                        empresa.slug
+                    } -e PORT=5000 -e NODE_ENV=${
+                        enviroments.NODE_ENV
+                    } -e SESSION_NAME=${
+                        empresa.slug
+                    } -e VITE_TOKEN_VIGILIO_SERVICES=${
+                        enviroments.VITE_TOKEN_VIGILIO_SERVICES
+                    } --restart always --memory="${
+                        Number(empresa.whatsapp_mode.memory) - 0.2 || "1"
+                    }g" --memory-swap="${
+                        Number(empresa.whatsapp_mode.memory) - 0.2 || "1"
+                    }g" --cpus="${
+                        Number(empresa.whatsapp_mode.cpu) - 0.2 || "1"
+                    }" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${
+                        enviroments.DOCKER_IMAGE_WHATSAPP
+                    }`
+                );
+
+                console.error("STDERR: error bash a la hora de reiniciar");
+            } catch (error) {
+                console.error("Hubo un error: ", error);
+            } finally {
+                ssh.dispose();
             }
-            await onSSH();
         } else {
             const command1 = `docker rm -f ${empresa.slug} || true`;
             const command2 = `docker volume rm ${empresa.slug}  || true`;
