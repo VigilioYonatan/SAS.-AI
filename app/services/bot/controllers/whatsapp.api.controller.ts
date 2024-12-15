@@ -88,7 +88,6 @@ export class whatsappApiController {
         }
     ) {
         let content = body.content;
-        console.log({ body });
 
         const userId = body.from;
         try {
