@@ -176,7 +176,7 @@ export async function prompt(
                   ` RECUERDA QUE ANTES DE RESPONDERME, REVISA BIEN LA BASE DE DATOS- COMO EN LAS CANTIDADES DEL PRODUCTO, PRECIO , VARIANTES, ETC. REVISA BIEN,ORDENES, NO TRAIGAS NI CONTESTES ERRONEAMENTE, LA CANTIDAD,ETC..
     SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR y DAME BIEN EL PRECIO, NO INVENTES PRECIOS, ETC.
     ACTUALIZA SIEMPRE LO QUE VAS A DECIR SI CAMBIA LA BASE DE DATOS.
-    0 unidades quiere decir que no hay producto/servicio.
+    0 unidades/cantidad quiere decir que no hay producto/servicio.
     "EN STOCK" significa. cantidad ilimitado. ${
         empresa.tipo_empresa.tipo_servicio_id === 2
             ? "NO USES STOCK, usa muchas unidades. para restaurantes y bares"

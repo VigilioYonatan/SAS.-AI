@@ -102,15 +102,13 @@ export async function onDb(empresa: Empresas) {
                                         }[];
                                     }
                                 ),
-                                cantidad: ilimit
+                                unidades: ilimit
                                     ? "en stock"
                                     : `${stock || 0} unidades`,
                             };
                         }
                     )
                 );
-                console.log(JSON.stringify(variantes));
-
                 return {
                     id: product.id,
                     name: product.name.toLowerCase(),
@@ -157,7 +155,7 @@ export async function onDb(empresa: Empresas) {
                           )[0]
                         : "",
                     price: subtotalIgv(empresa!, product),
-                    cantidad: product.ilimit
+                    unidades: product.ilimit
                         ? "en stock"
                         : `${product.stock || 0} unidades`,
                     disponible: product.enabled,
