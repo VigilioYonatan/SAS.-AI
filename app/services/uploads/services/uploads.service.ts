@@ -45,6 +45,8 @@ import { NewApiService } from "@/empresas/services/new.api.service";
 import { SubCategoriesApiService } from "@/products/services/subcategories.api.service";
 import { SettingsApiService } from "@/empresas/services/settings.api.service";
 import { FileSchema } from "@/empresas/entities/file.entity";
+import { Variants } from "@/products/entities/options/variants.entity";
+import { ProductsNormal } from "@/products/entities/products_normal.entity";
 
 @Injectable()
 export class UploadsService {
@@ -517,6 +519,17 @@ export class UploadsService {
                 entidad = product;
                 if (product.images) {
                     removeFile(empresa.slug, product.images);
+                    if (product instanceof ProductsNormal) {
+                        await Variants.update(
+                            { images: [] },
+                            {
+                                where: {
+                                    product_normal_id: product.id,
+                                    empresa_id: empresa.id,
+                                },
+                            }
+                        );
+                    }
                 }
                 break;
             }

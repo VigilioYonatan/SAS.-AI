@@ -56,6 +56,7 @@ function ProductsNormalUpdate({
         window.history.back();
         return null;
     }
+
     const productQuery = productsShowApi(id as string, false);
     const optionsFeaturesQuery = optionsFeaturesApi();
     const optionsFeaturesData = useMemo(() => {
@@ -64,6 +65,7 @@ function ProductsNormalUpdate({
         }
         return [];
     }, [optionsFeaturesQuery.data, optionsFeaturesQuery.isSuccess]);
+
     let component: JSX.Element | JSX.Element[] | null = null;
 
     if (productQuery.isLoading) {

@@ -492,4 +492,10 @@ export async function fileIoApi(file: File): Promise<{ link: string }> {
     if (!response.ok) throw result;
     return result;
 }
+
+export function limpiarParametro(parametro: string) {
+    const parametro1 = parametro.replace(/\s+/g, "-");
+    const parametro2 = parametro1.replace(/[^a-zA-Z0-9-]/g, "");
+    return parametro2;
+}
 export default dayjs;

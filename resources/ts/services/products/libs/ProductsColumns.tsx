@@ -164,7 +164,7 @@ const productsColumns: Columns<
                     html: reactComponent(
                         <ProductsUpdate
                             id={props.id}
-                            refetch={methods.refetch}
+                            refetch={methods.refetch}  
                         />
                     ),
 

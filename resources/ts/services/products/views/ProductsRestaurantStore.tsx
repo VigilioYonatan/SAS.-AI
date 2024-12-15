@@ -4,7 +4,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useEffect, useMemo } from "preact/hooks";
 import { formatMoney, subtotal as subtotalCart } from "@/cart/libs/helpers";
 import { valibotVigilio } from "~/libs/valibot";
-import { handlerError } from "~/libs/helpers";
+import { handlerError, limpiarParametro } from "~/libs/helpers";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import AlertInfo from "~/components/Alerts/AlertInfo";
 import { imageBackgroundIA } from "~/config/settings";
@@ -75,7 +75,7 @@ function ProductsRestaurantStore({
     }, [categoriesIndexQuery.data, categoriesIndexQuery.isSuccess]);
 
     function onSearchProduct() {
-        aiProductQuery.mutate(name, {
+        aiProductQuery.mutate(limpiarParametro(name), {
             async onSuccess(data) {
                 isImageLoading.value = true;
                 const images = await getFilesEdit(

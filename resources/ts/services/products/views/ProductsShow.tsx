@@ -48,6 +48,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
     }
     if (productsShowApiQuery.isSuccess && productsShowApiQuery.data) {
         const { product } = productsShowApiQuery.data;
+
         const images = printImagesProduct(product.images, 500);
         // const variantsDeleteMutation = variantsDeleteApi(product.id);
         function onProductsUpdate() {
@@ -112,7 +113,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                             true
                         )}{" "}
                         - {formatMoney(subtotalIgv(product), true)}
-                        <div class="flex gap-2 items-center">
+                        <span class="flex gap-2 items-center">
                             {product.discount > 0 ? (
                                 <span class="absolute -top-3 right-6 text-xs bg-success  rounded-md text-white">
                                     - {product.discount}% desc.
@@ -124,7 +125,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                     {empresaStore.state?.tipo_impuesto}
                                 </span>
                             ) : null}
-                        </div>
+                        </span>
                     </p>
                     <div class="flex gap-4 flex-wrap justify-center  font-semibold">
                         <div class="flex-1 min-w-[250px]">
@@ -212,7 +213,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                     <div
                                         dangerouslySetInnerHTML={{
                                             __html:
-                                                product.description ??
+                                                product.description ||
                                                 "no hay descripción",
                                         }}
                                     />
@@ -452,8 +453,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                             <span class="text-xs">
                                                 Eliminar
                                             </span>
-                                            <button
-                                                type="button"
+                                            <span
                                                 aria-label="on check delete"
                                                 class="absolute bottom-8 w-[20px] h-[20px] bg-black rounded-full shadow group"
                                                 onClick={(e) =>
@@ -468,7 +468,7 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                                     disponibilidad para no
                                                     volver a crear producto.
                                                 </span>
-                                            </button>
+                                            </span>
                                         </button>
                                     </div>
                                 </div>

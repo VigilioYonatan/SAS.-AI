@@ -18,21 +18,24 @@ export async function productShowFetch(url: string, isCart = false) {
 
     let result = JSON.parse(localStorage.getItem(url) ?? "null");
 
-    if (!result || Date.now() - result.timestamp > EXPIRATION_TIME || isCart) {
+    if (!result || Date.now() - result.timestamp > EXPIRATION_TIME || !isCart) {
+        localStorage.removeItem(url);
         const response = await fetch(`/api${url}`);
         result = await response.json();
         if (!result.success) throw result;
         const { description, ...rest } = result.product;
-        localStorage.setItem(
-            url,
-            JSON.stringify({
-                timestamp: Date.now(),
-                data: {
-                    success: true,
-                    product: rest,
-                },
-            })
-        );
+        if (isCart) {
+            localStorage.setItem(
+                url,
+                JSON.stringify({
+                    timestamp: Date.now(),
+                    data: {
+                        success: true,
+                        product: rest,
+                    },
+                })
+            );
+        }
 
         return result;
     }
