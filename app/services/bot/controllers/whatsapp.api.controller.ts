@@ -521,16 +521,6 @@ export class whatsappApiController {
                         .then(async () => {
                             // biome-ignore lint/suspicious/noConsoleLog: <explanation>
                             console.log("Conectado correctamente a vps");
-                            const command1 = `docker rm -f ${empresa.slug} || true`;
-                            const command2 = `docker volume rm ${empresa.slug} || true`;
-
-                            // Ejecutar los comandos en el servidor SSH
-                            await ssh.execCommand(command1);
-                            await ssh.execCommand(command2);
-
-                            // Obtener información de la API
-                            const result = await vpsShowApi();
-
                             // Eliminar la imagen de Docker
                             await ssh.execCommand(
                                 `docker rmi ${enviroments.DOCKER_IMAGE_WHATSAPP} || true`
@@ -549,11 +539,14 @@ export class whatsappApiController {
                                 } -e VITE_TOKEN_VIGILIO_SERVICES=${
                                     enviroments.VITE_TOKEN_VIGILIO_SERVICES
                                 } --restart always --memory="${
-                                    result.vps.whatsapp_ram || "1"
+                                    Number(empresa.whatsapp_mode.memory) -
+                                        0.2 || "1"
                                 }g" --memory-swap="${
-                                    result.vps.whatsapp_ram || "1"
+                                    Number(empresa.whatsapp_mode.memory) -
+                                        0.2 || "1"
                                 }g" --cpus="${
-                                    result.vps.whatsapp_cpu_max || "1"
+                                    Number(empresa.whatsapp_mode.cpu) - 0.2 ||
+                                    "1"
                                 }" -p ${empresa.port}:5000 -v ${
                                     empresa.slug
                                 }:/app/data ${
