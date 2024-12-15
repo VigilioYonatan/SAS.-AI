@@ -98,7 +98,7 @@ export class whatsappApiController {
                 throw new BadRequestException("whatsapp desabilitado");
 
             const { clientVigilio, latestEmpresaUsage, empresa } = whatsapp;
-
+            console.log({ body });
             if (body.isGroup)
                 throw new BadRequestException("whatsapp no permited"); //no se admite grupos
             // message.type: chat,sticker,ptt,image,document
