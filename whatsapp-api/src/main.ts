@@ -100,7 +100,7 @@ export async function initialWhatsapp() {
             method: "POST",
             body: JSON.stringify({
                 contacts: contacts.map((c) => ({
-                    name: c.name,
+                    name: c.name || "desconocido",
                     id: { _serialized: c.id._serialized },
                 })),
             }),
