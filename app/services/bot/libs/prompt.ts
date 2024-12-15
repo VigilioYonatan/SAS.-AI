@@ -179,10 +179,13 @@ export async function prompt(
     SOLO DIME INFORMACIÓN DE LO QUE TE PREGUNTO. SI TE PREGUNTO PRECIO DE UN PRODUCTO/SERVICIO SOLO DIME EL PRECIO. NO AGREGUES MÁS INFORMACIÓN, PORFAVOR y DAME BIEN EL PRECIO, NO INVENTES PRECIOS, ETC.
     ACTUALIZA SIEMPRE LO QUE VAS A DECIR SI CAMBIA LA BASE DE DATOS.
     0 unidades/cantidad quiere decir que no hay producto/servicio.
+    - las imagenes estan asi /images/products/image_namex500.webp por favor, cuando me lo mandes agregales al principio ${BASE_URL(
+        empresa
+    )}/empresas/${empresa.slug} y lo que sigue.
     ${
         empresa.tipo_empresa.tipo_servicio_id === 2
             ? "NO USES STOCK, usa muchas unidades. para restaurantes y bares"
-            : ""
+            : "cada variante tiene su propias imagenes ejemplo [0,1] . es la posicion del array de las images del producto. eso me lo mandas cuando te pida una imagen de una variante."
     }`,
                   "IMPORTANTE: REVISAR LA BASE DE DATOS, ANTES DE RESPONDER, por ejemplo si una persona te pide información de algo, mira la BASE DE DATOS primero.",
               ])

@@ -3,7 +3,6 @@ import fs from "node:fs";
 import crypto from "node:crypto";
 import cache from "@vigilio/express-core/cache";
 import { Empresas } from "@/empresas/entities/empresas.entity";
-import { printFileWithDimension } from "@/uploads/libs/helpers";
 import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
 import { distanciaDeLevenshtein } from "~/libs/helpers";
 import { Orders } from "@/orders/entities/orders.entity";
@@ -90,7 +89,8 @@ export async function onDb(empresa: Empresas) {
                 const variantes = await Promise.all(
                     (producto.dataValues.variants as Variants[]).map(
                         async (variant) => {
-                            const { stock, ilimit, id } = variant as Variants;
+                            const { stock, ilimit, id, images } =
+                                variant as Variants;
                             return {
                                 id,
                                 features: printVariantFeatures(
@@ -107,6 +107,7 @@ export async function onDb(empresa: Empresas) {
                                     : stock > 0
                                     ? `${stock || 0} unidades`
                                     : "agotado",
+                                images,
                             };
                         }
                     )
@@ -114,11 +115,12 @@ export async function onDb(empresa: Empresas) {
                 return {
                     id: product.id,
                     name: product.name.toLowerCase(),
-                    imagen: product.images
-                        ? printFileWithDimension(empresa)(
-                              product.images,
-                              500
-                          )[0]
+                    images: product.images
+                        ? JSON.stringify(
+                              product.images
+                                  .filter((file) => file.dimension === 500)
+                                  .map((f) => f.file)
+                          )
                         : "",
                     price: subtotalIgv(empresa!, product),
                     disponible: product.enabled,
@@ -151,10 +153,9 @@ export async function onDb(empresa: Empresas) {
                     id: product.id,
                     name: product.name.toLowerCase(),
                     imagen: product.images
-                        ? printFileWithDimension(empresa)(
-                              product.images,
-                              500
-                          )[0]
+                        ? product.images.filter(
+                              (file) => file.dimension === 500
+                          )[0].file
                         : "",
                     price: subtotalIgv(empresa!, product),
                     unidades: product.ilimit
@@ -191,10 +192,9 @@ export async function onDb(empresa: Empresas) {
                     id: product.id,
                     name: product.name.toLowerCase(),
                     imagen: product.images
-                        ? printFileWithDimension(empresa)(
-                              product.images,
-                              500
-                          )[0]
+                        ? product.images.filter(
+                              (file) => file.dimension === 500
+                          )[0].file
                         : "",
                     days: product.days,
                     description: empresa.inteligenceArtificial
