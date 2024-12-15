@@ -19,10 +19,7 @@ import {
     updateTokensEmpresa,
 } from "@/bot/libs/ai";
 import { Injectable } from "@vigilio/express-core";
-import {
-    deleteHostCache,
-    openAis,
-} from "@/empresas/services/empresas.api.service";
+import { openAis } from "@/empresas/services/empresas.api.service";
 import cron from "node-cron";
 import { promptReplace } from "@/bot/libs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
@@ -221,7 +218,6 @@ export class WebsocketsController {
                     { enabled_catalogo: false },
                     { where: { id: empresa, isFreeVPS: true } }
                 );
-                deleteHostCache();
                 const now = new Date();
                 now.setMinutes(now.getMinutes() + 15);
                 await executeCronDate(now, async () => {
@@ -229,7 +225,6 @@ export class WebsocketsController {
                         { enabled_catalogo: true },
                         { where: { id: empresa, isFreeVPS: true } }
                     );
-                    deleteHostCache();
                 });
             }
         }

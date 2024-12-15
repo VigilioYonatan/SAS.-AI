@@ -55,8 +55,6 @@ import { converterMoneyApi } from "~/libs/apis";
 import { MONEYLOCAL, type Money } from "@/empresas/libs";
 import { Questions } from "@/empresas/entities/questions.entity";
 
-export let hosts: string[] = [];
-
 export class Server {
     public readonly app: express.Application = express();
 
@@ -161,7 +159,9 @@ export class Server {
                       ],
                   };
             let empresa: Empresas | null = JSON.parse(
-                cache.get(host!) ?? "null"
+                cache.get(
+                    `EMPRESA:${subdomain || host?.slice(4).split(".")[0]}`
+                ) || "null"
             );
 
             if (!empresa) {
@@ -179,9 +179,12 @@ export class Server {
 
                 empresa = empresa?.toJSON() as Empresas;
                 // agregar todos los hosts
-                hosts = [...hosts, host!];
                 const hours24 = 60 * 1000 * 60 * 24;
-                cache.set(host!, JSON.stringify(empresa), hours24);
+                cache.set(
+                    `EMPRESA:${subdomain || host?.slice(4).split(".")[0]}`,
+                    JSON.stringify(empresa),
+                    hours24
+                );
             }
 
             if (empresa) {

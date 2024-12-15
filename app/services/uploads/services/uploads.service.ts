@@ -33,10 +33,7 @@ import { usersPhotoQualities } from "@/users/libs";
 import { Users } from "@/users/entities/users.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { ordersTransferenciaImage } from "@/orders/libs";
-import {
-    deleteHostCache,
-    EmpresasApiService,
-} from "@/empresas/services/empresas.api.service";
+import { EmpresasApiService } from "@/empresas/services/empresas.api.service";
 import { postsImageQualities } from "@/posts/libs";
 import { PostsApiService } from "@/posts/services/posts.api.service";
 import { BackgroundApiService } from "@/empresas/services/background.api.service";
@@ -754,7 +751,6 @@ export class UploadsService {
                 if (property === "photo" && emp.photo) {
                     removeFile(empresa.slug, emp.photo);
                 }
-                deleteHostCache();
 
                 break;
             }

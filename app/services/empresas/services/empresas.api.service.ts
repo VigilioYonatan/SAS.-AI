@@ -47,7 +47,6 @@ import { TipoFinanza } from "@/finanzas/entities/tipo.entity";
 import { finanzasSeeder } from "@/finanzas/seeders/finanzas.seeder";
 import { CategoriesFinanzas } from "@/finanzas/entities/categories.entity";
 import cache from "@vigilio/express-core/cache";
-import { hosts } from "~/config/server";
 import { GridBanner } from "../entities/grid_banner.entity";
 import { Users } from "@/users/entities/users.entity";
 import { usersSeeder } from "@/users/seeders/users.seeder";
@@ -64,12 +63,6 @@ import type { Features } from "@/products/entities/options/features.entity";
 import { Brands } from "@/products/entities/brands.entitiy";
 import { ProductsApiService } from "@/products/services/products.api.service";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
-
-export function deleteHostCache() {
-    for (const host of hosts) {
-        cache.delete(host!);
-    }
-}
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
@@ -371,7 +364,6 @@ export class EmpresasApiService {
             },
         });
         await data!.update(body);
-        deleteHostCache();
         return {
             success: true,
             message: "Editado correctamente",
@@ -390,8 +382,6 @@ export class EmpresasApiService {
             payments: rest,
             credentials: { ...data.credentials, open_ai: paymentDto.token },
         });
-        deleteHostCache();
-        cache.delete(`EMPRESA:${data.slug}`);
         cache.delete(`EMPRESA:${slug}`);
         return {
             success: true,
@@ -1199,8 +1189,6 @@ export class EmpresasApiService {
         empresa: Empresas,
         body: Pick<EmpresasSchema, "whatsapp_mode">
     ) {
-        deleteHostCache();
-
         const response = await fetch(
             `${enviroments.VITE_VIGILIO_WEB}/api/empresas/whatsapp/${empresa.slug}`,
             {
@@ -1349,7 +1337,6 @@ export class EmpresasApiService {
                 },
             }
         );
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
@@ -1404,7 +1391,6 @@ export class EmpresasApiService {
             data[0].length || data[1].length || data[2].length
                 ? body.transferencias
                 : null;
-        deleteHostCache();
         await metodo.update(body);
         return {
             success: true,
@@ -1427,8 +1413,6 @@ export class EmpresasApiService {
                 await initializeBot(empresa, empresasUpdateDto.telegram_token);
             }
 
-            deleteHostCache();
-            cache.delete(`EMPRESA:${empresa!.id}`);
             cache.delete(`EMPRESA:${empresa.slug}`);
             await empresa.update(empresasUpdateDto);
             return {
@@ -1445,9 +1429,7 @@ export class EmpresasApiService {
             attributes: ["id", "whatsappconfig", "slug"],
         });
         if (!empresa) throw new NotFoundException("Error empresas.");
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
-        deleteHostCache();
         await empresa.update({ whatsappconfig });
         return {
             success: true,
@@ -1460,9 +1442,7 @@ export class EmpresasApiService {
     ) {
         const { empresa } = await this.show(emp.slug);
         // to reutilize if company no update certificado
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
-        deleteHostCache();
         await empresa.update({
             company: companyStoreDto,
         });
@@ -1480,12 +1460,10 @@ export class EmpresasApiService {
             attributes: ["inteligenceArtificial", "id"],
         });
         if (!empresa) throw new BadRequestException("No informacion");
-        deleteHostCache();
         // to reutilize if company no update certificado
         await empresa.update({
             inteligenceArtificial: empresasIAUpdateDto.inteligenceArtificial,
         });
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
@@ -1518,8 +1496,6 @@ export class EmpresasApiService {
         const address = await Address.findOne({
             where: { empresa_id: empresa!.id },
         });
-        deleteHostCache();
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await address!.update(body);
         return {
@@ -1547,7 +1523,6 @@ export class EmpresasApiService {
             }
             return contacto;
         });
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({
             contacts: newChanges,
@@ -1592,7 +1567,6 @@ export class EmpresasApiService {
                     body: "telephone",
                 }
             );
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({
             contacts: [
@@ -1625,7 +1599,6 @@ export class EmpresasApiService {
         await empresa.update({
             contacts: filtered,
         });
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
@@ -1634,7 +1607,6 @@ export class EmpresasApiService {
     }
     async scheduleUpdate(emp: Empresas, body: { schedule: ScheduleSchema[] }) {
         const { empresa } = await this.show(emp.slug);
-        deleteHostCache();
         await empresa.update({ schedule: body.schedule });
         return {
             success: true,
@@ -1668,8 +1640,6 @@ export class EmpresasApiService {
             },
         });
         const time = NOW(empresa).add(4, "minute");
-        deleteHostCache();
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await setting?.update({
             host: {
@@ -1721,8 +1691,6 @@ export class EmpresasApiService {
                 enabled: true,
             },
         });
-        deleteHostCache();
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         cache.delete("CACHE_HOST");
         return {
@@ -1750,7 +1718,6 @@ export class EmpresasApiService {
             },
         });
         const time = NOW(empresa).add(4, "minute");
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         cache.delete("CACHE_HOST");
         await setting?.update({
@@ -1816,7 +1783,6 @@ export class EmpresasApiService {
                 { body: "name" }
             );
         const groupWhatsapp = [...(empresa.groupWhatsapp || []), body];
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({ groupWhatsapp });
         return {
@@ -1841,7 +1807,6 @@ export class EmpresasApiService {
                 ? { name: body.name, members: body.members }
                 : group
         );
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({ groupWhatsapp });
         return {
@@ -1856,7 +1821,6 @@ export class EmpresasApiService {
             attributes: ["id", "contacts", "groupWhatsapp"],
         });
         if (!empresa) throw new NotFoundException("Error empresas.");
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({ contacts: [], groupWhatsapp: [] });
         return {
@@ -1873,7 +1837,6 @@ export class EmpresasApiService {
         const groupWhatsapp = empresa!.groupWhatsapp.filter(
             (gro) => gro.name !== group
         );
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa.update({ groupWhatsapp });
         return {
@@ -1905,7 +1868,6 @@ export class EmpresasApiService {
             }
             return group;
         });
-        cache.delete(`EMPRESA:${empresa!.id}`);
         cache.delete(`EMPRESA:${empresa.slug}`);
         await empresa!.update({ groupWhatsapp });
         return {
@@ -1922,8 +1884,6 @@ export class EmpresasApiService {
             if (fs.existsSync(dir)) {
                 fs.rmdirSync(dir, { recursive: true });
             }
-            deleteHostCache();
-            cache.delete(`EMPRESA:${empresa!.id}`);
             cache.delete(`EMPRESA:${empresa.slug}`);
             await empresa.destroy({ force: true });
             await terminal(`docker container stop ${empresa.slug} || true`);

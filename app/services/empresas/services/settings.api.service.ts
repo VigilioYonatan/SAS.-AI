@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from "@vigilio/express-core";
 import type { Empresas } from "../entities/empresas.entity";
 import { Settings } from "../entities/settings.entity";
 import type { SettingsUpdateDto } from "../dtos/settings.update.dto";
-import { deleteHostCache } from "./empresas.api.service";
 
 @Injectable()
 export class SettingsApiService {
@@ -21,7 +20,6 @@ export class SettingsApiService {
 
 	async update(empresa: Empresas, body: SettingsUpdateDto) {
 		const { data } = await this.index(empresa);
-		deleteHostCache();
 		await data.update(body);
 		return {
 			success: true,

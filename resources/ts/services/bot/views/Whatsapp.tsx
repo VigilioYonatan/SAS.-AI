@@ -973,7 +973,14 @@ export function QrWhatsapp() {
                                     <li class="dark:text-white text-center text-sm">
                                         *Si se conectó correctamente, esperar
                                         unos minutos para añadir tus contactos
-                                        automáticamente.{" "}
+                                        automáticamente. <br />
+                                        <img
+                                            class="mx-auto w-[200px] rounded-md"
+                                            title="whatsapp"
+                                            width={100}
+                                            src="/images/settings/others/whatsapp-success.jfif"
+                                            alt="whatsapp"
+                                        />
                                     </li>
                                 </ul>
                             </>

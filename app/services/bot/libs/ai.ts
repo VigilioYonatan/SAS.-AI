@@ -99,7 +99,7 @@ export async function isWhatsappTelegramIA(
         if (!e) return null;
         emp = e.toJSON() as Empresas;
         const hour24 = 24 * 60 * 60 * 1000;
-        cache.set(`EMPRESA:${empresa}`, JSON.stringify(emp), hour24);
+        cache.set(`EMPRESA:${empresa}`, JSON.stringify(e.slug), hour24);
     }
     if (!emp) return null;
     const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
@@ -320,10 +320,7 @@ export async function updateTokensEmpresa(
         JSON.stringify({ ...empresaUpdate })
     );
     // await Empresas.update(empresaUpdate, { where: { slug: empresa.slug } });
-    cache.set(
-        `EMPRESA:${empresa.id}`,
-        JSON.stringify({ ...empresa, ...empresaUpdate })
-    );
+
     cache.set(
         `EMPRESA:${empresa.slug}`,
         JSON.stringify({ ...empresa, ...empresaUpdate })
@@ -641,7 +638,6 @@ cron.schedule("0 0 * * *", () => {
     chatsTelegram = {};
 });
 cron.schedule("*/4 * * * *", async () => {
-
     const empresas = await Empresas.unscoped().findAll({
         attributes: ["id", "slug"],
     });
