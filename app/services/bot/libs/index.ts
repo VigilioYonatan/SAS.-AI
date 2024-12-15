@@ -435,7 +435,7 @@ export async function promptReplace(
     }
     let precioEnvio = "";
 
-    if (isTemaEnvio) {
+    if (isTemaEnvio && empresa.enable_sell_country) {
         let dbPais = JSON.parse(
             cache.get(`price_country:${empresa.id}`) ?? "null"
         );
