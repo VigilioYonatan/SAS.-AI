@@ -104,7 +104,9 @@ export async function onDb(empresa: Empresas) {
                                 ),
                                 unidades: ilimit
                                     ? "en stock"
-                                    : `${stock || 0} unidades`,
+                                    : stock > 0
+                                    ? `${stock || 0} unidades`
+                                    : "agotado",
                             };
                         }
                     )
@@ -157,7 +159,9 @@ export async function onDb(empresa: Empresas) {
                     price: subtotalIgv(empresa!, product),
                     unidades: product.ilimit
                         ? "en stock"
-                        : `${product.stock || 0} unidades`,
+                        : product.stock > 0
+                        ? `${product.stock || 0} unidades`
+                        : "agotado",
                     disponible: product.enabled,
                     category_id: product.category_id ?? null,
                     url: product.url ?? null,
