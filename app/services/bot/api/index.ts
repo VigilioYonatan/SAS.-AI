@@ -50,7 +50,7 @@ export async function whatsappSendFileApi(
 ): Promise<{ success: boolean; message: string }> {
     const { telephone, ...rest } = body;
     const formdata = new FormData();
-    console.log(JSON.stringify(rest.options));
+    console.log(JSON.stringify(JSON.stringify(rest.options)));
 
     if (rest.name) {
         formdata.append("name", rest.name);
@@ -66,7 +66,10 @@ export async function whatsappSendFileApi(
         formdata.append("delay", String(rest.delay));
     }
     if (rest.options) {
-        formdata.append("options", JSON.stringify(rest.options));
+        formdata.append(
+            "options",
+            JSON.stringify(JSON.stringify(rest.options))
+        );
     }
     const response = await fetch(
         `${BASE_URL_WHATSAPP(
