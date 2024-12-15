@@ -109,7 +109,7 @@ export async function onDb(empresa: Empresas) {
                         }
                     )
                 );
-               
+
                 return {
                     id: product.id,
                     name: product.name.toLowerCase(),
@@ -337,13 +337,10 @@ export async function promptReplace(
                     ),
                 };
             } else {
-                productsData =
-                    empresa.isTemplate || data.products.length < 30
-                        ? {
-                              ...data,
-                              products: data.products,
-                          }
-                        : ({} as DataPrompt);
+                productsData = {
+                    ...data,
+                    products: data.products,
+                };
             }
         }
     }
