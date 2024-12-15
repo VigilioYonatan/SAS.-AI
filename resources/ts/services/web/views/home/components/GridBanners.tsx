@@ -9,6 +9,9 @@ interface GridBanners {
 }
 function GridBanners({ grid, i }: GridBanners) {
     const gr = grid[i];
+    console.log({ grid });
+    console.log({ gr });
+
     if (!gr.enabled) return null;
     return (
         <section
