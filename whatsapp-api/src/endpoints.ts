@@ -62,6 +62,7 @@ export async function sendFile(req: Request, res: Response) {
         const options: any = field.options
             ? JSON.parse(JSON.parse(field.options[0]))
             : {};
+
         if (!query.telephone)
             return res.status(400).json({
                 success: false,
