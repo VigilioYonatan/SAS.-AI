@@ -93,24 +93,28 @@ export async function initialWhatsapp() {
     client.on("ready", async () => {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("******      ready      *********");
-        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-        console.log(JSON.stringify((await client.getContacts()).slice(0, 10)));
-        const contacts = await client.getContacts();
-        const response = await fetch(`${BASE_URL}/api/whatsapp/ready`, {
-            method: "POST",
-            body: JSON.stringify({
-                contacts: contacts.map((c) => ({
-                    name: c.name || "desconocido",
-                    id: { _serialized: c.id._serialized },
-                })),
-            }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const resultready = await response.json();
-        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-        console.log({ resultready });
+        try {
+            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+            console.log(
+                JSON.stringify((await client.getContacts()).slice(0, 10))
+            );
+            const contacts = await client.getContacts();
+            const response = await fetch(`${BASE_URL}/api/whatsapp/ready`, {
+                method: "POST",
+                body: JSON.stringify({
+                    contacts: contacts.map((c) => ({
+                        name: c.name || "desconocido",
+                        id: { _serialized: c.id._serialized },
+                    })),
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const resultready = await response.json();
+            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+            console.log({ resultready });
+        } catch (error) {}
     });
 
     client.on("message", async (message) => {
@@ -130,24 +134,26 @@ export async function initialWhatsapp() {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const notifyName = (message as any)._data.notifyName;
         const quotedMessageId = message.id._serialized;
-        const response = await fetch(
-            `${BASE_URL}/api/whatsapp/receive-message`,
-            {
-                method: "POST",
-                body: JSON.stringify({
-                    isGroup: chat.isGroup,
-                    content,
-                    from: message.from,
-                    type: message.type,
-                    notifyName,
-                    quotedMessageId,
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-        const resultMessage = await response.json();
+        try {
+            const response = await fetch(
+                `${BASE_URL}/api/whatsapp/receive-message`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        isGroup: chat.isGroup,
+                        content,
+                        from: message.from,
+                        type: message.type,
+                        notifyName,
+                        quotedMessageId,
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            const resultMessage = await response.json();
+        } catch (error) {}
     });
     client.on("disconnected", async () => {
         const response = await fetch(`${BASE_URL}/api/whatsapp/disconnected`, {
