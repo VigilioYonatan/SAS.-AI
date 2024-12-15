@@ -5,7 +5,7 @@ import { useEffect } from "preact/hooks";
 import dayjs, { delay, NOW } from "~/libs/helpers";
 
 function initialStorage() {
-    const noticiaStorage = localStorage.getItem("noticia") ?? null;
+    const noticiaStorage = localStorage.getItem("pwa") ?? null;
     return !noticiaStorage || !NOW().isBefore(dayjs(noticiaStorage));
 }
 
@@ -96,6 +96,11 @@ function MessagePWA() {
                         onClick={() => {
                             showBanner.value = false;
                             initial.value = false;
+                            localStorage.setItem(
+                                "pwa",
+                                // cada 2 horas para que guarde
+                                NOW().add(2, "hour").toISOString()
+                            );
                         }}
                     >
                         x
