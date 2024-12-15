@@ -9,10 +9,8 @@ interface GridBanners {
 }
 function GridBanners({ grid, i }: GridBanners) {
     const gr = grid[i];
-    console.log({ grid });
-    console.log({ gr });
 
-    if (!gr.enabled) return null;
+    if (!gr?.enabled) return null;
     return (
         <section
             class={` grid-banner-${i}  max-w-6xl mx-auto my-4 md:my-8 relative `}
