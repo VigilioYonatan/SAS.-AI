@@ -50,7 +50,7 @@ export async function whatsappSendFileApi(
 ): Promise<{ success: boolean; message: string }> {
     const { telephone, ...rest } = body;
     const formdata = new FormData();
-    console.log(JSON.stringify(JSON.stringify(rest.options)));
+    console.log({ opt: JSON.stringify(JSON.stringify(rest.options)) });
 
     if (rest.name) {
         formdata.append("name", rest.name);
