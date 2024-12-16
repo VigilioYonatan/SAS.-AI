@@ -118,6 +118,8 @@ function BackgroundIndex() {
                                                                         "1300px",
                                                                     isCloseInBackground:
                                                                         false,
+                                                                    position:
+                                                                        "start",
                                                                 })
                                                             );
                                                         }}
