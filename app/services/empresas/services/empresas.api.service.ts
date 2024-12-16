@@ -121,6 +121,7 @@ export class EmpresasApiService {
             },
         });
         if (!data) throw new NotFoundException("no se encontró settings");
+
         cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
@@ -364,7 +365,9 @@ export class EmpresasApiService {
                 empresa_id: empresa!.id,
             },
         });
+
         await data!.update(body);
+
         cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
