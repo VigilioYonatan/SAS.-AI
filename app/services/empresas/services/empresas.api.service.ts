@@ -121,6 +121,7 @@ export class EmpresasApiService {
             },
         });
         if (!data) throw new NotFoundException("no se encontró settings");
+        cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
             data,
@@ -364,6 +365,7 @@ export class EmpresasApiService {
             },
         });
         await data!.update(body);
+        cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
             message: "Editado correctamente",
@@ -1355,6 +1357,7 @@ export class EmpresasApiService {
             // biome-ignore lint/style/noUnusedTemplateLiteral: <explanation>
             throw new NotFoundException(`No se encontró un informacion`);
         }
+        cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
             empresa,
@@ -1370,6 +1373,7 @@ export class EmpresasApiService {
 
         if (!metodo)
             throw new BadRequestException("No se encontró metodo de pago");
+        cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
             metodo,
@@ -1477,6 +1481,7 @@ export class EmpresasApiService {
             attributes: ["id", "contacts", "groupWhatsapp"],
         });
         if (!empresa) throw new NotFoundException("Error empresas.");
+
         return { success: true, data: empresa.contacts };
     }
     async favorites(slug: string) {
@@ -1489,6 +1494,7 @@ export class EmpresasApiService {
         const favorites = empresa.contacts.filter(
             (empresa) => empresa.isFavorite
         );
+        cache.delete(`EMPRESA:${empresa.slug}`);
         return { success: true, favorites };
     }
 
