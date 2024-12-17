@@ -21,8 +21,8 @@ function TitleSection({ children, titleExample }: TitleSectionProps) {
                     title === "border"
                         ? "border-b-[4px] border-primary self-start "
                         : title === "normal"
-                        ? "title-container-1"
-                        : ""
+                        ? "title-container-1 text-center"
+                        : " text-center"
                 }   font-bold  dark:text-white flex justify-center flex-col items-center `}
             >
                 {children}

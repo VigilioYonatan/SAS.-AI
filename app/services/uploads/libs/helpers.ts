@@ -306,7 +306,7 @@ export function printFileWithDimension(empresa: Empresas) {
         return filterImages.map((file) =>
             file.file!.startsWith("https://")
                 ? file.file
-                : `${BASE_URL(empresa)}/empresas/${empresa.slug}${file.file}`
+                : `${BASE_URL(empresa)}/empresas/${empresa.slug}/${file.file}`
         );
     };
 }
