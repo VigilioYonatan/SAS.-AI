@@ -607,48 +607,43 @@ export class WebsocketsService {
             return null;
         if (![ROLES.trabajador, ROLES.admin].includes(user.role_id))
             return null;
-        let floors = null;
-        try {
-            floors = await Floors.findAll({
-                include: [
-                    {
-                        model: Mesas,
-                        include: [
-                            {
-                                model: Orders,
-                                include: [
-                                    {
-                                        model: StatusOrders,
-                                        where: {
-                                            id: [
-                                                STATUSORDER.confirmado,
-                                                STATUSORDER.preparado,
-                                            ], //solo los que estan confirmados y preparados
-                                        },
+        const floors = await Floors.findAll({
+            include: [
+                {
+                    model: Mesas,
+                    include: [
+                        {
+                            model: Orders,
+                            include: [
+                                {
+                                    model: StatusOrders,
+                                    where: {
+                                        id: [
+                                            STATUSORDER.confirmado,
+                                            STATUSORDER.preparado,
+                                        ], //solo los que estan confirmados y preparados
                                     },
-                                ],
-                                attributes: [
-                                    "id",
-                                    "order_code",
-                                    "status_order_id",
-                                ] as (keyof OrdersSchema)[],
-                            },
-                        ],
-                        order: [["createdAt", "ASC"]],
-                    },
-                    {
-                        model: Empresas.unscoped(),
-                        where: {
-                            slug: empresa,
+                                },
+                            ],
+                            attributes: [
+                                "id",
+                                "order_code",
+                                "status_order_id",
+                            ] as (keyof OrdersSchema)[],
                         },
-                        attributes: ["slug"],
-                        required: true,
+                    ],
+                    order: [["createdAt", "ASC"]],
+                },
+                {
+                    model: Empresas.unscoped(),
+                    where: {
+                        slug: empresa,
                     },
-                ],
-            });
-        } catch (error) {
-            console.log((error as Error).message);
-        }
+                    attributes: ["slug"],
+                    required: true,
+                },
+            ],
+        });
 
         return { success: true, floors };
     }
