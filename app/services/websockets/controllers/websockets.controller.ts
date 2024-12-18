@@ -43,7 +43,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
                 ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
                 [
                     "user",
-                    `${message}. [[en html no mkdown, revisa base de datos y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA!!!.]]`,
+                    `${message}. [[en html no mkdown, formato chat persona a persona, no web, revisa base de datos y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA!!!.]]`,
                 ],
             ],
         };
@@ -68,7 +68,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         const messageActual = `Mensajes Anterior: ${messageAnterior.join(
             ", "
         )}.\n
-        Mensaje Actual: ${message}. y en html`;
+        Mensaje Actual: ${message}.`;
 
         const prompt = await promptReplace(whatsapp, messageActual!, empresa);
 
