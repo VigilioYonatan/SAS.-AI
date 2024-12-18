@@ -635,15 +635,11 @@ export class WebsocketsService {
                     order: [["createdAt", "ASC"]],
                 },
                 {
-                    include: [
-                        {
-                            model: Empresas,
-                            where: {
-                                slug: empresa,
-                            },
-                            required: true,
-                        },
-                    ],
+                    model: Empresas,
+                    where: {
+                        slug: empresa,
+                    },
+                    required: true,
                 },
             ],
         });
