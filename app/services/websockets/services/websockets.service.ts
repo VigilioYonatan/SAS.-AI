@@ -59,7 +59,7 @@ export class WebsocketsService {
         }
     ) {
         const emp = await Empresas.unscoped().findOne({
-            where: { id: empresa },
+            where: { slug: empresa },
             attributes: ["id", "logo", "money", "slug"],
         });
         if (!emp) return;
@@ -119,7 +119,7 @@ export class WebsocketsService {
         }
     ) {
         const emp = await Empresas.unscoped().findOne({
-            where: { id: empresa },
+            where: { slug: empresa },
             attributes: ["id", "logo", "money", "slug"],
         });
         if (!emp) return;
@@ -195,7 +195,7 @@ export class WebsocketsService {
         }
     ) {
         const emp = await Empresas.findOne({
-            where: { id: empresa },
+            where: { slug: empresa },
             attributes: [
                 "id",
                 "logo",
@@ -391,7 +391,7 @@ export class WebsocketsService {
         }
     ) {
         const emp = await Empresas.findOne({
-            where: { id: empresa },
+            where: { slug: empresa },
             attributes: [
                 "id",
                 "logo",
@@ -595,7 +595,8 @@ export class WebsocketsService {
             cache.get(`isRestaurant:${empresa}`) || "null"
         );
         if (!isEmpresaRestaurant) {
-            const empresas = await Empresas.unscoped().findByPk(empresa, {
+            const empresas = await Empresas.unscoped().findOne({
+                where: { slug: empresa },
                 include: [TipoEmpresa.unscoped()],
             });
             isEmpresaRestaurant = empresas;

@@ -6,36 +6,36 @@ import { generateId } from "@vigilio/express-core/helpers";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 export function getId() {
-	const key = `${storageEmpresa?.slug}:chatUserId`;
-	if (!localStorage.getItem(key)) {
-		localStorage.setItem(key, generateId());
-	}
+    const key = `${storageEmpresa?.slug}:chatUserId`;
+    if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, generateId());
+    }
 
-	return localStorage.getItem(key);
+    return localStorage.getItem(key);
 }
 
 const io = signal<Socket | null>(null);
 
 export function useSocketStore() {
-	/* contectar socket */
-	function connectSocket() {
-		const socketio = socket({
-			query: {
-				"x-user": authStorage ? authStorage?.id : "null",
-				"x-token": getId() ?? "null",
-				"x-empresa": storageEmpresa ? storageEmpresa.id : "null",
-			},
-			autoConnect: true,
-			forceNew: true,
-		});
-		io.value = socketio;
+    /* contectar socket */
+    function connectSocket() {
+        const socketio = socket({
+            query: {
+                "x-user": authStorage ? authStorage?.id : "null",
+                "x-token": getId() ?? "null",
+                "x-empresa": storageEmpresa ? storageEmpresa.slug : "null",
+            },
+            autoConnect: true,
+            forceNew: true,
+        });
+        io.value = socketio;
 
-		return () => socketio.disconnect();
-	}
+        return () => socketio.disconnect();
+    }
 
-	return {
-		io: io.value,
-		connectSocket,
-	};
+    return {
+        io: io.value,
+        connectSocket,
+    };
 }
 export default useSocketStore;
