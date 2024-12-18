@@ -611,13 +611,14 @@ function SettingsIndex() {
                     />
                 </Form>
                 <br />{" "}
-                <AlertInfo>
+                <AlertWarning>
                     <span class="font-semibold">
-                        <b class="font-bold">¿Sabias que?</b> El 90% de los
-                        usuarios, usan un dispositivo móvil para realizar
-                        compras por internet.
+                        <b class="font-bold">
+                            Este campo es recomendable si eres desarrollador
+                            web.
+                        </b>
                     </span>
-                </AlertInfo>
+                </AlertWarning>
                 <Form
                     className="flex gap-4 flex-col"
                     {...settingsUpdateform}

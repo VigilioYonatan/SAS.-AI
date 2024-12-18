@@ -578,7 +578,7 @@ function ServicioPage({
                         <TitleSectionTwo>
                             <>Más de {category_name}</>
                         </TitleSectionTwo>
-                        <div class="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 justify-center lg:h-[1200px] p-2 overflow-y-auto">
+                        <div class="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 justify-center lg:h-[1200px] p-2 overflow-y-auto items-start">
                             {categoriesproductsrandom.map((service) => (
                                 <ServicioCard
                                     servicio={service}

@@ -123,7 +123,7 @@ function BannersIndex() {
             <div class="flex flex-col gap-4 [&>header]:relative">
                 <div>
                     <div class="flex gap-2 mb-2">
-                        <div class="flex gap-2">
+                        <div class="grid grid-cols-4 gap-2">
                             <button
                                 type="button"
                                 onClick={() => {
@@ -180,16 +180,15 @@ function BannersIndex() {
                                 </button>
                             ) : null}
                         </div>
-                        {useMediaQuery("(max-width:1000px)") ? (
-                            <AlertInfo>
-                                <span class=" text-sm font-semibold">
-                                    Se recomienda Editar los Banners en una
-                                    Laptop/PC
-                                </span>
-                            </AlertInfo>
-                        ) : null}
                     </div>
-
+                    {useMediaQuery("(max-width:1000px)") ? (
+                        <AlertInfo>
+                            <span class=" text-sm font-semibold">
+                                Se recomienda Editar los Banners en una
+                                Laptop/PC
+                            </span>
+                        </AlertInfo>
+                    ) : null}
                     <div class="flex justify-between">
                         <span class="font-bold text-sm">
                             Ancho Actual: <b>{widthResponsive}PX</b>{" "}

@@ -185,8 +185,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
             {
                 title: (
                     <span>
-                        <i class="fa-sharp-duotone fa-solid fa-image-landscape" />{" "}
-                        Banners
+                        <i class="fas fa-globe" /> Páginas
                     </span>
                 ),
                 to: "/banners",

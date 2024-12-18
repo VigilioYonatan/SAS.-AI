@@ -8,7 +8,7 @@ import { valibotVigilio } from "~/libs/valibot";
 import Form from "~/components/form";
 import { Fragment } from "preact/jsx-runtime";
 import { getParams, handlerError } from "~/libs/helpers";
-import { useMemo } from "preact/hooks";
+import { useEffect, useMemo } from "preact/hooks";
 import { formSelectNumber } from "~/components/form/FormSelect";
 import { Signal } from "@preact/signals";
 import { gridBannerServiceIndexApi } from "../apis/grid_banner_service/grid_banner_service.index.api";
@@ -27,6 +27,9 @@ function ServiciosPageIndex({ type }: ServiciosPageIndexProps) {
     const bannerParams = getParams().get("banner");
 
     const gridBannerIndexQuery = gridBannerServiceIndexApi({ type });
+    useEffect(() => {
+        gridBannerIndexQuery.refetch(false);
+    }, [type.value]);
     let component: JSX.Element | JSX.Element[] | null = null;
     if (gridBannerIndexQuery.isLoading) {
         component = <Loading />;

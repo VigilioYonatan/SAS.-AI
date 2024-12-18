@@ -634,10 +634,18 @@ export class WebsocketsService {
                     ],
                     order: [["createdAt", "ASC"]],
                 },
+                {
+                    include: [
+                        {
+                            model: Empresas,
+                            where: {
+                                slug: empresa,
+                            },
+                            required: true,
+                        },
+                    ],
+                },
             ],
-            where: {
-                empresa_id: empresa,
-            },
         });
 
         return { success: true, floors };
