@@ -71,7 +71,7 @@ function BackgroundIndex() {
                                                     }
                                                     width={1600}
                                                     height={1600}
-                                                    alt={background.title}
+                                                    alt={background.title || ""}
                                                 />
                                             )}
 
@@ -83,14 +83,17 @@ function BackgroundIndex() {
                                                     {background.description ??
                                                         ""}
                                                 </p>
-                                                <a
-                                                    class="text-white bg-primary px-4 py-2 rounded-md font-semibold  text-xs"
-                                                    href={background.url}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    Más información
-                                                </a>
+                                                {background.url ? (
+                                                    <a
+                                                        class="text-white bg-primary px-4 py-2 rounded-md font-semibold  text-xs"
+                                                        href={background.url}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                    >
+                                                        Más información
+                                                    </a>
+                                                ) : null}
+
                                                 <div class="flex gap-2">
                                                     <button
                                                         class="bg-orange-600 text-white px-2 py-1 rounded-md text-xs"

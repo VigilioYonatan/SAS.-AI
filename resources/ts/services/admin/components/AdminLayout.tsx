@@ -191,16 +191,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 ),
                 to: "/banners",
             },
-            storageEmpresa?.setting.is_service_page
-                ? {
-                      title: (
-                          <span>
-                              <i class="fal fa-building" /> Servicios
-                          </span>
-                      ),
-                      to: "/servicios_page",
-                  }
-                : null,
+
             {
                 title: (
                     <span>

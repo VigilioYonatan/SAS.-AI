@@ -23,6 +23,7 @@ import TitleSection from "@/web/components/TitleSection";
 import { gridBannerServiceIndexApi } from "../apis/grid_banner_service/grid_banner_service.index.api";
 import { useEffect } from "preact/hooks";
 import ServiciosPageIndex from "./ServiciosPageIndex";
+import { storageEmpresa } from "../stores/empresa.store";
 export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
 
 function BannersIndex() {
@@ -162,20 +163,22 @@ function BannersIndex() {
                             >
                                 <i class="fab fa-blogger-b" /> Blog Page
                             </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    typeBanner.value = "service";
-                                }}
-                                class={`${
-                                    typeBanner.value === "service"
-                                        ? "bg-primary"
-                                        : ""
-                                } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs`}
-                            >
-                                <i class="fas fa-handshake-alt" /> Servicios
-                                Page
-                            </button>
+                            {storageEmpresa?.setting.is_service_page ? (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        typeBanner.value = "service";
+                                    }}
+                                    class={`${
+                                        typeBanner.value === "service"
+                                            ? "bg-primary"
+                                            : ""
+                                    } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs`}
+                                >
+                                    <i class="fas fa-handshake-alt" /> Servicios
+                                    Page
+                                </button>
+                            ) : null}
                         </div>
                         {useMediaQuery("(max-width:1000px)") ? (
                             <AlertInfo>

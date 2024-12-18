@@ -254,37 +254,41 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                                             }
                                                         </p>
                                                     ) : null}
-                                                    <a
-                                                        href={background.url}
-                                                        style={{
-                                                            "--brightness-delay":
-                                                                "8s",
-                                                        }}
-                                                        class={`bg-primary animation-brightness ${
-                                                            storageEmpresa
-                                                                ?.setting
-                                                                .type_border ===
-                                                            "circle"
-                                                                ? "rounded-md"
-                                                                : ""
-                                                        }   text-sm md:text-base background-home-button-${
-                                                            i + 1
-                                                        }  text-white hover:text-primary border delay-custom-1 border-primary px-4 py-2   font-semibold tracking-wider ${
-                                                            storageEmpresa
-                                                                ?.setting
-                                                                .background_position ===
-                                                            "start"
-                                                                ? "self-start"
-                                                                : storageEmpresa
-                                                                      ?.setting
-                                                                      .background_position ===
-                                                                  "center"
-                                                                ? "self-center"
-                                                                : "self-end"
-                                                        }`}
-                                                    >
-                                                        Más información
-                                                    </a>
+                                                    {background.url ? (
+                                                        <a
+                                                            href={
+                                                                background.url
+                                                            }
+                                                            style={{
+                                                                "--brightness-delay":
+                                                                    "8s",
+                                                            }}
+                                                            class={`bg-primary animation-brightness ${
+                                                                storageEmpresa
+                                                                    ?.setting
+                                                                    .type_border ===
+                                                                "circle"
+                                                                    ? "rounded-md"
+                                                                    : ""
+                                                            }   text-sm md:text-base background-home-button-${
+                                                                i + 1
+                                                            }  text-white hover:text-primary border delay-custom-1 border-primary px-4 py-2   font-semibold tracking-wider ${
+                                                                storageEmpresa
+                                                                    ?.setting
+                                                                    .background_position ===
+                                                                "start"
+                                                                    ? "self-start"
+                                                                    : storageEmpresa
+                                                                          ?.setting
+                                                                          .background_position ===
+                                                                      "center"
+                                                                    ? "self-center"
+                                                                    : "self-end"
+                                                            }`}
+                                                        >
+                                                            Más información
+                                                        </a>
+                                                    ) : null}
                                                 </div>
                                             </div>
                                             {printFileWithDimension(

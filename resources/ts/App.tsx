@@ -136,17 +136,6 @@ function App() {
                                 )}
                             />
                         ) : null}
-                        {storageEmpresa?.setting.is_service_page ? (
-                            <Route
-                                path="/servicios_page"
-                                component={lazy(
-                                    () =>
-                                        import(
-                                            "@/empresas/views/ServiciosPageIndex"
-                                        )
-                                )}
-                            />
-                        ) : null}
                         <Route
                             path="/cupones"
                             component={lazy(
