@@ -24,6 +24,8 @@ import { productsServicioSchema } from "@/products/schemas/products_servicio.sch
 import { brandsSchema } from "@/products/schemas/brands.schema";
 import { productsNormalStoreDto } from "@/products/dtos/products_normal.dto";
 import { subcategoriesSchema } from "@/products/schemas/subcategories.schema";
+import { gridBannerAboutSchema } from "../schemas/grid-banner-about.schema";
+import { gridBannerShopSchema } from "../schemas/grid-banner-shop.schema";
 
 export const empresasStoreDto = mergeAsync([
     omitAsync(
@@ -75,6 +77,8 @@ export const empresasStoreDto = mergeAsync([
         setting: omitAsync(settingsSchema, ["id", "empresa_id"]),
         gridBanners: nullableAsync(arrayAsync(gridBannerSchema)),
         gridBannersService: nullableAsync(arrayAsync(gridBannerServicechema)),
+        gridBannersAbout: nullableAsync(arrayAsync(gridBannerAboutSchema)),
+        gridBannersShop: nullableAsync(arrayAsync(gridBannerShopSchema)),
         backgrounds: arrayAsync(backgroundSchema),
         files: arrayAsync(fileSchema),
         brands: arrayAsync(brandsSchema),

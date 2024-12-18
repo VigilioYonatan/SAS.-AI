@@ -1,5 +1,3 @@
-import AdminBreadCrumb from "@/admin/components/AdminBreadCrumb";
-import Container from "@/admin/components/Container";
 import Loading from "@/admin/components/Loading";
 import View404 from "@/admin/views/404";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
@@ -10,11 +8,9 @@ import { valibotVigilio } from "~/libs/valibot";
 import Form from "~/components/form";
 import { Fragment } from "preact/jsx-runtime";
 import { getParams, handlerError } from "~/libs/helpers";
-import useMediaQuery, { ResponsiveWidth } from "~/hooks/useMediaQuery";
-import AlertInfo from "~/components/Alerts/AlertInfo";
 import { useMemo } from "preact/hooks";
 import { formSelectNumber } from "~/components/form/FormSelect";
-import { useSignal } from "@preact/signals";
+import { Signal } from "@preact/signals";
 import { gridBannerServiceIndexApi } from "../apis/grid_banner_service/grid_banner_service.index.api";
 import {
     gridBannerServiceUpdateDto,
@@ -24,11 +20,13 @@ import { gridBannerServiceUpdateApi } from "../apis/grid_banner_service/grid_ban
 import { gridBannerIndexApi } from "../apis/grid_banner/grid_banner.index.api";
 import TitleSection from "@/web/components/TitleSection";
 export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
-function ServiciosPageIndex() {
-    const gridBannerIndexQuery = gridBannerServiceIndexApi();
-    const widthResponsive = ResponsiveWidth();
-    const showHtml = useSignal(HTMLSHOW);
+interface ServiciosPageIndexProps {
+    type: Signal<string>;
+}
+function ServiciosPageIndex({ type }: ServiciosPageIndexProps) {
     const bannerParams = getParams().get("banner");
+
+    const gridBannerIndexQuery = gridBannerServiceIndexApi({ type });
     let component: JSX.Element | JSX.Element[] | null = null;
     if (gridBannerIndexQuery.isLoading) {
         component = <Loading />;
@@ -66,6 +64,7 @@ function ServiciosPageIndex() {
                                                     <GridBannerUpdate
                                                         grid={f}
                                                         i={g}
+                                                        type={type}
                                                         onClose={onClose}
                                                         refetch={
                                                             gridBannerIndexQuery.refetch
@@ -103,52 +102,11 @@ function ServiciosPageIndex() {
         );
     }
 
-    return (
-        <Container className="p-2 dark:text-white">
-            <div className="flex flex-col gap-4 mx-1 ">
-                <AdminBreadCrumb current="Banners" />
-            </div>
-            <div class="flex flex-col gap-4 [&>header]:relative">
-                <div>
-                    {useMediaQuery("(max-width:1000px)") ? (
-                        <AlertInfo>
-                            <span class=" text-sm font-semibold">
-                                Se recomienda Editar los Banners en una
-                                Laptop/PC
-                            </span>
-                        </AlertInfo>
-                    ) : null}
-                    <div class="flex justify-between">
-                        <span class="font-bold text-sm">
-                            Ancho Actual: <b>{widthResponsive}PX</b>{" "}
-                        </span>
-                        <label class="text-xs dark:text-white font-semibold">
-                            <input
-                                type="checkbox"
-                                checked={showHtml.value}
-                                name="active"
-                                onChange={(e) => {
-                                    showHtml.value = (
-                                        e.target as HTMLInputElement
-                                    ).checked;
-                                    localStorage.setItem(
-                                        "show-html",
-                                        JSON.stringify(showHtml.value)
-                                    );
-                                }}
-                                class="mr-2"
-                            />
-                            Show HTML
-                        </label>
-                    </div>
-                </div>
-                {component}
-            </div>
-        </Container>
-    );
+    return component;
 }
 interface GridBannerEditProps {
     grid: GridBannerSchema;
+    type: Signal<string>;
     i: number;
     onClose: () => void;
     refetch: (clean?: boolean) => void;
@@ -158,8 +116,9 @@ export function GridBannerUpdate({
     i,
     onClose,
     refetch,
+    type,
 }: GridBannerEditProps) {
-    const gridUpdateMutation = gridBannerServiceUpdateApi(grid.id);
+    const gridUpdateMutation = gridBannerServiceUpdateApi(grid.id, type);
 
     const gridBannerIndexQuery = gridBannerIndexApi();
     const gridUpdateForm = useForm<GridBannerServiceUpdateDto>({

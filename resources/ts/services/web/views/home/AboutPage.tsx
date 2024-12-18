@@ -1,6 +1,5 @@
 import type { HeaderType } from "@/web/components/WebLayout";
 import WebLayout from "@/web/components/WebLayout";
-import AboutSection from "./components/AboutSection";
 import PostsSection from "./components/PostsSection";
 import UsersSection from "./components/UsersSection";
 import { PostsSchemaFromServer } from "@/posts/schemas/posts.schema";
@@ -19,13 +18,7 @@ export interface AboutPageProps {
         "id" | "name" | "speciality" | "photo" | "birthday"
     >[];
 }
-function AboutPage({
-    header,
-    posts,
-    productsquantity,
-    users,
-    productservicesquantity,
-}: AboutPageProps) {
+function AboutPage({ header, posts, users }: AboutPageProps) {
     return (
         <>
             <WebLayout header={header}>
@@ -36,10 +29,6 @@ function AboutPage({
                         <div class="mt-20 lg:mt-10">
                             <TitleSection>Nosotros</TitleSection>
                         </div>
-                        <AboutSection
-                            productservicesquantity={productservicesquantity}
-                            productsquantity={productsquantity}
-                        />
                         <PostsSection posts={posts} />
                         <UsersSection users={users} />
                     </>

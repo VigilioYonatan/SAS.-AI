@@ -1,8 +1,11 @@
 import { GridBannerServicechemaFromServer } from "@/empresas/schemas/grid-banner-service.schema";
+import { Signal } from "@preact/signals";
 import { useQuery } from "@vigilio/preact-fetching";
-
-export function gridBannerServiceIndexApi() {
-    return useQuery("/grid_banner_service", async (url) => {
+interface gridBannerServiceIndexApiProps {
+    type: Signal<string>;
+}
+export function gridBannerServiceIndexApi({type}:gridBannerServiceIndexApiProps) {
+    return useQuery(`/grid_banner_${type.value}`, async (url) => {
         const response = await fetch(`/api${url}`);
         const result: GridBannerServiceIndexAPI = await response.json();
         if (!result.success) throw result;

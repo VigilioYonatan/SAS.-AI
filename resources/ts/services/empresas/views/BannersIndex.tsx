@@ -20,14 +20,26 @@ import useMediaQuery, { ResponsiveWidth } from "~/hooks/useMediaQuery";
 import AlertInfo from "~/components/Alerts/AlertInfo";
 import { useSignal } from "@preact/signals";
 import TitleSection from "@/web/components/TitleSection";
+import { gridBannerServiceIndexApi } from "../apis/grid_banner_service/grid_banner_service.index.api";
+import { useEffect } from "preact/hooks";
+import ServiciosPageIndex from "./ServiciosPageIndex";
 export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
 
 function BannersIndex() {
-    const gridBannerIndexQuery = gridBannerIndexApi();
+    const typeBanner = useSignal<"home" | "service" | "about" | "shop">("home");
+    const gridBannerIndexQuery =
+        typeBanner.value === "home"
+            ? gridBannerIndexApi()
+            : gridBannerServiceIndexApi({ type: typeBanner });
     const widthResponsive = ResponsiveWidth();
     const showHtml = useSignal(HTMLSHOW);
     let component: JSX.Element | JSX.Element[] | null = null;
+
     const bannerParams = getParams().get("banner");
+
+    useEffect(() => {
+        gridBannerIndexQuery.refetch(false);
+    }, [typeBanner.value]);
 
     if (gridBannerIndexQuery.isLoading) {
         component = <Loading />;
@@ -36,67 +48,70 @@ function BannersIndex() {
         component = <View404 />;
     }
     if (gridBannerIndexQuery.isSuccess) {
-        component = (
-            <Fragment>
-                {gridBannerIndexQuery.data?.data.map((grid, g) => {
-                    return (
-                        <div
-                            key={grid.id}
-                            class={`grid-banner-${g}  ${
-                                bannerParams && Number(bannerParams) === g
-                                    ? "border-4 border-primary shadow"
-                                    : ""
-                            } relative`}
-                        >
-                            <div class="flex justify-between w-full mb-1 items-center">
-                                <span class="font-semibold text-sm">
-                                    Banner {g}
-                                </span>
-                                <div class="flex gap-2 items-center">
-                                    <button
-                                        type="button"
-                                        class="bg-primary px-4 py-1 rounded-md"
-                                        onClick={() => {
-                                            sweetModal((onClose) => ({
-                                                html: reactComponent(
-                                                    <GridBannerUpdate
-                                                        grid={grid}
-                                                        i={g}
-                                                        onClose={onClose}
-                                                        refetch={
-                                                            gridBannerIndexQuery.refetch
-                                                        }
-                                                    />
-                                                ),
-                                                showCloseButton: true,
-                                                isCloseInBackground: false,
-                                                sweetWidth: "1200px",
-                                                position: "start",
-                                            }));
-                                        }}
-                                    >
-                                        <i class="fas fa-gears" />
-                                    </button>
+        component =
+            typeBanner.value === "home" ? (
+                <Fragment>
+                    {gridBannerIndexQuery.data?.data.map((grid, g) => {
+                        return (
+                            <div
+                                key={grid.id}
+                                class={`grid-banner-${g}  ${
+                                    bannerParams && Number(bannerParams) === g
+                                        ? "border-4 border-primary shadow"
+                                        : ""
+                                } relative`}
+                            >
+                                <div class="flex justify-between w-full mb-1 items-center">
+                                    <span class="font-semibold text-sm">
+                                        Banner {g}
+                                    </span>
+                                    <div class="flex gap-2 items-center">
+                                        <button
+                                            type="button"
+                                            class="bg-primary px-4 py-1 rounded-md"
+                                            onClick={() => {
+                                                sweetModal((onClose) => ({
+                                                    html: reactComponent(
+                                                        <GridBannerUpdate
+                                                            grid={grid}
+                                                            i={g}
+                                                            onClose={onClose}
+                                                            refetch={
+                                                                gridBannerIndexQuery.refetch
+                                                            }
+                                                        />
+                                                    ),
+                                                    showCloseButton: true,
+                                                    isCloseInBackground: false,
+                                                    sweetWidth: "1200px",
+                                                    position: "start",
+                                                }));
+                                            }}
+                                        >
+                                            <i class="fas fa-gears" />
+                                        </button>
+                                    </div>
                                 </div>
+                                {grid.title ? (
+                                    <TitleSection>{grid.title}</TitleSection>
+                                ) : null}
+                                {grid.html ? (
+                                    <div
+                                        class={`w-full   banners-${g} relative dark:bg-admin-terciary`}
+                                        dangerouslySetInnerHTML={{
+                                            __html: grid.html,
+                                        }}
+                                    />
+                                ) : (
+                                    <div class="h-[200px] w-full bg-paper-light dark:bg-admin-terciary" />
+                                )}
                             </div>
-                            {grid.title ? (
-                                <TitleSection>{grid.title}</TitleSection>
-                            ) : null}
-                            {grid.html ? (
-                                <div
-                                    class={`w-full   banners-${g} relative dark:bg-admin-terciary`}
-                                    dangerouslySetInnerHTML={{
-                                        __html: grid.html,
-                                    }}
-                                />
-                            ) : (
-                                <div class="h-[200px] w-full bg-paper-light dark:bg-admin-terciary" />
-                            )}
-                        </div>
-                    );
-                })}
-            </Fragment>
-        );
+                        );
+                    })}
+                </Fragment>
+            ) : (
+                <ServiciosPageIndex type={typeBanner} />
+            );
     }
 
     return (
@@ -106,14 +121,72 @@ function BannersIndex() {
             </div>
             <div class="flex flex-col gap-4 [&>header]:relative">
                 <div>
-                    {useMediaQuery("(max-width:1000px)") ? (
-                        <AlertInfo>
-                            <span class=" text-sm font-semibold">
-                                Se recomienda Editar los Banners en una
-                                Laptop/PC
-                            </span>
-                        </AlertInfo>
-                    ) : null}
+                    <div class="flex gap-2 mb-2">
+                        <div class="flex gap-2">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    typeBanner.value = "home";
+                                }}
+                                class={`${
+                                    typeBanner.value === "home"
+                                        ? "bg-primary"
+                                        : ""
+                                } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs`}
+                            >
+                                <i class="fas fa-home" /> Home Page
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    typeBanner.value = "shop";
+                                }}
+                                class={`${
+                                    typeBanner.value === "shop"
+                                        ? "bg-primary"
+                                        : ""
+                                } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs`}
+                            >
+                                <i class="fas fa-shopping-cart" /> Shop Page
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    typeBanner.value = "about";
+                                }}
+                                class={`${
+                                    typeBanner.value === "about"
+                                        ? "bg-primary"
+                                        : ""
+                                } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs`}
+                            >
+                                <i class="fab fa-blogger-b" /> Blog Page
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    typeBanner.value = "service";
+                                }}
+                                class={`${
+                                    typeBanner.value === "service"
+                                        ? "bg-primary"
+                                        : ""
+                                } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs`}
+                            >
+                                <i class="fas fa-handshake-alt" /> Servicios
+                                Page
+                            </button>
+                        </div>
+                        {useMediaQuery("(max-width:1000px)") ? (
+                            <AlertInfo>
+                                <span class=" text-sm font-semibold">
+                                    Se recomienda Editar los Banners en una
+                                    Laptop/PC
+                                </span>
+                            </AlertInfo>
+                        ) : null}
+                    </div>
+
                     <div class="flex justify-between">
                         <span class="font-bold text-sm">
                             Ancho Actual: <b>{widthResponsive}PX</b>{" "}

@@ -54,6 +54,8 @@ import { GridBannerApiController } from "@/empresas/controllers/grid_banner.api.
 import { FilesApiServiceApiController } from "@/empresas/controllers/files.api.controller";
 import { QuestionsApiController } from "@/empresas/controllers/questions.api.controller";
 import { GridBannerServiceApiController } from "@/empresas/controllers/grid_banner_service.api.controller";
+import { GridBannerAboutApiController } from "@/empresas/controllers/grid_banner_about.api.controller";
+import { GridBannerShopApiController } from "@/empresas/controllers/grid_banner_shop.api.controller";
 
 export const apiRouters: Type[] = [
     EmpresasApiController,
@@ -111,4 +113,6 @@ export const apiRouters: Type[] = [
     FilesApiServiceApiController,
     QuestionsApiController,
     GridBannerServiceApiController,
+    GridBannerAboutApiController,
+    GridBannerShopApiController,
 ];

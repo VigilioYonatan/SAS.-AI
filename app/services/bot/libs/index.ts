@@ -600,7 +600,7 @@ export async function chatgpt(
         whatsapp!.empresa.slug
     ].chat.completions.create({
         model: whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
-        max_tokens: 5000,
+        max_tokens: 10000,
         messages: [
             {
                 role: "user",

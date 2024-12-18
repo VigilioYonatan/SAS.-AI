@@ -63,6 +63,8 @@ import type { Features } from "@/products/entities/options/features.entity";
 import { Brands } from "@/products/entities/brands.entitiy";
 import { ProductsApiService } from "@/products/services/products.api.service";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
+import { GridBannerAbout } from "../entities/grid_banner_about.entity";
+import { GridBannerShop } from "../entities/grid_banner_shop.entity";
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
@@ -702,6 +704,7 @@ export class EmpresasApiService {
                 }),
             ]);
             let gridBannersMap = null;
+
             if (body.gridBanners?.length) {
                 gridBannersMap = await Promise.all(
                     body.gridBanners.map(async (grid) => {
@@ -746,7 +749,6 @@ export class EmpresasApiService {
                     },
                 ]);
             }
-
             if (body.gridBannersService?.length) {
                 await Promise.all(
                     body.gridBannersService.map(async (grid) => {
@@ -771,6 +773,118 @@ export class EmpresasApiService {
                 );
             } else {
                 await GridBannerService.bulkCreate([
+                    {
+                        html: "",
+                        enabled: false,
+                        empresa_id: empresa!.id,
+                        grid_banner_id: null,
+                    },
+                    {
+                        html: "",
+                        enabled: false,
+                        empresa_id: empresa!.id,
+                        grid_banner_id: null,
+                    },
+                    {
+                        html: "",
+                        enabled: false,
+                        grid_banner_id: null,
+                        empresa_id: empresa!.id,
+                    },
+                    {
+                        html: "",
+                        grid_banner_id: null,
+                        enabled: true,
+                        empresa_id: empresa!.id,
+                    },
+                    {
+                        html: "",
+                        grid_banner_id: null,
+                        enabled: true,
+                        empresa_id: empresa!.id,
+                    },
+                ]);
+            }
+            if (body.gridBannersAbout?.length) {
+                await Promise.all(
+                    body.gridBannersAbout.map(async (grid) => {
+                        const { id, grid_banner_id, ...rest } = grid;
+
+                        const findBannerTest = gridBannersMap?.find(
+                            (grid) => grid.id_test === grid_banner_id
+                        );
+
+                        const gridBanner = findBannerTest
+                            ? await GridBanner.findByPk(findBannerTest.id)
+                            : null;
+
+                        await GridBannerAbout.create({
+                            ...rest,
+                            empresa_id: empresa!.id,
+                            grid_banner_id: gridBanner
+                                ? findBannerTest.id
+                                : null,
+                        });
+                    })
+                );
+            } else {
+                await GridBannerAbout.bulkCreate([
+                    {
+                        html: "",
+                        enabled: false,
+                        empresa_id: empresa!.id,
+                        grid_banner_id: null,
+                    },
+                    {
+                        html: "",
+                        enabled: false,
+                        empresa_id: empresa!.id,
+                        grid_banner_id: null,
+                    },
+                    {
+                        html: "",
+                        enabled: false,
+                        grid_banner_id: null,
+                        empresa_id: empresa!.id,
+                    },
+                    {
+                        html: "",
+                        grid_banner_id: null,
+                        enabled: true,
+                        empresa_id: empresa!.id,
+                    },
+                    {
+                        html: "",
+                        grid_banner_id: null,
+                        enabled: true,
+                        empresa_id: empresa!.id,
+                    },
+                ]);
+            }
+            if (body.gridBannersShop?.length) {
+                await Promise.all(
+                    body.gridBannersShop.map(async (grid) => {
+                        const { id, grid_banner_id, ...rest } = grid;
+
+                        const findBannerTest = gridBannersMap?.find(
+                            (grid) => grid.id_test === grid_banner_id
+                        );
+
+                        const gridBanner = findBannerTest
+                            ? await GridBanner.findByPk(findBannerTest.id)
+                            : null;
+
+                        await GridBannerShop.create({
+                            ...rest,
+                            empresa_id: empresa!.id,
+                            grid_banner_id: gridBanner
+                                ? findBannerTest.id
+                                : null,
+                        });
+                    })
+                );
+            } else {
+                await GridBannerShop.bulkCreate([
                     {
                         html: "",
                         enabled: false,

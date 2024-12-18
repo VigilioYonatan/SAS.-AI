@@ -102,6 +102,8 @@ export async function isWhatsappTelegramIA(
         cache.set(`EMPRESA:${empresa}`, JSON.stringify(e.slug), hour24);
     }
     if (!emp) return null;
+    console.log({ emp, empresa });
+
     const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
     const isDateNow = restarDays(
         emp,

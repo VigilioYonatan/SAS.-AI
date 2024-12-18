@@ -158,14 +158,12 @@ export class Server {
                           },
                       ],
                   };
-            console.log({ subdomain });
 
             let empresa: Empresas | null = JSON.parse(
                 cache.get(
                     `EMPRESA:${subdomain || host?.slice(4).split(".")[0]}`
                 ) || "null"
             );
-            console.log({ empresa });
 
             if (!empresa) {
                 empresa = await Empresas.findOne({

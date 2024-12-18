@@ -13,9 +13,9 @@ import { filesSchema } from "~/libs/upload";
 export const backgroundSchema = object({
     id: number(),
     image: array(filesSchema()),
-    title: string([maxLength(40)]),
+    title: nullable(string([maxLength(40)])),
     description: nullable(string([maxLength(60)])),
-    url: string([startsWith("https")]),
+    url: nullable(string([startsWith("https")])),
     html: nullable(string()),
     empresa_id: number(),
 });

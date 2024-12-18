@@ -6,53 +6,54 @@ export const test: Pick<
     | "gridBanners"
     | "files"
     | "gridBannersService"
+    | "gridBannersAbout"
+    | "gridBannersShop"
     | "backgrounds"
     | "categories"
     | "brands"
 > = {
     setting: {
-        logo_width: 120,
+        logo_width: 140,
         host: {
+            enabled: false,
             host: null,
             nameserver_one: null,
             nameserver_two: null,
             time: null,
-            enabled: false,
         },
-        bg_color: "#c90303",
+        bg_color: "#dca050",
         bg_color_header: "#000000",
         bg_color_aside: "#000000",
         bg_color_background: "#ffffff",
-        bg_color_footer: "#000000",
-        bg_color_secondary: "#dc2626",
+        bg_color_footer: "#323232",
+        bg_color_secondary: "#dca050",
         type_animation: "fade-up",
         background_auth: null,
-        font_face: "Exo",
+        font_face: "Barlow",
         bg_color_paper: "#ffffff",
-        bg_color_button: "#c80000",
+        bg_color_button: "#dca050",
         isCoverImage: true,
-        isScrolling: false,
+        isScrolling: true,
         is_hidde_total_cart: false,
         isDark: false,
         isLogoImage: false,
         is_block_aside: false,
         is_subcategory: false,
-        is_service_page: false,
+        is_service_page: true,
         position_header: true,
         bg_color_responsive: "#000000",
         border_title_type: "normal",
         type_star: "star",
-        background_position: "start",
+        background_position: "center",
         header_type: "transparent",
         background_type: "first",
         type_icons: "normal",
         type_border: "circle",
-        type_cart: "fas fa-shopping-bag",
+        type_cart: "fas fa-shopping-cart",
         type_arrow: "first",
         type_map: "satelite",
         web_script:
-            '/*\r\n\r\n    NO MODIFICAR ESTO, SI NO ERES DESARROLLADOR\r\n\r\n*/\r\n\r\nconst style = document.createElement("style")\r\nconst h1 = document.querySelector(\r\n    ".background-home-container > div > div > div > h1"\r\n);\r\nif (h1) {\r\n    const text = h1.textContent.trim(); // Elimina espacios al inicio o final\r\n    const words = text.split(" "); // Divide el texto en palabras\r\n    const lastWord = words.pop(); // Extrae la última palabra\r\n    const newText = words.join(" ") + ` <span style="color: red;">${lastWord}</span>`; // Reconstruye el texto con la última palabra en un span\r\n    h1.innerHTML = newText; // Actualiza el contenido del h1\r\n}\r\nstyle.innerHTML = `\r\n.background-home .slick-slide > div{\r\n    padding: 0px 0px !important;\r\n}\r\n.background-home-container > div > div > div {\r\n    gap: 2.5rem;\r\n}\r\n.background-home-container > div > div > div > h1{\r\n    font-size: 4.5rem;\r\n    line-height: 4.5rem;\r\n}\r\n.background-home-container > div > div > div > p{\r\n    color: white;\r\n    font-size: 1rem;\r\n    line-height: 1.5rem;\r\n    width:90%;\r\n}\r\n.background-home-container > div > div > div > a{\r\n    border-radius: 0.3rem;\r\n    padding: 0.8rem 2rem;\r\n}\r\n.background-home-container > div > div > div > a:hover{\r\n    transform: scale(1.1);\r\n    background-color: white;\r\n    color: var(--primary) !important;\r\n}\r\n\r\n.grid-banner-0 {\r\n    padding: 0rem 1.2rem;\r\n    transform: translateY(-10rem);\r\n}\r\n@media screen and (max-width:700px){\r\n    \r\n    .background-home-container > div > div > div {\r\n        gap: 1.5rem;\r\n    }\r\n    .background-home-container > div > div > div > h1{\r\n        font-size: 3.5rem;\r\n        line-height: 3.5rem;\r\n    }\r\n    .background-home-container > div > div > div > p{\r\n        color: white;\r\n        font-size: 1rem;\r\n        line-height: 1.5rem;\r\n        width:90%;\r\n    }\r\n    .background-home-container > div > div > div > a{\r\n        border-radius: 0.3rem;\r\n        padding: 0.8rem 2rem;\r\n    }\r\n    .grid-banner-0 {\r\n        padding: 0rem 1.2rem;\r\n        transform: translateY(-5rem);\r\n    }\r\n    .grid-banner-0 > div > .grid-banner-0-1 {\r\n       grid-area: span 2 / span 1 / span 2 / span 1 !important;\r\n    }\r\n    .grid-banner-0 > div > .grid-banner-0-3 {\r\n       grid-area: span 3 / span 1 / span 3 / span 1 !important;\r\n    }\r\n    .grid-banner-0 > div > div {\r\n        grid-area: span 1 / span 1 / span 1 / span 1 !important;\r\n    }\r\n}\r\n\r\n.grid-banner-0 .banners-0 > div {\r\n    border-radius: 0.5rem;\r\n\r\n}\r\n.grid-banner-0 .banners-0 > .grid-banner-0-1 > div, .grid-banner-0 .banners-0 > .grid-banner-0-3 > div {\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items:center;\r\n}\r\n.grid-banner-0 .banners-0 > .grid-banner-0-1 > div > div, .grid-banner-0 .banners-0 > .grid-banner-0-3 > div > div{\r\n    align-self: auto;\r\n}\r\n.grid-banner-0 .banners-0 > div > div > div > a {\r\n    border-radius: 0.5rem;\r\n}\r\n\r\n\r\n .product-card {\r\n    border: 1px solid #e2e2e2;\r\n}\r\n.product-card header{\r\n    padding: 0.5rem;\r\n    border-radius: 0.5rem !important;\r\n    overflow: hidden !important;\r\n}\r\n.product-card header img{\r\n    border-radius: 0.5rem !important;\r\n    overflow: hidden !important;\r\n}\r\n\r\n.product-card a{\r\n   font-family: Font-Bold, serif;\r\n   height: auto !important;\r\n}\r\n.product-card header img{\r\n    width: 100%;\r\n}\r\n.product-card .md-rating-star--full img{\r\n    width: 15px;\r\n    height: 15px;\r\n}\r\n\r\n.product-users-section .product-card {\r\n    border: 0px solid #e2e2e2;\r\n}\r\n\r\n.title-section h3{\r\n    text-transform: capitalize !important;\r\n    font-family: Helvetica !important;\r\n    font-size: 2rem !important;\r\n    font-weight: bold;\r\n}\r\n\r\n.categories-section-slide .slick-slide > div > a{\r\n border: 1px solid #e2e2e2;\r\n}\r\n\r\n.product-users-section > div{\r\n    border: 1px solid #e2e2e2;\r\n}\r\n\r\n.post-section .slick-slide > div > div{\r\n    border: 1px solid #e2e2e2;\r\n}\r\n\r\nhome-page .offer-section{\r\n  position: relative;\r\n    top: -6rem;\r\n}\r\nhome-page .categories-section{\r\n  position: relative;\r\n    top: -4rem;\r\n}\r\n\r\n.auth-page .image-logo{\r\n    filter: drop-shadow(1px 1px black);\r\n}\r\n\r\n.grid-banner-2{\r\n    max-width: none !important;\r\n}\r\n.post-section{\r\n    color: white;\r\n}\r\n.post-section::after{\r\n    content:"";\r\n    position: absolute;\r\n    width:100%;\r\n    left:0;\r\n    right:0;\r\n    height:300px;\r\n    background-color: black;\r\n    z-index:-1;\r\n}\r\n`\r\n\r\n\r\n// quitar efecto de hover productcard\r\nconst productCardheaderImg  = document.querySelectorAll(".product-card header img")\r\nArray.from(productCardheaderImg).map((card)=>{\r\n    card.classList.remove("group-hover:scale-105")\r\n})\r\n\r\n// agregar efecto\r\nconst backgroundHomeContainer = document.querySelectorAll(".banners-0 div a")\r\nArray.from(backgroundHomeContainer).map((card)=>{\r\n    card.classList.add("animation-brightness")\r\n    card.style.cssText = `--brightness-delay: 6s;`;\r\n})\r\n\r\n\r\ndocument.head.appendChild(style)',
-
+            'const style = document.createElement("style");\nstyle.innerHTML = `\n.background-home-container > div {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.brand-section{\n    padding: 3rem 1rem;\n}\n.brand-section > div:nth-child(1){\n    display: none;\n}\n\n.product-users-section > div> div> div > h3 a{\n    display: none;\n}\n.product-users-section > div> div > div > h3  span{\n    font-size: 1.2rem;\n}\n.product-users-section > div> div > div > h3  i{\n    display: none;\n}\n.product-users-section > div > div:nth-child(2) > div:nth-child(even){\n    display: none;\n}\n.product-users-section > div > div:nth-child(2) > div{\n    margin-bottom: 0.5rem;\n}\n\n.users-section .users-section-slide .slick-track > div > div {\n    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);\n}\n.users-section .users-section-slide .slick-list {\n    height: 300px !important;\n}\n.users-section .users-section-slide .slick-track  img {\n    width: 150px;\n    height: 150px;\n    border: 4px solid var(--primary);\n}\n.post-section::after {\n    content: "";\n    position: absolute;\n    width: 100%;\n    left: 0;\n    right: 0;\n    height: 300px;\n    background-color: #150D14;\n    z-index: -1;\n}\n\n.product-users-section > div > div:nth-child(1) > div {\n    justify-content: center !important;\n}\n.product-users-section .title-container-2::before {\n    left: 26% !important;\n}\n.post-section > div > h2{\n    color: white;\n}\n\n`;\ndocument.head.appendChild(style);\n                    ',
         header_position: {
             logo: 1,
             navbar: 2,
@@ -63,21 +64,21 @@ export const test: Pick<
             shop: true,
             profile: true,
             about: true,
-            pedidos: true,
+            pedidos: false,
             condiciones: true,
-            categories: true,
+            categories: false,
             subcategories: true,
             services: true,
         },
-        type_card: "normal",
-        type_product_buttons: "first",
-        type_icons_bars: "light",
+        type_card: "eccomerce",
+        type_product_buttons: "second",
+        type_icons_bars: "normal",
         is_hover_product: true,
         isProductWallpaper: false,
         hamburger: "fas fa-bars",
         shows: {
             map: false,
-            about: true,
+            about: false,
             cards: false,
             brands: true,
             android: true,
@@ -88,1474 +89,1827 @@ export const test: Pick<
     },
     gridBanners: [
         {
-            id: 15,
+            id: 35,
             title: null,
             enabled: true,
-            empresa_id: 4,
-            html: '\u003Cdiv x-data="{\r\n   header: JSON.parse(((document.querySelector(\'home-page\') || document.querySelector(\'servicios-page\'))?.getAttribute(\':header\')) || \'{}\'),\r\n   subtotalIgv(product, showWithDiscount = true, moreDiscount = null) {\r\n        const empresaStore = JSON.parse(localStorage.getItem(\'empresa\'));\r\n        const prod = JSON.parse(JSON.stringify(product));\r\n        let price = prod.price;\r\n\r\n        function formatMoney(value, forceLocal = false) {\r\n            const moneyStore = JSON.parse(localStorage.getItem(\'money\'));\r\n            function subtotalDolar(value) {\r\n                const converter = moneyStore.moneyValue[moneyStore.money];\r\n                return value * converter;\r\n            }\r\n\r\n            function formatDolares(number) {\r\n                return number.toLocaleString(\'en-US\', {\r\n                    style: \'currency\',\r\n                    currency: \'USD\',\r\n                });\r\n            }\r\n\r\n            return moneyStore.money === \'LOCAL\' || forceLocal\r\n                ? `${empresaStore.isDolar ? `${empresaStore.money.simbolo} ` : \'\'}${\r\n                    value.toLocaleString(empresaStore.money.international_simbolo, {\r\n                        style: \'currency\',\r\n                        currency: empresaStore.money.simbolo,\r\n                    })\r\n                }`\r\n                : formatDolares(subtotalDolar(value));\r\n        }\r\n\r\n        function subtotal(price, discount, increase = false) {\r\n            if (increase) {\r\n                return price + (discount * price) / 100;\r\n            }\r\n            return price - (discount * price) / 100;\r\n        }\r\n\r\n        if (showWithDiscount) {\r\n            price = subtotal(price, prod.discount ?? 0);\r\n        }\r\n        if (moreDiscount) {\r\n            price = subtotal(price, moreDiscount);\r\n        }\r\n\r\n        return formatMoney(\r\n            empresaStore.enabled_igv\r\n                ? subtotal(price, empresaStore.igv, true)\r\n                : price\r\n        );\r\n    }\r\n}" class="grid grid-cols-1 md:grid-cols-3 shadow " style="gap: 2rem; min-height: 300px;"\u003E\r\n    \u003Ctemplate x-if="header.categoriesServices"\u003E\r\n       \u003Ctemplate  x-for="servicio of (header.categoriesServices)[0].products"\u003E\r\n            \u003Cdiv class="flex flex-col gap-2 card"\u003E\r\n                \u003Cspan class="text-black text-2xl font-bold text-center block uppercase" x-text="`${subtotalIgv(servicio)}/${servicio.days[0].name}`"\u003E\u003C/span\u003E\r\n                \u003Ch3 class="bg-black py-3 px-4 text-center text-white font-bold text-xl" x-text="servicio.name"\u003E\u003C/h3\u003E\r\n                \u003Cul class="flex flex-col justify-center items-center w-full  px-6 py-4"\u003E\r\n                    \u003Ctemplate x-for="char of servicio.characteristics"\u003E\r\n                        \u003Cli class="py-3 border-b border-gray-400 w-full text-center font-semibold" x-text="char.value||\'\'"\u003E\u003C/li\u003E\r\n                    \u003C/template\u003E\r\n                \u003C/ul\u003E\r\n                \u003Ca :href="`/servicio/${servicio.slug}`"  class="uppercase font-bold" data-label="0"\u003EMás información\u003C/span\u003E\r\n            \u003C/div\u003E\r\n        \u003C/template\u003E     \r\n    \u003C/template\u003E\r\n    \r\n\u003C/div\u003E\r\n\u003Cstyle\u003E\r\n\r\n    .grid-banner-4 .card{\r\n        background-color:#FBFBFB; \r\n        padding: 2rem 1rem;\r\n        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra para efecto 3D */\r\n        clip-path: polygon(\r\n            0% 0%,       \r\n            90% 0%,      \r\n            100% 15%,    \r\n            100% 100%,   \r\n            15% 100%,    \r\n            0% 85%       \r\n        );\r\n    }\r\n    @media screen and(min-width:800px){   padding: 4rem 2rem;}\r\n    .grid-banner-4 .banners-4 a {\r\n        position: relative;\r\n        position: relative;\r\n        display: inline-block;\r\n        padding: 0.8rem 2rem;\r\n        background-color: black; /* Fondo del botón */\r\n        color: white; /* Color del texto */\r\n        text-decoration: none;\r\n        text-tranform: uppercase;\r\n        font-weight: bold;\r\n        text-align: center;\r\n        border: none;\r\n        align-self: center;\r\n        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra para efecto 3D */\r\n        clip-path: polygon(\r\n            0% 0%,       \r\n            90% 0%,      \r\n            100% 15%,    \r\n            100% 100%,   \r\n            15% 100%,    \r\n            0% 85%       \r\n        );\r\n        transition: all 0.5s ease;\r\n    }\r\n    .grid-banner-4 .banners-4 a:hover {\r\n        background-color:#EAEAEA; \r\n        color:black;\r\n    }\r\n\r\n\u003C/style\u003E',
+            html: '<div class="about-us" x-data="{\r\n    empresa:JSON.parse(localStorage.getItem(\'empresa\'))\r\n}">\r\n    <div class="content">\r\n        <div class="text">\r\n            <h2 data-label="11">About Us</h2>\r\n            <p data-label="12">Welcome To Our Barber Shop</p>\r\n            <p data-label="13">Barber Shop is an authentic collection of 11 styles, entirely designed and made in Italy. Quality, Italian style and functionality are the hallmarks of Barber Shop. Every single piece is handcrafted in Bassano del Grappa (Vicenza) by skilled artisans.</p>\r\n            <p data-label="14">Barber Shop high-quality multifunctional bags and accessories are made using only selected Italian leathers and fabrics and offers top quality technical features.</p>\r\n            <button data-label="15">Our Teams</button>\r\n            <button data-label="16">Shop Now</button>\r\n        </div>\r\n        <div class="container-images relative">\r\n            <img :src="`/empresas/${empresa.slug}/images/files/banner-0-image-1.webp`" alt="Barber styling client">\r\n            <img  :src="`/empresas/${empresa.slug}/images/files/banner-0-image-2.webp`" alt="Barber styling client">\r\n            <img :src="`/empresas/${empresa.slug}/images/files/banner-0-image-3.webp`" alt="Barber styling client">\r\n        </div>\r\n    </div>\r\n</div>\r\n<!--  -->\r\n<div class="info-bar-container">\r\n    <div class="info-bar">\r\n    <div class="info-item">\r\n        <i class="fas fa-shipping-fast text-3xl"></i>\r\n        <div class="info-text">\r\n            <strong>Free Shipping</strong>\r\n            <p>Free shipping on all US order or order above $200</p>\r\n        </div>\r\n    </div>\r\n    <div class="info-item">\r\n        <i class="fas fa-headset text-3xl"></i>\r\n        <div class="info-text">\r\n            <strong>Support 24/7</strong>\r\n            <p>Contact us 24 hours a day, 7 days a week</p>\r\n        </div>\r\n    </div>\r\n    <div class="info-item">\r\n        <i class="fas fa-undo-alt text-3xl"></i>\r\n        <div class="info-text">\r\n            <strong>30 Days Return</strong>\r\n            <p>Simply return it within 30 days for an exchange</p>\r\n        </div>\r\n    </div>\r\n    <div class="info-item">\r\n        <i class="fas fa-lock text-3xl"></i>\r\n        <div class="info-text">\r\n            <strong>100% Payment Secure</strong>\r\n            <p>We ensure secure payment with PEV</p>\r\n        </div>\r\n    </div>\r\n</div>\r\n</div>\r\n\r\n<style>\r\n    .grid-banner-0{\r\n        max-width: none;\r\n    }\r\n    .grid-banner-0 .about-us {\r\n        max-width: 75rem;\r\n        margin: auto;\r\n        padding: 20px;\r\n        font-family: \'Arial\', sans-serif;\r\n    }\r\n\r\n    .grid-banner-0 .about-us h2 {\r\n        font-size: 24px;\r\n        color: #333;\r\n    }\r\n\r\n    .grid-banner-0 .about-us p {\r\n        color: #666;\r\n    }\r\n\r\n    .grid-banner-0 .about-us .content {\r\n        display: flex;\r\n        flex-direction: column;\r\n        justify-content: space-between;\r\n        margin-top: 20px;\r\n        gap: 2rem;\r\n    }\r\n    @media screen and (min-width: 700px){\r\n        .grid-banner-0 .about-us .content{\r\n            flex-direction: row;\r\n        }\r\n    }\r\n\r\n    .grid-banner-0 .about-us .text {\r\n        width: 100%;\r\n    }\r\n\r\n    .grid-banner-0 .about-us .text p {\r\n        line-height: 1.6;\r\n        margin-bottom: 10px;\r\n    }\r\n\r\n    .grid-banner-0 .about-us button {\r\n        background-color: #444;\r\n        color: white;\r\n        border: none;\r\n        padding: 10px 20px;\r\n        margin-right: 10px;\r\n        cursor: pointer;\r\n    }\r\n\r\n    .grid-banner-0 .about-us button:hover {\r\n        background-color: #555;\r\n    }\r\n    .grid-banner-0 .container-images {\r\n        position: relative;\r\n        margin: 20px auto; \r\n        width: 100%; \r\n        height: 399px;\r\n    }\r\n    .grid-banner-0 .container-images img {\r\n        width: 100%;\r\n        min-width: 100px;\r\n        border: 10px solid white;\r\n        height: 250px;\r\n        object-fit: cover;\r\n        z-index: 10;\r\n        position: absolute;\r\n    }\r\n    .grid-banner-0 .container-images img:nth-child(2) {\r\n        width: 150px;\r\n        height: 150px;\r\n        bottom: 2rem;\r\n        right: 2rem;\r\n       \r\n    }\r\n    .grid-banner-0 .container-images img:nth-child(3) {\r\n        width: 150px;\r\n        height: 150px;\r\n        bottom: 2rem;\r\n        left: 2rem;\r\n    }\r\n    @media screen and(min-width: 700px){\r\n        .grid-banner-0 .container-images {\r\n            width: 578px; \r\n            height: 599px; \r\n        }\r\n        .grid-banner-0 .container-images img {\r\n            width: 400px;\r\n            min-width: 100px;\r\n            height:450px;\r\n        }\r\n        .grid-banner-0 .container-images img:nth-child(2) {\r\n            width: 300px;\r\n            height:300px;\r\n            top: 4rem; \r\n            right: 0;\r\n        }\r\n        .grid-banner-0 .container-images img:nth-child(3) {\r\n            width: 300px;\r\n            height:200px;\r\n            bottom: 6rem;  \r\n            right: 2rem;\r\n        }\r\n        .grid-banner-0 .about-us .text {\r\n            width:50%;\r\n        }\r\n\r\n    }\r\n\r\n   \r\n    \r\n    .grid-banner-0 .info-bar-container .info-bar{\r\n        background-color: #f1f1f1; \r\n        padding: 2rem 1rem;\r\n        width: 100%; \r\n        display:grid;\r\n        grid-template-columns: repeat(2, minmax(0, 1fr));\r\n    }\r\n    @media screen and (min-width:700px){\r\n        .grid-banner-0 .info-bar-container .info-bar{\r\n            grid-template-columns: repeat(4, minmax(0, 1fr));\r\n            padding: 4rem 2rem;\r\n        }\r\n\r\n    }\r\n    .grid-banner-0 .info-bar {\r\n        display: flex;\r\n        justify-content: space-around; \r\n        align-items: center;\r\n        \r\n        max-width: 75rem;\r\n        margin: 0 auto;\r\n    }\r\n\r\n    .grid-banner-0 .info-item {\r\n        display: flex;\r\n        align-items: center;\r\n        flex-direction: column; \r\n        flex-grow: 1;\r\n        text-align: center; \r\n    }\r\n\r\n    .grid-banner-0 .info-item i {\r\n        font-size: 24px;\r\n        color: #333; \r\n        margin-bottom: 10px;\r\n    }\r\n\r\n    .grid-banner-0 .info-text strong {\r\n        font-size: 16px; \r\n        color: #000; \r\n        margin-bottom: 5px; \r\n    }\r\n\r\n    .grid-banner-0 .info-text p {\r\n        font-size: 14px; \r\n        color: #666; \r\n        margin: 0; \r\n    }\r\n    .form-html-editor .content > div {\r\n        display:flex;\r\n         flex-direction: column;\r\n    }\r\n    .form-html-editor img {\r\n         width: 200px !important; \r\n         height: 200px !important; \r\n    }\r\n</style>',
+            empresa_id: 8,
         },
         {
-            id: 16,
+            id: 36,
             title: null,
             enabled: true,
-            empresa_id: 4,
-            html: '<!--  NO MODIFICAR ESTO, SI NO ERES DESARROLLADOR -->\r\n\r\n<div x-data="{slug: JSON.parse(localStorage.getItem(\'empresa\')).slug}" class="grid  banner-1-container px-2">\r\n    <div style="padding: 2rem 2rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n        <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-1" \r\n             alt="ico-1" \r\n            :src="`/empresas/${slug}/images/files/icon-1.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center  dark:text-white" data-label="1">Envio Rápido</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center  dark:text-white" data-label="2">On all orders over $49.00</p>\r\n    </div>\r\n    <div style="padding: 0rem 2rem 4rem 0rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n        <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-1" \r\n             alt="ico-1" \r\n            :src="`/empresas/${slug}/images/files/ico-2.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center  dark:text-white" data-label="3">Envio gratuito</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center  dark:text-white" data-label="4">¡Aprovecha el envío gratuito en tu pedido!</p>\r\n    </div>\r\n    <div style="padding: 0rem 2rem 4rem 0rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n         <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-3" \r\n             alt="ico-3" \r\n            :src="`/empresas/${slug}/images/files/ico-3.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center dark:text-white"  data-label="5">Compra segura</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center dark:text-white" data-label="6">100% protegido</p>\r\n    </div>\r\n    <div style="padding: 0rem 2rem 4rem 0rem;" class="flex flex-col gap-2  justify-center items-center border-b  border-gray-300 hover:border-primary ">\r\n         <img\r\n             width="63" \r\n             height="63"\r\n             title="ico-4" \r\n             alt="ico-4" \r\n            :src="`/empresas/${slug}/images/files/ico-4.png`"\r\n        />\r\n        <span class="text-black font-semibold  text-center dark:text-white" data-label="7">Garantía 100%</span>\r\n        <p class="text-gray-600 font-semibold text-sm text-center dark:text-white" data-label="8">Garantía de devolución de dinero</p>\r\n    </div>\r\n    \r\n</div>\r\n\r\n<style>\r\n    .grid-banner-1{\r\n        padding:0rem 1.5rem;\r\n        position: relative;\r\n        top: -5rem;\r\n    }\r\n    .banner-1-container div:hover{\r\n        border-bottom: 2px solid var(--primary);\r\n\r\n    }\r\n    .banner-1-container{\r\n        grid-template-columns: repeat(2, minmax(0, 1fr));\r\n        gap: 0rem;\r\n    }\r\n    @media screen and (min-width:800px){\r\n        .banner-1-container{\r\n            padding: 2rem 0rem;\r\n            grid-template-columns: repeat(4, minmax(0, 1fr));\r\n            \r\n        }\r\n\r\n    }\r\n    \r\n</style>',
+            html: '<div class="flex flex-col md:flex-row gap-4 banner-1-custom" x-data="{\r\n    empresa: JSON.parse(localStorage.getItem(\'empresa\'))\r\n}">\r\n    <div class="relative h-full w-full flex justify-content items-center">\r\n        <img class="absolute inset-0 w-full h-full object-cover" :src="`/empresas/${empresa.slug}/images/files/grid-banner-image-1.webp`"/>\r\n        <div class="relative z-10 " style="margin: 2rem;">\r\n            <h3 class="uppercase font-bold text-3xl text-white">Barber Kits</h3>\r\n            <p class="font-semibold tracking-widest text-lg text-white">Save Up to 70% Off</p>\r\n            <a class="text-primary underline font-bold" style="margin-top: 1rem; display:block;">SHOP NOW</a>\r\n        </div>\r\n    </div>\r\n    <div class="relative h-full w-full flex justify-content items-center">\r\n         <img class="absolute inset-0 w-full h-full object-cover" :src="`/empresas/${empresa.slug}/images/files/grid-banner-image-2.webp`"/>\r\n          <div class="relative z-10 " style="margin: 2rem;">\r\n            <h3 class="uppercase font-bold text-3xl text-white">Professional</h3>\r\n            <p class="font-semibold tracking-widest text-lg text-white">Hair Cuttings Shears</p>\r\n            <a class="text-primary underline font-bold" style="margin-top: 1rem; display:block;">SHOP NOW</a>\r\n        </div>\r\n    </div>\r\n</div>\r\n<style>\r\n    .banner-1-custom{\r\n        height: 450px;\r\n    } \r\n    @media screen and (min-width: 700px){\r\n       .banner-1-custom{\r\n            height: 250px;\r\n        } \r\n    }\r\n</style>',
+            empresa_id: 8,
         },
         {
-            id: 17,
+            id: 37,
             title: null,
-            enabled: true,
-            html: '<div  x-data="{slug: JSON.parse(localStorage.getItem(\'empresa\')).slug}" class=""   :style="`background-image: url(\'/empresas/${slug}/images/files/wallpaper-1.webp\'); height: 600px; background-size: cover; background-repeat: no-repeat; width: 100%`">\r\n    <div\r\n        class="grid grid-cols-1 md:grid-cols-2 max-w-6xl mx-auto h-full"\r\n    >\r\n        <div class="flex justify-center items-center">\r\n            <div class="relative">\r\n                <img class=" mb-2" width="300" height="300" alt="offer" title="offer" :src="`/empresas/${slug}/images/files/offer.png`"/>\r\n                <span class="font-bold text-primary absolute top" style="transform: rotate(30deg);top: 45px;left: 120px;font-size: 2.5rem;" data-label="0">50%</span>\r\n            </div>\r\n        </div>\r\n        <div class="flex flex-col gap-4 justify-center items-center w-6/12">\r\n            <span class="text-primary font-semibold text-3xl"  data-label="1">Delicious Taste</span>\r\n            <h3 class="text-white text-6xl font-bold text-center" data-label="2">Fast Food</h3>\r\n            <p class="text-white font-semibold text-center"" data-label="3">You are feeling hungry! Let order your favorite food.</p>\r\n            <a href="/shop" style="--brightness-delay: 8s;" class="bg-primary animation-brightness rounded-md   text-sm md:text-base background-home-button-1  text-white hover:text-primary border delay-custom-1 border-primary px-4 py-2   font-semibold tracking-wider" data-label="4">Order Now</a>\r\n        </div>\r\n    </div>\r\n</div>\r\n',
-            empresa_id: 4,
+            enabled: false,
+            html: "",
+            empresa_id: 8,
         },
         {
-            id: 18,
+            id: 38,
             title: null,
-            enabled: true,
-            empresa_id: 4,
-            html: null,
+            enabled: false,
+            html: "",
+            empresa_id: 8,
         },
         {
-            id: 19,
+            id: 39,
             title: null,
-            enabled: true,
-            empresa_id: 4,
-            html: null,
+            enabled: false,
+            html: "",
+            empresa_id: 8,
         },
     ],
     files: [
         {
-            id: 8,
+            id: 68,
             file: [
                 {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-1.webp",
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/files/grid-banner-image-2.webp",
                 },
             ],
-            empresa_id: 5,
+            empresa_id: 8,
         },
         {
-            id: 9,
+            id: 69,
             file: [
                 {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-2.webp",
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/files/grid-banner-image-1.webp",
                 },
             ],
-            empresa_id: 5,
+            empresa_id: 8,
         },
         {
-            id: 10,
+            id: 70,
             file: [
                 {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-3.webp",
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/files/banner-0-image-1.webp",
                 },
             ],
-            empresa_id: 5,
+            empresa_id: 8,
         },
         {
-            id: 11,
+            id: 71,
             file: [
                 {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-4.webp",
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/files/banner-0-image-2.webp",
                 },
             ],
-            empresa_id: 5,
+            empresa_id: 8,
         },
         {
-            id: 12,
+            id: 72,
             file: [
                 {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-5.webp",
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/files/banner-0-image-3.webp",
                 },
             ],
-            empresa_id: 5,
-        },
-        {
-            id: 13,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-6.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 14,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-7.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 15,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-8.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 16,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-9.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 17,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/partner-10.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 19,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-1.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 20,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-2.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 21,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-3.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 22,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-4.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 23,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-1.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 24,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-2.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 25,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-3.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 26,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-4.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 27,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-5.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 28,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-slider-6.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 29,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-1.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 30,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-2.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 31,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-3.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 32,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-5.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 33,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-4.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 34,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/gym-thump-6.webp",
-                },
-            ],
-            empresa_id: 5,
-        },
-        {
-            id: 35,
-            file: [
-                {
-                    file: "https://www.demo-5.vigilio-services.com/empresas/demo-5/images/files/servicio-1.webp",
-                },
-            ],
-            empresa_id: 5,
+            empresa_id: 8,
         },
     ],
     gridBannersService: [
         {
-            id: 11,
-            html: null,
+            id: 31,
             title: null,
-            enabled: true,
-            empresa_id: 4,
+            html: "",
+            enabled: false,
+            empresa_id: 8,
+
             grid_banner_id: null,
+        },
+        {
+            id: 32,
+            title: null,
+            html: "",
+            enabled: false,
+            empresa_id: 8,
+
+            grid_banner_id: null,
+        },
+        {
+            id: 33,
+            title: null,
+            html: "",
+            enabled: false,
+            empresa_id: 8,
+
+            grid_banner_id: null,
+        },
+        {
+            id: 34,
+            title: null,
+            html: "",
+            enabled: true,
+            empresa_id: 8,
+            grid_banner_id: null,
+        },
+        {
+            id: 35,
+            title: null,
+            html: "",
+            enabled: true,
+            empresa_id: 8,
+
+            grid_banner_id: null,
+        },
+    ],
+    gridBannersShop: [],
+    gridBannersAbout: [],
+    backgrounds: [
+        {
+            id: 13,
+            title: " ",
+            description: null,
+            url: "https://www.demo-8.vigilio-services.com/",
+            html: '<div class="flex flex-col gap-6 items-center justify-center">\r\n    <img\r\n        width="300"\r\n        height="300"\r\n        style="width: 110px; height: 110px"\r\n        alt="scissors"\r\n        title="scissors"\r\n        src="https://demo-48.woovinapro.com/wp-content/plugins/woovina-barber-package/assets/images/demo-48/before-1.png"/>\r\n    <div>\r\n        <div class="flex justify-center items-center flex-col ">\r\n            <h3 class="text-3xl text-white text-center font-bold tracking-wide">Barber Shop</h3>\r\n            <div class="flex items-center gap-2">\r\n                <span class="text-3xl text-white text-center font-bold"> Greate </span> <span class="text-3xl text-primary text-center font-bold tracking-wide">Your Style</span>\r\n            </div>\r\n        </div>\r\n        <p class="text-white text-center tracking-widest  text-xl">We Make Your Hair Look Great Perfect!</p>\r\n    </div>\r\n    <a href="/shop" class="bg-primary px-6 py-2 font-bold uppercase " style="color: white !important; margin-top: 1rem">+ Shop Now</a>\r\n</div>',
+            image: [
+                {
+                    dimension: 100,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/background/7886aef4-8ed5-4401-b873-66c1e3f924b4n4ercx100.webp",
+                },
+                {
+                    dimension: 1600,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/background/dbd44fe0-594e-494e-a7ea-80f1af0944dbn4erhx1600.webp",
+                },
+            ],
+            empresa_id: 8,
         },
         {
             id: 12,
-            title: null,
-            html: null,
-            enabled: true,
-            empresa_id: 4,
-            grid_banner_id: null,
-        },
-        {
-            id: 13,
-            html: null,
-            title: null,
-            enabled: true,
-            empresa_id: 4,
-            grid_banner_id: null,
-        },
-        {
-            id: 14,
-            title: null,
-            html: null,
-            enabled: true,
-            empresa_id: 4,
-            grid_banner_id: null,
-        },
-        {
-            id: 15,
-            title: null,
-            enabled: true,
-            empresa_id: 4,
-            grid_banner_id: null,
-            html: null,
-        },
-    ],
-    backgrounds: [
-        {
-            id: 6,
-            title: "Pizza for Everyone!",
-            description:
-                "Extra-virgin olive oil, garlic, mozzarella cheese, onions.",
-            url: "https://www.demo-4.vigilio-services.com/",
-            html: null,
+            title: " ",
+            description: null,
+            url: "https://www.demo-8.vigilio-services.com/shop",
+            html: '<div class="flex flex-col gap-6 items-center justify-center">\r\n    <img\r\n        width="300"\r\n        height="300"\r\n        style="width: 110px; height: 110px"\r\n        alt="scissors"\r\n        title="scissors"\r\n        src="https://demo-48.woovinapro.com/wp-content/plugins/woovina-barber-package/assets/images/demo-48/before-1.png"/>\r\n    <div>\r\n        <div class="flex justify-center items-center flex-col ">\r\n            <h3 class="text-3xl text-white text-center font-bold tracking-wide">Collection</h3>\r\n            <div class="flex items-center gap-2">\r\n                <span class="text-3xl text-white text-center font-bold tracking-wide"> Greate </span> <span class="text-3xl text-primary text-center font-bold tracking-wide"> & Bread</span>\r\n            </div>\r\n        </div>\r\n        <p class="text-white text-center tracking-widest  text-xl">A Stylish and Happening a Grooming</p>\r\n    </div>\r\n    <a href="/shop" class="bg-primary px-6 py-2 font-bold uppercase " style="color: white !important; margin-top: 1rem">+ Shop Now</a>\r\n</div>',
             image: [
                 {
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/background/1b4c2697-f85a-4ec4-9d74-12bd39f92dde0ctlfx100.webp",
                     dimension: 100,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/background/074d9588-34bb-421d-bbde-c71cc9908194n31m7x100.webp",
                 },
                 {
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/background/766a031a-bf0f-46a8-a976-df95a5302e380ctljx1600.webp",
                     dimension: 1600,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/background/61cab4f9-17cb-4f1e-80bb-878f52c782e4n31mvx1600.webp",
                 },
             ],
-            empresa_id: 4,
+            empresa_id: 8,
         },
     ],
     categories: [
         {
-            id: 11,
-            category_code: "CAT-000002",
-            name: "Pizza",
+            id: 20,
+            category_code: "CAT-000001",
+            name: "Comb",
             isService: false,
-            image: [
-                {
-                    dimension: 100,
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/categories/pizzaglfrsx100.webp",
-                },
-                {
-                    dimension: 800,
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/categories/pizzaglfrvx800.webp",
-                },
-            ],
-            icon: '<i class="fa fa-pizza-slice"></i>',
-            slug: "pizza",
-            empresa_id: 4,
+            image: null,
+            wallpaper: null,
+            icon: "<i class='fa fa-comb'></i>",
+            slug: "comb",
+            empresa_id: 8,
+
             subcategories: [],
-            productsNormals: [],
-            wallpaper: [],
-            productsRestaurants: [
+            productsNormals: [
                 {
-                    price: 33,
+                    price: 50,
                     discount: 0,
-                    id: 8,
-                    product_code: "PROD-000008",
-                    name: "Pizza Hawaiana",
+                    name: "Razor clip",
                     url: null,
-                    description: null,
-                    characteristics: [],
-                    stock: 5,
-                    ilimit: false,
+                    description:
+                        "Descripción del Producto: Razor-Clip\nEl Razor-Clip es la herramienta perfecta para quienes buscan un corte de cabello preciso y profesional en la comodidad de su hogar. Diseñado para barberos y aficionados, este dispositivo incorpora tecnología de última generación que garantiza resultados impecables.\n\nCaracterísticas Principales:\n\n\nEl Razor-Clip es más que un simple recortador; es un aliado indispensable para conseguir un acabado profesional en cada corte. ¡Transforma tu experiencia de peluquería hoy mismo!",
+                    characteristics: [
+                        {
+                            name: "nombre",
+                            value: "Razor-clip",
+                        },
+                        {
+                            name: "tipo",
+                            value: "Accesorio de peluquería",
+                        },
+                        {
+                            name: "material",
+                            value: "Acero inoxidable",
+                        },
+                        {
+                            name: "color",
+                            value: "Negro",
+                        },
+                        {
+                            name: "peso",
+                            value: "20 gramos",
+                        },
+                        {
+                            name: "dimensiones",
+                            value: "10 cm x 5 cm",
+                        },
+                        {
+                            name: "uso",
+                            value: "Recoger cabello durante cortes",
+                        },
+                        {
+                            name: "comodidad",
+                            value: "Diseño ergonómico",
+                        },
+                        {
+                            name: "característica_1",
+                            value: "Antideslizante",
+                        },
+                        {
+                            name: "característica_2",
+                            value: "Resistente a la corrosión",
+                        },
+                        {
+                            name: "característica_3",
+                            value: "Fácil de limpiar",
+                        },
+                        {
+                            name: "característica_4",
+                            value: "Clip de retención seguro",
+                        },
+                        {
+                            name: "diseño",
+                            value: "Compacto y portable",
+                        },
+                        {
+                            name: "aplicación",
+                            value: "Uso profesional y hogareño",
+                        },
+                        {
+                            name: "compatibilidad",
+                            value: "Todos los tipos de cabello",
+                        },
+                        {
+                            name: "mantenimiento",
+                            value: "Bajo",
+                        },
+                        {
+                            name: "durabilidad",
+                            value: "Alta",
+                        },
+                        {
+                            name: "origen",
+                            value: "Fabricado en EE.UU.",
+                        },
+                        {
+                            name: "garantía",
+                            value: "1 año por defectos de fabricación",
+                        },
+                        {
+                            name: "recomendado_para",
+                            value: "Peluqueros y estilistas",
+                        },
+                        {
+                            name: "ventajas",
+                            value: "Mejora la precisión y eficiencia en cortes",
+                        },
+                    ],
                     enabled: true,
                     images: [
                         {
                             dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/pizza-hawaianabi6enx100.webp",
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/razor-clip110p5x100.webp",
                         },
                         {
                             dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/pizza-hawaianabi6erx500.webp",
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/razor-clip110p7x500.webp",
                         },
                     ],
-                    slug: "pizza-hawaiana",
-                    category_id: 11,
+                    slug: "razor-clip",
+                    category_id: 20,
                     subcategory_id: null,
-                    empresa_id: 4,
+                    brand_id: 24,
+                    empresa_id: 8,
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
                 },
                 {
-                    price: 23,
+                    price: 61,
                     discount: 5,
-                    id: 9,
-                    product_code: "PROD-000009",
-                    name: "Pizza Americana",
+                    name: "Hairdryer Large  500W",
                     url: null,
                     description:
-                        "Pizza Americana: Disfruta de una auténtica pizza al estilo americano, con una base gruesa y esponjosa, cubierta con una abundante capa de salsa de tomate, irresistible queso mozzarella fundido y tus ingredientes favoritos. Perfecta para compartir con amigos y familiares, cada porción está repleta de sabor y textura. Ideal para cualquier ocasión, ya sea una cena informal o una fiesta. Personaliza tu pizza con una variedad de ingredientes, desde pepperoni y champiñones hasta pimientos y aceitunas. ¡Atrévete a saborear la tradición de la pizza americana en cada bocado!",
+                        "Secadora de Cabello Mini 500W\nDescubre la nueva Secadora de Cabello Mini 500W, diseñada para ofrecer un rendimiento excepcional en un tamaño compacto y ligero. Ideal para llevar en tus viajes o para un uso diario en casa, esta secadora combina potencia y comodidad.\n\nCaracterísticas Principales\n\n\nBeneficios\n\n\nLa Secadora de Cabello Mini 500W es la solución perfecta para quienes buscan un producto eficiente sin sacrificar espacio. ¡Añádelo a tu rutina de belleza y disfruta de resultados profesionales en cualquier lugar!",
                     characteristics: [
                         {
-                            name: "Estilo",
-                            value: "Pizza de tipo americano",
+                            name: "Modelo",
+                            value: "Hairdryer-Mini-500W",
                         },
                         {
-                            name: "Masa",
-                            value: "Crujiente o gruesa",
-                        },
-                        {
-                            name: "Salsa",
-                            value: "Salsa de tomate abundante",
-                        },
-                        {
-                            name: "Queso",
-                            value: "Mozzarella, a menudo mezclada con otros quesos",
-                        },
-                        {
-                            name: "Coberturas",
-                            value: "Variadas, incluyen pepperoni, jamón, champiñones, pimientos",
+                            name: "Potencia",
+                            value: "500W",
                         },
                         {
                             name: "Tamaño",
-                            value: "Generalmente más grande que otras variedades",
+                            value: "Mini",
                         },
                         {
-                            name: "Corte",
-                            value: "A menudo cortada en triángulos grandes",
+                            name: "Peso",
+                            value: "300 gramos",
                         },
                         {
-                            name: "Origen",
-                            value: "Desarrollada en Estados Unidos en el siglo 20",
+                            name: "Estilo",
+                            value: "Compacto y ligero",
                         },
                         {
-                            name: "Cocción",
-                            value: "Horneada a altas temperaturas",
+                            name: "Fuentes de energía",
+                            value: "Eléctrico",
                         },
                         {
-                            name: "Variedades",
-                            value: "Pizza de Chicago, Pizza de Nueva York, entre otras",
+                            name: "Voltaje",
+                            value: "110-240V",
                         },
                         {
-                            name: "Consumo",
-                            value: "Popular en reuniones y eventos sociales",
+                            name: "Temperaturas",
+                            value: "2 niveles de ajuste",
                         },
                         {
-                            name: "Textura",
-                            value: "Exterior crujiente, interior suave",
-                        },
-                        {
-                            name: "Presentación",
-                            value: "Frecuentemente servida en cajas de cartón",
+                            name: "Velocidades",
+                            value: "2 velocidades",
                         },
                         {
                             name: "Accesorios",
-                            value: "A menudo acompañada de salsa de ajo o picante",
+                            value: "Boquilla concentradora",
                         },
                         {
-                            name: "Popularidad",
-                            value: "Una de las comidas más consumidas en EE.UU.",
+                            name: "Uso",
+                            value: "Secado y peinado en casa o viajes",
                         },
                         {
-                            name: "Nutrición",
-                            value: "Puede ser rica en grasas y carbohidratos",
+                            name: "Material",
+                            value: "Plástico resistente",
                         },
                         {
-                            name: "Adaptaciones",
-                            value: "Existen versiones vegetarianas y veganas",
+                            name: "Funciones adicionales",
+                            value: "Secado rápido",
                         },
                         {
-                            name: "Experiencia",
-                            value: "Frecuentemente disfrutada en pizzerías o delivery",
+                            name: "Tipo de motor",
+                            value: "Motor DC",
                         },
                         {
-                            name: "Innovación",
-                            value: "Nuevas recetas con ingredientes locales",
-                        },
-                    ],
-                    stock: 34,
-                    ilimit: false,
-                    enabled: true,
-                    images: [
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/pizza-americanabkeh6x100.webp",
+                            name: "Cable",
+                            value: "Cable ligero y flexible",
                         },
                         {
-                            dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/pizza-americanabkehex500.webp",
-                        },
-                    ],
-                    slug: "pizza-americana",
-                    category_id: 11,
-                    subcategory_id: null,
-                    empresa_id: 4,
-                },
-                {
-                    price: 69,
-                    discount: 10,
-                    id: 12,
-                    product_code: "PROD-000012",
-                    name: "Pepperoni Pizza",
-                    url: null,
-                    description:
-                        "Disfruta de nuestra deliciosa Pizza de Pepperoni, elaborada con una masa crujiente y suave, cubierta con una rica salsa de tomate y generosas porciones de queso mozzarella fundido. Cada rebanada está adornada con sabrosas y picantes rodajas de pepperoni, que aportan un toque irresistible. Perfecta para compartir en cualquier ocasión, nuestra pizza es ideal para una cena en familia, una noche de películas o una reunión con amigos. ¡Satisfacción garantizada con cada bocado!",
-                    characteristics: [
-                        {
-                            name: "Tipo de comida",
-                            value: "Pizza",
+                            name: "Aislación",
+                            value: "Protección contra sobrecalentamiento",
                         },
                         {
-                            name: "Base",
-                            value: "Masa de pizza",
+                            name: "Colores disponibles",
+                            value: "Varios colores",
                         },
                         {
-                            name: "Salsa",
-                            value: "Salsa de tomate",
-                        },
-                        {
-                            name: "Queso",
-                            value: "Queso mozzarella",
-                        },
-                        {
-                            name: "Topping principal",
-                            value: "Rodajas de pepperoni",
-                        },
-                        {
-                            name: "Textura",
-                            value: "Crujiente por fuera, suave por dentro",
-                        },
-                        {
-                            name: "Sabor",
-                            value: "Salado y especiado",
-                        },
-                        {
-                            name: "Tamaño promedio",
-                            value: "Individual o familiar",
-                        },
-                        {
-                            name: "Método de cocción",
-                            value: "Horneada",
-                        },
-                        {
-                            name: "Origen",
-                            value: "Estados Unidos",
-                        },
-                        {
-                            name: "Popularidad",
-                            value: "Alta en restaurantes y pizzerías",
-                        },
-                        {
-                            name: "Variedades",
-                            value: "Pizza estilo Chicago, Napolitana, entre otras",
-                        },
-                        {
-                            name: "Opciones veganas",
-                            value: "Disponibles en algunas pizzerías",
-                        },
-                        {
-                            name: "Acompañamientos",
-                            value: "Salsas, ensaladas",
-                        },
-                        {
-                            name: "Consumo",
-                            value: "Fácil de compartir",
-                        },
-                        {
-                            name: "Alergias",
-                            value: "Contiene lactosa y gluten",
-                        },
-                        {
-                            name: "Valor nutricional",
-                            value: "Alto en grasas y carbohidratos",
-                        },
-                    ],
-                    stock: 3,
-                    ilimit: false,
-                    enabled: true,
-                    images: [
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/pepperoni-pizzanokrlx100.webp",
-                        },
-                        {
-                            dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/pepperoni-pizzanokrox500.webp",
-                        },
-                    ],
-                    slug: "pepperoni-pizza",
-                    category_id: 11,
-                    subcategory_id: null,
-                    empresa_id: 4,
-                },
-                {
-                    price: 78,
-                    discount: 0,
-                    id: 13,
-                    product_code: "PROD-000013",
-                    name: "Margherita",
-                    url: null,
-                    description:
-                        "Deléitate con nuestra clásica Pizza Margherita, elaborada con una base de masa artesanal, crujiente y esponjosa. Cada pizza está cubierta con una suave salsa de tomate 100% natural, mozzarella de alta calidad y hojas frescas de albahaca, creando una combinación de sabores auténticos y frescos. Ideal para los amantes de la pizza que buscan disfrutar de un plato tradicional italiano en su máxima expresión. Perfecta para compartir o saborear en cualquier momento del día. ¡Un verdadero festín para los sentidos!",
-                    characteristics: [
-                        {
-                            name: "Nombre",
-                            value: "Pizza Margherita",
-                        },
-                        {
-                            name: "Origen",
-                            value: "Italia",
-                        },
-                        {
-                            name: "Ingredientes principales",
-                            value: "Tomate, mozzarella, albahaca",
-                        },
-                        {
-                            name: "Sabor",
-                            value: "Equilibrado entre dulce y salado",
-                        },
-                        {
-                            name: "Textura de la masa",
-                            value: "Crujiente por fuera, suave por dentro",
-                        },
-                        {
-                            name: "Método de cocción",
-                            value: "Horno de leña tradicional",
-                        },
-                        {
-                            name: "Variantes",
-                            value: "Algunas versiones incluyen aceite de oliva",
-                        },
-                        {
-                            name: "Tamaño típico",
-                            value: "Entre 30 y 50 cm de diámetro",
-                        },
-                        {
-                            name: "Presentación",
-                            value: "Cortada en porciones triangulares",
-                        },
-                        {
-                            name: "Colores representativos",
-                            value: "Rojo, blanco y verde",
-                        },
-                        {
-                            name: "Popularidad",
-                            value: "Una de las pizzas más famosas del mundo",
-                        },
-                        {
-                            name: "Acompañamientos recomendados",
-                            value: "Vino tinto o agua con gas",
-                        },
-                        {
-                            name: "Nutrición",
-                            value: "Una opción relativamente ligera",
-                        },
-                        {
-                            name: "Cultura",
-                            value: "Símbolo de la gastronomía italiana",
-                        },
-                        {
-                            name: "Historia",
-                            value: "Creada en 1889 en honor a la reina Margherita de Saboya",
-                        },
-                        {
-                            name: "Simbolismo",
-                            value: "Colores de la bandera italiana",
+                            name: "Diseño",
+                            value: "Ergonómico",
                         },
                         {
                             name: "Ideal para",
-                            value: "Reuniones familiares y eventos sociales",
+                            value: "Viajes y uso diario",
                         },
                         {
-                            name: "Popularidad internacional",
-                            value: "Ampliamente reconocida y servida en restaurantes de todo el mundo",
+                            name: "Ruido",
+                            value: "Bajo nivel de ruido",
                         },
                         {
-                            name: "Dificultad de preparación",
-                            value: "Moderada",
-                        },
-                        {
-                            name: "Tiempo de cocción",
-                            value: "Poco tiempo, alrededor de 90 segundos a alta temperatura",
-                        },
-                        {
-                            name: "Estilo de servicio",
-                            value: "Normalmente se sirve caliente",
-                        },
-                        {
-                            name: "Tendencias actuales",
-                            value: "Cada vez más opciones veganas y sin gluten",
-                        },
-                        {
-                            name: "Inspiración local",
-                            value: "Variantes regionales en Italia con ingredientes locales",
-                        },
-                        {
-                            name: "Recomendación de chefs",
-                            value: "Usar ingredientes frescos y de alta calidad",
+                            name: "Garantía",
+                            value: "1 año de garantía",
                         },
                     ],
-                    stock: 4,
-                    ilimit: false,
                     enabled: true,
                     images: [
                         {
                             dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/margheritansb36x100.webp",
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hairdryer-large-500wvd3uox100.webp",
                         },
                         {
                             dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/margheritansb3cx500.webp",
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hairdryer-large-500wvd3urx500.webp",
                         },
                     ],
-                    slug: "margherita",
-                    category_id: 11,
+                    slug: "hairdryer-large-500w",
+                    category_id: 20,
                     subcategory_id: null,
-                    empresa_id: 4,
-                },
-            ],
-            productsServicios: [],
-        },
-        {
-            id: 10,
-            category_code: "CAT-000001",
-            name: "Burguer",
-            isService: false,
-            image: [
-                {
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/categories/burguergr2r4x100.webp",
-                    dimension: 100,
+                    brand_id: 23,
+                    empresa_id: 8,
+
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
                 },
                 {
-                    file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/categories/burguergr2r7x800.webp",
-                    dimension: 800,
-                },
-            ],
-            icon: "<i class='fa fa-burger'></i>",
-            slug: "burguer",
-            empresa_id: 4,
-            subcategories: [],
-            wallpaper: [],
-            productsNormals: [],
-            productsRestaurants: [
-                {
-                    price: 67,
-                    discount: 2,
-                    id: 2,
-                    product_code: "PROD-000002",
-                    name: "Burguer Clásica de Res",
+                    price: 57,
+                    discount: 1,
+                    name: "Hair trimmer set",
                     url: null,
                     description:
-                        "Descubre la deliciosa Buffalo Ranch Burger, una jugosa hamburguesa de carne 100% de res, sazonada a la perfección y cubierta con una cremosa salsa ranch que le aporta un sabor único. Cada bocado está complementado con queso derretido, lechuga fresca y rodajas de tomate, todo servido en un suave pan de hamburguesa. Ideal para los amantes de los sabores intensos y la cocina americana, esta hamburguesa se convierte en una experiencia gustativa inolvidable. Perfecta para disfrutar con papas fritas crujientes y tu bebida favorita. ¡No te la puedes perder!",
-                    characteristics: [
-                        {
-                            name: "nombre",
-                            value: "Buffalo Ranch Burger",
-                        },
-                        {
-                            name: "tipo_de_burger",
-                            value: "Hamburguesa de res",
-                        },
-                        {
-                            name: "sabor_principal",
-                            value: "Buffalo",
-                        },
-                        {
-                            name: "ingredientes",
-                            value: "Carne de res, salsa buffalo, lechuga, tomate, cebolla, queso azul",
-                        },
-                        {
-                            name: "estilo_de_queso",
-                            value: "Queso azul desmenuzado",
-                        },
-                        {
-                            name: "salsa",
-                            value: "Salsa buffalo picante",
-                        },
-                        {
-                            name: "acompañamientos",
-                            value: "Papas fritas, aros de cebolla",
-                        },
-                        {
-                            name: "tamaño",
-                            value: "Doble carne disponible",
-                        },
-                        {
-                            name: "nivel_de_picante",
-                            value: "Alto",
-                        },
-                        {
-                            name: "presentacion",
-                            value: "Servida en pan de hamburguesa",
-                        },
-                        {
-                            name: "sustitutos",
-                            value: "Opción de pollo o pavo",
-                        },
-                        {
-                            name: "toppings_adicionales",
-                            value: "Jalapeños, aguacate",
-                        },
-                        {
-                            name: "opcion_vegetariana",
-                            value: "No disponible",
-                        },
-                        {
-                            name: "origen_del_plato",
-                            value: "Cocina estadounidense",
-                        },
-                        {
-                            name: "ideal_para",
-                            value: "Amantes de la comida picante",
-                        },
-                        {
-                            name: "sensacion_boca",
-                            value: "Cremosidad del queso y crujiente",
-                        },
-                        {
-                            name: "tiempo_de_preparacion",
-                            value: "15 minutos",
-                        },
-                        {
-                            name: "tamaño_de_porcion",
-                            value: "Generosa",
-                        },
-                        {
-                            name: "maridaje_recomendado",
-                            value: "Cerveza artesanal",
-                        },
-                        {
-                            name: "dieta_especial",
-                            value: "No apta para celíacos",
-                        },
-                    ],
-                    stock: 0,
-                    ilimit: true,
-                    enabled: true,
-                    images: [
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/burguer-clsica-de-reseg9rfx100.webp",
-                        },
-                        {
-                            dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/burguer-clsica-de-reseg9rix500.webp",
-                        },
-                    ],
-                    slug: "burguer-clsica-de-res",
-                    category_id: 10,
-                    subcategory_id: null,
-                    empresa_id: 4,
-                },
-                {
-                    price: 34,
-                    discount: 0,
-                    id: 4,
-                    product_code: "PROD-000004",
-                    name: "Ultimate Bacon",
-                    url: null,
-                    description: null,
-                    characteristics: [],
-                    stock: 0,
-                    ilimit: false,
-                    enabled: true,
-                    images: [
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/ultimate-baconeie6ix100.webp",
-                        },
-                        {
-                            dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/ultimate-baconeie6kx500.webp",
-                        },
-                    ],
-                    slug: "ultimate-bacon",
-                    category_id: 10,
-                    subcategory_id: null,
-                    empresa_id: 4,
-                },
-                {
-                    price: 34,
-                    discount: 0,
-                    id: 5,
-                    product_code: "PROD-000005",
-                    name: "Ultimate Bacon Dark",
-                    url: null,
-                    description: null,
-                    characteristics: [],
-                    stock: 3,
-                    ilimit: false,
-                    enabled: true,
-                    images: [
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/ultimate-bacon-darkej8n3x100.webp",
-                        },
-                        {
-                            dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/ultimate-bacon-darkej8n5x500.webp",
-                        },
-                    ],
-                    slug: "ultimate-bacon-dark",
-                    category_id: 10,
-                    subcategory_id: null,
-                    empresa_id: 4,
-                },
-                {
-                    price: 45,
-                    discount: 0,
-                    id: 3,
-                    product_code: "PROD-000003",
-                    name: "Hambuger Sicilian",
-                    url: null,
-                    description:
-                        "Hamburguesa Sicilian: Disfruta de una deliciosa fusión de sabores en cada bocado. Esta hamburguesa gourmet presenta una jugosa carne de res sazonada con especias italianas, acompañada de una mezcla de quesos fundidos, rodajas de tomate fresco y hojas de albahaca. Todo ello se sirve en un suave pan ciabatta tostado, añadiendo un toque crujiente y delicioso. Perfecta para los amantes de la cocina mediterránea, la Hamburguesa Sicilian es una experiencia culinaria que no te puedes perder. Ideal para compartir o disfrutar en una comida especial.",
-                    characteristics: [
-                        {
-                            name: "nombre",
-                            value: "Hamburguesa Siciliana",
-                        },
-                        {
-                            name: "tipo_de_carne",
-                            value: "Carne de res",
-                        },
-                        {
-                            name: "pan",
-                            value: "Pan ciabatta",
-                        },
-                        {
-                            name: "dimension",
-                            value: "150 gramos",
-                        },
-                        {
-                            name: "ingredientes_principales",
-                            value: "Albahaca, tomate, mozzarella",
-                        },
-                        {
-                            name: "salsa",
-                            value: "Salsa pesto",
-                        },
-                        {
-                            name: "acompañamiento",
-                            value: "Ensalada de rúcula",
-                        },
-                        {
-                            name: "estilo_culinario",
-                            value: "Mediterráneo",
-                        },
-                        {
-                            name: "opciones_veganas",
-                            value: "Alternativa de hamburguesa vegetal",
-                        },
-                        {
-                            name: "elaboración",
-                            value: "A la parrilla",
-                        },
-                        {
-                            name: "origen",
-                            value: "Sicilia, Italia",
-                        },
-                        {
-                            name: "sabor",
-                            value: "Fresco y aromático",
-                        },
-                        {
-                            name: "textura",
-                            value: "Jugosa y crujiente",
-                        },
-                        {
-                            name: "tipo_de_servicio",
-                            value: "Rápido y casual",
-                        },
-                        {
-                            name: "presentación",
-                            value: "Servida en plato con guarnición",
-                        },
-                        {
-                            name: "popularidad",
-                            value: "Popular en restaurantes italianos",
-                        },
-                        {
-                            name: "recomendación",
-                            value: "Ideal para amantes de la cocina italiana",
-                        },
-                    ],
-                    stock: 0,
-                    ilimit: false,
-                    enabled: true,
-                    images: [
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/hambuger-sicilianehffcx100.webp",
-                        },
-                        {
-                            dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/hambuger-sicilianehffgx500.webp",
-                        },
-                    ],
-                    slug: "hambuger-sicilian",
-                    category_id: 10,
-                    subcategory_id: null,
-                    empresa_id: 4,
-                },
-                {
-                    price: 290,
-                    discount: 2,
-                    id: 1,
-                    product_code: "PROD-000001",
-                    name: "Buffalo Ranch burguer",
-                    url: null,
-                    description:
-                        "Descubre la deliciosa Buffalo Ranch Burger, una jugosa hamburguesa de carne 100% de res, sazonada a la perfección y cubierta con una irresistible salsa buffalo picante. Añadimos queso crema suave y crujientes trocitos de tocino para una explosión de sabor en cada bocado. Servida en un pan artesanal recién horneado y acompañada de lechuga fresca, tomate maduro y cebolla morada, esta hamburguesa es la opción perfecta para los amantes de los sabores intensos. Ideal para disfrutar en cualquier ocasión, te hará vivir una experiencia gourmet única. ¡No te la puedes perder!",
-                    characteristics: [
-                        {
-                            name: "nombre",
-                            value: "Buffalo Ranch Burger",
-                        },
-                        {
-                            name: "tipo",
-                            value: "Hamburguesa",
-                        },
-                        {
-                            name: "ingredientes_principales",
-                            value: "Carne de res, salsa buffalo, queso cheddar",
-                        },
-                        {
-                            name: "pan",
-                            value: "Pan brioche",
-                        },
-                        {
-                            name: "tamaño",
-                            value: "180g",
-                        },
-                        {
-                            name: "sabor",
-                            value: "Picante y ahumado",
-                        },
-                        {
-                            name: "acompañamientos",
-                            value: "Pico de gallo, lechuga, cebolla roja",
-                        },
-                        {
-                            name: "salsa",
-                            value: "Salsa ranch",
-                        },
-                        {
-                            name: "opciones_vegetarianas",
-                            value: "Disponibles (hamburguesa de garbanzos)",
-                        },
-                        {
-                            name: "nutrición",
-                            value: "Alto en proteínas",
-                        },
-                        {
-                            name: "alergénicos",
-                            value: "Contiene lactosa y gluten",
-                        },
-                        {
-                            name: "popularidad",
-                            value: "Alta",
-                        },
-                        {
-                            name: "estilo_culinario",
-                            value: "Americano",
-                        },
-                        {
-                            name: "preparación",
-                            value: "A la parrilla",
-                        },
-                        {
-                            name: "servicio",
-                            value: "Listo para llevar o comer en el local",
-                        },
-                        {
-                            name: "opciones_de_personalización",
-                            value: "Se pueden añadir más ingredientes",
-                        },
-                        {
-                            name: "maridaje",
-                            value: "Cervezas artesanales o refrescos",
-                        },
-                        {
-                            name: "recomendación",
-                            value: "Ideal para los amantes del picante",
-                        },
-                        {
-                            name: "tiempo_de_preparación",
-                            value: "15 minutos",
-                        },
-                        {
-                            name: "presentación",
-                            value: "Servida con papas fritas",
-                        },
-                        {
-                            name: "disponibilidad",
-                            value: "Todo el año",
-                        },
-                    ],
-                    stock: 19,
-                    ilimit: false,
-                    enabled: true,
-                    images: [
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/buffalo-ranch-burguere6pq7x100.webp",
-                        },
-                        {
-                            dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/buffalo-ranch-burguere6pqex500.webp",
-                        },
-                    ],
-                    slug: "buffalo-ranch-burguer",
-                    category_id: 10,
-                    subcategory_id: null,
-                    empresa_id: 4,
-                },
-                {
-                    price: 66,
-                    discount: 0,
-                    id: 7,
-                    product_code: "PROD-000007",
-                    name: "Hambuerger Delicius",
-                    url: null,
-                    description:
-                        "Descubre la Hamburguesa Delicius, una explosión de sabor en cada bocado. Elaborada con carne 100% de res de alta calidad, esta hamburguesa se cocina a la perfección para lograr un exterior jugoso y un interior tierno. Acompañada de pan artesanal suave y fresco, la Hamburguesa Delicius incluye una mezcla de vegetales frescos, queso fundido y nuestra salsa especial que realza todos sus sabores. Ideal para cualquier ocasión, perfecta para compartir o disfrutar en solitario. Atrévete a saborear la diferencia con cada mordida. ¡Tu antojo lo agradecerá!",
-                    characteristics: [
-                        {
-                            name: "nombre",
-                            value: "Hamburguesa Delicius",
-                        },
-                        {
-                            name: "tamaño",
-                            value: "Doble",
-                        },
-                        {
-                            name: "carne",
-                            value: "100% carne de res angus",
-                        },
-                        {
-                            name: "pan",
-                            value: "Pan brioche suave",
-                        },
-                        {
-                            name: "queso",
-                            value: "Queso cheddar derretido",
-                        },
-                        {
-                            name: "ingredientes adicionales",
-                            value: "Tocino, lechuga, tomate, cebolla caramelizada",
-                        },
-                        {
-                            name: "salsas",
-                            value: "Mayonesa especial y salsa BBQ",
-                        },
-                        {
-                            name: "acompañamientos",
-                            value: "Papas fritas crujientes",
-                        },
-                        {
-                            name: "opciones vegetarianas",
-                            value: "Alternativa de hamburguesa de garbanzos",
-                        },
-                        {
-                            name: "porción",
-                            value: "200g de carne",
-                        },
-                        {
-                            name: "presentación",
-                            value: "Servida en plato con guarnición",
-                        },
-                        {
-                            name: "calorías",
-                            value: "Aproximadamente 800 kcal",
-                        },
-                        {
-                            name: "ideal para",
-                            value: "Almuerzos y cenas",
-                        },
-                        {
-                            name: "localización",
-                            value: "Disponible en restaurantes seleccionados",
-                        },
-                        {
-                            name: "nivel de picante",
-                            value: "Suave",
-                        },
-                        {
-                            name: "opciones de bebidas",
-                            value: "Cervezas artesanales y refrescos",
-                        },
-                        {
-                            name: "nivel de satisfacción",
-                            value: "Alta",
-                        },
-                        {
-                            name: "recomendaciones",
-                            value: "Recomendado por críticos gastronómicos",
-                        },
-                        {
-                            name: "presentación visual",
-                            value: "Atractiva y colorida",
-                        },
-                        {
-                            name: "tipo de cliente",
-                            value: "Amantes de las hamburguesas gourmet",
-                        },
-                        {
-                            name: "promociones",
-                            value: "Combo con bebida y papas",
-                        },
-                    ],
-                    stock: 6,
-                    ilimit: false,
-                    enabled: true,
-                    images: [
-                        {
-                            dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/hambuerger-deliciusbc055x100.webp",
-                        },
-                        {
-                            dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/hambuerger-deliciusbc057x500.webp",
-                        },
-                    ],
-                    slug: "hambuerger-delicius",
-                    category_id: 10,
-                    subcategory_id: null,
-                    empresa_id: 4,
-                },
-                {
-                    price: 23,
-                    discount: 0,
-                    id: 10,
-                    product_code: "PROD-000010",
-                    name: "Hamburgueza de Pollo",
-                    url: null,
-                    description:
-                        "Descubre nuestra deliciosa Hamburguesa de Pollo, elaborada con pechuga de pollo 100% fresca y sazonada con una mezcla especial de especias. Presentada en un suave pan brioche y acompañada de lechuga crujiente, tomate jugoso y mayonesa casera, cada bocado es una explosión de sabor. Ideal para quienes buscan una opción ligera pero contundente, esta hamburguesa es perfecta para cualquier ocasión. Disfruta de una experiencia gastronómica única con nuestra Hamburguesa de Pollo y déjate seducir por su frescura y calidad. ¡Haz tu pedido ahora!",
+                        "Juego de Cortadoras de Cabello\nDescubre la precisión y el estilo con nuestro juego de cortadoras de cabello de alta calidad, diseñado para ofrecerte una experiencia de corte excepcional en la comodidad de tu hogar. Este set es perfecto tanto para barberos profesionales como para aquellos que desean mantener su look personal.\n\nCaracterísticas del Producto:\n\n\nBeneficios:\n\n\nEleva tu experiencia de cuidado personal con nuestro juego de cortadoras de cabello, la herramienta definitiva para lucir siempre impecable y a la moda.",
                     characteristics: [
                         {
                             name: "tipo",
-                            value: "Hamburguesa",
+                            value: "Juego de recortadores de cabello",
                         },
                         {
-                            name: "ingrediente principal",
-                            value: "Pollo",
+                            name: "número de piezas",
+                            value: "6",
                         },
                         {
-                            name: "tipo de carne",
-                            value: "Pechuga de pollo",
+                            name: "material de las cuchillas",
+                            value: "Acero inoxidable",
                         },
                         {
-                            name: "sabor",
-                            value: "Suave y jugoso",
+                            name: "longitud de corte ajustable",
+                            value: "Sí, varias posiciones",
                         },
                         {
-                            name: "tamaño",
-                            value: "Regular a grande",
+                            name: "tipo de alimentación",
+                            value: "Inalámbrico y con cable",
                         },
                         {
-                            name: "pan",
-                            value: "Bollo de hamburguesa",
+                            name: "duración de batería",
+                            value: "Hasta 60 minutos",
                         },
                         {
-                            name: "acompañamientos",
-                            value: "Lechuga, tomate, cebolla",
+                            name: "tiempo de carga",
+                            value: "1.5 horas",
                         },
                         {
-                            name: "salsas",
-                            value: "Mayonesa, mostaza, ketchup",
+                            name: "peso",
+                            value: "300 g",
                         },
                         {
-                            name: "opciones de cocción",
-                            value: "A la parrilla, a la plancha",
+                            name: "accesorios incluidos",
+                            value: "Peines guía, cepillo de limpieza, aceite",
                         },
                         {
-                            name: "opciones de complementos",
-                            value: "Queso, aguacate, bacon",
+                            name: "facilidad de limpieza",
+                            value: "Cuchillas lavables",
                         },
                         {
-                            name: "valor nutricional",
-                            value: "Alta en proteínas",
+                            name: "uso recomendado",
+                            value: "Cortes de cabello y barba",
                         },
                         {
-                            name: "tendencia",
-                            value: "Saludable",
+                            name: "garantía",
+                            value: "2 años",
                         },
                         {
-                            name: "vegetariana",
+                            name: "color",
+                            value: "Negro/plateado",
+                        },
+                        {
+                            name: "diseño ergonómico",
+                            value: "Sí",
+                        },
+                        {
+                            name: "ruido de funcionamiento",
+                            value: "Bajo",
+                        },
+                        {
+                            name: "compatibilidad",
+                            value: "Compatible con voltaje universal",
+                        },
+                        {
+                            name: "indicador de batería",
+                            value: "LED",
+                        },
+                        {
+                            name: "velocidades ajustables",
+                            value: "Sí, 2 velocidades",
+                        },
+                        {
+                            name: "usos múltiples",
+                            value: "Incluso para detalles y acabados",
+                        },
+                        {
+                            name: "tecnología de corte",
+                            value: "Corte de precisión",
+                        },
+                        {
+                            name: "facilidad de manejo",
+                            value: "Manguito antideslizante",
+                        },
+                    ],
+                    enabled: true,
+                    images: [
+                        {
+                            dimension: 100,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hair-trimmer-set0vdb7x100.webp",
+                        },
+                        {
+                            dimension: 500,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hair-trimmer-set0vdbax500.webp",
+                        },
+                    ],
+                    slug: "hair-trimmer-set",
+                    category_id: 20,
+                    subcategory_id: null,
+                    brand_id: 22,
+                    empresa_id: 8,
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
+                },
+                {
+                    price: 50,
+                    discount: 0,
+                    name: "Hairdryer Mini 500W",
+                    url: null,
+                    description:
+                        "Secador de Pelo Mini 500W\nDescubre la potencia y la comodidad del Secador de Pelo Mini 500W, diseñado para aquellos que buscan un producto compacto y eficiente sin sacrificar el rendimiento.\n\nCaracterísticas Principales:\n\n\nBeneficios:\nEste secador mini es perfecto para quienes desean una herramienta práctica y eficiente que se adapte a cualquier estilo de vida. Con su tecnología avanzada, garantiza un secado uniforme y reduce el riesgo de daños por calor. ¡Llévalo contigo a todas partes y mantén tu cabello siempre perfecto!",
+                    characteristics: [
+                        {
+                            name: "Modelo",
+                            value: "Hairdryer-Mini-500W",
+                        },
+                        {
+                            name: "Potencia",
+                            value: "500 W",
+                        },
+                        {
+                            name: "Tamaño",
+                            value: "Mini",
+                        },
+                        {
+                            name: "Peso",
+                            value: "300 g",
+                        },
+                        {
+                            name: "Dimensiones",
+                            value: "20 x 10 x 5 cm",
+                        },
+                        {
+                            name: "Voltaje",
+                            value: "220-240 V",
+                        },
+                        {
+                            name: "Tipo de secador",
+                            value: "Secador de viaje",
+                        },
+                        {
+                            name: "Tecnología",
+                            value: "Iónica",
+                        },
+                        {
+                            name: "Configuraciones de calor",
+                            value: "2 niveles",
+                        },
+                        {
+                            name: "Configuraciones de velocidad",
+                            value: "1 nivel",
+                        },
+                        {
+                            name: "Accesorios incluidos",
+                            value: "Boquilla concentradora",
+                        },
+                        {
+                            name: "Función de aire frío",
+                            value: "Sí",
+                        },
+                        {
+                            name: "Cortacircuito de seguridad",
+                            value: "Sí",
+                        },
+                        {
+                            name: "Uso recomendado",
+                            value: "Viajes y uso doméstico",
+                        },
+                        {
+                            name: "Material principalmente",
+                            value: "Plástico",
+                        },
+                        {
+                            name: "Color disponible",
+                            value: "Negro, Rosa",
+                        },
+                        {
+                            name: "Cable retráctil",
                             value: "No",
                         },
                         {
-                            name: "alternativa",
-                            value: "Hamburguesa de pavo",
+                            name: "Tipo de funcionamiento",
+                            value: "Eléctrico",
                         },
                         {
-                            name: "popularidad",
-                            value: "Alta en restaurantes de comida rápida",
+                            name: "Garantía",
+                            value: "1 año",
                         },
                         {
-                            name: "servir con",
-                            value: "Papas fritas o ensalada",
+                            name: "Compatibilidad internacional",
+                            value: "Sí",
                         },
                         {
-                            name: "origen",
-                            value: "Estadounidense",
+                            name: "Ajustes de temperatura",
+                            value: "Calor bajo y alto",
                         },
                         {
-                            name: "variantes",
-                            value: "Pollo empanizado, pollo BBQ",
+                            name: "Ruido en funcionamiento",
+                            value: "Bajo",
                         },
                         {
-                            name: "cualidades adicionales",
-                            value: "Bajo en grasas si es a la parrilla",
+                            name: "Fácil de almacenar",
+                            value: "Sí",
                         },
                         {
-                            name: "presentación",
-                            value: "Servida en plato o envoltura",
+                            name: "Uso profesional",
+                            value: "No recomendado",
                         },
                     ],
-                    stock: 3,
-                    ilimit: false,
                     enabled: true,
                     images: [
                         {
                             dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/hamburgueza-de-pollonjuppx100.webp",
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hairdryer-mini-500w145tsx100.webp",
                         },
                         {
                             dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/hamburgueza-de-pollonjuq3x500.webp",
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hairdryer-mini-500w145u0x500.webp",
                         },
                     ],
-                    slug: "hamburgueza-de-pollo",
-                    category_id: 10,
+                    slug: "hairdryer-mini-500w",
+                    category_id: 20,
                     subcategory_id: null,
-                    empresa_id: 4,
+                    brand_id: 25,
+                    empresa_id: 8,
+                    options: [
+                        {
+                            option_id: 3,
+                            features: [14],
+                        },
+                    ],
                 },
                 {
-                    price: 76,
-                    discount: 5,
-                    id: 11,
-                    product_code: "PROD-000011",
-                    name: "Hamburgueza de Carnet",
+                    price: 60,
+                    discount: 3,
+                    name: "White trimmer",
                     url: null,
                     description:
-                        "Descubre la Hamburguesa de Carnet, una deliciosa experiencia culinaria que combina jugosas capas de carne de res premium con ingredientes frescos y de alta calidad. Su pan artesanal, tostado a la perfección, envuelve un generoso medallón de carne, complementado con lechuga crujiente, tomate fresco y nuestra especial salsa secreta que realza cada bocado. Ideal para los amantes de las hamburguesas que buscan un sabor único y abundante. Perfecta para cualquier ocasión, disfrútala con una guarnición de papas fritas doradas o una ensalada fresca. ¡Haz de tu momento hamburguesa una experiencia inolvidable!",
+                        "White-Trimmer\nTransforma tu experiencia de afeitado con el innovador White-Trimmer, diseñado para ofrecer un rendimiento excepcional y una precisión inigualable.\n\nCaracterísticas Destacadas:\n\n\nBeneficios de Utilizar White-Trimmer:\n\n\nDescubre la revolución en el cuidado personal con White-Trimmer y logra acabados perfectos en cada corte.",
+                    characteristics: [
+                        {
+                            name: "tipo",
+                            value: "Trimmer de jardín",
+                        },
+                        {
+                            name: "marca",
+                            value: "White",
+                        },
+                        {
+                            name: "modelo",
+                            value: "White-trimmer",
+                        },
+                        {
+                            name: "potencia",
+                            value: "750W",
+                        },
+                        {
+                            name: "longitud del cable",
+                            value: "10 metros",
+                        },
+                        {
+                            name: "peso",
+                            value: "3.5 kg",
+                        },
+                        {
+                            name: "sistema de corte",
+                            value: "Hilo de nylon",
+                        },
+                        {
+                            name: "ajuste de altura",
+                            value: "Sí",
+                        },
+                        {
+                            name: "ruedas",
+                            value: "No",
+                        },
+                        {
+                            name: "tipo de combustible",
+                            value: "Eléctrico",
+                        },
+                        {
+                            name: "facilidad de inicio",
+                            value: "Arranque rápido",
+                        },
+                        {
+                            name: "nivel de ruido",
+                            value: "Moderado",
+                        },
+                        {
+                            name: "uso recomendado",
+                            value: "Jardines pequeños a medianos",
+                        },
+                        {
+                            name: "garantía",
+                            value: "2 años",
+                        },
+                        {
+                            name: "accesorios incluidos",
+                            value: "Rebobinador de hilo",
+                        },
+                        {
+                            name: "tipo de usuario",
+                            value: "Doméstico",
+                        },
+                        {
+                            name: "diseño ergonómico",
+                            value: "Sí",
+                        },
+                        {
+                            name: "nivel de vibración",
+                            value: "Bajo",
+                        },
+                        {
+                            name: "color",
+                            value: "Verde",
+                        },
+                        {
+                            name: "durabilidad",
+                            value: "Alta",
+                        },
+                        {
+                            name: "mantenimiento",
+                            value: "Bajo",
+                        },
+                        {
+                            name: "calificación de seguridad",
+                            value: "IPX4",
+                        },
+                    ],
+                    enabled: true,
+                    images: [
+                        {
+                            dimension: 100,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/white-trimmer12d9tx100.webp",
+                        },
+                        {
+                            dimension: 500,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/white-trimmer12da0x500.webp",
+                        },
+                    ],
+                    slug: "white-trimmer",
+                    category_id: 20,
+                    subcategory_id: null,
+                    brand_id: 23,
+                    empresa_id: 8,
+
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
+                },
+                {
+                    price: 56,
+                    discount: 2,
+                    name: "Hair cutting comb scissors",
+                    url: null,
+                    description:
+                        "Juego de Tijeras y Peine para Corte de Cabello\n\nDescubre el set perfecto para estilistas y barberos profesionales. Nuestro juego de tijeras y peine para corte de cabello incluye herramientas de alta calidad diseñadas para lograr cortes precisos y estilizados.\n\nCaracterísticas del producto:\n\n\nBeneficios:\n\n\nCon este set de tijeras y peine, estarás listo para ofrecer un servicio de calidad superior. Perfecto para cualquier profesional de la barbería que busca mejorar su kit de herramientas.",
+                    characteristics: [
+                        {
+                            name: "tipo",
+                            value: "Set de herramientas para corte de cabello",
+                        },
+                        {
+                            name: "material",
+                            value: "Acero inoxidable y plástico",
+                        },
+                        {
+                            name: "componentes",
+                            value: "Tijeras, peine, y parte de corte",
+                        },
+                        {
+                            name: "longitud tijeras",
+                            value: "6.5 pulgadas",
+                        },
+                        {
+                            name: "longitud peine",
+                            value: "7.5 pulgadas",
+                        },
+                        {
+                            name: "color",
+                            value: "Negro y plateado",
+                        },
+                        {
+                            name: "uso",
+                            value: "Corte de cabello profesional y personal",
+                        },
+                        {
+                            name: "corte de precisión",
+                            value: "Sí",
+                        },
+                        {
+                            name: "facilidad de uso",
+                            value: "Diseño ergonómico",
+                        },
+                        {
+                            name: "limpieza",
+                            value: "Fácil de limpiar y mantener",
+                        },
+                        {
+                            name: "peso",
+                            value: "Ligero y portátil",
+                        },
+                        {
+                            name: "resistente a la corrosión",
+                            value: "Sí",
+                        },
+                        {
+                            name: "para todo tipo de cabello",
+                            value: "Sí",
+                        },
+                        {
+                            name: "seguridad",
+                            value: "Puntas redondeadas en tijeras",
+                        },
+                        {
+                            name: "estilo",
+                            value: "Ideal para profesionales y principiantes",
+                        },
+                        {
+                            name: "almacenamiento",
+                            value: "Viene con funda o estuche",
+                        },
+                        {
+                            name: "garantía",
+                            value: "Generalmente incluye garantía del fabricante",
+                        },
+                        {
+                            name: "recomendado por",
+                            value: "Estilistas y barberos",
+                        },
+                        {
+                            name: "certificación",
+                            value: "Cumple con estándares de calidad",
+                        },
+                        {
+                            name: "adaptabilidad",
+                            value: "Apropiado para cortes en seco y húmedo",
+                        },
+                        {
+                            name: "comb",
+                            value: "Peine de dientes finos y gruesos",
+                        },
+                    ],
+                    enabled: true,
+                    images: [
+                        {
+                            dimension: 100,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hair-cutting-comb-scissors8skc6x100.webp",
+                        },
+                        {
+                            dimension: 500,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hair-cutting-comb-scissors8skc8x500.webp",
+                        },
+                    ],
+                    slug: "hair-cutting-comb-scissors",
+                    category_id: 20,
+                    subcategory_id: null,
+                    brand_id: 22,
+                    empresa_id: 8,
+
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
+                },
+            ],
+            productsRestaurants: [],
+            productsServicios: [],
+        },
+        {
+            id: 21,
+            category_code: "CAT-000002",
+            name: "Hair Wax",
+            isService: false,
+            image: null,
+            wallpaper: null,
+            icon: "<i class='fa fa-grooming'></i>",
+            slug: "hair-wax",
+            empresa_id: 8,
+
+            subcategories: [],
+            productsNormals: [
+                {
+                    price: 60,
+                    discount: 0,
+                    name: "360 degree hair comb",
+                    url: null,
+                    description:
+                        "Peine de Cabello 360 Grados\nDescubre la herramienta perfecta para el cuidado de tu cabello. El peine de 360 grados es un innovador accesorio que transforma la experiencia de peinar y estilizar, brindando un acabado profesional desde la comodidad de tu hogar.\n\nCaracterísticas Principales\n\n\nBeneficios\n\n\nNo esperes más para transformar tu rutina de cuidado capilar. Con el peine de 360 grados, ¡cada día es un buen día para lucir un cabello espectacular!",
                     characteristics: [
                         {
                             name: "nombre",
-                            value: "Hamburguesa de Carnet",
+                            value: "Peine 360 Grados",
                         },
                         {
-                            name: "tipo_de_carne",
-                            value: "Carne de res jugosa",
+                            name: "material",
+                            value: "Plástico ABS",
                         },
                         {
-                            name: "tamaño",
-                            value: "250 gramos",
+                            name: "dimensiones",
+                            value: "15 cm x 5 cm x 2 cm",
                         },
                         {
-                            name: "pan",
-                            value: "Pan artesanal tostado",
+                            name: "peso",
+                            value: "50 g",
                         },
                         {
-                            name: "ingredientes_principales",
-                            value: "Lechuga, tomate, cebolla",
+                            name: "colores",
+                            value: "Variados",
                         },
                         {
-                            name: "queso",
-                            value: "Queso cheddar derretido",
+                            name: "tipo",
+                            value: "Cepillo/desenredador",
                         },
                         {
-                            name: "salsas",
-                            value: "Mayonesa, salsa BBQ",
+                            name: "uso",
+                            value: "Uso en cabello seco y húmedo",
                         },
                         {
-                            name: "acompañamiento",
-                            value: "Papas fritas o ensalada",
+                            name: "diseño",
+                            value: "Ergonómico y rotatorio",
                         },
                         {
-                            name: "opciones_veg",
-                            value: "Opción con carne vegetal",
+                            name: "beneficios",
+                            value: "Reduce el quiebre y el frizz",
                         },
                         {
-                            name: "procedencia",
-                            value: "Carne de ganado local",
+                            name: "cuidado",
+                            value: "Fácil de limpiar",
                         },
                         {
-                            name: "preparación",
-                            value: "A la parrilla",
+                            name: "adecuado_para",
+                            value: "Todo tipo de cabello",
                         },
                         {
-                            name: "nivel_de_picante",
-                            value: "Opción picante disponible",
+                            name: "tecnología",
+                            value: "Tecnología de peinado 360°",
                         },
                         {
-                            name: "alergenos",
-                            value: "Puede contener gluten y lácteos",
+                            name: "tamaño_del_diente",
+                            value: "Varía según el diseño",
                         },
                         {
-                            name: "calorías_aproximadas",
-                            value: "700 kcal",
+                            name: "característica_adicional",
+                            value: "Antiestático",
                         },
                         {
-                            name: "presentación",
-                            value: "Servida en plato con decoración",
+                            name: "marca",
+                            value: "Marca no especificada",
                         },
                         {
-                            name: "estilo_culinario",
-                            value: "Americano clásico",
+                            name: "recomendaciones_de_uso",
+                            value: "Usar con movimientos suaves",
                         },
                         {
-                            name: "variaciones",
-                            value: "Bacon, champiñones, aguacate",
+                            name: "garantía",
+                            value: "1 año",
                         },
                         {
-                            name: "opciones_de_bebida",
-                            value: "Refrescos y cervezas",
+                            name: "tipo_de_cabello",
+                            value: "Largo, corto, rizado, lacio",
                         },
                         {
-                            name: "disponibilidad",
-                            value: "Solo en fin de semana",
+                            name: "uso_profesional",
+                            value: "Recomendado para estilistas",
                         },
                         {
-                            name: "sustentos_nutricionales",
-                            value: "Rica en proteínas",
+                            name: "compatibilidad",
+                            value: "Compatible con productos de peinado",
                         },
                         {
-                            name: "recomendación_de_consumo",
-                            value: "Ideal para compartir",
-                        },
-                        {
-                            name: "experiencia_de_sabor",
-                            value: "Sabor intenso y equilibrado",
-                        },
-                        {
-                            name: "popularidad",
-                            value: "Favorita entre los clientes",
-                        },
-                        {
-                            name: "notas",
-                            value: "Sirve caliente para mejor sabor",
+                            name: "origen",
+                            value: "Fabricado en China",
                         },
                     ],
-                    stock: 0,
-                    ilimit: false,
                     enabled: true,
                     images: [
                         {
                             dimension: 100,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/hamburgueza-de-carnetnls98x100.webp",
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/360-degree-hair-comb190vgx100.webp",
                         },
                         {
                             dimension: 500,
-                            file: "https://www.demo-4.vigilio-services.com/empresas/demo-4/images/products/hamburgueza-de-carnetnls9cx500.webp",
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/360-degree-hair-comb190vmx500.webp",
                         },
                     ],
-                    slug: "hamburgueza-de-carnet",
-                    category_id: 10,
+                    slug: "360-degree-hair-comb",
+                    category_id: 21,
                     subcategory_id: null,
-                    empresa_id: 4,
+                    brand_id: 22,
+                    empresa_id: 8,
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
+                },
+                {
+                    price: 25,
+                    discount: 0,
+                    name: "Trimmer brush",
+                    url: null,
+                    description:
+                        "Trimmer-Brush para Barbería\nDescubre el revolucionario Trimmer-Brush, la herramienta perfecta para los profesionales de la barbería y los entusiastas del cuidado personal. Este producto combina la precisión de un trimmer con la funcionalidad de un cepillo, ofreciendo una experiencia única en el arte del afeitado y el estilizado de la barba.\n\nCaracterísticas Destacadas:\n\n\nBeneficios:\n\n\nCon el Trimmer-Brush, tu rutina de cuidado personal se transformará, logrando resultados excepcionales con facilidad. No dejes pasar la oportunidad de llevar tu estilo al siguiente nivel.",
+                    characteristics: [
+                        {
+                            name: "Nombre del producto",
+                            value: "Trimmer-brush",
+                        },
+                        {
+                            name: "Tipo de producto",
+                            value: "Herramienta de jardín",
+                        },
+                        {
+                            name: "Peso",
+                            value: "Varía según el modelo",
+                        },
+                        {
+                            name: "Fuente de energía",
+                            value: "Eléctrico, a batería o de gasolina",
+                        },
+                        {
+                            name: "Uso",
+                            value: "Corte y recorte de hierba y maleza",
+                        },
+                        {
+                            name: "Características de la cuchilla",
+                            value: "Cuchillas intercambiables para diferentes tareas",
+                        },
+                        {
+                            name: "Ergonomía",
+                            value: "Diseño ligero y fácil de manejar",
+                        },
+                        {
+                            name: "Longitud del eje",
+                            value: "Ajustable en algunos modelos",
+                        },
+                        {
+                            name: "Sistema de corte",
+                            value: "Hilo o cuchilla de metal",
+                        },
+                        {
+                            name: "Accesorios incluidos",
+                            value: "Cabezal de corte, protector de cuchilla, arnés",
+                        },
+                        {
+                            name: "Niveles de velocidad",
+                            value: "Multivelocidad en algunos modelos",
+                        },
+                        {
+                            name: "Características de seguridad",
+                            value: "Interruptor de seguridad y protector de manos",
+                        },
+                        {
+                            name: "Garantía",
+                            value: "Generalmente entre 1 a 3 años",
+                        },
+                        {
+                            name: "Condiciones de uso",
+                            value: "Adecuado para uso doméstico y profesional",
+                        },
+                        {
+                            name: "Servicio de mantenimiento",
+                            value: "Requiere mantenimiento regular para un rendimiento óptimo",
+                        },
+                        {
+                            name: "Facilidad de almacenamiento",
+                            value: "Diseño compacto y desmontable en algunos modelos",
+                        },
+                        {
+                            name: "Compatibilidad con accesorios",
+                            value: "Compatible con diversos accesorios de jardín",
+                        },
+                        {
+                            name: "Colores disponibles",
+                            value: "Varía según el fabricante",
+                        },
+                        {
+                            name: "Ruido",
+                            value: "Niveles de ruido variables según la potencia",
+                        },
+                        {
+                            name: "Aplicaciones",
+                            value: "Ideal para bordes, caminos y áreas difíciles de alcanzar",
+                        },
+                    ],
+                    enabled: true,
+                    images: [
+                        {
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/trimmer-brush1e8erx100.webp",
+                            dimension: 100,
+                        },
+                        {
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/trimmer-brush1e8esx500.webp",
+                            dimension: 500,
+                        },
+                    ],
+                    slug: "trimmer-brush",
+                    category_id: 21,
+                    subcategory_id: null,
+                    brand_id: null,
+                    empresa_id: 8,
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
+                },
+                {
+                    price: 30,
+                    discount: 4,
+                    name: "Water Spray",
+                    url: null,
+                    description:
+                        "Water-Spray para Barbería\nDescubre nuestra innovadora botella de Water-Spray, diseñada especialmente para barberías y estilos de vida de grooming. Este producto es esencial para los barberos que buscan precisión y calidad en cada corte.\n\nCaracterísticas del Producto\n\n\nBeneficios\n\n\nNo te pierdas la oportunidad de mejorar tu rutina de barbería con nuestro Water-Spray. Ideal para profesionales que valoran la calidad en cada detalle.",
+                    characteristics: [
+                        {
+                            name: "Tipo",
+                            value: "Sistema de rociado de agua",
+                        },
+                        {
+                            name: "Uso principal",
+                            value: "Control de incendios",
+                        },
+                        {
+                            name: "Método de operación",
+                            value: "Rociado de agua a presión",
+                        },
+                        {
+                            name: "Cobertura",
+                            value: "Amplia, dependiendo del diseño",
+                        },
+                        {
+                            name: "Componentes principales",
+                            value: "Bomba, manguera, boquillas",
+                        },
+                        {
+                            name: "Ventajas",
+                            value: "Eficaz para múltiples tipos de incendios",
+                        },
+                        {
+                            name: "Desventajas",
+                            value: "Puede causar daños por agua",
+                        },
+                        {
+                            name: "Requisitos de mantenimiento",
+                            value: "Inspecciones regulares y pruebas",
+                        },
+                        {
+                            name: "Clima operacional",
+                            value: "Funciona en diversas condiciones climáticas",
+                        },
+                        {
+                            name: "Normativas",
+                            value: "Cumple con estándares de seguridad locales",
+                        },
+                        {
+                            name: "Tipo de agua",
+                            value: "Agua potable o tratada",
+                        },
+                        {
+                            name: "Facilidad de instalación",
+                            value: "Moderada, requiere planificación",
+                        },
+                        {
+                            name: "Alcance",
+                            value: "Puede llegar hasta varios cientos de pies",
+                        },
+                        {
+                            name: "Consumo de agua",
+                            value: "Variable según la presión y diseño",
+                        },
+                        {
+                            name: "Entrenamiento requerido",
+                            value: "Capacitación para el personal",
+                        },
+                        {
+                            name: "Aplicaciones",
+                            value: "Industria, edificios, áreas exteriores",
+                        },
+                        {
+                            name: "Resiliencia",
+                            value: "Puede ser afectado por condiciones extremas",
+                        },
+                        {
+                            name: "Innovaciones recientes",
+                            value: "Tecnología de control automático",
+                        },
+                        {
+                            name: "Compatibilidad",
+                            value: "Integrable con otros sistemas de seguridad",
+                        },
+                        {
+                            name: "Historial de uso",
+                            value: "Utilizado desde el siglo XIX",
+                        },
+                        {
+                            name: "Impacto ambiental",
+                            value: "Consideraciones sobre aguas residuales",
+                        },
+                        {
+                            name: "Requerimientos de energía",
+                            value: "Bomba eléctrica o diesel según el sistema",
+                        },
+                    ],
+                    enabled: true,
+                    images: [
+                        {
+                            dimension: 100,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/water-spray1fks0x100.webp",
+                        },
+                        {
+                            dimension: 500,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/water-spray1fks2x500.webp",
+                        },
+                    ],
+                    slug: "water-spray",
+                    category_id: 21,
+                    subcategory_id: null,
+                    brand_id: 23,
+                    empresa_id: 8,
+
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
+                },
+                {
+                    price: 45,
+                    discount: 5,
+                    name: "Hair  set",
+                    url: null,
+                    description:
+                        "Set de Afeitado Eléctrico para Barberos\nDescubre la perfección en el cuidado personal con nuestro set de recortadora de cabello, diseñado especialmente para barberos profesionales y entusiastas del estilo. Este completo kit incluye todo lo necesario para lograr cortes precisos y acabados impecables.\n\nCaracterísticas del Producto:\n\n\nPor qué Elegir Nuestro Set:\nPerfecto tanto para uso doméstico como profesional, este set de recortadora de cabello garantiza precisión y facilidad en cada corte. Actualiza tu colección de herramientas de barbería y ofrece a tus clientes o a ti mismo la mejor experie",
+                    characteristics: [
+                        {
+                            name: "tipo",
+                            value: "cortadora de cabello",
+                        },
+                        {
+                            name: "número de piezas",
+                            value: "7",
+                        },
+                        {
+                            name: "uso",
+                            value: "personal y profesional",
+                        },
+                        {
+                            name: "material de cuchillas",
+                            value: "acero inoxidable",
+                        },
+                        {
+                            name: "ajuste de longitud",
+                            value: "5 longitudes ajustables",
+                        },
+                        {
+                            name: "función de carga",
+                            value: "inalámbrico y con cable",
+                        },
+                        {
+                            name: "batería",
+                            value: "recargable de larga duración",
+                        },
+                        {
+                            name: "peso",
+                            value: "aproximadamente 200 gramos",
+                        },
+                        {
+                            name: "tamaño",
+                            value: "compacto y portátil",
+                        },
+                        {
+                            name: "accesorios incluidos",
+                            value: "peine, tijeras, cortapelos, cepillo de limpieza",
+                        },
+                        {
+                            name: "ruido",
+                            value: "bajo nivel de ruido",
+                        },
+                        {
+                            name: "pantalla",
+                            value: "indicador LED de carga",
+                        },
+                        {
+                            name: "tipo de motor",
+                            value: "motor de alta potencia",
+                        },
+                        {
+                            name: "código IP",
+                            value: "IPX4 (resistente al agua)",
+                        },
+                        {
+                            name: "garantía",
+                            value: "1 año para defectos de fabricación",
+                        },
+                        {
+                            name: "color",
+                            value: "negro y plata",
+                        },
+                        {
+                            name: "ergonomía",
+                            value: "diseño antideslizante",
+                        },
+                        {
+                            name: "facilidad de limpieza",
+                            value: "cuchillas desmontables y lavables",
+                        },
+                        {
+                            name: "destinatario",
+                            value: "hombres, mujeres y niños",
+                        },
+                        {
+                            name: "usos adicionales",
+                            value: "perfilado de barba y bigote",
+                        },
+                    ],
+                    enabled: true,
+                    images: [
+                        {
+                            dimension: 100,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hair-setv8jj7x100.webp",
+                        },
+                        {
+                            dimension: 500,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hair-setv8jj8x500.webp",
+                        },
+                    ],
+                    slug: "hair-set",
+                    category_id: 21,
+                    subcategory_id: null,
+                    brand_id: null,
+                    empresa_id: 8,
+
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
+                },
+                {
+                    price: 30,
+                    discount: 4,
+                    name: "Hair cutting comb scissors set",
+                    url: null,
+                    description:
+                        "Set de Tijeras y Peine para Corte de Cabello\nTransforma tu experiencia de peluquería con nuestro exclusivo set de tijeras y peine para corte de cabello. Diseñado para barberos profesionales y aficionados, este conjunto te proporciona las herramientas esenciales para lograr el estilo deseado.\n\nCaracterísticas del Producto:\n\n\nVentajas del Set:\n\n\nYa seas un barbero experimentado o un entusiasta del cuidado personal, este set de tijeras y peine es la elección perfecta para lograr cortes impecables y estilos personalizados.",
+                    characteristics: [
+                        {
+                            name: "set_type",
+                            value: "Hair-cutting comb and scissors set",
+                        },
+                        {
+                            name: "comb_material",
+                            value: "High-quality plastic or stainless steel",
+                        },
+                        {
+                            name: "scissor_material",
+                            value: "Forged stainless steel",
+                        },
+                        {
+                            name: "scissor_length",
+                            value: "6.5 to 7 inches",
+                        },
+                        {
+                            name: "comb_length",
+                            value: "7 to 8 inches",
+                        },
+                        {
+                            name: "features",
+                            value: "Ergonomic design for comfort",
+                        },
+                        {
+                            name: "scissor_blade_type",
+                            value: "Straight or curved blades",
+                        },
+                        {
+                            name: "comb_type",
+                            value: "Fine-toothed and wide-toothed options",
+                        },
+                        {
+                            name: "usage",
+                            value: "Professional and home use",
+                        },
+                        {
+                            name: "cutting_technique",
+                            value: "Precision cutting",
+                        },
+                        {
+                            name: "care_instructions",
+                            value: "Clean after each use, dry thoroughly",
+                        },
+                        {
+                            name: "brand_reputation",
+                            value: "Renowned brands often included",
+                        },
+                        {
+                            name: "user_experience",
+                            value: "Smooth and efficient cutting",
+                        },
+                        {
+                            name: "weight",
+                            value: "Lightweight for ease of use",
+                        },
+                        {
+                            name: "color_options",
+                            value: "Various colors available",
+                        },
+                        {
+                            name: "safety_features",
+                            value: "Rounded tips for safety",
+                        },
+                        {
+                            name: "target_audience",
+                            value: "Barbers and hairstylists",
+                        },
+                        {
+                            name: "packaging",
+                            value: "Compact and durable storage cases",
+                        },
+                        {
+                            name: "additional_tools",
+                            value: "May include thinning shears or a razor",
+                        },
+                        {
+                            name: "durability",
+                            value: "Long-lasting materials",
+                        },
+                        {
+                            name: "maintenance",
+                            value: "Regular sharpening recommended",
+                        },
+                        {
+                            name: "user_guide",
+                            value: "Included for best practices",
+                        },
+                    ],
+                    enabled: true,
+                    images: [
+                        {
+                            dimension: 100,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hair-cutting-comb-scissors-set1aba3x100.webp",
+                        },
+                        {
+                            dimension: 500,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hair-cutting-comb-scissors-set1aba9x500.webp",
+                        },
+                    ],
+                    slug: "hair-cutting-comb-scissors-set",
+                    category_id: 21,
+                    subcategory_id: null,
+                    brand_id: 25,
+                    empresa_id: 8,
+
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
+                },
+                {
+                    price: 25,
+                    discount: 5,
+                    name: "Hair detangling comb",
+                    url: null,
+                    description:
+                        "Peina Desenredante para Cabello\n\nDescubre la solución perfecta para desenredar tu cabello sin esfuerzo. Nuestra peina desenredante está diseñada para ofrecerte una experiencia de peinado suave y sin tirones, ideal para todo tipo de cabellos, desde finos hasta rizados.\n\nCaracterísticas Principales:\n\n\nBeneficios:\n\n\nAñade esta peina desenredante a tu rutina de cuidado capilar y disfruta de un cabello manejable y saludable todos los días. ¡Haz tu pedido ahora y transforma tu peinado!",
+                    characteristics: [
+                        {
+                            name: "Material",
+                            value: "Plástico, madera o metal",
+                        },
+                        {
+                            name: "Tamaño",
+                            value: "Varía, generalmente entre 20-25 cm",
+                        },
+                        {
+                            name: "Diseño",
+                            value: "Dientes anchos para desenredar",
+                        },
+                        {
+                            name: "Usos",
+                            value: "Desenredar el cabello húmedo o seco",
+                        },
+                        {
+                            name: "Antiestático",
+                            value: "Puede ser antiestático para evitar frizz",
+                        },
+                        {
+                            name: "Ergonomía",
+                            value: "Mango fácil de agarrar para mayor comodidad",
+                        },
+                        {
+                            name: "Versatilidad",
+                            value: "Adecuado para todo tipo de cabello",
+                        },
+                        {
+                            name: "Resistente",
+                            value: "Duradero y fácil de limpiar",
+                        },
+                        {
+                            name: "Prevención de daños",
+                            value: "Minimiza la ruptura del cabello",
+                        },
+                        {
+                            name: "Uso profesional",
+                            value: "Ideal para peluqueros y estilistas",
+                        },
+                        {
+                            name: "Aconsejado por expertos",
+                            value: "Recomendado por dermatólogos y estilistas",
+                        },
+                        {
+                            name: "Colores disponibles",
+                            value: "Variedad de colores y acabados",
+                        },
+                        {
+                            name: "Fácil mantenimiento",
+                            value: "Simple de limpiar y mantener",
+                        },
+                        {
+                            name: "Grupo de edad",
+                            value: "Apropiado para todas las edades",
+                        },
+                        {
+                            name: "Agujeros de drenaje",
+                            value: "Puede tener agujeros para evitar la acumulación de agua",
+                        },
+                        {
+                            name: "Diseño portátil",
+                            value: "Ligero y fácil de llevar",
+                        },
+                        {
+                            name: "Función terapéutica",
+                            value: "Puede ayudar a estimular el cuero cabelludo",
+                        },
+                        {
+                            name: "Adaptabilidad",
+                            value: "Adecuado para cabellos rizados, lisos, o gruesos",
+                        },
+                        {
+                            name: "Consejería de uso",
+                            value: "Se recomienda usar desde las puntas hacia la raíz",
+                        },
+                        {
+                            name: "Precio accesible",
+                            value: "Generalmente asequible",
+                        },
+                        {
+                            name: "Opciones biodegradables",
+                            value: "Algunas versiones están hechas de materiales biodegradables",
+                        },
+                    ],
+                    enabled: true,
+                    images: [
+                        {
+                            dimension: 100,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hair-detangling-comb1bm9tx100.webp",
+                        },
+                        {
+                            dimension: 500,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/hair-detangling-comb1bma0x500.webp",
+                        },
+                    ],
+                    slug: "hair-detangling-comb",
+                    category_id: 21,
+                    subcategory_id: null,
+                    brand_id: 24,
+                    empresa_id: 8,
+
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
+                },
+                {
+                    price: 56,
+                    discount: 0,
+                    name: "Trimmer MIX R2",
+                    url: null,
+                    description:
+                        "Descripción del Trimmer-MIX-R2\nDescubre el Trimmer-MIX-R2, la herramienta perfecta para lograr un acabado profesional en tu barbería. Diseñado para ofrecer precisión y comodidad, este recortador es ideal tanto para barberos experimentados como para principiantes.\n\nCaracterísticas Destacadas:\n\n\nCon el Trimmer-MIX-R2, tu creatividad no tendrá límites. Eleva tus servicios de barbería con herramientas que marcan la diferencia en cada corte.",
+                    characteristics: [
+                        {
+                            name: "Modelo",
+                            value: "Trimmer-MIX-R2",
+                        },
+                        {
+                            name: "Tipo",
+                            value: "Trimmer",
+                        },
+                        {
+                            name: "Uso",
+                            value: "Afeitado y recorte",
+                        },
+                        {
+                            name: "Fuente de energía",
+                            value: "Batería recargable",
+                        },
+                        {
+                            name: "Duración de la batería",
+                            value: "Hasta 120 minutos",
+                        },
+                        {
+                            name: "Tiempo de carga",
+                            value: "60 minutos",
+                        },
+                        {
+                            name: "Material de cuchillas",
+                            value: "Acero inoxidable",
+                        },
+                        {
+                            name: "Cuchillas ajustables",
+                            value: "Sí",
+                        },
+                        {
+                            name: "Accesorios incluidos",
+                            value: "Peines de guía, cepillo de limpieza",
+                        },
+                        {
+                            name: "Diseño",
+                            value: "Ergonómico y ligero",
+                        },
+                        {
+                            name: "Impermeable",
+                            value: "Sí",
+                        },
+                        {
+                            name: "Peso",
+                            value: "280 gramos",
+                        },
+                        {
+                            name: "Dimensiones",
+                            value: "15 x 4 x 4 cm",
+                        },
+                        {
+                            name: "Rango de longitud de corte",
+                            value: "0.5 mm a 20 mm",
+                        },
+                        {
+                            name: "Velocidades",
+                            value: "2 ajustes de velocidad",
+                        },
+                        {
+                            name: "Iluminación LED",
+                            value: "Indicador de carga",
+                        },
+                        {
+                            name: "Garantía",
+                            value: "2 años",
+                        },
+                        {
+                            name: "Color",
+                            value: "Negro con detalles en plata",
+                        },
+                        {
+                            name: "Uso recomendado",
+                            value: "Doméstico y profesional",
+                        },
+                        {
+                            name: "Función de bloqueo",
+                            value: "Sí",
+                        },
+                        {
+                            name: "Facilidad de limpieza",
+                            value: "Sí, cuchillas desmontables",
+                        },
+                    ],
+                    enabled: true,
+                    images: [
+                        {
+                            dimension: 100,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/trimmer-mix-r28tvspx100.webp",
+                        },
+                        {
+                            dimension: 500,
+                            file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/products/trimmer-mix-r28tvssx500.webp",
+                        },
+                    ],
+                    slug: "trimmer-mix-r2",
+                    category_id: 21,
+                    subcategory_id: null,
+                    brand_id: null,
+                    empresa_id: 8,
+
+                    options: [
+                        {
+                            option_id: 1,
+                            features: [1],
+                        },
+                    ],
                 },
             ],
+            productsRestaurants: [],
             productsServicios: [],
         },
     ],
-    brands: [],
+    brands: [
+        {
+            id: 22,
+            name: "Cafe Royale",
+            brand_code: "BRAND-000001",
+            image: [
+                {
+                    dimension: 100,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/brands/cafe-royale3c1elx100.webp",
+                },
+                {
+                    dimension: 500,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/brands/cafe-royale3c1esx500.webp",
+                },
+            ],
+            slug: "cafe-royale",
+            empresa_id: 8,
+        },
+        {
+            id: 23,
+            name: "GILLETE",
+            brand_code: "BRAND-000002",
+            image: [
+                {
+                    dimension: 100,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/brands/gillete3cjimx100.webp",
+                },
+                {
+                    dimension: 500,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/brands/gillete3cjiox500.webp",
+                },
+            ],
+            slug: "gillete",
+            empresa_id: 8,
+        },
+        {
+            id: 24,
+            name: "The Barber",
+            brand_code: "BRAND-000003",
+            image: [
+                {
+                    dimension: 100,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/brands/the-barber3dgjhx100.webp",
+                },
+                {
+                    dimension: 500,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/brands/the-barber3dgjix500.webp",
+                },
+            ],
+            slug: "the-barber",
+            empresa_id: 8,
+        },
+        {
+            id: 25,
+            name: "Delicious",
+            brand_code: "BRAND-000004",
+            image: [
+                {
+                    dimension: 100,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/brands/delicious3e0hex100.webp",
+                },
+                {
+                    dimension: 500,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/brands/delicious3e0hfx500.webp",
+                },
+            ],
+            slug: "delicious",
+            empresa_id: 8,
+        },
+        {
+            id: 26,
+            name: "we re designers",
+            brand_code: "BRAND-000005",
+            image: [
+                {
+                    dimension: 100,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/brands/we-re-designers3emsox100.webp",
+                },
+                {
+                    dimension: 500,
+                    file: "https://www.demo-8.vigilio-services.com/empresas/demo-8/images/brands/we-re-designers3emssx500.webp",
+                },
+            ],
+            slug: "we-re-designers",
+            empresa_id: 8,
+        },
+    ],
 };

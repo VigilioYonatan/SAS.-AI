@@ -1,12 +1,13 @@
 import { GridBannerServiceUpdateDto } from "@/empresas/dtos/grid_banner_service.update.dto";
+import { Signal } from "@preact/signals";
 import { useMutation } from "@vigilio/preact-fetching";
 
-export function gridBannerServiceUpdateApi(id: number) {
+export function gridBannerServiceUpdateApi(id: number, type: Signal<string>) {
     return useMutation<
         GridBannerServiceUpdateAPI,
         GridBannerServiceUpdateDto,
         GridBannerServiceUpdateErrorAPI
-    >(`/grid_banner_service/${id}`, async (url, body) => {
+    >(`/grid_banner_${type.value}/${id}`, async (url, body) => {
         const response = await fetch(`/api${url}`, {
             method: "PUT",
             body: JSON.stringify(body),

@@ -16,7 +16,7 @@ export class Background extends Model implements Omit<BackgroundSchema, "id"> {
         allowNull: false,
         type: DataType.STRING(60),
     })
-    title: string;
+    title: string | null;
 
     @Column({
         type: DataType.STRING(80),
@@ -27,7 +27,7 @@ export class Background extends Model implements Omit<BackgroundSchema, "id"> {
         allowNull: false,
         type: DataType.STRING(255),
     })
-    url: string;
+    url: string | null;
 
     @Column({
         type: DataType.TEXT,
