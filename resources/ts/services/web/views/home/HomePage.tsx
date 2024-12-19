@@ -13,7 +13,6 @@ import CategoriesProductSection from "./components/CategoriesProductSection";
 import Noticia from "./components/Noticia";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
-import AboutSection from "./components/AboutSection";
 import UsersSection from "./components/UsersSection";
 import { UsersSchema } from "@/users/schemas/users.schema";
 import CategoriesSection from "./components/CategoriesSection";
@@ -75,10 +74,8 @@ function HomePage({
     backgrounds,
     noticia,
     getproductsbycategories,
-    productsquantity,
     users,
     brands,
-    productservicesquantity,
     productsmostreactionmapped,
     productsmostratingmapped,
     productsmostcommentsmapped,
@@ -95,10 +92,10 @@ function HomePage({
                     productlatestmapped={productlatestmapped}
                     productsoffert8mapped={productsoffert6mapped}
                 />
-                <AboutSection
+                {/* <AboutSection
                     productservicesquantity={productservicesquantity}
                     productsquantity={productsquantity}
-                />
+                /> */}
                 <GridBanners grid={gridbanners} i={1} />
                 <CategoriesSection categories={header.categories} />
                 <ProductsSectionRandom

@@ -31,6 +31,7 @@ import LoaderSubmit from "~/components/LoaderSubmit";
 import useVideo from "~/hooks/useVideo";
 import { bgPrimaryHover } from "~/config/settings";
 import { getParams } from "~/libs/helpers";
+import QuillText from "~/components/QuillText";
 
 export interface VariantFeature {
     option_id: number;
@@ -259,7 +260,7 @@ function ProductPage({
                             transform: scale(1.5);
                         }
                     `}</style>
-                    <div class="flex flex-col gap-2 md:w-5/12 mt-8 ">
+                    <div class="flex flex-col gap-3 md:w-5/12 mt-8 ">
                         {varianteChoose?.sku ? (
                             <span class="text-terciary text-xs">
                                 SKU: {varianteChoose?.sku}
@@ -983,12 +984,7 @@ function ProductPage({
                                             "delay-custom-1  max-h-[1200px] overflow-auto"
                                         }
                                     >
-                                        <div
-                                            class="dark:text-secondary-light text-sm font-normal"
-                                            dangerouslySetInnerHTML={{
-                                                __html: product.description,
-                                            }}
-                                        />
+                                        <QuillText text={product.description} />
                                     </div>
                                 </>
                             ) : (

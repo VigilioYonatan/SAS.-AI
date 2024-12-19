@@ -5,8 +5,9 @@ import UsersSection from "./components/UsersSection";
 import { PostsSchemaFromServer } from "@/posts/schemas/posts.schema";
 import { UsersSchema } from "@/users/schemas/users.schema";
 import TitleSection from "@/web/components/TitleSection";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
-import IsTemplate from "./components/IsTemplate";
+import { GridBannersServicios } from "./components/GridBanners";
+import { GridBannerAboutSchemaFromServer } from "@/empresas/schemas/grid-banner-about.schema";
+import { Fragment } from "preact/jsx-runtime";
 
 export interface AboutPageProps {
     header: HeaderType;
@@ -17,22 +18,22 @@ export interface AboutPageProps {
         UsersSchema,
         "id" | "name" | "speciality" | "photo" | "birthday"
     >[];
+    gridbannersabout: GridBannerAboutSchemaFromServer[];
 }
-function AboutPage({ header, posts, users }: AboutPageProps) {
+function AboutPage({ header, posts, users, gridbannersabout }: AboutPageProps) {
     return (
         <>
             <WebLayout header={header}>
-                {storageEmpresa?.isTemplate ? (
-                    <IsTemplate />
-                ) : (
-                    <>
-                        <div class="mt-20 lg:mt-10">
-                            <TitleSection>Nosotros</TitleSection>
-                        </div>
-                        <PostsSection posts={posts} />
-                        <UsersSection users={users} />
-                    </>
-                )}
+                <div class="mt-20 lg:mt-10">
+                    <TitleSection>Nosotros</TitleSection>
+                </div>
+                <Fragment>
+                    {gridbannersabout.map((grid, i) => (
+                        <GridBannersServicios key={grid.id} grid={grid} i={i} />
+                    ))}
+                </Fragment>
+                <PostsSection posts={posts} />
+                <UsersSection users={users} />
             </WebLayout>
         </>
     );

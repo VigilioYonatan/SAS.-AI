@@ -512,8 +512,7 @@ function Header({ header }: HeaderProps) {
                             </div>
                         ) : null}
 
-                        {storageEmpresa?.setting.shows.about &&
-                        storageEmpresa?.setting.header.about ? (
+                        {storageEmpresa?.setting.header.about ? (
                             <a
                                 class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
                                     isActive("/nosotros")
@@ -661,7 +660,7 @@ function Header({ header }: HeaderProps) {
                                 {favoriteStore.state}
                             </span>
                         </a>
-                        <div class="flex gap-3 items-center">
+                        <div class="flex gap-4 items-center">
                             {storageEmpresa?.setting.isDark ? (
                                 <button
                                     type="button"

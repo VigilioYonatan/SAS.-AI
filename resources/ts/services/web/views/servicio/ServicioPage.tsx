@@ -24,6 +24,8 @@ import ProductsComments from "@/products/components/ProductsComments";
 import { ProductKeys } from "@/products/libs/helpers";
 import ProductRatingStore from "@/products/components/ProductRatingStore";
 import { ServicioCard } from "../home/components/ServiciosSection";
+import "quill/dist/quill.snow.css"; // Estilos por defecto de Quill
+import QuillText from "~/components/QuillText";
 
 export interface VariantFeature {
     option_id: number;
@@ -475,12 +477,7 @@ function ServicioPage({
                                             "delay-custom-1  max-h-[1200px] overflow-auto"
                                         }
                                     >
-                                        <div
-                                            class="dark:text-secondary-light text-sm font-normal"
-                                            dangerouslySetInnerHTML={{
-                                                __html: product.description,
-                                            }}
-                                        />
+                                        <QuillText text={product.description} />
                                     </div>
                                 </>
                             ) : (

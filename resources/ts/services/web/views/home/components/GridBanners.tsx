@@ -1,4 +1,6 @@
+import { GridBannerAboutSchemaFromServer } from "@/empresas/schemas/grid-banner-about.schema";
 import { GridBannerServicechemaFromServer } from "@/empresas/schemas/grid-banner-service.schema";
+import { GridBannerShopSchemaFromServer } from "@/empresas/schemas/grid-banner-shop.schema";
 import { GridBannerSchema } from "@/empresas/schemas/grid_banner.schema";
 import AdminEdit from "@/web/components/AdminEdit";
 import TitleSection from "@/web/components/TitleSection";
@@ -27,7 +29,10 @@ function GridBanners({ grid, i }: GridBanners) {
     );
 }
 interface GridBannersServiciosProps {
-    grid: GridBannerServicechemaFromServer;
+    grid:
+        | GridBannerServicechemaFromServer
+        | GridBannerShopSchemaFromServer
+        | GridBannerAboutSchemaFromServer;
     i: number;
 }
 export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {

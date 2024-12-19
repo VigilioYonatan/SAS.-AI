@@ -138,7 +138,7 @@ export class IAApiController {
 
             const desc = `Dame solo la "Descripcion", "Características Principales Y "Recomendaciones de uso" y no otro en formato de tienda virtual sobre ${
                 empresa.type_empresa_other || empresa.tipo_empresa.value
-            } de producto de ${name} en español  y no traer fuentes y no menciones otra cosa que no sea la descripción, y sin comillas "" por favor y información más actualizada. Importante: en formato html usa h2,h3,b ul li  en formato quill, no en formato markdown y con clases de tailwind. Presentable`;
+            } de producto de ${name} en español  y no traer fuentes y no menciones otra cosa que no sea la descripción, y sin comillas "" por favor y información más actualizada. Importante: en formato html usa h2,h3,b ol <li data-list="bullet"><span class="ql-ui">valor-de-la-lista</span></li>, SIEMPRE USA <ol></ol>, en formato quill.js . Presentable Y NO MARKDOWN`;
             const caract = `traeme las caracterisiticas del ${name}, valor y descripcion en un json [{key:"",value:""}] minimo 10 maximo 25,. solo traemw el json, no digas nada mas  y información más actualizada y no traigas precio`;
             //             const claveSat = `rame la clave catalog producto sat del "${name}", solo di la clave!! , no digas nada mas. ejemplo 292929292
             // `;

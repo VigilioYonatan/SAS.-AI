@@ -102,7 +102,6 @@ export async function isWhatsappTelegramIA(
         cache.set(`EMPRESA:${empresa}`, JSON.stringify(e.slug), hour24);
     }
     if (!emp) return null;
-    console.log({ emp, empresa });
 
     const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
     const isDateNow = restarDays(
@@ -358,7 +357,7 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
 
         const completion = await openAis[empresa.slug].chat.completions.create({
             model: clientVigilio?.information.modelai ?? "gpt-4o-mini",
-            max_tokens: 300,
+            max_tokens: 1000,
             messages: [
                 {
                     role: "user",

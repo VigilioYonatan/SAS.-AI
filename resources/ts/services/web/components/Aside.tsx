@@ -135,8 +135,7 @@ function Aside({
                                 Servicios
                             </a>
                         ) : null}
-                        {storageEmpresa?.setting.shows.about &&
-                        storageEmpresa?.setting.header.about ? (
+                        {storageEmpresa?.setting.header.about ? (
                             <a
                                 class={` flex gap-2 items-center dark:text-white text-sm hover:bg-paper-light hover:dark:bg-paper-dark py-2  px-4    tracking-wide font-semibold ${
                                     isActive("/nosotros")

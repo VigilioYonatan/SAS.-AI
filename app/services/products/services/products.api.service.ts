@@ -94,7 +94,7 @@ export class ProductsApiService {
             throw new NotFoundException(message);
         }
         if (allProduct) {
-            product = await getProductAll(empresa, product, user, false);
+            product = await getProductAll(empresa, product, user, true);
         }
         return {
             success: true,

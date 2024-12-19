@@ -7,7 +7,17 @@
 
 <body class="dark:bg-paper-dark  bg-paper-light">
   <%- include("../components/pixels.ejs")  %>
-  <shop-page :header="<%= JSON.stringify(header)  %>" :noticia="<%= JSON.stringify(noticia)  %>" :categories="<%= JSON.stringify(categories)  %>" :productsLatestMapped="<%= JSON.stringify(productsLatestMapped)  %>" :productsOffertsMapped="<%= JSON.stringify(productsOffertsMapped)  %>" :productLatestMapped="<%= JSON.stringify(productLatestMapped)  %>" :productMostDiscountMapped="<%= JSON.stringify(productMostDiscountMapped)  %>"></shop-page>
+  <shop-page :header="<%= JSON.stringify(header)  %>" :gridBannersShop="<%= JSON.stringify(gridBannersShop)  %>" :noticia="<%= JSON.stringify(noticia)  %>" :categories="<%= JSON.stringify(categories)  %>" :productsLatestMapped="<%= JSON.stringify(productsLatestMapped)  %>" :productsOffertsMapped="<%= JSON.stringify(productsOffertsMapped)  %>" :productLatestMapped="<%= JSON.stringify(productLatestMapped)  %>" :productMostDiscountMapped="<%= JSON.stringify(productMostDiscountMapped)  %>">
+    <% for(grid of gridBannersShop){  %>
+      <% if(grid.enabled){ %>
+      <% if(grid.grid_banner_id){  %>
+      <%- grid.grid_banner.html  %>
+      <% }else{ %>
+      <%- grid.html  %>
+      <% } %>
+      <% } %>
+      <% } %>
+  </shop-page>
 
 </body>
 

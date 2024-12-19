@@ -27,6 +27,8 @@ import { SubCategoriesApiService } from "@/products/services/subcategories.api.s
 import { GridBanner } from "@/empresas/entities/grid_banner.entity";
 import { ROLES } from "@/users/libs";
 import { GridBannerService } from "@/empresas/entities/grid_banner_service.entity";
+import { GridBannerAbout } from "@/empresas/entities/grid_banner_about.entity";
+import { GridBannerShop } from "@/empresas/entities/grid_banner_shop.entity";
 
 @Injectable()
 export class WebApiService {
@@ -386,6 +388,7 @@ export class WebApiService {
             productsQuantity,
             users,
             productServicesQuantity,
+            gridBannersAbout,
         ] = await Promise.all([
             Posts.findAll({
                 limit: 6, // maximo 8 . si deseas lo podes poner en un slider
@@ -424,6 +427,17 @@ export class WebApiService {
             Product(empresa, true).count({
                 where: { empresa_id: empresa.id, enabled: true },
             }),
+            GridBannerAbout.findAll({
+                where: {
+                    empresa_id: empresa.id,
+                },
+                include: [
+                    {
+                        model: GridBanner,
+                    },
+                ],
+                order: [["id", "ASC"]],
+            }),
         ]);
         return {
             title: "Inicio",
@@ -434,6 +448,7 @@ export class WebApiService {
             productsQuantity,
             users,
             productServicesQuantity,
+            gridBannersAbout,
         };
     }
     async shop(empresa: Empresas, user: Users) {
@@ -444,6 +459,7 @@ export class WebApiService {
             productMostDiscount,
             productLatest,
             noticia,
+            gridBannersShop,
         ] = await Promise.all([
             Product(empresa, false).findAll({
                 // traer 10 los ultimos products
@@ -484,6 +500,17 @@ export class WebApiService {
                     empresa_id: empresa.id,
                 },
             }),
+            GridBannerShop.findAll({
+                where: {
+                    empresa_id: empresa.id,
+                },
+                include: [
+                    {
+                        model: GridBanner,
+                    },
+                ],
+                order: [["id", "ASC"]],
+            }),
         ]);
 
         // productos
@@ -512,6 +539,7 @@ export class WebApiService {
             productLatestMapped,
             noticia,
             description: `En ${empresa.name_empresa}, ofrecemos una amplia variedad de productos de alta calidad a precios inmejorables, encontrarás todo lo que necesitas en un solo lugar. Disfruta de envíos rápidos, devoluciones fáciles y un servicio al cliente excepcional. ¡Explora nuestras ofertas diarias y descubre la diferencia de comprar en Tienda XYZ!`,
+            gridBannersShop,
         };
     }
 

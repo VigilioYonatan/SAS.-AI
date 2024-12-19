@@ -25,15 +25,18 @@ import { FileSchema } from "../schemas/file.schema";
 import { useEffect } from "preact/hooks";
 import { getParams } from "~/libs/helpers";
 import { storageEmpresa } from "../stores/empresa.store";
+import { useSignal } from "@preact/signals";
 
 interface FilesIndexProps {
     params: {
         file?: string;
+        changeImage?: (image: string) => void;
     };
 }
 function FilesIndex({ params }: FilesIndexProps) {
     const filesIndexQuery = filesIndexApi();
     const param = getParams();
+    const chooseImage = useSignal<null | string>(null);
     let component: JSX.Element | JSX.Element[] | null = null;
     if (filesIndexQuery.isLoading) {
         component = <Loading />;
@@ -53,11 +56,20 @@ function FilesIndex({ params }: FilesIndexProps) {
                     return (
                         <div
                             class={`relative ${
-                                getUltimo === params.file || param.get("file")
+                                getUltimo ===
+                                (chooseImage.value ||
+                                    params.file ||
+                                    param.get("file"))
                                     ? "border-2 border-primary"
                                     : ""
                             }`}
                             key={file.id}
+                            onClick={() => {
+                                if (params.changeImage) {
+                                    params.changeImage(getUltimo as string);
+                                    chooseImage.value = getUltimo!;
+                                }
+                            }}
                         >
                             {[".jpg", ".jpeg", ".webp", ".jpeg", "png"].some(
                                 (ext) => filed[0]?.endsWith(ext)

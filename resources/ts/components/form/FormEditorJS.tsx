@@ -197,10 +197,19 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                 const clonedElement = lastChild?.cloneNode(true) as HTMLElement;
                 const lastLabels =
                     arrayContainer.querySelectorAll("[data-label]");
+                const images = arrayContainer.querySelectorAll("img");
                 Array.from(lastLabels).map((label) => {
                     if (label) {
                         label.setAttribute(
                             "data-label",
+                            Math.random().toString(32).slice(3)
+                        );
+                    }
+                });
+                Array.from(images).map((img) => {
+                    if (img) {
+                        img.setAttribute(
+                            "data-image",
                             Math.random().toString(32).slice(3)
                         );
                     }
@@ -218,18 +227,37 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
             console.error("Elemento no válido proporcionado.");
             return;
         }
-        element.classList.add("relative");
+        element.classList.add(
+            "relative",
+            "border-gray-400",
+            "border-b-2",
+            "w-full",
+            "flex",
+            "flex-col",
+            "gap-4",
+            "items-center",
+            "justify-center"
+        );
 
-        const deleteButton = document.createElement("p");
-        const icon = document.createElement("i");
-        icon.classList.add("fas", "fa-trash");
-        deleteButton.appendChild(icon);
-        deleteButton.className = " ";
-        deleteButton.addEventListener("click", () => {
-            sweetModal({});
-            // e.preventDefault(); // Prevenimos cualquier comportamiento por defecto
+        const deleteButton = document.createElement("button");
+
+        deleteButton.classList.add(
+            "bg-danger",
+            "px-2",
+            "py-1",
+            "rounded-md",
+            "absolute",
+            "right-2"
+        );
+        deleteButton.type = "button";
+        deleteButton.addEventListener("click", (e) => {
+            console.log("hola");
+            sweetModal({ html: "aggg" });
             // element.remove(); // Eliminamos el contenedor
         });
+        const icon = document.createElement("i");
+        icon.classList.add("fas", "fa-trash", "text-xs");
+        deleteButton.appendChild(icon);
         element.appendChild(deleteButton);
     }
 
@@ -275,6 +303,7 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                             type="button"
                             onClick={() => handleArrayAddition(arrayId)}
                             class="mt-2 px-2 py-1 bg-blue-500 text-white absolute -bottom-0 rounded-md font-bold"
+                            style={{ position: "relative", bottom: "-1rem" }}
                         >
                             +
                         </button>
@@ -289,13 +318,8 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                         onClick={() => startEditing(elementId, elementText)}
                         style={{
                             cursor: "pointer",
-                            color: isColorLight(
-                                storageEmpresa!.setting.bg_color
-                            )
-                                ? "black"
-                                : "var(--primary)",
                         }}
-                        class="relative"
+                        class="relative block dark:text-white"
                     >
                         {element.innerHTML}
                         <i class="fas fa-pen text-[12px] rounded-md shadow bg-orange-600 text-white absolute right-0 -top-2 p-1" />
@@ -326,8 +350,21 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                     )
                         ?.split("/")
                         .pop();
+
+                    function changeImage(newImageName: string) {
+                        const updatedContent = content.replace(
+                            new RegExp(
+                                `(<img data-image="${element.getAttribute(
+                                    "data-image"
+                                )}" [^>]*?:src="[^"]*/empresas/[^/]+/images/files/)${imageName}(".*?>)`,
+                                "gs"
+                            ),
+                            `$1${`${newImageName}\``}$2`
+                        );
+                        setContent(updatedContent); // Actualiza el HTML con el nuevo valor
+                    }
                     return (
-                        <div className="relative inline-block min-w-[100px] min-h-[100px]">
+                        <div className="relative inline-block min-w-[100px] max-w-[100px] min-h-[100px]  max-h-[100px] [&>img]:object-contain [&>img]:w-full">
                             {/* biome-ignore lint/a11y/useAltText: <explanation> */}
                             <img
                                 {...Array.from(element.attributes).reduce(
@@ -351,6 +388,7 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                                                         "`",
                                                         ""
                                                     ),
+                                                    changeImage,
                                                 }}
                                             />
                                         ),

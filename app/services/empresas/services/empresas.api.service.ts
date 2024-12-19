@@ -88,6 +88,77 @@ export async function initial() {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await setting.update({ bg_color_header: "transparent" });
         }
+        const existGridAbout = await empresa.$get("grid_banner_abouts");
+        if (!existGridAbout.length) {
+            await GridBannerAbout.bulkCreate([
+                {
+                    html: "",
+                    enabled: false,
+                    empresa_id: empresa!.id,
+                    grid_banner_id: null,
+                },
+                {
+                    html: "",
+                    enabled: false,
+                    empresa_id: empresa!.id,
+                    grid_banner_id: null,
+                },
+                {
+                    html: "",
+                    enabled: false,
+                    grid_banner_id: null,
+                    empresa_id: empresa!.id,
+                },
+                {
+                    html: "",
+                    grid_banner_id: null,
+                    enabled: true,
+                    empresa_id: empresa!.id,
+                },
+                {
+                    html: "",
+                    grid_banner_id: null,
+                    enabled: true,
+                    empresa_id: empresa!.id,
+                },
+            ]);
+        }
+        const existGridShop = await empresa.$get("grid_banner_shop");
+        if (!existGridShop.length) {
+            await GridBannerShop.bulkCreate([
+                {
+                    html: "",
+                    enabled: false,
+                    empresa_id: empresa!.id,
+                    grid_banner_id: null,
+                },
+                {
+                    html: "",
+                    enabled: false,
+                    empresa_id: empresa!.id,
+                    grid_banner_id: null,
+                },
+                {
+                    html: "",
+                    enabled: false,
+                    grid_banner_id: null,
+                    empresa_id: empresa!.id,
+                },
+                {
+                    html: "",
+                    grid_banner_id: null,
+                    enabled: true,
+                    empresa_id: empresa!.id,
+                },
+                {
+                    html: "",
+                    grid_banner_id: null,
+                    enabled: true,
+                    empresa_id: empresa!.id,
+                },
+            ]);
+        }
+
         openAis = { ...openAis, [empresa.slug]: openAiClient };
     }
 }
@@ -140,6 +211,28 @@ export class EmpresasApiService {
             order: [["id", "ASC"]],
         });
         const gridBannersServices = await GridBannerService.findAll({
+            where: {
+                empresa_id: empresa!.id,
+            },
+            include: [
+                {
+                    model: GridBanner,
+                },
+            ],
+            order: [["id", "ASC"]],
+        });
+        const gridBannersShop = await GridBannerShop.findAll({
+            where: {
+                empresa_id: empresa!.id,
+            },
+            include: [
+                {
+                    model: GridBanner,
+                },
+            ],
+            order: [["id", "ASC"]],
+        });
+        const gridBannersAbout = await GridBannerAbout.findAll({
             where: {
                 empresa_id: empresa!.id,
             },
@@ -354,6 +447,8 @@ export class EmpresasApiService {
                 gridBanners: gridBanners,
                 files,
                 gridBannersService: gridBannersServices,
+                gridBannersShop,
+                gridBannersAbout,
                 backgrounds,
                 categories,
                 brands,
