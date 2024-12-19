@@ -8,17 +8,15 @@ import type {
     RegisterOptions,
     UseFormReturn,
 } from "react-hook-form";
-import { anidarPropiedades } from ".";
+import FilesIndex from "@/empresas/views/FilesIndex";
 import MonacoEditor from "@monaco-editor/react";
 import useThemeStore from "~/stores/theme.store";
 import { useSignal } from "@preact/signals";
-import { isColorLight } from "~/libs/helpers";
-import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ChangeEvent, HTMLProps } from "preact/compat";
 import { HTMLSHOW } from "@/empresas/views/BannersIndex";
 import { sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
-import FilesIndex from "@/empresas/views/FilesIndex";
+import { anidarPropiedades } from ".";
 
 interface FormControlLabelProps<T extends object> {
     title: string;
@@ -239,7 +237,7 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
             "justify-center"
         );
 
-        const deleteButton = document.createElement("button");
+        const deleteButton = document.createElement("span");
 
         deleteButton.classList.add(
             "bg-danger",
@@ -249,9 +247,8 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
             "absolute",
             "right-2"
         );
-        deleteButton.type = "button";
-        deleteButton.addEventListener("click", (e) => {
-            console.log("hola");
+        deleteButton.style.cursor = "pointer";
+        deleteButton.addEventListener("click", () => {
             sweetModal({ html: "aggg" });
             // element.remove(); // Eliminamos el contenedor
         });
