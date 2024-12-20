@@ -422,6 +422,7 @@ export class WebApiService {
                     },
                 },
                 attributes: ["id", "name", "speciality", "photo", "birthday"],
+                limit: empresa.isTemplate ? 5 : 20,
             }),
             // aca ira productos normal
             Product(empresa, true).count({
