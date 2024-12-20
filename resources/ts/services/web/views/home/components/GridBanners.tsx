@@ -36,7 +36,6 @@ interface GridBannersServiciosProps {
     i: number;
 }
 export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
-    console.log({ grid });
 
     const gr = grid.grid_banner_id ? grid.grid_banner : grid;
     if (!gr.enabled) return null;

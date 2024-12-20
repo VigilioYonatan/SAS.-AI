@@ -61,7 +61,6 @@ function ShopPage({
                 <GridBannersServicios grid={gridbannersshop[3]} i={3} />
                 <LatestProductSection ultimosproducto={productslatestmapped} />
                 <GridBannersServicios grid={gridbannersshop[4]} i={4} />
-                <GridBannersServicios grid={gridbannersshop[5]} i={5} />
             </div>
         </WebLayout>
     );
