@@ -1,6 +1,4 @@
-import { GridBannerAboutSchemaFromServer } from "@/empresas/schemas/grid-banner-about.schema";
-import { GridBannerServicechemaFromServer } from "@/empresas/schemas/grid-banner-service.schema";
-import { GridBannerShopSchemaFromServer } from "@/empresas/schemas/grid-banner-shop.schema";
+import { GridBannerPageSchemaFromServer } from "@/empresas/schemas/grid-banner-page.schema";
 import { GridBannerSchema } from "@/empresas/schemas/grid_banner.schema";
 import AdminEdit from "@/web/components/AdminEdit";
 import TitleSection from "@/web/components/TitleSection";
@@ -28,17 +26,13 @@ function GridBanners({ grid, i }: GridBanners) {
         </section>
     );
 }
-interface GridBannersServiciosProps {
-    grid:
-        | GridBannerServicechemaFromServer
-        | GridBannerShopSchemaFromServer
-        | GridBannerAboutSchemaFromServer;
+interface GridBannersPageProps {
+    grid: GridBannerPageSchemaFromServer;
     i: number;
 }
-export function GridBannersServicios({ grid, i }: GridBannersServiciosProps) {
-
-    const gr = grid.grid_banner_id ? grid.grid_banner : grid;
-    if (!gr.enabled) return null;
+export function GridBannersPage({ grid, i }: GridBannersPageProps) {
+    const gr = grid?.grid_banner_id ? grid.grid_banner : grid;
+    if (!gr?.enabled) return null;
 
     return (
         <section

@@ -53,9 +53,10 @@ import { SubcategoriesApiController } from "@/products/controllers/subcategories
 import { GridBannerApiController } from "@/empresas/controllers/grid_banner.api.controller";
 import { FilesApiServiceApiController } from "@/empresas/controllers/files.api.controller";
 import { QuestionsApiController } from "@/empresas/controllers/questions.api.controller";
-import { GridBannerServiceApiController } from "@/empresas/controllers/grid_banner_service.api.controller";
-import { GridBannerAboutApiController } from "@/empresas/controllers/grid_banner_about.api.controller";
-import { GridBannerShopApiController } from "@/empresas/controllers/grid_banner_shop.api.controller";
+import { PagesApiController } from "@/empresas/controllers/pages.api.controller";
+import { GridBannerPageApiController } from "@/empresas/controllers/grid_banner_page.api.controller";
+import { EmailsApiController } from "@/emails/controllers/emails.api.controller";
+import { EmailsPromocionesApiController } from "@/emails/controllers/emails_promociones.controller";
 
 export const apiRouters: Type[] = [
     EmpresasApiController,
@@ -112,7 +113,8 @@ export const apiRouters: Type[] = [
     GridBannerApiController,
     FilesApiServiceApiController,
     QuestionsApiController,
-    GridBannerServiceApiController,
-    GridBannerAboutApiController,
-    GridBannerShopApiController,
+    PagesApiController,
+    GridBannerPageApiController,
+    EmailsApiController,
+    EmailsPromocionesApiController,
 ];

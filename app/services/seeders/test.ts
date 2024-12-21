@@ -5,12 +5,10 @@ export const test: Pick<
     | "setting"
     | "gridBanners"
     | "files"
-    | "gridBannersService"
-    | "gridBannersAbout"
-    | "gridBannersShop"
     | "backgrounds"
     | "categories"
     | "brands"
+    | "pages"
 > = {
     setting: {
         logo_width: 140,
@@ -171,54 +169,35 @@ export const test: Pick<
             empresa_id: 8,
         },
     ],
-    gridBannersService: [
+    pages: [
         {
-            id: 31,
-            title: null,
-            html: "",
-            enabled: false,
+            title: "Nosotros",
+            slug: "nosotros",
+            description: "",
+            grid_banner_pages: [],
             empresa_id: 8,
-
-            grid_banner_id: null,
+            id: 1,
+            icon: null,
         },
         {
-            id: 32,
-            title: null,
-            html: "",
-            enabled: false,
+            title: "Servicios",
+            slug: "servicios",
+            description: "",
+            id: 2,
+            grid_banner_pages: [],
+            icon: null,
             empresa_id: 8,
-
-            grid_banner_id: null,
         },
         {
-            id: 33,
-            title: null,
-            html: "",
-            enabled: false,
+            title: "Shop",
+            slug: "shop",
+            description: "",
+            id: 3,
+            grid_banner_pages: [],
+            icon: null,
             empresa_id: 8,
-
-            grid_banner_id: null,
-        },
-        {
-            id: 34,
-            title: null,
-            html: "",
-            enabled: true,
-            empresa_id: 8,
-            grid_banner_id: null,
-        },
-        {
-            id: 35,
-            title: null,
-            html: "",
-            enabled: true,
-            empresa_id: 8,
-
-            grid_banner_id: null,
         },
     ],
-    gridBannersShop: [],
-    gridBannersAbout: [],
     backgrounds: [
         {
             id: 13,

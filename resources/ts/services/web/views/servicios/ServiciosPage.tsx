@@ -1,23 +1,24 @@
 import WebLayout, { type HeaderType } from "@/web/components/WebLayout";
-import { GridBannerServicechemaFromServer } from "@/empresas/schemas/grid-banner-service.schema";
-import { GridBannersServicios } from "../home/components/GridBanners";
+import { GridBannerPageSchemaFromServer } from "@/empresas/schemas/grid-banner-page.schema";
 import TitleSection from "../../components/TitleSection";
 import { Fragment } from "preact/jsx-runtime";
+import { GridBannersPage } from "../home/components/GridBanners";
 
 export interface HomePageProps {
     header: HeaderType;
-    gridbannersservicios: GridBannerServicechemaFromServer[];
+    grid_banner_pages: GridBannerPageSchemaFromServer[];
+    title: string;
 }
-function ServiciosPage({ header, gridbannersservicios }: HomePageProps) {
+function ServiciosPage({ header, grid_banner_pages, title }: HomePageProps) {
     return (
         <>
             <WebLayout header={header}>
                 <div class="mt-20 lg:mt-10">
-                    <TitleSection>Servicios</TitleSection>
+                    <TitleSection>{title}</TitleSection>
                 </div>
                 <Fragment>
-                    {gridbannersservicios.map((grid, i) => (
-                        <GridBannersServicios key={grid.id} grid={grid} i={i} />
+                    {grid_banner_pages.map((grid, i) => (
+                        <GridBannersPage key={grid.id} grid={grid} i={i} />
                     ))}
                 </Fragment>
             </WebLayout>

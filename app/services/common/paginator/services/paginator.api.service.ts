@@ -40,6 +40,7 @@ import { Finanzas } from "@/finanzas/entities/finanzas.entity";
 import { Favorites } from "@/favorites/entities/favorites.entity";
 import { Subcategories } from "@/products/entities/subcategories.entity";
 import { Questions } from "@/empresas/entities/questions.entity";
+import { Emails } from "@/emails/entities/emails.entity";
 
 @Injectable()
 export class PaginatorApiServices {
@@ -407,6 +408,19 @@ export class PaginatorApiServices {
                     })
                 );
 
+                break;
+            }
+            case "emails": {
+                if (!user || !user.enabled || ![1].includes(user.role_id))
+                    throw new UnauthorizedException("No authorizado");
+                data = await Promise.all([
+                    Emails.findAll({
+                        offset: offsetConverted,
+                        limit: limitConverted,
+                        order: Object.entries(rest),
+                    }),
+                    Emails.count({}),
+                ]);
                 break;
             }
             case "orders-local": {

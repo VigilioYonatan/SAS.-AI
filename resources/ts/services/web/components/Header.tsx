@@ -224,20 +224,7 @@ function Header({ header }: HeaderProps) {
                             >
                                 Inicio
                             </a>
-                        ) : null}
-                        {storageEmpresa?.setting.is_service_page ? (
-                            <a
-                                class={` font-bold tracking-widest dark:hover:text-primary text-sm uppercase ${
-                                    isActive("/servicios", false)
-                                        ? "text-primary after:scale-x-100 "
-                                        : " dark:text-white hover:text-primary"
-                                }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                                href={"/servicios"}
-                            >
-                                Servicios
-                            </a>
-                        ) : null}
-
+                        ) : null}{" "}
                         {storageEmpresa?.setting.header_type !== "search" &&
                         storageEmpresa?.setting.header.shop ? (
                             <div class="relative">
@@ -511,19 +498,35 @@ function Header({ header }: HeaderProps) {
                                 ) : null}
                             </div>
                         ) : null}
-
-                        {storageEmpresa?.setting.header.about ? (
-                            <a
-                                class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
-                                    isActive("/nosotros")
-                                        ? "text-primary after:scale-x-100"
-                                        : " dark:text-white hover:text-primary"
-                                }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                                href={"/nosotros"}
-                            >
-                                Nosotros
-                            </a>
-                        ) : null}
+                        {storageEmpresa!.pages
+                            .filter((page) => page.slug !== "shop")
+                            .map((page) => {
+                                if (
+                                    page.slug === "services" &&
+                                    !storageEmpresa!.setting.header.services
+                                ) {
+                                    return null;
+                                }
+                                if (
+                                    page.slug === "about" &&
+                                    !storageEmpresa!.setting.header.about
+                                ) {
+                                    return null;
+                                }
+                                return (
+                                    <a
+                                        key={page.id}
+                                        class={` font-bold tracking-widest dark:hover:text-primary text-sm uppercase ${
+                                            isActive(`/${page.slug}`, false)
+                                                ? "text-primary after:scale-x-100 "
+                                                : " dark:text-white hover:text-primary"
+                                        }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                                        href={`/${page.slug}`}
+                                    >
+                                        {page.title}
+                                    </a>
+                                );
+                            })}
                         {storageEmpresa?.setting.header.profile ? (
                             <a
                                 class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
@@ -548,7 +551,6 @@ function Header({ header }: HeaderProps) {
                                 Pedidos
                             </a>
                         ) : null}
-
                         {storageEmpresa?.setting.header.condiciones ? (
                             <div class="relative">
                                 <button

@@ -22,6 +22,7 @@ import ServiciosSection from "./components/ServiciosSection";
 import ProductsUsers from "./components/ProductsUsers";
 import { GridBannerSchema } from "@/empresas/schemas/grid_banner.schema";
 import GridBanners from "./components/GridBanners";
+import EmailsPromocionesStore from "@/emails/views/EmailsPromocionesStore";
 
 export interface HomePageProps {
     header: HeaderType;
@@ -113,12 +114,12 @@ function HomePage({
                     productsmostratingmapped={productsmostratingmapped}
                     productsmostcommentsmapped={productsmostcommentsmapped}
                 />
-
                 <BrandsSection brands={brands} />
                 <PostsSection posts={posts} />
                 <UsersSection users={users} />
                 <GridBanners grid={gridbanners} i={4} />
                 <FindSection />
+                <EmailsPromocionesStore />
             </WebLayout>
         </>
     );

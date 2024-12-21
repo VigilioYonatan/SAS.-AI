@@ -1,115 +1,84 @@
-import Loading from "@/admin/components/Loading";
-import View404 from "@/admin/views/404";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import { GridBannerSchema } from "../schemas/grid_banner.schema";
 import { useForm } from "react-hook-form";
 import { valibotVigilio } from "~/libs/valibot";
 import Form from "~/components/form";
-import { Fragment } from "preact/jsx-runtime";
 import { getParams, handlerError } from "~/libs/helpers";
-import { useEffect, useMemo } from "preact/hooks";
 import { formSelectNumber } from "~/components/form/FormSelect";
-import { Signal } from "@preact/signals";
-import { gridBannerServiceIndexApi } from "../apis/grid_banner_service/grid_banner_service.index.api";
-import {
-    gridBannerServiceUpdateDto,
-    GridBannerServiceUpdateDto,
-} from "../dtos/grid_banner_service.update.dto";
-import { gridBannerServiceUpdateApi } from "../apis/grid_banner_service/grid_banner_service.update.api";
 import { gridBannerIndexApi } from "../apis/grid_banner/grid_banner.index.api";
 import TitleSection from "@/web/components/TitleSection";
+import { gridBannerPageUpdateApi } from "../apis/grid_banner_page/grid_banner_page.update.api";
+import {
+    gridBannerPageUpdateDto,
+    GridBannerPageUpdateDto,
+} from "../dtos/grid_banner_service.update.dto";
+import { GridBannerPageSchemaFromServer } from "../schemas/grid-banner-page.schema";
+import { useMemo } from "preact/hooks";
 export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
 interface ServiciosPageIndexProps {
-    type: Signal<string>;
+    data: GridBannerPageSchemaFromServer[];
+    refetch: (clean?: boolean) => Promise<void>;
 }
-function ServiciosPageIndex({ type }: ServiciosPageIndexProps) {
+function ServiciosPageIndex({ data, refetch }: ServiciosPageIndexProps) {
     const bannerParams = getParams().get("banner");
+    return data.map((f, g) => {
+        const grid = f.grid_banner_id ? f.grid_banner : f;
 
-    const gridBannerIndexQuery = gridBannerServiceIndexApi({ type });
-    useEffect(() => {
-        gridBannerIndexQuery.refetch(false);
-    }, [type.value]);
-    let component: JSX.Element | JSX.Element[] | null = null;
-    if (gridBannerIndexQuery.isLoading) {
-        component = <Loading />;
-    }
-    if (gridBannerIndexQuery.isError) {
-        component = <View404 />;
-    }
-    if (gridBannerIndexQuery.isSuccess) {
-        component = (
-            <Fragment>
-                {gridBannerIndexQuery.data?.data.map((f, g) => {
-                    const grid = f.grid_banner_id ? f.grid_banner : f;
+        return (
+            <div
+                key={grid!.id}
+                class={`grid-banner-${g} relative ${
+                    bannerParams && Number(bannerParams) === g
+                        ? "border-4 border-primary shadow"
+                        : ""
+                }`}
+            >
+                <div class="flex justify-between w-full mb-1 items-center">
+                    <span class="font-semibold text-sm">Banner {g}</span>
 
-                    return (
-                        <div
-                            key={grid!.id}
-                            class={`grid-banner-${g} relative ${
-                                bannerParams && Number(bannerParams) === g
-                                    ? "border-4 border-primary shadow"
-                                    : ""
-                            }`}
+                    <div class="flex gap-2 items-center">
+                        <button
+                            type="button"
+                            class="bg-primary px-4 py-1 rounded-md"
+                            onClick={() => {
+                                sweetModal((onClose) => ({
+                                    html: reactComponent(
+                                        <GridBannerUpdate
+                                            grid={f}
+                                            i={g}
+                                            onClose={onClose}
+                                            refetch={refetch}
+                                        />
+                                    ),
+                                    showCloseButton: true,
+                                    isCloseInBackground: false,
+                                    sweetWidth: "1200px",
+                                    position: "start",
+                                }));
+                            }}
                         >
-                            <div class="flex justify-between w-full mb-1 items-center">
-                                <span class="font-semibold text-sm">
-                                    Banner {g}
-                                </span>
-
-                                <div class="flex gap-2 items-center">
-                                    <button
-                                        type="button"
-                                        class="bg-primary px-4 py-1 rounded-md"
-                                        onClick={() => {
-                                            sweetModal((onClose) => ({
-                                                html: reactComponent(
-                                                    <GridBannerUpdate
-                                                        grid={f}
-                                                        i={g}
-                                                        type={type}
-                                                        onClose={onClose}
-                                                        refetch={
-                                                            gridBannerIndexQuery.refetch
-                                                        }
-                                                    />
-                                                ),
-                                                showCloseButton: true,
-                                                isCloseInBackground: false,
-                                                sweetWidth: "1200px",
-                                                position: "start",
-                                            }));
-                                        }}
-                                    >
-                                        <i class="fas fa-gears" />
-                                    </button>
-                                </div>
-                            </div>
-                            {grid.title ? (
-                                <TitleSection>{grid.title}</TitleSection>
-                            ) : null}
-                            {grid.html ? (
-                                <div
-                                    class={`w-full   banners-${g} relative dark:bg-admin-terciary`}
-                                    dangerouslySetInnerHTML={{
-                                        __html: grid.html,
-                                    }}
-                                />
-                            ) : (
-                                <div class="h-[200px] w-full bg-paper-light dark:bg-admin-terciary" />
-                            )}
-                        </div>
-                    );
-                })}
-            </Fragment>
+                            <i class="fas fa-gears" />
+                        </button>
+                    </div>
+                </div>
+                {grid.title ? <TitleSection>{grid.title}</TitleSection> : null}
+                {grid.html ? (
+                    <div
+                        class={`w-full   banners-${g} relative dark:bg-admin-terciary`}
+                        dangerouslySetInnerHTML={{
+                            __html: grid.html,
+                        }}
+                    />
+                ) : (
+                    <div class="h-[200px] w-full bg-paper-light dark:bg-admin-terciary" />
+                )}
+            </div>
         );
-    }
-
-    return component;
+    });
 }
 interface GridBannerEditProps {
     grid: GridBannerSchema;
-    type: Signal<string>;
     i: number;
     onClose: () => void;
     refetch: (clean?: boolean) => void;
@@ -119,13 +88,12 @@ export function GridBannerUpdate({
     i,
     onClose,
     refetch,
-    type,
 }: GridBannerEditProps) {
-    const gridUpdateMutation = gridBannerServiceUpdateApi(grid.id, type);
+    const gridUpdateMutation = gridBannerPageUpdateApi(grid.id);
 
     const gridBannerIndexQuery = gridBannerIndexApi();
-    const gridUpdateForm = useForm<GridBannerServiceUpdateDto>({
-        resolver: valibotVigilio(gridBannerServiceUpdateDto),
+    const gridUpdateForm = useForm<GridBannerPageUpdateDto>({
+        resolver: valibotVigilio(gridBannerPageUpdateDto),
         defaultValues: grid,
     });
     const gridBannerSelect = useMemo(() => {
@@ -138,7 +106,7 @@ export function GridBannerUpdate({
         return [];
     }, [gridBannerIndexQuery.data, gridBannerIndexQuery.isSuccess]);
 
-    function onGridBannerUpdate(data: GridBannerServiceUpdateDto) {
+    function onGridBannerUpdate(data: GridBannerPageUpdateDto) {
         sweetModal({
             title: "¿Estas seguro de editar tu banner?",
             isCloseInBackground: false,
@@ -171,27 +139,25 @@ export function GridBannerUpdate({
                 <>
                     <Form.control
                         title="Title"
-                        name={"title" as keyof GridBannerServiceUpdateDto}
+                        name={"title" as keyof GridBannerPageUpdateDto}
                         placeholder="Titulo"
                     />
                     <Form.control.editorJS
                         type="html"
                         title="HTML"
                         question="Customiza el banner agregando html, data-label='1',, para customizar texto"
-                        name={"html" as keyof GridBannerServiceUpdateDto}
+                        name={"html" as keyof GridBannerPageUpdateDto}
                         className={`grid-banner-${i}`}
                     />{" "}
                     <Form.control.toggle
                         title="Habilitar"
-                        name={"enabled" as keyof GridBannerServiceUpdateDto}
+                        name={"enabled" as keyof GridBannerPageUpdateDto}
                     />
                     <Form.control.select
                         array={gridBannerSelect}
                         title="Grid Banner"
                         placeholder="Escoger Grid Banner"
-                        name={
-                            "grid_banner_id" as keyof GridBannerServiceUpdateDto
-                        }
+                        name={"grid_banner_id" as keyof GridBannerPageUpdateDto}
                         options={{
                             setValueAs: formSelectNumber,
                         }}

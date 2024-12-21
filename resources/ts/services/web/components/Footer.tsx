@@ -518,7 +518,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                     >
                         <i class="fa-solid fa-caret-up" />
                     </a>
-                    <div class="flex flex-col">
+                    <div class="flex flex-col grayscale">
                         <MetodosDePago />
                     </div>
                 </div>

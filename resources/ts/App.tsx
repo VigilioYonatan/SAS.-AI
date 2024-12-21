@@ -206,6 +206,12 @@ function App() {
                             component={lazy(
                                 () => import("@/orders/views/OrdersDelivery")
                             )}
+                        />{" "}
+                        <Route
+                            path="/emails"
+                            component={lazy(
+                                () => import("@/emails/views/EmailsIndex")
+                            )}
                         />
                         <Route
                             path="/perfil"

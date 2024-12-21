@@ -9,6 +9,7 @@ import {
     InteligenceArtificial,
 } from "../schemas/empresas.schema";
 import { CitasSettingSchema } from "@/citas/schemas/citas_settings.schema";
+import { PageSchema } from "../schemas/pages.schema";
 export type empresaStore = Omit<
     EmpresasSchemaFromServer,
     "contacts" | "groupWhatsapp" | "credentials"
@@ -40,6 +41,7 @@ export type empresaStore = Omit<
     citasSetting: CitasSettingSchema;
     citas: Record<number, number>;
     questionCount?: number;
+    pages: PageSchema[];
 };
 export const storageEmpresa: empresaStore | null = JSON.parse(
     localStorage.getItem("empresa") ?? "null"
@@ -53,7 +55,7 @@ function useEmpresastore() {
             ...empresa.value,
             ...(info as empresaStore),
         };
-        return empresa.value
+        return empresa.value;
     }
 
     return {

@@ -5,13 +5,9 @@ import {
     DataType,
     ForeignKey,
     BelongsTo,
-    HasMany,
 } from "sequelize-typescript";
 import { Empresas } from "./empresas.entity";
 import type { GridBannerSchema } from "../schemas/grid_banner.schema";
-import { GridBannerService } from "./grid_banner_service.entity";
-import { GridBannerAbout } from "./grid_banner_about.entity";
-import { GridBannerShop } from "./grid_banner_shop.entity";
 
 @Table
 export class GridBanner extends Model implements Omit<GridBannerSchema, "id"> {
@@ -23,15 +19,6 @@ export class GridBanner extends Model implements Omit<GridBannerSchema, "id"> {
 
     @Column({ type: DataType.TEXT })
     html: string;
-
-    @HasMany(() => GridBannerService)
-    grid_banner_services: unknown[];
-
-    @HasMany(() => GridBannerAbout)
-    grid_banner_abouts: unknown[];
-
-    @HasMany(() => GridBannerShop)
-    grid_banner_shops: unknown[];
 
     @ForeignKey(() => Empresas)
     @Column({

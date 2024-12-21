@@ -51,7 +51,6 @@ import { GridBanner } from "../entities/grid_banner.entity";
 import { Users } from "@/users/entities/users.entity";
 import { usersSeeder } from "@/users/seeders/users.seeder";
 import { FileSchema } from "../entities/file.entity";
-import { GridBannerService } from "../entities/grid_banner_service.entity";
 import { Background } from "../entities/background.entity";
 import { Categories } from "@/products/entities/categories.entity";
 import { Subcategories } from "@/products/entities/subcategories.entity";
@@ -63,8 +62,9 @@ import type { Features } from "@/products/entities/options/features.entity";
 import { Brands } from "@/products/entities/brands.entitiy";
 import { ProductsApiService } from "@/products/services/products.api.service";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
-import { GridBannerAbout } from "../entities/grid_banner_about.entity";
-import { GridBannerShop } from "../entities/grid_banner_shop.entity";
+import { Page } from "../entities/page.entity";
+import { GridBannerPage } from "../entities/grid_banner_page.entity";
+import { PagesApiService } from "./pages.api.service";
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
@@ -88,76 +88,6 @@ export async function initial() {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await setting.update({ bg_color_header: "transparent" });
         }
-        const existGridAbout = await empresa.$get("grid_banner_abouts");
-        if (!existGridAbout.length) {
-            await GridBannerAbout.bulkCreate([
-                {
-                    html: "",
-                    enabled: false,
-                    empresa_id: empresa!.id,
-                    grid_banner_id: null,
-                },
-                {
-                    html: "",
-                    enabled: false,
-                    empresa_id: empresa!.id,
-                    grid_banner_id: null,
-                },
-                {
-                    html: "",
-                    enabled: false,
-                    grid_banner_id: null,
-                    empresa_id: empresa!.id,
-                },
-                {
-                    html: "",
-                    grid_banner_id: null,
-                    enabled: true,
-                    empresa_id: empresa!.id,
-                },
-                {
-                    html: "",
-                    grid_banner_id: null,
-                    enabled: true,
-                    empresa_id: empresa!.id,
-                },
-            ]);
-        }
-        const existGridShop = await empresa.$get("grid_banner_shop");
-        if (!existGridShop.length) {
-            await GridBannerShop.bulkCreate([
-                {
-                    html: "",
-                    enabled: false,
-                    empresa_id: empresa!.id,
-                    grid_banner_id: null,
-                },
-                {
-                    html: "",
-                    enabled: false,
-                    empresa_id: empresa!.id,
-                    grid_banner_id: null,
-                },
-                {
-                    html: "",
-                    enabled: false,
-                    grid_banner_id: null,
-                    empresa_id: empresa!.id,
-                },
-                {
-                    html: "",
-                    grid_banner_id: null,
-                    enabled: true,
-                    empresa_id: empresa!.id,
-                },
-                {
-                    html: "",
-                    grid_banner_id: null,
-                    enabled: true,
-                    empresa_id: empresa!.id,
-                },
-            ]);
-        }
 
         openAis = { ...openAis, [empresa.slug]: openAiClient };
     }
@@ -168,7 +98,8 @@ export class EmpresasApiService {
     constructor(
         private readonly UsersApiService: UsersApiService,
         private readonly backgroundApiService: BackgroundApiService,
-        private readonly productsApiService: ProductsApiService
+        private readonly productsApiService: ProductsApiService,
+        private readonly pagesApiService: PagesApiService
     ) {}
     async payment(slug: string) {
         const iaTokens = JSON.parse(cache.get(`IA_TOKENS:${slug}`) ?? "null");
@@ -210,40 +141,13 @@ export class EmpresasApiService {
             },
             order: [["id", "ASC"]],
         });
-        const gridBannersServices = await GridBannerService.findAll({
-            where: {
-                empresa_id: empresa!.id,
-            },
-            include: [
-                {
-                    model: GridBanner,
-                },
-            ],
-            order: [["id", "ASC"]],
-        });
-        const gridBannersShop = await GridBannerShop.findAll({
-            where: {
-                empresa_id: empresa!.id,
-            },
-            include: [
-                {
-                    model: GridBanner,
-                },
-            ],
-            order: [["id", "ASC"]],
-        });
-        const gridBannersAbout = await GridBannerAbout.findAll({
-            where: {
-                empresa_id: empresa!.id,
-            },
-            include: [
-                {
-                    model: GridBanner,
-                },
-            ],
-            order: [["id", "ASC"]],
-        });
 
+        const pages = await Page.findAll({
+            where: {
+                empresa_id: empresa.id,
+            },
+            include: [GridBannerPage],
+        });
         let files = await FileSchema.findAll({
             where: { empresa_id: empresa!.id },
         });
@@ -446,9 +350,7 @@ export class EmpresasApiService {
                 setting,
                 gridBanners: gridBanners,
                 files,
-                gridBannersService: gridBannersServices,
-                gridBannersShop,
-                gridBannersAbout,
+                pages,
                 backgrounds,
                 categories,
                 brands,
@@ -844,174 +746,71 @@ export class EmpresasApiService {
                     },
                 ]);
             }
-            if (body.gridBannersService?.length) {
+            if (body.pages?.length) {
                 await Promise.all(
-                    body.gridBannersService.map(async (grid) => {
-                        const { id, grid_banner_id, ...rest } = grid;
-
-                        const findBannerTest = gridBannersMap?.find(
-                            (grid) => grid.id_test === grid_banner_id
-                        );
-
-                        const gridBanner = findBannerTest
-                            ? await GridBanner.findByPk(findBannerTest.id)
-                            : null;
-
-                        await GridBannerService.create({
-                            ...rest,
+                    body.pages.map(async (page) => {
+                        const { grid_banner_pages, id, ...resto } = page;
+                        const newpage = await Page.create({
+                            ...resto,
                             empresa_id: empresa!.id,
-                            grid_banner_id: gridBanner
-                                ? findBannerTest.id
-                                : null,
                         });
+                        await Promise.all(
+                            page.grid_banner_pages.map(async (grid) => {
+                                const { grid_banner_id, ...rest } = grid;
+
+                                const findBannerTest = gridBannersMap?.find(
+                                    (grid) => grid.id_test === grid_banner_id
+                                );
+                                const gridBanner = findBannerTest
+                                    ? await GridBanner.findByPk(
+                                          findBannerTest.id
+                                      )
+                                    : null;
+
+                                await GridBannerPage.create({
+                                    ...rest,
+                                    empresa_id: empresa!.id,
+                                    grid_banner_id: gridBanner
+                                        ? findBannerTest.id
+                                        : null,
+                                });
+                            })
+                        );
                     })
                 );
             } else {
-                await GridBannerService.bulkCreate([
-                    {
-                        html: "",
-                        enabled: false,
-                        empresa_id: empresa!.id,
-                        grid_banner_id: null,
-                    },
-                    {
-                        html: "",
-                        enabled: false,
-                        empresa_id: empresa!.id,
-                        grid_banner_id: null,
-                    },
-                    {
-                        html: "",
-                        enabled: false,
-                        grid_banner_id: null,
-                        empresa_id: empresa!.id,
-                    },
-                    {
-                        html: "",
-                        grid_banner_id: null,
-                        enabled: true,
-                        empresa_id: empresa!.id,
-                    },
-                    {
-                        html: "",
-                        grid_banner_id: null,
-                        enabled: true,
-                        empresa_id: empresa!.id,
-                    },
+                await Promise.all([
+                    this.pagesApiService.store(empresa, {
+                        title: "Nosotros",
+                        description: `Bienvenidos a ${empresa.name_empresa}`,
+                        slug: "about",
+                        empresa_id: empresa.id,
+                        icon: "<i class='fas fa-users'></i>",
+                    }),
+                    this.pagesApiService.store(empresa, {
+                        title: "Shop",
+                        description: `Bienvenidos a ${empresa.name_empresa}`,
+                        slug: "shop",
+                        empresa_id: empresa.id,
+                        icon: "<i class='fas fa-store'></i>",
+                    }),
+                    this.pagesApiService.store(empresa, {
+                        title: "Servicios",
+                        description: `En ${empresa.name_empresa}, ofrecemos una amplia variedad de productos de alta calidad a precios inmejorables, encontrarás todo lo que necesitas en un solo lugar. Disfruta de envíos rápidos, devoluciones fáciles y un servicio al cliente excepcional. ¡Explora nuestras ofertas diarias y descubre la diferencia de comprar en Tienda XYZ!`,
+                        slug: "services",
+                        empresa_id: empresa.id,
+                        icon: "<i class='fas fa-building'></i>",
+                    }),
+                    this.pagesApiService.store(empresa, {
+                        title: "Contacto",
+                        description: `En ${empresa.name_empresa}, ofrecemos una amplia variedad de productos de alta calidad a precios inmejorables, encontrarás todo lo que necesitas en un solo lugar. Disfruta de envíos rápidos, devoluciones fáciles y un servicio al cliente excepcional. ¡Explora nuestras ofertas diarias y descubre la diferencia de comprar en Tienda XYZ!`,
+                        slug: "contact",
+                        empresa_id: empresa.id,
+                        icon: "<i class='fas fa-envelope-open'></i>",
+                    }),
                 ]);
             }
-            if (body.gridBannersAbout?.length) {
-                await Promise.all(
-                    body.gridBannersAbout.map(async (grid) => {
-                        const { id, grid_banner_id, ...rest } = grid;
 
-                        const findBannerTest = gridBannersMap?.find(
-                            (grid) => grid.id_test === grid_banner_id
-                        );
-
-                        const gridBanner = findBannerTest
-                            ? await GridBanner.findByPk(findBannerTest.id)
-                            : null;
-
-                        await GridBannerAbout.create({
-                            ...rest,
-                            empresa_id: empresa!.id,
-                            grid_banner_id: gridBanner
-                                ? findBannerTest.id
-                                : null,
-                        });
-                    })
-                );
-            } else {
-                await GridBannerAbout.bulkCreate([
-                    {
-                        html: "",
-                        enabled: false,
-                        empresa_id: empresa!.id,
-                        grid_banner_id: null,
-                    },
-                    {
-                        html: "",
-                        enabled: false,
-                        empresa_id: empresa!.id,
-                        grid_banner_id: null,
-                    },
-                    {
-                        html: "",
-                        enabled: false,
-                        grid_banner_id: null,
-                        empresa_id: empresa!.id,
-                    },
-                    {
-                        html: "",
-                        grid_banner_id: null,
-                        enabled: true,
-                        empresa_id: empresa!.id,
-                    },
-                    {
-                        html: "",
-                        grid_banner_id: null,
-                        enabled: true,
-                        empresa_id: empresa!.id,
-                    },
-                ]);
-            }
-            if (body.gridBannersShop?.length) {
-                await Promise.all(
-                    body.gridBannersShop.map(async (grid) => {
-                        const { id, grid_banner_id, ...rest } = grid;
-
-                        const findBannerTest = gridBannersMap?.find(
-                            (grid) => grid.id_test === grid_banner_id
-                        );
-
-                        const gridBanner = findBannerTest
-                            ? await GridBanner.findByPk(findBannerTest.id)
-                            : null;
-
-                        await GridBannerShop.create({
-                            ...rest,
-                            empresa_id: empresa!.id,
-                            grid_banner_id: gridBanner
-                                ? findBannerTest.id
-                                : null,
-                        });
-                    })
-                );
-            } else {
-                await GridBannerShop.bulkCreate([
-                    {
-                        html: "",
-                        enabled: false,
-                        empresa_id: empresa!.id,
-                        grid_banner_id: null,
-                    },
-                    {
-                        html: "",
-                        enabled: false,
-                        empresa_id: empresa!.id,
-                        grid_banner_id: null,
-                    },
-                    {
-                        html: "",
-                        enabled: false,
-                        grid_banner_id: null,
-                        empresa_id: empresa!.id,
-                    },
-                    {
-                        html: "",
-                        grid_banner_id: null,
-                        enabled: true,
-                        empresa_id: empresa!.id,
-                    },
-                    {
-                        html: "",
-                        grid_banner_id: null,
-                        enabled: true,
-                        empresa_id: empresa!.id,
-                    },
-                ]);
-            }
             if (body.isTemplate) {
                 await Users.bulkCreate(
                     usersSeeder.map((user) => ({

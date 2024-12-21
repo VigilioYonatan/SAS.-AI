@@ -51,23 +51,6 @@ function FormEditorJSControl<T extends object>({
                 {title}{" "}
                 {type === "html" ? (
                     <div class="flex gap-2 items-center">
-                        {" "}
-                        <button
-                            type="button"
-                            onClick={() => {
-                                sweetModal({
-                                    html: reactComponent(
-                                        <FilesIndex params={{}} />
-                                    ),
-                                    sweetWidth: "800px",
-                                    position: "start",
-                                    showCloseButton: true,
-                                    isCloseInBackground: false,
-                                });
-                            }}
-                        >
-                            <i class="fas fa-image text-lg" />
-                        </button>
                         <button
                             type="button"
                             onClick={() => {

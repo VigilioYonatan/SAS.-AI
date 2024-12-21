@@ -22,7 +22,8 @@ export type PaginatorModel =
     | "urls"
     | "complaints"
     | "finanzas"
-    | "questions";
+    | "questions"
+    | "emails";
 
 export const paginatorModel: PaginatorModel[] = [
     "products",
@@ -46,6 +47,7 @@ export const paginatorModel: PaginatorModel[] = [
     "favorites",
     "subcategories",
     "questions",
+    "emails",
 ];
 export type TimeTable =
     | "all"

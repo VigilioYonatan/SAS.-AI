@@ -16,7 +16,6 @@ import { Empresas } from "../entities/empresas.entity";
 import { gridBannerSchema } from "../schemas/grid_banner.schema";
 import { settingsSchema } from "../schemas/settings.schema";
 import { fileSchema } from "../schemas/file.schema";
-import { gridBannerServicechema } from "../schemas/grid-banner-service.schema";
 import { backgroundSchema } from "../schemas/background.schema";
 import { categoriesSchema } from "@/products/schemas/categories.schema";
 import { productsRestaurantSchema } from "../../products/schemas/products_restaurant.schema";
@@ -24,8 +23,8 @@ import { productsServicioSchema } from "@/products/schemas/products_servicio.sch
 import { brandsSchema } from "@/products/schemas/brands.schema";
 import { productsNormalStoreDto } from "@/products/dtos/products_normal.dto";
 import { subcategoriesSchema } from "@/products/schemas/subcategories.schema";
-import { gridBannerAboutSchema } from "../schemas/grid-banner-about.schema";
-import { gridBannerShopSchema } from "../schemas/grid-banner-shop.schema";
+import { pagesSchema } from "../schemas/pages.schema";
+import { gridBannerPageSchema } from "../schemas/grid-banner-page.schema";
 
 export const empresasStoreDto = mergeAsync([
     omitAsync(
@@ -76,9 +75,16 @@ export const empresasStoreDto = mergeAsync([
     objectAsync({
         setting: omitAsync(settingsSchema, ["id", "empresa_id"]),
         gridBanners: nullableAsync(arrayAsync(gridBannerSchema)),
-        gridBannersService: nullableAsync(arrayAsync(gridBannerServicechema)),
-        gridBannersAbout: nullableAsync(arrayAsync(gridBannerAboutSchema)),
-        gridBannersShop: nullableAsync(arrayAsync(gridBannerShopSchema)),
+        pages: nullableAsync(
+            arrayAsync(
+                mergeAsync([
+                    pagesSchema,
+                    objectAsync({
+                        grid_banner_pages: arrayAsync(gridBannerPageSchema),
+                    }),
+                ])
+            )
+        ),
         backgrounds: arrayAsync(backgroundSchema),
         files: arrayAsync(fileSchema),
         brands: arrayAsync(brandsSchema),

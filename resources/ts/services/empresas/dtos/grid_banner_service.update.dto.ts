@@ -1,11 +1,10 @@
 import { Input, omit } from "@vigilio/valibot";
-import { gridBannerServicechema } from "../schemas/grid-banner-service.schema";
+import { gridBannerPageSchema } from "../schemas/grid-banner-page.schema";
 
-export const gridBannerServiceUpdateDto = omit(gridBannerServicechema, [
+export const gridBannerPageUpdateDto = omit(gridBannerPageSchema, [
     "id",
     "empresa_id",
+    "page_id",
 ]);
 
-export type GridBannerServiceUpdateDto = Input<
-    typeof gridBannerServiceUpdateDto
->;
+export type GridBannerPageUpdateDto = Input<typeof gridBannerPageUpdateDto>;

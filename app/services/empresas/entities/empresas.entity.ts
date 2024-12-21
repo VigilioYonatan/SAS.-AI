@@ -55,9 +55,9 @@ import { GridBanner } from "./grid_banner.entity";
 import { FileSchema } from "./file.entity";
 import { RedesChat } from "./redes_chat.entity";
 import { Questions } from "./questions.entity";
-import { GridBannerService } from "./grid_banner_service.entity";
-import { GridBannerAbout } from "./grid_banner_about.entity";
-import { GridBannerShop } from "./grid_banner_shop.entity";
+import { Page } from "./page.entity";
+import { Emails } from "@/emails/entities/emails.entity";
+import { EmailsPromociones } from "@/emails/entities/emails_offers.entity";
 
 @DefaultScope(() => ({
     include: [Address, MetodosPago, TipoEmpresa, Settings, CitasSettings],
@@ -83,7 +83,17 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     @Column({
         type: DataType.STRING(200),
     })
-    email: string;
+    email: string | null;
+
+    @Column({
+        type: DataType.STRING(200),
+    })
+    email_zoho: string | null;
+
+    @Column({
+        type: DataType.STRING(200),
+    })
+    password_zoho: string | null;
 
     @Column({
         type: DataType.JSON,
@@ -555,12 +565,12 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     @HasMany(() => GridBanner)
     grid_banners: GridBanner[];
 
-    @HasMany(() => GridBannerService)
-    grid_banner_services: GridBannerService[];
+    @HasMany(() => Page)
+    pages: Page[];
 
-    @HasMany(() => GridBannerAbout)
-    grid_banner_abouts: GridBannerAbout[];
+    @HasMany(() => Emails)
+    emails: Emails[];
 
-    @HasMany(() => GridBannerShop)
-    grid_banner_shop: GridBannerShop[];
+    @HasMany(() => EmailsPromociones)
+    emailsPromociones: EmailsPromociones[];
 }

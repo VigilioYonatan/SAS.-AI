@@ -114,6 +114,14 @@ render(
     "ServiciosPage",
     lazy(() => import("@/web/views/servicios/ServiciosPage"))
 );
+render(
+    "OthersPage",
+    lazy(() => import("@/web/views/home/OthersPage"))
+);
+render(
+    "ContactPage",
+    lazy(() => import("@/web/views/home/ContactPage"))
+);
 
 render(
     "ClearCartPaypalSuccess",

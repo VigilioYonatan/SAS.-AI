@@ -62,9 +62,10 @@ import { GridBanner } from "@/empresas/entities/grid_banner.entity";
 import { FileSchema } from "@/empresas/entities/file.entity";
 import { RedesChat } from "@/empresas/entities/redes_chat.entity";
 import { Questions } from "@/empresas/entities/questions.entity";
-import { GridBannerService } from "@/empresas/entities/grid_banner_service.entity";
-import { GridBannerAbout } from "@/empresas/entities/grid_banner_about.entity";
-import { GridBannerShop } from "@/empresas/entities/grid_banner_shop.entity";
+import { Page } from "@/empresas/entities/page.entity";
+import { GridBannerPage } from "@/empresas/entities/grid_banner_page.entity";
+import { Emails } from "@/emails/entities/emails.entity";
+import { EmailsPromociones } from "@/emails/entities/emails_offers.entity";
 
 const sequelize = new Sequelize({
     dialect: "postgres",
@@ -145,9 +146,10 @@ sequelize.addModels([
     FileSchema,
     RedesChat,
     Questions,
-    GridBannerService,
-    GridBannerAbout,
-    GridBannerShop,
+    Page,
+    GridBannerPage,
+    Emails,
+    EmailsPromociones,
 ]);
 
 export async function connectDB() {

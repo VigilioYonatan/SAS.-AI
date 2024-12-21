@@ -54,6 +54,7 @@ import { Favorites } from "@/favorites/entities/favorites.entity";
 import { converterMoneyApi } from "~/libs/apis";
 import { MONEYLOCAL, type Money } from "@/empresas/libs";
 import { Questions } from "@/empresas/entities/questions.entity";
+import { Page } from "@/empresas/entities/page.entity";
 
 export class Server {
     public readonly app: express.Application = express();
@@ -247,6 +248,7 @@ export class Server {
                             answer: null,
                         },
                     });
+
                     cache.set(
                         `${empresa.slug}:questions-count`,
                         JSON.stringify(questionCount)
@@ -288,6 +290,11 @@ export class Server {
                         1 * 60 * 60 * 1000
                     );
                 }
+                const pages = await Page.findAll({
+                    where: { empresa_id: empresa.id }, // biometria
+                    attributes: ["id", "title", "description", "icon", "slug"],
+                    order: [["id", "ASC"]],
+                });
 
                 const info = {
                     ...empresa,
@@ -323,6 +330,7 @@ export class Server {
                                 .stripe.enabled,
                         },
                     },
+                    pages,
                     ...certificado,
                 };
                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>

@@ -548,6 +548,12 @@ function AdminLayout({ children }: AdminLayoutProps) {
                         ) : null}
                         <NavLink
                             onClick={onCloseAside}
+                            to="/emails"
+                            title="Imbox"
+                            Icon={<i class="fas fa-envelope-open" />}
+                        />
+                        <NavLink
+                            onClick={onCloseAside}
                             to="/usuarios"
                             title="Usuarios"
                             Icon={<i class="fas fa-users" />}

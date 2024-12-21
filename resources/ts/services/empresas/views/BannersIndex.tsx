@@ -20,18 +20,31 @@ import useMediaQuery, { ResponsiveWidth } from "~/hooks/useMediaQuery";
 import AlertInfo from "~/components/Alerts/AlertInfo";
 import { useSignal } from "@preact/signals";
 import TitleSection from "@/web/components/TitleSection";
-import { gridBannerServiceIndexApi } from "../apis/grid_banner_service/grid_banner_service.index.api";
 import { useEffect } from "preact/hooks";
 import ServiciosPageIndex from "./ServiciosPageIndex";
 import { storageEmpresa } from "../stores/empresa.store";
-export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
+import PageStore, { PageUpdate } from "./PageStore";
+import { pagesShowApi } from "../apis/pages/pages.show.api";
+import { GridBannerPageSchemaFromServer } from "../schemas/grid-banner-page.schema";
+import Helper from "~/components/Helper";
+import { PageSchema } from "../schemas/pages.schema";
+export const HTMLSHOW = JSON.parse(
+    localStorage.getItem("show-html") || "false"
+);
 
 function BannersIndex() {
-    const typeBanner = useSignal<"home" | "service" | "about" | "shop">("home");
+    const typeBanner = useSignal<string>("home");
     const gridBannerIndexQuery =
         typeBanner.value === "home"
             ? gridBannerIndexApi()
-            : gridBannerServiceIndexApi({ type: typeBanner });
+            : pagesShowApi(typeBanner, {
+                  transformData(data) {
+                      return {
+                          ...data,
+                          data: data.page.grid_banner_pages,
+                      };
+                  },
+              });
     const widthResponsive = ResponsiveWidth();
     const showHtml = useSignal(HTMLSHOW);
     let component: JSX.Element | JSX.Element[] | null = null;
@@ -111,7 +124,13 @@ function BannersIndex() {
                     })}
                 </Fragment>
             ) : (
-                <ServiciosPageIndex type={typeBanner} />
+                <ServiciosPageIndex
+                    data={
+                        gridBannerIndexQuery.data!
+                            .data as GridBannerPageSchemaFromServer[]
+                    }
+                    refetch={gridBannerIndexQuery.refetch}
+                />
             );
     }
 
@@ -122,63 +141,93 @@ function BannersIndex() {
             </div>
             <div class="flex flex-col gap-4 [&>header]:relative">
                 <div>
-                    <div class="flex gap-2 mb-2">
-                        <div class="grid grid-cols-4 gap-2">
+                    <div class="flex gap-2 mb-3 w-full">
+                        <div class="flex items-center justify-between gap-2 w-full">
+                            <div class="flex items-center gap-2 max-w-[350px] ">
+                                {[
+                                    {
+                                        id: 0,
+                                        title: "Home",
+                                        slug: "home",
+                                        icon: "<i class='fas fa-home'></i>",
+                                    },
+                                    ...storageEmpresa!.pages,
+                                ].map((page) => (
+                                    <button
+                                        type="button"
+                                        key={page.id}
+                                        onClick={() => {
+                                            typeBanner.value = page.slug;
+                                        }}
+                                        class={`${
+                                            typeBanner.value === page.slug
+                                                ? "bg-primary"
+                                                : ""
+                                        } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs relative`}
+                                    >
+                                        {showHtml.value &&
+                                        page.slug !== "home" ? (
+                                            <span
+                                                class="bg-orange-400 text-white px-1.5 py-1 rounded-md top-[-12px] right-[-8px] absolute"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    sweetModal((onClose) => ({
+                                                        html: reactComponent(
+                                                            <PageUpdate
+                                                                onClose={
+                                                                    onClose
+                                                                }
+                                                                page={
+                                                                    page as PageSchema
+                                                                }
+                                                                refetch={
+                                                                    gridBannerIndexQuery.refetch
+                                                                }
+                                                            />
+                                                        ),
+                                                        showCloseButton: true,
+                                                        isCloseInBackground:
+                                                            false,
+                                                        sweetWidth: "500px",
+                                                    }));
+                                                }}
+                                            >
+                                                {" "}
+                                                <i class="fas fa-pen text-[0.6rem]" />
+                                            </span>
+                                        ) : null}
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html:
+                                                    page.icon ||
+                                                    "<i class='fas fa-globe'></i>",
+                                            }}
+                                        />{" "}
+                                        {page.title}
+                                    </button>
+                                ))}
+                            </div>
                             <button
+                                class="bg-primary px-3 py-1 rounded-md text-xl font-bold"
                                 type="button"
                                 onClick={() => {
-                                    typeBanner.value = "home";
+                                    sweetModal((onClose) => ({
+                                        html: reactComponent(
+                                            <PageStore
+                                                onClose={onClose}
+                                                refetch={
+                                                    gridBannerIndexQuery.refetch
+                                                }
+                                            />
+                                        ),
+                                        showCloseButton: true,
+                                        isCloseInBackground: false,
+                                        sweetWidth: "500px",
+                                    }));
                                 }}
-                                class={`${
-                                    typeBanner.value === "home"
-                                        ? "bg-primary"
-                                        : ""
-                                } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs`}
                             >
-                                <i class="fas fa-home" /> Home Page
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    typeBanner.value = "shop";
-                                }}
-                                class={`${
-                                    typeBanner.value === "shop"
-                                        ? "bg-primary"
-                                        : ""
-                                } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs`}
-                            >
-                                <i class="fas fa-shopping-cart" /> Shop Page
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    typeBanner.value = "about";
-                                }}
-                                class={`${
-                                    typeBanner.value === "about"
-                                        ? "bg-primary"
-                                        : ""
-                                } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs`}
-                            >
-                                <i class="fab fa-blogger-b" /> Blog Page
-                            </button>
-                            {storageEmpresa?.setting.is_service_page ? (
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        typeBanner.value = "service";
-                                    }}
-                                    class={`${
-                                        typeBanner.value === "service"
-                                            ? "bg-primary"
-                                            : ""
-                                    } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs`}
-                                >
-                                    <i class="fas fa-handshake-alt" /> Servicios
-                                    Page
-                                </button>
-                            ) : null}
+                                +
+                            </button>{" "}
                         </div>
                     </div>
                     {useMediaQuery("(max-width:1000px)") ? (
@@ -193,7 +242,7 @@ function BannersIndex() {
                         <span class="font-bold text-sm">
                             Ancho Actual: <b>{widthResponsive}PX</b>{" "}
                         </span>
-                        <label class="text-xs dark:text-white font-semibold">
+                        <label class="text-xs dark:text-white font-semibold relative">
                             <input
                                 type="checkbox"
                                 checked={showHtml.value}
@@ -209,7 +258,12 @@ function BannersIndex() {
                                 }}
                                 class="mr-2"
                             />
-                            Show HTML
+                            Modo Desarrollador
+                            <Helper top={0} key={0} right={0}>
+                                <span>
+                                    Activar, solo si eres un desarrollador.
+                                </span>
+                            </Helper>
                         </label>
                     </div>
                 </div>

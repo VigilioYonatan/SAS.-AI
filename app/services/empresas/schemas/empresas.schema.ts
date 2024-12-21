@@ -153,6 +153,8 @@ export const empresasSchema = objectAsync({
     dial_code: string(),
     name_empresa: string([minLength(2), maxLength(100)]),
     email: nullable(string([email()])),
+    email_zoho: nullable(string([email()])),
+    password_zoho: nullable(string([minLength(1), maxLength(3)])),
     about: nullable(string()), //  acerca de la empresa
     logo: nullable(array(filesSchema(empresasLogoQualities))), //obligatorio
     logo_pwa: nullable(array(filesSchema(empresasLogoQualities))), //obligatorio

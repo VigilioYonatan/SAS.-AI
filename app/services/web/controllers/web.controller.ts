@@ -72,20 +72,6 @@ export class WebController {
             message: message ?? "No se a encontrado esta página",
         });
     }
-    @Get("/shop", [webEnabledMiddleware])
-    async shop(
-        @Res() res: Response,
-        @Req("empresa") empresa: Empresas,
-        @Req("user") user: Users
-    ) {
-        const result = await this.webService.shop(empresa, user);
-        return res.render("web/shop", result);
-    }
-    @Get("/servicios", [webEnabledMiddleware])
-    async servicios(@Res() res: Response, @Req("empresa") empresa: Empresas) {
-        const result = await this.webService.servicios(empresa);
-        return res.render("web/servicios", result);
-    }
 
     @Get("/shop/:category_slug", [webEnabledMiddleware])
     async categories(
@@ -120,11 +106,6 @@ export class WebController {
     ) {
         const result = await this.webService.marcas(brand, empresa);
         return res.render("web/shop/brands", result);
-    }
-    @Get("/nosotros", [webEnabledMiddleware])
-    async about(@Res() res: Response, @Req("empresa") empresa: Empresas) {
-        const result = await this.webService.about(empresa);
-        return res.render("web/home/about", result);
     }
 
     @Get("/pedidos")
@@ -174,7 +155,24 @@ export class WebController {
             req.empresa,
             req.user
         );
-        return res.render("web/product", result);
+
+        if (!result.type_page) {
+            return res.render("web/product", result);
+        }
+
+        if (result.type_page === "shop_page") {
+            return res.render("web/shop", result);
+        }
+        if (result.type_page === "nosotros_page") {
+            return res.render("web/home/about", result);
+        }
+        if (result.type_page === "servicios_page") {
+            return res.render("web/servicios", result);
+        }
+        if (result.type_page === "contact_page") {
+            return res.render("web/contact", result);
+        }
+        return res.render("web/home/others", result);
     }
 
     @Pipe(objectAsync({ hash: string() }))

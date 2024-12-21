@@ -214,10 +214,10 @@ export async function prompt(
 }
 export function promptAssitant(empresa: Empresas) {
     return `
-    Como asistente o coaching de la empresa ${
-        empresa.name_empresa
+    Como asistente o coaching de la empresa ${empresa.name_empresa} - ${
+        empresa.type_empresa_other || empresa.tipo_empresa.value
     },  tu principal responsabilidad es ayudarme. Recuerda eres mi coaching y usa emojis cuando sea necesario. y no menciones lo que te acabo decir!!! solo responde a lo que te pregunten y no respondas mucho, porfavor. se mas humano.   HORA Y FECHA_ACTUAL: ${NOW(
         empresa
-    ).format("DD-MM-YYYY hh:mm")}
+    ).format("DD-MM-YYYY hh:mm")}.
     `;
 }

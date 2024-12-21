@@ -98,61 +98,49 @@ function Aside({
                                 <i class={`fa${typeIcon1} fa-home`} /> Inicio
                             </a>
                         ) : null}
-                        {storageEmpresa?.setting.header.shop ? (
-                            <a
-                                class={` dark:text-white   text-sm hover:bg-paper-light   flex gap-2 items-center dark:hover:dark:bg-paper-dark tracking-wide px-4 py-2  font-semibold ${
-                                    isActive("/shop", false)
-                                        ? "bg-background-light dark:bg-paper-dark"
-                                        : ""
-                                } ${
-                                    isColorLight(
-                                        storageEmpresa!.setting.bg_color_paper
-                                    )
-                                        ? "hover:text-black"
-                                        : "hover:text-white"
-                                } `}
-                                href={"/shop"}
-                            >
-                                <i class={`fa${typeIcon1} fa-store`} /> Tienda
-                            </a>
-                        ) : null}
-                        {storageEmpresa?.setting.is_service_page ? (
-                            <a
-                                class={` flex gap-2 items-center dark:text-white text-sm hover:bg-paper-light hover:dark:bg-paper-dark py-2  px-4    tracking-wide font-semibold ${
-                                    isActive("/servicios")
-                                        ? "bg-background-light dark:bg-paper-dark"
-                                        : ""
-                                } ${
-                                    isColorLight(
-                                        storageEmpresa!.setting.bg_color_paper
-                                    )
-                                        ? "hover:text-black"
-                                        : "hover:text-white"
-                                }`}
-                                href={"/servicios"}
-                            >
-                                <i class={`fa${typeIcon1} fa-building`} />{" "}
-                                Servicios
-                            </a>
-                        ) : null}
-                        {storageEmpresa?.setting.header.about ? (
-                            <a
-                                class={` flex gap-2 items-center dark:text-white text-sm hover:bg-paper-light hover:dark:bg-paper-dark py-2  px-4    tracking-wide font-semibold ${
-                                    isActive("/nosotros")
-                                        ? "bg-background-light dark:bg-paper-dark"
-                                        : ""
-                                } ${
-                                    isColorLight(
-                                        storageEmpresa!.setting.bg_color_paper
-                                    )
-                                        ? "hover:text-black"
-                                        : "hover:text-white"
-                                }`}
-                                href={"/nosotros"}
-                            >
-                                <i class={`fa${typeIcon1} fa-users`} /> Nosotros
-                            </a>
-                        ) : null}
+
+                        {storageEmpresa!.pages.map((page) => {
+                            if (
+                                page.slug === "services" &&
+                                !storageEmpresa!.setting.header.services
+                            ) {
+                                return null;
+                            }
+                            if (
+                                page.slug === "about" &&
+                                !storageEmpresa!.setting.header.about
+                            ) {
+                                return null;
+                            }
+                            return (
+                                <a
+                                    key={page.id}
+                                    class={` flex gap-2 items-center dark:text-white text-sm hover:bg-paper-light hover:dark:bg-paper-dark py-2  px-4    tracking-wide font-semibold ${
+                                        isActive(`/${page.slug}`)
+                                            ? "bg-background-light dark:bg-paper-dark"
+                                            : ""
+                                    } ${
+                                        isColorLight(
+                                            storageEmpresa!.setting
+                                                .bg_color_paper
+                                        )
+                                            ? "hover:text-black"
+                                            : "hover:text-white"
+                                    }`}
+                                    href={`/${page.slug}`}
+                                >
+                                    {page.icon ? (
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: page.icon,
+                                            }}
+                                        />
+                                    ) : null}{" "}
+                                    {page.title}
+                                </a>
+                            );
+                        })}
+
                         {storageEmpresa?.setting.header.categories ? (
                             <div class="">
                                 {categories.map((category) => (
