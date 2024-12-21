@@ -17,19 +17,19 @@ import { sendMail } from "~/libs/mailer";
 @Injectable()
 export class EmailsApiService {
     async store(empresa: Empresas, emailsStoreDto: EmailsStoreDto) {
-        if (!empresa.email || !empresa.email_zoho) {
+        if (!empresa.email || !empresa.zoho.email) {
             throw new BadRequestException(
                 "Necesitas un correo electrónico Zoho"
             );
         }
-        if (!empresa.password_zoho) {
+        if (!empresa.zoho.password) {
             throw new BadRequestException("No se encontró contraseña zoho");
         }
         try {
             await sendMail(
                 {
-                    email: empresa.email,
-                    password: empresa.password_zoho,
+                    email: empresa.zoho.email,
+                    password: empresa.zoho.password,
                 },
                 {
                     from: emailsStoreDto.email,
@@ -55,7 +55,7 @@ export class EmailsApiService {
     }
 
     async sendAllUsers(empresa: Empresas, emailsSendAllDto: EmailsSendAllDto) {
-        if (!empresa.email_zoho || !empresa.password_zoho || empresa.email) {
+        if (!empresa.zoho.email || !empresa.zoho.password || empresa.email) {
             throw new BadRequestException(
                 "No se encontró zoho mail o contraaseña zoho mail"
             );
@@ -81,8 +81,8 @@ export class EmailsApiService {
                         });
                         await sendMail(
                             {
-                                email: empresa.email_zoho!,
-                                password: empresa.password_zoho!,
+                                email: empresa.zoho.email!,
+                                password: empresa.zoho.password!,
                             },
                             {
                                 from: empresa.email!,
@@ -104,8 +104,8 @@ export class EmailsApiService {
                     });
                     await sendMail(
                         {
-                            email: empresa.email!,
-                            password: empresa.email_zoho!,
+                            email: empresa.zoho.email!,
+                            password: empresa.zoho.password!,
                         },
                         {
                             from: empresa.email!,
@@ -124,13 +124,13 @@ export class EmailsApiService {
             throw new BadRequestException((error as Error).message);
         }
     }
-    async accounts() {
-        const result = await emailsAccountsAPI();
+    async accounts(empresa: Empresas) {
+        const result = await emailsAccountsAPI(empresa);
         return result;
     }
 
-    async account(account_id: string) {
-        const result = await emailsAccountAPI(account_id);
+    async account(empresa: Empresas, account_id: string) {
+        const result = await emailsAccountAPI(empresa, account_id);
         return result;
     }
 }

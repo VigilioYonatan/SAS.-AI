@@ -153,8 +153,14 @@ export const empresasSchema = objectAsync({
     dial_code: string(),
     name_empresa: string([minLength(2), maxLength(100)]),
     email: nullable(string([email()])),
-    email_zoho: nullable(string([email()])),
-    password_zoho: nullable(string([minLength(1), maxLength(3)])),
+    zoho: object({
+        email: nullable(string([email()])),
+        password: nullable(string([minLength(1), maxLength(3)])),
+        account_id: nullable(string()),
+        client_id: nullable(string()),
+        client_secret: nullable(string()),
+        refresh_token: nullable(string()),
+    }),
     about: nullable(string()), //  acerca de la empresa
     logo: nullable(array(filesSchema(empresasLogoQualities))), //obligatorio
     logo_pwa: nullable(array(filesSchema(empresasLogoQualities))), //obligatorio
@@ -354,6 +360,7 @@ export const empresasSchema = objectAsync({
     enabled_dni_cart: boolean(),
     isDolar: boolean(),
     token: string(),
+    enabled_zoho_mail: boolean(),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

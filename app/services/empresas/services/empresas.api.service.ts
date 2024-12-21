@@ -80,13 +80,23 @@ export async function initial() {
         }
         // tipos finanzas
         // const finanzas = await TipoFinanza.findAll();
-        const [setting, created] = await Settings.findOrCreate({
+        const bg_color_header = await Settings.findOrCreate({
             where: { empresa_id: empresa!.id },
             defaults: { bg_color_header: "transparent" }, // Valores predeterminados si se crea
         });
-        if (!created && !setting.bg_color_header) {
+        const enabled_zoho_mail = await Settings.findOrCreate({
+            where: { empresa_id: empresa!.id },
+            defaults: { enabled_zoho_mail: false }, // Valores predeterminados si se crea
+        });
+        if (!bg_color_header[1] && !bg_color_header[0].bg_color_header) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await setting.update({ bg_color_header: "transparent" });
+            await bg_color_header[0].update({ bg_color_header: "transparent" });
+        }
+        if (!enabled_zoho_mail[1] && !enabled_zoho_mail[0].bg_color_header) {
+            // Si ya existía el registro pero el valor está vacío, actualizarlo
+            await enabled_zoho_mail[0].update({
+                enabled_zoho_mail: false,
+            });
         }
 
         openAis = { ...openAis, [empresa.slug]: openAiClient };

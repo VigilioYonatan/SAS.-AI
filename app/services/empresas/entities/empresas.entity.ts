@@ -86,14 +86,16 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     email: string | null;
 
     @Column({
-        type: DataType.STRING(200),
+        type: DataType.JSON,
     })
-    email_zoho: string | null;
-
-    @Column({
-        type: DataType.STRING(200),
-    })
-    password_zoho: string | null;
+    zoho: {
+        email: string | null;
+        password: string | null;
+        account_id: string | null;
+        client_id: string | null;
+        client_secret: string | null;
+        refresh_token: string | null;
+    };
 
     @Column({
         type: DataType.JSON,
@@ -300,6 +302,12 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
         allowNull: false,
     })
     enable_map_marker: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: false,
+    })
+    enabled_zoho_mail: boolean;
 
     @Column({
         type: DataType.JSON,
