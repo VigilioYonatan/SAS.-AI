@@ -305,3 +305,6 @@ git push origin main
 git tag -a v1.0 -m "Versión 1.0"
 git push origin v1.0
 
+{# zoho mail #}
+1. Registrarse en zoho mail gratis
+2. Agrega dominio y completar datos
