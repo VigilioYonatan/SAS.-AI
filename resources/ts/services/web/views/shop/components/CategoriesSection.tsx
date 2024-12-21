@@ -87,7 +87,9 @@ function CategoriesSection({ categories }: categoriesSectionProps) {
                                             800
                                         )[0]
                                     }
+                                    title={category.name}
                                     alt={category.name}
+                                    loading="lazy"
                                 />
                             ) : null}
                         </div>

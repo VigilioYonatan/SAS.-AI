@@ -93,6 +93,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                             height={800}
                                             alt={post.title}
                                             title={post.title}
+                                            loading="lazy"
                                         />
                                     </div>
 

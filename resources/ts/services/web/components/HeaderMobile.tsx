@@ -66,6 +66,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                         class="w-[50px] h-[50px] object-contain"
                                         alt={empresaStore.state!.name_empresa}
                                         title={empresaStore.state!.name_empresa}
+                                        loading="lazy"
                                     />
                                 ) : (
                                     <h2 class="text-2xl font-bold  uppercase">

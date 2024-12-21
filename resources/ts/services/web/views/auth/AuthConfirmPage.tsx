@@ -65,6 +65,7 @@ function AuthConfirmPage({ user }: AuthConfirmPageProps) {
                 height={1200}
                 src={authWallpaper()}
                 alt="wallpaper"
+                loading="lazy"
                 class="object-cover w-full h-screen translate-y-16 sm:col-span-2 sm:translate-y-0 gradient"
             />
         </section>

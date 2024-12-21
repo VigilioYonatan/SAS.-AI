@@ -462,6 +462,7 @@ function Aside({
                                         }
                                         alt={authStore.state!.name}
                                         title={authStore.state!.name}
+                                        loading="lazy"
                                     />
                                     <span class=" dark:text-white ">
                                         Hola <b>{authStore.state.username}</b>

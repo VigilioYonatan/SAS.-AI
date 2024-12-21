@@ -89,6 +89,7 @@ function ServicioPage({
                                             class="w-full h-full object-contain"
                                             alt={product.name}
                                             src={isImagesLength[i]}
+                                            loading="lazy"
                                         />
                                     </div>
                                 );
@@ -135,6 +136,7 @@ function ServicioPage({
                                     width={800}
                                     height={800}
                                     src={img}
+                                    loading="lazy"
                                     style={{
                                         transformOrigin: `${zoom.position.x} ${zoom.position.y}`,
                                     }}
@@ -166,6 +168,7 @@ function ServicioPage({
                                         width={800}
                                         height={800}
                                         alt=""
+                                        loading="lazy"
                                     />
                                 </div>
                             ))}

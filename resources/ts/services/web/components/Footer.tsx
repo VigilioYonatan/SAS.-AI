@@ -375,6 +375,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             src="/images/settings/holidays/christmas.hat2.webp"
                                             alt="hat christmas"
                                             title="hat christmas"
+                                            loading="lazy"
                                         />
                                     ) : null}
                                 </a>
@@ -395,6 +396,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             height={60}
                                             src="/images/settings/holidays/christmas.hat2.webp"
                                             alt="hat christmas"
+                                            loading="lazy"
                                             title="hat christmas"
                                         />
                                     ) : null}
@@ -417,6 +419,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             src="/images/settings/holidays/christmas.hat2.webp"
                                             alt="hat christmas"
                                             title="hat christmas"
+                                            loading="lazy"
                                         />
                                     ) : null}
                                 </a>
@@ -437,6 +440,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             height={60}
                                             src="/images/settings/holidays/christmas.hat2.webp"
                                             alt="hat christmas"
+                                            loading="lazy"
                                             title="hat christmas"
                                         />
                                     ) : null}
@@ -459,6 +463,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                             src="/images/settings/holidays/christmas.hat2.webp"
                                             alt="hat christmas"
                                             title="hat christmas"
+                                            loading="lazy"
                                         />
                                     ) : null}
                                 </a>
@@ -472,6 +477,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                     width={100}
                                     height={100}
                                     title="libro de reclamaciones"
+                                    loading="lazy"
                                     alt="libro de reclamaciones"
                                 />
                             </a>
@@ -539,6 +545,7 @@ function MetodosDePago() {
                     height={80}
                     alt="visa"
                     title="visa"
+                    loading="lazy"
                     class="w-[60px] md:w-[80px]"
                 />
             ) : null}
@@ -549,6 +556,7 @@ function MetodosDePago() {
                     width={30}
                     height={30}
                     alt="yape"
+                    loading="lazy"
                     title="yape"
                 />
             ) : null}
@@ -561,6 +569,7 @@ function MetodosDePago() {
                     height={30}
                     alt="paypal"
                     title="paypal"
+                    loading="lazy"
                 />
             ) : null}
             {empresaStore.state?.metodos_pago.enable_efectivo ? (

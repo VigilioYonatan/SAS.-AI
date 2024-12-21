@@ -59,6 +59,7 @@ function Noticia({ noticia }: NoticiaProps) {
                                             )[0]
                                         }
                                         alt={noticia.title}
+                                        loading="lazy"
                                     />
                                     <div class="relative flex flex-col gap-2 rounded-md bg-black bg-opacity-50 p-2 w-full mx-2 md:w-7/12 mb-2">
                                         {" "}

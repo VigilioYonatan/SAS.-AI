@@ -134,7 +134,9 @@ function PedidosPage({ header }: PedidosPageProps) {
                     src={pedidosImage()}
                     width={300}
                     height={300}
+                    title="pedidos"
                     alt="pedidos"
+                    loading="lazy"
                 />
             </section>
         </WebLayout>

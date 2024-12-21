@@ -583,6 +583,7 @@ function ChatWhatsapp({ contacts, type, onClose }: ChatWhatsappProps) {
                                     <div class=" font-normal bg-[#E1FEC4] px-2 py-1 rounded-md self-end flex flex-col relative">
                                         {message.type.includes("image") ? (
                                             <img
+                                                loading="lazy"
                                                 width={100}
                                                 height={100}
                                                 src={URL.createObjectURL(
@@ -883,6 +884,7 @@ export function QrWhatsapp() {
                                     >
                                         <Helper top={10} right={10}>
                                             <img
+                                                loading="lazy"
                                                 src={whatsappInfoImage()}
                                                 width={300}
                                                 height={300}
@@ -899,6 +901,7 @@ export function QrWhatsapp() {
                                 {qrCodeQuery.data && (
                                     <div class="relative flex flex-col  gap-2">
                                         <img
+                                            loading="lazy"
                                             width={300}
                                             height={300}
                                             src={URL.createObjectURL(
@@ -975,6 +978,7 @@ export function QrWhatsapp() {
                                         unos minutos para añadir tus contactos
                                         automáticamente. <br />
                                         <img
+                                            loading="lazy"
                                             class="mx-auto w-[200px] rounded-md"
                                             title="whatsapp"
                                             width={100}
@@ -1662,6 +1666,7 @@ function WhatsappFREE() {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div class="flex justify-center flex-col items-center ">
                     <img
+                        loading="lazy"
                         src="/images/settings/others/vigilio-services-ico.webp"
                         width={100}
                         alt=""
@@ -1732,9 +1737,11 @@ function WhatsappFREE() {
                 </div>{" "}
                 <div class="flex justify-center flex-col items-center    dark:text-white">
                     <img
+                        loading="lazy"
                         src="/images/settings/others/vps.png"
                         width={100}
-                        alt=""
+                        alt="whatsapp"
+                        title="whatsapp"
                     />
                     <b class="text-lg">VPS</b>
                     <span class=" font-semibold">USD $29 / Anual</span>

@@ -80,6 +80,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                     alt={product.producto.value.name}
                                     title={product.producto.value.name}
                                     src={isImagesLength[i]}
+                                    loading="lazy"
                                 />
                             </div>
                         );
@@ -130,6 +131,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             style={{
                                 transformOrigin: `${zoom.position.x} ${zoom.position.y}`,
                             }}
+                            loading="lazy"
                         />
                     </div>
                 ))}
@@ -160,6 +162,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                 height={500}
                                 alt={product.producto.value.name}
                                 title={product.producto.value.name}
+                                loading="lazy"
                             />
                         </div>
                     ))}
@@ -273,6 +276,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         width={40}
                         class="object-contain w-[40px]"
                         height={40}
+                        loading="lazy"
                     />
                 ) : null}
                 <div class="flex flex-col">
@@ -755,6 +759,7 @@ export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
                         width={80}
                         height={80}
                         alt="visa"
+                        loading="lazy"
                         title="visa"
                     />
                 ) : null}
@@ -765,6 +770,7 @@ export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
                         height={30}
                         alt="yape"
                         title="yape"
+                        loading="lazy"
                     />
                 ) : null}
                 {empresaStore.state?.metodos_pago.qrPlin ? (
@@ -773,6 +779,7 @@ export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
                         width={30}
                         height={30}
                         alt="plin"
+                        loading="lazy"
                         title="plin"
                     />
                 ) : null}
@@ -783,6 +790,7 @@ export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
                         height={30}
                         alt="paypal"
                         title="paypal"
+                        loading="lazy"
                     />
                 ) : null}
                 {empresaStore.state?.metodos_pago.enable_efectivo &&
@@ -812,6 +820,7 @@ export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
                                             src={bank.image}
                                             alt={bank.value}
                                             title={bank.value}
+                                            loading="lazy"
                                         />
                                     ) : null}
                                 </Fragment>

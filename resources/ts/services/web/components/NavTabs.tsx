@@ -123,6 +123,7 @@ function NavTabs({ background, totalProducts }: NavTabsProps) {
                                 height={100}
                                 class="rounded-full w-[35px] h-[35px]"
                                 title={authStore.state.name}
+                                loading="lazy"
                                 alt={authStore.state.name}
                             />
                         </>

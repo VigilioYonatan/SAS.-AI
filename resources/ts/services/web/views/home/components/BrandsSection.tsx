@@ -61,6 +61,7 @@ function BrandsSection({ brands }: BrandsSectionProps) {
                                         alt={String(brand.id)}
                                         title={String(brand.id)}
                                         class="mx-4 rounded-md object-contain w-[80px] h-full"
+                                        loading="lazy"
                                     />
                                 </div>
                             ))}

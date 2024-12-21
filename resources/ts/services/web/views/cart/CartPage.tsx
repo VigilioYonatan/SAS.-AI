@@ -280,6 +280,7 @@ function CartPage({ cart, header }: CartProps) {
                                                                 alt={
                                                                     product.name
                                                                 }
+                                                                loading="lazy"
                                                             />
                                                             <div>
                                                                 <a

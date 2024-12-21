@@ -51,6 +51,7 @@ function AboutSection({
                             }
                             alt={storageEmpresa?.name_empresa}
                             title={storageEmpresa?.name_empresa}
+                            loading="lazy"
                         />
                     ) : null}
                 </div>

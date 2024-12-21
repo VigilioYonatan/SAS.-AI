@@ -461,6 +461,7 @@ function Header({ header }: HeaderProps) {
                                                                 <div class="flex gap-2 items-center ">
                                                                     {brand.image ? (
                                                                         <img
+                                                                            loading="lazy"
                                                                             class="object-contain w-[30px] h-[30px]"
                                                                             width={
                                                                                 100
@@ -1000,6 +1001,7 @@ function AuthUserIcon({ hiddenName }: AuthUserIconProps) {
                             ref={trigger}
                         >
                             <img
+                                loading="lazy"
                                 src={printFileUser(authStore.state!.photo)[0]}
                                 width={30}
                                 height={30}

@@ -65,6 +65,7 @@ function NewsLatestSection({ posts }: NewsLatestProps) {
                                 height={500}
                                 src="https://www.pedigree.com.mx/cdn-cgi/image/format=auto,q=90/sites/g/files/fnmzdf1501/files/2022-08/product-landing-hero-allBreeds.png"
                                 alt=""
+                                loading="lazy"
                             />
                         </div>
                         <div class="flex flex-col p-2 gap-1">

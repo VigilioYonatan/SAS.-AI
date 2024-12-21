@@ -88,6 +88,7 @@ function UsersSection({ users }: UsersSection) {
                                 height={200}
                                 src={printFileUser(user.photo, 300)[0]}
                                 alt={user.name}
+                                loading="lazy"
                                 title={user.name}
                             />
                         </div>

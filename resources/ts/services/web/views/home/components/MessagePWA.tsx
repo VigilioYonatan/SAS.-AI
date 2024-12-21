@@ -123,7 +123,9 @@ function MessagePWA() {
                         src="/images/settings/others/android.png"
                         width={50}
                         height={50}
+                        title="android"
                         alt="android"
+                        loading="lazy"
                     />
                 </div>
             )}

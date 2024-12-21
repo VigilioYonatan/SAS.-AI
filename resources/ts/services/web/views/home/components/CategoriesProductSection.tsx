@@ -52,6 +52,7 @@ function CategoriesProductSection({
                                 class="w-[150px] object-cover lg:w-[300px] h-full  group-hover:scale-105 delay-custom-1"
                                 width={300}
                                 height={1200}
+                                loading="lazy"
                                 src={
                                     printFileWithDimension(
                                         category.wallpaper,
@@ -99,6 +100,7 @@ function CategoriesProductSection({
                                             }
                                             alt={category.name}
                                             title={category.name}
+                                            loading="lazy"
                                         />
                                     </a>
                                 ) : null}

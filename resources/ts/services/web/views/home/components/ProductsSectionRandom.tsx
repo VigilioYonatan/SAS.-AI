@@ -73,6 +73,7 @@ function ProductsSectionRandom({
                                             productlatestmapped as ProductsNormalSchemaFromServer
                                         ).brand.name
                                     }
+                                    loading="lazy"
                                 />
                             ) : null}
                             <span class="font-bold dark:text-gray-400 tracking-widest  line-clamp-3">
