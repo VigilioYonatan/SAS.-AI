@@ -13,23 +13,6 @@ import { Empresas } from "./empresas.entity";
 @Table
 export class Background extends Model implements Omit<BackgroundSchema, "id"> {
     @Column({
-        allowNull: false,
-        type: DataType.STRING(60),
-    })
-    title: string | null;
-
-    @Column({
-        type: DataType.STRING(80),
-    })
-    description: string | null;
-
-    @Column({
-        allowNull: false,
-        type: DataType.STRING(255),
-    })
-    url: string | null;
-
-    @Column({
         type: DataType.TEXT,
     })
     html: string;

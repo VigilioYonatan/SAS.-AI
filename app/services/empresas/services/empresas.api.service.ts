@@ -555,8 +555,6 @@ export class EmpresasApiService {
                 );
             } else {
                 await this.backgroundApiService.store(empresa, {
-                    title: "Los Mejores Precios",
-                    description: "Bienvenido a nuestra Tienda Online",
                     image: [
                         {
                             file: `${BASE_URL(
@@ -565,7 +563,6 @@ export class EmpresasApiService {
                             dimension: 1000,
                         },
                     ],
-                    url: `${BASE_URL(empresa)}/`,
                     html: null,
                 });
             }

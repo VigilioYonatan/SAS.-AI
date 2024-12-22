@@ -201,9 +201,6 @@ export const test: Pick<
     backgrounds: [
         {
             id: 13,
-            title: " ",
-            description: null,
-            url: "https://www.demo-8.vigilio-services.com/",
             html: '<div class="flex flex-col gap-6 items-center justify-center">\r\n    <img\r\n        width="300"\r\n        height="300"\r\n        style="width: 110px; height: 110px"\r\n        alt="scissors"\r\n        title="scissors"\r\n        src="https://demo-48.woovinapro.com/wp-content/plugins/woovina-barber-package/assets/images/demo-48/before-1.png"/>\r\n    <div>\r\n        <div class="flex justify-center items-center flex-col ">\r\n            <h3 class="text-3xl text-white text-center font-bold tracking-wide">Barber Shop</h3>\r\n            <div class="flex items-center gap-2">\r\n                <span class="text-3xl text-white text-center font-bold"> Greate </span> <span class="text-3xl text-primary text-center font-bold tracking-wide">Your Style</span>\r\n            </div>\r\n        </div>\r\n        <p class="text-white text-center tracking-widest  text-xl">We Make Your Hair Look Great Perfect!</p>\r\n    </div>\r\n    <a href="/shop" class="bg-primary px-6 py-2 font-bold uppercase " style="color: white !important; margin-top: 1rem">+ Shop Now</a>\r\n</div>',
             image: [
                 {
@@ -219,9 +216,6 @@ export const test: Pick<
         },
         {
             id: 12,
-            title: " ",
-            description: null,
-            url: "https://www.demo-8.vigilio-services.com/shop",
             html: '<div class="flex flex-col gap-6 items-center justify-center">\r\n    <img\r\n        width="300"\r\n        height="300"\r\n        style="width: 110px; height: 110px"\r\n        alt="scissors"\r\n        title="scissors"\r\n        src="https://demo-48.woovinapro.com/wp-content/plugins/woovina-barber-package/assets/images/demo-48/before-1.png"/>\r\n    <div>\r\n        <div class="flex justify-center items-center flex-col ">\r\n            <h3 class="text-3xl text-white text-center font-bold tracking-wide">Collection</h3>\r\n            <div class="flex items-center gap-2">\r\n                <span class="text-3xl text-white text-center font-bold tracking-wide"> Greate </span> <span class="text-3xl text-primary text-center font-bold tracking-wide"> & Bread</span>\r\n            </div>\r\n        </div>\r\n        <p class="text-white text-center tracking-widest  text-xl">A Stylish and Happening a Grooming</p>\r\n    </div>\r\n    <a href="/shop" class="bg-primary px-6 py-2 font-bold uppercase " style="color: white !important; margin-top: 1rem">+ Shop Now</a>\r\n</div>',
             image: [
                 {

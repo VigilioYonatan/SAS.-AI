@@ -9,7 +9,6 @@ import {
     type BackgroundStoreDto,
 } from "../dtos/background.store.dto";
 import { backgroundStoreApi } from "../apis/background.store.api";
-import { BASE_URL } from "~/config";
 
 interface PoststoreProps {
     onClose: () => void;
@@ -64,23 +63,10 @@ function BackgroundStore({ onClose, refetch }: PoststoreProps) {
                     </h3>
                     <Form.button.reset />
                 </div>
-                <Form.control
-                    title="Título"
-                    name={"title" as keyof BackgroundStoreDto}
-                />
-                <Form.control
-                    title="Url"
-                    name={"url" as keyof BackgroundStoreDto}
-                    placeholder={BASE_URL}
-                />
-                <Form.control
-                    title="Contenido"
-                    name={"description" as keyof BackgroundStoreDto}
-                />
+
                 <Form.control.editorJS
                     title="Contenido"
                     type="html"
-                    
                     name={"html" as keyof BackgroundStoreDto}
                 />
                 <Form.control.file

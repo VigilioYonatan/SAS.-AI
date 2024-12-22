@@ -370,10 +370,6 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
         type: DataType.JSON,
     })
     icon: FilesSchema[] | null;
-    @Column({
-        type: DataType.JSON,
-    })
-    photo: FilesSchema[] | null;
 
     @Column({
         type: DataType.JSON,

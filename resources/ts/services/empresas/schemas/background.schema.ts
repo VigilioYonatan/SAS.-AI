@@ -1,10 +1,8 @@
 import {
     array,
-    maxLength,
     nullable,
     number,
     object,
-    startsWith,
     string,
     type Input,
 } from "@vigilio/valibot";
@@ -13,9 +11,6 @@ import { filesSchema } from "~/libs/upload";
 export const backgroundSchema = object({
     id: number(),
     image: array(filesSchema()),
-    title: nullable(string([maxLength(40)])),
-    description: nullable(string([maxLength(60)])),
-    url: nullable(string([startsWith("https")])),
     html: nullable(string()),
     empresa_id: number(),
 });

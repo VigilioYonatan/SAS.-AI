@@ -354,7 +354,6 @@ export const empresasSchema = objectAsync({
     isFreeVPS: boolean(),
     isTemplate: boolean(), // es template
     icon: nullable(array(filesSchema([100, 300]))), //obligatorio
-    photo: nullable(array(filesSchema())),
     enabled_commentario_ia: boolean(),
     versionamiento: string(),
     enabled_dni_cart: boolean(),

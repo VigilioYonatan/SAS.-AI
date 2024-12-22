@@ -23,7 +23,6 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         logo_pwa: null,
         about: null,
         icon: null,
-        photo: null,
         token: "asas",
         zoho: {
             account_id: null,
@@ -253,7 +252,6 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         logo_pwa: null,
         about: null,
         icon: null,
-        photo: null,
         name_empresa: "Tacos A",
         dial_code: "34",
         web: null,

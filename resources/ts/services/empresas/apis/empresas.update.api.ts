@@ -3,7 +3,6 @@ import {
 	EmpresasIconUpdateDto,
 	EmpresasLogoPWAUpdateDto,
 	EmpresasLogoUpdateDto,
-	EmpresasPhotoUpdateDto,
 } from "../dtos/empresas.update.dto";
 import { ResultApiImages, uploadApi } from "~/libs/upload";
 import { EmpresasUpdateDto } from "../dtos/empresas.update.dto";
@@ -71,19 +70,7 @@ export function empresasUpdateIconApi() {
 		return result;
 	});
 }
-export function empresasUpdatePhotoApi() {
-	return useMutation<
-		ResultApiImages,
-		EmpresasPhotoUpdateDto & { name: string },
-		{ success: false; message: string; body: keyof EmpresasPhotoUpdateDto }
-	>("/uploads/empresas/photo/1", async (url, body) => {
-		const result = await uploadApi(`/api${url}`, {
-			file: body.photo,
-			name: body.name,
-		});
-		return result;
-	});
-}
+
 interface empresaUpdateAPI {
 	success: boolean;
 	empresa: EmpresasSchemaFromServer;

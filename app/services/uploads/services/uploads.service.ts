@@ -763,9 +763,6 @@ export class UploadsService {
                 if (property === "icon" && emp.icon) {
                     removeFile(empresa.slug, emp.icon);
                 }
-                if (property === "photo" && emp.photo) {
-                    removeFile(empresa.slug, emp.photo);
-                }
 
                 break;
             }

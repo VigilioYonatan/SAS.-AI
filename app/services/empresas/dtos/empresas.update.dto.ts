@@ -22,7 +22,6 @@ export const empresasUpdateDto = omitAsync(empresasSchema, [
     "logo",
     "icon",
     "token",
-    "photo",
     "timeWhatsapp",
     "impuestos",
     "logo_pwa",

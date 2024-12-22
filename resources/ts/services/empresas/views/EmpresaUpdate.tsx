@@ -11,15 +11,12 @@ import {
     EmpresasLogoPWAUpdateDto,
     empresasLogoUpdateDto,
     EmpresasLogoUpdateDto,
-    empresasPhotoUpdateDto,
-    EmpresasPhotoUpdateDto,
     empresasUpdateDto,
     EmpresasUpdateDto,
 } from "../dtos/empresas.update.dto";
 
 import {
     empresasUpdateIconApi,
-    empresasUpdatePhotoApi,
     empresaUpdateApi,
     empresaUpdateLogoApi,
     empresaUpdateLogoPWAApi,
@@ -71,7 +68,6 @@ function empresaUpdate() {
         const empresa = empresaQuery.data!.empresa;
         const empresaUpdateMutation = empresaUpdateApi();
         const empresaUpdateIconMutation = empresasUpdateIconApi();
-        const empresasUpdatePhotoMutation = empresasUpdatePhotoApi();
         const empresasUpdateMutation = settingsUpdateApi();
         const color = useSignal<string | null>(
             storageEmpresa!.logo ? storageEmpresa!.setting.bg_color : null
@@ -108,20 +104,10 @@ function empresaUpdate() {
             mode: "all",
         });
 
-        const empresasPhotoUpdateform = useForm<EmpresasPhotoUpdateDto>({
-            resolver: valibotVigilio(empresasPhotoUpdateDto),
-            mode: "all",
-        });
         async function initialUpdateIcon() {
             if (empresa.icon) {
                 const icon = await getFilesEdit(empresa.icon, 300);
                 empresasIconUpdateform.setValue("icon", icon);
-            }
-        }
-        async function initialUpdatePhoto() {
-            if (empresa.photo) {
-                const photo = await getFilesEdit(empresa.photo, 800);
-                empresasPhotoUpdateform.setValue("photo", photo);
             }
         }
 
@@ -139,38 +125,6 @@ function empresaUpdate() {
                             onSuccess(data) {
                                 empresaStore.methods.updateempresa({
                                     icon: data.files,
-                                });
-                                sweetAlert({
-                                    icon: "success",
-                                    title: "Actualizado icono correctamente",
-                                });
-                            },
-                            onError() {
-                                sweetAlert({
-                                    icon: "danger",
-                                    title: "Error al actualizar",
-                                });
-                            },
-                        }
-                    );
-                }
-            });
-        }
-
-        function onUpdatePhotoempresa(body: EmpresasPhotoUpdateDto) {
-            sweetModal({
-                title: "¿Estas seguro de cambiar el photo de tu web?",
-                isCloseInBackground: false,
-                showCancelButton: true,
-                showCloseButton: true,
-            }).then(({ isConfirmed }) => {
-                if (isConfirmed) {
-                    empresasUpdatePhotoMutation.mutate(
-                        { ...body, name: empresaStore.state!.name_empresa },
-                        {
-                            onSuccess(data) {
-                                empresaStore.methods.updateempresa({
-                                    photo: data.files,
                                 });
                                 sweetAlert({
                                     icon: "success",
@@ -253,9 +207,7 @@ function empresaUpdate() {
         useEffect(() => {
             initialUpdateIcon();
         }, []);
-        useEffect(() => {
-            initialUpdatePhoto();
-        }, []);
+
         function onUpdateLogoSetting(body: EmpresasLogoUpdateDto) {
             if (!color.value && logo) {
                 colorError.value = "Escoge un color para tu Web.";
@@ -1204,31 +1156,6 @@ function empresaUpdate() {
                                 }
                                 isLoading={
                                     empresaUpdateLogoPWAMutation.isLoading ||
-                                    false
-                                }
-                                title="Guardar Cambios"
-                            />
-                        </Form>
-                        <Form
-                            {...empresasPhotoUpdateform}
-                            onSubmit={onUpdatePhotoempresa}
-                        >
-                            <br id="#foto_empresa" />
-                            <Form.control.file
-                                name={"photo" as keyof EmpresasPhotoUpdateDto}
-                                title="Imagen de  tu negocio/empresa"
-                                showButonCopy
-                                accept="image/*"
-                                typeFile="image"
-                                multiple={false}
-                            />
-                            <Form.button.submit
-                                disabled={
-                                    empresasUpdatePhotoMutation.isLoading ||
-                                    false
-                                }
-                                isLoading={
-                                    empresasUpdatePhotoMutation.isLoading ||
                                     false
                                 }
                                 title="Guardar Cambios"

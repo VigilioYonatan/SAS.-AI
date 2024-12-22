@@ -71,29 +71,11 @@ function BackgroundIndex() {
                                                     }
                                                     width={1600}
                                                     height={1600}
-                                                    alt={background.title || ""}
+                                                    alt={""}
                                                 />
                                             )}
 
                                             <div class="flex flex-col gap-4 justify-center items-center lg:items-start">
-                                                <span class="font-bold text-xl dark:text-white">
-                                                    {background.title}
-                                                </span>
-                                                <p class="dark:text-white">
-                                                    {background.description ??
-                                                        ""}
-                                                </p>
-                                                {background.url ? (
-                                                    <a
-                                                        class="text-white bg-primary px-4 py-2 rounded-md font-semibold  text-xs"
-                                                        href={background.url}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                    >
-                                                        Más información
-                                                    </a>
-                                                ) : null}
-
                                                 <div class="flex gap-2">
                                                     <button
                                                         class="bg-orange-600 text-white px-2 py-1 rounded-md text-xs"
@@ -137,7 +119,7 @@ function BackgroundIndex() {
                                                         onClick={() => {
                                                             sweetModal({
                                                                 title: "Estas seguro?",
-                                                                text: `Quieres eliminar este background <b>${background.title}</b>`,
+                                                                text: "Quieres eliminar este background",
                                                                 icon: "danger",
                                                                 showCancelButton:
                                                                     true,

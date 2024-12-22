@@ -356,7 +356,6 @@ export const empresasSchema = object({
     isFreeVPS: boolean(),
     isTemplate: boolean(), // es template
     icon: nullable(array(filesSchema())),
-    photo: nullable(array(filesSchema())),
     enabled_commentario_ia: boolean(),
     token: string(),
     enabled_dni_cart: boolean(),

@@ -31,7 +31,6 @@ export const empresasUpdateDto = omit(empresasSchema, [
     "logo",
     "logo_pwa",
     "icon",
-    "photo",
     "token",
     "timeWhatsapp",
     "impuestos",
@@ -77,20 +76,8 @@ export const empresasIconUpdateDto = object({
         ])
     ),
 });
-export const empresasPhotoUpdateDto = object({
-    photo: nullable(
-        array(instance(File), "Este campo es obligatorio", [
-            validFileValibot({
-                required: false,
-                min: 1,
-                max: 1,
-            }),
-        ])
-    ),
-});
 
 export type EmpresasLogoUpdateDto = Input<typeof empresasLogoUpdateDto>;
 export type EmpresasLogoPWAUpdateDto = Input<typeof empresasLogoPWAUpdateDto>;
 
 export type EmpresasIconUpdateDto = Input<typeof empresasIconUpdateDto>;
-export type EmpresasPhotoUpdateDto = Input<typeof empresasPhotoUpdateDto>;

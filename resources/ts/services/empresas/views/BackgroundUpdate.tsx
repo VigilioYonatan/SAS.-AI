@@ -20,7 +20,6 @@ import {
     backgroundUpdateApi,
     backgroundUpdateImageApi,
 } from "../apis/background.update.api";
-import { BASE_URL } from "~/config";
 
 interface BackgroundUpdateProps {
     id: number;
@@ -130,19 +129,7 @@ function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
                         </h3>
                         <Form.button.reset />
                     </div>
-                    <Form.control
-                        title="Título"
-                        name={"title" as keyof BackgroundUpdateDto}
-                    />
-                    <Form.control
-                        title="Url"
-                        name={"url" as keyof BackgroundUpdateDto}
-                    />
-                    <Form.control
-                        placeholder={BASE_URL}
-                        title="Contenido"
-                        name={"description" as keyof BackgroundUpdateDto}
-                    />
+
                     <Form.control.editorJS
                         title="Contenido"
                         type="html"
