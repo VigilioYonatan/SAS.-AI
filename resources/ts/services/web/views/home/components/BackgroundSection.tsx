@@ -174,6 +174,7 @@ function BackgroundSection({ backgrounds }: BackgroundSectionProps) {
                                 >
                                     {background.html ? (
                                         <div
+                                            class="h-full"
                                             dangerouslySetInnerHTML={{
                                                 __html: background.html,
                                             }}
