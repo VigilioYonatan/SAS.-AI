@@ -37,4 +37,33 @@ ON UPDATE CASCADE;
 -- convertir a null una columna si tuvo foreing not null
 ALTER TABLE "Banners"
 ALTER COLUMN grid_banner_id DROP NOT NULL;
+
+
+-- eliminar constraint unique si deseas 
+SELECT tc.constraint_name, tc.table_name, kcu.column_name
+FROM information_schema.table_constraints AS tc
+JOIN information_schema.key_column_usage AS kcu
+  ON tc.constraint_name = kcu.constraint_name
+WHERE tc.constraint_type = 'UNIQUE'
+  AND tc.table_name = 'subcategoriess'
+--   ver si ess unique
+  AND kcu.column_name IN ('slug', 'name'); 
+
+
+DO $$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN
+        SELECT tc.constraint_name
+        FROM information_schema.table_constraints AS tc
+        JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name
+        WHERE tc.table_name = 'subcategories'  -- Especifica la tabla
+        AND tc.constraint_type = 'UNIQUE'
+        AND kcu.column_name = 'name'           -- Especifica la columna
+        AND tc.table_schema = 'public'
+    LOOP
+        EXECUTE 'ALTER TABLE public.subcategories DROP CONSTRAINT ' || quote_ident(r.constraint_name) || ';';
+    END LOOP;
+END $$;
 -------- END EXAMPLES --------------
