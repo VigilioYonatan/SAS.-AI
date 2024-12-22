@@ -1439,11 +1439,7 @@ export class EmpresasApiService {
             }
 
             cache.delete(`EMPRESA:${empresa.slug}`);
-            if (empresa.setting.host.host) {
-                cache.delete(
-                    `EMPRESA:${empresa.setting.host.host.split(".")[0]}`
-                );
-            }
+
             await empresa.update(empresasUpdateDto);
             return {
                 success: true,

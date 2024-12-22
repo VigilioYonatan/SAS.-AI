@@ -1020,6 +1020,13 @@ function empresaUpdate() {
                                             actualizarlo aquí tambien.
                                         </div>
                                     }
+                                />{" "}
+                                <Form.control
+                                    name={
+                                        "zoho.account_id" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Account ID Zoho"
+                                    disabled
                                 />
                                 <Form.control
                                     name={
@@ -1032,13 +1039,6 @@ function empresaUpdate() {
                                             funcione zoho en su tienda virtual.{" "}
                                         </div>
                                     }
-                                    disabled
-                                />
-                                <Form.control
-                                    name={
-                                        "zoho.account_id" as keyof EmpresasUpdateDto
-                                    }
-                                    title="Account ID Zoho"
                                     disabled
                                 />
                                 <Form.control

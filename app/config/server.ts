@@ -161,12 +161,19 @@ export class Server {
                   };
 
             let empresa: Empresas | null = JSON.parse(
-                cache.get(
-                    `EMPRESA:${subdomain || host?.slice(4).split(".")[0]}`
-                ) || "null"
+                cache.get(`EMPRESA:${subdomain}`) || "null"
             );
 
             if (!empresa) {
+                if (!subdomain) {
+                    const emp = await Empresas.unscoped().findOne({
+                        where,
+                        attributes: ["id", "slug"],
+                    });
+                    if (emp) {
+                        subdomain = emp.slug;
+                    }
+                }
                 empresa = await Empresas.findOne({
                     ...where,
                     attributes: {
@@ -182,7 +189,7 @@ export class Server {
                 // agregar todos los hosts
                 const hours24 = 60 * 1000 * 60 * 24;
                 cache.set(
-                    `EMPRESA:${subdomain || host?.slice(4).split(".")[0]}`,
+                    `EMPRESA:${subdomain}`,
                     JSON.stringify(empresa),
                     hours24
                 );
