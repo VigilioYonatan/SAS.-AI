@@ -31,9 +31,9 @@ export async function onNginx({ sub_domain, port, domain }: OnNginx) {
 				proxy_cache_bypass $http_upgrade;
 				proxy_set_header X-Forwarded-Proto $scheme;
 				# esperar a 10 minutos. a los endpoints
-				proxy_connect_timeout 1600s;
-				proxy_send_timeout 1600s;
-				proxy_read_timeout 1600s;
+				proxy_connect_timeout 3200s;
+				proxy_send_timeout 3200s;
+				proxy_read_timeout 3200s;
 			}
 
 		# Redirige www a la versión

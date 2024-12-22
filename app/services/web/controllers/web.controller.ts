@@ -203,8 +203,8 @@ export class WebController {
         res.cookie("money", money, { httpOnly: false });
         return res.redirect(rutaAnterior);
     }
-    @Get("/goodbye")
-    async goodbye(@Res() res: Response) {
-        return res.send("<h1>goodbye!!!</h1>"); // no borrar
+    @Get("/auth/zoho/callback")
+    async goodbye(@Req() req: Request, @Res() res: Response) {
+        return res.send(`<code>query:<br/>${JSON.stringify(req.query)}</code>`); // no borrar
     }
 }

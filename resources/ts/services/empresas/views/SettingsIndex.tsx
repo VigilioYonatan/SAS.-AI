@@ -4,7 +4,7 @@ import { settingsIndexApi } from "../apis/settings/settings.index.api";
 import Loading from "@/admin/components/Loading";
 import Form from "~/components/form";
 import { useEffect, useMemo } from "preact/hooks";
-import { handlerError, isColorLight } from "~/libs/helpers";
+import { handlerError, isColorLight, NOW, restarDays } from "~/libs/helpers";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import useEmpresastore, { storageEmpresa } from "../stores/empresa.store";
 import { useForm } from "react-hook-form";
@@ -33,6 +33,7 @@ import { Link } from "wouter-preact";
 import LogoImage from "~/components/LogoImage";
 import AlertInfo from "~/components/Alerts/AlertInfo";
 import { slug } from "@vigilio/express-core/helpers";
+import useCountDown from "~/hooks/useCountDown";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import useCopyToClipboard from "~/hooks/useCopyToClipboard";
 import Hamburguer from "@/web/components/Hamburguer";
@@ -435,6 +436,27 @@ function SettingsIndex() {
                             <br />
                             <div>
                                 <div class="  self-center mt-3 flex gap-2 items-center">
+                                    {restarDays(
+                                        NOW().toDate(),
+                                        state!.setting.host.time as Date,
+                                        "seconds"
+                                    ) >= 0 ? (
+                                        <>
+                                            {(() => {
+                                                const countdown = useCountDown(
+                                                    state!.setting.host
+                                                        .time as Date
+                                                );
+
+                                                return (
+                                                    <span class="font-bold">
+                                                        {countdown.minutes}:
+                                                        {countdown.seconds}
+                                                    </span>
+                                                );
+                                            })()}
+                                        </>
+                                    ) : null}
                                     {storageEmpresa?.setting.host.enabled ? (
                                         <button
                                             type="button"
@@ -495,6 +517,14 @@ function SettingsIndex() {
                                     ) : (
                                         <button
                                             type="button"
+                                            disabled={
+                                                restarDays(
+                                                    NOW().toDate(),
+                                                    state!.setting.host
+                                                        .time as Date,
+                                                    "seconds"
+                                                ) >= 0
+                                            }
                                             onClick={() => {
                                                 sweetModal({
                                                     icon: "info",
