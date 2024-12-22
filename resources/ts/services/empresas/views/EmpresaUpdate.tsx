@@ -969,7 +969,7 @@ function empresaUpdate() {
                         </div>
                         <div class="w-full my-6">
                             {" "}
-                            <span class="dark:text-white font-semibold text-lg   relative">
+                            <span class="dark:text-white font-semibold text-lg   relative [&>div]:!w-[100px]">
                                 Zoho Mail{" "}
                                 {!storageEmpresa!.enabled_zoho_mail ? (
                                     <Helper top={0} right={0}>

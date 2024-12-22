@@ -97,7 +97,7 @@ function EmailsIndex() {
                                         <Helper top={0} key={0} right={0}>
                                             <span class="text-xs">
                                                 Obtener Zoho Email{" "}
-                                                <a href="/">Ir</a>
+                                                <a href="/admin/plus">Ir</a>
                                             </span>
                                         </Helper>
                                     ) : null}
