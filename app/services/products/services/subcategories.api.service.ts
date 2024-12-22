@@ -82,7 +82,7 @@ export class SubCategoriesApiService {
         } catch (error) {
             console.log((error as Error).message);
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            console.log((error as any).error);
+            console.log((error as any).errors);
         }
 
         return {
