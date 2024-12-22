@@ -8,6 +8,7 @@ import type { SubcategoriesUpdateDto } from "../dtos/subcategories.update.dto";
 import { Subcategories } from "../entities/subcategories.entity";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { ProductKeys } from "../libs";
+import { slug } from "@vigilio/express-core/helpers";
 
 @Injectable()
 export class SubCategoriesApiService {
@@ -55,7 +56,21 @@ export class SubCategoriesApiService {
         empresa: Empresas,
         subCategoriesStoreDto: SubcategoriesStoreDto
     ) {
-        const subcategory = new Subcategories(subCategoriesStoreDto);
+        const [existSlug] = await Promise.all([
+            Subcategories.findOne({
+                where: {
+                    slug: subCategoriesStoreDto.slug,
+                    empresa_id: empresa.id,
+                },
+            }),
+        ]);
+        const subcategory = new Subcategories({
+            ...subCategoriesStoreDto,
+            slug: existSlug
+                ? slug(subCategoriesStoreDto.slug) +
+                  Math.random().toString(32).slice(2, 4)
+                : subCategoriesStoreDto.slug,
+        });
         subcategory.subcategory_code = await generateCodeEntity(
             Subcategories,
             "subcategory_code" as keyof Subcategories,
@@ -66,6 +81,8 @@ export class SubCategoriesApiService {
             await subcategory.save();
         } catch (error) {
             console.log((error as Error).message);
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            console.log((error as any).error);
         }
 
         return {
@@ -80,6 +97,15 @@ export class SubCategoriesApiService {
         subCategoriesUpdateDto: SubcategoriesUpdateDto
     ) {
         const { subcategory } = await this.show(empresa, id);
+        const [existSlug] = await Promise.all([
+            Subcategories.findOne({
+                where: {
+                    slug: subCategoriesUpdateDto.slug,
+                    empresa_id: empresa.id,
+                    id: { [Op.not]: id },
+                },
+            }),
+        ]);
         const [byName, bySlug] = await Promise.all([
             Subcategories.findOne({
                 where: {
@@ -112,7 +138,13 @@ export class SubCategoriesApiService {
                 { body: "slug" as keyof SubcategoriesUpdateDto }
             );
         }
-        await subcategory.update(subCategoriesUpdateDto);
+        await subcategory.update({
+            ...subCategoriesUpdateDto,
+            slug: existSlug
+                ? slug(subCategoriesUpdateDto.slug) +
+                  Math.random().toString(32).slice(2, 4)
+                : subCategoriesUpdateDto.slug,
+        });
 
         return {
             success: true,
