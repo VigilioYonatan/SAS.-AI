@@ -62,8 +62,12 @@ export class SubCategoriesApiService {
             "SUB",
             empresa
         );
+        try {
+            await subcategory.save();
+        } catch (error) {
+            console.log((error as Error).message);
+        }
 
-        await subcategory.save();
         return {
             success: true,
             subcategory,
@@ -108,11 +112,7 @@ export class SubCategoriesApiService {
                 { body: "slug" as keyof SubcategoriesUpdateDto }
             );
         }
-        try {
-            await subcategory.update(subCategoriesUpdateDto);
-        } catch (error) {
-            console.log((error as Error).message);
-        }
+        await subcategory.update(subCategoriesUpdateDto);
 
         return {
             success: true,
