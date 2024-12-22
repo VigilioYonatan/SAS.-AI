@@ -108,7 +108,11 @@ export class SubCategoriesApiService {
                 { body: "slug" as keyof SubcategoriesUpdateDto }
             );
         }
-        await subcategory.update(subCategoriesUpdateDto);
+        try {
+            await subcategory.update(subCategoriesUpdateDto);
+        } catch (error) {
+            console.log((error as Error).message);
+        }
 
         return {
             success: true,
