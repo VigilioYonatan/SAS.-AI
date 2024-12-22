@@ -972,7 +972,7 @@ function empresaUpdate() {
                                 Zoho Mail{" "}
                                 {!storageEmpresa!.enabled_zoho_mail ? (
                                     <Helper top={0} right={0}>
-                                        <span>
+                                        <span class="text-xs">
                                             Activar Zoho Mail{" "}
                                             <a
                                                 href="/plus"

@@ -163,8 +163,6 @@ export const empresasSchema = object({
     name_empresa: string([minLength(2), maxLength(100)]),
     web: nullable(string([startsWith("https://", "Web no válida. https://")])),
     email: nullable(string([email()])),
-    email_zoho: nullable(string([email()])),
-    password_zoho: nullable(string([minLength(1), maxLength(3)])),
     about: nullable(string()), //  acerca de la empresa
     telephoneFirst: string([
         minLength(1),
