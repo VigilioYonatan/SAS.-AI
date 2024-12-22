@@ -102,6 +102,7 @@ function empresaUpdate() {
                 };
             }, []),
         });
+
         const empresasIconUpdateform = useForm<EmpresasIconUpdateDto>({
             resolver: valibotVigilio(empresasIconUpdateDto),
             mode: "all",
@@ -1029,10 +1030,15 @@ function empresaUpdate() {
                                         <div class="w-[250px]">
                                             Este es su id de zoho para que
                                             funcione zoho en su tienda virtual.{" "}
-                                            <br />
-                                            No modificar.
                                         </div>
                                     }
+                                    disabled
+                                />
+                                <Form.control
+                                    name={
+                                        "zoho.account_id" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Account ID Zoho"
                                     disabled
                                 />
                                 <Form.control

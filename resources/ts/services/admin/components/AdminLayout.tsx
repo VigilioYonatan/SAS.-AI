@@ -546,12 +546,15 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                 }
                             />
                         ) : null}
-                        <NavLink
-                            onClick={onCloseAside}
-                            to="/emails"
-                            title="Imbox"
-                            Icon={<i class="fas fa-envelope-open" />}
-                        />
+                        {authStore.guards.permissionAdminGuard() ? (
+                            <NavLink
+                                onClick={onCloseAside}
+                                to="/emails"
+                                title="Imbox"
+                                Icon={<i class="fas fa-envelope-open" />}
+                            />
+                        ) : null}
+
                         <NavLink
                             onClick={onCloseAside}
                             to="/usuarios"

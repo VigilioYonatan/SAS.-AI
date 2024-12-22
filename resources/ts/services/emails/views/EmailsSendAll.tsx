@@ -19,7 +19,7 @@ function EmailsSendAll() {
 
     const emailsSendAlForm = useForm<EmailsSendAllDto & { email: string }>({
         resolver: valibotVigilio(emailsSendAllDto),
-        defaultValues: { email: informationStore.state!.email_zoho as string },
+        defaultValues: { email: informationStore.state!.zoho.email as string },
     });
     const content = emailsSendAlForm.watch("content");
     const title = emailsSendAlForm.watch("title");

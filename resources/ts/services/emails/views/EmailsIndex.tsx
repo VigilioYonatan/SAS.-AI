@@ -13,14 +13,22 @@ import { emailsAccountsApi } from "../apis/emails.accounts.api";
 import Box from "../components/Box";
 import Loading from "@/admin/components/Loading";
 import View404 from "@/admin/views/404";
-import useEmpresastore from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import { emailsPaginatorApi } from "@/common/paginator/emails.paginator.api";
+import { ROLES } from "@/users/libs/helpers";
+import EmailsSendAll from "./EmailsSendAll";
+import Helper from "~/components/Helper";
 
 function EmailsIndex() {
+    const authStore = useAuthstore();
+    if (authStore.state!.role_id !== ROLES.admin) {
+        return null;
+    }
     const table = useTable({
         columns: emailsColumns,
     });
-    const authStore = useAuthstore();
     const query = emailsPaginatorApi(table);
 
     function onShowPost(post: EmailsSchemaFromServer) {
@@ -38,7 +46,15 @@ function EmailsIndex() {
             sweetWidth: "700px",
         });
     }
-
+    function onSendEmailAll() {
+        sweetModal({
+            html: reactComponent(<EmailsSendAll />),
+            sweetWidth: "1000px",
+            showCloseButton: true,
+            isCloseInBackground: false,
+            position: "start",
+        });
+    }
     return (
         <Container className="p-2">
             <div className="flex flex-col gap-4 mx-1 ">
@@ -48,27 +64,45 @@ function EmailsIndex() {
                 <VigilioTable query={query} table={table}>
                     <VigilioTable.header className="p-0 mb-2 flex justify-between items-center">
                         <>
-                            {authStore.guards.permissionAdminGuard() ? (
-                                <div class="flex items-center gap-2">
-                                    <a
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        href="https://mail.zoho.com/zm/#mail/folder/inbox"
-                                        class="text-xs px-4 py-2 rounded-md dark:bg-admin-terciary shadow font-bold  dark:text-white"
-                                    >
-                                        <i class="fa-solid fa-inbox" /> Bandeja
-                                        de entrada
-                                    </a>
-                                    <button
-                                        type="button"
-                                        aria-label="open to more information"
-                                        class="text-xs px-4 py-2 rounded-md dark:bg-admin-terciary shadow font-bold dark:text-white"
-                                        onClick={onShowMoreInformation}
-                                    >
-                                        Más información
-                                    </button>
-                                </div>
-                            ) : null}
+                            <div class="flex items-center gap-2">
+                                <a
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    href="https://mail.zoho.com/zm/#mail/folder/inbox"
+                                    class="text-xs px-4 py-2 rounded-md dark:bg-admin-terciary shadow font-bold  dark:text-white"
+                                >
+                                    <i class="fa-solid fa-inbox" /> Bandeja de
+                                    entrada
+                                </a>
+                                <button
+                                    type="button"
+                                    aria-label="open to more information"
+                                    class="text-xs px-4 py-2 rounded-md dark:bg-admin-terciary shadow font-bold dark:text-white"
+                                    onClick={onShowMoreInformation}
+                                >
+                                    Más información
+                                </button>
+                                <button
+                                    type="button"
+                                    class=" px-2 py-2 rounded-md dark:text-white text-xs flex  gap-2 items-center font-semibold justify-center  shadow bg-paper-light   dark:bg-admin-terciary  lg:w-auto relative"
+                                    disabled={
+                                        !storageEmpresa!.enabled_zoho_mail
+                                    }
+                                    aria-label="button to open create new user"
+                                    onClick={onSendEmailAll}
+                                >
+                                    <i class="fa-solid fa-envelopes" /> Enviar
+                                    correos másivo
+                                    {!storageEmpresa!.enabled_zoho_mail ? (
+                                        <Helper top={0} key={0} right={0}>
+                                            <span class="text-xs">
+                                                Obtener Zoho Email{" "}
+                                                <a href="/">Ir</a>
+                                            </span>
+                                        </Helper>
+                                    ) : null}
+                                </button>
+                            </div>
 
                             <div class="flex items-center gap-1">
                                 <VigilioTable.header.limit />
@@ -127,10 +161,10 @@ function EmailInformation() {
                 </h3>
                 <div class="text-xs flex flex-col gap-2">
                     <span class="text-lg">
-                        Correo: <b>{information.state!.email_zoho}</b>
+                        Correo: <b>{information.state!.zoho.email}</b>
                     </span>
                     <span class="text-lg">
-                        Contraseña: <b>{information.state!.password_zoho}</b>
+                        Contraseña: <b>{information.state!.zoho.password}</b>
                     </span>
                 </div>
                 <div class="flex flex-col gap-2">
