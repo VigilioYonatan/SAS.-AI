@@ -184,6 +184,17 @@ function EmailInformation() {
                         )}
                     </pre>
                 </div>
+                <br />
+                <span>
+                    Crear más usuarios y correos corporativos
+                    <a
+                        href="https://mailadmin.zoho.com/cpanel/home.do#users/list"
+                        class="underline text-primary"
+                    >
+                        Ir
+                    </a>
+                </span>
+                <br />
                 <AlertInfo>
                     <div class="flex flex-col">
                         <span>
