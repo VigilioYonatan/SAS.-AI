@@ -77,14 +77,7 @@ export class SubCategoriesApiService {
             "SUB",
             empresa
         );
-        try {
-            await subcategory.save();
-        } catch (error) {
-            console.log((error as Error).message);
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            console.log((error as any).errors);
-        }
-
+        await subcategory.save();
         return {
             success: true,
             subcategory,

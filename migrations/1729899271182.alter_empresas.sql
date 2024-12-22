@@ -40,30 +40,20 @@ ALTER COLUMN grid_banner_id DROP NOT NULL;
 
 
 -- eliminar constraint unique si deseas 
-SELECT tc.constraint_name, tc.table_name, kcu.column_name
-FROM information_schema.table_constraints AS tc
-JOIN information_schema.key_column_usage AS kcu
-  ON tc.constraint_name = kcu.constraint_name
-WHERE tc.constraint_type = 'UNIQUE'
-  AND tc.table_name = 'subcategoriess'
---   ver si ess unique
-  AND kcu.column_name IN ('slug', 'name'); 
-
+SELECT conname
+FROM pg_constraint
+WHERE conrelid = '"public"."Subcategories"'::regclass AND contype = 'u'; // ver si hay un unique 
 
 DO $$
 DECLARE
-    r RECORD;
+    constraint_record RECORD;
 BEGIN
-    FOR r IN
-        SELECT tc.constraint_name
-        FROM information_schema.table_constraints AS tc
-        JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name
-        WHERE tc.table_name = 'subcategories'  -- Especifica la tabla
-        AND tc.constraint_type = 'UNIQUE'
-        AND kcu.column_name = 'name'           -- Especifica la columna
-        AND tc.table_schema = 'public'
+    FOR constraint_record IN SELECT conname
+    FROM pg_constraint
+    WHERE conrelid = 'public."Subcategories"'::regclass AND contype = 'u'
+        AND conname LIKE 'Subcategories_name_key%' //aca name,slug o otro
     LOOP
-        EXECUTE 'ALTER TABLE public.subcategories DROP CONSTRAINT ' || quote_ident(r.constraint_name) || ';';
+        EXECUTE 'ALTER TABLE public."Subcategories" DROP CONSTRAINT ' || quote_ident(constraint_record.conname);
     END LOOP;
 END $$;
 -------- END EXAMPLES --------------
