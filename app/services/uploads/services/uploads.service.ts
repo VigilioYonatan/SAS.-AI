@@ -47,6 +47,7 @@ import { SettingsApiService } from "@/empresas/services/settings.api.service";
 import { FileSchema } from "@/empresas/entities/file.entity";
 import { Variants } from "@/products/entities/options/variants.entity";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
+import cache from "@vigilio/express-core/cache";
 
 @Injectable()
 export class UploadsService {
@@ -375,6 +376,7 @@ export class UploadsService {
                         },
                         [100, 1600]
                     );
+                    cache.delete(`EMPRESA:${empresa.slug}`);
                 }
                 break;
             case "empresas":
@@ -443,7 +445,7 @@ export class UploadsService {
                         [100, 300]
                     );
                 }
-
+                cache.delete(`EMPRESA:${empresa.slug}`);
                 break;
             default:
                 throw new InternalServerErrorException(
