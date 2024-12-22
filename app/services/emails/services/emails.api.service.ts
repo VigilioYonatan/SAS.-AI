@@ -125,6 +125,7 @@ export class EmailsApiService {
         }
     }
     async accounts(empresa: Empresas) {
+        console.log({ zoho: empresa.zoho });
         const result = await emailsAccountsAPI(empresa);
         return result;
     }
