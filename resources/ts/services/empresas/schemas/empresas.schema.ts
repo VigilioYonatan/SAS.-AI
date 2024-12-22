@@ -364,7 +364,7 @@ export const empresasSchema = object({
     isDolar: boolean(),
     zoho: object({
         email: nullable(string([email()])),
-        password: nullable(string([minLength(1), maxLength(3)])),
+        password: nullable(string([minLength(3), maxLength(100)])),
         account_id: nullable(string()),
         client_id: nullable(string()),
         client_secret: nullable(string()),
