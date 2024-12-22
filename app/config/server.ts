@@ -167,7 +167,18 @@ export class Server {
             if (!empresa) {
                 if (!subdomain) {
                     const emp = await Empresas.unscoped().findOne({
-                        ...where,
+                        include: [
+                            {
+                                model: Settings,
+                                //   dominio.com
+                                where: Sequelize.where(
+                                    Sequelize.literal(`host->>'host'`), // Extrae el valor de 'dominio' dentro de 'host'
+                                    host?.slice(4) // Compara con el valor que necesitas
+                                ),
+                                required: true,
+                                attributes: ["host"],
+                            },
+                        ],
                         attributes: ["id", "slug"],
                     });
                     if (emp) {
