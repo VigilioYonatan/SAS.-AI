@@ -22,7 +22,7 @@ export class Page extends Model implements Omit<PageSchema, "id"> {
     @Column({ type: DataType.STRING })
     slug: string;
 
-    @Column({ type: DataType.STRING })
+    @Column({ type: DataType.STRING(1000) })
     description: string;
 
     @Column({ type: DataType.STRING })
