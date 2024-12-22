@@ -1047,6 +1047,7 @@ function empresaUpdate() {
                                     }
                                     title="Cient Secret Zoho"
                                     disabled
+                                    type="password"
                                 />
                                 <Form.control
                                     name={
