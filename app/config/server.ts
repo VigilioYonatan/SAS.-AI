@@ -167,7 +167,7 @@ export class Server {
             if (!empresa) {
                 if (!subdomain) {
                     const emp = await Empresas.unscoped().findOne({
-                        where,
+                        ...where,
                         attributes: ["id", "slug"],
                     });
                     if (emp) {
