@@ -364,6 +364,15 @@ export const empresasSchema = object({
     enabled_dni_cart: boolean(),
     versionamiento: string(),
     isDolar: boolean(),
+    zoho: object({
+        email: nullable(string([email()])),
+        password: nullable(string([minLength(1), maxLength(3)])),
+        account_id: nullable(string()),
+        client_id: nullable(string()),
+        client_secret: nullable(string()),
+        refresh_token: nullable(string()),
+    }),
+    enabled_zoho_mail: boolean(),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

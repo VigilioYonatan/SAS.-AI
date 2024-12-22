@@ -204,7 +204,7 @@ export class WebController {
         return res.redirect(rutaAnterior);
     }
     @Get("/auth/zoho/callback")
-    async goodbye(@Req() req: Request, @Res() res: Response) {
+    async zoho(@Req() req: Request, @Res() res: Response) {
         return res.send(`<code>query:<br/>${JSON.stringify(req.query)}</code>`); // no borrar
     }
 }

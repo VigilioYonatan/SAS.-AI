@@ -861,7 +861,7 @@ function empresaUpdate() {
 
                         <div class="w-full my-6">
                             {" "}
-                            <span class="dark:text-white font-semibold text-xs ">
+                            <span class="dark:text-white font-semibold text-lg  ">
                                 Integraciones
                             </span>
                             <div class="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-2">
@@ -963,6 +963,91 @@ function empresaUpdate() {
                                             </a>
                                         </div>
                                     }
+                                />
+                            </div>
+                        </div>
+                        <div class="w-full my-6">
+                            {" "}
+                            <span class="dark:text-white font-semibold text-lg   relative">
+                                Zoho Mail{" "}
+                                {!storageEmpresa!.enabled_zoho_mail ? (
+                                    <Helper top={0} right={0}>
+                                        <span>
+                                            Activar Zoho Mail{" "}
+                                            <a
+                                                href="/plus"
+                                                class="text-primary underline"
+                                            >
+                                                Ir
+                                            </a>
+                                        </span>
+                                    </Helper>
+                                ) : null}
+                            </span>
+                            <div class="grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                <Form.control
+                                    name={
+                                        "zoho.email" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Correo Electrónico Zoho"
+                                    disabled={
+                                        !storageEmpresa!.enabled_zoho_mail
+                                    }
+                                    question={
+                                        <div class="w-[250px]">
+                                            Correo electrónico que se usará para
+                                            enviar mensajes a tus clientes vía
+                                            correo electrónico.
+                                        </div>
+                                    }
+                                />
+                                <Form.control
+                                    name={
+                                        "zoho.password" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Contraseña Zoho"
+                                    type="password"
+                                    disabled={
+                                        !storageEmpresa!.enabled_zoho_mail
+                                    }
+                                    question={
+                                        <div class="w-[250px]">
+                                            Contraseña de tu Zoho Mail.
+                                            <br />
+                                            Si cambias la contraseña de Zoho
+                                            Mail en la web de Zoho, debes
+                                            actualizarlo aquí tambien.
+                                        </div>
+                                    }
+                                />
+                                <Form.control
+                                    name={
+                                        "zoho.client_id" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Cient ID Zoho"
+                                    question={
+                                        <div class="w-[250px]">
+                                            Este es su id de zoho para que
+                                            funcione zoho en su tienda virtual.{" "}
+                                            <br />
+                                            No modificar.
+                                        </div>
+                                    }
+                                    disabled
+                                />
+                                <Form.control
+                                    name={
+                                        "zoho.client_secret" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Cient Secret Zoho"
+                                    disabled
+                                />
+                                <Form.control
+                                    name={
+                                        "zoho.refresh_token" as keyof EmpresasUpdateDto
+                                    }
+                                    title="Refresh Zoho"
+                                    disabled
                                 />
                             </div>
                         </div>
