@@ -6,6 +6,7 @@ import type { PagesStoreDto } from "../dtos/pages.store.dto";
 import { GridBannerPage } from "../entities/grid_banner_page.entity";
 import type { PagesUpdateDto } from "../dtos/pages.update.dto";
 import { Op } from "sequelize";
+import { GridBanner } from "../entities/grid_banner.entity";
 
 @Injectable()
 export class PagesApiService {
@@ -47,6 +48,7 @@ export class PagesApiService {
         }
         const grid_banner_pages = await page.$get("grid_banner_pages", {
             order: [["id", "ASC"]],
+            include: [GridBanner],
         });
         page.dataValues.grid_banner_pages = grid_banner_pages;
 
