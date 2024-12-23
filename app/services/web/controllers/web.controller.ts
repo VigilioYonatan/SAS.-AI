@@ -170,7 +170,7 @@ export class WebController {
             return res.render("web/servicios", result);
         }
         if (result.type_page === "contact_page") {
-            return res.render("web/contact", result);
+            return res.render("web/home/contact", result);
         }
         return res.render("web/home/others", result);
     }

@@ -3,6 +3,8 @@ import TitleSection from "@/web/components/TitleSection";
 import WebLayout, { HeaderType } from "@/web/components/WebLayout";
 import { Fragment } from "preact/jsx-runtime";
 import { GridBannersPage } from "./components/GridBanners";
+import EmailSection from "@/emails/views/EmailSection";
+import FindSection from "./components/FindSection";
 export interface ContactPageProps {
     header: HeaderType;
 
@@ -16,9 +18,13 @@ function ContactPage({ grid_banner_pages, header, title }: ContactPageProps) {
                 <TitleSection>{title}</TitleSection>
             </div>
             <Fragment>
-                {grid_banner_pages.map((grid, i) => (
-                    <GridBannersPage key={grid.id} grid={grid} i={i} />
-                ))}
+                <GridBannersPage grid={grid_banner_pages[0]} i={0} />
+                <GridBannersPage grid={grid_banner_pages[1]} i={1} />
+                <EmailSection />
+                <GridBannersPage grid={grid_banner_pages[2]} i={2} />
+                <FindSection />
+                <GridBannersPage grid={grid_banner_pages[3]} i={3} />
+                <GridBannersPage grid={grid_banner_pages[4]} i={4} />
             </Fragment>
         </WebLayout>
     );
