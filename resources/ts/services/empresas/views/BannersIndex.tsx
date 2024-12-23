@@ -33,7 +33,10 @@ export const HTMLSHOW = JSON.parse(
 );
 
 function BannersIndex() {
-    const typeBanner = useSignal<string>("home");
+    const typeParams = getParams().get("type");
+    const typeBanner = useSignal<string>(typeParams ? typeParams : "home");
+    const bannerParams = getParams().get("banner");
+
     const gridBannerIndexQuery =
         typeBanner.value === "home"
             ? gridBannerIndexApi()
@@ -48,8 +51,6 @@ function BannersIndex() {
     const widthResponsive = ResponsiveWidth();
     const showHtml = useSignal(HTMLSHOW);
     let component: JSX.Element | JSX.Element[] | null = null;
-
-    const bannerParams = getParams().get("banner");
 
     useEffect(() => {
         gridBannerIndexQuery.refetch(false);
@@ -130,6 +131,7 @@ function BannersIndex() {
                             .data as GridBannerPageSchemaFromServer[]
                     }
                     refetch={gridBannerIndexQuery.refetch}
+                    bannerParams={bannerParams}
                 />
             );
     }

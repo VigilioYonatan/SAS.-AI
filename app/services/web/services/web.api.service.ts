@@ -505,9 +505,9 @@ export class WebApiService {
             },
         });
         if (page) {
-            const grid_banner_pages = (await page.$get(
-                "grid_banner_pages"
-            )) as GridBannerPage[];
+            const grid_banner_pages = (await page.$get("grid_banner_pages", {
+                order: [["id", "ASC"]],
+            })) as GridBannerPage[];
             let pagina = {
                 title: page.title,
                 description: page.description,

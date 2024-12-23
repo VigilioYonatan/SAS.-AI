@@ -4,7 +4,7 @@ import { GridBannerSchema } from "../schemas/grid_banner.schema";
 import { useForm } from "react-hook-form";
 import { valibotVigilio } from "~/libs/valibot";
 import Form from "~/components/form";
-import { getParams, handlerError } from "~/libs/helpers";
+import { handlerError } from "~/libs/helpers";
 import { formSelectNumber } from "~/components/form/FormSelect";
 import { gridBannerIndexApi } from "../apis/grid_banner/grid_banner.index.api";
 import TitleSection from "@/web/components/TitleSection";
@@ -19,9 +19,13 @@ export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
 interface ServiciosPageIndexProps {
     data: GridBannerPageSchemaFromServer[];
     refetch: (clean?: boolean) => Promise<void>;
+    bannerParams: string | null;
 }
-function ServiciosPageIndex({ data, refetch }: ServiciosPageIndexProps) {
-    const bannerParams = getParams().get("banner");
+function ServiciosPageIndex({
+    data,
+    refetch,
+    bannerParams,
+}: ServiciosPageIndexProps) {
     return data.map((f, g) => {
         const grid = f.grid_banner_id ? f.grid_banner : f;
 

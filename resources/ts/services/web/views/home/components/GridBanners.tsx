@@ -33,12 +33,16 @@ interface GridBannersPageProps {
 export function GridBannersPage({ grid, i }: GridBannersPageProps) {
     const gr = grid?.grid_banner_id ? grid.grid_banner : grid;
     if (!gr?.enabled) return null;
-
+    const urlBase = window.location.href.split("?")[0];
+    const segmentos = urlBase.split("/");
+    const ultimoSegmento = segmentos[segmentos.length - 1];
     return (
         <section
             class={` grid-banner-${i}  max-w-6xl mx-auto my-4 md:my-8 relative`}
         >
-            <AdminEdit uri={`/admin/banners?banner=${i}`} />
+            <AdminEdit
+                uri={`/admin/banners?banner=${i}&type=${ultimoSegmento}`}
+            />
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             {gr.html ? (
                 <div
