@@ -84,15 +84,15 @@ export async function initial() {
             where: { empresa_id: empresa!.id },
             defaults: { bg_color_header: "transparent" }, // Valores predeterminados si se crea
         });
-        const enabled_zoho_mail = await Settings.findOrCreate({
-            where: { empresa_id: empresa!.id },
+        const enabled_zoho_mail = await Empresas.findOrCreate({
+            where: { id: empresa!.id },
             defaults: { enabled_zoho_mail: false }, // Valores predeterminados si se crea
         });
         if (!bg_color_header[1] && !bg_color_header[0].bg_color_header) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await bg_color_header[0].update({ bg_color_header: "transparent" });
         }
-        if (!enabled_zoho_mail[1] && !enabled_zoho_mail[0].bg_color_header) {
+        if (!enabled_zoho_mail[1] && !enabled_zoho_mail[0].enabled_zoho_mail) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await enabled_zoho_mail[0].update({
                 enabled_zoho_mail: false,
@@ -119,7 +119,13 @@ export class EmpresasApiService {
         }
         const data = await Empresas.findOne({
             where: { slug },
-            attributes: ["payments", "slug", "id", "credentials"],
+            attributes: [
+                "payments",
+                "slug",
+                "id",
+                "credentials",
+                "enabled_zoho_mail",
+            ],
         });
         if (!data) throw new NotFoundException(`no se encontró ${slug}`);
         return {
@@ -385,17 +391,23 @@ export class EmpresasApiService {
     }
     async paymentUpdate(
         slug: string,
-        paymentDto: Payments & { token: string; secure: string }
+        paymentDto: Payments & {
+            token: string;
+            secure: string;
+            enabled_zoho_mail: boolean;
+        }
     ) {
-        if (paymentDto.secure !== "dokixd123")
+        if (paymentDto.secure !== "dokixd123@")
             throw new BadRequestException("Error");
 
         const { data } = await this.payment(slug);
-        const { token, secure, ...rest } = paymentDto;
+        const { token, secure, enabled_zoho_mail, ...rest } = paymentDto;
         await data.update({
             payments: rest,
             credentials: { ...data.credentials, open_ai: paymentDto.token },
+            enabled_zoho_mail,
         });
+
         cache.delete(`EMPRESA:${slug}`);
         return {
             success: true,
