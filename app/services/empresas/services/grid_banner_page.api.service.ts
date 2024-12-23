@@ -31,6 +31,11 @@ export class GridBannerPageApiService {
                 id,
                 empresa_id: empresa.id,
             },
+            include: [
+                {
+                    model: GridBanner,
+                },
+            ],
         });
         if (!gridBannerService) {
             throw new NotFoundException(
