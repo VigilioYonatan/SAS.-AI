@@ -113,6 +113,7 @@ export class EmpresasApiService {
     ) {}
     async payment(slug: string) {
         const iaTokens = JSON.parse(cache.get(`IA_TOKENS:${slug}`) ?? "null");
+
         if (iaTokens) {
             await Empresas.update(iaTokens, { where: { slug } });
             cache.delete(`IA_TOKENS:${slug}`);
