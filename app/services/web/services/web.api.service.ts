@@ -502,6 +502,7 @@ export class WebApiService {
         const page = await Page.findOne({
             where: {
                 slug,
+                empresa_id: empresa.id,
             },
         });
         if (page) {
