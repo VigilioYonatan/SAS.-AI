@@ -49,7 +49,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
 
     return (
         <footer
-            class=" lg:mb-0 lg:mt-40  mb-[4.3rem] text-white relative "
+            class=" lg:mb-0  mb-[4.3rem] text-white relative "
             id="footer"
             style={{
                 backgroundColor: storageEmpresa?.setting.bg_color_footer,

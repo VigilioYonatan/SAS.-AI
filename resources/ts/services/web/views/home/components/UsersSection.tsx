@@ -76,14 +76,14 @@ function UsersSection({ users }: UsersSection) {
                         } `}
                         key={user.id}
                     >
-                        <div class="flex justify-center items-center group overflow-hidden">
+                        <div class="flex justify-center items-center group overflow-hidden h-[300px] w-full">
                             <img
                                 class={`${
                                     storageEmpresa!.setting.type_border ===
                                     "circle"
                                         ? "rounded-full"
                                         : "rounded-md"
-                                }`}
+                                } object-cover h-full w-full`}
                                 width={200}
                                 height={200}
                                 src={printFileUser(user.photo, 300)[0]}

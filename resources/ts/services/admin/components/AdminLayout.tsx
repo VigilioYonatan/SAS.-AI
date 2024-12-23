@@ -261,7 +261,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
                         >
                             {empresaStore.state?.logo ? (
                                 <img
-                                    class="w-full h-full object-contain"
+                                    class="w-full h-full object-contain  image-admin-logo "
                                     width={80}
                                     height={80}
                                     src={
@@ -276,7 +276,12 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                 <span class="dark:text-white text-4xl font-bold">
                                     {empresaStore.state?.name_empresa[0]}
                                 </span>
-                            )}
+                            )}{" "}
+                            <style jsx>{`
+                                .image-admin-logo {
+                                    filter: drop-shadow(1px 1px black);
+                                }
+                            `}</style>
                         </a>
                         {/* logo */}
                     </div>
