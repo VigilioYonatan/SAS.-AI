@@ -318,11 +318,18 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                                                             );
                                                         div.innerHTML = content;
 
+                                                        const parent =
+                                                            child.parentElement?.getAttribute(
+                                                                "data-array"
+                                                            );
+
                                                         const childNodes =
                                                             Array.from(
                                                                 (
-                                                                    div?.firstElementChild as Node
-                                                                ).childNodes
+                                                                    div as HTMLDivElement
+                                                                )?.querySelector(
+                                                                    `[data-array='${parent}']`
+                                                                )!.childNodes
                                                             );
 
                                                         childNodes[
