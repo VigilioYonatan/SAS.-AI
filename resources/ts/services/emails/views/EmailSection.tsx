@@ -3,7 +3,7 @@ import FormContact from "./FormContact";
 
 function EmailSection() {
     return (
-        <div class="max-w-6xl mx-auto">
+        <div class="contact-section max-w-6xl mx-auto ">
             <TitleSection>Contacto</TitleSection>
             <div>
                 <FormContact />
