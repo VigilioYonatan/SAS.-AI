@@ -198,47 +198,8 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
 
                 arrayContainer.appendChild(clonedElement);
                 setContent(div.innerHTML);
-                addDeleteButton(clonedElement);
             }
         }
-    }
-
-    function addDeleteButton(element: HTMLElement) {
-        if (!element) {
-            console.error("Elemento no válido proporcionado.");
-            return;
-        }
-        element.classList.add(
-            "relative",
-            "border-gray-400",
-            "border-b-2",
-            "w-full",
-            "flex",
-            "flex-col",
-            "gap-4",
-            "items-center",
-            "justify-center"
-        );
-
-        const deleteButton = document.createElement("span");
-
-        deleteButton.classList.add(
-            "bg-danger",
-            "px-2",
-            "py-1",
-            "rounded-md",
-            "absolute",
-            "right-2"
-        );
-        deleteButton.style.cursor = "pointer";
-        deleteButton.addEventListener("click", () => {
-            sweetModal({ html: "aggg" });
-            // element.remove(); // Eliminamos el contenedor
-        });
-        const icon = document.createElement("i");
-        icon.classList.add("fas", "fa-trash", "text-xs");
-        deleteButton.appendChild(icon);
-        element.appendChild(deleteButton);
     }
 
     const renderElement = (el: Node) => {
@@ -261,9 +222,20 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
             if (dataArray) {
                 const arrayId = dataArray;
 
-                for (const child of Array.from(element.children)) {
-                    addDeleteButton(child as HTMLElement);
-                }
+                // for (const child of Array.from(element.children)) {
+                //     child.appendChild(
+                //         c(
+                //             "div",
+                //             null,
+                //             `<button
+                //                     type="button"
+                //                     onclick="console.log('hola')"
+                //                 >
+                //                     OK!!!
+                //                 </button>`
+                //         )
+                //     );
+                // }
                 const validAttributes = Array.from(element.attributes)
                     .filter((attr) => /^[a-zA-Z_][\w\-]*$/.test(attr.name))
                     .reduce((attrs, attr) => {
@@ -272,16 +244,109 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                     }, {} as Record<string, string>);
                 return (
                     <div {...validAttributes} class="relative">
-                        {Array.from(element.childNodes).map((child, index) => (
-                            // Render child nodes recursively
-                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                            <Fragment key={index}>
-                                {renderElement(child)}
-                            </Fragment>
-                        ))}
+                        {/* {Array.from(element.children).map((el, index) => (
+                            <div
+                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                key={index}
+                                // biome-ignore lint/security/noDangerouslySetInnerHtmlWithChildren: <explanation>
+                                dangerouslySetInnerHTML={{
+                                    __html: el.outerHTML,
+                                }}
+                                class="absolute"
+                            >
+                                <button
+                                    type="button"
+                                    class="absolute top-0 right-0"
+                                    onClick={() => {
+                                        console.log("OK");
+                                    }}
+                                >
+                                    OK
+                                </button>
+                            </div>
+                        ))} */}
+                        {Array.from(element.childNodes).map((child, index) => {
+                            // console.log(child);
+
+                            // child.className =
+                            //     "relative border-gray-400 border-b-2 w-full flex flex-col gap-4 items-center justify-center";
+
+                            // const deleteButton = document.createElement("span");
+                            // deleteButton.classList.add(
+                            //     "bg-danger",
+                            //     "px-2",
+                            //     "py-1",
+                            //     "rounded-md",
+                            //     "absolute",
+                            //     "right-2"
+                            // );
+                            // deleteButton.type = "button";
+                            // deleteButton.style.cursor = "pointer";
+                            // console.log(deleteButton);
+
+                            // deleteButton.addEventListener("click", () => {
+                            //     sweetModal({ html: "aggg" });
+                            //     // element.remove(); // Eliminamos el contenedor
+                            // });
+                            // const icon = document.createElement("i");
+                            // icon.classList.add("fas", "fa-trash", "text-xs");
+                            // deleteButton.appendChild(icon);
+
+                            if (child.nodeType !== Node?.ELEMENT_NODE)
+                                return null;
+                            // const a =
+                            return (
+                                // Render child nodes recursively
+                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                <Fragment key={index}>
+                                    <div class="relative border-b-2 border-gray-400">
+                                        {renderElement(child)}
+                                        <button
+                                            class="absolute top-0 right-0 bg-danger px-1 py-1 rounded-md "
+                                            type="button"
+                                            onClick={() => {
+                                                sweetModal({
+                                                    title: "Estás seguro de eliminar este elemento?",
+                                                    isCloseInBackground: false,
+                                                    showCancelButton: true,
+                                                    showCloseButton: true,
+                                                }).then(({ isConfirmed }) => {
+                                                    if (isConfirmed) {
+                                                        const div =
+                                                            document.createElement(
+                                                                "div"
+                                                            );
+                                                        div.innerHTML = content;
+
+                                                        const childNodes =
+                                                            Array.from(
+                                                                (
+                                                                    div?.firstElementChild as Node
+                                                                ).childNodes
+                                                            );
+
+                                                        childNodes[
+                                                            index
+                                                        ]?.remove(); // Elimina el nodo correspondiente
+
+                                                        setContent(
+                                                            div.innerHTML
+                                                        );
+                                                    }
+                                                });
+                                            }}
+                                        >
+                                            <i class="fas fa-trash" />
+                                        </button>
+                                    </div>
+                                </Fragment>
+                            );
+                        })}
                         <button
                             type="button"
-                            onClick={() => handleArrayAddition(arrayId)}
+                            onClick={() => {
+                                handleArrayAddition(arrayId);
+                            }}
                             class="mt-2 px-2 py-1 bg-blue-500 text-white absolute -bottom-0 rounded-md font-bold"
                             style={{ position: "relative", bottom: "-1rem" }}
                         >
@@ -334,14 +399,14 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                     function changeImage(newImageName: string) {
                         const updatedContent = content.replace(
                             new RegExp(
-                                `(<img data-image="${element.getAttribute(
+                                `(<(?:img|video) data-image="${element.getAttribute(
                                     "data-image"
                                 )}" [^>]*?:src="[^"]*/empresas/[^/]+/images/files/)${imageName}(".*?>)`,
                                 "gs"
                             ),
                             `$1${`${newImageName}\``}$2`
                         );
-                        setContent(updatedContent); // Actualiza el HTML con el nuevo valor
+                        setContent(updatedContent);
                     }
                     return (
                         <div className="relative inline-block min-w-[100px] max-w-[100px] min-h-[100px]  max-h-[100px] [&>img]:object-contain [&>img]:w-full">
