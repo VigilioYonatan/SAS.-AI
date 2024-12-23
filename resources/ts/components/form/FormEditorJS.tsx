@@ -378,7 +378,16 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                     </span>
                 );
             }
-
+            if (["button", "a"].includes(element.tagName.toLowerCase())) {
+                const existTitle = element.getAttribute("aria-label");
+                if (existTitle) {
+                    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                    console.log(
+                        "Falta aria label en <boton></boton> o <a></a>"
+                    );
+                    return null;
+                }
+            }
             // Si es una etiqueta auto-cerrada (como <img>, <video>, etc.), la procesamos automáticamente
             if (
                 [
@@ -395,6 +404,26 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                     "col",
                 ].includes(element.tagName.toLowerCase())
             ) {
+                if (["img", "video"].includes(element.tagName.toLowerCase())) {
+                    const existTitle = element.getAttribute("title");
+                    const existTitle2 = element.getAttribute("alt");
+                    const existdataImage = element.getAttribute("data-image");
+                    if (!existTitle) {
+                        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                        console.log("Title <img/> o  <video/> necesario");
+                        return null;
+                    }
+                    if (!existTitle2) {
+                        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                        console.log("alt  <img/> o  <video/> necesario");
+                        return null;
+                    }
+                    if (!existdataImage) {
+                        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                        console.log("data-image necesario  <img/> o  <video/>");
+                        return null;
+                    }
+                }
                 if (element.tagName.toLowerCase() === "img") {
                     const imageName = (
                         element.getAttribute(":src") ||
