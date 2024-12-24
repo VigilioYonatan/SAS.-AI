@@ -1,6 +1,5 @@
 import type { Empresas } from "@/empresas/entities/empresas.entity";
-import { pathUploads, printFileWithDimension } from "@/uploads/libs/helpers";
-import fs from "node:fs";
+import { printFileWithDimension } from "@/uploads/libs/helpers";
 
 interface CustomEmailHTMLProps {
     empresa: Empresas;
