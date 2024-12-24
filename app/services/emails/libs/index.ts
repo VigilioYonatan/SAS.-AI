@@ -15,7 +15,7 @@ export function customEmailHTML({
     content,
 }: CustomEmailHTMLProps) {
     console.log({
-        path: `${pathUploads()}/${empresa.slug}/${empresa.logo[0].file}`,
+        path: `${pathUploads()}/${empresa.slug}/${empresa.logo![0].file}`,
     });
 
     const logo = empresa.logo
