@@ -943,9 +943,6 @@ function empresaUpdate() {
                                         "zoho.email" as keyof EmpresasUpdateDto
                                     }
                                     title="Correo Electrónico Zoho"
-                                    disabled={
-                                        !storageEmpresa!.enabled_zoho_mail
-                                    }
                                     question={
                                         <div class="w-[250px]">
                                             Correo electrónico que se usará para
@@ -960,9 +957,6 @@ function empresaUpdate() {
                                     }
                                     title="Contraseña Zoho"
                                     type="password"
-                                    disabled={
-                                        !storageEmpresa!.enabled_zoho_mail
-                                    }
                                     question={
                                         <div class="w-[250px]">
                                             Contraseña de tu Zoho Mail.

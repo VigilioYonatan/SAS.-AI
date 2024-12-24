@@ -60,9 +60,14 @@ export class EmailsApiService {
     }
 
     async sendAllUsers(empresa: Empresas, emailsSendAllDto: EmailsSendAllDto) {
-        if (!empresa.zoho.email || !empresa.zoho.password || empresa.email) {
+        if (
+            !empresa.zoho.email ||
+            !empresa.zoho.password ||
+            !empresa.email ||
+            !empresa.logo
+        ) {
             throw new BadRequestException(
-                "No se encontró zoho mail o contraaseña zoho mail"
+                "No se encontró zoho mail o contraseña zoho mail o logo de tu web"
             );
         }
         try {
@@ -101,7 +106,7 @@ export class EmailsApiService {
             );
             await Promise.all(
                 emailsPromociones.map(async (email) => {
-                    const html = await customEmailHTML({
+                    const html = customEmailHTML({
                         empresa,
                         namecomplete: email.email,
                         content: emailsSendAllDto.content,

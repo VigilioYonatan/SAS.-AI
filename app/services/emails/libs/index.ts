@@ -17,7 +17,7 @@ export function customEmailHTML({
     const logo = empresa.logo
         ? fs
               .readFileSync(
-                  `${pathUploads()}/${empresa.logo[0].file}` // trae a la imagen 100px
+                  `${pathUploads()}/${empresa.slug}/${empresa.logo[0].file}` // trae a la imagen 100px
               )
               .toString("base64")
         : "";
