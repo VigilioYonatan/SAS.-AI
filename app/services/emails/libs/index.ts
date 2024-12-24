@@ -14,7 +14,7 @@ export function customEmailHTML({
     content,
 }: CustomEmailHTMLProps) {
     const logo = empresa.logo
-        ? printFileWithDimension(empresa)(empresa.logo, 100)
+        ? printFileWithDimension(empresa)(empresa.logo, 100)[0]
         : "";
     console.log({ logo });
 
