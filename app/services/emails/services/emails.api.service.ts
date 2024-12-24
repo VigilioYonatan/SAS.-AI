@@ -18,6 +18,8 @@ import { sendMail } from "~/libs/mailer";
 export class EmailsApiService {
     async store(empresa: Empresas, emailsStoreDto: EmailsStoreDto) {
         try {
+            console.log({ html: emailsStoreDto.content.slice(0, 20) });
+
             if (empresa.enabled_zoho_mail) {
                 if (!empresa.email || !empresa.zoho.email) {
                     throw new BadRequestException(
