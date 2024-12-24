@@ -48,7 +48,7 @@ function EmailsSendAll() {
                 Enviar correo masivo a tus clientes
             </h1>
             <p class="text-gray-400 font-semibold">
-                Puedes enviar ofertas, eventos,etc a tus clientes
+                Puedes enviar ofertas, eventos,etc a tus clientes.
             </p>
             <Form {...emailsSendAlForm} onSubmit={onEmailSendAll}>
                 <Form.control

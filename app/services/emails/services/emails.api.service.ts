@@ -65,7 +65,6 @@ export class EmailsApiService {
                 "No se encontró zoho mail o contraseña zoho mail o logo de tu web"
             );
         }
-        console.log({ html: emailsSendAllDto.content.slice(0, 50) });
 
         try {
             // Enviar solo a clientes
