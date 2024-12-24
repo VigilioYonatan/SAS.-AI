@@ -17,27 +17,32 @@ import { sendMail } from "~/libs/mailer";
 @Injectable()
 export class EmailsApiService {
     async store(empresa: Empresas, emailsStoreDto: EmailsStoreDto) {
-        if (!empresa.email || !empresa.zoho.email) {
-            throw new BadRequestException(
-                "Necesitas un correo electrónico Zoho"
-            );
-        }
-        if (!empresa.zoho.password) {
-            throw new BadRequestException("No se encontró contraseña zoho");
-        }
         try {
-            await sendMail(
-                {
-                    email: empresa.zoho.email,
-                    password: empresa.zoho.password,
-                },
-                {
-                    from: emailsStoreDto.email,
-                    to: empresa.email,
-                    subject: emailsStoreDto.subject,
-                    text: emailsStoreDto.content,
+            if (empresa.enabled_zoho_mail) {
+                if (!empresa.email || !empresa.zoho.email) {
+                    throw new BadRequestException(
+                        "Necesitas un correo electrónico Zoho"
+                    );
                 }
-            );
+                if (!empresa.zoho.password) {
+                    throw new BadRequestException(
+                        "No se encontró contraseña zoho"
+                    );
+                }
+                await sendMail(
+                    {
+                        email: empresa.zoho.email,
+                        password: empresa.zoho.password,
+                    },
+                    {
+                        from: emailsStoreDto.email,
+                        to: empresa.email,
+                        subject: emailsStoreDto.subject,
+                        text: emailsStoreDto.content,
+                    }
+                );
+            }
+
             await Emails.create({ ...emailsStoreDto, empresa_id: empresa.id });
             return {
                 success: true,

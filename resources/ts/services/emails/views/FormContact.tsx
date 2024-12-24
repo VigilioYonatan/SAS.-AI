@@ -3,7 +3,7 @@ import Form from "~/components/form";
 import { valibotVigilio } from "~/libs/valibot";
 import { emailsStoreDto, type EmailsStoreDto } from "../dtos/emails.store.dto";
 import { emailsStoreApi } from "../apis/emails.store.api";
-import { sweetAlert } from "@vigilio/sweet";
+import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { handlerError } from "~/libs/helpers";
 import useSocketStore from "~/stores/socket.store";
 
@@ -16,15 +16,24 @@ function FormContact() {
     });
 
     function onSendEmail(body: EmailsStoreDto) {
-        emailsStoreMutation.mutate(body, {
-            onSuccess(data) {
-                sweetAlert({ icon: "success", title: data.message });
-                io?.emit("notifications:email-store", body);
-                emailStoreForm.reset();
-            },
-            onError(error) {
-                handlerError(emailStoreForm, error);
-            },
+        sweetModal({
+            title: "¿Estas seguro de enviarnos un mensaje?",
+            showCancelButton: true,
+            showCloseButton: true,
+            isCloseInBackground: false,
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                emailsStoreMutation.mutate(body, {
+                    onSuccess(data) {
+                        sweetAlert({ icon: "success", title: data.message });
+                        io?.emit("notifications:email-store", body);
+                        emailStoreForm.reset();
+                    },
+                    onError(error) {
+                        handlerError(emailStoreForm, error);
+                    },
+                });
+            }
         });
     }
     return (
