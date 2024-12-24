@@ -44,9 +44,12 @@ function EmailsSendAll() {
     }
     return (
         <div>
-            <h1 class="dark:text-white my-4">
+            <h1 class="dark:text-white my-4 text-3xl font-bold">
                 Enviar correo masivo a tus clientes
             </h1>
+            <p class="text-gray-400 font-semibold">
+                Puedes enviar ofertas, eventos,etc a tus clientes
+            </p>
             <Form {...emailsSendAlForm} onSubmit={onEmailSendAll}>
                 <Form.control
                     name={"subject" as keyof EmailsSendAllDto}

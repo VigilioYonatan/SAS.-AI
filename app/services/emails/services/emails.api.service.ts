@@ -36,7 +36,7 @@ export class EmailsApiService {
                     },
                     {
                         from: emailsStoreDto.email,
-                        to: empresa.email,
+                        to: empresa.zoho.email,
                         subject: emailsStoreDto.subject,
                         text: emailsStoreDto.content,
                     }
@@ -60,12 +60,7 @@ export class EmailsApiService {
     }
 
     async sendAllUsers(empresa: Empresas, emailsSendAllDto: EmailsSendAllDto) {
-        if (
-            !empresa.zoho.email ||
-            !empresa.zoho.password ||
-            !empresa.email ||
-            !empresa.logo
-        ) {
+        if (!empresa.zoho.email || !empresa.zoho.password || !empresa.logo) {
             throw new BadRequestException(
                 "No se encontró zoho mail o contraseña zoho mail o logo de tu web"
             );
@@ -95,7 +90,7 @@ export class EmailsApiService {
                                 password: empresa.zoho.password!,
                             },
                             {
-                                from: empresa.email!,
+                                from: empresa.zoho.email!,
                                 to: user.email!,
                                 subject: emailsSendAllDto.subject,
                                 html,
@@ -118,7 +113,7 @@ export class EmailsApiService {
                             password: empresa.zoho.password!,
                         },
                         {
-                            from: empresa.email!,
+                            from: empresa.zoho.email!,
                             to: email.email,
                             subject: emailsSendAllDto.subject,
                             html,
