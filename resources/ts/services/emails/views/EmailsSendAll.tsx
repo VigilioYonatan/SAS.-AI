@@ -67,6 +67,9 @@ function EmailsSendAll() {
                     title="Titulo"
                     placeholder="Título del mensaje"
                 />
+                <span class="dark:text-white font-semibold text-xs">
+                    No es posible enviar imágenes, Solo Textos y Enlaces
+                </span>
                 <Form.control.editor
                     name={"content" as keyof EmailsSendAllDto}
                     title="Contenido del mensaje"
