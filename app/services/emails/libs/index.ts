@@ -78,7 +78,7 @@ export function customEmailHTML({
             <div  class="animation-brightness" style="background-color:${
                 empresa!.setting.bg_color
             }; height: 100px;width: 100%;display: flex;justify-content: space-between;align-items: center; --brightness-delay:12s;">
-              <img width="100" height="100" style="object-fit: contain;" src="data:image/png;base64,${logo}" alt="${
+              <img width="100" height="100" style="object-fit: contain;" src="data:image/webp;base64,${logo}" alt="${
         empresa.name_empresa
     }">
               <span style="color:#000;font-family:'Nunito Sans rev=2',sans-serif!important;font-weight:bolder!important;line-height:1.6!important;color: #fff!important;font-size: 1.2rem!important;margin: 0px 1rem;">${
