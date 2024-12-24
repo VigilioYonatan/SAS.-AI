@@ -13,6 +13,7 @@ import {
 import { Pipe, Validator } from "@vigilio/express-core/valibot";
 import {
     arrayAsync,
+    boolean,
     mergeAsync,
     object,
     objectAsync,
@@ -110,7 +111,14 @@ export class EmpresasApiController {
 
     @VigilioServicesGuard()
     @Validator(
-        mergeAsync([payments, object({ token: string(), secure: string() })])
+        mergeAsync([
+            payments,
+            object({
+                token: string(),
+                secure: string(),
+                enabled_zoho_mail: boolean(),
+            }),
+        ])
     )
     @Pipe(objectAsync({ slug: string() }))
     @Put("/:slug/payment")
