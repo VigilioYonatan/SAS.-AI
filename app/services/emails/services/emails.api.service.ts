@@ -38,7 +38,7 @@ export class EmailsApiService {
                     text: emailsStoreDto.content,
                 }
             );
-
+            await Emails.create({ ...emailsStoreDto, empresa_id: empresa.id });
             return {
                 success: true,
                 message: "Se envió correo correctamente",
