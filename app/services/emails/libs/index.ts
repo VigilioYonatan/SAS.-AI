@@ -1,5 +1,5 @@
 import type { Empresas } from "@/empresas/entities/empresas.entity";
-import { pathUploads } from "@/uploads/libs/helpers";
+import { pathUploads, printFileWithDimension } from "@/uploads/libs/helpers";
 import fs from "node:fs";
 
 interface CustomEmailHTMLProps {
@@ -14,16 +14,8 @@ export function customEmailHTML({
     title,
     content,
 }: CustomEmailHTMLProps) {
-    console.log({
-        path: `${pathUploads()}/${empresa.slug}/${empresa.logo![0].file}`,
-    });
-
     const logo = empresa.logo
-        ? fs
-              .readFileSync(
-                  `${pathUploads()}/${empresa.slug}/${empresa.logo[0].file}` // trae a la imagen 100px
-              )
-              .toString("base64")
+        ? printFileWithDimension(empresa)(empresa.logo, 100)
         : "";
     console.log({ logo });
 
