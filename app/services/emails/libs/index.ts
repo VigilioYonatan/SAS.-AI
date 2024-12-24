@@ -14,6 +14,10 @@ export function customEmailHTML({
     title,
     content,
 }: CustomEmailHTMLProps) {
+    console.log({
+        path: `${pathUploads()}/${empresa.slug}/${empresa.logo[0].file}`,
+    });
+
     const logo = empresa.logo
         ? fs
               .readFileSync(
@@ -21,6 +25,8 @@ export function customEmailHTML({
               )
               .toString("base64")
         : "";
+    console.log({ logo });
+
     return /*html*/ `<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
