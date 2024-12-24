@@ -247,7 +247,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
             password: null,
             refresh_token: null,
         },
-        enabled_zoho_mail: true,
+        enabled_zoho_mail: false,
         // twilio: { account: "", token: "" },
         logo_pwa: null,
         about: null,

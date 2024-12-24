@@ -36,7 +36,8 @@ export type TypePayment =
     | "facturacion-peru"
     | "telegram"
     | "tokens"
-    | "finanza";
+    | "finanza"
+    | "email";
 function Plus() {
     const vigilioServices = vigilioServicesQuery();
     const pricing = vigilioServicesPricingQuery();
@@ -335,6 +336,50 @@ function Plus() {
                                 inteligencia Aritificial?.
                             </span>
                         </ProductCard>
+                        {!storageEmpresa?.enabled_zoho_mail ? (
+                            <ProductCard
+                                isMensual={false}
+                                title="Email Empresarial"
+                                priceLocal={price!.local.email!}
+                                priceDolar={price!.dolar.email!}
+                                ico={
+                                    <p class="dark:text-gray-300 text-gray-700 text-base flex  flex-wrap gap-2 self-start  mb-3">
+                                        <i class="fas fa-envelope-open text-3xl" />
+                                    </p>
+                                }
+                                link={`${
+                                    enviroments.VITE_VIGILIO_WEB
+                                }/payment/${storageEmpresa?.slug}?type=${
+                                    "email" as TypePayment
+                                }`}
+                            >
+                                <span class="">
+                                    Envia correos electrónicos a clientes y
+                                    manejar correos corporativos con dominio
+                                    personalizado, ideal para mejorar la
+                                    comunicación empresarial. Ofrece integración
+                                    para automatizar y personalizar mensajes.
+                                    Esta solución es perfecta para empresas que
+                                    buscan profesionalizar su comunicación y
+                                    optimizar su marketing por correo
+                                    electrónico.
+                                </span>
+                                <p class="text-center text-xs text-primary">
+                                    Enviár mensaje a la empresa por correo
+                                    electrónico{" "}
+                                    <a
+                                        href={enviroments.VITE_VIGILIO_WEB}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        Vigilio Services{" "}
+                                    </a>
+                                    para la instalación, si se realizó el pedido
+                                    correctamente.{" "}
+                                </p>
+                            </ProductCard>
+                        ) : null}
+
                         <ProductCard
                             isMensual={false}
                             title="Sistema de Finanzas"
