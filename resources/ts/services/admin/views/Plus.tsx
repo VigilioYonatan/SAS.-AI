@@ -315,7 +315,7 @@ function Plus() {
                             }
                             link={`${enviroments.VITE_VIGILIO_WEB}/payment/${
                                 storageEmpresa?.slug
-                            }?type=${"finanza" as TypePayment}`}
+                            }?type=${"tokens" as TypePayment}`}
                         >
                             <span class="font-semibold block h-[300px] ">
                                 <span
