@@ -63,7 +63,7 @@ export class EmailsApiService {
         try {
             // Enviar solo a clientes
             const users = await Users.unscoped().findAll({
-                attributes: ["email", "username", "name", "father_lastname"],
+                attributes: ["email", "username", "name", "lastname"],
                 where: { role_id: ROLES.user },
             });
 
@@ -71,7 +71,7 @@ export class EmailsApiService {
             await Promise.all(
                 users.map(async (user) => {
                     if (user.enabledEmailsOffers) {
-                        const html = await customEmailHTML({
+                        const html = customEmailHTML({
                             empresa,
                             namecomplete: `${user.username} - ${user.name} ${
                                 user.lastname ? user.lastname : ""

@@ -8,11 +8,13 @@ import { valibotVigilio } from "~/libs/valibot";
 import Form from "~/components/form";
 import { sweetModal } from "@vigilio/sweet";
 import { handlerError } from "~/libs/helpers";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 function EmailsPromocionesStore() {
     const emailsPromocionesStoreMutation = emailsPromocionesStoreApi();
     const emailsPromocionesForm = useForm<EmailsPromocionesStoreDto>({
         resolver: valibotVigilio(emailsPromocionesStoreDto),
+        defaultValues: { empresa_id: storageEmpresa!.id },
     });
 
     function onEmailsPromocionesStore(body: EmailsPromocionesStoreDto) {
