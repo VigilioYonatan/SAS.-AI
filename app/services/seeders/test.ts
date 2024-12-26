@@ -12,6 +12,7 @@ export const test: Pick<
 > = {
     setting: {
         logo_width: 140,
+        products_limit: 10,
         host: {
             enabled: false,
             host: null,
