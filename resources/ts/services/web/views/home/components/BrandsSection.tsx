@@ -67,7 +67,7 @@ function BrandsSection({ brands }: BrandsSectionProps) {
                             ))}
                     </Slider>
                     <style>{`
-                            &  .slick-list { margin: 0 -7px; & .slick-slide > div { padding: 0 10px; } }
+                           .brand-section &  .slick-list { margin: 0 -7px; & .slick-slide > div { padding: 0 10px; } }
                     `}</style>
                 </div>
             </section>
