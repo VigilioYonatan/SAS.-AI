@@ -200,7 +200,7 @@ export class WebApiService {
                     where: {
                         empresa_id: empresa.id,
                     },
-                    attributes: ["id", "image"],
+                    attributes: ["id", "image", "name"],
                 }),
 
                 // aca ira servicios normal
