@@ -7,8 +7,6 @@ import { UsersSchema } from "@/users/schemas/users.schema";
 import TitleSection from "@/web/components/TitleSection";
 import { GridBannersPage } from "./components/GridBanners";
 import { GridBannerPageSchemaFromServer } from "@/empresas/schemas/grid-banner-page.schema";
-import FindSection from "./components/FindSection";
-import EmailSection from "@/emails/views/EmailSection";
 
 export interface AboutPageProps {
     header: HeaderType;
@@ -36,13 +34,11 @@ function AboutPage({
                     <TitleSection>{title}</TitleSection>
                 </div>
                 <GridBannersPage grid={grid_banner_pages[0]} i={0} />
-                <PostsSection posts={posts} />
                 <GridBannersPage grid={grid_banner_pages[1]} i={1} />
-                <UsersSection users={users} />
+                <PostsSection posts={posts} />
                 <GridBannersPage grid={grid_banner_pages[2]} i={2} />
-                <EmailSection />
+                <UsersSection users={users} />
                 <GridBannersPage grid={grid_banner_pages[3]} i={3} />
-                <FindSection />
                 <GridBannersPage grid={grid_banner_pages[4]} i={4} />
             </WebLayout>
         </>

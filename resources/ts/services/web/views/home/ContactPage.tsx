@@ -20,9 +20,9 @@ function ContactPage({ grid_banner_pages, header, title }: ContactPageProps) {
             <Fragment>
                 <GridBannersPage grid={grid_banner_pages[0]} i={0} />
                 <GridBannersPage grid={grid_banner_pages[1]} i={1} />
-                <EmailSection />
-                <GridBannersPage grid={grid_banner_pages[2]} i={2} />
                 <FindSection />
+                <GridBannersPage grid={grid_banner_pages[2]} i={2} />
+                <EmailSection />
                 <GridBannersPage grid={grid_banner_pages[3]} i={3} />
                 <GridBannersPage grid={grid_banner_pages[4]} i={4} />
             </Fragment>
