@@ -259,6 +259,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     hamburger: string;
 
     @Column({
+        type: DataType.INTEGER,
+    })
+    products_limit: number;
+
+    @Column({
         type: DataType.JSON,
     })
     shows: {

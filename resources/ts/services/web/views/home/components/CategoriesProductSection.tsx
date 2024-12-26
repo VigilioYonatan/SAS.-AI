@@ -77,7 +77,7 @@ function CategoriesProductSection({
                                           ? "md:grid-cols-2 lg:grid-cols-3"
                                           : "md:grid-cols-3 lg:grid-cols-4"
                                   }`
-                        }  w-full gap-2 lg:gap-6 `}
+                        }  w-full gap-4 lg:gap-6 `}
                     >
                         {!category.products.length ? null : (
                             <>

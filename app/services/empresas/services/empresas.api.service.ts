@@ -84,6 +84,10 @@ export async function initial() {
             where: { empresa_id: empresa!.id },
             defaults: { bg_color_header: "transparent" }, // Valores predeterminados si se crea
         });
+        const products_limit = await Settings.findOrCreate({
+            where: { empresa_id: empresa!.id },
+            defaults: { products_limit: 10 }, // Valores predeterminados si se crea
+        });
         const enabled_zoho_mail = await Empresas.findOrCreate({
             where: { id: empresa!.id },
             defaults: { enabled_zoho_mail: false }, // Valores predeterminados si se crea
@@ -96,6 +100,12 @@ export async function initial() {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await enabled_zoho_mail[0].update({
                 enabled_zoho_mail: false,
+            });
+        }
+        if (!products_limit[1] && !products_limit[0].products_limit) {
+            // Si ya existía el registro pero el valor está vacío, actualizarlo
+            await products_limit[0].update({
+                products_limit: 10,
             });
         }
 

@@ -216,14 +216,7 @@ export class WebApiService {
             const getProductsByCategories = await Promise.all(
                 categories.map(async (category) => {
                     let products = await Products.findAll({
-                        limit:
-                            empresa?.setting.type_card === "eccomerce"
-                                ? empresa?.setting.isProductWallpaper
-                                    ? 8
-                                    : 5
-                                : empresa?.setting.isProductWallpaper
-                                ? 6
-                                : 4,
+                        limit: empresa?.setting.products_limit || 8,
                         where: {
                             enabled: true,
                             category_id: category.id,

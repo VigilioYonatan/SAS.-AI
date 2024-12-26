@@ -1172,6 +1172,17 @@ function SettingsIndex() {
                                                     }
                                                     title="Hover Imagen?"
                                                 />
+                                                <Form.control
+                                                    type="number"
+                                                    name={
+                                                        "products_limit" as keyof SettingsUpdateDto
+                                                    }
+                                                    title="Limite de Productos"
+                                                    options={{
+                                                        setValueAs: Number,
+                                                    }}
+                                                    question="Limite de Productos por categoria en Home Product Category Seccion"
+                                                />
                                             </div>
 
                                             <div>

@@ -171,6 +171,7 @@ export const settingsSchema = object({
         "Tipo de arrows no válido"
     ),
     isProductWallpaper: boolean(),
+    products_limit: number(),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;
 
