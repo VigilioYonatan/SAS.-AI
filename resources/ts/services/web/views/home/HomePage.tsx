@@ -23,7 +23,6 @@ import ProductsUsers from "./components/ProductsUsers";
 import { GridBannerSchema } from "@/empresas/schemas/grid_banner.schema";
 import GridBanners from "./components/GridBanners";
 import EmailsPromocionesStore from "@/emails/views/EmailsPromocionesStore";
-import EmailSection from "@/emails/views/EmailSection";
 
 export interface HomePageProps {
     header: HeaderType;
@@ -121,7 +120,6 @@ function HomePage({
                 <GridBanners grid={gridbanners} i={4} />
                 <FindSection />
                 <EmailsPromocionesStore />
-                <EmailSection />
             </WebLayout>
         </>
     );
