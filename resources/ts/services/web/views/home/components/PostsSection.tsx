@@ -88,7 +88,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                                     800
                                                 )[0]
                                             }
-                                            class="group-hover:scale-110 delay-custom-1 h-full"
+                                            class="group-hover:scale-110 delay-custom-1 h-[230px] object-cover"
                                             width={800}
                                             height={800}
                                             alt={post.title}

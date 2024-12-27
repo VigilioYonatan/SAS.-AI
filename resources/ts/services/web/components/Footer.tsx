@@ -13,6 +13,7 @@ import AdminEdit from "./AdminEdit";
 import { service } from "../views/home/components/ServiciosSection";
 import { isColorLight } from "~/libs/helpers";
 import { holidayChristmas } from "./Animations";
+import enviroments from "~/config";
 
 interface FooterProps {
     categories: HeaderType["categories"];
@@ -484,8 +485,10 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         </li>
                     </ul>
                 </div>
-                <div class="h-[1px] w-full bg-primary" />
-                <div class="w-full flex justify-between items-center  gap-2">
+            </div>
+            <div class="h-[1px] w-full bg-primary" />
+            <div class="">
+                <div class="w-full max-w-6xl mx-auto flex justify-between items-center  gap-2">
                     <span class="text-sm w-[160px]  md:w-[250px] font-semibold text-center flex flex-col">
                         <span>
                             © Todos los derechos Reservados.{" "}
@@ -524,7 +527,18 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                     >
                         <i class="fa-solid fa-caret-up" />
                     </a>
-                    <div class="flex flex-col grayscale">
+                    <div class="flex grayscale items-center gap-4">
+                        <span class="text-xs text-gray-400 mb-1">
+                            Desarrollador Por: <br />
+                            <a
+                                href={enviroments.VITE_VIGILIO_WEB}
+                                target="_blank"
+                                rel="noreferrer"
+                                class="font-bold hover:underline tracking-wide"
+                            >
+                                Vigilio Services
+                            </a>
+                        </span>
                         <MetodosDePago />
                     </div>
                 </div>
