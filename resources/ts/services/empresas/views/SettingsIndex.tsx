@@ -1183,6 +1183,17 @@ function SettingsIndex() {
                                                     }}
                                                     question="Limite de Productos por categoria en Home Product Category Seccion"
                                                 />
+                                                <Form.control
+                                                    type="number"
+                                                    name={
+                                                        "products_limit_offer" as keyof SettingsUpdateDto
+                                                    }
+                                                    title="Limite de Productos Oferta"
+                                                    options={{
+                                                        setValueAs: Number,
+                                                    }}
+                                                    question="Limite de Productos de ofertas en Home Product Category Seccion"
+                                                />
                                             </div>
 
                                             <div>
