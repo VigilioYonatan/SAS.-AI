@@ -85,7 +85,7 @@ export class WebApiService {
                         enabled: true,
                     },
                     order: [["createdAt", "DESC"]],
-                    limit: empresa?.setting.type_card === "eccomerce" ? 8 : 6,
+                    limit: empresa?.setting.products_limit_offer || 4,
                 }),
                 Products.findAll({
                     // productos recien subidos
@@ -437,7 +437,7 @@ export class WebApiService {
                     enabled: true,
                     empresa_id: empresa.id,
                 },
-                limit: 9,
+                limit: empresa?.setting.products_limit_offer || 4,
                 order: [["createdAt", "DESC"]],
             }),
             this.categoriesApiService.index(empresa, false),
