@@ -140,6 +140,13 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                     key={category.id}
                                 >
                                     <a href={`/shop/${category.slug}`}>
+                                        {category.icon ? (
+                                            <div
+                                                dangerouslySetInnerHTML={{
+                                                    __html: category.icon,
+                                                }}
+                                            />
+                                        ) : null}{" "}
                                         {category.name}
                                     </a>
                                 </li>
