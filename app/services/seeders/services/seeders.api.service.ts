@@ -82,7 +82,7 @@ export class SeedersApiService {
                     ...empresa,
                     fullname: "Yonatan Vigilio",
                     password: "123456a",
-                    servicio_id: 3,
+                    servicio_id: 2,
                     ...test,
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 } as any);

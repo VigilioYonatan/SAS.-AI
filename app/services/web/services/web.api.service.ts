@@ -509,19 +509,19 @@ export class WebApiService {
                 grid_banner_pages,
                 type_page: "other_page",
             };
-            if (page.slug === "shop") {
+            if (page.slug === "shop" || page.slug === "tienda") {
                 const shop = await this.shop(empresa, user);
                 pagina = { ...pagina, ...shop, type_page: "shop_page" };
             }
-            if (page.slug === "about") {
+            if (page.slug === "about" || page.slug === "nosotros") {
                 const nosotros = await this.about(empresa);
                 pagina = { ...pagina, ...nosotros, type_page: "nosotros_page" };
             }
-            if (page.slug === "services") {
+            if (page.slug === "services" || page.slug === "servicios") {
                 const servicios = await this.servicios(empresa);
                 return { ...pagina, ...servicios, type_page: "servicios_page" };
             }
-            if (page.slug === "contact") {
+            if (page.slug === "contact" || page.slug === "contactos") {
                 return { ...pagina, type_page: "contact_page" };
             }
 

@@ -73,7 +73,7 @@ export const empresasStoreDto = mergeAsync([
         servicio_id: number(),
     }),
     objectAsync({
-        setting: omitAsync(settingsSchema, ["id", "empresa_id"]),
+        setting: omitAsync(settingsSchema, ["id", "empresa_id", "host"]),
         gridBanners: nullableAsync(arrayAsync(gridBannerSchema)),
         pages: nullableAsync(
             arrayAsync(

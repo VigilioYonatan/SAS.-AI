@@ -384,10 +384,24 @@ export class EmpresasApiService {
                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             }) as any
         );
+        const settingsBackground = {
+            ...setting.toJSON(),
+            background_auth: setting.background_auth
+                ? setting.background_auth.map((file) => {
+                      return {
+                          ...file,
+                          file: `${BASE_URL(empresa)}/empresas/${
+                              empresa.slug
+                          }/${file.file}`,
+                      };
+                  })
+                : null,
+        };
+
         return {
             success: true,
             data: {
-                setting,
+                setting: settingsBackground,
                 gridBanners: gridBanners,
                 files,
                 pages,
@@ -618,6 +632,23 @@ export class EmpresasApiService {
             }
             const am8 = "09:00";
             const pm8 = "18:00";
+            if (body.setting.background_auth) {
+                const imag = await Promise.all(
+                    body.setting.background_auth.map(async (f) => {
+                        const file = f.file.substring(
+                            f.file.indexOf("/images")
+                        );
+                        const dirEmpresa = `${pathUploads()}/${empresa!.slug}`;
+                        const dirEntity = `${dirEmpresa}${file}`;
+                        await downloadAndSaveFile(f.file, dirEntity);
+
+                        return {
+                            ...f,
+                            file,
+                        };
+                    })
+                );
+            }
 
             // como hacer qeu sea {[bank.key]:{titular:null}}
             await Promise.all([
@@ -826,7 +857,7 @@ export class EmpresasApiService {
                     this.pagesApiService.store(empresa, {
                         title: "Nosotros",
                         description: `Bienvenidos a ${empresa.name_empresa}`,
-                        slug: "about",
+                        slug: "nosotros",
                         empresa_id: empresa.id,
                         icon: "<i class='fas fa-users'></i>",
                     }),
@@ -840,14 +871,14 @@ export class EmpresasApiService {
                     this.pagesApiService.store(empresa, {
                         title: "Servicios",
                         description: `En ${empresa.name_empresa}, ofrecemos una amplia variedad de productos de alta calidad a precios inmejorables, encontrarás todo lo que necesitas en un solo lugar. Disfruta de envíos rápidos, devoluciones fáciles y un servicio al cliente excepcional. ¡Explora nuestras ofertas diarias y descubre la diferencia de comprar en Tienda XYZ!`,
-                        slug: "services",
+                        slug: "servicios",
                         empresa_id: empresa.id,
                         icon: "<i class='fas fa-building'></i>",
                     }),
                     this.pagesApiService.store(empresa, {
                         title: "Contacto",
                         description: `En ${empresa.name_empresa}, ofrecemos una amplia variedad de productos de alta calidad a precios inmejorables, encontrarás todo lo que necesitas en un solo lugar. Disfruta de envíos rápidos, devoluciones fáciles y un servicio al cliente excepcional. ¡Explora nuestras ofertas diarias y descubre la diferencia de comprar en Tienda XYZ!`,
-                        slug: "contact",
+                        slug: "contacto",
                         empresa_id: empresa.id,
                         icon: "<i class='fas fa-envelope-open'></i>",
                     }),

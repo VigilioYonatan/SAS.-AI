@@ -165,5 +165,6 @@ export const settingsSchema = objectAsync({
         "Tipo de arrows no válido"
     ),
     products_limit: number(),
+    products_limit_offer: number(),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;
