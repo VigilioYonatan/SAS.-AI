@@ -18,14 +18,27 @@ function EmailsPromocionesStore() {
     });
 
     function onEmailsPromocionesStore(body: EmailsPromocionesStoreDto) {
-        emailsPromocionesStoreMutation.mutate(body, {
-            onSuccess(data) {
-                emailsPromocionesForm.reset();
-                sweetModal({ title: data.message, icon: "success", text: "" });
-            },
-            onError(error) {
-                handlerError(emailsPromocionesForm, error);
-            },
+        sweetModal({
+            title: "¿Estás seguro de recibir ofertas y novedades en tu correo electrónico",
+            showCancelButton: true,
+            isCloseInBackground: false,
+            showCloseButton: true,
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                emailsPromocionesStoreMutation.mutate(body, {
+                    onSuccess(data) {
+                        emailsPromocionesForm.reset();
+                        sweetModal({
+                            title: data.message,
+                            icon: "success",
+                            text: "",
+                        });
+                    },
+                    onError(error) {
+                        handlerError(emailsPromocionesForm, error);
+                    },
+                });
+            }
         });
     }
 
@@ -41,6 +54,7 @@ function EmailsPromocionesStore() {
                         title="Correo Electrónico"
                         name={"email" as keyof EmailsPromocionesStoreDto}
                         type="email"
+                        placeholder="tucorreo@gmail.com"
                     />
                     <Form.button.submit
                         ico={null}

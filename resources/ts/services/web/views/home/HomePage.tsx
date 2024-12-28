@@ -116,8 +116,8 @@ function HomePage({
                 />
                 <BrandsSection brands={brands} />
                 <PostsSection posts={posts} />
-                <UsersSection users={users} />
                 <GridBanners grid={gridbanners} i={4} />
+                <UsersSection users={users} />
                 <FindSection />
                 <EmailsPromocionesStore />
             </WebLayout>

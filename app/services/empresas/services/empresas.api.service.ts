@@ -109,7 +109,7 @@ export async function initial() {
         if (!products_limit[1] && !products_limit[0].products_limit) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await products_limit[0].update({
-                products_limit: 10,
+                products_limit: 5,
             });
         }
         if (
@@ -118,7 +118,7 @@ export async function initial() {
         ) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await products_limit[0].update({
-                products_limit: 4,
+                products_limit_offer: 4,
             });
         }
 
