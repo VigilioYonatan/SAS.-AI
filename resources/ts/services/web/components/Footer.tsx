@@ -139,14 +139,17 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                     class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2"
                                     key={category.id}
                                 >
-                                    <a href={`/shop/${category.slug}`}>
+                                    <a
+                                        href={`/shop/${category.slug}`}
+                                        class="flex items-center gap-2"
+                                    >
                                         {category.icon ? (
                                             <div
                                                 dangerouslySetInnerHTML={{
                                                     __html: category.icon,
                                                 }}
                                             />
-                                        ) : null}{" "}
+                                        ) : null}
                                         {category.name}
                                     </a>
                                 </li>

@@ -219,16 +219,13 @@ function ProductCardView({ product }: ProductCardViewProps) {
                     </div>
 
                     <span class="dark:text-white  font-bold text-lg">
-                        {product.producto.value.name}
-
-                        {product.varianteChoose &&
-                        [1, 3].includes(
-                            storageEmpresa!.tipo_empresa.tipo_servicio_id
-                        )
+                        {product.producto.value.name}{" "}
+                        {varianteChoose &&
+                        (producto.value as ProductsNormalSchemaFromServer)
+                            .variants
                             ? printProductVariant(
-                                  product.producto
-                                      .value as ProductsNormalSchemaFromServer,
-                                  product.varianteChoose
+                                  producto.value as ProductsNormalSchemaFromServer,
+                                  varianteChoose
                               )
                                   .filter((opt) => opt?.id !== 1)
                                   .map((variant) => {
