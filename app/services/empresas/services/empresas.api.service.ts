@@ -1231,7 +1231,7 @@ export class EmpresasApiService {
             if (enviroments.NODE_ENV === "production" && body.isWhatsappFree) {
                 // crear whatsapp contenedor
                 await terminal(
-                    `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --restart always --memory="2000m" --memory-swap="2000m" --cpus="2g" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+                    `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --restart always --memory="2000m" --memory-swap="2000m" --cpus="2.0g" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
                 );
                 // // eliminar docker en 15 dias
                 // const fechaUTC5 = new Date();
