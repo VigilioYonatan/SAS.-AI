@@ -13,13 +13,13 @@
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "noUnusedParameters": true,
         "skipLibCheck": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["app/services/*"],
-            "~/*": ["app/*"]
+            "@/*": ["./app/services/*"],
+            "~/*": ["./app/*"]
         }
     },
     "include": ["app", "vite.config.ts", "vitest.config.ts"]
