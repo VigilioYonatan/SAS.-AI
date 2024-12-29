@@ -1250,7 +1250,7 @@ export class EmpresasApiService {
                 message: "Nuevo información agregado correctamente.",
             };
         } catch (error) {
-            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+            // biome-ignore lint/suspicious/noConsoleLog: <explanation> 2
             console.log((error as Error).message);
             if (empresa) {
                 empresa.destroy();
