@@ -142,7 +142,7 @@ export async function newVersionVPS({
             docker exec saas-db-1 pg_restore -U postgres -d saas /tmp/backup.sql && \
             ${commando ? `${commando} && \ ` : ""} \
             pm2 delete all || true && bun i && bun build:serve && bun build:client && \
-            pm2 start bun --name "saas" -- start && \
+            pm2 start bun --name "saas" -- start && sleep 20 && \
             rm -rf ./app || true && rm -rf ./resources/ts || true && rm -rf ./whatsapp-api || true && \
             rm -rf ./redes || true && rm -rf .git`;
 
