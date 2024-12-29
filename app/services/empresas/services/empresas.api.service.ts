@@ -1222,40 +1222,21 @@ export class EmpresasApiService {
                     );
                 })
             );
-            // if (enviroments.NODE_ENV === "production" && !body.isTemplate) {
-            //     const result = await vpsShowApi();
-            //     // crear whatsapp contenedor
-            //     await terminal(
-            //         `docker volume create ${
-            //             empresa.slug
-            //         } && docker run -d --name ${
-            //             empresa.slug
-            //         } -e PORT=5000 -e NODE_ENV=${
-            //             enviroments.NODE_ENV
-            //         } -e SESSION_NAME=${
-            //             empresa.slug
-            //         } -e VITE_TOKEN_VIGILIO_SERVICES=${
-            //             enviroments.VITE_TOKEN_VIGILIO_SERVICES
-            //         } --restart always --memory="${
-            //             result.vps.whatsapp_ram ?? "1000"
-            //         }m" --memory-swap="${
-            //             result.vps.whatsapp_ram ?? "1000"
-            //         }m" --cpus="${result.vps.whatsapp_cpu_max ?? "1"}" -p ${
-            //             empresa.port
-            //         }:5000 -v ${empresa.slug}:/app/data ${
-            //             enviroments.DOCKER_IMAGE_WHATSAPP
-            //         }`
-            //     );
-            //     // eliminar docker en 15 dias
-            //     const fechaUTC5 = new Date();
-            //     fechaUTC5.setDate(fechaUTC5.getDate() + 14);
-            //     await executeCronDate(fechaUTC5, async () => {
-            //         if (!empresa.slug.includes("demo")) {
-            //             await terminal(`docker stop ${empresa.slug} || true`);
-            //             await terminal(`docker rm -f ${empresa.slug} || true`);
-            //         }
-            //     });
-            // }
+            if (enviroments.NODE_ENV === "production" && body.isWhatsappFree) {
+                // crear whatsapp contenedor
+                await terminal(
+                    `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --restart always --memory="2000m" --memory-swap="2000m" --cpus="2g" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+                );
+                // // eliminar docker en 15 dias
+                // const fechaUTC5 = new Date();
+                // fechaUTC5.setDate(fechaUTC5.getDate() + 14);
+                // await executeCronDate(fechaUTC5, async () => {
+                //     if (!empresa.slug.includes("demo")) {
+                //         await terminal(`docker stop ${empresa.slug} || true`);
+                //         await terminal(`docker rm -f ${empresa.slug} || true`);
+                //     }
+                // });
+            }
             cache.delete("CACHE_HOST");
 
             return {

@@ -1,5 +1,6 @@
 import {
     arrayAsync,
+    boolean,
     getOutput,
     getPipeIssues,
     mergeAsync,
@@ -99,6 +100,7 @@ export const empresasStoreDto = mergeAsync([
                 categoriesSchema,
             ])
         ),
+        isWhatsappFree: boolean(),
     }),
 ]);
 
