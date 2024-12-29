@@ -7,7 +7,7 @@ import { Op, Sequelize } from "sequelize";
 
 export const dirMode =
     enviroments.NODE_ENV === "production"
-        ? path.resolve(__dirname, "..", "..")
+        ? path.resolve(__dirname, "..", "..", "..")
         : path.resolve(__dirname, "..", "..");
 
 export const corsOptions: cors.CorsOptions = {
