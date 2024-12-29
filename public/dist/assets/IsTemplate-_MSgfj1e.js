@@ -1,0 +1,1 @@
+import{u as t}from"./vendor-CZUWYgQd.js";function l(){return t("div",{class:"h-screen max-w-6xl mx-auto",children:t("h3",{class:"text-4xl font-bold text-center mt-6 dark:text-white",children:"Esto es una plantilla Web"})})}export{l as I};

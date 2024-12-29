@@ -1,0 +1,1 @@
+import{u as n}from"./index-7sRwzA1E.js";import"./vendor-CZUWYgQd.js";function p(r,t){return n("/categories",async a=>{const s=new URLSearchParams;r&&s.append("type","service");const e=await(await fetch(`/api${a}?${s}`)).json();if(!e.success)throw e;return e},t)}export{p as c};

@@ -1,0 +1,1 @@
+import{y as o}from"./vendor-CZUWYgQd.js";import{u as s}from"./cart.store-Xb-m817X.js";import{u as i,a}from"./socket.store-BiOY2f2D.js";import{r as n}from"./index-DvZtoiQ2.js";import"./main-BihXfA-e.js";import"./index-7sRwzA1E.js";function l(){const r=s(),e=i(),t=a();return o(()=>{r.methods.initial(),e.connectSocket()},[]),o(()=>{t.state&&n()},[t.state]),null}export{l as default};

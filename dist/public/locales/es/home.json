@@ -1,0 +1,128 @@
+{
+    "language": "Idioma",
+    "titleSecondary": "Potencia tu negocio al ritmo de la tecnología, innova y crece sin límites con IA.",
+    "description": "Mejora la calidad de tu servicios, aumenta tus ingresos y administra tu negocio como las grandes empresas del mundo usando inteligencia Artificial en tus aplicaciones web.",
+    "toGetInTouch": "Contactar",
+    "header": {
+        "home": "Inicio",
+        "characteristics": "Características",
+        "recognitions": "Reconocimientos",
+        "comparisons": "Comparaciones",
+        "contactus": "Contactános",
+        "reviews": "Reseñas",
+        "login": "Iniciar sesión"
+    },
+    "cardsOne": {
+        "webs-aplications": {
+            "title": "Aplicaciones Webs",
+            "description": "Aplicaciones webs destacables por su rapidez, seguridad y facilidad de mantenimiento que se enfocan en ofrecer una experiencia rápida y segura para nuestros usuarios, priorizando su satisfacción y tranquilidad."
+        },
+        "mobiles-aplications": {
+            "title": "Aplicaciones Móbiles",
+            "description": "Aplicaciones Móbiles destacables por su rapidez, seguridad y facilidad de mantenimiento que se enfocan en ofrecer una experiencia rápida y segura para nuestros usuarios, priorizando su satisfacción y tranquilidad."
+        },
+        "ia": {
+            "title": "Asistentes Virtuales con Inteligencia Artificial",
+            "description": "Diseñados para ofrecer interacciones naturales y significativas, brindando respuestas contextualizadas y adaptadas a las necesidades de los usuarios, construidas con las mejores herramientas de IA disponibles."
+        },
+        "glass": {
+            "title": "Aplicaciones para Gafas de Realidad Aumentada",
+            "description": "Si la demanda del mercado lo requiere, Próximamente estaremos lanzando aplicaciones para gafas de realidad aumentada, ofreciendo experiencias inmersivas y personalizadas que transformarán la manera en que interactuamos con el mundo que nos rodea."
+        }
+    },
+    "soon": "pronto",
+    "characteristic": {
+        "title": "Automatiza tu empresa con Inteligencia Articial.",
+        "description": "Te presentamos una solución extremo a extremo que automatiza la comunicación de tu empresa. Nuestras herramientas te permiten obtener más clientes y reducir la deserción.",
+        "cards": {
+            "customized-interface": {
+                "title": "Interfaz personalizada",
+                "description": "Se adapta a la marca y estilo visual de la aplicación web en la que se integra, asegurando una experiencia cohesiva y consistente para los usuarios."
+            },
+            "audio-transcription": {
+                "title": "Transcripción de audio",
+                "description": "Transcribe audios enviados por los usuarios en texto, utilizando tecnologías de reconocimiento de voz para convertir la entrada de audio en texto comprensible, permitiendo así una interacción más fácil y accesible para los usuarios."
+            },
+            "image-recognition": {
+                "title": "Reconocimiento de imágenes",
+                "description": "Analizar y reconoce imágenes enviadas por los usuarios, utilizando tecnologías de visión por computadora para identificar objetos, rostros, lugares, entre otros elementos, y responder de manera relevante a la consulta del usuario."
+            },
+            "natural-interaction": {
+                "title": "Interacción natural",
+                "description": "Experiencia de interacción natural con los usuarios, utilizando procesamiento del lenguaje natural (NLP) para comprender y responder a preguntas y solicitudes en lenguaje humano a las 24/7."
+            }
+        },
+        "online": "En linea",
+        "send-message": "Enviar mensaje"
+    },
+    "recognitions": {
+        "title": "Nuestros reconocimientos.",
+        "card-one": {
+            "first": "Destacada por su excelencia en contenido y usabilidad, galardonada por expertos en la industria.",
+            "second": "Reconocida por su compromiso con la calidad y la satisfacción del cliente.",
+            "third": "Distinción por su innovación y calidad, aclamada por usuarios y expertos de la industria."
+        },
+        "card-two": {
+            "velocity": {
+                "title": "Velocidad",
+                "description": "Nuestras aplicaciones web desempeñan con una velocidad excepcional.",
+                "secondary": "0.1 segundos en Lighthouse"
+            },
+            "security": {
+                "title": "Seguridad",
+                "description": "La seguridad de la información de tu negocio está garantizada con excelencia."
+            },
+            "innovation": {
+                "title": "Innovación",
+                "description": "Actualizados con las últimas tecnologías disponibles."
+            },
+            "payment-methods": {
+                "title": "Metodos de Pago",
+                "description": "Amplia variedad de métodos de pago para adaptarnos a las preferencias y comodidad de los clientes."
+            },
+            "scalability": {
+                "title": "Escalabilidad",
+                "description": "Altamente escalables, adaptándose sin problemas a tus necesidades de crecimiento."
+            },
+            "customizable": {
+                "title": "Personalizable",
+                "description": "Altamente personalizables, adaptándose a tus necesidades específicas con precisión y flexibilidad."
+            }
+        }
+    },
+    "best_tech": {
+        "title": "Lo mejor en tecnología web está aquí.",
+        "description": "Contamos con la mejor tecnología para crear las webs más avanzadas con Inteligencia Artificial, utilizando las mejores prácticas de las tecnologías más utilizadas en el mercado."
+    },
+    "support": {
+        "title": "Suportado por"
+    },
+    "testimonials": {
+        "title": "Nuestros Testimonios"
+    },
+    "comparations": {
+        "title": "Comparaciones con otras tecnologías Web",
+        "description": "Con nuestras aplicaciones web muy rápidas, seguras y con un posicionamiento excepcional en el mercado. Con nuestra tecnología avanzada y estrategias personalizadas, potenciaremos tu negocio al máximo.",
+        "subs": {
+            "velocity": "Velocidad y Rendimiento",
+            "Accessibility": "Accesibilidad y SEO",
+            "ai": "Integración de Inteligencia Artificial"
+        }
+    },
+    "people": {
+        "title": "Lo que la gente esta diciendo"
+    },
+    "news": {
+        "title": "Novedades"
+    },
+    "suscribe": {
+        "title": "Suscríbete para recibir noticias y promociones últimas actualizaciones.",
+        "email": "Correo Electrónico",
+        "suscribe": "suscribete"
+    },
+    "footer": {
+        "title": "Todos los derechos reservados."
+    },
+    "message_whatsapp": "Hola, me gustaría tener más información de negocio digital con Inteligencia Artificial y WhatsApp al máximo 🚀",
+    "message_ai": " Hola, bienvenido a Vigilio Services 😀. ¿En qué le podríamos ayudar?"
+}

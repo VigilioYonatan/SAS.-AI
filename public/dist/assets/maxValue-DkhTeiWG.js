@@ -1,0 +1,1 @@
+import{k as t}from"./index-7sRwzA1E.js";import{y as a}from"./helpers-GTjZ4v-0.js";function u(e,m){return function(o){return o>e?a("max_value",m||"Este campo debe ser como máximo ".concat(e,"."),o):t(o)}}export{u as m};

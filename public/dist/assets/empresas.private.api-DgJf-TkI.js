@@ -1,0 +1,1 @@
+import{u as r}from"./index-7sRwzA1E.js";import"./vendor-CZUWYgQd.js";function i(){return r("/empresas/private",async s=>{const e=await(await fetch(`/api${s}`)).json();if(!e.success)throw e;return e})}export{i as e};

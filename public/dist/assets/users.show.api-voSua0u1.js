@@ -1,0 +1,1 @@
+import{u as o}from"./index-7sRwzA1E.js";import"./vendor-CZUWYgQd.js";function i(r,e){return o(`/users/${r}`,async t=>{const s=await(await fetch(`/api${t}`)).json();if(!s.success)throw s;return s},e)}export{i as u};
