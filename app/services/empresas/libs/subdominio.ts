@@ -138,7 +138,7 @@ export async function newVersionVPS({
             docker rm -f saas-db-1 && docker volume rm saas_postgres-data-saas && \
             docker rm -f && docker compose up -d --build && \
             docker cp ../temp/backup.sql saas-db-1:/tmp/backup.sql && \
-            sleep 60 && \
+             docker exec saas-db-1 sh -c "while [ ! -f /tmp/backup.sql ]; do sleep 1; done && \
             docker exec saas-db-1 pg_restore -U postgres -d saas /tmp/backup.sql && \
             ${commando ? `${commando} && \ ` : ""} \
             pm2 delete all || true && bun i && bun build:serve && bun build:client && \

@@ -4,7 +4,6 @@ import cors from "cors";
 import { Settings } from "@/empresas/entities/settings.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { Op, Sequelize } from "sequelize";
-import cache from "@vigilio/express-core/cache";
 
 export const dirMode =
     enviroments.NODE_ENV === "production"
@@ -13,30 +12,23 @@ export const dirMode =
 
 export const corsOptions: cors.CorsOptions = {
     origin: async (origin, callback) => {
-        let empresas: Empresas[] = JSON.parse(
-            cache.get("CACHE_HOST") ?? "null"
-        );
-        if (!empresas) {
-            empresas = await Empresas.unscoped().findAll({
-                include: [
-                    {
-                        model: Settings,
-                        //   dominio.com
-                        where: Sequelize.where(
-                            Sequelize.literal(`host->>'host'`), // Extrae el valor de 'dominio' dentro de 'host'
-                            {
-                                [Op.ne]: null,
-                            } // Compara con el valor que necesitas
-                        ),
-                        required: true,
-                        attributes: ["host"],
-                    },
-                ],
-                attributes: ["id", "slug"],
-            });
-            const hours24 = 60 * 60 * 1000 * 10;
-            cache.set("CACHE_HOST", JSON.stringify(empresas), hours24);
-        }
+        const empresas = await Empresas.unscoped().findAll({
+            include: [
+                {
+                    model: Settings,
+                    //   dominio.com
+                    where: Sequelize.where(
+                        Sequelize.literal(`host->>'host'`), // Extrae el valor de 'dominio' dentro de 'host'
+                        {
+                            [Op.ne]: null,
+                        } // Compara con el valor que necesitas
+                    ),
+                    required: true,
+                    attributes: ["host"],
+                },
+            ],
+            attributes: ["id", "slug"],
+        });
 
         // Aquí puedes agregar lógica para permitir subdominios
         const allowedOrigins = [
