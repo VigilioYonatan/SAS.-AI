@@ -144,7 +144,11 @@ export async function downloadAndSaveFile(url: string, outputPath: string) {
             throw new Error("La respuesta no contiene un cuerpo legible.");
         }
         // Usa pipeline para manejar el flujo de datos y escribir en un archivo
-        await pipelineAsync(response.body, fs.createWriteStream(outputPath));
+        await pipelineAsync(
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            response.body as any,
+            fs.createWriteStream(outputPath)
+        );
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("Archivo descargado y guardado exitosamente.");
     } catch (error) {

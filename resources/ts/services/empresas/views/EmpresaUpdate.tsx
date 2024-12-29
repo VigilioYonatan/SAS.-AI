@@ -1209,14 +1209,17 @@ function empresaUpdate() {
                                                                                 onSuccess() {
                                                                                     sweetAlert(
                                                                                         {
-                                                                                            title: "Esto puede tomar unos minutos",
+                                                                                            title: "Esto puede tomar unos minutos, al actualizarse.",
                                                                                         }
                                                                                     );
                                                                                 },
-                                                                                onError() {
+                                                                                onError(
+                                                                                    error
+                                                                                ) {
                                                                                     sweetAlert(
                                                                                         {
-                                                                                            title: "Esto puede tomar unos minutos",
+                                                                                            icon: "danger",
+                                                                                            title: error.message,
                                                                                         }
                                                                                     );
                                                                                 },

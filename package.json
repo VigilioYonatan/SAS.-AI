@@ -1,15 +1,14 @@
 {
     "name": "@vigilio/express",
     "version": "1.0.0",
-    "type": "module",
     "private": true,
     "description": "create web apps with @vigilio/express now",
     "scripts": {
         "dev": "vite",
         "serve": "bun --watch app/main.ts ",
-        "build:serve": "rimraf dist && tsc  --project tsconfig.build.json ",
+        "build:serve": "rimraf dist && tsc  --project tsconfig.build.json",
         "build:client": "tsc --project ./resources/tsconfig.json && bun dev build ",
-        "start": "NODE_ENV=production bun dist/app/main.js",
+        "start": "NODE_ENV=production node dist/app/main.js",
         "test": "vitest",
         "biome:format:server": " biome format  ./app --write",
         "now": "node -e \"console.log(new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 14))\"",

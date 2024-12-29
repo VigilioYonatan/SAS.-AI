@@ -17,10 +17,10 @@ import { UrlsPayment } from "@/urls/entities/urls.payment.entity";
 import cache from "@vigilio/express-core/cache";
 import { chats } from "../controllers/whatsapp.api.controller";
 import { whatsappSendMessageApi } from "../api";
-import type { ChatCompletion } from "openai/resources/index.mjs";
 import { Citas } from "@/citas/entities/citas.entities";
 import { Op } from "sequelize";
 import { Questions } from "@/empresas/entities/questions.entity";
+import { ChatCompletion } from "openai/resources";
 
 export function buenosDias(query: string, name: string, empresa: Empresas) {
     const messages = [

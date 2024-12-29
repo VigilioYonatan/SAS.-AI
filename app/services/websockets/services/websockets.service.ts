@@ -26,9 +26,9 @@ import {} from "@/bot/libs/prompt";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import { HTMLPROMPT } from "../controllers/websockets.controller";
 import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
-import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { TipoEmpresa } from "@/empresas/entities/tipo_empresa.entity";
 import cache from "@vigilio/express-core/cache";
+import { ChatCompletionMessageParam } from "openai/resources";
 
 @Injectable()
 export class WebsocketsService {
