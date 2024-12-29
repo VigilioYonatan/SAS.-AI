@@ -848,6 +848,7 @@ export class EmpresasApiService {
 
                                 await GridBannerPage.create({
                                     ...rest,
+                                    page_id: newpage.id,
                                     empresa_id: empresa!.id,
                                     grid_banner_id: gridBanner
                                         ? findBannerTest.id
