@@ -18,8 +18,8 @@
         "skipLibCheck": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./app/services/*"],
-            "~/*": ["./app/*"]
+            "@/*": ["app/services/*"],
+            "~/*": ["app/*"]
         }
     },
     "include": ["app", "vite.config.ts", "vitest.config.ts"]
