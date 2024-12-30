@@ -14,7 +14,7 @@ import useThemeStore from "~/stores/theme.store";
 import { useSignal } from "@preact/signals";
 import { ChangeEvent, HTMLProps } from "preact/compat";
 import { HTMLSHOW } from "@/empresas/views/BannersIndex";
-import { sweetModal } from "@vigilio/sweet";
+import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import { anidarPropiedades } from ".";
 
@@ -317,11 +317,25 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                                                                 "div"
                                                             );
                                                         div.innerHTML = content;
-
                                                         const parent =
                                                             child.parentElement?.getAttribute(
                                                                 "data-array"
                                                             );
+                                                        const getParent = (
+                                                            div as HTMLDivElement
+                                                        )?.querySelector(
+                                                            `[data-array='${parent}']`
+                                                        );
+                                                        if (
+                                                            getParent!.children
+                                                                .length <= 1
+                                                        ) {
+                                                            sweetAlert({
+                                                                title: "No se pudo eliminar, por que no puede estar vacio",
+                                                                icon: "danger",
+                                                            });
+                                                            return;
+                                                        }
 
                                                         const childNodes =
                                                             Array.from(

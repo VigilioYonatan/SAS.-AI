@@ -28,9 +28,7 @@ import { pagesShowApi } from "../apis/pages/pages.show.api";
 import { GridBannerPageSchemaFromServer } from "../schemas/grid-banner-page.schema";
 import Helper from "~/components/Helper";
 import { PageSchema } from "../schemas/pages.schema";
-export const HTMLSHOW = JSON.parse(
-    localStorage.getItem("show-html") || "false"
-);
+export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
 
 function BannersIndex() {
     const typeParams = getParams().get("type");
