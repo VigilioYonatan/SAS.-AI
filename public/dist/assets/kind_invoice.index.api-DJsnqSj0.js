@@ -1,1 +1,0 @@
-import{u as s}from"./index-7sRwzA1E.js";import"./vendor-CZUWYgQd.js";function t(){return s("/kind_invoice",async n=>{const e=await(await fetch(`/api${n}`)).json();if(!e.success)throw e;return e})}export{t as k};

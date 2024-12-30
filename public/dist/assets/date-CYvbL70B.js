@@ -1,1 +1,0 @@
-import{a as o,B as i,C as u,D as f}from"./index-7sRwzA1E.js";function g(e,t){return o(o({},e),{_parse:function(a,s){return e._parse(t(a),s)}})}function _(e,t){var a=f(e,t),s=a[0],c=a[1];return{type:"date",async:!1,_parse:function(r,n){return!(r instanceof Date)||isNaN(r.getTime())?i(n,"type","date",s||"Este campo es obligatorio.",r):u(r,c,n,"date")}}}export{g as c,_ as d};

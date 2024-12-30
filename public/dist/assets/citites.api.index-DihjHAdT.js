@@ -1,1 +1,0 @@
-import{u as i}from"./index-7sRwzA1E.js";import"./vendor-CZUWYgQd.js";function o(){return i("/ubigeo/cities",async e=>{const s=await(await fetch(`/api${e}`)).json();if(!s.success)throw s;return s},{isCaching:12*60*1e3*60})}export{o as c};

@@ -1,1 +1,0 @@
-import{o,n as t,s as e}from"./index-7sRwzA1E.js";import{t as m,m as s,b as a,s as i}from"./helpers-GTjZ4v-0.js";import{e as r}from"./email-BYSdoKcJ.js";const n=o({id:t(),name:e([m(),s(3),a(30)]),subject:e([m(),s(4),a(200)]),email:e([m(),r()]),content:e([m(),s(10),a(200)]),empresa_id:t()}),b=i(n,["id","empresa_id"]);export{b as e};

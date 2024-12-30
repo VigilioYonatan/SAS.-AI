@@ -17,7 +17,7 @@ interface UsersSection {
     >[];
 }
 function UsersSection({ users }: UsersSection) {
-    if (users.length < 3) return null;
+    if (users.length < 3 || !storageEmpresa?.setting.shows.users) return null;
     return (
         <section
             data-aos={`${

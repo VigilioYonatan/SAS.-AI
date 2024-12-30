@@ -1,1 +1,0 @@
-import{b as t,u as r}from"./index-7sRwzA1E.js";function a(e){return r(`/ubigeo/regions/${e}`,async o=>{const s=await(await fetch(`/api${o}`)).json();if(!s.success)throw s;return s})}function u(){return t("/ubigeo/regions",async(e,o)=>{const s=await(await fetch(`/api${e}/${o}`)).json();if(!s.success)throw s;return s})}export{a,u as r};

@@ -1,1 +1,0 @@
-import{u as t,b as n}from"./index-7sRwzA1E.js";function u(r){return t(`/orders/${r}`,async e=>{const s=await(await fetch(`/api${e}`)).json();if(!s.success)throw s;return s})}function c(){return n("/orders",async(r,e)=>{const s=await(await fetch(`/api${r}/${e}`)).json();if(!s.success)throw s;return s})}export{u as a,c as o};

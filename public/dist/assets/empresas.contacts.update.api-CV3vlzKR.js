@@ -1,1 +1,0 @@
-import"./vendor-CZUWYgQd.js";import{b as a}from"./index-7sRwzA1E.js";function c(){return a("/empresas/contacts",async(e,s)=>{const{telephone:o,...n}=s,t=await(await fetch(`/api${e}/${o}`,{method:"PUT",body:JSON.stringify(n),headers:{"Content-Type":"application/json"}})).json();if(!t.success)throw t;return t})}export{c as e};

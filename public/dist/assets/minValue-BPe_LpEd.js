@@ -1,1 +1,0 @@
-import{k as t}from"./index-7sRwzA1E.js";import{y as r}from"./helpers-GTjZ4v-0.js";function n(e,m){return function(o){return o<e?r("min_value",m||"Este campo debe ser como mínimo ".concat(e,"."),o):t(o)}}export{n as m};

@@ -1,1 +1,0 @@
-import{o as s,s as e}from"./index-7sRwzA1E.js";import{m as o,i as m,b as r}from"./helpers-GTjZ4v-0.js";import{e as a}from"./email-BYSdoKcJ.js";import{a as i}from"./orders.store.api-BNGf89EC.js";const f=s({...i.entries,telephone:e([o(6),m(t=>/^\d+$/.test(t),"Este campo permite solo números.")]),address:e([o(10),r(100)]),email:e([a()]),reference:e([o(10),r(100)])});export{f as o};

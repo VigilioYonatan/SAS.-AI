@@ -1,1 +1,0 @@
-import{k as e}from"./index-7sRwzA1E.js";import{y as o}from"./helpers-GTjZ4v-0.js";var t=/^[\w+-]+(?:\.[\w+-]+)*@[\da-z]+(?:[.-][\da-z]+)*\.[a-z]{2,}$/iu;function m(a){return function(r){return t.test(r)?e(r):o("email","Correo electrónico inválido.",r)}}export{m as e};
