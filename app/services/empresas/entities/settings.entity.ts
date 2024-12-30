@@ -280,6 +280,7 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
         offers_section: boolean;
         offers_user: boolean;
         categories_slider: boolean;
+        users: boolean;
     };
 
     @ForeignKey(() => Empresas)

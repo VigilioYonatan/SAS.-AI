@@ -87,6 +87,7 @@ export const test: Pick<
             offers_section: false,
             offers_user: true,
             categories_slider: true,
+            users: true,
         },
     },
     gridBanners: [
