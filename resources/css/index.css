@@ -150,10 +150,10 @@
 }
 .background-home .slick-slider .slick-dots,
 .post-section .slick-slider .slick-dots {
-    bottom: 2rem;
+    bottom: 1rem;
 }
 .background-home .slick-slider .slick-dots button::before,
 .post-section .slick-slider .slick-dots button::before {
-    font-size: 3rem;
+    font-size: 1rem;
     color: var(--primary) !important;
 }
