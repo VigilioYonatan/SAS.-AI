@@ -14,7 +14,7 @@ export interface ContactPageProps {
 function ContactPage({ grid_banner_pages, header, title }: ContactPageProps) {
     return (
         <WebLayout header={header}>
-            <div class="mt-20 lg:mt-10">
+            <div class="mt-20 lg:mt-10 max-w-6xl">
                 <TitleSection>{title}</TitleSection>
             </div>
             <Fragment>

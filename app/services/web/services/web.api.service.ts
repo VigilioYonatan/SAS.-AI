@@ -521,7 +521,7 @@ export class WebApiService {
                 const servicios = await this.servicios(empresa);
                 return { ...pagina, ...servicios, type_page: "servicios_page" };
             }
-            if (page.slug === "contact" || page.slug === "contactos") {
+            if (page.slug === "contact" || page.slug === "contacto") {
                 return { ...pagina, type_page: "contact_page" };
             }
 

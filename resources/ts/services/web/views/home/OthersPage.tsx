@@ -14,7 +14,7 @@ function AboutPage({ header, grid_banner_pages, title }: AboutPageProps) {
     return (
         <>
             <WebLayout header={header}>
-                <div class="mt-20 lg:mt-10">
+                <div class="mt-20 lg:mt-10 max-w-6xl">
                     <TitleSection>{title}</TitleSection>
                 </div>
                 <Fragment>
