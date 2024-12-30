@@ -8,7 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-# dist
+dist
 dist-ssr
 *.local
 *.tsbuildinfo
@@ -22,7 +22,7 @@ dist-ssr
 *.sw?
 build
 bin
-# dist
+dist
 # Based on https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore
 
 # Logs
@@ -129,7 +129,7 @@ web_modules/
 .next
 out
 .nuxt
-# dist
+dist
 .vuepress/dist
 .temp
 .docusaurus
