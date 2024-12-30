@@ -75,7 +75,12 @@ export const settingsSchema = objectAsync({
         "Tipo de Background no válido"
     ),
     header_type: union(
-        [literal("normal"), literal("search"), literal("transparent")],
+        [
+            literal("normal"),
+            literal("search"),
+            literal("search2"),
+            literal("transparent"),
+        ],
         "Tipo de header no válido"
     ),
     font_face: union(

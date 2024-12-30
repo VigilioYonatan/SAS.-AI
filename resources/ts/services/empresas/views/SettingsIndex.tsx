@@ -1773,6 +1773,22 @@ function SettingsIndex() {
                                             </button>
                                             <button
                                                 class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    header_type === "search2"
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "header_type",
+                                                        "search2"
+                                                    );
+                                                }}
+                                            >
+                                                Search 2
+                                            </button>
+                                            <button
+                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
                                                     header_type ===
                                                     "transparent"
                                                         ? "bg-paper-light dark:bg-admin-terciary"

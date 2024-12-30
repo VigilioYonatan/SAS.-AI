@@ -8,7 +8,7 @@ import useEmpresastore, {
 } from "@/empresas/stores/empresa.store";
 import useThemeStore from "~/stores/theme.store";
 import useAuthStore from "@/auth/stores/auth.store";
-import { useSignal } from "@preact/signals";
+import { Signal, useSignal } from "@preact/signals";
 import WebDropdown from "~/components/dropdown/WebDropdown";
 import { printFileUser, ROLES } from "@/users/libs/helpers";
 import LogoImage from "~/components/LogoImage";
@@ -160,8 +160,14 @@ function Header({ header }: HeaderProps) {
 
             <header
                 class={`header  hidden lg:block z-[99]   top-0 right-0 left-0 ${
-                    storageEmpresa?.setting.header_type !== "transparent"
-                        ? "bg-background-light dark:bg-background-dark sticky shadow"
+                    !["transparent"].includes(
+                        storageEmpresa!.setting.header_type
+                    )
+                        ? `bg-background-light dark:bg-background-dark ${
+                              storageEmpresa!.setting.header_type === "search2"
+                                  ? ""
+                                  : "sticky"
+                          } shadow`
                         : `  ${
                               !isTop.value
                                   ? `sticky  ${
@@ -200,434 +206,25 @@ function Header({ header }: HeaderProps) {
                             height="60"
                         />
                     </div>
+                    {storageEmpresa?.setting.header_type !== "search2" ? (
+                        <NavHeader
+                            header={header}
+                            isOpen={isOpen}
+                            isTop={isTop}
+                            isOpenCondiciones={isOpenCondiciones}
+                        />
+                    ) : (
+                        <div
+                            class="w-full flex gap-6 items-center max-w-[600px] relative border dark:border-gray-600"
+                            style={{
+                                order: storageEmpresa?.setting.header_position
+                                    .navbar,
+                            }}
+                        >
+                            <ProductsSearch2 />
+                        </div>
+                    )}
 
-                    <nav
-                        class={`header-nav gap-6 items-center hidden lg:flex  relative ${
-                            storageEmpresa?.setting.header_type ===
-                                "transparent" && isActive("/", false)
-                                ? `${isTop.value ? "text-white" : ""}`
-                                : ""
-                        } `}
-                        style={{
-                            order: storageEmpresa?.setting.header_position
-                                .navbar,
-                        }}
-                    >
-                        {storageEmpresa?.setting.header.home ? (
-                            <a
-                                class={` font-bold tracking-widest dark:hover:text-primary text-sm uppercase ${
-                                    isActive("/", false)
-                                        ? "text-primary after:scale-x-100 "
-                                        : " dark:text-white hover:text-primary"
-                                }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                                href={"/"}
-                            >
-                                Inicio
-                            </a>
-                        ) : null}{" "}
-                        {storageEmpresa?.setting.header_type !== "search" &&
-                        storageEmpresa?.setting.header.shop ? (
-                            <div class="relative">
-                                <a
-                                    href="/shop"
-                                    type="button"
-                                    class={`font-bold tracking-widest text-sm uppercase hover:text-primary dark:hover:text-primary delay-custom-1 ${
-                                        isActive("/shop")
-                                            ? "text-primary after:scale-x-100"
-                                            : " dark:text-white "
-                                    } relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                                    onBlur={() => {}}
-                                    onFocus={() => {}}
-                                    onMouseOver={() => {
-                                        isOpen.value = !isOpen.value;
-                                    }}
-                                    onMouseOut={() => {
-                                        isOpen.value = false;
-                                    }}
-                                >
-                                    Shop
-                                </a>
-                                {storageEmpresa.setting.header.categories ? (
-                                    <div
-                                        onFocus={() => {}}
-                                        onBlur={() => {}}
-                                        onMouseOver={() => {
-                                            isOpen.value = true;
-                                        }}
-                                        onMouseOut={() => {
-                                            isOpen.value = false;
-                                        }}
-                                        class={`flex p-2 min-w-[300px]  bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
-                                            isOpen.value
-                                                ? "max-h-[800px]  opacity-100"
-                                                : "max-h-0 overflow-hidden opacity-0"
-                                        } `}
-                                    >
-                                        <div class="">
-                                            {header.categories.map(
-                                                (category) => {
-                                                    const dropdown =
-                                                        useDropdown();
-                                                    const isOpen =
-                                                        useSignal(false);
-                                                    return (
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-                                                                window.location.href = `/shop/${category.slug}`;
-                                                            }}
-                                                            class={`flex gap-2 items-center justify-between p-2   group w-full rounded-md hover:bg-primary ${bgPrimaryHover()}`}
-                                                            onFocus={() => {}}
-                                                            onBlur={() => {}}
-                                                            ref={
-                                                                dropdown.dropdown
-                                                            }
-                                                            key={category.id}
-                                                            aria-label="sho category"
-                                                            onMouseOver={() => {
-                                                                isOpen.value =
-                                                                    !isOpen.value;
-                                                            }}
-                                                            onMouseOut={() => {
-                                                                isOpen.value =
-                                                                    false;
-                                                            }}
-                                                        >
-                                                            <div class="flex gap-3 items-center dark:text-white justify-between w-full">
-                                                                <div class="flex gap-2 w-full">
-                                                                    {category.icon ? (
-                                                                        <div
-                                                                            dangerouslySetInnerHTML={{
-                                                                                __html: category.icon,
-                                                                            }}
-                                                                        />
-                                                                    ) : null}
-                                                                    <span class="font-semibold">
-                                                                        {
-                                                                            category.name
-                                                                        }
-                                                                    </span>
-                                                                </div>
-                                                                {category
-                                                                    .subcategories
-                                                                    .length &&
-                                                                storageEmpresa
-                                                                    ?.setting
-                                                                    .is_subcategory ? (
-                                                                    <button
-                                                                        type="button"
-                                                                        aria-label="on subcategory"
-                                                                    >
-                                                                        <i class="far fa-chevron-right" />
-                                                                    </button>
-                                                                ) : null}
-                                                                {category
-                                                                    .subcategories
-                                                                    .length &&
-                                                                storageEmpresa
-                                                                    ?.setting
-                                                                    .is_subcategory ? (
-                                                                    <div
-                                                                        class={`flex p-2 min-w-[300px]  bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  left-[19rem]  shadow-lg ${
-                                                                            isOpen.value
-                                                                                ? "max-h-[800px]  opacity-100"
-                                                                                : "max-h-0 overflow-hidden opacity-0"
-                                                                        }`}
-                                                                    >
-                                                                        {category.subcategories.map(
-                                                                            (
-                                                                                sub
-                                                                            ) => {
-                                                                                const dropdown =
-                                                                                    useDropdown();
-                                                                                return (
-                                                                                    <a
-                                                                                        href={`/shop/${category.slug}/${sub.slug}`}
-                                                                                        class={`flex gap-2 items-center justify-between p-2   group w-full rounded-md hover:bg-primary ${bgPrimaryHover()}`}
-                                                                                        ref={
-                                                                                            dropdown.dropdown
-                                                                                        }
-                                                                                        key={
-                                                                                            sub.id
-                                                                                        }
-                                                                                        aria-label="sho category"
-                                                                                    >
-                                                                                        <div class="flex gap-3 items-center dark:text-white justify-between w-full">
-                                                                                            <span class="font-semibold">
-                                                                                                {
-                                                                                                    sub.name
-                                                                                                }
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                );
-                                                                            }
-                                                                        )}
-                                                                    </div>
-                                                                ) : null}
-                                                            </div>
-                                                        </button>
-                                                    );
-                                                }
-                                            )}
-                                        </div>
-                                        {header.categoriesServices.length ? (
-                                            <>
-                                                {header.categoriesServices.map(
-                                                    (category) => (
-                                                        <>
-                                                            <button
-                                                                key={
-                                                                    category.id
-                                                                }
-                                                                type="button"
-                                                                aria-label="marcas"
-                                                                class={`flex gap-2 items-center justify-between p-2 hover:bg-primary  ${bgPrimaryHover()}  group w-full rounded-md  relative group `}
-                                                            >
-                                                                <div class="flex gap-3 items-center dark:text-white">
-                                                                    {category.icon ? (
-                                                                        <div
-                                                                            dangerouslySetInnerHTML={{
-                                                                                __html: category.icon,
-                                                                            }}
-                                                                        />
-                                                                    ) : null}
-                                                                    <span class="font-semibold">
-                                                                        {
-                                                                            category.name
-                                                                        }
-                                                                    </span>
-                                                                </div>
-                                                                <div class="absolute rounded-md right-[-312px] min-w-[300px]  p-2 bg-background-light dark:bg-paper-dark rounded-b-md flex-col hidden group-hover:flex">
-                                                                    {category.products.map(
-                                                                        (
-                                                                            service
-                                                                        ) => (
-                                                                            <a
-                                                                                href={`/servicio/${service.slug}`}
-                                                                                class={`flex gap-2 items-center justify-between p-2   w-full rounded-md hover:bg-primary ${bgPrimaryHover()} `}
-                                                                                key={
-                                                                                    service.id
-                                                                                }
-                                                                                aria-label="show category"
-                                                                            >
-                                                                                <div class="flex gap-2 items-center ">
-                                                                                    <span class="font-semibold">
-                                                                                        {
-                                                                                            service.name
-                                                                                        }
-                                                                                    </span>
-                                                                                </div>
-                                                                            </a>
-                                                                        )
-                                                                    )}
-                                                                </div>
-                                                            </button>
-                                                        </>
-                                                    )
-                                                )}
-                                            </>
-                                        ) : null}
-                                        {header.brands.length ? (
-                                            <button
-                                                type="button"
-                                                aria-label="marcas"
-                                                class={`flex gap-2 items-center justify-between p-2 hover:bg-primary ${bgPrimaryHover()} group w-full rounded-md  relative group  `}
-                                            >
-                                                <div class="flex gap-3 items-center dark:text-white">
-                                                    <i
-                                                        class={`fa${
-                                                            storageEmpresa
-                                                                ?.setting
-                                                                .type_icons_bars ===
-                                                            "normal"
-                                                                ? "s"
-                                                                : "r"
-                                                        } fa-tag`}
-                                                    />
-                                                    <span class="font-semibold">
-                                                        Marcas
-                                                    </span>
-                                                </div>
-                                                <div class="absolute rounded-md right-[-312px] min-w-[300px]  p-2 bg-background-light dark:bg-paper-dark rounded-b-md flex-col hidden group-hover:flex">
-                                                    {header.brands.map(
-                                                        (brand) => (
-                                                            <a
-                                                                href={`/marcas/${brand.slug}`}
-                                                                class={`flex gap-2 items-center justify-between p-2   w-full rounded-md hover:bg-primary  ${bgPrimaryHover()}`}
-                                                                key={brand.id}
-                                                                aria-label="sho category"
-                                                            >
-                                                                <div class="flex gap-2 items-center ">
-                                                                    {brand.image ? (
-                                                                        <img
-                                                                            loading="lazy"
-                                                                            class="object-contain w-[30px] h-[30px]"
-                                                                            width={
-                                                                                100
-                                                                            }
-                                                                            height={
-                                                                                100
-                                                                            }
-                                                                            alt={
-                                                                                brand.name
-                                                                            }
-                                                                            title={
-                                                                                brand.name
-                                                                            }
-                                                                            src={
-                                                                                printFileWithDimension(
-                                                                                    brand.image,
-                                                                                    100
-                                                                                )[0]
-                                                                            }
-                                                                        />
-                                                                    ) : null}
-                                                                    <span class="font-semibold">
-                                                                        {
-                                                                            brand.name
-                                                                        }
-                                                                    </span>
-                                                                </div>
-                                                            </a>
-                                                        )
-                                                    )}
-                                                </div>
-                                            </button>
-                                        ) : null}
-                                    </div>
-                                ) : null}
-                            </div>
-                        ) : null}
-                        {storageEmpresa!.pages
-                            .filter((page) => page.slug !== "shop")
-                            .map((page) => {
-                                if (
-                                    (page.slug === "services" ||
-                                        page.slug === "servicios") &&
-                                    !storageEmpresa!.setting.header.services
-                                ) {
-                                    return null;
-                                }
-                                if (
-                                    (page.slug === "about" ||
-                                        page.slug === "nosotros") &&
-                                    !storageEmpresa!.setting.header.about
-                                ) {
-                                    return null;
-                                }
-                                return (
-                                    <a
-                                        key={page.id}
-                                        class={` font-bold tracking-widest dark:hover:text-primary text-sm uppercase ${
-                                            isActive(`/${page.slug}`, false)
-                                                ? "text-primary after:scale-x-100 "
-                                                : " dark:text-white hover:text-primary"
-                                        }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                                        href={`/${page.slug}`}
-                                    >
-                                        {page.title}
-                                    </a>
-                                );
-                            })}
-                        {storageEmpresa?.setting.header.profile ? (
-                            <a
-                                class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
-                                    isActive("/auth/profile", true)
-                                        ? "text-primary after:scale-x-100"
-                                        : " dark:text-white hover:text-primary"
-                                }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                                href={"/auth/profile"}
-                            >
-                                Mi Perfil
-                            </a>
-                        ) : null}
-                        {storageEmpresa?.setting.header.pedidos ? (
-                            <a
-                                class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
-                                    isActive("/pedidos")
-                                        ? "text-primary after:scale-x-100"
-                                        : " dark:text-white hover:text-primary "
-                                }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                                href={"/pedidos"}
-                            >
-                                Pedidos
-                            </a>
-                        ) : null}
-                        {storageEmpresa?.setting.header.condiciones ? (
-                            <div class="relative">
-                                <button
-                                    type="button"
-                                    class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1  hover:text-primary  delay-custom-1 ${
-                                        isActive("/terminos-y-condiciones") ||
-                                        isActive("/politica-de-privacidad") ||
-                                        isActive("/libro-de-reclamaciones")
-                                            ? "text-primary after:scale-x-100"
-                                            : " dark:text-white "
-                                    }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                                    onBlur={() => {}}
-                                    onFocus={() => {}}
-                                    onMouseOver={() => {
-                                        isOpenCondiciones.value =
-                                            !isOpenCondiciones.value;
-                                    }}
-                                    onMouseOut={() => {
-                                        isOpenCondiciones.value = false;
-                                    }}
-                                >
-                                    Condiciones de Uso
-                                </button>
-                                <div
-                                    onFocus={() => {}}
-                                    onBlur={() => {}}
-                                    onMouseOver={() => {
-                                        isOpenCondiciones.value = true;
-                                    }}
-                                    onMouseOut={() => {
-                                        isOpenCondiciones.value = false;
-                                    }}
-                                    class={`flex p-2 min-w-[240px] bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
-                                        isOpenCondiciones.value
-                                            ? "max-h-[800px]  opacity-100"
-                                            : "max-h-0 overflow-hidden opacity-0"
-                                    } `}
-                                >
-                                    <div class="">
-                                        <a
-                                            href="/terminos-y-condiciones"
-                                            class={`flex gap-2 items-center justify-between p-2 hover:bg-primary  ${bgPrimaryHover()} group w-full rounded-md`}
-                                        >
-                                            <div class="flex gap-3 items-center dark:text-white">
-                                                <span class="font-semibold">
-                                                    Términos y Condiciones
-                                                </span>
-                                            </div>
-                                        </a>
-                                        <a
-                                            href="/politica-de-privacidad"
-                                            class={`flex gap-2 items-center justify-between p-2  hover:bg-primary ${bgPrimaryHover()} group w-full rounded-md `}
-                                        >
-                                            <div class="flex gap-3 items-center dark:text-white">
-                                                <span class="font-semibold">
-                                                    Política y Privacidad
-                                                </span>
-                                            </div>
-                                        </a>
-                                        <a
-                                            href="/libro-de-reclamaciones"
-                                            class={`flex gap-2 items-center  hover:bg-primary justify-between p-2  ${bgPrimaryHover()} group w-full rounded-md`}
-                                        >
-                                            <div class="flex gap-3 items-center dark:text-white">
-                                                <span class="font-semibold">
-                                                    Libro de Reclamaciones
-                                                </span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : null}
-                    </nav>
                     <div
                         class={`header-icons flex items-center gap-3 ${
                             storageEmpresa?.setting.header_type ===
@@ -640,7 +237,10 @@ function Header({ header }: HeaderProps) {
                                 .icons,
                         }}
                     >
-                        {header.totalProducts > 0 ? <SearchProducts /> : null}
+                        {header.totalProducts > 0 &&
+                        storageEmpresa?.setting.header_type !== "search2" ? (
+                            <SearchProducts />
+                        ) : null}
                         <a
                             href="/auth/profile?type=favorites"
                             class=" text-sm flex justify-center items-center relative"
@@ -805,32 +405,48 @@ function Header({ header }: HeaderProps) {
                         </div>
                     ) : null}
                 </div>
-                <div
-                    class={`${
-                        storageEmpresa?.setting.header_type === "search" &&
-                        isTop.value
-                            ? "hidden lg:flex"
-                            : "hidden"
-                    }  gap-6 items-center  py-2  max-w-6xl mx-auto  px-2`}
-                >
-                    <div class="relative ">
-                        <button
-                            class="flex gap-4 text-md tracking-wider  items-center  px-4 py-2 w-[250px] bg-hamburger-linear font-bold text-white [&>div>i]:dark:!text-white bg-primary"
-                            type="button"
-                            aria-label="categories"
-                            onClick={() => {
-                                isOpen.value = !isOpen.value;
-                            }}
-                        >
-                            <Hamburguer isOpen={false} />
-                            Shop
-                        </button>
-                        <HeaderAside header={header} isOpen={isOpen.value} />
+                {storageEmpresa?.setting.header_type === "search2" ? (
+                    <div class="navbar-search2  py-3 ">
+                        <div class=" max-w-6xl mx-auto [&>nav]:justify-center ">
+                            <NavHeader
+                                header={header}
+                                isOpen={isOpen}
+                                isTop={isTop}
+                                isOpenCondiciones={isOpenCondiciones}
+                            />
+                        </div>
                     </div>
-                    <div class="flex gap-6 items-center w-full relative border dark:border-gray-600">
-                        <ProductsSearch2 />
+                ) : (
+                    <div
+                        class={`${
+                            storageEmpresa?.setting.header_type === "search" &&
+                            isTop.value
+                                ? "hidden lg:flex"
+                                : "hidden"
+                        }  gap-6 items-center  py-2  max-w-6xl mx-auto  px-2`}
+                    >
+                        <div class="relative ">
+                            <button
+                                class="flex gap-4 text-md tracking-wider  items-center  px-4 py-2 w-[250px] bg-hamburger-linear font-bold text-white [&>div>i]:dark:!text-white bg-primary"
+                                type="button"
+                                aria-label="categories"
+                                onClick={() => {
+                                    isOpen.value = !isOpen.value;
+                                }}
+                            >
+                                <Hamburguer isOpen={false} />
+                                Shop
+                            </button>
+                            <HeaderAside
+                                header={header}
+                                isOpen={isOpen.value}
+                            />
+                        </div>
+                        <div class="flex gap-6 items-center w-full relative border dark:border-gray-600">
+                            <ProductsSearch2 />
+                        </div>
                     </div>
-                </div>
+                )}
             </header>
             {/* acá ira el header personalizado */}
             <HeaderMobile
@@ -981,6 +597,410 @@ function HeaderAside({ header, isOpen }: HeaderAsideProps) {
                 );
             })}
         </div>
+    );
+}
+interface NavHeaderProps {
+    header: HeaderType;
+    isOpen: Signal<boolean>;
+    isTop: Signal<boolean>;
+    isOpenCondiciones: Signal<boolean>;
+}
+function NavHeader({
+    header,
+    isOpen,
+    isTop,
+    isOpenCondiciones,
+}: NavHeaderProps) {
+    return (
+        <nav
+            class={`header-nav gap-6 items-center hidden lg:flex  relative ${
+                storageEmpresa?.setting.header_type === "transparent" &&
+                isActive("/", false)
+                    ? `${isTop.value ? "text-white" : ""}`
+                    : ""
+            } `}
+            style={{
+                order: storageEmpresa?.setting.header_position.navbar,
+            }}
+        >
+            {storageEmpresa?.setting.header.home ? (
+                <a
+                    class={` font-bold tracking-widest dark:hover:text-primary text-sm uppercase ${
+                        isActive("/", false)
+                            ? "text-primary after:scale-x-100 "
+                            : " dark:text-white hover:text-primary"
+                    }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                    href={"/"}
+                >
+                    Inicio
+                </a>
+            ) : null}{" "}
+            {storageEmpresa?.setting.header_type !== "search" &&
+            storageEmpresa?.setting.header.shop ? (
+                <div class="relative">
+                    <a
+                        href="/shop"
+                        type="button"
+                        class={`font-bold tracking-widest text-sm uppercase hover:text-primary dark:hover:text-primary delay-custom-1 ${
+                            isActive("/shop")
+                                ? "text-primary after:scale-x-100"
+                                : " dark:text-white "
+                        } relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                        onBlur={() => {}}
+                        onFocus={() => {}}
+                        onMouseOver={() => {
+                            isOpen.value = !isOpen.value;
+                        }}
+                        onMouseOut={() => {
+                            isOpen.value = false;
+                        }}
+                    >
+                        Shop
+                    </a>
+                    {storageEmpresa.setting.header.categories ? (
+                        <div
+                            onFocus={() => {}}
+                            onBlur={() => {}}
+                            onMouseOver={() => {
+                                isOpen.value = true;
+                            }}
+                            onMouseOut={() => {
+                                isOpen.value = false;
+                            }}
+                            class={`flex p-2 min-w-[300px]  bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
+                                isOpen.value
+                                    ? "max-h-[800px]  opacity-100"
+                                    : "max-h-0 overflow-hidden opacity-0"
+                            } `}
+                        >
+                            <div class="">
+                                {header.categories.map((category) => {
+                                    const dropdown = useDropdown();
+                                    const isOpen = useSignal(false);
+                                    return (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                window.location.href = `/shop/${category.slug}`;
+                                            }}
+                                            class={`flex gap-2 items-center justify-between p-2   group w-full rounded-md hover:bg-primary ${bgPrimaryHover()}`}
+                                            onFocus={() => {}}
+                                            onBlur={() => {}}
+                                            ref={dropdown.dropdown}
+                                            key={category.id}
+                                            aria-label="sho category"
+                                            onMouseOver={() => {
+                                                isOpen.value = !isOpen.value;
+                                            }}
+                                            onMouseOut={() => {
+                                                isOpen.value = false;
+                                            }}
+                                        >
+                                            <div class="flex gap-3 items-center dark:text-white justify-between w-full">
+                                                <div class="flex gap-2 w-full">
+                                                    {category.icon ? (
+                                                        <div
+                                                            dangerouslySetInnerHTML={{
+                                                                __html: category.icon,
+                                                            }}
+                                                        />
+                                                    ) : null}
+                                                    <span class="font-semibold">
+                                                        {category.name}
+                                                    </span>
+                                                </div>
+                                                {category.subcategories
+                                                    .length &&
+                                                storageEmpresa?.setting
+                                                    .is_subcategory ? (
+                                                    <button
+                                                        type="button"
+                                                        aria-label="on subcategory"
+                                                    >
+                                                        <i class="far fa-chevron-right" />
+                                                    </button>
+                                                ) : null}
+                                                {category.subcategories
+                                                    .length &&
+                                                storageEmpresa?.setting
+                                                    .is_subcategory ? (
+                                                    <div
+                                                        class={`flex p-2 min-w-[300px]  bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  left-[19rem]  shadow-lg ${
+                                                            isOpen.value
+                                                                ? "max-h-[800px]  opacity-100"
+                                                                : "max-h-0 overflow-hidden opacity-0"
+                                                        }`}
+                                                    >
+                                                        {category.subcategories.map(
+                                                            (sub) => {
+                                                                const dropdown =
+                                                                    useDropdown();
+                                                                return (
+                                                                    <a
+                                                                        href={`/shop/${category.slug}/${sub.slug}`}
+                                                                        class={`flex gap-2 items-center justify-between p-2   group w-full rounded-md hover:bg-primary ${bgPrimaryHover()}`}
+                                                                        ref={
+                                                                            dropdown.dropdown
+                                                                        }
+                                                                        key={
+                                                                            sub.id
+                                                                        }
+                                                                        aria-label="sho category"
+                                                                    >
+                                                                        <div class="flex gap-3 items-center dark:text-white justify-between w-full">
+                                                                            <span class="font-semibold">
+                                                                                {
+                                                                                    sub.name
+                                                                                }
+                                                                            </span>
+                                                                        </div>
+                                                                    </a>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {header.categoriesServices.length ? (
+                                <>
+                                    {header.categoriesServices.map(
+                                        (category) => (
+                                            <>
+                                                <button
+                                                    key={category.id}
+                                                    type="button"
+                                                    aria-label="marcas"
+                                                    class={`flex gap-2 items-center justify-between p-2 hover:bg-primary  ${bgPrimaryHover()}  group w-full rounded-md  relative group `}
+                                                >
+                                                    <div class="flex gap-3 items-center dark:text-white">
+                                                        {category.icon ? (
+                                                            <div
+                                                                dangerouslySetInnerHTML={{
+                                                                    __html: category.icon,
+                                                                }}
+                                                            />
+                                                        ) : null}
+                                                        <span class="font-semibold">
+                                                            {category.name}
+                                                        </span>
+                                                    </div>
+                                                    <div class="absolute rounded-md right-[-312px] min-w-[300px]  p-2 bg-background-light dark:bg-paper-dark rounded-b-md flex-col hidden group-hover:flex">
+                                                        {category.products.map(
+                                                            (service) => (
+                                                                <a
+                                                                    href={`/servicio/${service.slug}`}
+                                                                    class={`flex gap-2 items-center justify-between p-2   w-full rounded-md hover:bg-primary ${bgPrimaryHover()} `}
+                                                                    key={
+                                                                        service.id
+                                                                    }
+                                                                    aria-label="show category"
+                                                                >
+                                                                    <div class="flex gap-2 items-center ">
+                                                                        <span class="font-semibold">
+                                                                            {
+                                                                                service.name
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                </a>
+                                                            )
+                                                        )}
+                                                    </div>
+                                                </button>
+                                            </>
+                                        )
+                                    )}
+                                </>
+                            ) : null}
+                            {header.brands.length ? (
+                                <button
+                                    type="button"
+                                    aria-label="marcas"
+                                    class={`flex gap-2 items-center justify-between p-2 hover:bg-primary ${bgPrimaryHover()} group w-full rounded-md  relative group  `}
+                                >
+                                    <div class="flex gap-3 items-center dark:text-white">
+                                        <i
+                                            class={`fa${
+                                                storageEmpresa?.setting
+                                                    .type_icons_bars ===
+                                                "normal"
+                                                    ? "s"
+                                                    : "r"
+                                            } fa-tag`}
+                                        />
+                                        <span class="font-semibold">
+                                            Marcas
+                                        </span>
+                                    </div>
+                                    <div class="absolute rounded-md right-[-312px] min-w-[300px]  p-2 bg-background-light dark:bg-paper-dark rounded-b-md flex-col hidden group-hover:flex">
+                                        {header.brands.map((brand) => (
+                                            <a
+                                                href={`/marcas/${brand.slug}`}
+                                                class={`flex gap-2 items-center justify-between p-2   w-full rounded-md hover:bg-primary  ${bgPrimaryHover()}`}
+                                                key={brand.id}
+                                                aria-label="sho category"
+                                            >
+                                                <div class="flex gap-2 items-center ">
+                                                    {brand.image ? (
+                                                        <img
+                                                            loading="lazy"
+                                                            class="object-contain w-[30px] h-[30px]"
+                                                            width={100}
+                                                            height={100}
+                                                            alt={brand.name}
+                                                            title={brand.name}
+                                                            src={
+                                                                printFileWithDimension(
+                                                                    brand.image,
+                                                                    100
+                                                                )[0]
+                                                            }
+                                                        />
+                                                    ) : null}
+                                                    <span class="font-semibold">
+                                                        {brand.name}
+                                                    </span>
+                                                </div>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </button>
+                            ) : null}
+                        </div>
+                    ) : null}
+                </div>
+            ) : null}
+            {storageEmpresa!.pages
+                .filter((page) => page.slug !== "shop")
+                .map((page) => {
+                    if (
+                        (page.slug === "services" ||
+                            page.slug === "servicios") &&
+                        !storageEmpresa!.setting.header.services
+                    ) {
+                        return null;
+                    }
+                    if (
+                        (page.slug === "about" || page.slug === "nosotros") &&
+                        !storageEmpresa!.setting.header.about
+                    ) {
+                        return null;
+                    }
+                    return (
+                        <a
+                            key={page.id}
+                            class={` font-bold tracking-widest dark:hover:text-primary text-sm uppercase ${
+                                isActive(`/${page.slug}`, false)
+                                    ? "text-primary after:scale-x-100 "
+                                    : " dark:text-white hover:text-primary"
+                            }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                            href={`/${page.slug}`}
+                        >
+                            {page.title}
+                        </a>
+                    );
+                })}
+            {storageEmpresa?.setting.header.profile ? (
+                <a
+                    class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
+                        isActive("/auth/profile", true)
+                            ? "text-primary after:scale-x-100"
+                            : " dark:text-white hover:text-primary"
+                    }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                    href={"/auth/profile"}
+                >
+                    Mi Perfil
+                </a>
+            ) : null}
+            {storageEmpresa?.setting.header.pedidos ? (
+                <a
+                    class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
+                        isActive("/pedidos")
+                            ? "text-primary after:scale-x-100"
+                            : " dark:text-white hover:text-primary "
+                    }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                    href={"/pedidos"}
+                >
+                    Pedidos
+                </a>
+            ) : null}
+            {storageEmpresa?.setting.header.condiciones ? (
+                <div class="relative">
+                    <button
+                        type="button"
+                        class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1  hover:text-primary  delay-custom-1 ${
+                            isActive("/terminos-y-condiciones") ||
+                            isActive("/politica-de-privacidad") ||
+                            isActive("/libro-de-reclamaciones")
+                                ? "text-primary after:scale-x-100"
+                                : " dark:text-white "
+                        }  relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-primary after:left-0 after:-bottom-1 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                        onBlur={() => {}}
+                        onFocus={() => {}}
+                        onMouseOver={() => {
+                            isOpenCondiciones.value = !isOpenCondiciones.value;
+                        }}
+                        onMouseOut={() => {
+                            isOpenCondiciones.value = false;
+                        }}
+                    >
+                        Condiciones de Uso
+                    </button>
+                    <div
+                        onFocus={() => {}}
+                        onBlur={() => {}}
+                        onMouseOver={() => {
+                            isOpenCondiciones.value = true;
+                        }}
+                        onMouseOut={() => {
+                            isOpenCondiciones.value = false;
+                        }}
+                        class={`flex p-2 min-w-[240px] bg-background-light dark:bg-paper-dark rounded-b-md flex-col  z-[99] absolute delay-custom-1  right-0 left-0 shadow-lg ${
+                            isOpenCondiciones.value
+                                ? "max-h-[800px]  opacity-100"
+                                : "max-h-0 overflow-hidden opacity-0"
+                        } `}
+                    >
+                        <div class="">
+                            <a
+                                href="/terminos-y-condiciones"
+                                class={`flex gap-2 items-center justify-between p-2 hover:bg-primary  ${bgPrimaryHover()} group w-full rounded-md`}
+                            >
+                                <div class="flex gap-3 items-center dark:text-white">
+                                    <span class="font-semibold">
+                                        Términos y Condiciones
+                                    </span>
+                                </div>
+                            </a>
+                            <a
+                                href="/politica-de-privacidad"
+                                class={`flex gap-2 items-center justify-between p-2  hover:bg-primary ${bgPrimaryHover()} group w-full rounded-md `}
+                            >
+                                <div class="flex gap-3 items-center dark:text-white">
+                                    <span class="font-semibold">
+                                        Política y Privacidad
+                                    </span>
+                                </div>
+                            </a>
+                            <a
+                                href="/libro-de-reclamaciones"
+                                class={`flex gap-2 items-center  hover:bg-primary justify-between p-2  ${bgPrimaryHover()} group w-full rounded-md`}
+                            >
+                                <div class="flex gap-3 items-center dark:text-white">
+                                    <span class="font-semibold">
+                                        Libro de Reclamaciones
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
+        </nav>
     );
 }
 

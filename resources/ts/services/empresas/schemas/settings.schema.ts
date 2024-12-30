@@ -131,7 +131,7 @@ export const settingsSchema = object({
         "Tipo de estrella no válido"
     ),
     header_type: union(
-        [literal("normal"), literal("search"), literal("transparent")],
+        [literal("normal"), literal("search"), literal("transparent"),literal("search2")],
         "Tipo de header no válido"
     ),
     logo_width: number(),
