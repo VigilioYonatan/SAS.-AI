@@ -86,14 +86,22 @@ function ProductsUsers({
                                                     .length > 1
                                                     ? "left-2"
                                                     : "left-3"
-                                            } text-sm text-white font-bold`}
+                                            } text-sm ${
+                                                storageEmpresa?.setting
+                                                    .type_icons_bars ===
+                                                "normal"
+                                                    ? "text-white"
+                                                    : "text-primary"
+                                            } font-bold`}
                                         >
                                             {(Number(product.favoritescount) ??
                                                 0) > 99
                                                 ? "+99"
                                                 : product.favoritescount}
                                         </span>
-                                        <i class="fas fa-heart text-3xl text-primary" />
+                                        <i
+                                            class={`fa${typeIcon1} fa-heart text-3xl text-primary`}
+                                        />
                                     </span>
                                     <ProductCard.footer className="pt-0" />
                                 </div>
@@ -210,14 +218,22 @@ function ProductsUsers({
                                                     .length > 1
                                                     ? "left-2"
                                                     : "left-3"
-                                            }  text-sm text-white font-bold`}
+                                            }  text-sm ${
+                                                storageEmpresa?.setting
+                                                    .type_icons_bars ===
+                                                "normal"
+                                                    ? "text-white"
+                                                    : "text-primary"
+                                            }  font-bold`}
                                         >
                                             {(Number(product.quantity) ?? 0) >
                                             99
                                                 ? "+99"
                                                 : product.quantity}
                                         </span>
-                                        <i class="fa-solid fa-comment text-3xl text-primary" />
+                                        <i
+                                            class={`fa${typeIcon1} fa-comment text-3xl text-primary`}
+                                        />
                                     </span>
                                     <ProductCard.footer className="pt-0" />
                                 </div>

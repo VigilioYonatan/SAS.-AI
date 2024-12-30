@@ -31,7 +31,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                     <Slider
                         className="posts-section-slide"
                         {...{
-                            dots: false,
+                            dots: true,
                             arrows: true,
                             infinite: false,
                             speed: 500,
