@@ -121,6 +121,7 @@ export const settingsSchema = object({
         categories_slider: boolean(),
         offers_section: boolean(),
         offers_user: boolean(),
+        users: boolean(),
     }),
     type_map: union(
         [literal("normal"), literal("satelite"), literal("secondary")],

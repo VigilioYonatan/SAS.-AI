@@ -132,6 +132,7 @@ export const settingsSchema = objectAsync({
         offers_section: boolean(),
         offers_user: boolean(),
         categories_slider: boolean(),
+        users: boolean(),
     }),
     header: object({
         home: boolean(),

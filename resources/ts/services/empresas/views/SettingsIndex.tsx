@@ -2148,6 +2148,10 @@ function SettingsIndex() {
                                 title="Seccion Ofertas"
                             />
                             <Form.control.toggle
+                                name={"shows.users" as keyof SettingsUpdateDto}
+                                title="Seccion Usuarios Cards"
+                            />
+                            <Form.control.toggle
                                 name={
                                     "shows.offers_user" as keyof SettingsUpdateDto
                                 }
