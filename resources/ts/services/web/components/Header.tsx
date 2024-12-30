@@ -503,13 +503,15 @@ function Header({ header }: HeaderProps) {
                             .filter((page) => page.slug !== "shop")
                             .map((page) => {
                                 if (
-                                    page.slug === "services" &&
+                                    (page.slug === "services" ||
+                                        page.slug === "servicios") &&
                                     !storageEmpresa!.setting.header.services
                                 ) {
                                     return null;
                                 }
                                 if (
-                                    page.slug === "about" &&
+                                    (page.slug === "about" ||
+                                        page.slug === "nosotros") &&
                                     !storageEmpresa!.setting.header.about
                                 ) {
                                     return null;
