@@ -46,16 +46,27 @@ export async function getFilesEdit(
               })
             : files;
 
+        function fetchWithTimeout(url: string, timeout: number) {
+            return Promise.race([
+                fetch(url),
+                new Promise<never>((_, reject) =>
+                    setTimeout(
+                        () => reject(new Error("Request timed out")),
+                        timeout
+                    )
+                ),
+            ]);
+        }
         const response = await Promise.all(
             filterImages.map(async (file) => {
                 try {
-                    // probar si el primer fetch funciona si no no
-                    return await fetch(
+                    const url =
                         file.file?.startsWith("https://") ||
-                            file.file?.startsWith("http://")
+                        file.file?.startsWith("http://")
                             ? `/proxy?url=${file.file!}`
-                            : `${BASE_URL}/empresas/${storageEmpresa?.slug}/${file.file}`
-                    );
+                            : `${BASE_URL}/empresas/${storageEmpresa?.slug}/${file.file}`;
+
+                    return await fetchWithTimeout(url, 10000);
                 } catch (error) {
                     return null;
                 }
