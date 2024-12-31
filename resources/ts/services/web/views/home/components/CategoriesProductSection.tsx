@@ -110,11 +110,14 @@ function CategoriesProductSection({
                                         product={product}
                                         key={product.id}
                                         className={`${
-                                            i + 1 ===
-                                                category.products.length &&
                                             category.products.length % 2 === 0
                                                 ? ""
-                                                : "last-child"
+                                                : ` ${
+                                                      i + 1 ===
+                                                      category.products.length
+                                                          ? "last-child "
+                                                          : ""
+                                                  }`
                                         }`}
                                     >
                                         <ProductCard.header>
