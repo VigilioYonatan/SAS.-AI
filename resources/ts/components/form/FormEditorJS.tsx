@@ -9,7 +9,7 @@ import type {
     UseFormReturn,
 } from "react-hook-form";
 import FilesIndex from "@/empresas/views/FilesIndex";
-import MonacoEditor from "@monaco-editor/react";
+import MonacoEditor, { OnMount } from "@monaco-editor/react";
 import useThemeStore from "~/stores/theme.store";
 import { useSignal } from "@preact/signals";
 import { ChangeEvent, HTMLProps } from "preact/compat";
@@ -41,6 +41,143 @@ function FormEditorJSControl<T extends object>({
     } = useContext<UseFormReturn<T, unknown, FieldValues>>(FormControlContext);
     const value = watch(name as Path<T>);
     const err = anidarPropiedades(errors, (name as string).split("."));
+    const handleEditorMount: OnMount = (editor, monaco) => {
+        const model = editor.getModel();
+
+        if (model) {
+            // Agregar autocierre de etiquetas
+            editor.onDidChangeModelContent(() => {
+                const position = editor.getPosition();
+                if (!model || !position) return;
+
+                const lineContent = model.getLineContent(position.lineNumber);
+                const match = lineContent.match(/<([a-zA-Z]+)>$/); // Detectar etiquetas abiertas
+                if (match) {
+                    const tagName = match[1];
+                    const insertPosition = {
+                        column: position.column,
+                        lineNumber: position.lineNumber,
+                    };
+                    editor.executeEdits("", [
+                        {
+                            range: {
+                                startLineNumber: insertPosition.lineNumber,
+                                startColumn: insertPosition.column,
+                                endLineNumber: insertPosition.lineNumber,
+                                endColumn: insertPosition.column,
+                            },
+                            text: `</${tagName}>`,
+                        },
+                    ]);
+
+                    // Mover el cursor entre las etiquetas
+                    editor.setPosition({
+                        lineNumber: insertPosition.lineNumber,
+                        column: insertPosition.column,
+                    });
+                }
+            });
+
+            // Agregar validación de etiquetas y atributos requeridos
+            editor.onDidChangeModelContent(() => {
+                const text = model.getValue();
+                const markers = [];
+
+                // Definir las reglas de validación
+                const validationRules = [
+                    {
+                        tag: "img",
+                        requiredAttributes: [
+                            "alt",
+                            "title",
+                            "data-image",
+                            "width",
+                            "height",
+                        ],
+                        message: `<img> debe tener atributos "width", "height","alt", "title" y "data-image".`,
+                    },
+                    {
+                        tag: "video",
+                        requiredAttributes: [
+                            "alt",
+                            "data-image",
+                            "width",
+                            "height",
+                        ],
+                        message: `<video> debe tener atributos "width", "height", "alt" y "data-image".`,
+                    },
+                    {
+                        tag: "button",
+                        requiredAttributes: ["data-label", "type"],
+                        message: `<button> debe tener el atributo "data-label y type".`,
+                    },
+                    {
+                        tag: "a",
+                        requiredAttributes: ["data-label", "href"],
+                        message: `<a> debe tener el atributo "data-label" o "href".`,
+                    },
+                ];
+
+                for (const rule of validationRules) {
+                    const regex = new RegExp(`<${rule.tag}\\b[^>]*>`, "g");
+                    const matches = text.matchAll(regex);
+
+                    for (const match of matches) {
+                        const tag = match[0];
+                        if (
+                            !rule.requiredAttributes.every((attr) =>
+                                new RegExp(`${attr}=`).test(tag)
+                            )
+                        ) {
+                            markers.push({
+                                startLineNumber: text
+                                    .substring(0, match.index)
+                                    .split("\n").length,
+                                startColumn:
+                                    match.index -
+                                    text.lastIndexOf("\n", match.index) +
+                                    1,
+                                endLineNumber: text
+                                    .substring(0, match.index)
+                                    .split("\n").length,
+                                endColumn:
+                                    match.index -
+                                    text.lastIndexOf("\n", match.index) +
+                                    tag.length +
+                                    1,
+                                message: rule.message,
+                                severity: monaco.MarkerSeverity.Warning,
+                            });
+                        }
+                    }
+                }
+
+                // Establecer marcadores en el editor
+                monaco.editor.setModelMarkers(model, "html", markers);
+            });
+            // Función para formatear el HTML
+            const formatHTML = () => {
+                const action = editor.getAction("editor.action.formatDocument");
+                if (action) {
+                    action.run();
+                }
+            };
+
+            // Opcional: Agregar un botón para formatear el HTML
+            const toolbar = document.querySelector(".monaco-editor");
+            if (toolbar) {
+                const button = document.createElement("button");
+                const i = document.createElement("i");
+                i.className = "fa-solid fa-code";
+                button.type = "button";
+                button.className =
+                    "absolute z-[99] top-0 bg-primary text-white rounded-md px-1 py-0.5 ";
+                button.appendChild(i);
+                button.onclick = formatHTML;
+                toolbar.appendChild(button);
+            }
+        }
+    };
 
     return (
         <div class="w-full mb-2">
@@ -103,6 +240,7 @@ function FormEditorJSControl<T extends object>({
                         theme={
                             useThemeStore().state === "dark" ? "vs-dark" : ""
                         }
+                        onMount={handleEditorMount}
                     />
                 )}
 
