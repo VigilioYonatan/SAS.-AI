@@ -96,10 +96,15 @@ export async function initial() {
             where: { empresa_id: empresa!.id },
             defaults: { type_loader: "null" }, // Valores predeterminados si se crea
         });
+        const text_color = await Settings.findOrCreate({
+            where: { empresa_id: empresa!.id },
+            defaults: { text_color: "transparent" }, // Valores predeterminados si se crea
+        });
         const enabled_zoho_mail = await Empresas.findOrCreate({
             where: { id: empresa!.id },
             defaults: { enabled_zoho_mail: false }, // Valores predeterminados si se crea
         });
+
         if (!bg_color_header[1] && !bg_color_header[0].bg_color_header) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await bg_color_header[0].update({ bg_color_header: "transparent" });
@@ -129,6 +134,12 @@ export async function initial() {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await type_loader[0].update({
                 type_loader: "null" as Settings["type_loader"],
+            });
+        }
+        if (!text_color[1] && !text_color[0].text_color) {
+            // Si ya existía el registro pero el valor está vacío, actualizarlo
+            await text_color[0].update({
+                text_color: "transparent" as Settings["text_color"],
             });
         }
 
