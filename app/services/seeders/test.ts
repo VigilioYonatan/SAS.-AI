@@ -34,6 +34,7 @@ export const test: Pick<
         bg_color_button: "#c80000",
         isCoverImage: true,
         isScrolling: false,
+        type_loader: "null",
         is_hidde_total_cart: true,
         isDark: false,
         isLogoImage: false,

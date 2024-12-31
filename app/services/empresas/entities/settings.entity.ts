@@ -230,6 +230,7 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
 
     @Column({
         type: DataType.STRING(60),
+        defaultValue: "null",
     })
     type_loader: SettingsSchema["type_loader"];
 
