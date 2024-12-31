@@ -19,7 +19,7 @@ function GridBanners({ grid, i }: GridBanners) {
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             {gr.html ? (
                 <div
-                    class={`w-full  grid banners-${i} relative`}
+                    class={`w-full   banners-${i} relative`}
                     dangerouslySetInnerHTML={{ __html: gr.html }}
                 />
             ) : null}
@@ -46,7 +46,7 @@ export function GridBannersPage({ grid, i }: GridBannersPageProps) {
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
             {gr.html ? (
                 <div
-                    class={`w-full  grid banners-${i} relative`}
+                    class={`w-full   banners-${i} relative`}
                     dangerouslySetInnerHTML={{ __html: gr.html }}
                 />
             ) : null}
