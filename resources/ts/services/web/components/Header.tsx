@@ -119,7 +119,7 @@ function Header({ header }: HeaderProps) {
                         : "color: #FFFFFF !important"};
                 }
                 .bg-primary {
-                    ${empresaStore.state!.setting.text_color === "transparent"
+                    ${empresaStore.state!.setting.text_color !== "transparent"
                         ? empresaStore.state!.setting.text_color
                         : isColorLight(empresaStore.state!.setting.bg_color)
                         ? "color: #000000 !important"
