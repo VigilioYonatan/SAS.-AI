@@ -141,10 +141,10 @@
     height: 300px;
 }
 @media screen and (min-width: 700px) {
-    .categories-products-section > div > div > div:last-child {
+    .categories-products-section > div > div > .last-child {
         grid-column: span 1;
     }
-    .categories-products-section > div > div > div:last-child img {
+    .categories-products-section > div > div > .last-child img {
         height: 180px;
     }
 }

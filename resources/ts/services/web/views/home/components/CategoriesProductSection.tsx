@@ -105,10 +105,17 @@ function CategoriesProductSection({
                                     </a>
                                 ) : null}
 
-                                {category.products.map((product) => (
+                                {category.products.map((product, i) => (
                                     <ProductCard
                                         product={product}
                                         key={product.id}
+                                        className={`${
+                                            i + 1 ===
+                                                category.products.length &&
+                                            category.products.length % 2 === 0
+                                                ? "last-child"
+                                                : ""
+                                        }`}
                                     >
                                         <ProductCard.header>
                                             <ProductCard.buttons isAbsolute />
