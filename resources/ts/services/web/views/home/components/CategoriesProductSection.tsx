@@ -113,8 +113,8 @@ function CategoriesProductSection({
                                             i + 1 ===
                                                 category.products.length &&
                                             category.products.length % 2 === 0
-                                                ? "last-child"
-                                                : ""
+                                                ? ""
+                                                : "last-child"
                                         }`}
                                     >
                                         <ProductCard.header>
