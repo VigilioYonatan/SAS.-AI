@@ -794,31 +794,31 @@ export class EmpresasApiService {
             } else {
                 await GridBanner.bulkCreate([
                     {
-                        html: "",
+                        html: null,
                         enabled: false,
                         empresa_id: empresa!.id,
                         title: null,
                     },
                     {
-                        html: "",
+                        html: null,
                         enabled: false,
                         title: null,
                         empresa_id: empresa!.id,
                     },
                     {
-                        html: "",
+                        html: null,
                         enabled: false,
                         title: null,
                         empresa_id: empresa!.id,
                     },
                     {
-                        html: "",
+                        html: null,
                         title: null,
                         enabled: false,
                         empresa_id: empresa!.id,
                     },
                     {
-                        html: "",
+                        html: null,
                         title: null,
                         enabled: false,
                         empresa_id: empresa!.id,
@@ -1231,7 +1231,8 @@ export class EmpresasApiService {
             if (enviroments.NODE_ENV === "production" && body.isWhatsappFree) {
                 // crear whatsapp contenedor
                 await terminal(
-                    `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --restart always --memory="2000m" --memory-swap="2000m" --cpus="2" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`
+                    `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --restart always --memory="2000m" --memory-swap="2000m" --cpus="2" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`,
+                    true
                 );
                 // // eliminar docker en 15 dias
                 // const fechaUTC5 = new Date();
@@ -1253,7 +1254,11 @@ export class EmpresasApiService {
             // biome-ignore lint/suspicious/noConsoleLog: <explanation> 2
             console.log((error as Error).message);
             if (empresa) {
-                empresa.destroy();
+                await GridBanner.destroy({ where: { empresa_id: empresa.id } });
+                await GridBannerPage.destroy({
+                    where: { empresa_id: empresa.id },
+                });
+                await empresa.destroy();
             }
             throw new InternalServerErrorException("Error al agregar empresa");
         }

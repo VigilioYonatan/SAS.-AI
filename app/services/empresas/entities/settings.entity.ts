@@ -204,11 +204,6 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     web_script: string | null;
 
     @Column({
-        type: DataType.TEXT,
-    })
-    sc: string | null;
-
-    @Column({
         type: DataType.JSON,
     })
     header_position: { logo: number; navbar: number; icons: number };
