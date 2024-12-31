@@ -3,13 +3,14 @@
 
 <head>
   <% if(locals.$empresa?.dial_code ==="51"){   %>
-   <link rel="stylesheet" href="https://static.micuentaweb.pe/static/js/krypton-client/V4.0/ext/classic-reset.css">
+  <link rel="stylesheet" href="https://static.micuentaweb.pe/static/js/krypton-client/V4.0/ext/classic-reset.css">
   <script type="text/javascript" src="https://static.micuentaweb.pe/static/js/krypton-client/V4.0/ext/classic.js"></script>
   <% } %>
   <%- include('../components/webHead',{title:"Carrito de compra",description:"Tu carrito de compra"}) %>
 </head>
 
 <body class="bg-paper-light dark:bg-paper-dark antialiased">
+  <%- include("../components/loader.ejs")  %>
   <cart-page :cart="<%= JSON.stringify(cart) %>" :header="<%= JSON.stringify(header)  %>"></cart-page>
 </body>
 

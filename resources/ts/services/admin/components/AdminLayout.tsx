@@ -232,7 +232,9 @@ function AdminLayout({ children }: AdminLayoutProps) {
         >
             <style jsx>{`
                 .bg-primary {
-                    ${isColorLight(storageEmpresa!.setting.bg_color)
+                    ${empresaStore.state!.setting.text_color === "transparent"
+                        ? empresaStore.state!.setting.text_color
+                        : isColorLight(empresaStore.state!.setting.bg_color)
                         ? "color: #000000 !important"
                         : "color: #FFFFFF !important"};
                 }

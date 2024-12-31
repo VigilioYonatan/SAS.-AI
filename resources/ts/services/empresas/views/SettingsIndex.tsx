@@ -711,6 +711,12 @@ function SettingsIndex() {
                                 title="Color Aside Responsive"
                             />
                         </div>
+                        <div class="w-[120px]">
+                            <Form.control.color
+                                name={"text_color" as keyof SettingsUpdateDto}
+                                title="Forzar color texto"
+                            />
+                        </div>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4">
                         <Form.control.toggle

@@ -32,7 +32,9 @@ function LoginPage() {
                         : "color: #FFFFFF !important"};
                 }
                 .bg-primary {
-                    ${isColorLight(storageEmpresa!.setting.bg_color)
+                    ${storageEmpresa!.setting.text_color === "transparent"
+                        ? storageEmpresa!.setting.text_color
+                        : isColorLight(storageEmpresa!.setting.bg_color)
                         ? "color: #000000 !important"
                         : "color: #FFFFFF !important"};
                 }

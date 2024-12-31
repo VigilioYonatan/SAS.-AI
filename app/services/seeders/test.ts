@@ -19,6 +19,7 @@ export const test: Pick<
         bg_color_footer: "#000000",
         bg_color_secondary: "#dc2626",
         type_animation: "fade-up",
+        text_color: "transparent",
         background_auth: [
             {
                 file: "images/settings/cb14aa25-020d-4ef5-90fd-49f7a3c78432msibkx100.webp",

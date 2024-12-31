@@ -10,6 +10,7 @@
 </head>
 
 <body class="bg-paper-light dark:bg-paper-dark antialiased">
+  <%- include("../components/loader.ejs")  %>
   <cart-servicio-page :header="<%= JSON.stringify(header)  %>" :servicio="<%= JSON.stringify(servicio)  %>">
   </cart-servicio-page>
 </body>

@@ -6,6 +6,7 @@
 </head>
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
+  <%- include("../components/loader.ejs")  %>
   <servicios-page title="<%= title  %>" :header="<%= JSON.stringify(header)  %>" :grid_banner_pages="<%=JSON.stringify(grid_banner_pages)  %>">
     <% for(grid of grid_banner_pages){  %>
     <% if(grid.enabled){ %>

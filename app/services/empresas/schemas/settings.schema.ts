@@ -46,6 +46,7 @@ export const settingsSchema = objectAsync({
     bg_color_secondary: string(),
     bg_color_header: string([minLength(2), maxLength(20)]),
     bg_color_aside: string([minLength(2), maxLength(20)]),
+    text_color: string([minLength(2), maxLength(20)]),
     bg_color_button: string(),
     isDark: boolean(),
     type_border: union(

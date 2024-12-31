@@ -52,6 +52,7 @@ export const settingsSchema = object({
     bg_color_button: string(),
     bg_color_header: string([minLength(2), maxLength(20)]),
     bg_color_aside: string([minLength(2), maxLength(20)]),
+    text_color: string([minLength(2), maxLength(20)]),
     bg_color_background: string(),
     is_subcategory: boolean(),
     is_service_page: boolean(),
