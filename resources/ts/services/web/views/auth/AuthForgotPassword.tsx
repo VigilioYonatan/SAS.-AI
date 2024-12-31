@@ -65,7 +65,9 @@ function AuthForgotPassword({ user }: AuthForgotPasswordProps) {
                 }
                 .bg-primary {
                     ${storageEmpresa!.setting.text_color !== "transparent"
-                        ? storageEmpresa!.setting.text_color
+                        ? `color: ${
+                              storageEmpresa!.setting.text_color
+                          } !important`
                         : isColorLight(storageEmpresa!.setting.bg_color)
                         ? "color: #000000 !important"
                         : "color: #FFFFFF !important"};
