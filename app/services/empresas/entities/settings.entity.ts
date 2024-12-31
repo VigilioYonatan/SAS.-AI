@@ -231,6 +231,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     @Column({
         type: DataType.STRING(60),
     })
+    type_loader: SettingsSchema["type_loader"];
+
+    @Column({
+        type: DataType.STRING(60),
+    })
     type_product_buttons: SettingsSchema["type_product_buttons"];
 
     @Column({

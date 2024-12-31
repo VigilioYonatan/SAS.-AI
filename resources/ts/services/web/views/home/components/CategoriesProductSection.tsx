@@ -27,7 +27,7 @@ function CategoriesProductSection({
             {getProductsByCategories.map((category, i) => (
                 <div
                     key={category.id}
-                    class="flex lg:flex-row gap-6  overflow-hidden"
+                    class={`product-${category.slug} flex lg:flex-row gap-6  overflow-hidden  `}
                     data-aos={`${
                         storageEmpresa?.setting.isScrolling
                             ? storageEmpresa.setting.type_animation

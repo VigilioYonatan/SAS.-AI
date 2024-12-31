@@ -27,7 +27,11 @@ import {
     settingsDominioUpdateApi,
 } from "../apis/settings/dominio.update.api";
 import { Input, pick } from "@vigilio/valibot";
-import { hamburgers, hostSchema } from "../schemas/settings.schema";
+import {
+    hamburgers,
+    hostSchema,
+    SettingsSchema,
+} from "../schemas/settings.schema";
 import useAuthStore from "@/auth/stores/auth.store";
 import { Link } from "wouter-preact";
 import LogoImage from "~/components/LogoImage";
@@ -49,6 +53,12 @@ import MapValue, { typeMap } from "~/components/MapValue";
 import AlertWarning from "~/components/Alerts/AlertWarning";
 import { BASE_URL } from "~/config";
 import { SamplePrevArrow } from "@/web/components/ArrowsSlider";
+import {
+    LoaderFour,
+    LoaderOne,
+    LoaderThree,
+    LoaderTwo,
+} from "../components/LoaderCharging";
 
 const dominioUpdate = pick(hostSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
@@ -133,6 +143,7 @@ function SettingsIndex() {
         const isLogoImage = settingsUpdateform.watch("isLogoImage");
         const bg_color = settingsUpdateform.watch("bg_color");
         const type_arrow = settingsUpdateform.watch("type_arrow");
+        const type_loader = settingsUpdateform.watch("type_loader");
         const bg_color_background = settingsUpdateform.watch(
             "bg_color_background"
         );
@@ -2046,6 +2057,54 @@ function SettingsIndex() {
                                                 <span class="absolute top-[40%] px-2 py-1 rounded-md right-[25%] bg-black bg-opacity-60 text-white">
                                                     {key}
                                                 </span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-xs dark:text-white font-semibold">
+                                Loading
+                            </span>
+                            <div class="flex gap-2 flex-wrap">
+                                <div class="flex flex-col gap-1">
+                                    <div class="grid grid-cols-3 gap-1">
+                                        {(
+                                            [
+                                                "one",
+                                                "two",
+                                                "three",
+                                                "four",
+                                                "null",
+                                            ] as SettingsSchema["type_loader"][]
+                                        ).map((val) => (
+                                            <button
+                                                key={val}
+                                                class={`flex justify-center items-center min-w-[70px] h-[70px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    type_loader === val
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                } font-semibold text-xs dark:text-white`}
+                                                type="button"
+                                                onClick={() => {
+                                                    settingsUpdateform.setValue(
+                                                        "type_loader",
+                                                        val
+                                                    );
+                                                }}
+                                            >
+                                                {val === "one" ? (
+                                                    <LoaderOne />
+                                                ) : val === "two" ? (
+                                                    <LoaderTwo />
+                                                ) : val === "three" ? (
+                                                    <LoaderThree />
+                                                ) : val === "four" ? (
+                                                    <LoaderFour />
+                                                ) : (
+                                                    "null"
+                                                )}
                                             </button>
                                         ))}
                                     </div>

@@ -51,7 +51,7 @@ function WebLayout({ children, header }: WebLayoutProps) {
     return (
         <>
             <MessagePWA />
-
+            {/* <LoaderCharging /> */}
             {/* <MessageNew /> */}
             <Header header={header} />
             {children}

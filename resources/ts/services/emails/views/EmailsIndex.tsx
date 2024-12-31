@@ -96,8 +96,7 @@ function EmailsIndex() {
                                     {!storageEmpresa!.enabled_zoho_mail ? (
                                         <Helper top={0} key={0} right={0}>
                                             <span class="text-xs">
-                                                Obtener Zoho Email{" "}
-                                                <a href="/admin/plus">Ir</a>
+                                                Obtener Zoho EmActivar Zoho Mail
                                             </span>
                                         </Helper>
                                     ) : null}

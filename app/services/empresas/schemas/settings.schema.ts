@@ -154,6 +154,16 @@ export const settingsSchema = objectAsync({
         [literal("normal"), literal("satelite"), literal("secondary")],
         "Mapa no válido"
     ),
+    type_loader: union(
+        [
+            literal("one"),
+            literal("two"),
+            literal("three"),
+            literal("four"),
+            literal("null"),
+        ],
+        "Type Loader no válido"
+    ),
     type_card: union(
         [literal("normal"), literal("eccomerce")],
         "Tipo de card no válido"

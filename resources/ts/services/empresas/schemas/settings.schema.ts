@@ -111,6 +111,16 @@ export const settingsSchema = object({
         ],
         "Icono Pack no válido"
     ),
+    type_loader: union(
+        [
+            literal("one"),
+            literal("two"),
+            literal("three"),
+            literal("four"),
+            literal("null"),
+        ],
+        "Type Loader no válido"
+    ),
 
     shows: object({
         map: boolean(),
@@ -132,7 +142,12 @@ export const settingsSchema = object({
         "Tipo de estrella no válido"
     ),
     header_type: union(
-        [literal("normal"), literal("search"), literal("transparent"),literal("search2")],
+        [
+            literal("normal"),
+            literal("search"),
+            literal("transparent"),
+            literal("search2"),
+        ],
         "Tipo de header no válido"
     ),
     logo_width: number(),

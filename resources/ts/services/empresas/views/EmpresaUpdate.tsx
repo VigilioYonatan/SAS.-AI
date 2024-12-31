@@ -928,7 +928,7 @@ function empresaUpdate() {
                                         <span class="text-xs">
                                             Activar Zoho Mail{" "}
                                             <a
-                                                href="/plus"
+                                                href="/admin/plus"
                                                 class="text-primary underline"
                                             >
                                                 Ir
