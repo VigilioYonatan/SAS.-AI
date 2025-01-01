@@ -9,12 +9,18 @@ import {
     type BackgroundStoreDto,
 } from "../dtos/background.store.dto";
 import { backgroundStoreApi } from "../apis/background.store.api";
+import { BackgroundSchemaFromServer } from "../schemas/background.schema";
 
 interface PoststoreProps {
     onClose: () => void;
     refetch: (clean?: boolean) => void;
+    background_latest?: BackgroundSchemaFromServer;
 }
-function BackgroundStore({ onClose, refetch }: PoststoreProps) {
+function BackgroundStore({
+    onClose,
+    refetch,
+    background_latest,
+}: PoststoreProps) {
     const { guards } = useAuthstore();
     if (!guards.permissionAdminGuard()) {
         window.history.back();
@@ -23,6 +29,9 @@ function BackgroundStore({ onClose, refetch }: PoststoreProps) {
     const backgroundStoreDtoForm = useForm<BackgroundStoreDto>({
         resolver: valibotVigilio(backgroundStoreDto),
         mode: "all",
+        defaultValues: {
+            html: background_latest?.html ? background_latest.html : null,
+        },
     });
     const backgroundStoreMutation = backgroundStoreApi();
 

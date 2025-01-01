@@ -204,6 +204,9 @@ function BackgroundIndex() {
                                     <BackgroundStore
                                         onClose={onclose}
                                         refetch={backgroundIndexQuery.refetch}
+                                        background_latest={backgroundIndexQuery.data?.data.at(
+                                            -1
+                                        )}
                                     />
                                 ),
                                 sweetWidth: "1300px",

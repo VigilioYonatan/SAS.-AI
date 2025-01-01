@@ -13,7 +13,6 @@ import "tiny-slider/dist/tiny-slider.css";
 
 Alpine.start();
 AOS.init({
-    duration: 1200, // Duración de la animación
     once: false, // Si quieres que la animación ocurra solo una vez
 });
 render(
