@@ -551,7 +551,7 @@ export async function promptReplace(
                         : ""
                 }  .
                 - No seas tecnico al responderme
-                - Si quiero cancelar CITA, busca por telefono en base de datos de citas. si no hay  dile que no se encontró cita. y si hay preguntame. Estas seguro de cancelar cita a las (la hora de base de datos de la cita encontrada)?- y si digo si. dí esto en el primer parraflo [[CANCELADO_CITA:{"telefono":telefono_que_te_dije,"hour":"la hora que tedije ejemplo 08:00"}]], solo eso [[CANCELADO_CITA:{"telefono":telefono_que_te_dije,"hour":"la hora que tedije ejemplo 08:00"}]] nada mas y en el segundo parrafo dime tu cita ha sido cancelado y agrega mas texto".
+                - 'Si quiero cancelar CITA,  preguntame mi numero de telefono de whatsapp SIEMPRE', busca por telefono en base de datos de citas. si no hay  dile que no se encontró cita. y si hay preguntame. Estas seguro de cancelar cita a las (la hora de base de datos de la cita encontrada)?- y si digo si. dí esto en el primer parraflo [[CANCELADO_CITA:{"telefono":telefono_que_te_dije,"hour":"la hora que tedije ejemplo 08:00"}]], solo eso [[CANCELADO_CITA:{"telefono":telefono_que_te_dije,"hour":"la hora que tedije ejemplo 08:00"}]] nada mas y en el segundo parrafo dime tu cita ha sido cancelado y agrega mas texto".
                 - preguntame mi numero de telefono de whatsapp a la hora de crear cita, consultar cita o cancelar cita.
                 - NO DIGAS QUE VAS A VERIFICAR SI TENGO UNA CITA
                 - A VECES TE DARÉ NUMEROS CON DIAL CODE ejemplo +${
