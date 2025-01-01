@@ -515,7 +515,7 @@ export async function featuresIA(
             where: {
                 date,
                 hour: {
-                    [Op.like]: `${hour}%`,
+                    [Op.like]: `${(hour as string).slice(0, 2)}%`,
                 },
                 empresa_id: empresa.id,
             },
