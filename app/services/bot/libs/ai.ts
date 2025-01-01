@@ -525,10 +525,10 @@ export async function featuresIA(
             raw: true,
         });
 
-        if (citas.length > empresa.citasSetting.maxCitas) {
+        if (citas.length >= empresa.citasSetting.maxCitas) {
             textoNormal =
                 "Parece que has alcanzado el límite para crear citas.";
-        } else if (citasHour.length > empresa.citasSetting.maxCitasForHour) {
+        } else if (citasHour.length >= empresa.citasSetting.maxCitasForHour) {
             textoNormal =
                 "Lo sentimos, ya hay citas programadas para esa hora.";
         } else {
