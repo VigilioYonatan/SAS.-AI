@@ -543,7 +543,7 @@ export async function promptReplace(
                         ? "Hazme las preguntas de uno a uno"
                         : "Hazme las preguntas de una sola, y no uno por uno."
                 }.
-                -IMPORTANTE: despues de hacerme todas las preguntas , hazme confirmar para crear cita .
+                -IMPORTANTE: despues de hacerme todas las preguntas , hazme confirmar para crear cita "¿Quieres confirmar la cita?".
                 - Cuando tengas todos mis datos para crear cita con mis datos EJEMPLO. DI ESTO [[DATOS_CONFIRMADOS:{"la pregunta completa y original que me hiciste de lo que te mande que digas, menos la fecha y hora":"respuesta de que te dije"}]]", . tambien agregame  "date" y "hour", ademas "telefono" en el json, con [[DATOS_CONFIRMADOS:{"pregunta":"respuesta","hour":" "hora" que "te" en el JSON dije ejemplo:08:00, 12:00,22:00 sin el AM Y PM. ojo las horas son de 12 am a 11:59pm. si digo 5pm seria 17 la hora entonces","date":"fecha formato utc para guardar en base de datos","telefono":"telefono lo guardas sin dial code sin espacios, limpio"} ]], porfavor que el json este limpio para usarlo con JSON.parse() . 
                 - Solo dime es [[DATOS_CONFIRMADOS:{...]], solo eso [[DATOS_CONFIRMADOS:{...]] nada mas en el primer parrafo y en el segundo parrafo, ahi si dime, te esperamos pronto " más la fecha y hora que fue creado la cita", ${
                     settingsCitas.sendAlert > 0
@@ -551,7 +551,9 @@ export async function promptReplace(
                         : ""
                 }  .
                 - No seas tecnico al responderme
-                - 'Si quiero cancelar CITA,  preguntame mi numero de telefono de whatsapp SIEMPRE', busca por telefono en base de datos de citas. si no hay  dile que no se encontró cita. y si hay preguntame. Estas seguro de cancelar cita a las (la hora de base de datos de la cita encontrada)?- y si digo si. dí esto en el primer parraflo [[CANCELADO_CITA:{"telefono":telefono_que_te_dije,"hour":"la hora que tedije ejemplo 08:00"}]], solo eso [[CANCELADO_CITA:{"telefono":telefono_que_te_dije,"hour":"la hora que tedije ejemplo 08:00"}]] nada mas y en el segundo parrafo dime tu cita ha sido cancelado y agrega mas texto".
+                - 'Si quiero cancelar CITA,  preguntame mi numero de telefono de whatsapp SIEMPRE', busca por telefono en base de datos de citas. si no hay  dile que no se encontró cita. y si hay preguntame. Estas seguro de cancelar cita a las (la hora de base de datos de la cita encontrada)?- y si digo si. dí esto en el primer parraflo [[CANCELADO_CITA:{"telefono":telefono_que_te_dije sin el dial code ${
+                    empresa.dial_code
+                } solo los numeros,"hour":"la hora que tedije ejemplo 08:00"}]], solo eso [[CANCELADO_CITA:{"telefono":telefono_que_te_dije,"hour":"la hora que tedije ejemplo 08:00"}]] nada mas y en el segundo parrafo dime tu cita ha sido cancelado y agrega mas texto".
                 - preguntame mi numero de telefono de whatsapp a la hora de crear cita, consultar cita o cancelar cita.
                 - NO DIGAS QUE VAS A VERIFICAR SI TENGO UNA CITA
                 - A VECES TE DARÉ NUMEROS CON DIAL CODE ejemplo +${
