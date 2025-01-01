@@ -473,6 +473,7 @@ export async function featuresIA(
     console.log({ completionText });
     if (match2) {
         const { hour, telefono } = JSON.parse(match2[1]);
+        console.log({ hour });
         const findCita = await Citas.findOne({
             where: {
                 telephone: `${
