@@ -411,7 +411,7 @@ export async function promptReplace(
             questionGPT(
                 whatsapp,
                 message,
-                " querer información de querer una cita o agendar reunion o preguntarme de una fecha o hora."
+                " querer información de querer una cita, cancelar cita o agendar reunion o preguntarme de una fecha o hora."
             ),
             questionGPT(whatsapp, message, "si es saludo o despedida."),
             questionGPT(
