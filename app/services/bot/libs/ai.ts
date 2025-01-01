@@ -470,6 +470,7 @@ export async function featuresIA(
         .format();
     const regex2 = /\[\[CANCELADO_CITA:(.*?)\]\]/;
     const match2 = completionText.match(regex2);
+    console.log({ completionText });
     if (match2) {
         const { hour, telefono } = JSON.parse(match2[1]);
         const findCita = await Citas.findOne({
