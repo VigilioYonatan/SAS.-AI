@@ -482,6 +482,7 @@ export async function featuresIA(
                 },
             },
         });
+        console.log({ findCita });
 
         if (findCita) {
             await findCita.destroy();
