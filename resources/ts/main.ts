@@ -12,8 +12,16 @@ import Alpine from "alpinejs";
 import "tiny-slider/dist/tiny-slider.css";
 
 Alpine.start();
-AOS.init({
-    once: false, // Si quieres que la animación ocurra solo una vez
+document.addEventListener("DOMContentLoaded", () => {
+    AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 50,
+    });
+
+    window.onload = () => {
+        AOS.refreshHard();
+    };
 });
 render(
     "Initial",
