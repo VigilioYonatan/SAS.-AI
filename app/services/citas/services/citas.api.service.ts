@@ -130,6 +130,8 @@ export class CitasApiService {
         });
 
         await cita.save();
+        cache.delete(`citas:${empresa.slug}`);
+
         return {
             success: true,
             // cita,
@@ -146,6 +148,7 @@ export class CitasApiService {
             ...citasUpdateDto,
             telephone: `${empresa.dial_code}${citasUpdateDto.telephone}@c.us`,
         });
+        cache.delete(`citas:${empresa.slug}`);
         return {
             success: true,
             cita,
