@@ -475,7 +475,11 @@ export async function featuresIA(
         const { hour, telefono } = JSON.parse(match2[1]);
         const findCita = await Citas.findOne({
             where: {
-                telephone: telefono,
+                telephone: `${
+                    (telefono as string).startsWith(empresa.dial_code)
+                        ? telefono
+                        : `${empresa.dial_code}${telefono}`
+                }@c.us`,
                 empresa_id: empresa.id,
                 hour: {
                     [Op.like]: `${hour}%`,
