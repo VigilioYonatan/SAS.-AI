@@ -1713,6 +1713,7 @@ export class EmpresasApiService {
     async scheduleUpdate(emp: Empresas, body: { schedule: ScheduleSchema[] }) {
         const { empresa } = await this.show(emp.slug);
         await empresa.update({ schedule: body.schedule });
+        cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
             message: "Se edito horario de atención correctamente",
