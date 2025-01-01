@@ -497,6 +497,7 @@ export async function featuresIA(
     }
     const regex = /\[\[DATOS_CONFIRMADOS:(.*?)\]\]/;
     const matchCitas = completionText.match(regex);
+    console.log({ completionText });
     if (matchCitas) {
         const { hour, date, telefono, ...rest } = JSON.parse(matchCitas[1]);
         const citas = await Citas.findAll({
@@ -504,7 +505,9 @@ export async function featuresIA(
                 date: {
                     [Op.between]: [now, after],
                 },
-                telephone: telefono,
+                telephone: {
+                    [Op.like]: `%${telefono}%`,
+                },
                 empresa_id: empresa.id,
             },
             attributes: {
