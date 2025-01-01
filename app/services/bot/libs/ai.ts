@@ -483,7 +483,7 @@ export async function featuresIA(
                 }@c.us`,
                 empresa_id: empresa.id,
                 hour: {
-                    [Op.like]: `${hour}%`,
+                    [Op.like]: `${(hour as string).slice(0, 2)}%`,
                 },
             },
         });
