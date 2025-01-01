@@ -213,7 +213,7 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
             const messages = chatsTelegram[`${empresa.slug}:${userId}`].map(
                 ([role, content]) => ({
                     role,
-                    content: `${content}.'[[en formato telegram, no markdown, revisa base de datos y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA.]]`,
+                    content: `${content}.'[[HAZ TODAS LAS INSTRUCCIONES QUE TE MANDE NO FALLES, trata de escribir poco, y formato telegram, no sobrecargues información]]`,
                 })
             );
             const messageAnterior = messages
