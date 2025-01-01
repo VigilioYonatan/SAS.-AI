@@ -13,7 +13,7 @@ function FindSection() {
                     ? storageEmpresa.setting.type_animation
                     : ""
             } `}
-            class="find-section  h-[400px] md:h-[500px]  px-2  rounded-md   flex flex-col gap-4  my-4 md:my-8"
+            class="find-section  h-[400px] md:h-[500px]  px-2  rounded-md   flex flex-col gap-4  py-4 md:py-8"
         >
             <div
                 class={`w-full relative h-full ${

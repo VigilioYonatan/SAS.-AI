@@ -13,7 +13,7 @@ function GridBanners({ grid, i }: GridBanners) {
     if (!gr?.enabled) return null;
     return (
         <section
-            class={` grid-banner-${i}  max-w-6xl mx-auto my-4 md:my-8 relative `}
+            class={` grid-banner-${i}  max-w-6xl mx-auto py-4 md:p-8 relative `}
         >
             <AdminEdit uri={`/admin/banners?banner=${i}`} />
             {gr.title ? <TitleSection>{gr.title}</TitleSection> : null}
@@ -38,7 +38,7 @@ export function GridBannersPage({ grid, i }: GridBannersPageProps) {
     const ultimoSegmento = segmentos[segmentos.length - 1];
     return (
         <section
-            class={` grid-banner-${i}  max-w-6xl mx-auto my-4 md:my-8 relative`}
+            class={` grid-banner-${i}  max-w-6xl mx-auto py-4 md:py-8 relative`}
         >
             <AdminEdit
                 uri={`/admin/banners?banner=${i}&type=${ultimoSegmento}`}

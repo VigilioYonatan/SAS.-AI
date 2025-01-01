@@ -25,7 +25,7 @@ function UsersSection({ users }: UsersSection) {
                     ? storageEmpresa.setting.type_animation
                     : ""
             } `}
-            class="users-section max-w-6xl mx-auto px-2 my-4 md:my-8 flex flex-col gap-4  group"
+            class="users-section max-w-6xl mx-auto px-2 py-4 md:py-8 flex flex-col gap-4  group"
         >
             <TitleSection>Nuestro Equipo</TitleSection>
             <Slider
