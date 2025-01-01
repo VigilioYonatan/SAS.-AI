@@ -24,7 +24,7 @@ import cron from "node-cron";
 import { promptReplace } from "@/bot/libs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 export function HTMLPROMPT(_empresa: Empresas) {
-    return `- IMPORTANTE: Por ultimo siempre responde con etiquetas html y clases de tailwind,  y recuerda enviar links ó urls con estilos de tailwind underline, (tablas solo carrito de compra ) , etc y usa <b class="font-bold"></b> en vez de **   en palabras importantes. Por ultimo usa solo un <br></br> para separar parrafos, usa etiqueta a <a href="url" class='text-primary underline'>text</a> para links o enlaces, etc. usa <ul class="list-disc list-inside"><li></li></ul>  para listas, pedidos, información, etc. etiqueta de letra p,h1,span esos text-sm, imagenes maximo width 100px,  html limpio no markdown`;
+    return `- IMPORTANTE: Por ultimo siempre responde con etiquetas html y clases de tailwind,  y recuerda enviar links ó urls con ETIQUETA <a></a>  estilos de tailwind underline, (tablas solo carrito de compra ) , etc y usa <b class="font-bold"></b> en vez de **   en palabras importantes. Por ultimo usa solo un <br></br> para separar parrafos, usa etiqueta a <a href="url" class='text-primary underline'>text</a> para links o enlaces, etc. usa <ul class="list-disc list-inside"><li></li></ul>  para listas, pedidos, información, etc. etiqueta de letra p,h1,span esos text-sm, imagenes maximo width 100px,  html limpio no markdown`;
 }
 export let chatAssistantWeb: Record<string, ["user" | "assistant", string][]> =
     {};
@@ -44,7 +44,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
                 [
                     "user",
                     // `${message}. [[en html no mkdown, formato chat persona a persona, no web, los links recuerda <a></a>,imagenes width 100px revisa base de datos y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA!!!.]]`,
-                    `${message}. [[lee y haz las todas las intrucciones que te dije al principio (html,a para links,idioma,citas,etc.), URGENTE]]`,
+                    `${message}. [[HAZ TODAS LAS INSTRUCCIONES QUE TE MANDE NO FALLES, trata de escribir poco, no sobrecargues información]]]`,
                 ],
             ],
         };
