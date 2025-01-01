@@ -361,9 +361,7 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
             messages: [
                 {
                     role: "user",
-                    content: `${promptAssitant(
-                        empresa!
-                    )}. `,
+                    content: `${promptAssitant(empresa!)}. `,
                 },
                 ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
             ],
@@ -615,14 +613,16 @@ export function sendMessageCron({
                 ...(chats[`${empresa.slug}:${userId}`] || []),
                 ["assistant", message],
             ];
-            await whatsappSendMessageApi(empresa, {
-                message: message,
-                telephone: userId,
-                options: {},
-                delay: 3,
-            });
-            // Detener el cron job después de que se ejecute
-            task.stop();
+            try {
+                await whatsappSendMessageApi(empresa, {
+                    message: message,
+                    telephone: userId,
+                    options: {},
+                    delay: 3,
+                });
+                // Detener el cron job después de que se ejecute
+                task.stop();
+            } catch (error) {}
         }
     });
 }
