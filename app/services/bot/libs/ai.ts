@@ -484,6 +484,7 @@ export async function featuresIA(
 
         if (findCita) {
             await findCita.destroy();
+            cache.delete(`citas:${empresa.slug}`);
         }
         const message = completionText
             .replace(regex2, "")
@@ -552,6 +553,7 @@ export async function featuresIA(
                     name: "",
                 });
             }
+            cache.delete(`citas:${empresa.slug}`);
         }
     }
 
