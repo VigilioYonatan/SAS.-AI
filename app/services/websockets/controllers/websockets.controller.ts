@@ -44,7 +44,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
                 [
                     "user",
                     // `${message}. [[en html no mkdown, formato chat persona a persona, no web, los links recuerda <a></a>,imagenes width 100px revisa base de datos y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA!!!.]]`,
-                    `${message}. [[lee y haz las todas las intrucciones que te dije al principio URGENTE]]`,
+                    `${message}. [[lee y haz las todas las intrucciones que te dije al principio (html,links,citas,etc.), URGENTE]]`,
                 ],
             ],
         };
