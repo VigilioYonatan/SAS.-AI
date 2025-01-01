@@ -13,7 +13,7 @@ import MonacoEditor, { OnMount } from "@monaco-editor/react";
 import useThemeStore from "~/stores/theme.store";
 import { useSignal } from "@preact/signals";
 import { ChangeEvent, HTMLProps } from "preact/compat";
-import { HTMLSHOW } from "@/empresas/views/BannersIndex";
+import { HIDDEEDITOR, HTMLSHOW } from "@/empresas/views/BannersIndex";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import { anidarPropiedades } from ".";
@@ -191,6 +191,9 @@ function FormEditorJSControl<T extends object>({
                         <button
                             type="button"
                             onClick={() => {
+                                if (!HIDDEEDITOR) {
+                                    return;
+                                }
                                 mode.value = !mode.value;
                             }}
                         >

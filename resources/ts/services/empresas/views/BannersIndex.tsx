@@ -29,6 +29,9 @@ import { GridBannerPageSchemaFromServer } from "../schemas/grid-banner-page.sche
 import Helper from "~/components/Helper";
 import { PageSchema } from "../schemas/pages.schema";
 export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
+export const HIDDEEDITOR = JSON.parse(
+    localStorage.getItem("hidde-editor") || "false"
+);
 
 function BannersIndex() {
     const typeParams = getParams().get("type");
@@ -238,33 +241,65 @@ function BannersIndex() {
                             </span>
                         </AlertInfo>
                     ) : null}
+
                     <div class="flex justify-between">
                         <span class="font-bold text-sm">
                             Ancho Actual: <b>{widthResponsive}PX</b>{" "}
                         </span>
-                        <label class="text-xs dark:text-white font-semibold relative">
-                            <input
-                                type="checkbox"
-                                checked={showHtml.value}
-                                name="active"
-                                onChange={(e) => {
-                                    showHtml.value = (
-                                        e.target as HTMLInputElement
-                                    ).checked;
-                                    localStorage.setItem(
-                                        "show-html",
-                                        JSON.stringify(showHtml.value)
-                                    );
-                                }}
-                                class="mr-2"
-                            />
-                            Modo Desarrollador
-                            <Helper top={0} key={0} right={0}>
-                                <span>
-                                    Activar, solo si eres un desarrollador.
-                                </span>
-                            </Helper>
-                        </label>
+                        <div class="flex flex-col">
+                            <label class="text-xs dark:text-white font-semibold relative">
+                                <input
+                                    type="checkbox"
+                                    checked={showHtml.value}
+                                    name="active"
+                                    onChange={(e) => {
+                                        showHtml.value = (
+                                            e.target as HTMLInputElement
+                                        ).checked;
+                                        localStorage.setItem(
+                                            "show-html",
+                                            JSON.stringify(showHtml.value)
+                                        );
+                                    }}
+                                    class="mr-2"
+                                />
+                                Modo Desarrollador
+                                <Helper top={0} key={0} right={0}>
+                                    <span>
+                                        Activar, solo si eres un desarrollador.
+                                    </span>
+                                </Helper>
+                            </label>
+                            <label class="text-xs dark:text-white font-semibold relative">
+                                <input
+                                    type="checkbox"
+                                    checked={HIDDEEDITOR}
+                                    name="active2"
+                                    onChange={(e) => {
+                                        const isTrue = (
+                                            e.target as HTMLInputElement
+                                        ).checked;
+                                        if (!isTrue) {
+                                            localStorage.removeItem(
+                                                "hidde-editor"
+                                            );
+                                            return;
+                                        }
+                                        localStorage.setItem(
+                                            "hidde-editor",
+                                            JSON.stringify("true")
+                                        );
+                                    }}
+                                    class="mr-2"
+                                />
+                                Mostrar HTML
+                                <Helper top={0} key={0} right={0}>
+                                    <span>
+                                        Activar, solo si eres un desarrollador.
+                                    </span>
+                                </Helper>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 {component}
