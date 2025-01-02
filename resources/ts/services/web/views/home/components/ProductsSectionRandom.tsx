@@ -31,7 +31,7 @@ function ProductsSectionRandom({
             {productlatestmapped ? (
                 <a
                     href={`/${productlatestmapped.slug}`}
-                    class={`animation-brightness bg-background-light dark:bg-background-dark p-4 md:p-6 group overflow-hidden ${
+                    class={`animation-brightness shadow-inner bg-background-light dark:bg-background-dark p-4 md:p-6 group overflow-hidden ${
                         storageEmpresa.setting.bg_color_background ===
                         storageEmpresa.setting.bg_color_paper
                             ? ""
@@ -107,7 +107,7 @@ function ProductsSectionRandom({
                             : "shadow"
                     } dark:bg-background-dark p-4 md:p-6 ${
                         enviroments.TYPE_BORDER === "circle" ? "rounded-md" : ""
-                    }`}
+                    } shadow-inner`}
                     style={{ "--brightness-delay": "6s" }}
                 >
                     <div class="flex gap-6 items-center group-hover:scale-105 delay-custom-1">
