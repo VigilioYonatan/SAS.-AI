@@ -93,8 +93,9 @@ function FormEditorJSControl<T extends object>({
                             "data-image",
                             "width",
                             "height",
+                            "lazy",
                         ],
-                        message: `<img> debe tener atributos "width", "height","alt", "title" y "data-image".`,
+                        message: `<img> debe tener atributos "width", "height","alt", "title", lazy="loading" y "data-image".`,
                     },
                     {
                         tag: "video",
