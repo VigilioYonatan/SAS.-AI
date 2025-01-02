@@ -535,7 +535,7 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
             }
             if (["button", "a"].includes(element.tagName.toLowerCase())) {
                 const existTitle = element.getAttribute("aria-label");
-                if (existTitle) {
+                if (!existTitle) {
                     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
                     console.log(
                         "Falta aria label en <boton></boton> o <a></a>"
