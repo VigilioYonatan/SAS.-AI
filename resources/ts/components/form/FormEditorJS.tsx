@@ -108,13 +108,13 @@ function FormEditorJSControl<T extends object>({
                     },
                     {
                         tag: "button",
-                        requiredAttributes: ["data-label", "type"],
-                        message: `<button> debe tener el atributo "data-label y type".`,
+                        requiredAttributes: ["aria-label", "type"],
+                        message: `<button> debe tener el atributo "aria-label y type".`,
                     },
                     {
                         tag: "a",
-                        requiredAttributes: ["data-label", "href"],
-                        message: `<a> debe tener el atributo "data-label" o "href".`,
+                        requiredAttributes: ["aria-label", "href"],
+                        message: `<a> debe tener el atributo "aria-label" o "href".`,
                     },
                 ];
 

@@ -569,6 +569,7 @@ export async function promptReplace(
                 - Recuerda que los telefonos de la db estarán @c.us asi que ignora  eso, y el dialcode ${
                     empresa.dial_code
                 } y busca desde los telefonos
+                - NO CONFUNDAS CITAS CON PRODUCTOS PARA VENDER.
                 `
                 : "";
     }

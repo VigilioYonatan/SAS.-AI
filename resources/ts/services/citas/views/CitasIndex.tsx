@@ -38,7 +38,7 @@ function CitasIndex() {
     if (query.isSuccess) {
         const citasDestroyMutation = citasDestroyApi();
         useEffect(() => {
-            query.refetch(false);
+            query.refetch(true);
         }, [today.value]);
 
         const citas = query.data?.citas;
