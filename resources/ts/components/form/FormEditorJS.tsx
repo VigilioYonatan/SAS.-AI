@@ -347,8 +347,13 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
         if (el.nodeType === 1) {
             const element = el as HTMLElement;
             const elementId = element.getAttribute("data-label");
+            const elementYtId = element.getAttribute("data-youtube");
+            const elementLinkId = element.getAttribute("data-link");
 
-            if (elementId && editingId === elementId) {
+            if (
+                (elementId || elementYtId || elementLinkId) &&
+                editingId === (elementId || elementYtId || elementLinkId)
+            ) {
                 return (
                     <input
                         type="text"
@@ -362,21 +367,6 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
             const dataArray = element.getAttribute("data-array");
             if (dataArray) {
                 const arrayId = dataArray;
-
-                // for (const child of Array.from(element.children)) {
-                //     child.appendChild(
-                //         c(
-                //             "div",
-                //             null,
-                //             `<button
-                //                     type="button"
-                //                     onclick="console.log('hola')"
-                //                 >
-                //                     OK!!!
-                //                 </button>`
-                //         )
-                //     );
-                // }
                 const validAttributes = Array.from(element.attributes)
                     .filter((attr) => /^[a-zA-Z_][\w\-]*$/.test(attr.name))
                     .reduce((attrs, attr) => {
@@ -385,54 +375,7 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                     }, {} as Record<string, string>);
                 return (
                     <div {...validAttributes} class="relative">
-                        {/* {Array.from(element.children).map((el, index) => (
-                            <div
-                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                                key={index}
-                                // biome-ignore lint/security/noDangerouslySetInnerHtmlWithChildren: <explanation>
-                                dangerouslySetInnerHTML={{
-                                    __html: el.outerHTML,
-                                }}
-                                class="absolute"
-                            >
-                                <button
-                                    type="button"
-                                    class="absolute top-0 right-0"
-                                    onClick={() => {
-                                        console.log("OK");
-                                    }}
-                                >
-                                    OK
-                                </button>
-                            </div>
-                        ))} */}
                         {Array.from(element.childNodes).map((child, index) => {
-                            // console.log(child);
-
-                            // child.className =
-                            //     "relative border-gray-400 border-b-2 w-full flex flex-col gap-4 items-center justify-center";
-
-                            // const deleteButton = document.createElement("span");
-                            // deleteButton.classList.add(
-                            //     "bg-danger",
-                            //     "px-2",
-                            //     "py-1",
-                            //     "rounded-md",
-                            //     "absolute",
-                            //     "right-2"
-                            // );
-                            // deleteButton.type = "button";
-                            // deleteButton.style.cursor = "pointer";
-                            // console.log(deleteButton);
-
-                            // deleteButton.addEventListener("click", () => {
-                            //     sweetModal({ html: "aggg" });
-                            //     // element.remove(); // Eliminamos el contenedor
-                            // });
-                            // const icon = document.createElement("i");
-                            // icon.classList.add("fas", "fa-trash", "text-xs");
-                            // deleteButton.appendChild(icon);
-
                             if (child.nodeType !== Node?.ELEMENT_NODE)
                                 return null;
                             // const a =
@@ -518,18 +461,78 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                 );
             }
             // Si tiene un data-label, lo hacemos editable al hacer clic
-            if (elementId) {
+            if (elementId || elementYtId || elementLinkId) {
                 const elementText = element.textContent?.trim() || ""; // El texto del elemento
                 return (
                     <span
-                        onClick={() => startEditing(elementId, elementText)}
+                        onClick={() =>
+                            startEditing(
+                                (elementId ||
+                                    elementYtId ||
+                                    elementLinkId) as string,
+                                elementText
+                            )
+                        }
                         style={{
                             cursor: "pointer",
                         }}
                         class="relative block dark:text-white"
                     >
                         {element.innerHTML}
-                        <i class="fas fa-pen text-[12px] rounded-md shadow bg-orange-600 text-white absolute right-0 -top-2 p-1" />
+
+                        <i
+                            class={`${
+                                elementId
+                                    ? "fas fa-pen"
+                                    : elementYtId
+                                    ? "fab fa-youtube"
+                                    : elementLinkId
+                                    ? "fas fa-link"
+                                    : ""
+                            } text-[12px] rounded-md shadow ${
+                                elementId
+                                    ? "bg-orange-500"
+                                    : elementYtId
+                                    ? "bg-danger"
+                                    : elementLinkId
+                                    ? "bg-blue-600"
+                                    : ""
+                            } text-white absolute right-0 -top-2 p-1`}
+                        >
+                            {elementYtId ? (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                    type="button"
+                                    class="bg-black text-[8px] absolute text-white px-0.5 py-0.5 rounded-full w-[20px] h-[20px] -left-2 -top-2 group"
+                                >
+                                    ?
+                                    <div class="hidden w-[190px] group-hover:block text-white bg-black p-1 rounded-md bg-opacity-90 text-[10px] absolute left-[-12rem] z-[9999]">
+                                        <img
+                                            width={250}
+                                            height={250}
+                                            class="object-contain"
+                                            src="/images/settings/others/yt.png"
+                                            alt=""
+                                        />
+                                    </div>
+                                </button>
+                            ) : elementLinkId ? (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                    type="button"
+                                    class="bg-black text-[8px] absolute text-white px-0.5 py-0.5 rounded-full w-[20px] h-[20px] -left-2 -top-2 group"
+                                >
+                                    ?
+                                    <div class="hidden w-[100px] group-hover:block text-white bg-black p-1 rounded-md bg-opacity-90 text-[10px] absolute left-[-4rem] z-[9999]">
+                                        Url de tu web
+                                    </div>
+                                </button>
+                            ) : null}
+                        </i>
                     </span>
                 );
             }
