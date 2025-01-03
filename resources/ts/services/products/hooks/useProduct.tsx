@@ -315,7 +315,6 @@ function useProduct({ product, isService }: UseProductProps) {
                     sweetAlert({
                         title: data.message,
                         icon: "success",
-                        timer: 50,
                     });
                     favoriteStore.methods.onFavoriteDestroy();
                     producto.value = {

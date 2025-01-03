@@ -28,7 +28,7 @@ function NavTabs({ background, totalProducts }: NavTabsProps) {
                 color: isColorLight(bg) ? "#000000" : "#FFFFFF",
                 position: background ? "relative" : "fixed",
             }}
-            class={` z-[99] bottom-0 left-0 right-0 w-full ${
+            class={`nav-tabs z-[99] bottom-0 left-0 right-0 w-full ${
                 background ? "" : "lg:hidden"
             }  shadow-lg`}
         >

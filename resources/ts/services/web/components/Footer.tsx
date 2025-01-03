@@ -538,7 +538,7 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         <i class="fa-solid fa-caret-up" />
                     </a>
                     <div class="flex grayscale items-center gap-4">
-                        <span class="text-xs text-gray-400 mb-1">
+                        <span class="text-xs text-gray-400 mb-1 text-center">
                             Desarrollador Por: <br />
                             <a
                                 href={enviroments.VITE_VIGILIO_WEB}
