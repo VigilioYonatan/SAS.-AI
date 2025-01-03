@@ -59,7 +59,7 @@ import {
     LoaderThree,
     LoaderTwo,
 } from "../components/LoaderCharging";
-import { HTMLSHOW } from "./BannersIndex";
+import { HIDDEEDITOR } from "./BannersIndex";
 
 const dominioUpdate = pick(hostSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
@@ -2225,7 +2225,7 @@ function SettingsIndex() {
                             />
                         </div>
                     </div>
-                    {HTMLSHOW ? (
+                    {HIDDEEDITOR ? (
                         <Form.control.editorJS
                             name={"web_script" as keyof SettingsUpdateDto}
                             title="Personalización html script "
