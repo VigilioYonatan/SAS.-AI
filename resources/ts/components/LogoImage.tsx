@@ -31,7 +31,9 @@ function LogoImage({ height = "100", width = "100" }: LogoImageProps) {
                         }
                     />
                     <style jsx>{`
-                        .auth-page .image-logo, app .image-logo {
+                        .auth-page .image-logo,
+                        app .image-logo,
+                        .vigilio-modal .image-logo {
                             filter: drop-shadow(1px 1px black);
                         }
                     `}</style>
