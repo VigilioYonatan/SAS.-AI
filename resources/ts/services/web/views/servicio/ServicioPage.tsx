@@ -77,7 +77,7 @@ function ServicioPage({
                         ]}
                     />
                 </div>
-                <div class="flex gap-6 flex-col md:flex-row  product-card p-2 group">
+                <div class="flex gap-6 flex-col md:flex-row  product-card-page p-2 group">
                     <Slider
                         {...{
                             customPaging: (i) => {
@@ -175,7 +175,7 @@ function ServicioPage({
                         </Slider>
                     </ShowImage>
                     <style jsx>{`
-                        .product-card .slick-dots li {
+                        .product-card-page .slick-dots li {
                             min-width: 50px !important;
                             min-height: 50px !important;
                             border: 1px solid
@@ -184,10 +184,10 @@ function ServicioPage({
                                     : "rgba(0, 0, 0, 0.2)"};
                             bottom: -36px;
                         }
-                        .product-card .slick-dots .slick-active {
+                        .product-card-page .slick-dots .slick-active {
                             border: 2px solid var(--primary);
                         }
-                        .product-card .slick-slide div {
+                        .product-card-page .slick-slide div {
                             margin-inline: 8px;
                             outline: none;
                         }
