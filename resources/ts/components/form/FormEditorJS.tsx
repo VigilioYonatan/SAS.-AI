@@ -270,13 +270,124 @@ interface HtmlEditorProps {
 }
 function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
     const [content, setContent] = useState<string>(htmlString);
-    const [editingId, setEditingId] = useState<string | null>(null);
-    const [inputValue, setInputValue] = useState<string>("");
-    // Función para manejar el inicio de la edición
-    const startEditing = (id: string, currentValue: string): void => {
-        setEditingId(id);
-        setInputValue(currentValue);
-    };
+
+    function useEdit(data: "data-label" | "data-link" | "data-youtube") {
+        const [inputValue, setInputValue] = useState<string>("");
+        const [editingId, setEditingId] = useState<string | null>(null);
+        const startEditing = (id: string, currentValue: string): void => {
+            setEditingId(id);
+            setInputValue(currentValue);
+        };
+        const stopEditing = (): void => {
+            if (editingId && inputValue) {
+                // Usamos una expresión regular para reemplazar solo el texto dentro de la etiqueta
+                const updatedContent = content.replace(
+                    new RegExp(
+                        `(<[^>]+${data}="${editingId}"[^>]*>)(.*?)(</[^>]+>)`,
+                        "gs"
+                    ),
+                    `$1${inputValue}$3`
+                );
+                setContent(updatedContent); // Actualiza el HTML con el nuevo valor
+                setEditingId(null); // Termina la edición
+                setInputValue(""); // Limpia el valor del input
+            }
+        };
+        // Función para manejar el cambio en el input
+        const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+            setInputValue((e.target as HTMLInputElement).value);
+        };
+        function rendering(element: Element) {
+            const elementId = element.getAttribute(data);
+            if (elementId && editingId === elementId) {
+                return (
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onBlur={stopEditing}
+                        class="dark:bg-admin-paper-dark dark:text-white text-black border border-black"
+                    />
+                );
+            }
+            if (elementId) {
+                const elementText = element.textContent?.trim() || ""; // El texto del elemento
+                return (
+                    <span
+                        onClick={() =>
+                            startEditing(elementId as string, elementText)
+                        }
+                        style={{
+                            cursor: "pointer",
+                        }}
+                        class="relative block dark:text-white"
+                    >
+                        {element.innerHTML}
+
+                        <i
+                            class={`${
+                                data === "data-label"
+                                    ? "fas fa-pen"
+                                    : data === "data-youtube"
+                                    ? "fab fa-youtube"
+                                    : data === "data-link"
+                                    ? "fas fa-link"
+                                    : ""
+                            } text-[12px] rounded-md shadow ${
+                                data === "data-label"
+                                    ? "bg-orange-500"
+                                    : data === "data-youtube"
+                                    ? "bg-danger"
+                                    : data === "data-link"
+                                    ? "bg-blue-600"
+                                    : ""
+                            } text-white absolute right-0 -top-2 p-1`}
+                        >
+                            {data === "data-youtube" ? (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                    type="button"
+                                    class="bg-black text-[8px] absolute text-white px-0.5 py-0.5 rounded-full w-[20px] h-[20px] -left-2 -top-2 group"
+                                >
+                                    ?
+                                    <div class="hidden w-[190px] group-hover:block text-white bg-black p-1 rounded-md bg-opacity-90 text-[10px] absolute left-[-12rem] z-[9999]">
+                                        <img
+                                            width={250}
+                                            height={250}
+                                            class="object-contain"
+                                            src="/images/settings/others/yt.png"
+                                            alt=""
+                                        />
+                                    </div>
+                                </button>
+                            ) : data === "data-link" ? (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                    type="button"
+                                    class="bg-black text-[8px] absolute text-white px-0.5 py-0.5 rounded-full w-[20px] h-[20px] -left-2 -top-2 group"
+                                >
+                                    ?
+                                    <div class="hidden w-[100px] group-hover:block text-white bg-black p-1 rounded-md bg-opacity-90 text-[10px] absolute left-[-4rem] z-[9999]">
+                                        Url de tu web
+                                    </div>
+                                </button>
+                            ) : null}
+                        </i>
+                    </span>
+                );
+            }
+            return false;
+        }
+        return rendering;
+    }
+    const renderingLabel = useEdit("data-label");
+    const renderingLink = useEdit("data-link");
+    const renderingYoutube = useEdit("data-youtube");
+
     useEffect(() => {
         if (content.length) {
             onChange(content);
@@ -285,27 +396,6 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
         }
     }, [content]);
 
-    // Función para manejar el guardado del valor editado
-    const stopEditing = (): void => {
-        if (editingId && inputValue) {
-            // Usamos una expresión regular para reemplazar solo el texto dentro de la etiqueta
-            const updatedContent = content.replace(
-                new RegExp(
-                    `(<[^>]+data-label="${editingId}"[^>]*>)(.*?)(</[^>]+>)`,
-                    "gs"
-                ),
-                `$1${inputValue}$3`
-            );
-            setContent(updatedContent); // Actualiza el HTML con el nuevo valor
-            setEditingId(null); // Termina la edición
-            setInputValue(""); // Limpia el valor del input
-        }
-    };
-
-    // Función para manejar el cambio en el input
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        setInputValue((e.target as HTMLInputElement).value);
-    };
     function handleArrayAddition(arrayId: string) {
         const div = document.createElement("div");
 
@@ -320,11 +410,30 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                 const clonedElement = lastChild?.cloneNode(true) as HTMLElement;
                 const lastLabels =
                     arrayContainer.querySelectorAll("[data-label]");
+                const lastYoutube =
+                    arrayContainer.querySelectorAll("[data-youtube]");
+                const lastLink = arrayContainer.querySelectorAll("[data-link]");
                 const images = arrayContainer.querySelectorAll("img");
                 Array.from(lastLabels).map((label) => {
                     if (label) {
                         label.setAttribute(
                             "data-label",
+                            Math.random().toString(32).slice(3)
+                        );
+                    }
+                });
+                Array.from(lastYoutube).map((yt) => {
+                    if (yt) {
+                        yt.setAttribute(
+                            "data-youtube",
+                            Math.random().toString(32).slice(3)
+                        );
+                    }
+                });
+                Array.from(lastLink).map((yt) => {
+                    if (yt) {
+                        yt.setAttribute(
+                            "data-link",
                             Math.random().toString(32).slice(3)
                         );
                     }
@@ -347,23 +456,19 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
     const renderElement = (el: Node) => {
         if (el.nodeType === 1) {
             const element = el as HTMLElement;
-            const elementId = element.getAttribute("data-label");
-            const elementYtId = element.getAttribute("data-youtube");
-            const elementLinkId = element.getAttribute("data-link");
 
-            if (
-                (elementId || elementYtId || elementLinkId) &&
-                editingId === (elementId || elementYtId || elementLinkId)
-            ) {
-                return (
-                    <input
-                        type="text"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onBlur={stopEditing}
-                        class="dark:bg-admin-paper-dark dark:text-white text-black border border-black"
-                    />
-                );
+            //   rendering
+            const label = renderingLabel(element);
+            if (label) {
+                return label;
+            }
+            const link = renderingLink(element);
+            if (link) {
+                return link;
+            }
+            const youtube = renderingYoutube(element);
+            if (youtube) {
+                return youtube;
             }
             const dataArray = element.getAttribute("data-array");
             if (dataArray) {
@@ -461,82 +566,7 @@ function HtmlEditor({ htmlString, onChange }: HtmlEditorProps) {
                     </div>
                 );
             }
-            // Si tiene un data-label, lo hacemos editable al hacer clic
-            if (elementId || elementYtId || elementLinkId) {
-                const elementText = element.textContent?.trim() || ""; // El texto del elemento
-                return (
-                    <span
-                        onClick={() =>
-                            startEditing(
-                                (elementId ||
-                                    elementYtId ||
-                                    elementLinkId) as string,
-                                elementText
-                            )
-                        }
-                        style={{
-                            cursor: "pointer",
-                        }}
-                        class="relative block dark:text-white"
-                    >
-                        {element.innerHTML}
 
-                        <i
-                            class={`${
-                                elementId
-                                    ? "fas fa-pen"
-                                    : elementYtId
-                                    ? "fab fa-youtube"
-                                    : elementLinkId
-                                    ? "fas fa-link"
-                                    : ""
-                            } text-[12px] rounded-md shadow ${
-                                elementId
-                                    ? "bg-orange-500"
-                                    : elementYtId
-                                    ? "bg-danger"
-                                    : elementLinkId
-                                    ? "bg-blue-600"
-                                    : ""
-                            } text-white absolute right-0 -top-2 p-1`}
-                        >
-                            {elementYtId ? (
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                    }}
-                                    type="button"
-                                    class="bg-black text-[8px] absolute text-white px-0.5 py-0.5 rounded-full w-[20px] h-[20px] -left-2 -top-2 group"
-                                >
-                                    ?
-                                    <div class="hidden w-[190px] group-hover:block text-white bg-black p-1 rounded-md bg-opacity-90 text-[10px] absolute left-[-12rem] z-[9999]">
-                                        <img
-                                            width={250}
-                                            height={250}
-                                            class="object-contain"
-                                            src="/images/settings/others/yt.png"
-                                            alt=""
-                                        />
-                                    </div>
-                                </button>
-                            ) : elementLinkId ? (
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                    }}
-                                    type="button"
-                                    class="bg-black text-[8px] absolute text-white px-0.5 py-0.5 rounded-full w-[20px] h-[20px] -left-2 -top-2 group"
-                                >
-                                    ?
-                                    <div class="hidden w-[100px] group-hover:block text-white bg-black p-1 rounded-md bg-opacity-90 text-[10px] absolute left-[-4rem] z-[9999]">
-                                        Url de tu web
-                                    </div>
-                                </button>
-                            ) : null}
-                        </i>
-                    </span>
-                );
-            }
             if (["button", "a"].includes(element.tagName.toLowerCase())) {
                 const existTitle = element.getAttribute("aria-label");
                 if (!existTitle) {
