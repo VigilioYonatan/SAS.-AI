@@ -247,7 +247,7 @@ function Header({ header }: HeaderProps) {
                         ) : null}
                         <a
                             href="/auth/profile?type=favorites"
-                            class=" text-sm flex justify-center items-center relative"
+                            class=" text-sm flex justify-center items-center relative header-icon-favorites"
                         >
                             <i
                                 class={`fa${typeIcon1} fa-heart text-lg  dark:text-white`}
@@ -264,7 +264,7 @@ function Header({ header }: HeaderProps) {
                                         ? "#000000"
                                         : "#ffffff",
                                 }}
-                                class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs  -right-3 -top-2 flex justify-center items-center  font-semibold"
+                                class="header-icon-favorites-span border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs  -right-3 -top-2 flex justify-center items-center  font-semibold"
                             >
                                 {favoriteStore.state}
                             </span>
@@ -274,7 +274,7 @@ function Header({ header }: HeaderProps) {
                                 <button
                                     type="button"
                                     aria-label="change theme"
-                                    class="flex gap-2 items-center justify-center text-md dark:text-white"
+                                    class="header-icon-favorites-theme flex gap-2 items-center justify-center text-md dark:text-white"
                                     onClick={() =>
                                         themeStore.methods.changeThemeMode(
                                             themeStore.state === "dark"
@@ -304,14 +304,14 @@ function Header({ header }: HeaderProps) {
                                 <>
                                     <button
                                         type="button"
-                                        class=" text-sm flex justify-center items-center relative"
+                                        class=" header-icon-cart text-sm flex justify-center items-center relative"
                                         onClick={cartStore.dropdown.onOpen}
                                     >
                                         <i
                                             class={`${iconCart} text-lg  dark:text-white`}
                                         />
                                         <span
-                                            class="border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs -right-2 -top-2  font-semibold"
+                                            class="header-icon-cart-span border-2 absolute border-white rounded-full w-[20px] h-[20px] text-xs -right-2 -top-2  font-semibold"
                                             style={{
                                                 backgroundColor:
                                                     empresaStore.state!.setting

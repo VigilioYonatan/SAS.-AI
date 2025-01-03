@@ -60,7 +60,7 @@ function ProductsUsers({
                         </>
                     </TitleSectionTwo>
                 </div>
-                <div class="p-2 bg-background-light dark:bg-background-dark grid grid-cols-1 xs:grid-cols-2 md:grid-cols-1">
+                <div class="p-2 bg-background-light dark:bg-background-dark grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-1">
                     {productsmostreactionmapped.map((product) => (
                         <Fragment key={product.id}>
                             <ProductCard
@@ -106,7 +106,7 @@ function ProductsUsers({
                                     <ProductCard.footer className="pt-0" />
                                 </div>
                             </ProductCard>
-                            <div class="xs:hidden md:block h-[1px] bg-gray-300 dark:bg-gray-500 w-full my-1" />
+                            <div class="xs:hidden lg:block h-[1px] bg-gray-300 dark:bg-gray-500 w-full my-1" />
                         </Fragment>
                     ))}
                 </div>
@@ -139,7 +139,7 @@ function ProductsUsers({
                         </>
                     </TitleSectionTwo>
                 </div>
-                <div class="p-2 bg-background-light dark:bg-background-dark grid grid-cols-1 xs:grid-cols-2 md:grid-cols-1">
+                <div class="p-2 bg-background-light dark:bg-background-dark grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-1">
                     {productsmostratingmapped.map((product) => (
                         <Fragment key={product.id}>
                             <ProductCard
@@ -161,7 +161,7 @@ function ProductsUsers({
                                     <ProductCard.footer className="pt-0" />
                                 </div>
                             </ProductCard>
-                            <div class="h-[1px] bg-gray-300 dark:bg-gray-500 w-full my-1 xs:hidden md:block " />
+                            <div class="h-[1px] bg-gray-300 dark:bg-gray-500 w-full my-1 xs:hidden lg:block " />
                         </Fragment>
                     ))}
                 </div>
@@ -192,7 +192,7 @@ function ProductsUsers({
                         </>
                     </TitleSectionTwo>
                 </div>
-                <div class="p-2 bg-background-light dark:bg-background-dark grid grid-cols-1 xs:grid-cols-2 md:grid-cols-1">
+                <div class="p-2 bg-background-light dark:bg-background-dark grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-1">
                     {productsmostcommentsmapped.map((product) => (
                         <Fragment key={product.id}>
                             <ProductCard
@@ -238,7 +238,7 @@ function ProductsUsers({
                                     <ProductCard.footer className="pt-0" />
                                 </div>
                             </ProductCard>
-                            <div class="h-[1px] bg-gray-300 dark:bg-gray-500 w-full my-1 xs:hidden md:block " />
+                            <div class="h-[1px] bg-gray-300 dark:bg-gray-500 w-full my-1 xs:hidden lg:block " />
                         </Fragment>
                     ))}
                 </div>

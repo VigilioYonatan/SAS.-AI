@@ -363,7 +363,7 @@ export function useNotifications() {
     }: NotificationCountComponentProps) {
         return notificationsCountQuery.data?.data! > 0 ? (
             <span
-                class={`absolute left-[4px] top-[-5px] text-xs ${
+                class={`header-icon-notification-span absolute left-[4px] top-[-5px] text-xs ${
                     isWeb ? "bg-primary" : "bg-danger"
                 } px-[.3rem] font-bold rounded-full text-white  border-2 border-white`}
             >

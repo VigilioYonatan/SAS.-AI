@@ -17,7 +17,7 @@ function WebNotificacion() {
 								ref={trigger}
 								type="button"
 								aria-label="button to open user dropdown"
-								class=" text-sm flex justify-center items-center relative"
+								class="header-icon-notification text-sm flex justify-center items-center relative"
 								onClick={onOpen}
 							>
 								<i

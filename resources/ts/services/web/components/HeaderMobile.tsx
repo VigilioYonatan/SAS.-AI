@@ -149,12 +149,12 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
 
                         <a
                             href="/auth/profile?type=favorites"
-                            class="flex gap-2 items-center justify-center text-md relative"
+                            class="header-icon-favorites flex gap-2 items-center justify-center text-md relative"
                         >
                             <i class={`fa${typeIcon1} fa-heart text-lg`} />{" "}
                             {favoriteStore.state > 0 ? (
                                 <span
-                                    class="border-2 absolute border-white rounded-full w-[20px] h-[20px] font-semibold text-[0.7rem]   -right-3 -top-1 flex justify-center items-center   "
+                                    class="header-icon-favorites-span border-2 absolute border-white rounded-full w-[20px] h-[20px] font-semibold text-[0.7rem]   -right-3 -top-1 flex justify-center items-center   "
                                     style={{
                                         backgroundColor:
                                             empresaStore.state?.setting
@@ -207,12 +207,12 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                         {totalProducts > 0 ? (
                             <button
                                 type="button"
-                                class=" text-xl   relative"
+                                class=" text-xl   relative header-icon-cart"
                                 onClick={cartStore.dropdown.onOpen}
                             >
                                 <i class={iconCart} />
                                 <span
-                                    class="absolute -top-1 -right-2  border-2 text-xs font-bold flex justify-center items-center  w-[20px] h-[20px] rounded-full"
+                                    class="header-icon-cart-span absolute -top-1 -right-2  border-2 text-xs font-bold flex justify-center items-center  w-[20px] h-[20px] rounded-full"
                                     style={{
                                         backgroundColor:
                                             empresaStore.state?.setting
