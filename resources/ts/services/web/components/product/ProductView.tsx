@@ -742,7 +742,7 @@ export function MetodosDePago({ isEfectivo = true }: MetodosDePagoProps) {
     const empresaStore = useEmpresastore();
 
     return (
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2 ">
             {isEfectivo ? (
                 <span class="dark:text-white text-xs font-bold ">
                     Métodos de pago disponible

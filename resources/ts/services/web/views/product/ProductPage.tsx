@@ -260,7 +260,7 @@ function ProductPage({
                             transform: scale(1.5);
                         }
                     `}</style>
-                    <div class="flex flex-col gap-3 md:w-5/12 mt-8 ">
+                    <div class="flex flex-col gap-3 md:w-5/12 mt-8  product-page-container">
                         {varianteChoose?.sku ? (
                             <span class="text-terciary text-xs">
                                 SKU: {varianteChoose?.sku}
@@ -324,7 +324,7 @@ function ProductPage({
                                 height={40}
                             />
                         ) : null}
-                        <div class="flex flex-col">
+                        <div class="flex flex-col  product-page-container-cost">
                             <div class="flex gap-2">
                                 {product.discount > 0 ? (
                                     <span
@@ -637,7 +637,7 @@ function ProductPage({
                                     </Form>
                                 ) : null}
 
-                                <div class="flex gap-2">
+                                <div class=" product-page-container-buttons flex gap-2">
                                     {(!(
                                         producto.value as ProductsRestaurantSchemaFromServer
                                     )?.ilimit &&
@@ -791,7 +791,7 @@ function ProductPage({
                             </div>
                         )}
                         {/* coupon form  si  esta en el carrito que no se vea el formulario de cupon */}
-                        <div class="flex  flex-col gap-1">
+                        <div class="flex  flex-col gap-1  product-page-container-shared">
                             <span class=" dark:text-white text-xs font-bold ">
                                 Compartir
                             </span>

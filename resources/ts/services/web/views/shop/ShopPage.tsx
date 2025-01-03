@@ -1,7 +1,6 @@
 import WebLayout, { type HeaderType } from "@/web/components/WebLayout";
 import LatestProductSection from "./components/LatestProductSection";
 import type { CategoriesSchemaFromServer } from "@/products/schemas/categories.schema";
-import CategoriesSection from "./components/CategoriesSection";
 import OfferSection from "../home/components/OfferSection";
 import ProductsSectionRandom from "../home/components/ProductsSectionRandom";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
@@ -9,6 +8,7 @@ import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_
 import ServiciosSection from "../home/components/ServiciosSection";
 import { GridBannersPage } from "../home/components/GridBanners";
 import { GridBannerPageSchemaFromServer } from "@/empresas/schemas/grid-banner-page.schema";
+import CategoriesSection from "../home/components/CategoriesSection";
 
 interface ShopPageProps {
     categories: CategoriesSchemaFromServer[];
