@@ -59,6 +59,7 @@ import {
     LoaderThree,
     LoaderTwo,
 } from "../components/LoaderCharging";
+import { HTMLSHOW } from "./BannersIndex";
 
 const dominioUpdate = pick(hostSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
@@ -2224,10 +2225,15 @@ function SettingsIndex() {
                             />
                         </div>
                     </div>
-                    <Form.control.editorJS
-                        name={"web_script" as keyof SettingsUpdateDto}
-                        title="Personalización html script "
-                    />
+                    {HTMLSHOW ? (
+                        <Form.control.editorJS
+                            name={"web_script" as keyof SettingsUpdateDto}
+                            title="Personalización html script "
+                        />
+                    ) : (
+                        <></>
+                    )}
+
                     <Form.button.submit
                         title="Actualizar"
                         className="self-start"
