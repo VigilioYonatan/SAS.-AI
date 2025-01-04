@@ -588,8 +588,8 @@ function ImagesIa() {
         });
     }
     return (
-        <div>
-            <Form onSubmit={onSearchImage} {...imageForm}>
+        <div class="flex flex-col">
+            <Form className="" onSubmit={onSearchImage} {...imageForm}>
                 <Form.control
                     title="Buscar"
                     name="name"
@@ -720,6 +720,95 @@ function ImagesIa() {
                     </div>
                 </div>
             ) : null}
+            <div class="self-center flex items-center gap-1 mt-6">
+                <img
+                    width={80}
+                    height={50}
+                    src="/images/settings/others/image-ai.png"
+                    alt=""
+                    class="rounded-md object-cover"
+                />
+                <div class="flex flex-col">
+                    <span class="text-xs dark:text-white text-center font-semibold">
+                        Eliminar Imagen Fondo <br /> con I.A
+                    </span>
+                    <button
+                        type="button"
+                        class=" px-3 py-1 rounded-md shadow text-xs text-primary hover:underline"
+                        onClick={() => {
+                            sweetModal({
+                                html: reactComponent(
+                                    <div class="dark:text-white">
+                                        <p class="text-sm text-center">
+                                            Para mejores resultados recomendamos
+                                            estas alternativas gratuitas de I.A
+                                            para eliminar los fondos de tus
+                                            imagenes. (sube tus imagenes)
+                                        </p>
+                                        <ul class="list-disc list-item mt-4">
+                                            <li>
+                                                <span class="text-primary">
+                                                    Removeal:{"  "}
+                                                </span>
+                                                <a
+                                                    href="https://removal.ai/"
+                                                    class="hover:underline hover:text-primary"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    https://removal.ai/
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <span class="text-primary">
+                                                    Remove.bg:{"  "}
+                                                </span>
+                                                <a
+                                                    href="https://www.remove.bg/"
+                                                    class="hover:underline hover:text-primary"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    https://www.remove.bg/
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <span class="text-primary">
+                                                    Adobe:{"  "}
+                                                </span>
+                                                <a
+                                                    href="https://www.adobe.com/express/feature/image/remove-background"
+                                                    class="hover:underline hover:text-primary"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    https://www.adobe.com/express/feature/image/remove-background
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <span class="text-primary">
+                                                    IloveIMG:{"  "}
+                                                </span>
+                                                <a
+                                                    href="https://www.iloveimg.com/remove-background"
+                                                    class="hover:underline hover:text-primary"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    https://www.iloveimg.com/remove-background
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                ),
+                                showCloseButton: true,
+                            });
+                        }}
+                    >
+                        Más información
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

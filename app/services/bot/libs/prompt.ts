@@ -18,7 +18,7 @@ export async function prompt(
         isQuestion: boolean;
     },
     empresa: Empresas,
-    productsData: DataPrompt
+    productsData: DataPrompt,
 ) {
     let preguntasIA: Questions[] | null = JSON.parse(
         cache.get(`questions-ia:${empresa.slug}`) ?? "null"

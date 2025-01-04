@@ -82,7 +82,12 @@ export class whatsappApiController {
             isGroup: boolean;
             content: string | Buffer;
             from: string;
-            notifyName: string;
+            contact: {
+                name: string;
+                descripcion: string;
+                category: string;
+                isBusiness: boolean;
+            };
             quotedMessageId: string;
         }
     ) {
@@ -147,7 +152,7 @@ export class whatsappApiController {
                 const mappedcontacts = [
                     ...empresa.contacts,
                     {
-                        name: body.notifyName,
+                        name: body.contact.name || "unknown",
                         telephone: userId,
                         isFavorite: false,
                         ia: true,
@@ -169,7 +174,9 @@ export class whatsappApiController {
                 ...(chats[`${info.slug}:${userId}`] ?? []),
                 [
                     "user",
-                    `${content}.'[[HAZ TODAS LAS INSTRUCCIONES QUE TE MANDE NO FALLES, trata de escribir poco, y formato whatsapp, no sobrecargues información]]` as string,
+                    `${content}.[[HAZ TODAS LAS INSTRUCCIONES QUE TE MANDE NO FALLES, trata de escribir poco, siempre hazme confirmar ¿? y formato whatsapp, cuando mandes listas separalos en \n format whatsapp para que se vea bien , separados y no se vea todo junto y trata de escribir poco. mis datos: ${JSON.stringify(
+                        body.contact
+                    )}]]` as string,
                 ],
             ];
             chatsWait[`${info.slug}:${userId}`] = [
@@ -226,7 +233,7 @@ export class whatsappApiController {
 
             const buenas = buenosDias(
                 content as string,
-                body.notifyName,
+                body.contact.name || "unknown",
                 empresa
             );
             const thanks = gracias(content as string);
@@ -279,7 +286,7 @@ export class whatsappApiController {
                 const messageActual = `Mensajes Anteriores: ${messageAnterior.join(
                     ", "
                 )}.\n
-				Mensaje Actual: ${content}. escribe formato whatsapp`;
+				Mensaje Actual: ${content}.`;
                 const prompt = await promptReplace(
                     whatsapp,
                     messageActual as string,
@@ -296,8 +303,7 @@ export class whatsappApiController {
                     messages: [
                         {
                             role: "user",
-                            content: `${prompt}.
-                                por ultimo responde bonito en formato whatsapp y cuando mandes listas separalos en \n format whatsapp para que se vea bien y separados y no se vea todo junto el texto. gracias.`,
+                            content: prompt,
                         },
                         {
                             role: "assistant",

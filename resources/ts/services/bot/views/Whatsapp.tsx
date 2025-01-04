@@ -260,6 +260,7 @@ function Whatsapp() {
                         onClick={() => {
                             sweetModal({
                                 title: "¿Estas seguro que quieres actualizar WhatsApp?",
+                                text: "Se actualizará a la ultima version Whatsapp, Puede tomar algunos minutos",
                                 isCloseInBackground: false,
                                 showCancelButton: true,
                                 showCloseButton: true,

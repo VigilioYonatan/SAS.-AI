@@ -130,6 +130,11 @@ export async function initialWhatsapp() {
         const content =
             message.type === "chat" ? message.body : await getFile();
         if (!content) return null;
+        // console.log({ chat });
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const contact = (await message.getContact()) as any;
+
+        // console.log(JSON.stringify(message));
 
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const notifyName = (message as any)._data.notifyName;
@@ -144,8 +149,20 @@ export async function initialWhatsapp() {
                         content,
                         from: message.from,
                         type: message.type,
-                        notifyName,
                         quotedMessageId,
+                        contact: {
+                            name: notifyName,
+                            description: contact.isBusiness
+                                ? contact?.businessProfile.description
+                                : "",
+                            category: contact.isBusiness
+                                ? contact.categories?.length
+                                    ? contact.categories[0]
+                                          .localized_display_name
+                                    : ""
+                                : "",
+                            isBusiness: contact.isBusiness,
+                        },
                     }),
                     headers: {
                         "Content-Type": "application/json",
