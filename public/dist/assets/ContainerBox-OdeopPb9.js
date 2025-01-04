@@ -1,1 +1,0 @@
-import{u as a}from"./vendor-CZUWYgQd.js";function o({children:r}){return a("div",{class:" rounded-md shadow w-full  bg-background-light dark:bg-admin-paper-dark p-4 relative ",children:r})}export{o as C};
