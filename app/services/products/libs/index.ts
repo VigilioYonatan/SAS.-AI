@@ -20,6 +20,7 @@ import type { Users } from "@/users/entities/users.entity";
 import { Ratings } from "@/polymorphism/entities/ratings.entity";
 import { Favorites } from "@/favorites/entities/favorites.entity";
 import { removeTextHTML } from "~/libs/helpers";
+import { sequelize } from "~/config/db.config";
 // products
 export const productsImagesQualities = [100, 500];
 
@@ -105,46 +106,73 @@ export async function getProductAll(
             }),
         ]);
 
-        product.dataValues.options = await Promise.all(
-            options.map(async (opt) => {
-                const { ProductsOptions, ...rest } = opt.toJSON();
-                const features = await Promise.all(
-                    opt.ProductsOptions.features.map(async (feat) => {
-                        const feature = await Features.findByPk(feat);
-                        return feature;
-                    })
-                );
-                return {
-                    ...rest,
-                    features,
-                };
-            })
+        const featureIds = options.flatMap(
+            (opt) => opt.ProductsOptions.features
         );
 
-        product.dataValues.variants = await Promise.all(
-            variants.map(async (variant) => {
-                const totalSold = await DetailOrders.count({
+        const features = await Features.findAll({
+            where: {
+                id: featureIds, // Usamos los IDs de las características
+            },
+        });
+
+        const featuresMap = new Map(
+            features.map((feature) => [feature.id, feature])
+        );
+
+        product.dataValues.options = options.map((opt) => {
+            const { ProductsOptions, ...rest } = opt.toJSON();
+            const mappedFeatures = (
+                ProductsOptions as ProductsOptions
+            ).features.map((featId) => {
+                return featuresMap.get(featId);
+            });
+
+            return {
+                ...rest,
+                features: mappedFeatures,
+            };
+        });
+        const variantIds = variants.map((variant) => (variant as Variants).id);
+        const variantSales = await DetailOrders.findAll({
+            where: {
+                product_normal_id: product.id,
+                variant_id: variantIds,
+            },
+            include: [
+                {
+                    model: Orders.unscoped(),
                     where: {
-                        product_normal_id: product.id,
-                        variant_id: (variant as Variants).id,
+                        status_order_id: STATUSORDER.entregado,
                     },
-                    include: [
-                        {
-                            model: Orders,
-                            where: {
-                                status_order_id: STATUSORDER.entregado,
-                            },
-                            required: true,
-                        },
-                    ],
-                });
-                return {
-                    ...(variant as Variants).toJSON(),
-
-                    totalSold,
-                };
-            })
+                    required: true,
+                    attributes: [],
+                },
+            ],
+            attributes: [
+                "variant_id",
+                [
+                    sequelize.fn(
+                        "COUNT",
+                        sequelize.col("DetailOrders.variant_id")
+                    ),
+                    "totalSold",
+                ],
+            ],
+            group: ["DetailOrders.variant_id"], // Agrupamos solo por variant_id
+        });
+        // Crear un mapa de ventas por variante
+        const salesMap = new Map(
+            variantSales.map((sale) => [sale.variant_id, sale.get("totalSold")])
         );
+        // Asignar las ventas totales a las variantes
+        product.dataValues.variants = variants.map((variant) => {
+            const totalSold = salesMap.get((variant as Variants).id) || 0; // Obtener el total vendido de la variante
+            return {
+                ...(variant as Variants).toJSON(),
+                totalSold,
+            };
+        });
     } else {
         const product_id =
             product instanceof ProductsNormal

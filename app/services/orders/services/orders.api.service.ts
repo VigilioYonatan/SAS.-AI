@@ -830,7 +830,7 @@ export class OrdersApiService {
                     }
                 }
                 return `*${product.name}${
-                    ` ${detail_order.variante}` || ""
+                    ` ${detail_order.variante || ""}` || ""
                 }* - ${detail_order.quantity} UND - *${formatMoney(
                     empresa,
                     detail_order.price,

@@ -191,7 +191,7 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
             tokens: { tokens: 100000 },
             finanza: { enabled: true },
         },
-        type_empresa_id: 24,
+        type_empresa_id: 1,
         bancos: [
             {
                 key: "bcp",
@@ -409,7 +409,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
             tokens: { tokens: 10000000 },
             finanza: { enabled: true },
         },
-        type_empresa_id: 22, //22 restaurant // 24 gym
+        type_empresa_id: 1, //22 restaurant // 24 gym
         bancos: [
             {
                 key: "bbva",
