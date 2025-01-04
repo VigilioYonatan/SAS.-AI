@@ -107,8 +107,9 @@ export class whatsappApiController {
                 Math.random() < 0.5
                     ? {
                           quotedMessageId: body.quotedMessageId,
+                          linkPreview: false,
                       }
-                    : {};
+                    : { linkPreview: false };
             if (body.type === "ptt") {
                 const audioToTxt = await transcribeAudio(
                     empresa.slug,
@@ -268,10 +269,14 @@ export class whatsappApiController {
 
                 // Si el primer mensaje en lastMessages no es del role
                 const messageAnterior = messages
-                    .filter((a) => a.role === "user")
                     .slice(-5, -1)
-                    .map((c) => c.content);
-                const messageActual = `Mensajes Anterior: ${messageAnterior.join(
+                    .map(
+                        (c) =>
+                            `${c.role === "user" ? "yo" : c.role}:  ${
+                                c.content
+                            }`
+                    );
+                const messageActual = `Mensajes Anteriores: ${messageAnterior.join(
                     ", "
                 )}.\n
 				Mensaje Actual: ${content}. escribe formato whatsapp`;

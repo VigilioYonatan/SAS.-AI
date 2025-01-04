@@ -217,9 +217,10 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
                 })
             );
             const messageAnterior = messages
-                .filter((a) => a.role === "user")
                 .slice(-5, -1)
-                .map((c) => c.content);
+                .map(
+                    (c) => `${c.role === "user" ? "yo" : c.role}:  ${c.content}`
+                );
             const messageActual = `Mensajes Anterior: ${messageAnterior.join(
                 ", "
             )}.\n
@@ -497,7 +498,6 @@ export async function featuresIA(
     }
     const regex = /\[\[DATOS_CONFIRMADOS:(.*?)\]\]/;
     const matchCitas = completionText.match(regex);
-    console.log({ completionText });
     if (matchCitas) {
         const { hour, date, telefono, ...rest } = JSON.parse(matchCitas[1]);
         const citas = await Citas.findAll({

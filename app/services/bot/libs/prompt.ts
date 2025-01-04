@@ -181,7 +181,9 @@ export async function prompt(
     0 unidades/cantidad quiere decir que no hay producto/servicio.
     - las imagenes estan asi /images/products/image_namex500.webp por favor, cuando me lo mandes agregales al principio ${BASE_URL(
         empresa
-    )}/empresas/${empresa.slug} y lo que sigue.
+    )}/empresas/${
+                      empresa.slug
+                  } y lo que sigue Y el link que este limpio - no markdown ni otro..
     ${
         empresa.tipo_empresa.tipo_servicio_id === 2
             ? "NO USES STOCK, usa muchas unidades. para restaurantes y bares"
