@@ -146,7 +146,7 @@ function BannersIndex() {
                 <div>
                     <div class="flex gap-2 mb-3 w-full">
                         <div class="flex items-center justify-between gap-2 w-full">
-                            <div class="flex items-center gap-2 max-w-[350px] ">
+                            <div class="flex items-center gap-2 max-w-[350px] flex-wrap">
                                 {[
                                     {
                                         id: 0,
@@ -243,8 +243,25 @@ function BannersIndex() {
                     ) : null}
 
                     <div class="flex justify-between">
-                        <span class="font-bold text-sm">
+                        <span class="font-bold text-sm flex items-center gap-1">
                             Ancho Actual: <b>{widthResponsive}PX</b>{" "}
+                            {typeBanner.value === "home" ? (
+                                <button
+                                    type="button"
+                                    class="bg-black group relative w-[30px] h-[30px] flex rounded-full items-center justify-center text-white "
+                                >
+                                    ?{" "}
+                                    <div class="absolute  w-[500px] top-[1rem] left-[-3rem] group-hover:block hidden z-50">
+                                        <img
+                                            class="w-full"
+                                            width={300}
+                                            height={300}
+                                            src="/images/settings/others/grids.png"
+                                            alt=""
+                                        />
+                                    </div>
+                                </button>
+                            ) : null}
                         </span>
                         <div class="flex flex-col">
                             <label class="text-xs dark:text-white font-semibold relative">
