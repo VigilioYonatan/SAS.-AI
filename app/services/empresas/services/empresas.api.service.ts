@@ -104,6 +104,16 @@ export async function initial() {
             where: { id: empresa!.id },
             defaults: { enabled_zoho_mail: false }, // Valores predeterminados si se crea
         });
+        const gridBanners = await GridBanner.findAll({
+            where: {
+                empresa_id: empresa.id,
+            },
+        });
+        const pages = await Page.findAll({
+            where: {
+                empresa_id: empresa.id,
+            },
+        });
 
         if (!bg_color_header[1] && !bg_color_header[0].bg_color_header) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
@@ -142,6 +152,42 @@ export async function initial() {
                 text_color: "transparent" as Settings["text_color"],
             });
         }
+
+        if (gridBanners.length < 6) {
+            await Promise.all(
+                Array.from({ length: 5 }).map(async () => {
+                    await GridBanner.create({
+                        html: null,
+                        enabled: false,
+                        empresa_id: empresa!.id,
+                        title: null,
+                    });
+                })
+            );
+        }
+        await Promise.all(
+            pages.map(async (page) => {
+                const gridBannersPage = await GridBannerPage.findAll({
+                    where: {
+                        empresa_id: empresa.id,
+                        page_id: page.id,
+                    },
+                });
+                if (gridBannersPage.length < 6) {
+                    await Promise.all(
+                        Array.from({ length: 5 }).map(async () => {
+                            await GridBannerPage.create({
+                                html: null,
+                                enabled: false,
+                                empresa_id: empresa!.id,
+                                title: null,
+                                page_id: page.id,
+                            });
+                        })
+                    );
+                }
+            })
+        );
 
         openAis = { ...openAis, [empresa.slug]: openAiClient };
     }
@@ -834,7 +880,7 @@ export class EmpresasApiService {
                         empresa_id: empresa!.id,
                     });
                     for (const grid of page.grid_banner_pages) {
-                        const { grid_banner_id, ...rest } = grid;
+                        const { grid_banner_id, id, ...rest } = grid;
 
                         const findBannerTest = gridBannersMap?.find(
                             (grid) => grid.id_test === grid_banner_id
