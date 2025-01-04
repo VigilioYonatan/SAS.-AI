@@ -817,38 +817,14 @@ export class EmpresasApiService {
                 }
                 gridBannersMap = gridBannersMap2;
             } else {
-                await GridBanner.bulkCreate([
-                    {
+                await GridBanner.bulkCreate(
+                    Array.from({ length: 10 }).map(() => ({
                         html: null,
                         enabled: false,
                         empresa_id: empresa!.id,
                         title: null,
-                    },
-                    {
-                        html: null,
-                        enabled: false,
-                        title: null,
-                        empresa_id: empresa!.id,
-                    },
-                    {
-                        html: null,
-                        enabled: false,
-                        title: null,
-                        empresa_id: empresa!.id,
-                    },
-                    {
-                        html: null,
-                        title: null,
-                        enabled: false,
-                        empresa_id: empresa!.id,
-                    },
-                    {
-                        html: null,
-                        title: null,
-                        enabled: false,
-                        empresa_id: empresa!.id,
-                    },
-                ]);
+                    }))
+                );
             }
             if (body.pages?.length) {
                 for (const page of body.pages) {

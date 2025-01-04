@@ -49,18 +49,19 @@ function ShopPage({
                 <CategoriesSection categories={categories} />
                 <ServiciosSection servicios={header.categoriesServices} />
                 <GridBannersPage grid={grid_banner_pages[1]} i={1} />
+                <GridBannersPage grid={grid_banner_pages[2]} i={2} />
                 <OfferSection
                     productlatestmapped={productlatestmapped}
                     productsoffert8mapped={productsoffertsmapped}
                 />
-                <GridBannersPage grid={grid_banner_pages[2]} i={2} />
+                <GridBannersPage grid={grid_banner_pages[3]} i={3} />
                 <ProductsSectionRandom
                     productlatestmapped={productlatestmapped}
                     productmostdiscountmapped={productmostdiscountmapped}
                 />
-                <GridBannersPage grid={grid_banner_pages[3]} i={3} />
-                <LatestProductSection ultimosproducto={productslatestmapped} />
                 <GridBannersPage grid={grid_banner_pages[4]} i={4} />
+                <LatestProductSection ultimosproducto={productslatestmapped} />
+                <GridBannersPage grid={grid_banner_pages[5]} i={5} />
             </div>
         </WebLayout>
     );

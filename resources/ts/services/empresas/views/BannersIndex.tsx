@@ -119,7 +119,7 @@ function BannersIndex() {
                                         }}
                                     />
                                 ) : (
-                                    <div class="h-[200px] w-full bg-paper-light dark:bg-admin-terciary" />
+                                    <div class="h-[150px] w-full bg-paper-light dark:bg-admin-terciary" />
                                 )}
                             </div>
                         );

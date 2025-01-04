@@ -89,36 +89,38 @@ function HomePage({
                 <Noticia noticia={noticia} />
                 <BackgroundSection backgrounds={backgrounds} />
                 <GridBanners grid={gridbanners} i={0} />
+                <GridBanners grid={gridbanners} i={1} />
                 <OfferSection
                     productlatestmapped={productlatestmapped}
                     productsoffert8mapped={productsoffert6mapped}
                 />
-                {/* <AboutSection
-                    productservicesquantity={productservicesquantity}
-                    productsquantity={productsquantity}
-                /> */}
-                <GridBanners grid={gridbanners} i={1} />
+                <GridBanners grid={gridbanners} i={2} />
+                <GridBanners grid={gridbanners} i={3} />
                 <CategoriesSection categories={header.categories} />
                 <ProductsSectionRandom
                     productlatestmapped={productlatestmapped}
                     productmostdiscountmapped={productmostdiscountmapped}
                 />
                 <ServiciosSection servicios={header.categoriesServices} />
-                <GridBanners grid={gridbanners} i={2} />
+                <GridBanners grid={gridbanners} i={4} />
+                <GridBanners grid={gridbanners} i={5} />
                 <CategoriesProductSection
                     getProductsByCategories={getproductsbycategories}
                 />
-                <GridBanners grid={gridbanners} i={3} />
+                <GridBanners grid={gridbanners} i={6} />
+                <GridBanners grid={gridbanners} i={7} />
                 <ProductsUsers
                     productsmostreactionmapped={productsmostreactionmapped}
                     productsmostratingmapped={productsmostratingmapped}
                     productsmostcommentsmapped={productsmostcommentsmapped}
                 />
                 <BrandsSection brands={brands} />
+                <GridBanners grid={gridbanners} i={8} />
                 <PostsSection posts={posts} />
-                <GridBanners grid={gridbanners} i={4} />
+                <GridBanners grid={gridbanners} i={9} />
                 <UsersSection users={users} />
                 <FindSection />
+                <GridBanners grid={gridbanners} i={10} />
                 <EmailsPromocionesStore />
             </WebLayout>
         </>

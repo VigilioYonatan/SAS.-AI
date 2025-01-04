@@ -61,43 +61,14 @@ export class PagesApiService {
     async store(empresa: Empresas, body: PagesStoreDto) {
         const page = new Page({ ...body, empresa_id: empresa.id });
         await page.save();
-        await GridBannerPage.bulkCreate([
-            {
-                html: "",
+        await GridBannerPage.bulkCreate(
+            Array.from({ length: 10 }).map(() => ({
+                html: null,
                 enabled: false,
                 empresa_id: empresa!.id,
-                grid_banner_id: null,
-                page_id: page.id,
-            },
-            {
-                html: "",
-                enabled: false,
-                empresa_id: empresa!.id,
-                page_id: page.id,
-                grid_banner_id: null,
-            },
-            {
-                html: "",
-                enabled: false,
-                grid_banner_id: null,
-                page_id: page.id,
-                empresa_id: empresa!.id,
-            },
-            {
-                html: "",
-                grid_banner_id: null,
-                enabled: false,
-                page_id: page.id,
-                empresa_id: empresa!.id,
-            },
-            {
-                html: "",
-                grid_banner_id: null,
-                enabled: false,
-                page_id: page.id,
-                empresa_id: empresa!.id,
-            },
-        ]);
+                title: null,
+            }))
+        );
         return {
             success: true,
             page,
