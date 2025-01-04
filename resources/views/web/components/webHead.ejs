@@ -29,11 +29,11 @@
 <meta property="og:site_name" content="<%= locals.$empresa ? $empresa.name_empresa:''  %>">
 <meta property="fb:app_id" content="">
 <link rel="manifest" href="/manifest.webmanifest.json">
-<script src="/js/tiny-slider.js"></script>
-<script src="/js/sweet.min.js"></script>
+<script src="/js/tiny-slider.js" defer></script>
+<script src="/js/sweet.min.js" defer></script>
 <!-- ICONO -->
 <link rel="shortcut icon" href="<%=  locals.$empresa.icon ? printFileWithDimension(locals.$empresa.icon,100)[0] :'/images/settings/others/logo.webp' %>" type="image/x-icon" />
-<%- `<script> 
+<%- `<script defer> 
     localStorage.setItem("user", ${JSON.stringify(JSON.stringify(typeof $user !== "undefined" ? $user  ?? null : null  ))});
     localStorage.setItem("empresa", ${JSON.stringify(JSON.stringify(typeof $empresa !== "undefined" ? $empresa  : null))});
     localStorage.setItem("money",${JSON.stringify(JSON.stringify(typeof $money !== "undefined" ? $money  : null))});

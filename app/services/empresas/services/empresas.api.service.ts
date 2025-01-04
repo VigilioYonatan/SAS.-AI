@@ -795,23 +795,27 @@ export class EmpresasApiService {
                     ],
                 }),
             ]);
-            let gridBannersMap = null;
+            let gridBannersMap: (GridBanner & { id_test: number })[] | null =
+                null;
 
             if (body.gridBanners?.length) {
-                gridBannersMap = await Promise.all(
-                    body.gridBanners.map(async (grid) => {
-                        const { id, ...rest } = grid;
-                        const g = await GridBanner.create({
-                            ...rest,
-                            empresa_id: empresa!.id,
-                        });
+                const gridBannersMap2: (GridBanner & { id_test: number })[] =
+                    [];
+                for (const grid of body.gridBanners) {
+                    const { id, ...rest } = grid;
 
-                        return {
-                            ...g.toJSON(),
-                            id_test: id,
-                        };
-                    })
-                );
+                    // Esperar a que se cree el GridBanner antes de proceder al siguiente
+                    const g = await GridBanner.create({
+                        ...rest,
+                        empresa_id: empresa!.id,
+                    });
+
+                    gridBannersMap2.push({
+                        ...g.toJSON(),
+                        id_test: id,
+                    } as GridBanner & { id_test: number });
+                }
+                gridBannersMap = gridBannersMap2;
             } else {
                 await GridBanner.bulkCreate([
                     {
@@ -847,38 +851,32 @@ export class EmpresasApiService {
                 ]);
             }
             if (body.pages?.length) {
-                await Promise.all(
-                    body.pages.map(async (page) => {
-                        const { grid_banner_pages, id, ...resto } = page;
-                        const newpage = await Page.create({
-                            ...resto,
-                            empresa_id: empresa!.id,
-                        });
-                        await Promise.all(
-                            page.grid_banner_pages.map(async (grid) => {
-                                const { grid_banner_id, ...rest } = grid;
+                for (const page of body.pages) {
+                    const { grid_banner_pages, id, ...resto } = page;
+                    const newpage = await Page.create({
+                        ...resto,
+                        empresa_id: empresa!.id,
+                    });
+                    for (const grid of page.grid_banner_pages) {
+                        const { grid_banner_id, ...rest } = grid;
 
-                                const findBannerTest = gridBannersMap?.find(
-                                    (grid) => grid.id_test === grid_banner_id
-                                );
-                                const gridBanner = findBannerTest
-                                    ? await GridBanner.findByPk(
-                                          findBannerTest.id
-                                      )
-                                    : null;
-
-                                await GridBannerPage.create({
-                                    ...rest,
-                                    page_id: newpage.id,
-                                    empresa_id: empresa!.id,
-                                    grid_banner_id: gridBanner
-                                        ? findBannerTest.id
-                                        : null,
-                                });
-                            })
+                        const findBannerTest = gridBannersMap?.find(
+                            (grid) => grid.id_test === grid_banner_id
                         );
-                    })
-                );
+                        const gridBanner = findBannerTest
+                            ? await GridBanner.findByPk(findBannerTest.id)
+                            : null;
+
+                        await GridBannerPage.create({
+                            ...rest,
+                            page_id: newpage.id,
+                            empresa_id: empresa!.id,
+                            grid_banner_id: gridBanner
+                                ? findBannerTest?.id
+                                : null,
+                        });
+                    }
+                }
             } else {
                 await Promise.all([
                     this.pagesApiService.store(empresa, {

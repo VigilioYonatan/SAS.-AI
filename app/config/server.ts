@@ -380,22 +380,38 @@ export class Server {
                 // no permitido para endpoints y que no sea el subdominio client
                 if (!req.path.includes("api")) {
                     // LAYOUT
-                    const [categories, categoriesService, totalProducts] =
-                        await Promise.all([
-                            Categories.findAll({
-                                where: {
-                                    empresa_id: empresa.id,
-                                    isService: false,
-                                },
-                            }),
-                            Categories.findAll({
-                                where: {
-                                    empresa_id: empresa.id,
-                                    isService: true,
-                                },
-                            }),
-                            Product(empresa, false).count(),
-                        ]);
+                    const [
+                        categories,
+                        categoriesService,
+                        totalProducts,
+                        brands,
+                    ] = await Promise.all([
+                        Categories.findAll({
+                            where: {
+                                empresa_id: empresa.id,
+                                isService: false,
+                            },
+                        }),
+                        Categories.findAll({
+                            where: {
+                                empresa_id: empresa.id,
+                                isService: true,
+                            },
+                        }),
+                        Product(empresa, false).count(),
+                        Brands.findAll({
+                            where: {
+                                empresa_id: empresa.id,
+                            },
+                            attributes: [
+                                "id",
+                                "name",
+                                "image",
+                                "empresa_id",
+                                "slug",
+                            ],
+                        }),
+                    ]);
                     const categoriasTotal = await Promise.all(
                         categories.map(async (category) => {
                             // productnormal
@@ -440,18 +456,6 @@ export class Server {
                         ]);
                         user.dataValues.products_favorites_length = favorites;
                     }
-                    const brands = await Brands.findAll({
-                        where: {
-                            empresa_id: empresa.id,
-                        },
-                        attributes: [
-                            "id",
-                            "name",
-                            "image",
-                            "empresa_id",
-                            "slug",
-                        ],
-                    });
 
                     res.locals.header = {
                         categories: categoriasTotal,
