@@ -60,7 +60,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
 
     return (
         <div
-            class={`flex gap-6 flex-col md:flex-row  product-card   p-2 ${
+            class={`flex gap-6 flex-col md:flex-row  product-card-page-page   p-2 ${
                 (
                     producto.value as ProductsNormalSchemaFromServer
                 ).options?.filter((option) => option.id !== 1).length
@@ -169,12 +169,12 @@ function ProductCardView({ product }: ProductCardViewProps) {
                 </Slider>
             </ShowImage>
             <style jsx>{`
-                .product-card {
+                .product-card-page {
                     ${isColorLight(storageEmpresa!.setting.bg_color_paper)
                         ? "color: #000000 !important"
                         : "color: #FFFFFF !important"};
                 }
-                .product-card .slick-dots li {
+                .product-card-page .slick-dots li {
                     min-width: 50px !important;
                     min-height: 50px !important;
                     border: 1px solid
@@ -183,10 +183,10 @@ function ProductCardView({ product }: ProductCardViewProps) {
                             : "rgba(0, 0, 0, 0.2)"};
                     bottom: -36px;
                 }
-                .product-card .slick-dots .slick-active {
+                .product-card-page .slick-dots .slick-active {
                     border: 2px solid var(--primary);
                 }
-                .product-card .slick-slide div {
+                .product-card-page .slick-slide div {
                     margin-inline: 8px;
                     outline: none;
                 }
@@ -276,7 +276,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         loading="lazy"
                     />
                 ) : null}
-                <div class="flex flex-col">
+                <div class="flex flex-col product-page-container-cost">
                     <div class="flex gap-2">
                         {product.producto.value.discount > 0 ? (
                             <span
@@ -575,7 +575,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         />
                     </Form>
                 ) : null}
-                <div class="flex gap-2">
+                <div class="flex gap-2 product-page-container-buttons">
                     {(!(producto.value as ProductsRestaurantSchemaFromServer)
                         ?.ilimit &&
                         (producto.value as ProductsRestaurantSchemaFromServer)
@@ -657,7 +657,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                         </>
                     )}
                 </div>{" "}
-                <div class="flex  flex-col gap-1">
+                <div class="flex  flex-col gap-1 product-page-container-shared">
                     <span class=" dark:text-white text-xs font-bold ">
                         Descripción
                     </span>
