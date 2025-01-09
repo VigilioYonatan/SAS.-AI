@@ -94,7 +94,6 @@ export async function initial() {
                 empresa_id: empresa.id,
             },
         });
-        console.log({ empresa });
 
         if (!pageHome) {
             await Page.create({
