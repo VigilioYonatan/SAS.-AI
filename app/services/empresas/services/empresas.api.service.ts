@@ -103,6 +103,8 @@ export async function initial() {
                 empresa_id: empresa.id,
                 icon: "<i class='fas fa-home'></i>",
                 queries: [],
+                isDinamic: false,
+                enabledHeaderPage: true,
             });
         }
         // const finanzas = await TipoFinanza.findAll();
