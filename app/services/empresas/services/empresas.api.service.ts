@@ -163,7 +163,7 @@ export async function initial() {
         }
         if (!isProduction[1] && !isProduction[0].isProduction) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await isProduction[0].update({ isProduction: false });
+            await isProduction[0].update({ isProduction: true });
         }
         if (!enabled_zoho_mail[1] && !enabled_zoho_mail[0].enabled_zoho_mail) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
@@ -174,7 +174,7 @@ export async function initial() {
         if (!isEccomerce[1] && !isEccomerce[0].isEccomerce) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await isEccomerce[0].update({
-                isEccomerce: false,
+                isEccomerce: true,
             });
         }
         if (!products_limit[1] && !products_limit[0].products_limit) {

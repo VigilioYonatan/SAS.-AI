@@ -91,6 +91,7 @@ export const test: Pick<
             categories_slider: true,
             users: true,
         },
+        isEccomerce: true,
     },
     gridBanners: [
         {
