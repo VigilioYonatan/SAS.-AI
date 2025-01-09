@@ -126,6 +126,10 @@ render(
     lazy(() => import("@/web/views/home/OthersPage"))
 );
 render(
+    "DynamicPage",
+    lazy(() => import("@/web/views/home/DynamicPage"))
+);
+render(
     "ContactPage",
     lazy(() => import("@/web/views/home/ContactPage"))
 );

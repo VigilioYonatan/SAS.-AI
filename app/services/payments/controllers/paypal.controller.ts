@@ -17,6 +17,7 @@ import {
 } from "@/orders/dtos/orders.store.dto";
 import type { RequestVigilio } from "~/config/types";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
+import { initialMiddleware } from "@/web/middlewares/initial.middleware";
 
 @Injectable()
 @Controller("/paypal")
@@ -30,7 +31,7 @@ export class PaypalController {
         return result;
     }
 
-    @Get("/success")
+    @Get("/success", [initialMiddleware])
     async success(
         @Req("empresa") empresa: Empresas,
         @Query("token") token: string,
@@ -52,7 +53,7 @@ export class PaypalController {
         }
     }
 
-    @Get("/cancel")
+    @Get("/cancel", [initialMiddleware])
     async cancel(@Req("empresa") empresa: Empresas, @Res() res: Response) {
         return res.render("web/payment/paypal/cancel", {
             empresa,
@@ -61,7 +62,7 @@ export class PaypalController {
         });
     }
 
-    @Get("/failed")
+    @Get("/failed", [initialMiddleware])
     async failed(
         @Req("empresa") empresa: Empresas,
         @Res() res: Response,

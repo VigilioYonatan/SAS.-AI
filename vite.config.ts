@@ -34,6 +34,10 @@ export default defineConfig({
                 ],
                 display: "standalone",
                 start_url: "/",
+                shortcuts: [
+                    { name: "Home", short_name: "Home", url: "/" },
+                    { name: "Login", short_name: "Login", url: "/auth/login" },
+                ],
             },
         }),
     ],

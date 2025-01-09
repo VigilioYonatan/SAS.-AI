@@ -40,6 +40,7 @@ export const empresasUpdateDto = omit(empresasSchema, [
     "isFreeVPS",
     "versionamiento",
     "enabled_zoho_mail",
+    "isProduction",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;
 export const empresasLogoUpdateDto = object({

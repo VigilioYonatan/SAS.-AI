@@ -158,6 +158,15 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
     function pathsWeb() {
         return [
+            ...empresaStore.state!.cruds.map((crud) => ({
+                title: (
+                    <span class="flex gap-1 items-center">
+                        <div dangerouslySetInnerHTML={{ __html: crud.icon }} />{" "}
+                        {crud.name}
+                    </span>
+                ),
+                to: `/crud/${crud.name}`,
+            })),
             {
                 title: (
                     <span>

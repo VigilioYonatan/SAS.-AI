@@ -130,6 +130,12 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
         type: DataType.BOOLEAN,
         defaultValue: false,
     })
+    isEccomerce: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: false,
+    })
     is_service_page: boolean;
 
     @Column({

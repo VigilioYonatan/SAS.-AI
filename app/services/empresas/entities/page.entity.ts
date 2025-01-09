@@ -25,8 +25,17 @@ export class Page extends Model implements Omit<PageSchema, "id"> {
     @Column({ type: DataType.STRING(1000) })
     description: string;
 
+    @Column({ type: DataType.BOOLEAN })
+    isDinamic: boolean;
+
+    @Column({ type: DataType.BOOLEAN })
+    enabledHeaderPage: boolean;
+
     @Column({ type: DataType.STRING })
     icon: string;
+
+    @Column({ type: DataType.JSON })
+    queries: PageSchema["queries"];
 
     @ForeignKey(() => Empresas)
     @Column({

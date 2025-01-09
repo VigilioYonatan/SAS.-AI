@@ -66,6 +66,7 @@ import { Page } from "@/empresas/entities/page.entity";
 import { GridBannerPage } from "@/empresas/entities/grid_banner_page.entity";
 import { Emails } from "@/emails/entities/emails.entity";
 import { EmailsPromociones } from "@/emails/entities/emails_offers.entity";
+import { Crud } from "@/empresas/entities/crud.entity";
 
 const sequelize = new Sequelize({
     dialect: "postgres",
@@ -150,6 +151,7 @@ sequelize.addModels([
     GridBannerPage,
     Emails,
     EmailsPromociones,
+    Crud,
 ]);
 
 export async function connectDB() {

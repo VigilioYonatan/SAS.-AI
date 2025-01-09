@@ -122,7 +122,20 @@ export const inteligenceArtificial = object({
         maxValue(21),
         custom((val) => val % 2 !== 0, "Solo debe ser numeros impares."),
     ]),
-    datos: array(string()),
+    datos: array(
+        object({
+            key: string([minLength(3)]),
+            query: string([
+                minLength(3),
+                regex(
+                    /^SELECT.*:empresa_id.*/,
+                    "consulta solo SELECT  y solo en máyusculas"
+                ),
+            ]),
+            condition: string(),
+            enabled: boolean(),
+        })
+    ),
     hour_update: number([minValue(6, "Minimo 6")]),
     usage: object({ input_tokens: number(), output_tokens: number() }),
     enabledBotInteligence: boolean(), // usará toda la base de datos. sino filtará los productos que el cliente busca , pero no es muy precioso por que el cliente puede escribir mal
@@ -369,7 +382,8 @@ export const empresasSchema = object({
         client_secret: nullable(string()),
         refresh_token: nullable(string()),
     }),
-    enabled_zoho_mail: boolean(),
+    enabled_zoho_mail: boolean(),    isProduction: boolean(),
+
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

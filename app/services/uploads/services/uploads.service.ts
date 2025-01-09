@@ -6,7 +6,6 @@ import {
 } from "@vigilio/express-core/helpers";
 import {
     BadRequestException,
-    InternalServerErrorException,
     UnauthorizedException,
 } from "@vigilio/express-core";
 import {
@@ -48,6 +47,11 @@ import { FileSchema } from "@/empresas/entities/file.entity";
 import { Variants } from "@/products/entities/options/variants.entity";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import cache from "@vigilio/express-core/cache";
+import { Crud } from "@/empresas/entities/crud.entity";
+import { CrudDateApiService } from "@/empresas/services/crud_data.api.service";
+import { Model } from "sequelize-typescript";
+import { sequelize } from "~/config/db.config";
+import { QueryTypes } from "sequelize";
 
 @Injectable()
 export class UploadsService {
@@ -62,14 +66,10 @@ export class UploadsService {
         private readonly brandsApiService: BrandsApiService,
         private readonly suppliersApiService: SuppliersApiService,
         private readonly newApiService: NewApiService,
-        private readonly settingsApiService: SettingsApiService
+        private readonly settingsApiService: SettingsApiService,
+        private readonly crudDateApiService: CrudDateApiService
     ) {}
-    async store(props: {
-        req: Request;
-
-        entity: UploadsEntities;
-        property: UploadsProperties;
-    }) {
+    async store(props: { req: Request; entity: string; property: string }) {
         const { entity, property } = props;
         const {
             files,
@@ -447,18 +447,54 @@ export class UploadsService {
                 }
                 cache.delete(`EMPRESA:${empresa.slug}`);
                 break;
-            default:
-                throw new InternalServerErrorException(
-                    "Error server, comunicarse con desarrollador"
-                );
+            default: {
+                const crud = await Crud.findOne({
+                    where: {
+                        name: props.entity,
+                        empresa_id: empresa.id,
+                    },
+                });
+                if (crud) {
+                    for (const data of crud.data) {
+                        if (data.type === "FILE") {
+                            if (property === data.name) {
+                                qualities = await this.customUpload(
+                                    files,
+                                    {
+                                        minFiles: 1,
+                                        maxFiles: data.file_option?.max,
+                                        required: !data.options.allowNull,
+                                        typeFile: {
+                                            value: data.file_option?.types.split(
+                                                ", "
+                                            ) || [
+                                                "image/webp",
+                                                "image/jpeg",
+                                                "image/jpg",
+                                                "image/png",
+                                            ],
+                                        },
+                                    },
+                                    null
+                                );
+                            }
+                        }
+                    }
+                } else {
+                    throw new BadRequestException(
+                        "Error server, comunicarse con desarrollador"
+                    );
+                }
+            }
         }
         const responseFile = await uploadFiles({
             empresa,
             files,
-            entity,
+            entity: entity as UploadsEntities,
             name,
             ...qualities,
         });
+
         return {
             success: true,
             files: responseFile,
@@ -766,12 +802,46 @@ export class UploadsService {
 
                 break;
             }
-            default:
-                throw new BadRequestException(
-                    "Error server, comunicarse con desarrollador"
-                );
+            default: {
+                const crud = await Crud.findOne({
+                    where: {
+                        name: props.entity,
+                        empresa_id: empresa.id,
+                    },
+                });
+                if (crud) {
+                    for (const data of crud.data) {
+                        const crudData = await this.crudDateApiService.show(
+                            empresa,
+                            props.entity,
+                            id
+                        );
+                        entidad = crudData[entity as keyof typeof crudData];
+                        if (
+                            property === data.name &&
+                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                            (crudData as any)[entity as keyof typeof crudData][
+                                data.name
+                            ]
+                        ) {
+                            removeFile(
+                                empresa.slug,
+                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                (crudData as any)[
+                                    entity as keyof typeof crudData
+                                ][data.name]
+                            );
+                        }
+                    }
+                } else {
+                    throw new BadRequestException(
+                        "Error server, comunicarse con desarrollador"
+                    );
+                }
+            }
         }
         let filesFoto = null;
+
         if (files) {
             const { files: responseFile } = await this.store({
                 req: props.req,
@@ -780,14 +850,33 @@ export class UploadsService {
             });
             filesFoto = responseFile;
         }
+
         /*
         type here is so difficult but  i know that you understand me
         */
+        if (entidad instanceof Model) {
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            (entidad as any)[property] = filesFoto;
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            await (entidad as any).save();
+        } else {
+            await sequelize.query(
+                `
+                UPDATE "${props.entity}"
+                SET ${props.property} = :value
+                WHERE "${props.entity}"."empresa_id" = :empresa_id AND "${props.entity}"."id" = :id
+            `,
+                {
+                    replacements: {
+                        value: JSON.stringify(filesFoto),
+                        id: props.id,
+                        empresa_id: empresa.id,
+                    },
+                    type: QueryTypes.UPDATE,
+                }
+            );
+        }
 
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        (entidad as any)[property] = filesFoto;
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        await (entidad as any).save();
         return {
             success: true,
             files: filesFoto,

@@ -100,7 +100,7 @@
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
   <%- include("../components/loader.ejs")  %>
-  <product-page :product="<%= JSON.stringify(product)  %>" :totalComments="<%= JSON.stringify(totalComments)  %>" category_name="<%= category_name %>" :productbybrands="<%= JSON.stringify(productByBrands)  %>" :categoriesproductsrandom="<%= JSON.stringify(categoriesProductsRandom)  %>" :header="<%= JSON.stringify(header)  %>">
+  <product-page  :product="<%= JSON.stringify(product)  %>" :totalComments="<%= JSON.stringify(totalComments)  %>" category_name="<%= category_name %>" :productbybrands="<%= JSON.stringify(productByBrands)  %>" :categoriesproductsrandom="<%= JSON.stringify(categoriesProductsRandom)  %>" :header="<%= JSON.stringify(header)  %>">
     <% if( product.description){ %>
     <%-  product.description  %>
     <% } %>

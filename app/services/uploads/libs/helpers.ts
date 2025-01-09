@@ -313,6 +313,7 @@ export function printFileWithDimension(empresa: Empresas) {
 export function removeFile(slug: string, files: FilesSchema[]) {
     for (const file of files) {
         const image = `${pathUploads()}/${slug}/${file.file}`;
+
         if (fs.existsSync(image)) {
             fs.unlinkSync(image);
         }

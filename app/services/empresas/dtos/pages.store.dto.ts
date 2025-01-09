@@ -9,13 +9,14 @@ import { Page } from "../entities/page.entity";
 
 export const pagesStoreDto = omitAsync(
     pagesSchema,
-    ["id"],
+    ["id", "isDinamic"],
     [
         async (input) => {
             const [byTitle, bySlug] = await Promise.all([
                 Page.findOne({
                     where: {
                         title: input.title,
+                        isDinamic: false,
                         empresa_id: input.empresa_id,
                     },
                     raw: true,
@@ -24,6 +25,7 @@ export const pagesStoreDto = omitAsync(
                     where: {
                         slug: input.slug,
                         empresa_id: input.empresa_id,
+                        isDinamic: false,
                     },
                     raw: true,
                 }),

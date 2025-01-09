@@ -65,11 +65,20 @@ import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { Page } from "../entities/page.entity";
 import { GridBannerPage } from "../entities/grid_banner_page.entity";
 import { PagesApiService } from "./pages.api.service";
+// import { sequelize } from "~/config/db.config";
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
+    // await sequelize.query(`DELETE FROM "Test"`);
     const empresas = await Empresas.findAll({
-        attributes: ["slug", "credentials", "payments", "telegram_token", "id"],
+        attributes: [
+            "slug",
+            "credentials",
+            "payments",
+            "telegram_token",
+            "id",
+            "name_empresa",
+        ],
     });
     for (const empresa of empresas) {
         const openAiClient = new openai.OpenAI({
@@ -79,6 +88,23 @@ export async function initial() {
             await initializeBot(empresa, empresa.telegram_token);
         }
         // tipos finanzas
+        const pageHome = await Page.findOne({
+            where: {
+                slug: "home",
+                empresa_id: empresa.id,
+            },
+        });
+
+        if (!pageHome) {
+            await Page.create({
+                title: "Home",
+                description: `En ${empresa.name_empresa}, ofrecemos una amplia variedad de productos de alta calidad a precios inmejorables, encontrarás todo lo que necesitas en un solo lugar. Disfruta de envíos rápidos, devoluciones fáciles y un servicio al cliente excepcional. ¡Explora nuestras ofertas diarias y descubre la diferencia de comprar en Tienda XYZ!`,
+                slug: "home",
+                empresa_id: empresa.id,
+                icon: "<i class='fas fa-home'></i>",
+                queries: [],
+            });
+        }
         // const finanzas = await TipoFinanza.findAll();
         const bg_color_header = await Settings.findOrCreate({
             where: { empresa_id: empresa!.id },
@@ -92,6 +118,10 @@ export async function initial() {
             where: { empresa_id: empresa!.id },
             defaults: { products_limit_offer: 4 }, // Valores predeterminados si se crea
         });
+        const isEccomerce = await Settings.findOrCreate({
+            where: { empresa_id: empresa!.id },
+            defaults: { isEccomerce: 4 }, // Valores predeterminados si se crea
+        });
         const type_loader = await Settings.findOrCreate({
             where: { empresa_id: empresa!.id },
             defaults: { type_loader: "null" }, // Valores predeterminados si se crea
@@ -104,6 +134,11 @@ export async function initial() {
             where: { id: empresa!.id },
             defaults: { enabled_zoho_mail: false }, // Valores predeterminados si se crea
         });
+        const isProduction = await Empresas.findOrCreate({
+            where: { id: empresa!.id },
+            defaults: { isProduction: false }, // Valores predeterminados si se crea
+        });
+
         const gridBanners = await GridBanner.findAll({
             where: {
                 empresa_id: empresa.id,
@@ -114,15 +149,32 @@ export async function initial() {
                 empresa_id: empresa.id,
             },
         });
-
+        const queries = await Page.findOrCreate({
+            where: { id: empresa!.id },
+            defaults: { queries: [] }, // Valores predeterminados si se crea
+        });
         if (!bg_color_header[1] && !bg_color_header[0].bg_color_header) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await bg_color_header[0].update({ bg_color_header: "transparent" });
+        }
+        if (!queries[1] && !queries[0].queries) {
+            // Si ya existía el registro pero el valor está vacío, actualizarlo
+            await queries[0].update({ queries: [] });
+        }
+        if (!isProduction[1] && !isProduction[0].isProduction) {
+            // Si ya existía el registro pero el valor está vacío, actualizarlo
+            await isProduction[0].update({ isProduction: false });
         }
         if (!enabled_zoho_mail[1] && !enabled_zoho_mail[0].enabled_zoho_mail) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await enabled_zoho_mail[0].update({
                 enabled_zoho_mail: false,
+            });
+        }
+        if (!isEccomerce[1] && !isEccomerce[0].isEccomerce) {
+            // Si ya existía el registro pero el valor está vacío, actualizarlo
+            await isEccomerce[0].update({
+                isEccomerce: false,
             });
         }
         if (!products_limit[1] && !products_limit[0].products_limit) {
@@ -167,6 +219,30 @@ export async function initial() {
         }
         await Promise.all(
             pages.map(async (page) => {
+                const isDinamic = await Page.findOrCreate({
+                    where: { id: page.id, empresa_id: empresa!.id },
+                    defaults: { isDinamic: false }, // Valores predeterminados si se crea
+                });
+                const enabledHeaderPage = await Page.findOrCreate({
+                    where: { id: page.id, empresa_id: empresa!.id },
+                    defaults: { enabledHeaderPage: false }, // Valores predeterminados si se crea
+                });
+
+                if (!isDinamic[1] && !isDinamic[0].isDinamic) {
+                    // Si ya existía el registro pero el valor está vacío, actualizarlo
+                    await isDinamic[0].update({
+                        isDinamic: false,
+                    });
+                }
+                if (
+                    !enabledHeaderPage[1] &&
+                    !enabledHeaderPage[0].enabledHeaderPage
+                ) {
+                    // Si ya existía el registro pero el valor está vacío, actualizarlo
+                    await enabledHeaderPage[0].update({
+                        enabledHeaderPage: false,
+                    });
+                }
                 const gridBannersPage = await GridBannerPage.findAll({
                     where: {
                         empresa_id: empresa.id,
@@ -902,11 +978,22 @@ export class EmpresasApiService {
             } else {
                 await Promise.all([
                     this.pagesApiService.store(empresa, {
+                        title: "Home",
+                        description: `En ${empresa.name_empresa}, ofrecemos una amplia variedad de productos de alta calidad a precios inmejorables, encontrarás todo lo que necesitas en un solo lugar. Disfruta de envíos rápidos, devoluciones fáciles y un servicio al cliente excepcional. ¡Explora nuestras ofertas diarias y descubre la diferencia de comprar en Tienda XYZ!`,
+                        slug: "home",
+                        empresa_id: empresa.id,
+                        icon: "<i class='fas fa-home'></i>",
+                        queries: [],
+                        enabledHeaderPage: true,
+                    }),
+                    this.pagesApiService.store(empresa, {
                         title: "Nosotros",
                         description: `Bienvenidos a ${empresa.name_empresa}`,
                         slug: "nosotros",
                         empresa_id: empresa.id,
                         icon: "<i class='fas fa-users'></i>",
+                        enabledHeaderPage: true,
+                        queries: [],
                     }),
                     this.pagesApiService.store(empresa, {
                         title: "Shop",
@@ -914,6 +1001,8 @@ export class EmpresasApiService {
                         slug: "shop",
                         empresa_id: empresa.id,
                         icon: "<i class='fas fa-store'></i>",
+                        enabledHeaderPage: true,
+                        queries: [],
                     }),
                     this.pagesApiService.store(empresa, {
                         title: "Servicios",
@@ -921,6 +1010,8 @@ export class EmpresasApiService {
                         slug: "servicios",
                         empresa_id: empresa.id,
                         icon: "<i class='fas fa-building'></i>",
+                        enabledHeaderPage: true,
+                        queries: [],
                     }),
                     this.pagesApiService.store(empresa, {
                         title: "Contacto",
@@ -928,6 +1019,8 @@ export class EmpresasApiService {
                         slug: "contacto",
                         empresa_id: empresa.id,
                         icon: "<i class='fas fa-envelope-open'></i>",
+                        enabledHeaderPage: true,
+                        queries: [],
                     }),
                 ]);
             }
@@ -1777,6 +1870,7 @@ export class EmpresasApiService {
             },
         });
         cache.delete("CACHE_HOST");
+        cache.delete("HOSTS");
         return {
             success: true,
             host: {
@@ -1819,6 +1913,7 @@ export class EmpresasApiService {
         });
         cache.delete(`EMPRESA:${empresa.slug}`);
         cache.delete("CACHE_HOST");
+        cache.delete("HOSTS");
         return {
             success: true,
             url: empresa.setting.host.host!,
@@ -1914,6 +2009,18 @@ export class EmpresasApiService {
         return {
             success: true,
             message: "Se agregó nuevo grupo whatsapp",
+        };
+    }
+    async changeMode(slug: string) {
+        const empresa = await Empresas.findOne({
+            where: { slug },
+            attributes: ["isProduction"],
+        });
+        if (!empresa) throw new BadRequestException("No informacion");
+        await empresa.update({ isProduction: !empresa.isProduction });
+        return {
+            success: true,
+            message: "Changed",
         };
     }
 

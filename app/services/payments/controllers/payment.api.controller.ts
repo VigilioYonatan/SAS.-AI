@@ -18,6 +18,7 @@ import { Validator } from "@vigilio/express-core/valibot";
 import type { RequestVigilio } from "~/config/types";
 import type { Response } from "express";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
+import { initialMiddleware } from "@/web/middlewares/initial.middleware";
 
 @Injectable()
 @Controller("/payment")
@@ -31,7 +32,7 @@ export class PaymentApiController {
         return result;
     }
 
-    @Get("/success")
+    @Get("/success", [initialMiddleware])
     async success(
         @Req() req: RequestVigilio,
         @Query() query: { preference_id: string },
@@ -63,7 +64,7 @@ export class PaymentApiController {
         await this.paymentApiService.webhook(req, id, type);
     }
 
-    @Get("/cancel")
+    @Get("/cancel", [initialMiddleware])
     async cancel(@Req("empresa") empresa: Empresas, @Res() res: Response) {
         return res.render("web/payment/mercado_pago/cancel", {
             empresa,
@@ -72,7 +73,7 @@ export class PaymentApiController {
         });
     }
 
-    @Get("/failure")
+    @Get("/failure", [initialMiddleware])
     async failed(
         @Req() req: RequestVigilio,
         @Res() res: Response,

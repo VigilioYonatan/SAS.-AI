@@ -1,11 +1,15 @@
-import { BadRequestException, Injectable } from "@vigilio/express-core";
+import {
+    BadRequestException,
+    Injectable,
+    InternalServerErrorException,
+} from "@vigilio/express-core";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { getProductAll, Product, ProductKeys } from "@/products/libs";
 import { ProductsApiService } from "@/products/services/products.api.service";
 import { CategoriesApiService } from "@/products/services/categories.api.service";
 import { BackgroundApiService } from "@/empresas/services/background.api.service";
 import cache from "@vigilio/express-core/cache";
-import { Op } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import { Posts } from "@/posts/entities/posts.entity";
 import { Categories } from "@/products/entities/categories.entity";
 import { New } from "@/empresas/entities/new.entity";
@@ -28,6 +32,15 @@ import { GridBanner } from "@/empresas/entities/grid_banner.entity";
 import { ROLES } from "@/users/libs";
 import { Page } from "@/empresas/entities/page.entity";
 import type { GridBannerPage } from "@/empresas/entities/grid_banner_page.entity";
+import { Crud } from "@/empresas/entities/crud.entity";
+import { PaginatorApiServices } from "@/common/paginator/services/paginator.api.service";
+import { RequestVigilio } from "~/config/types";
+import {
+    getQueries,
+    joins,
+    PaginatorModel,
+    relation,
+} from "@/common/paginator/libs";
 
 @Injectable()
 export class WebApiService {
@@ -36,7 +49,8 @@ export class WebApiService {
         private readonly categoriesApiService: CategoriesApiService,
         private readonly backgroundApiService: BackgroundApiService,
         private readonly brandsApiService: BrandsApiService,
-        private readonly subCategoriesApiService: SubCategoriesApiService
+        private readonly subCategoriesApiService: SubCategoriesApiService,
+        private readonly paginatorApiServices: PaginatorApiServices
     ) {}
 
     async home(empresa: Empresas, user: Users) {
@@ -321,13 +335,23 @@ export class WebApiService {
                         ? getProductAll(empresa, productLatest, user, false)
                         : null,
                 ]);
-
+            const data = await Page.findOne({
+                where: {
+                    [Op.or]: {
+                        slug: ["home", "inicio"],
+                    },
+                    empresa_id: empresa.id,
+                },
+                attributes: ["id", "title", "slug", "queries", "description"],
+            });
+            if (!data) {
+                throw new BadRequestException("Error : home - inicio");
+            }
+            const queries = await getQueries(empresa, data);
             cacheHome = {
-                title: "Inicio",
+                title: data.title,
                 backgrounds, //backgrounds
-                description: `Bienvenidos a ${empresa.name_empresa} - ${
-                    empresa.about ? empresa.about.slice(0, 100) : ""
-                }`,
+                description: data?.description || "no description",
                 posts, // posts
                 productsOffert6Mapped,
                 productsLatest6Mapped,
@@ -343,6 +367,7 @@ export class WebApiService {
                 productsMostRatingMapped,
                 productsMostCommentsMapped,
                 gridBanners,
+                queries,
             };
             const max = empresa.isTemplate ? 10000 : 1;
             const hora = 60 * 60 * 1000 * max;
@@ -353,8 +378,20 @@ export class WebApiService {
     async servicios(empresa: Empresas) {
         if (!empresa.setting.is_service_page)
             throw new BadRequestException("No permission");
-
-        return {};
+        const data = await Page.findOne({
+            where: {
+                [Op.or]: {
+                    slug: ["servicios", "services"],
+                },
+                empresa_id: empresa.id,
+            },
+            attributes: ["id", "title", "slug", "queries", "description"],
+        });
+        if (!data) {
+            throw new BadRequestException("Error page: servicios - services");
+        }
+        const queries = await getQueries(empresa, data);
+        return { queries };
     }
     async about(empresa: Empresas) {
         const [
@@ -404,6 +441,33 @@ export class WebApiService {
                 where: { empresa_id: empresa.id, enabled: true },
             }),
         ]);
+        const data = await Page.findOne({
+            where: {
+                [Op.or]: {
+                    slug: ["about", "nosotros"],
+                },
+                empresa_id: empresa.id,
+            },
+            attributes: ["id", "title", "slug", "queries", "description"],
+        });
+        if (!data) {
+            throw new BadRequestException("Error page , nosotros - about");
+        }
+        let queries = null;
+        try {
+            const q = await Promise.all(
+                data.queries.map(async (query) => {
+                    const result = await sequelize.query(query.query, {
+                        replacements: { empresa_id: empresa.id },
+                        type: QueryTypes.SELECT,
+                    });
+                    return { [query.key]: relation(result) || [] };
+                })
+            );
+            queries = q;
+        } catch (error) {
+            throw new InternalServerErrorException((error as Error).message);
+        }
         return {
             posts,
             categories,
@@ -411,9 +475,37 @@ export class WebApiService {
             productsQuantity,
             users,
             productServicesQuantity,
+            queries,
         };
     }
     async shop(empresa: Empresas, user: Users) {
+        const d = await Page.findOne({
+            where: {
+                [Op.or]: {
+                    slug: ["shop", "tienda"],
+                },
+                empresa_id: empresa.id,
+            },
+            attributes: ["id", "title", "slug", "queries", "description"],
+        });
+        if (!d) {
+            throw new BadRequestException("Error page, shop - tienda");
+        }
+        let queries = null;
+        try {
+            const q = await Promise.all(
+                d.queries.map(async (query) => {
+                    const result = await sequelize.query(query.query, {
+                        replacements: { empresa_id: empresa.id },
+                        type: QueryTypes.SELECT,
+                    });
+                    return { [query.key]: relation(result) || [] };
+                })
+            );
+            queries = q;
+        } catch (error) {
+            throw new InternalServerErrorException((error as Error).message);
+        }
         const [
             productsLatest,
             productsOfferts,
@@ -488,14 +580,17 @@ export class WebApiService {
             productMostDiscountMapped,
             productLatestMapped,
             noticia,
+            queries,
         };
     }
 
-    async product(slug: string, empresa: Empresas, user: Users) {
+    async product(slug: string, req: RequestVigilio, user: Users) {
+        const empresa = req.empresa;
         const page = await Page.findOne({
             where: {
                 slug,
                 empresa_id: empresa.id,
+                isDinamic: false,
             },
         });
         if (page) {
@@ -503,11 +598,23 @@ export class WebApiService {
                 order: [["id", "ASC"]],
                 include: [GridBanner],
             })) as GridBannerPage[];
-            let pagina = {
+            const queries = await getQueries(empresa, page);
+            let pagina: {
+                title: string;
+                description: string;
+                grid_banner_pages: GridBannerPage[];
+                type_page: string;
+                data: object[] | null;
+                paginator: unknown | null;
+                queries: null | object;
+            } = {
                 title: page.title,
                 description: page.description,
                 grid_banner_pages,
                 type_page: "other_page",
+                data: [],
+                paginator: undefined,
+                queries,
             };
             if (page.slug === "shop" || page.slug === "tienda") {
                 const shop = await this.shop(empresa, user);
@@ -524,7 +631,122 @@ export class WebApiService {
             if (page.slug === "contact" || page.slug === "contacto") {
                 return { ...pagina, type_page: "contact_page" };
             }
+            const crud = await Crud.findOne({
+                where: { empresa_id: empresa.id, slug: slug.toLowerCase() },
+            });
+            let data = null;
+            let paginator = null;
 
+            if (crud) {
+                const [attributes, join] = await joins(crud, empresa);
+
+                if (crud.paginator) {
+                    const query = req.query;
+                    const navigator = {
+                        limit: crud.paginator || 14,
+                        offset: Number(query.offset ?? "0"),
+                        page:
+                            Number(query.page ?? "1") < 1
+                                ? 1
+                                : Number(query.page ?? "1"),
+                    };
+
+                    const pagination = {
+                        limit: navigator.limit,
+                        offset:
+                            (navigator.page - 1) * navigator.limit +
+                            navigator.offset,
+                        maxPagesShown: 3,
+                    };
+                    const { results, count } =
+                        await this.paginatorApiServices.index({
+                            model: crud.name as PaginatorModel,
+                            query: {
+                                limit: String(pagination.limit),
+                                offset: String(pagination.offset),
+                                search: query.search as string, // tu puedes tambien cambiar por letra
+                                ...query,
+                            },
+                            req,
+                        });
+
+                    const total = count as number;
+                    let startPage: number;
+                    let endPage: number;
+                    const totalPages = Math.ceil(total / pagination.limit);
+                    const currentPage =
+                        Math.floor(pagination.offset / pagination.limit) + 1;
+
+                    if (totalPages <= pagination.maxPagesShown) {
+                        startPage = 1;
+                        endPage = totalPages;
+                    } else {
+                        const maxPagesShownBeforeCurrentPage = Math.floor(
+                            pagination.maxPagesShown / 2
+                        );
+                        const maxPagesShownAfterCurrentPage =
+                            Math.ceil(pagination.maxPagesShown / 2) - 1;
+                        if (currentPage <= maxPagesShownBeforeCurrentPage) {
+                            startPage = 1;
+                            endPage = pagination.maxPagesShown;
+                        } else if (
+                            currentPage + maxPagesShownAfterCurrentPage >=
+                            totalPages
+                        ) {
+                            startPage =
+                                totalPages - pagination.maxPagesShown + 1;
+                            endPage = totalPages;
+                        } else {
+                            startPage =
+                                currentPage - maxPagesShownBeforeCurrentPage;
+                            endPage =
+                                currentPage + maxPagesShownAfterCurrentPage;
+                        }
+                    }
+                    const pages = Array.from(
+                        Array(endPage + 1 - startPage).keys()
+                    ).map((i) => startPage + i);
+                    const startingBreakPointButtonIfCondition = pages[0] >= 3;
+                    const endingBreakPointButtonIfCondition =
+                        pages[pages.length - 1] < totalPages - 1;
+
+                    paginator = {
+                        totalItems: total,
+                        currentPage,
+                        totalPages,
+                        startPage: startPage,
+                        endPage: endPage,
+                        pages,
+                        startingBreakPointButtonIfCondition,
+                        endingBreakPointButtonIfCondition,
+                        onInitialPage: `/${slug}`,
+                        onNextPage: `/${slug}?page=${
+                            currentPage === endPage ? endPage : currentPage + 1
+                        }`,
+                        onBackPage: `/${slug}?page=${
+                            currentPage < 1 ? 0 : currentPage - 1
+                        }`,
+                        onFinalPage: `/${slug}?page=${endPage}`,
+                    };
+                    data = results;
+                } else {
+                    data = await sequelize.query(
+                        `SELECT  "${crud.name}".* ${
+                            attributes?.length ? `, ${attributes}` : ""
+                        } FROM "${crud.name}" ${join} WHERE "${
+                            crud.name
+                        }"."empresa_id" = :empresa_id ORDER BY "${
+                            crud.name
+                        }".id DESC`,
+                        {
+                            replacements: { empresa_id: empresa.id },
+                            type: QueryTypes.SELECT,
+                        }
+                    );
+                }
+            }
+            pagina.data = relation(data);
+            pagina.paginator = paginator;
             return pagina;
         }
         const { product } = await this.productsApiService.show(

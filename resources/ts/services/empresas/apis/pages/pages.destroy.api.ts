@@ -2,7 +2,7 @@ import { useMutation } from "@vigilio/preact-fetching";
 import type { NewSchema } from "@/empresas/schemas/new.schema";
 
 export function pagesDestroyApi() {
-    return useMutation<number, pagesDestroyAPI, pagesDestroyErrorAPI>(
+    return useMutation<pagesDestroyAPI, number, pagesDestroyErrorAPI>(
         "/pages",
         async (url, id) => {
             const response = await fetch(`/api${url}/${id}`, {

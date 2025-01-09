@@ -108,6 +108,14 @@ export class EmpresasApiController {
         const result = await this.empresaApiService.updateSettings(slug, body);
         return result;
     }
+    @VigilioServicesGuard()
+    @Pipe(objectAsync({ slug: string() }))
+    @Status(201)
+    @Put("/:slug/change-mode")
+    async changeMode(@Params("slug") slug: string) {
+        const result = await this.empresaApiService.changeMode(slug);
+        return result;
+    }
 
     @VigilioServicesGuard()
     @Validator(

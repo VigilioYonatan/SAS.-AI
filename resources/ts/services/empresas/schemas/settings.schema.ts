@@ -190,6 +190,7 @@ export const settingsSchema = object({
     isProductWallpaper: boolean(),
     products_limit: number(),
     products_limit_offer: number(),
+    isEccomerce: boolean(),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;
 

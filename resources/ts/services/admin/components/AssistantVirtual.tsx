@@ -69,7 +69,7 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
         <div
             class={`${
                 isOpen ? "block" : "hidden"
-            } p-2  rounded-md overflow-hidden  shadow-primary bg-background-light dark:bg-paper-dark w-[250px] md:w-[300px] h-[350px] md:h-[405px] absolute bottom-7 md:bottom-12 z-[99] m-4 right-0  shadow`}
+            } p-2  rounded-md overflow-hidden  shadow-primary bg-background-light dark:bg-paper-dark w-[250px] md:w-[300px] h-[400px] md:h-[405px] absolute bottom-7 md:bottom-12 z-[99] m-4 right-0  shadow`}
         >
             <div class="flex flex-col">
                 <h3 class=" dark:text-white text-primary font-bold text-center text-xl">

@@ -10,6 +10,7 @@ import {
 } from "../schemas/empresas.schema";
 import { CitasSettingSchema } from "@/citas/schemas/citas_settings.schema";
 import { PageSchema } from "../schemas/pages.schema";
+import { CrudSchema } from "../schemas/crud.schema";
 export type empresaStore = Omit<
     EmpresasSchemaFromServer,
     "contacts" | "groupWhatsapp" | "credentials"
@@ -42,6 +43,8 @@ export type empresaStore = Omit<
     citas: Record<number, number>;
     questionCount?: number;
     pages: PageSchema[];
+    cruds: Pick<CrudSchema, "id" | "slug" | "name" | "icon">[];
+    tableObjects: { name: string; data: { name: string; type: string }[] }[];
 };
 export const storageEmpresa: empresaStore | null = JSON.parse(
     localStorage.getItem("empresa") ?? "null"

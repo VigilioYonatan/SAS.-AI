@@ -18,6 +18,7 @@ import type { RequestVigilio } from "~/config/types";
 import { webEnabledMiddleware } from "../middlewares/webEnabled.middleware";
 import type { Users } from "@/users/entities/users.entity";
 import type { Money } from "@/empresas/libs";
+import { initialMiddleware } from "../middlewares/initial.middleware";
 
 @Injectable()
 @Controller("/")
@@ -58,13 +59,13 @@ export class WebController {
         return res.send("<h1>Hello World!!!</h1>"); // no borrar
     }
 
-    @Get("/", [webEnabledMiddleware])
+    @Get("/", [initialMiddleware, webEnabledMiddleware])
     async home(@Res() res: Response, @Req() req: RequestVigilio) {
         const result = await this.webService.home(req.empresa, req.user);
         return res.render("web/home", result);
     }
 
-    @Get("/404")
+    @Get("/404", [initialMiddleware])
     async page404(@Query("message") message: string, @Res() res: Response) {
         res.status(404);
         return res.render("web/404", {
@@ -73,7 +74,7 @@ export class WebController {
         });
     }
 
-    @Get("/shop/:category_slug", [webEnabledMiddleware])
+    @Get("/shop/:category_slug", [initialMiddleware, webEnabledMiddleware])
     async categories(
         @Params("category_slug") category_slug: string,
         @Res() res: Response,
@@ -83,7 +84,10 @@ export class WebController {
         return res.render("web/shop/categories", result);
     }
 
-    @Get("/shop/:category_slug/:subcategory_slug", [webEnabledMiddleware])
+    @Get("/shop/:category_slug/:subcategory_slug", [
+        webEnabledMiddleware,
+        initialMiddleware,
+    ])
     async subcategories(
         @Params("category_slug") category_slug: string,
         @Params("subcategory_slug") subcategory_slug: string,
@@ -98,7 +102,7 @@ export class WebController {
         return res.render("web/shop/subcategories", result);
     }
 
-    @Get("/marcas/:brand", [webEnabledMiddleware])
+    @Get("/marcas/:brand", [initialMiddleware, webEnabledMiddleware])
     async marcas(
         @Params("brand") brand: string,
         @Res() res: Response,
@@ -108,25 +112,25 @@ export class WebController {
         return res.render("web/shop/brands", result);
     }
 
-    @Get("/pedidos")
+    @Get("/pedidos", [initialMiddleware])
     async orders(@Res() res: Response) {
         const result = await this.webService.orders();
         return res.render("web/orders", result);
     }
 
-    @Get("/politica-de-privacidad")
+    @Get("/politica-de-privacidad", [initialMiddleware])
     async politica(@Res() res: Response, @Req("empresa") empresa: Empresas) {
         const result = await this.webService.politica(empresa);
         return res.render("web/politica/privacidad", result);
     }
 
-    @Get("/terminos-y-condiciones")
+    @Get("/terminos-y-condiciones", [initialMiddleware])
     async terminos(@Res() res: Response, @Req("empresa") empresa: Empresas) {
         const result = await this.webService.terminos(empresa);
         return res.render("web/politica/terminos", result);
     }
 
-    @Get("/libro-de-reclamaciones")
+    @Get("/libro-de-reclamaciones", [initialMiddleware])
     async reclamaciones(
         @Res() res: Response,
         @Req("empresa") empresa: Empresas
@@ -134,7 +138,7 @@ export class WebController {
         const result = await this.webService.reclamaciones(empresa);
         return res.render("web/politica/reclamaciones", result);
     }
-    @Get("/servicio/:slug")
+    @Get("/servicio/:slug", [initialMiddleware])
     async servicio(
         @Params("slug") slug: string,
         @Res() res: Response,
@@ -144,17 +148,13 @@ export class WebController {
         const result = await this.webService.servicio(slug, empresa, user);
         return res.render("web/servicio", result);
     }
-    @Get("/:slug")
+    @Get("/:slug", [initialMiddleware])
     async product(
         @Params("slug") slug: string,
         @Res() res: Response,
         @Req() req: RequestVigilio
     ) {
-        const result = await this.webService.product(
-            slug,
-            req.empresa,
-            req.user
-        );
+        const result = await this.webService.product(slug, req, req.user);
 
         if (!result.type_page) {
             return res.render("web/product", result);
@@ -172,7 +172,18 @@ export class WebController {
         if (result.type_page === "contact_page") {
             return res.render("web/home/contact", result);
         }
+
         return res.render("web/home/others", result);
+    }
+    @Get("/:page/:slug", [initialMiddleware])
+    async dynamic(
+        @Params("slug") slug: string,
+        @Params("page") page: string,
+        @Req() req: RequestVigilio,
+        @Res() res: Response
+    ) {
+        const result = await this.webService.dynamic(page, slug, req.empresa);
+        return res.render("web/home/dynamic", result);
     }
 
     @Pipe(objectAsync({ hash: string() }))

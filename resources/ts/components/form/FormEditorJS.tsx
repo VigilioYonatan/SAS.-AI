@@ -17,6 +17,7 @@ import { HIDDEEDITOR, HTMLSHOW } from "@/empresas/views/BannersIndex";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import { anidarPropiedades } from ".";
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 
 interface FormControlLabelProps<T extends object> {
     title: string;
@@ -192,7 +193,10 @@ function FormEditorJSControl<T extends object>({
                         <button
                             type="button"
                             onClick={() => {
-                                if (!HIDDEEDITOR) {
+                                if (
+                                    !HIDDEEDITOR ||
+                                    !storageEmpresa?.isProduction
+                                ) {
                                     return;
                                 }
                                 mode.value = !mode.value;

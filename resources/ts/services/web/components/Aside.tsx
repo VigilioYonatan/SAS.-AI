@@ -99,49 +99,54 @@ function Aside({
                             </a>
                         ) : null}
 
-                        {storageEmpresa!.pages.map((page) => {
-                            if (
-                                (page.slug === "services" ||
-                                    page.slug === "servicios") &&
-                                !storageEmpresa!.setting.header.services
-                            ) {
-                                return null;
-                            }
-                            if (
-                                (page.slug === "about" ||
-                                    page.slug === "nosotros") &&
-                                !storageEmpresa!.setting.header.about
-                            ) {
-                                return null;
-                            }
-                            return (
-                                <a
-                                    key={page.id}
-                                    class={` flex gap-2 items-center dark:text-white text-sm hover:bg-paper-light hover:dark:bg-paper-dark py-2  px-4    tracking-wide font-semibold ${
-                                        isActive(`/${page.slug}`)
-                                            ? "bg-background-light dark:bg-paper-dark"
-                                            : ""
-                                    } ${
-                                        isColorLight(
-                                            storageEmpresa!.setting
-                                                .bg_color_paper
-                                        )
-                                            ? "hover:text-black"
-                                            : "hover:text-white"
-                                    }`}
-                                    href={`/${page.slug}`}
-                                >
-                                    {page.icon ? (
-                                        <div
-                                            dangerouslySetInnerHTML={{
-                                                __html: page.icon,
-                                            }}
-                                        />
-                                    ) : null}{" "}
-                                    {page.title}
-                                </a>
-                            );
-                        })}
+                        {storageEmpresa!.pages
+                            .filter(
+                                (page) =>
+                                    !page.isDinamic && page.enabledHeaderPage
+                            )
+                            .map((page) => {
+                                if (
+                                    (page.slug === "services" ||
+                                        page.slug === "servicios") &&
+                                    !storageEmpresa!.setting.header.services
+                                ) {
+                                    return null;
+                                }
+                                if (
+                                    (page.slug === "about" ||
+                                        page.slug === "nosotros") &&
+                                    !storageEmpresa!.setting.header.about
+                                ) {
+                                    return null;
+                                }
+                                return (
+                                    <a
+                                        key={page.id}
+                                        class={` flex gap-2 items-center dark:text-white text-sm hover:bg-paper-light hover:dark:bg-paper-dark py-2  px-4    tracking-wide font-semibold ${
+                                            isActive(`/${page.slug}`)
+                                                ? "bg-background-light dark:bg-paper-dark"
+                                                : ""
+                                        } ${
+                                            isColorLight(
+                                                storageEmpresa!.setting
+                                                    .bg_color_paper
+                                            )
+                                                ? "hover:text-black"
+                                                : "hover:text-white"
+                                        }`}
+                                        href={`/${page.slug}`}
+                                    >
+                                        {page.icon ? (
+                                            <div
+                                                dangerouslySetInnerHTML={{
+                                                    __html: page.icon,
+                                                }}
+                                            />
+                                        ) : null}{" "}
+                                        {page.title}
+                                    </a>
+                                );
+                            })}
 
                         {storageEmpresa?.setting.header.categories ? (
                             <div class="">

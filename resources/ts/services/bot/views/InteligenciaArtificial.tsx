@@ -69,9 +69,9 @@ function InteligenciaArtificial() {
                 title: "¿Estás seguro de realizar estos cambios?",
                 customIcon:
                     "<i class='fas fa-user-robot text-3xl dark:text-white' ></i>",
-                    isCloseInBackground: false,
-                    showCancelButton: true,
-                    showCloseButton: true,
+                isCloseInBackground: false,
+                showCancelButton: true,
+                showCloseButton: true,
             }).then(({ isConfirmed }) => {
                 if (isConfirmed) {
                     empresaPromptUpdateMutation.mutate(data, {
@@ -554,35 +554,81 @@ function InteligenciaArtificial() {
                         </button>
                     </div>
                     <br />
-                    <div class="flex flex-col gap-2">
-                        <span class="dark:text-white text-lg font-bold">
-                            Más datos para tu Inteligencia Artificial
-                        </span>
-                        {datos.fields.map((field, i) => (
-                            <div key={field.id} class="flex gap-2 items-center">
-                                <Form.control
-                                    title={`Dato ${i + 1}`}
-                                    name={`inteligenceArtificial.datos.${i}`}
-                                    placeholder="Ingresar dato"
-                                    question="Más datos que deseas para  entrenar a tu ia, puede ser noticias de tu empresa, invitaciones, etc."
-                                />
-                                <button
-                                    type="button"
-                                    class="bg-danger px-2.5 py-1 rounded-md text-white  mt-2"
-                                    onClick={() => datos.remove(i)}
-                                >
-                                    <i class="fas fa-trash text-xs" />
-                                </button>
-                            </div>
-                        ))}
-                        <button
-                            type="button"
-                            class="bg-primary px-4 py-2 rounded-md text-white self-start"
-                            onClick={() => datos.append("")}
-                        >
-                            +
-                        </button>
-                    </div>
+                    {storageEmpresa!.isProduction ? (
+                        <div class="flex flex-col gap-2">
+                            <span class="dark:text-white text-lg font-bold">
+                                Más datos para tu Inteligencia Artificial
+                            </span>
+                            {datos.fields.map((field, i) => {
+                                return (
+                                    <div
+                                        key={field.id}
+                                        class="grid grid-cols-2 md:flex gap-2 items-center"
+                                    >
+                                        <div class="w-[150px]">
+                                            <Form.control
+                                                title={"Nombre"}
+                                                name={`inteligenceArtificial.datos.${i}.key`}
+                                                placeholder="posts"
+                                            />
+                                        </div>
+                                        <Form.control
+                                            title={"Query"}
+                                            name={`inteligenceArtificial.datos.${i}.query`}
+                                            placeholder="SELECT * FROM 'Post'"
+                                            question="CONSULTA SQL."
+                                        />
+                                        <div>
+                                            <Form.control.toggle
+                                                title={"Sin condición"}
+                                                name={`inteligenceArtificial.datos.${i}.enabled`}
+                                                question="Se ejecutará el sql sin condición"
+                                            />
+                                        </div>
+
+                                        {empresaPromptForm.watch(
+                                            `inteligenceArtificial.datos.${i}.enabled`
+                                        ) ? null : (
+                                            <Form.control
+                                                title={"Condicion"}
+                                                name={`inteligenceArtificial.datos.${i}.condition`}
+                                                placeholder="cuando te hable sobre publicaciones de mi empresa"
+                                                question="Condición la cual se va a ejecutar la data sql"
+                                            />
+                                        )}
+
+                                        <button
+                                            type="button"
+                                            class="bg-danger px-2.5 py-1 rounded-md text-white  mt-2"
+                                            onClick={() => {
+                                                sweetModal({
+                                                    title: "Estas seguro de eliminar este dato ?",
+                                                    isCloseInBackground: false,
+                                                    showCloseButton: true,
+                                                }).then(({ isConfirmed }) => {
+                                                    if (isConfirmed) {
+                                                        datos.remove(i);
+                                                    }
+                                                });
+                                            }}
+                                        >
+                                            <i class="fas fa-trash text-xs" />
+                                        </button>
+                                    </div>
+                                );
+                            })}
+                            <button
+                                type="button"
+                                class="bg-primary px-4 py-2 rounded-md text-white self-start"
+                                onClick={() => datos.append("")}
+                            >
+                                +
+                            </button>
+                        </div>
+                    ) : (
+                        <></>
+                    )}
+
                     <AdminHr />
                     <Form.button.submit
                         title="Guardar Cambios"

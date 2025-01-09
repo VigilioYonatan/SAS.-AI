@@ -10,6 +10,7 @@ import type { RequestVigilio } from "~/config/types";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { BASE_URL } from "@/empresas/libs";
 import type { Users } from "@/users/entities/users.entity";
+import { initialMiddleware } from "@/web/middlewares/initial.middleware";
 const CLIENT_ID = "1957086741385823";
 const CLIENT_SECRET = "94dff236a11b006bc4b215bf5c2d4fa6";
 @Injectable()
@@ -54,12 +55,12 @@ export class AuthController {
 			res.status(500).send("Error al obtener el token de acceso.");
 		}
 	}
-	@Get("/profile", [authAuthenticatedMiddleware])
+	@Get("/profile", [authAuthenticatedMiddleware,initialMiddleware])
 	async profile(@Res() res: Response, @Req("user") user: Users) {
 		return res.render("auth/profile", { user });
 	}
 
-	@Get("/register", [authNoAuthenticatedMiddleware])
+	@Get("/register", [authNoAuthenticatedMiddleware,initialMiddleware])
 	async register(@Res() res: Response) {
 		return res.render("auth/register", {
 			title: "Registrarse",
@@ -67,7 +68,7 @@ export class AuthController {
 		});
 	}
 
-	@Get("/login", [authNoAuthenticatedMiddleware])
+	@Get("/login", [authNoAuthenticatedMiddleware,initialMiddleware])
 	async login(@Res() res: Response) {
 		return res.render("auth/login", {
 			title: "Iniciar sesión",
@@ -84,7 +85,7 @@ export class AuthController {
 		});
 	}
 
-	@Get("/forgot-password")
+	@Get("/forgot-password", [initialMiddleware])
 	async changePassword(@Res() res: Response, @Req() req: Request) {
 		const token = (req.query as { token: string }).token;
 		const empresa = (req as RequestVigilio).empresa;
@@ -92,7 +93,7 @@ export class AuthController {
 		return res.render("auth/forgot-password", result);
 	}
 
-	@Get("/confirmed-account")
+	@Get("/confirmed-account", [initialMiddleware])
 	async confirmedAccount(
 		@Res() res: Response,
 		@Query("token") token: string | null,

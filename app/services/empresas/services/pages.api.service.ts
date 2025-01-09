@@ -7,6 +7,7 @@ import { GridBannerPage } from "../entities/grid_banner_page.entity";
 import type { PagesUpdateDto } from "../dtos/pages.update.dto";
 import { Op } from "sequelize";
 import { GridBanner } from "../entities/grid_banner.entity";
+import cache from "@vigilio/express-core/cache";
 
 @Injectable()
 export class PagesApiService {
@@ -67,8 +68,12 @@ export class PagesApiService {
                 enabled: false,
                 empresa_id: empresa!.id,
                 title: null,
+                page_id: page.id,
+                grid_banner_id: null,
             }))
         );
+        cache.delete(`EMPRESA:${empresa.slug}`);
+
         return {
             success: true,
             page,
@@ -77,12 +82,14 @@ export class PagesApiService {
 
     async update(empresa: Empresas, id: string, body: PagesUpdateDto) {
         const { page } = await this.show(empresa, id);
+
         const [byName, bySlug] = await Promise.all([
             Page.findOne({
                 where: {
                     title: body.title,
                     id: { [Op.not]: id },
                     empresa_id: empresa.id,
+                    isDinamic: page.isDinamic,
                 },
                 raw: true,
             }),
@@ -90,6 +97,7 @@ export class PagesApiService {
                 where: {
                     slug: body.slug,
                     id: { [Op.not]: id },
+                    isDinamic: page.isDinamic,
                     empresa_id: empresa.id,
                 },
                 raw: true,
@@ -102,12 +110,14 @@ export class PagesApiService {
             );
         }
         if (bySlug) {
-            throw new BadRequestException(
-                `Ya existe una página ${body.title}`,
-                { body: "title" }
-            );
+            throw new BadRequestException(`Ya existe una página ${body.slug}`, {
+                body: "slug",
+            });
         }
+        
         await page.update({ ...body, empresa_id: empresa.id });
+        cache.delete(`EMPRESA:${empresa.slug}`);
+
         return {
             success: true,
             message: "Editado correctamente gridBannerService",
@@ -116,6 +126,8 @@ export class PagesApiService {
     async destroy(empresa: Empresas, id: string) {
         const { page } = await this.show(empresa, id);
         await page.destroy();
+        cache.delete(`EMPRESA:${empresa.slug}`);
+
         return {
             success: true,
             message: "Editado correctamente gridBannerService",

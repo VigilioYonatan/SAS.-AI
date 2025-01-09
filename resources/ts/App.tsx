@@ -143,6 +143,12 @@ function App() {
                             )}
                         />
                         <Route
+                            path="/crud/:slug"
+                            component={lazy(
+                                () => import("@/empresas/views/CrudShow")
+                            )}
+                        />
+                        <Route
                             path="/usuarios"
                             component={lazy(
                                 () => import("@/users/views/UsersIndex")

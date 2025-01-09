@@ -18,7 +18,7 @@ export async function prompt(
         isQuestion: boolean;
     },
     empresa: Empresas,
-    productsData: DataPrompt,
+    productsData: DataPrompt
 ) {
     let preguntasIA: Questions[] | null = JSON.parse(
         cache.get(`questions-ia:${empresa.slug}`) ?? "null"
@@ -110,7 +110,6 @@ export async function prompt(
 
     const otrosDatos = [
         `incluimos ${empresa.tipo_impuesto} en nuestros precios de nuestros productos : ${empresa.enabled_igv}`,
-        ...empresa.inteligenceArtificial.datos,
     ];
 
     return `
@@ -166,7 +165,7 @@ export async function prompt(
    -  SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA si hablo ingles responde en ingles, etc SIEMPRE.
     NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
-	SI TE ENVIÉ UNA IMAGEN  Y BUSCA EN LA BASE DE DATOS Y RESPONDEME INFORMACIÓN DE ESO.
+	SI TE ENVIÉ UNA IMAGEN  Y BUSCA EN LA BASE DE DATOS Y RESPONDEME INFORMACIÓN DE ESO, si no encuentras informacion  di 'No se encontró IMAGEN en nuestro sistema ' o algo asi.
     CANTIDAD/UNIDADES si está agotado no vendas y hazmelo saber.
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
     ${
@@ -186,7 +185,7 @@ export async function prompt(
                   } y lo que sigue Y el link que este limpio - no markdown ni otro..
     ${
         empresa.tipo_empresa.tipo_servicio_id === 2
-            ? "NO USES STOCK, usa muchas unidades. para restaurantes y bares"
+            ? "NO DIGAS STOCK, usa 'muchas unidades'."
             : "cada variante tiene su propias imagenes ejemplo [0,1] . es la posicion del array de las images del producto. eso me lo mandas cuando te pida una imagen de una variante."
     }`,
                   "IMPORTANTE: REVISAR LA BASE DE DATOS, ANTES DE RESPONDER, por ejemplo si una persona te pide información de algo, mira la BASE DE DATOS primero.",

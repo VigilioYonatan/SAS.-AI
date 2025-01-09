@@ -1,11 +1,20 @@
-import { Injectable } from "@vigilio/express-core";
+import { Injectable, Redirect } from "@vigilio/express-core";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { getProductAll } from "@/products/libs";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import type { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
-import { WebApiService } from "./web.api.service";
 import type { Users } from "@/users/entities/users.entity";
+import { WebApiService } from "./web.api.service";
+import { Crud } from "@/empresas/entities/crud.entity";
+import { RequestVigilio } from "~/config/types";
+import { Page } from "@/empresas/entities/page.entity";
+import { sequelize } from "~/config/db.config";
+import { QueryTypes } from "sequelize";
+import { capitalize } from "@vigilio/express-core/helpers";
+import { GridBanner } from "@/empresas/entities/grid_banner.entity";
+import { GridBannerPage } from "@/empresas/entities/grid_banner_page.entity";
+import { getQueries, joins, relation } from "@/common/paginator/libs";
 
 @Injectable()
 export class WebService {
@@ -72,8 +81,8 @@ export class WebService {
         const result = await this.webApiService.servicios(empresa);
         return result;
     }
-    async product(slug: string, empresa: Empresas, user: Users) {
-        const result = await this.webApiService.product(slug, empresa, user);
+    async product(slug: string, req: RequestVigilio, user: Users) {
+        const result = await this.webApiService.product(slug, req, user);
         return result;
     }
 
@@ -132,6 +141,68 @@ export class WebService {
         return {
             title: "Libro de reclamaciones",
             description: `En ${empresa.name_empresa}, valoramos a nuestros clientes y nos comprometemos a resolver cualquier problema. Consulta nuestra página de Reclamaciones para conocer el proceso de presentación de quejas y cómo gestionamos las reclamaciones. Tu satisfacción es nuestra prioridad.`,
+        };
+    }
+    async dynamic(page: string, slug: string, empresa: Empresas) {
+        const crud = await Crud.findOne({
+            where: {
+                name: capitalize(page),
+                empresa_id: empresa.id,
+                isDynamicPage: true,
+            },
+        });
+        if (!crud) {
+            throw new Redirect(`/404?message=${"cr no encontrada"}`);
+        }
+        // const c = await this.crudDateApiService.show(empresa, crud.name, slug);
+        const pageFind = await Page.findOne({
+            where: {
+                slug: `:${page}`,
+                isDinamic: true,
+            },
+        });
+        if (!pageFind) {
+            throw new Redirect(`/404?message=${"pagina no encontrada"}`);
+        }
+        const [attributes, join] = await joins(crud, empresa);
+        const data = await sequelize.query(
+            `SELECT "${crud.name}".* ${
+                attributes?.length ? `, ${attributes}` : ""
+            }  FROM "${crud.name}" ${join} WHERE "${
+                crud.name
+            }"."empresa_id" = :empresa_id AND  "${
+                crud.name
+            }"."slug" = :slug LIMIT 1`,
+            {
+                replacements: { empresa_id: empresa.id, slug },
+                type: QueryTypes.SELECT,
+            }
+        );
+        if (!data[0]) {
+            throw new Redirect(`/404?message=No se encontró ${page}-${slug}`);
+        }
+        const queries = await getQueries(
+            empresa,
+            pageFind,
+            data[0] as Record<string, unknown>
+        );
+        const textoFinal = pageFind.description.replace(
+            /{{(.*?)}}/g,
+            (_, key: string) => {
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                return (data[0] as any)[key.trim()] || `{{${key}}}`;
+            }
+        );
+        const grid_banner_pages = (await pageFind.$get("grid_banner_pages", {
+            order: [["id", "ASC"]],
+            include: [GridBanner],
+        })) as GridBannerPage[];
+        return {
+            title: (data[0] as { slug: string }).slug.split("-").join(" "),
+            description: textoFinal,
+            data: relation(data)[0],
+            queries,
+            grid_banner_pages,
         };
     }
     async fetchProductArrays(

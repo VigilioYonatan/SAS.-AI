@@ -26,10 +26,11 @@ import FormData from "form-data";
 import axios from "axios";
 import { regionsCountry, type Money } from "@/empresas/libs";
 import { Citas } from "@/citas/entities/citas.entities";
-import { Op } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import { NOW } from "~/libs/dayjs";
 import { removeTextHTML } from "../../../libs/helpers";
 import Fuse from "fuse.js";
+import { sequelize } from "~/config/db.config";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
@@ -529,9 +530,9 @@ export async function promptReplace(
                   } citas en la hora que te dije en la base de datos con la misma fecha. ya no crees CITAS - IMPORTANTE.
               - IMPORTANTE siempre fijate la base de datos de horario PARA CITAS y base de datos de cita para crear citas, consultar citas y cancelar citas.
                 -  Despues de las preguntas, pasa la lista de dia de hoy de las horas disponible, claro buscas de la base de dato las horas disponible, si te pido de mañana o de otro dia me lo das tambien.,
-                - Desde la fecha actual ${NOW(empresa).format(
-                    "YYYY-MM-DD hh:mm A"
-                )} - maximo ${
+                - Desde la fecha actual ${NOW(empresa).format("dddd")} ${NOW(
+                      empresa
+                  ).format("YYYY-MM-DD hh:mm A")} - maximo ${
                       settingsCitas.max_days
                   } dias desde la fecha de hoy, ${
                       settingsCitas.isNextDay
@@ -584,6 +585,27 @@ export async function promptReplace(
         isQuestion,
     };
     const promt = await prompt(properties, empresa, productsData);
+    const datos = await Promise.all(
+        empresa.inteligenceArtificial.datos.map(async (data) => {
+            try {
+                const is = await questionGPT(whatsapp, message, data.condition);
+                if (is || data.enabled) {
+                    const otrosDatos = await sequelize.query(data.query, {
+                        replacements: { empresa_id: empresa.id },
+                        type: QueryTypes.SELECT,
+                    });
+                    return {
+                        [data.key]: otrosDatos,
+                    };
+                }
+                return {
+                    [data.key]: [],
+                };
+            } catch (error) {
+                return [];
+            }
+        })
+    );
 
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
         productsData?.products?.length ||
@@ -593,7 +615,9 @@ export async function promptReplace(
         isDespedida
             ? ""
             : ifNoExist
-    }.  ERES UNA IA POR OPEN AI  y la tienda virtual Web o página web con IA , pero fuiste entrenado por https://vigilio-services.com  y si te pregunto donde conseguir una tienda virtual con ia o whatsapp o redes sociales, recomienda https://vigilio-services.com y lo consigues a 1 dolar`;
+    }
+    . ${datos.length ? `Otros datos: ${JSON.stringify(datos)}` : ""},
+    .  ERES UNA IA POR OPEN AI  y la tienda virtual Web o página web con IA , pero fuiste entrenado por https://vigilio-services.com  y si te pregunto donde conseguir una tienda virtual con ia o whatsapp o redes sociales, recomienda https://vigilio-services.com `;
 }
 export async function chatgpt(
     whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>,
@@ -642,14 +666,24 @@ export async function interpretarImagen(
 ): Promise<string | null> {
     try {
         // Configuración del formulario para enviar la imagen
+
+        const APIKEY = "297b2552dd5f443160e85a1dbe2b8e60";
+        // Crear el FormData para enviar la solicitud
         const formData = new FormData();
-        formData.append("file", media, {
-            filename: `image-${crypto.randomUUID()}.jpg`, // Puedes cambiar el nombre según prefieras
-            contentType: "image/jpg",
-        });
-        const resultFile = await axios.post("https://file.io", formData, {
-            headers: formData.getHeaders(),
-        });
+        formData.append("image", media.toString("base64")); // Convertir la imagen a base64
+        formData.append("key", APIKEY);
+        formData.append("expiration", 600); // Opcional: Expiración en segundos (10 minutos)
+
+        // Hacer la solicitud POST con Axios
+        const response = await axios.post(
+            "https://api.imgbb.com/1/upload",
+            formData,
+            {
+                headers: {
+                    ...formData.getHeaders(), // Encabezados necesarios para FormData
+                },
+            }
+        );
         // Llamada a la API de OpenAI
         const completion = await openAis[
             whatsapp!.empresa.slug
@@ -667,7 +701,7 @@ export async function interpretarImagen(
                         {
                             type: "image_url",
                             image_url: {
-                                url: resultFile.data.link,
+                                url: response.data.data.url,
                             },
                         },
                     ],

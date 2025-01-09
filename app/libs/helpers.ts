@@ -5,6 +5,7 @@ import { exec } from "node:child_process";
 import { pipeline } from "node:stream";
 import util, { promisify } from "node:util";
 import * as fs from "node:fs";
+import { sequelize } from "~/config/db.config";
 const pipelineAsync = promisify(pipeline);
 
 /* PRO-00001 */
@@ -154,4 +155,12 @@ export async function downloadAndSaveFile(url: string, outputPath: string) {
     } catch (error) {
         console.error("Error al descargar el archivo:", error);
     }
+}
+
+export function getTables() {
+    return sequelize.query(`
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = 'public' AND table_type = 'BASE TABLE';
+      `);
 }

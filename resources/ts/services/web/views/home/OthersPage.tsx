@@ -9,6 +9,8 @@ export interface AboutPageProps {
     header: HeaderType;
     grid_banner_pages: GridBannerPageSchemaFromServer[];
     title: string;
+    paginator: unknown | null;
+    data: unknown[] | null;
 }
 function AboutPage({ header, grid_banner_pages, title }: AboutPageProps) {
     return (

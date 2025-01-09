@@ -879,7 +879,12 @@ function NavHeader({
                 </div>
             ) : null}
             {storageEmpresa!.pages
-                .filter((page) => page.slug !== "shop")
+                .filter(
+                    (page) =>
+                        page.slug !== "shop" &&
+                        !page.isDinamic &&
+                        page.enabledHeaderPage
+                )
                 .map((page) => {
                     if (
                         (page.slug === "services" ||

@@ -5,8 +5,8 @@ import { PaymentApiController } from "@/payments/controllers/payment.api.control
 import { PaypalController } from "@/payments/controllers/paypal.controller";
 
 export const webRouters: Type[] = [
-	CartController,
-	WebController,
-	PaymentApiController,
-	PaypalController,
+    CartController,
+    WebController,
+    PaymentApiController,
+    PaypalController,
 ];

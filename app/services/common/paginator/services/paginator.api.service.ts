@@ -5,9 +5,10 @@ import {
     Injectable,
     NotFoundException,
 } from "@vigilio/express-core";
-import { type PaginatorModel, type TimeTable } from "../libs";
+import { joins, relation, type PaginatorModel, type TimeTable } from "../libs";
 import {
     Op,
+    QueryTypes,
     type FindOptions,
     type Includeable,
     type Order,
@@ -41,6 +42,7 @@ import { Favorites } from "@/favorites/entities/favorites.entity";
 import { Subcategories } from "@/products/entities/subcategories.entity";
 import { Questions } from "@/empresas/entities/questions.entity";
 import { Emails } from "@/emails/entities/emails.entity";
+import { Crud } from "@/empresas/entities/crud.entity";
 
 @Injectable()
 export class PaginatorApiServices {
@@ -926,10 +928,102 @@ export class PaginatorApiServices {
                 break;
             }
 
-            default:
-                throw new InternalServerErrorException(
-                    "Comunicarse con el desarrollador"
-                );
+            default: {
+                const crud = await Crud.findOne({
+                    where: {
+                        name: props.model,
+                        empresa_id: empresa.id,
+                    },
+                });
+                if (crud) {
+                    const { page, offset, limit, ...prod } = rest as {
+                        page: string | null;
+                        offset: string;
+                        limit: string | null;
+                    };
+
+                    const [attributes, join] = await joins(crud, empresa);
+                    const result = Object.entries(prod).reduce(
+                        (acc, [key, value]) => {
+                            if (
+                                (value as string).toUpperCase() === "ASC" ||
+                                (value as string).toUpperCase() === "DESC"
+                            ) {
+                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                (acc as any).sorted[key] = value;
+                            } else {
+                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                (acc as any).rest[key] = value;
+                            }
+                            return acc;
+                        },
+                        { sorted: {}, rest: {} } // Objetos separados
+                    );
+                    const orders = Object.entries(result.sorted).map(
+                        ([key, value]) =>
+                            `"${props.model}"."${key}" ${(
+                                value as string
+                            ).toUpperCase()}`
+                    );
+
+                    const wheres = Object.entries(result.rest).map(
+                        ([key, value]) =>
+                            `AND "${props.model}"."${key}" = '${(
+                                value as string
+                            ).toUpperCase()}'`
+                    );
+
+                    data = await Promise.all([
+                        sequelize.query(
+                            `SELECT  "${crud.name}".* ${
+                                attributes?.length ? `, ${attributes}` : ""
+                            } FROM "${crud.name}" ${join}
+                            WHERE "${crud.name}"."empresa_id" = :empresa_id ${
+                                search?.length
+                                    ? `AND "${crud.name}"."name" ILIKE '${searchLowerCase}'`
+                                    : ""
+                            } ${wheres.length ? wheres.join(" ") : ""}
+                             ${
+                                 orders.length
+                                     ? `ORDER BY ${orders.join(", ")}`
+                                     : ""
+                             } 
+                            OFFSET :offset LIMIT :limit`,
+                            {
+                                replacements: {
+                                    empresa_id: empresa.id,
+                                    offset: offsetConverted,
+                                    limit: limitConverted,
+                                },
+                                type: QueryTypes.SELECT,
+                            }
+                        ),
+                        sequelize.query(
+                            `SELECT COUNT(*) FROM "${crud.name}" 
+                            WHERE "${crud.name}"."empresa_id" = :empresa_id ${
+                                search?.length
+                                    ? `AND "${crud.name}"."name" ILIKE '${searchLowerCase}'`
+                                    : ""
+                            } ${wheres.length ? wheres.join(" ") : ""}`,
+                            {
+                                replacements: {
+                                    empresa_id: empresa.id,
+                                },
+                                type: QueryTypes.SELECT,
+                            }
+                        ),
+                    ]);
+
+                    data = [
+                        relation(data[0]),
+                        Number((data[1][0] as { count: string }).count || "0"),
+                    ];
+                } else {
+                    throw new InternalServerErrorException(
+                        "Comunicarse con el desarrollador "
+                    );
+                }
+            }
         }
         const next = `/api/paginator/${props.model}?offset=${
             offsetConverted + limitConverted

@@ -362,6 +362,12 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
     @Column({
         type: DataType.BOOLEAN,
+        defaultValue: true,
+    })
+    isProduction: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
         allowNull: false,
     })
     enabled_dni_cart: boolean;

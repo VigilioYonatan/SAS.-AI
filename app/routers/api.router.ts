@@ -57,6 +57,8 @@ import { PagesApiController } from "@/empresas/controllers/pages.api.controller"
 import { GridBannerPageApiController } from "@/empresas/controllers/grid_banner_page.api.controller";
 import { EmailsApiController } from "@/emails/controllers/emails.api.controller";
 import { EmailsPromocionesApiController } from "@/emails/controllers/emails_promociones.controller";
+import { CrudApiController } from "@/empresas/controllers/crud.api.controller";
+import { CrudDateApiController } from "@/empresas/controllers/crud_data.api.controller";
 
 export const apiRouters: Type[] = [
     EmpresasApiController,
@@ -117,4 +119,6 @@ export const apiRouters: Type[] = [
     GridBannerPageApiController,
     EmailsApiController,
     EmailsPromocionesApiController,
+    CrudApiController,
+    CrudDateApiController,
 ];

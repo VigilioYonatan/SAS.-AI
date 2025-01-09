@@ -28,6 +28,9 @@ import { pagesShowApi } from "../apis/pages/pages.show.api";
 import { GridBannerPageSchemaFromServer } from "../schemas/grid-banner-page.schema";
 import Helper from "~/components/Helper";
 import { PageSchema } from "../schemas/pages.schema";
+import CrudIndex from "./CrudIndex";
+import { pagesDestroyApi } from "../apis/pages/pages.destroy.api";
+import LoaderSubmit from "~/components/LoaderSubmit";
 export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
 export const HIDDEEDITOR = JSON.parse(
     localStorage.getItem("hidde-editor") || "false"
@@ -136,26 +139,20 @@ function BannersIndex() {
                 />
             );
     }
+    const pages: PageSchema[] = [...storageEmpresa!.pages];
 
     return (
         <Container className="p-2 dark:text-white">
             <div className="flex flex-col gap-4 mx-1 ">
                 <AdminBreadCrumb current="Banners" />
             </div>
+
             <div class="flex flex-col gap-4 [&>header]:relative">
                 <div>
                     <div class="flex gap-2 mb-3 w-full">
                         <div class="flex items-center justify-between gap-2 w-full">
                             <div class="flex items-center gap-2 max-w-[350px] flex-wrap">
-                                {[
-                                    {
-                                        id: 0,
-                                        title: "Home",
-                                        slug: "home",
-                                        icon: "<i class='fas fa-home'></i>",
-                                    },
-                                    ...storageEmpresa!.pages,
-                                ].map((page) => (
+                                {pages.map((page) => (
                                     <button
                                         type="button"
                                         key={page.id}
@@ -164,40 +161,127 @@ function BannersIndex() {
                                         }}
                                         class={`${
                                             typeBanner.value === page.slug
-                                                ? "bg-primary"
+                                                ? ` ${
+                                                      page.isDinamic
+                                                          ? "bg-blue-500"
+                                                          : "bg-primary"
+                                                  }`
                                                 : ""
-                                        } border border-primary px-4 py-2 rounded-md shadow font-semibold text-xs relative`}
+                                        } border ${
+                                            page.isDinamic
+                                                ? "border-blue-500"
+                                                : "border-primary"
+                                        }  px-4 py-2 rounded-md shadow font-semibold text-xs relative`}
                                     >
-                                        {showHtml.value &&
-                                        page.slug !== "home" ? (
-                                            <span
-                                                class="bg-orange-400 text-white px-1.5 py-1 rounded-md top-[-12px] right-[-8px] absolute"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    sweetModal((onClose) => ({
-                                                        html: reactComponent(
-                                                            <PageUpdate
-                                                                onClose={
-                                                                    onClose
-                                                                }
-                                                                page={
-                                                                    page as PageSchema
-                                                                }
-                                                                refetch={
-                                                                    gridBannerIndexQuery.refetch
-                                                                }
-                                                            />
-                                                        ),
-                                                        showCloseButton: true,
-                                                        isCloseInBackground:
-                                                            false,
-                                                        sweetWidth: "500px",
-                                                    }));
-                                                }}
-                                            >
-                                                {" "}
-                                                <i class="fas fa-pen text-[0.6rem]" />
-                                            </span>
+                                        {storageEmpresa!.isProduction ? (
+                                            <div class=" top-[-12px] right-[-8px] absolute flex gap-1">
+                                                <span
+                                                    class="bg-orange-400 text-white px-1.5 py-1 rounded-md"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        sweetModal(
+                                                            (onClose) => ({
+                                                                html: reactComponent(
+                                                                    <PageUpdate
+                                                                        onClose={
+                                                                            onClose
+                                                                        }
+                                                                        page={
+                                                                            page as PageSchema
+                                                                        }
+                                                                        refetch={
+                                                                            gridBannerIndexQuery.refetch
+                                                                        }
+                                                                    />
+                                                                ),
+                                                                showCloseButton:
+                                                                    true,
+                                                                isCloseInBackground:
+                                                                    false,
+                                                                sweetWidth:
+                                                                    "800px",
+                                                            })
+                                                        );
+                                                    }}
+                                                >
+                                                    {" "}
+                                                    <i class="fas fa-pen text-[0.6rem]" />
+                                                </span>
+                                                {(() => {
+                                                    const pagesDestroyMutate =
+                                                        pagesDestroyApi();
+
+                                                    return (
+                                                        <>
+                                                            {page.slug !==
+                                                            "home" ? (
+                                                                <button
+                                                                    type="button"
+                                                                    disabled={
+                                                                        pagesDestroyMutate.isLoading ||
+                                                                        false
+                                                                    }
+                                                                    class="bg-danger text-white px-1.5 py-1 rounded-md"
+                                                                    onClick={() => {
+                                                                        sweetModal(
+                                                                            {
+                                                                                title: "¿Estas seguro de eliminar página",
+                                                                                showCancelButton:
+                                                                                    true,
+                                                                                showCloseButton:
+                                                                                    true,
+                                                                                isCloseInBackground:
+                                                                                    false,
+                                                                            }
+                                                                        ).then(
+                                                                            ({
+                                                                                isConfirmed,
+                                                                            }) => {
+                                                                                if (
+                                                                                    isConfirmed
+                                                                                ) {
+                                                                                    pagesDestroyMutate.mutate(
+                                                                                        page.id,
+                                                                                        {
+                                                                                            onSuccess() {
+                                                                                                sweetAlert(
+                                                                                                    {
+                                                                                                        icon: "success",
+                                                                                                        title: "Eliminado correctamente",
+                                                                                                    }
+                                                                                                );
+                                                                                                gridBannerIndexQuery.refetch(
+                                                                                                    true
+                                                                                                );
+                                                                                            },
+                                                                                            onError(
+                                                                                                data
+                                                                                            ) {
+                                                                                                sweetAlert(
+                                                                                                    {
+                                                                                                        icon: "danger",
+                                                                                                        title: `hubo un error  ${data.message}`,
+                                                                                                    }
+                                                                                                );
+                                                                                            },
+                                                                                        }
+                                                                                    );
+                                                                                }
+                                                                            }
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    {pagesDestroyMutate.isLoading ? (
+                                                                        <LoaderSubmit />
+                                                                    ) : (
+                                                                        <i class="fas fa-trash text-[0.6rem]" />
+                                                                    )}
+                                                                </button>
+                                                            ) : null}
+                                                        </>
+                                                    );
+                                                })()}
+                                            </div>
                                         ) : null}
                                         <div
                                             dangerouslySetInnerHTML={{
@@ -210,27 +294,48 @@ function BannersIndex() {
                                     </button>
                                 ))}
                             </div>
-                            <button
-                                class="bg-primary px-3 py-1 rounded-md text-xl font-bold"
-                                type="button"
-                                onClick={() => {
-                                    sweetModal((onClose) => ({
-                                        html: reactComponent(
-                                            <PageStore
-                                                onClose={onClose}
-                                                refetch={
-                                                    gridBannerIndexQuery.refetch
-                                                }
-                                            />
-                                        ),
-                                        showCloseButton: true,
-                                        isCloseInBackground: false,
-                                        sweetWidth: "500px",
-                                    }));
-                                }}
-                            >
-                                +
-                            </button>{" "}
+                            <div class="flex gap-2 items-center">
+                                {" "}
+                                <button
+                                    class="bg-primary px-3 py-1 rounded-md text-xl font-bold"
+                                    type="button"
+                                    onClick={() => {
+                                        sweetModal((onClose) => ({
+                                            html: reactComponent(
+                                                <PageStore
+                                                    onClose={onClose}
+                                                    refetch={
+                                                        gridBannerIndexQuery.refetch
+                                                    }
+                                                />
+                                            ),
+                                            showCloseButton: true,
+                                            isCloseInBackground: false,
+                                            sweetWidth: "500px",
+                                        }));
+                                    }}
+                                >
+                                    +
+                                </button>
+                                {storageEmpresa!.isProduction ? (
+                                    <button
+                                        class="bg-primary px-3 py-2.5 rounded-md text-xs  font-bold"
+                                        type="button"
+                                        onClick={() => {
+                                            sweetModal(() => ({
+                                                html: reactComponent(
+                                                    <CrudIndex />
+                                                ),
+                                                showCloseButton: true,
+                                                isCloseInBackground: false,
+                                                sweetWidth: "800px",
+                                            }));
+                                        }}
+                                    >
+                                        CRUD
+                                    </button>
+                                ) : null}
+                            </div>{" "}
                         </div>
                     </div>
                     {useMediaQuery("(max-width:1000px)") ? (
@@ -245,7 +350,8 @@ function BannersIndex() {
                     <div class="flex justify-between">
                         <span class="font-bold text-sm flex items-center gap-1">
                             Ancho Actual: <b>{widthResponsive}PX</b>{" "}
-                            {typeBanner.value === "home" ? (
+                            {typeBanner.value === "home" &&
+                            storageEmpresa?.isProduction ? (
                                 <button
                                     type="button"
                                     class="bg-black group relative w-[30px] h-[30px] flex rounded-full items-center justify-center text-white "
