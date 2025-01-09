@@ -153,7 +153,7 @@ export async function initial() {
             },
         });
         const queries = await Page.findOrCreate({
-            where: { id: empresa!.id },
+            where: { empresa_id: empresa!.id },
             defaults: { queries: [] }, // Valores predeterminados si se crea
         });
         if (!bg_color_header[1] && !bg_color_header[0].bg_color_header) {
