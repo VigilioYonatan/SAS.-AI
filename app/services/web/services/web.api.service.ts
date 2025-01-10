@@ -156,25 +156,31 @@ export class WebApiService {
                     },
                 }),
                 // aca ira productos normal
-                Product(empresa, false).count({
-                    where: { empresa_id: empresa.id, enabled: true },
-                }),
+                empresa.setting.isEccomerce
+                    ? Product(empresa, false).count({
+                          where: { empresa_id: empresa.id, enabled: true },
+                      })
+                    : {},
 
                 // // aca ira productos normal
-                Favorites.findAll({
-                    attributes: [
-                        key,
-                        [
-                            Sequelize.fn("COUNT", Sequelize.col(key)),
-                            "favoritescount",
-                        ],
-                    ],
-                    where: { empresa_id: empresa.id },
-                    group: [key],
-                    order: [[Sequelize.literal("favoritescount"), "DESC"]],
-                    limit: 4,
-                    raw: true,
-                }),
+                empresa.setting.isEccomerce
+                    ? Favorites.findAll({
+                          attributes: [
+                              key,
+                              [
+                                  Sequelize.fn("COUNT", Sequelize.col(key)),
+                                  "favoritescount",
+                              ],
+                          ],
+                          where: { empresa_id: empresa.id },
+                          group: [key],
+                          order: [
+                              [Sequelize.literal("favoritescount"), "DESC"],
+                          ],
+                          limit: 4,
+                          raw: true,
+                      })
+                    : [],
                 Ratings.findAll({
                     attributes: [
                         "ratingsable_id",
