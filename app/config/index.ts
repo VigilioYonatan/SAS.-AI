@@ -37,7 +37,6 @@ export const corsOptions: cors.CorsOptions = {
                 .map((emp) => `https://www.${emp.setting.host.host}`);
             cache.set("HOSTS", JSON.stringify(hosts));
         }
-        console.log({ hosts });
 
         // Aquí puedes agregar lógica para permitir subdominios
         const allowedOrigins = [

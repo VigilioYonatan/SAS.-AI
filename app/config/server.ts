@@ -32,8 +32,8 @@ import { GlobalMiddleware } from "~/libs/websocket";
 import { socketsRouters } from "~/routers/sockets.router";
 import { Settings } from "@/empresas/entities/settings.entity";
 // import { initial } from "@/empresas/services/empresas.api.service";
-import cors from "cors";
-import { corsOptions, dirMode } from ".";
+import cors from 'cors';
+import { dirMode, corsOptions } from '.';
 import * as i18nextHttpMiddleware from "i18next-http-middleware";
 import i18next, { i18nextMiddleware } from "../libs/i18next";
 import { Sequelize } from "sequelize-typescript";
@@ -53,7 +53,7 @@ export class Server {
     async middlewares() {
         this.app.set("trust proxy", 1);
 
-        // this.app.use(cors(corsOptions));
+        this.app.use(cors(corsOptions));
         const limiter = rateLimit({
             windowMs: 1 * 60 * 1000, // 1 minutos
             max: 1000, // Límite de 100 solicitudes por IP
@@ -130,8 +130,6 @@ export class Server {
             let empresa: Empresas | null = JSON.parse(
                 cache.get(`EMPRESA:${subdomain}`) || "null"
             );
-            console.log({ subdomain });
-            console.log({ empresa });
 
             if (!subdomain) {
                 const emp = await Empresas.unscoped().findOne({
@@ -197,7 +195,6 @@ export class Server {
                     hours24
                 );
             }
-            console.log({ empresa2: empresa });
 
             if (empresa) {
                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
