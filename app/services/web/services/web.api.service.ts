@@ -181,20 +181,25 @@ export class WebApiService {
                           raw: true,
                       })
                     : [],
-                Ratings.findAll({
-                    attributes: [
-                        "ratingsable_id",
-                        [Sequelize.fn("AVG", Sequelize.col("rating")), "stars"], // Calcula el promedio de las estrellas y lo nombra 'stars'
-                    ],
-                    group: ["ratingsable_id"],
-                    order: [[Sequelize.literal("stars"), "DESC"]], // Ordena por el promedio en orden descendente
-                    limit: 4, // Limita a los 5 productos con mejor promedio de rating
-                    where: {
-                        empresa_id: empresa.id,
-                        ratingsable_type: keys,
-                    },
-                    raw: true,
-                }),
+                empresa.setting.isEccomerce
+                    ? Ratings.findAll({
+                          attributes: [
+                              "ratingsable_id",
+                              [
+                                  Sequelize.fn("AVG", Sequelize.col("rating")),
+                                  "stars",
+                              ], // Calcula el promedio de las estrellas y lo nombra 'stars'
+                          ],
+                          group: ["ratingsable_id"],
+                          order: [[Sequelize.literal("stars"), "DESC"]], // Ordena por el promedio en orden descendente
+                          limit: 4, // Limita a los 5 productos con mejor promedio de rating
+                          where: {
+                              empresa_id: empresa.id,
+                              ratingsable_type: keys,
+                          },
+                          raw: true,
+                      })
+                    : [],
                 empresa.setting.isEccomerce
                     ? Comments.unscoped().findAll({
                           attributes: [
@@ -247,97 +252,104 @@ export class WebApiService {
                     ? Product(empresa, true).count({
                           where: { empresa_id: empresa.id, enabled: true },
                       })
-                    : {},
+                    : 0,
                 GridBanner.findAll({
                     where: { empresa_id: empresa.id },
                     order: [["id", "ASC"]],
                 }),
             ]);
-
-            const getProductsByCategories = await Promise.all(
-                categories.map(async (category) => {
-                    let products = await Products.findAll({
-                        limit: empresa?.setting.products_limit || 5,
-                        where: {
-                            enabled: true,
-                            category_id: category.id,
-                            empresa_id: empresa.id,
-                        },
-                        order: [["createdAt", "DESC"]],
-                    });
-                    products = await Promise.all(
-                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                        products.map(async (product: any) => {
-                            return await getProductAll(
-                                empresa,
-                                product,
-                                user,
-                                false
-                            );
-                        })
-                    );
-                    return {
-                        ...category.toJSON(),
-                        products,
-                    };
-                })
-            );
-
-            const productsMostReactionMapped = await Promise.all(
-                productsMostReaction.map(async (product) => {
-                    let producto = await Product(empresa, false).findByPk(
-                        product[
-                            empresa.tipo_empresa.tipo_servicio_id !== 2
-                                ? "product_normal_id"
-                                : "product_restaurant_id"
-                        ]
-                    );
-                    producto = await getProductAll(
-                        empresa,
-                        producto,
-                        user,
-                        false
-                    );
-                    return {
-                        ...producto.toJSON(),
-                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                        favoritescount: (product as any).stars ?? "0",
-                    };
-                })
-            );
-
-            const productsMostRatingMapped = await Promise.all(
-                productsMostRating.map(async (product) => {
-                    let producto = await Product(empresa, false).findByPk(
-                        product.ratingsable_id
-                    );
-                    producto = await getProductAll(
-                        empresa,
-                        producto,
-                        user,
-                        false
-                    );
-                    return producto;
-                })
-            );
-            const productsMostCommentsMapped = await Promise.all(
-                productsMostComments.map(async (product) => {
-                    let producto = await Product(empresa, false).findByPk(
-                        product.commentsable_id
-                    );
-                    producto = await getProductAll(
-                        empresa,
-                        producto,
-                        user,
-                        false
-                    );
-                    return {
-                        ...producto.toJSON(),
-                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                        quantity: (product as any).commentscount,
-                    };
-                })
-            );
+            let getProductsByCategories = [];
+            if (empresa.setting.isEccomerce) {
+                getProductsByCategories = await Promise.all(
+                    categories.map(async (category) => {
+                        let products = await Products.findAll({
+                            limit: empresa?.setting.products_limit || 5,
+                            where: {
+                                enabled: true,
+                                category_id: category.id,
+                                empresa_id: empresa.id,
+                            },
+                            order: [["createdAt", "DESC"]],
+                        });
+                        products = await Promise.all(
+                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                            products.map(async (product: any) => {
+                                return await getProductAll(
+                                    empresa,
+                                    product,
+                                    user,
+                                    false
+                                );
+                            })
+                        );
+                        return {
+                            ...category.toJSON(),
+                            products,
+                        };
+                    })
+                );
+            }
+            let productsMostReactionMapped = [];
+            if (empresa.setting.isEccomerce) {
+                productsMostReactionMapped = await Promise.all(
+                    productsMostReaction.map(async (product) => {
+                        let producto = await Product(empresa, false).findByPk(
+                            product[
+                                empresa.tipo_empresa.tipo_servicio_id !== 2
+                                    ? "product_normal_id"
+                                    : "product_restaurant_id"
+                            ]
+                        );
+                        producto = await getProductAll(
+                            empresa,
+                            producto,
+                            user,
+                            false
+                        );
+                        return {
+                            ...producto.toJSON(),
+                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                            favoritescount: (product as any).stars ?? "0",
+                        };
+                    })
+                );
+            }
+            let productsMostRatingMapped = [];
+            let productsMostCommentsMapped = [];
+            if (empresa.setting.isEccomerce) {
+                productsMostRatingMapped = await Promise.all(
+                    productsMostRating.map(async (product) => {
+                        let producto = await Product(empresa, false).findByPk(
+                            product.ratingsable_id
+                        );
+                        producto = await getProductAll(
+                            empresa,
+                            producto,
+                            user,
+                            false
+                        );
+                        return producto;
+                    })
+                );
+                productsMostCommentsMapped = await Promise.all(
+                    productsMostComments.map(async (product) => {
+                        let producto = await Product(empresa, false).findByPk(
+                            product.commentsable_id
+                        );
+                        producto = await getProductAll(
+                            empresa,
+                            producto,
+                            user,
+                            false
+                        );
+                        return {
+                            ...producto.toJSON(),
+                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                            quantity: (product as any).commentscount,
+                        };
+                    })
+                );
+            }
 
             // productos
             const [productsOffert6Mapped, productsLatest6Mapped] =

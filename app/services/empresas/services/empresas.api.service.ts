@@ -136,11 +136,11 @@ export async function initial() {
             where: { id: empresa!.id },
             defaults: { enabled_zoho_mail: false }, // Valores predeterminados si se crea
         });
-        const isProduction = await Empresas.findOrCreate({
-            where: { id: empresa!.id },
-            defaults: { isProduction: false }, // Valores predeterminados si se crea
-        });
-
+        // const isProduction = await Empresas.findOrCreate({
+        //     where: { id: empresa!.id },
+        //     defaults: { isProduction: false }, // Valores predeterminados si se crea
+        // });
+        await empresa.update({ isProduction: false });
         const gridBanners = await GridBanner.findAll({
             where: {
                 empresa_id: empresa.id,
@@ -163,10 +163,10 @@ export async function initial() {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await queries[0].update({ queries: [] });
         }
-        if (!isProduction[1] && !isProduction[0].isProduction) {
-            // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await isProduction[0].update({ isProduction: true });
-        }
+        // if (!isProduction[1] && !isProduction[0].isProduction) {
+        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //     await isProduction[0].update({ isProduction: true });
+        // }
         if (!enabled_zoho_mail[1] && !enabled_zoho_mail[0].enabled_zoho_mail) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await enabled_zoho_mail[0].update({
