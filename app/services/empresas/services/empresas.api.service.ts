@@ -2020,22 +2020,18 @@ export class EmpresasApiService {
         };
     }
     async changeMode(slug: string) {
-        try {
-            const empresa = await Empresas.unscoped().findOne({
-                where: { slug },
-                attributes: ["isProduction"],
-            });
-            if (!empresa) throw new BadRequestException("No informacion");
-            await empresa.update({ isProduction: !empresa.isProduction });
-            return {
-                success: true,
-                message: `Se cambió a modo ${
-                    empresa.isProduction ? "Modo producción" : "Modo desarrollo"
-                }`,
-            };
-        } catch (error) {
-            console.log((error as Error).message);
-        }
+        const empresa = await Empresas.unscoped().findOne({
+            where: { slug },
+            attributes: ["isProduction", "slug", "id"],
+        });
+        if (!empresa) throw new BadRequestException("No informacion");
+        await empresa.update({ isProduction: !empresa.isProduction });
+        return {
+            success: true,
+            message: `Se cambió a modo ${
+                empresa.isProduction ? "Modo producción" : "Modo desarrollo"
+            }`,
+        };
     }
 
     async whatsappGroupUpdate(slug: string, body: GroupWhatsapp) {
