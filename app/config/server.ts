@@ -130,6 +130,7 @@ export class Server {
             let empresa: Empresas | null = JSON.parse(
                 cache.get(`EMPRESA:${subdomain}`) || "null"
             );
+            console.log({ empresa });
 
             if (!subdomain) {
                 const emp = await Empresas.unscoped().findOne({
