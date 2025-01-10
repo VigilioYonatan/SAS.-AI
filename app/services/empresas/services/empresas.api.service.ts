@@ -2026,6 +2026,7 @@ export class EmpresasApiService {
         });
         if (!empresa) throw new BadRequestException("No informacion");
         await empresa.update({ isProduction: !empresa.isProduction });
+        cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
             message: `Se cambió a modo ${
