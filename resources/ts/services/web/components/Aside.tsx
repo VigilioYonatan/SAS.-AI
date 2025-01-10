@@ -102,6 +102,11 @@ function Aside({
                         {storageEmpresa!.pages
                             .filter(
                                 (page) =>
+                                    page.slug !== "home" &&
+                                    page.slug !== "inicio"
+                            )
+                            .filter(
+                                (page) =>
                                     !page.isDinamic && page.enabledHeaderPage
                             )
                             .map((page) => {

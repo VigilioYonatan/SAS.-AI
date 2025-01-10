@@ -622,7 +622,8 @@ function NavHeader({
                 </a>
             ) : null}{" "}
             {storageEmpresa?.setting.header_type !== "search" &&
-            storageEmpresa?.setting.header.shop ? (
+            storageEmpresa?.setting.header.shop &&
+            storageEmpresa.setting.isEccomerce ? (
                 <div class="relative">
                     <a
                         href="/shop"
@@ -861,6 +862,9 @@ function NavHeader({
                 </div>
             ) : null}
             {storageEmpresa!.pages
+                .filter(
+                    (page) => page.slug !== "home" && page.slug !== "inicio"
+                )
                 .filter(
                     (page) =>
                         page.slug !== "shop" &&
