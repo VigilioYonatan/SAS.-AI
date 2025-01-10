@@ -194,10 +194,11 @@ export class Server {
                     JSON.stringify(empresa),
                     hours24
                 );
-                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                (req as any).empresa = empresa;
             }
             if (empresa) {
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                (req as any).empresa = empresa;
+
                 return next();
             }
 
