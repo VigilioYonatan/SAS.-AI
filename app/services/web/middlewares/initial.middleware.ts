@@ -93,86 +93,94 @@ export async function initialMiddleware(
     let questionCount: number | null = JSON.parse(
         cache.get(`${empresa.slug}:questions-count`) ?? "null"
     );
-    let tableObjects: unknown[] = [];
 
-    if (req.originalUrl.includes("/admin") && !citas) {
-        // tablas
-        const [tables] = await getTables();
+    let tableObjects: unknown[] = JSON.parse(
+        cache.get(`${empresa.slug}:TABLE` || "null")
+    );
 
-        const tableobj = [];
+    if (req.originalUrl.includes("/admin")) {
+        if (!tableObjects) {
+            // tablas
+            const [tables] = await getTables();
 
-        for (const table of tables as { table_name: string }[]) {
-            const [columns] = await sequelize.query(
-                `SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = :tableName;`,
-                { replacements: { tableName: table.table_name } }
-            );
+            const tableobj = [];
 
-            tableobj.push({
-                name: table.table_name,
-                data: (
-                    columns as {
-                        column_name: string;
-                        data_type: string;
-                    }[]
-                ).map((col) => ({
-                    name: col.column_name,
-                    type: col.data_type,
-                })),
-            });
+            for (const table of tables as { table_name: string }[]) {
+                const [columns] = await sequelize.query(
+                    `SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = :tableName;`,
+                    { replacements: { tableName: table.table_name } }
+                );
+
+                tableobj.push({
+                    name: table.table_name,
+                    data: (
+                        columns as {
+                            column_name: string;
+                            data_type: string;
+                        }[]
+                    ).map((col) => ({
+                        name: col.column_name,
+                        type: col.data_type,
+                    })),
+                });
+            }
+            tableObjects = tableobj;
+            cache.set(`${empresa.slug}:TABLE`, JSON.stringify(tableobj));
         }
-        tableObjects = tableobj;
-        cache.set(`${empresa.slug}:TABLE`, JSON.stringify(tableobj));
 
         // citas
         const day = NOW(empresa);
+        if (!questionCount) {
+            questionCount = await Questions.count({
+                where: {
+                    empresa_id: empresa.id,
+                    answer: null,
+                },
+            });
 
-        questionCount = await Questions.count({
-            where: {
-                empresa_id: empresa.id,
-                answer: null,
-            },
-        });
-
-        cache.set(
-            `${empresa.slug}:questions-count`,
-            JSON.stringify(questionCount)
-        );
+            cache.set(
+                `${empresa.slug}:questions-count`,
+                JSON.stringify(questionCount)
+            );
+        }
 
         const dias = day.daysInMonth();
 
-        const cites = await Promise.all(
-            Array.from({ length: dias }).map(async (_, i) => {
-                const startOfDay = day
-                    .date(i + 1)
-                    .startOf("day")
-                    .utc()
-                    .format();
-                const endOfDay = day
-                    .date(i + 1)
-                    .endOf("day")
-                    .utc()
-                    .format();
-                const qty = await Citas.unscoped().count({
-                    where: {
-                        empresa_id: empresa.id,
-                        date: {
-                            [Op.between]: [startOfDay, endOfDay],
+        if (!citas) {
+            const cites = await Promise.all(
+                Array.from({ length: dias }).map(async (_, i) => {
+                    const startOfDay = day
+                        .date(i + 1)
+                        .startOf("day")
+                        .utc()
+                        .format();
+                    const endOfDay = day
+                        .date(i + 1)
+                        .endOf("day")
+                        .utc()
+                        .format();
+                    const qty = await Citas.unscoped().count({
+                        where: {
+                            empresa_id: empresa.id,
+                            date: {
+                                [Op.between]: [startOfDay, endOfDay],
+                            },
                         },
-                    },
-                });
-                return [i + 1, qty];
-            })
-        );
-        citas = cites.reduce((acc, [key, value]) => {
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            (acc as any)[key] = value;
-            return acc;
-        }, {});
-        cache.set(
-            `${empresa.slug}:citas`,
-            JSON.stringify(citas),
-            1 * 60 * 60 * 1000
-        );
+                    });
+                    return [i + 1, qty];
+                })
+            );
+            citas = cites.reduce((acc, [key, value]) => {
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                (acc as any)[key] = value;
+                return acc;
+            }, {});
+            cache.set(
+                `${empresa.slug}:citas`,
+                JSON.stringify(citas),
+                1 * 60 * 60 * 1000
+            );
+        }
     }
     const certificado =
         req.originalUrl.startsWith("/admin") && empresa?.company
