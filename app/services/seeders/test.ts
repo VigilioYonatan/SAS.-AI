@@ -92,6 +92,7 @@ export const test: Pick<
             users: true,
         },
         isEccomerce: true,
+        isLogin: true,
     },
     gridBanners: [
         {
