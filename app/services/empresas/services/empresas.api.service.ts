@@ -2020,7 +2020,7 @@ export class EmpresasApiService {
         };
     }
     async changeMode(slug: string) {
-        const empresa = await Empresas.findOne({
+        const empresa = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: ["isProduction"],
         });
