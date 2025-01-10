@@ -621,131 +621,129 @@ function SettingsIndex() {
                         title="Guardar Cambios"
                     />
                 </Form>
-                <br />{" "}
-                <AlertWarning>
-                    <span class="font-semibold">
-                        <b class="font-bold">
-                            Este campo es recomendable si eres desarrollador
-                            web.
-                        </b>
-                    </span>
-                </AlertWarning>
-                <Form
-                    className="flex gap-4 flex-col"
-                    {...settingsUpdateform}
-                    onSubmit={onUpdateempresa}
-                >
-                    <div class="grid grid-cols-2 md:grid-cols-3">
-                        <div class="w-[120px]">
-                            <Form.control.color
-                                name={"bg_color" as keyof SettingsUpdateDto}
-                                title="color de tu web"
-                                question="Color de tu web"
-                            />
+                <br />
+                {!storageEmpresa?.isProduction ? (
+                    <Form
+                        className="flex gap-4 flex-col"
+                        {...settingsUpdateform}
+                        onSubmit={onUpdateempresa}
+                    >
+                        <div class="grid grid-cols-2 md:grid-cols-3">
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={"bg_color" as keyof SettingsUpdateDto}
+                                    title="color de tu web"
+                                    question="Color de tu web"
+                                />
+                            </div>
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "bg_color_responsive" as keyof SettingsUpdateDto
+                                    }
+                                    title="color responsive"
+                                    question="Color de tu web en modo responsive"
+                                />
+                            </div>
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "bg_color_background" as keyof SettingsUpdateDto
+                                    }
+                                    title="color de fondo"
+                                    question="Color de fondo de tu web"
+                                />
+                            </div>
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "bg_color_paper" as keyof SettingsUpdateDto
+                                    }
+                                    title="color de fondo2 "
+                                    question="Color de fondo2 de tu web"
+                                />
+                            </div>
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "bg_color_footer" as keyof SettingsUpdateDto
+                                    }
+                                    title="color del footer "
+                                    question="Color de fondo2 de tu web"
+                                />
+                            </div>
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "bg_color_button" as keyof SettingsUpdateDto
+                                    }
+                                    title="color del boton carrito"
+                                />
+                            </div>
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "bg_color_secondary" as keyof SettingsUpdateDto
+                                    }
+                                    title="Color Secundario"
+                                />
+                            </div>
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "bg_color_header" as keyof SettingsUpdateDto
+                                    }
+                                    title="Color Header Background"
+                                />
+                            </div>
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "bg_color_aside" as keyof SettingsUpdateDto
+                                    }
+                                    title="Color Aside Responsive"
+                                />
+                            </div>
+                            <div class="w-[120px]">
+                                <Form.control.color
+                                    name={
+                                        "text_color" as keyof SettingsUpdateDto
+                                    }
+                                    title="Forzar color texto"
+                                />
+                            </div>
                         </div>
-                        <div class="w-[120px]">
-                            <Form.control.color
+                        <div class="grid grid-cols-2 md:grid-cols-4">
+                            <Form.control.toggle
+                                title="¿Modo Nocturno?"
+                                name={"isDark" as keyof SettingsUpdateDto}
+                                question="¿Deseas que tu web tenga modo nocturno?"
+                            />
+                            <Form.control.toggle
+                                title="¿Animación de Scroll?"
+                                name={"isScrolling" as keyof SettingsUpdateDto}
+                                question="Animación cuando tus clientes bajan con el mouse o dedo a tu web"
+                            />
+                            <Form.control.toggle
+                                title="Bloquear Aside"
                                 name={
-                                    "bg_color_responsive" as keyof SettingsUpdateDto
+                                    "is_block_aside" as keyof SettingsUpdateDto
                                 }
-                                title="color responsive"
-                                question="Color de tu web en modo responsive"
+                                question="Bloquear Aside"
                             />
-                        </div>
-                        <div class="w-[120px]">
-                            <Form.control.color
+                            <Form.control.toggle
+                                title="Pagina de Servicios"
                                 name={
-                                    "bg_color_background" as keyof SettingsUpdateDto
+                                    "is_service_page" as keyof SettingsUpdateDto
                                 }
-                                title="color de fondo"
-                                question="Color de fondo de tu web"
-                            />
-                        </div>
-                        <div class="w-[120px]">
-                            <Form.control.color
-                                name={
-                                    "bg_color_paper" as keyof SettingsUpdateDto
+                                question={
+                                    <span class="">
+                                        Agregar página servicios.
+                                        <br />
+                                        No activar si no eres desarrollador.
+                                    </span>
                                 }
-                                title="color de fondo2 "
-                                question="Color de fondo2 de tu web"
                             />
-                        </div>
-                        <div class="w-[120px]">
-                            <Form.control.color
-                                name={
-                                    "bg_color_footer" as keyof SettingsUpdateDto
-                                }
-                                title="color del footer "
-                                question="Color de fondo2 de tu web"
-                            />
-                        </div>
-                        <div class="w-[120px]">
-                            <Form.control.color
-                                name={
-                                    "bg_color_button" as keyof SettingsUpdateDto
-                                }
-                                title="color del boton carrito"
-                            />
-                        </div>
-                        <div class="w-[120px]">
-                            <Form.control.color
-                                name={
-                                    "bg_color_secondary" as keyof SettingsUpdateDto
-                                }
-                                title="Color Secundario"
-                            />
-                        </div>
-                        <div class="w-[120px]">
-                            <Form.control.color
-                                name={
-                                    "bg_color_header" as keyof SettingsUpdateDto
-                                }
-                                title="Color Header Background"
-                            />
-                        </div>
-                        <div class="w-[120px]">
-                            <Form.control.color
-                                name={
-                                    "bg_color_aside" as keyof SettingsUpdateDto
-                                }
-                                title="Color Aside Responsive"
-                            />
-                        </div>
-                        <div class="w-[120px]">
-                            <Form.control.color
-                                name={"text_color" as keyof SettingsUpdateDto}
-                                title="Forzar color texto"
-                            />
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4">
-                        <Form.control.toggle
-                            title="¿Modo Nocturno?"
-                            name={"isDark" as keyof SettingsUpdateDto}
-                            question="¿Deseas que tu web tenga modo nocturno?"
-                        />
-                        <Form.control.toggle
-                            title="¿Animación de Scroll?"
-                            name={"isScrolling" as keyof SettingsUpdateDto}
-                            question="Animación cuando tus clientes bajan con el mouse o dedo a tu web"
-                        />
-                        <Form.control.toggle
-                            title="Bloquear Aside"
-                            name={"is_block_aside" as keyof SettingsUpdateDto}
-                            question="Bloquear Aside"
-                        />
-                        <Form.control.toggle
-                            title="Pagina de Servicios"
-                            name={"is_service_page" as keyof SettingsUpdateDto}
-                            question={
-                                <span class="">
-                                    Agregar página servicios.
-                                    <br />
-                                    No activar si no eres desarrollador.
-                                </span>
-                            }
-                        />
-                        {!storageEmpresa?.isProduction ? (
                             <Form.control.toggle
                                 title="Web Eccomerce?"
                                 name={"isEccomerce" as keyof SettingsUpdateDto}
@@ -759,1231 +757,1326 @@ function SettingsIndex() {
                                     </span>
                                 }
                             />
-                        ) : null}
+                            <Form.control.toggle
+                                title="¿Registrar?"
+                                name={"isLogin" as keyof SettingsUpdateDto}
+                                question={
+                                    <span class="block w-[200px]">
+                                        No se podrán registrar clientes si está desactivado
+                                    </span>
+                                }
+                            />
 
-                        <Form.control.toggle
-                            title="¿Agregar subcategorias"
-                            name={"is_subcategory" as keyof SettingsUpdateDto}
-                            question={
-                                <span class="block w-[200px]">
-                                    ¿Tu web solo permite categorías a tus
-                                    productos?
-                                    <br />
-                                    Con esto activado, podrás agregar
-                                    subcategorías.
-                                    <br />
-                                    Ejemplo 1:
-                                    <br />
-                                    <b class="font-bold">Categoría</b>:
-                                    Tecnología <br />{" "}
-                                    <b class="font-bold">Subcategorias</b> :
-                                    Televisores, Celulares, Laptops, etc.
-                                    <br />
-                                    Ejemplo 2:
-                                    <br />
-                                    <b class="font-bold">Categoría</b>: Calzados
-                                    <br />{" "}
-                                    <b class="font-bold">Subcategorias</b> :
-                                    Zapatillas, Zapatos, Zandalias, etc.
-                                    <br />
-                                    <div class="[&>div]:p-0 [&>div>i]:me-0">
-                                        <AlertWarning>
-                                            <span class="text-xs">
-                                                Si ya tiene productos agregados,
-                                                Agregar subcategorías a esos
-                                                productos.
-                                            </span>
-                                        </AlertWarning>
-                                    </div>
-                                </span>
-                            }
-                        />
-                    </div>
-                    <div class="grid grid-cols-2 lg:grid-cols-4">
-                        <Form.control.toggle
-                            name="position_header"
-                            title="Header Mobile"
-                        />
-                        <Form.control.toggle
-                            name="is_hidde_total_cart"
-                            title="Ocultar carrito Total"
-                            question="Ocultar total en el header"
-                        />
-                        <div class="w-[120px]">
-                            <Form.control
-                                name="logo_width"
-                                type="number"
-                                title="Tamaño de logo"
-                                placeholder={"80"}
-                                question="Tamaño de tu logo en pixeles"
-                                options={{ setValueAs: Number }}
+                            <Form.control.toggle
+                                title="¿Agregar subcategorias"
+                                name={
+                                    "is_subcategory" as keyof SettingsUpdateDto
+                                }
+                                question={
+                                    <span class="block w-[200px]">
+                                        ¿Tu web solo permite categorías a tus
+                                        productos?
+                                        <br />
+                                        Con esto activado, podrás agregar
+                                        subcategorías.
+                                        <br />
+                                        Ejemplo 1:
+                                        <br />
+                                        <b class="font-bold">Categoría</b>:
+                                        Tecnología <br />{" "}
+                                        <b class="font-bold">Subcategorias</b> :
+                                        Televisores, Celulares, Laptops, etc.
+                                        <br />
+                                        Ejemplo 2:
+                                        <br />
+                                        <b class="font-bold">Categoría</b>:
+                                        Calzados
+                                        <br />{" "}
+                                        <b class="font-bold">Subcategorias</b> :
+                                        Zapatillas, Zapatos, Zandalias, etc.
+                                        <br />
+                                        <div class="[&>div]:p-0 [&>div>i]:me-0">
+                                            <AlertWarning>
+                                                <span class="text-xs">
+                                                    Si ya tiene productos
+                                                    agregados, Agregar
+                                                    subcategorías a esos
+                                                    productos.
+                                                </span>
+                                            </AlertWarning>
+                                        </div>
+                                    </span>
+                                }
                             />
                         </div>
-                        <div>
-                            <label
-                                htmlFor=""
-                                class="text-xs font-semibold  dark:text-white"
-                            >
-                                Posición del header [1, 2, 3]
-                            </label>
-                            <div class="grid grid-cols-3">
-                                <div class="w-[60px]">
-                                    <Form.control
-                                        title="logo"
-                                        name={"header_position.logo"}
-                                        type="number"
-                                        min={1}
-                                        max={3}
-                                        options={{ setValueAs: Number }}
-                                    />
-                                </div>
-                                <div class="w-[60px]">
-                                    <Form.control
-                                        title="Navbar"
-                                        name={"header_position.navbar"}
-                                        type="number"
-                                        min={1}
-                                        max={3}
-                                        options={{ setValueAs: Number }}
-                                    />
-                                </div>
-                                <div class="w-[60px]">
-                                    <Form.control
-                                        title="Iconoes"
-                                        name={"header_position.icons"}
-                                        type="number"
-                                        min={1}
-                                        max={3}
-                                        options={{ setValueAs: Number }}
-                                    />
+                        <div class="grid grid-cols-2 lg:grid-cols-4">
+                            <Form.control.toggle
+                                name="position_header"
+                                title="Header Mobile"
+                            />
+                            <Form.control.toggle
+                                name="is_hidde_total_cart"
+                                title="Ocultar carrito Total"
+                                question="Ocultar total en el header"
+                            />
+                            <div class="w-[120px]">
+                                <Form.control
+                                    name="logo_width"
+                                    type="number"
+                                    title="Tamaño de logo"
+                                    placeholder={"80"}
+                                    question="Tamaño de tu logo en pixeles"
+                                    options={{ setValueAs: Number }}
+                                />
+                            </div>
+                            <div>
+                                <label
+                                    htmlFor=""
+                                    class="text-xs font-semibold  dark:text-white"
+                                >
+                                    Posición del header [1, 2, 3]
+                                </label>
+                                <div class="grid grid-cols-3">
+                                    <div class="w-[60px]">
+                                        <Form.control
+                                            title="logo"
+                                            name={"header_position.logo"}
+                                            type="number"
+                                            min={1}
+                                            max={3}
+                                            options={{ setValueAs: Number }}
+                                        />
+                                    </div>
+                                    <div class="w-[60px]">
+                                        <Form.control
+                                            title="Navbar"
+                                            name={"header_position.navbar"}
+                                            type="number"
+                                            min={1}
+                                            max={3}
+                                            options={{ setValueAs: Number }}
+                                        />
+                                    </div>
+                                    <div class="w-[60px]">
+                                        <Form.control
+                                            title="Iconoes"
+                                            name={"header_position.icons"}
+                                            type="number"
+                                            min={1}
+                                            max={3}
+                                            options={{ setValueAs: Number }}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="flex gap-2 items-center w-full">
-                        <div class="w-full">
-                            <div
-                                style={{
-                                    backgroundColor: bg_color_paper,
-                                }}
-                            >
-                                <div class="flex gap-2 flex-wrap w-full">
-                                    <header
-                                        class={
-                                            " w-full px-4    py-4 shadow    delay-custom-1 "
-                                        }
-                                        style={{
-                                            background: bg_color_background,
-                                            color: isColorLight(
-                                                bg_color_background
-                                            )
-                                                ? "#000000"
-                                                : "#FFFFFF",
-                                        }}
-                                    >
-                                        <div class=" max-w-6xl mx-auto">
-                                            <div class="flex justify-between gap-2 items-center">
-                                                {!position_header ? (
-                                                    <div
-                                                        class="flex items-center gap-2"
-                                                        style={{
-                                                            order:
-                                                                header_position?.logo ??
-                                                                1,
-                                                        }}
-                                                    >
-                                                        <button
-                                                            type="button"
-                                                            aria-label="open aside"
-                                                            onClick={
-                                                                headerDropdown.onOpen
-                                                            }
-                                                        >
-                                                            <Hamburguer
-                                                                isOpen={
-                                                                    headerDropdown.dropdownOpen
-                                                                }
-                                                            />
-                                                        </button>
-                                                        <a
-                                                            href={"/"}
-                                                            class="flex  items-center "
-                                                        >
-                                                            {empresaStore.state!
-                                                                .logo ? (
-                                                                <img
-                                                                    width={100}
-                                                                    height={100}
-                                                                    src={
-                                                                        printFileWithDimension(
-                                                                            empresaStore.state!
-                                                                                .logo!,
-                                                                            100
-                                                                        )[0]
-                                                                    }
-                                                                    class="w-[50px] h-[50px] object-contain"
-                                                                    alt={
-                                                                        empresaStore.state!
-                                                                            .name_empresa
-                                                                    }
-                                                                />
-                                                            ) : (
-                                                                <h2 class="text-2xl font-bold  uppercase">
-                                                                    {
-                                                                        empresaStore.state!
-                                                                            .name_empresa[0]
-                                                                    }
-                                                                </h2>
-                                                            )}
-                                                        </a>
-                                                    </div>
-                                                ) : (
-                                                    <>
-                                                        <button
-                                                            type="button"
-                                                            aria-label="open aside"
-                                                            onClick={
-                                                                headerDropdown.onOpen
-                                                            }
+                        <div class="flex gap-2 items-center w-full">
+                            <div class="w-full">
+                                <div
+                                    style={{
+                                        backgroundColor: bg_color_paper,
+                                    }}
+                                >
+                                    <div class="flex gap-2 flex-wrap w-full">
+                                        <header
+                                            class={
+                                                " w-full px-4    py-4 shadow    delay-custom-1 "
+                                            }
+                                            style={{
+                                                background: bg_color_background,
+                                                color: isColorLight(
+                                                    bg_color_background
+                                                )
+                                                    ? "#000000"
+                                                    : "#FFFFFF",
+                                            }}
+                                        >
+                                            <div class=" max-w-6xl mx-auto">
+                                                <div class="flex justify-between gap-2 items-center">
+                                                    {!position_header ? (
+                                                        <div
+                                                            class="flex items-center gap-2"
                                                             style={{
                                                                 order:
                                                                     header_position?.logo ??
                                                                     1,
                                                             }}
                                                         >
-                                                            <div
-                                                                class={
-                                                                    "hamburger hamburger--collapse"
+                                                            <button
+                                                                type="button"
+                                                                aria-label="open aside"
+                                                                onClick={
+                                                                    headerDropdown.onOpen
                                                                 }
                                                             >
-                                                                <i
-                                                                    class={`${hamburger} ${
-                                                                        hamburger ===
-                                                                        "fas pizza-slice"
-                                                                            ? "rotate-[250deg]"
-                                                                            : ""
-                                                                    } text-3xl `}
+                                                                <Hamburguer
+                                                                    isOpen={
+                                                                        headerDropdown.dropdownOpen
+                                                                    }
                                                                 />
-                                                            </div>
-                                                        </button>
-
-                                                        <a
-                                                            href={"/"}
-                                                            class="flex  items-center ml-12"
-                                                            style={{
-                                                                order:
-                                                                    header_position?.logo ??
-                                                                    1,
-                                                            }}
-                                                        >
-                                                            {empresaStore.state!
-                                                                .logo ? (
-                                                                <img
-                                                                    width={100}
-                                                                    height={100}
-                                                                    src={
-                                                                        printFileWithDimension(
-                                                                            empresaStore.state!
-                                                                                .logo!,
+                                                            </button>
+                                                            <a
+                                                                href={"/"}
+                                                                class="flex  items-center "
+                                                            >
+                                                                {empresaStore.state!
+                                                                    .logo ? (
+                                                                    <img
+                                                                        width={
                                                                             100
-                                                                        )[0]
+                                                                        }
+                                                                        height={
+                                                                            100
+                                                                        }
+                                                                        src={
+                                                                            printFileWithDimension(
+                                                                                empresaStore.state!
+                                                                                    .logo!,
+                                                                                100
+                                                                            )[0]
+                                                                        }
+                                                                        class="w-[50px] h-[50px] object-contain"
+                                                                        alt={
+                                                                            empresaStore.state!
+                                                                                .name_empresa
+                                                                        }
+                                                                    />
+                                                                ) : (
+                                                                    <h2 class="text-2xl font-bold  uppercase">
+                                                                        {
+                                                                            empresaStore.state!
+                                                                                .name_empresa[0]
+                                                                        }
+                                                                    </h2>
+                                                                )}
+                                                            </a>
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            <button
+                                                                type="button"
+                                                                aria-label="open aside"
+                                                                onClick={
+                                                                    headerDropdown.onOpen
+                                                                }
+                                                                style={{
+                                                                    order:
+                                                                        header_position?.logo ??
+                                                                        1,
+                                                                }}
+                                                            >
+                                                                <div
+                                                                    class={
+                                                                        "hamburger hamburger--collapse"
                                                                     }
-                                                                    class="w-[60px] h-[60px] object-contain"
-                                                                    alt={
-                                                                        empresaStore.state!
-                                                                            .name_empresa
-                                                                    }
-                                                                />
-                                                            ) : (
-                                                                <h2 class="text-2xl font-bold  uppercase">
-                                                                    {
-                                                                        empresaStore.state!
-                                                                            .name_empresa[0]
-                                                                    }
-                                                                </h2>
-                                                            )}
-                                                        </a>
-                                                    </>
-                                                )}
-                                                {/* cartaside */}
-                                                <div
-                                                    class={`fixed inset-0 bg-opacity-70 bg-black z-[999] flex justify-end h-full ${
-                                                        cartStore.dropdown.value
-                                                            ? "visible"
-                                                            : "invisible"
-                                                    } delay-custom-1`}
-                                                    onClick={
-                                                        cartStore.dropdown
-                                                            .onClose
-                                                    }
-                                                    style={{
-                                                        order:
-                                                            header_position?.navbar ??
-                                                            2,
-                                                    }}
-                                                >
+                                                                >
+                                                                    <i
+                                                                        class={`${hamburger} ${
+                                                                            hamburger ===
+                                                                            "fas pizza-slice"
+                                                                                ? "rotate-[250deg]"
+                                                                                : ""
+                                                                        } text-3xl `}
+                                                                    />
+                                                                </div>
+                                                            </button>
+
+                                                            <a
+                                                                href={"/"}
+                                                                class="flex  items-center ml-12"
+                                                                style={{
+                                                                    order:
+                                                                        header_position?.logo ??
+                                                                        1,
+                                                                }}
+                                                            >
+                                                                {empresaStore.state!
+                                                                    .logo ? (
+                                                                    <img
+                                                                        width={
+                                                                            100
+                                                                        }
+                                                                        height={
+                                                                            100
+                                                                        }
+                                                                        src={
+                                                                            printFileWithDimension(
+                                                                                empresaStore.state!
+                                                                                    .logo!,
+                                                                                100
+                                                                            )[0]
+                                                                        }
+                                                                        class="w-[60px] h-[60px] object-contain"
+                                                                        alt={
+                                                                            empresaStore.state!
+                                                                                .name_empresa
+                                                                        }
+                                                                    />
+                                                                ) : (
+                                                                    <h2 class="text-2xl font-bold  uppercase">
+                                                                        {
+                                                                            empresaStore.state!
+                                                                                .name_empresa[0]
+                                                                        }
+                                                                    </h2>
+                                                                )}
+                                                            </a>
+                                                        </>
+                                                    )}
+                                                    {/* cartaside */}
                                                     <div
-                                                        class={`w-full delay-custom-1 md:w-[350px] bg-white dark:bg-paper-dark relative p-2 ${
+                                                        class={`fixed inset-0 bg-opacity-70 bg-black z-[999] flex justify-end h-full ${
                                                             cartStore.dropdown
                                                                 .value
-                                                                ? "translate-x-0"
-                                                                : "translate-x-full"
-                                                        }`}
-                                                        onClick={(e) =>
-                                                            e.stopPropagation()
+                                                                ? "visible"
+                                                                : "invisible"
+                                                        } delay-custom-1`}
+                                                        onClick={
+                                                            cartStore.dropdown
+                                                                .onClose
                                                         }
+                                                        style={{
+                                                            order:
+                                                                header_position?.navbar ??
+                                                                2,
+                                                        }}
                                                     >
+                                                        <div
+                                                            class={`w-full delay-custom-1 md:w-[350px] bg-white dark:bg-paper-dark relative p-2 ${
+                                                                cartStore
+                                                                    .dropdown
+                                                                    .value
+                                                                    ? "translate-x-0"
+                                                                    : "translate-x-full"
+                                                            }`}
+                                                            onClick={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                        >
+                                                            <button
+                                                                class="text-end block  text-primary absolute top-0 right-0 m-2"
+                                                                type="button"
+                                                                aria-label="close cart"
+                                                                onClick={
+                                                                    cartStore
+                                                                        .dropdown
+                                                                        .onClose
+                                                                }
+                                                            >
+                                                                <i class="fa-solid fa-x" />
+                                                            </button>
+                                                            <CartAside />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* endcartaside */}
+                                                    <div
+                                                        class="flex gap-3 items-center   text-xl "
+                                                        style={{
+                                                            order:
+                                                                header_position?.icons ??
+                                                                3,
+                                                        }}
+                                                    >
+                                                        <SearchProducts />
                                                         <button
-                                                            class="text-end block  text-primary absolute top-0 right-0 m-2"
                                                             type="button"
-                                                            aria-label="close cart"
+                                                            aria-label="btn"
+                                                            class="text-white px-4 py-2 rounded-md text-xs font-semibold"
+                                                            style={{
+                                                                backgroundColor:
+                                                                    bg_color,
+                                                            }}
+                                                        >
+                                                            Sign In
+                                                        </button>
+                                                        {isDark ? (
+                                                            <button
+                                                                type="button"
+                                                                aria-label="change theme"
+                                                                onClick={() => {
+                                                                    themeStore.methods.changeThemeMode(
+                                                                        themeStore.state ===
+                                                                            "dark"
+                                                                            ? "light"
+                                                                            : "dark"
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {themeStore.state! ===
+                                                                "dark" ? (
+                                                                    <i class="fas fa-moon" />
+                                                                ) : (
+                                                                    <i class="far fa-sun" />
+                                                                )}
+                                                            </button>
+                                                        ) : null}
+
+                                                        <button
+                                                            type="button"
+                                                            class=" text-xl   relative"
                                                             onClick={
                                                                 cartStore
                                                                     .dropdown
-                                                                    .onClose
+                                                                    .onOpen
                                                             }
                                                         >
-                                                            <i class="fa-solid fa-x" />
+                                                            <i
+                                                                class={
+                                                                    type_cart
+                                                                }
+                                                            />
+                                                            <span class="absolute -top-1 -right-2 bg-primary text-xs font-bold flex justify-center items-center text-white w-[20px] h-[20px] rounded-full">
+                                                                {
+                                                                    cartStore
+                                                                        .computed
+                                                                        .showCartLength
+                                                                }
+                                                            </span>
                                                         </button>
-                                                        <CartAside />
-                                                    </div>
-                                                </div>
-
-                                                {/* endcartaside */}
-                                                <div
-                                                    class="flex gap-3 items-center   text-xl "
-                                                    style={{
-                                                        order:
-                                                            header_position?.icons ??
-                                                            3,
-                                                    }}
-                                                >
-                                                    <SearchProducts />
-                                                    <button
-                                                        type="button"
-                                                        aria-label="btn"
-                                                        class="text-white px-4 py-2 rounded-md text-xs font-semibold"
-                                                        style={{
-                                                            backgroundColor:
-                                                                bg_color,
-                                                        }}
-                                                    >
-                                                        Sign In
-                                                    </button>
-                                                    {isDark ? (
-                                                        <button
-                                                            type="button"
-                                                            aria-label="change theme"
-                                                            onClick={() => {
-                                                                themeStore.methods.changeThemeMode(
-                                                                    themeStore.state ===
-                                                                        "dark"
-                                                                        ? "light"
-                                                                        : "dark"
-                                                                );
-                                                            }}
-                                                        >
-                                                            {themeStore.state! ===
-                                                            "dark" ? (
-                                                                <i class="fas fa-moon" />
-                                                            ) : (
-                                                                <i class="far fa-sun" />
-                                                            )}
-                                                        </button>
-                                                    ) : null}
-
-                                                    <button
-                                                        type="button"
-                                                        class=" text-xl   relative"
-                                                        onClick={
-                                                            cartStore.dropdown
-                                                                .onOpen
-                                                        }
-                                                    >
-                                                        <i class={type_cart} />
-                                                        <span class="absolute -top-1 -right-2 bg-primary text-xs font-bold flex justify-center items-center text-white w-[20px] h-[20px] rounded-full">
-                                                            {
-                                                                cartStore
-                                                                    .computed
-                                                                    .showCartLength
-                                                            }
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </header>
-                                </div>
-                                <br />{" "}
-                                <TitleSection titleExample={border_title_type}>
-                                    Esto es un titulo
-                                </TitleSection>{" "}
-                                <div
-                                    class="flex flex-col gap-2 self-start p-2 md:w-[500px] rounded-md shadow-md mx-2"
-                                    style={{
-                                        color: isColorLight(bg_color_background)
-                                            ? "#000000 !important"
-                                            : "#FFFFFF !important",
-                                        backgroundColor: bg_color_background,
-                                    }}
-                                >
-                                    <div class="flex flex-col md:flex-row gap-4 items-center">
-                                        <div
-                                            class={`w-[200px]  shadow bg-paper-light dark:bg-admin-terciary overflow-hidden ${
-                                                type_border === "circle"
-                                                    ? "rounded-md"
-                                                    : ""
-                                            }`}
-                                        >
-                                            <div class="relative">
-                                                <img
-                                                    class={`mx-auto w-[300px] h-[200px] ${
-                                                        isCoverImage
-                                                            ? "object-cover"
-                                                            : "object-contain"
-                                                    }`}
-                                                    width={200}
-                                                    height={150}
-                                                    src="https://http2.mlstatic.com/D_NQ_NP_993674-MLA31895860508_082019-O.webp"
-                                                    alt=""
-                                                />
-                                                {isLogoImage ? (
-                                                    <div class="absolute right-0 bottom-1 z-[9]">
-                                                        <LogoImage
-                                                            width="40"
-                                                            height="40"
-                                                        />
-                                                    </div>
-                                                ) : null}
-                                            </div>
-                                        </div>
-                                        <div
-                                            class={`${
-                                                isColorLight(
-                                                    bg_color_background
-                                                )
-                                                    ? "parent_form"
-                                                    : ""
-                                            }`}
-                                        >
-                                            <style jsx>{`
-                                                .parent_form label {
-                                                    ${isColorLight(
-                                                        bg_color_background
-                                                    )
-                                                        ? "color: #000000 !important"
-                                                        : "color: #FFFFFF !important"};
-                                                }
-                                            `}</style>
-                                            <Form.control.select
-                                                name={
-                                                    "type_border" as keyof SettingsUpdateDto
-                                                }
-                                                title="Borde"
-                                                array={[
-                                                    {
-                                                        key: "circle",
-                                                        value: "Redondo",
-                                                    },
-                                                    {
-                                                        key: "square",
-                                                        value: "Rectangular",
-                                                    },
-                                                ]}
-                                                placeholder="Escoger tipo de border"
-                                            />
-                                            <div class="grid gap-2 grid-cols-2">
-                                                <Form.control.toggle
-                                                    name={
-                                                        "isCoverImage" as keyof SettingsUpdateDto
-                                                    }
-                                                    title="¿Cover Imagen?"
-                                                />
-                                                <Form.control.toggle
-                                                    name={
-                                                        "is_hover_product" as keyof SettingsUpdateDto
-                                                    }
-                                                    title="Hover Imagen?"
-                                                />
-                                                <Form.control
-                                                    type="number"
-                                                    name={
-                                                        "products_limit" as keyof SettingsUpdateDto
-                                                    }
-                                                    title="Limite de Productos"
-                                                    options={{
-                                                        setValueAs: Number,
-                                                    }}
-                                                    question="Limite de Productos por categoria en Home Product Category Seccion"
-                                                />
-                                                <Form.control
-                                                    type="number"
-                                                    name={
-                                                        "products_limit_offer" as keyof SettingsUpdateDto
-                                                    }
-                                                    title="Limite de Productos Oferta"
-                                                    options={{
-                                                        setValueAs: Number,
-                                                    }}
-                                                    question="Limite de Productos de ofertas en Home Product Category Seccion"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <span class="text-xs dark:text-white font-semibold">
-                                                    Tipo de Card
-                                                </span>
-                                                <div class="flex gap-2 flex-wrap">
-                                                    <div class="flex flex-col gap-1">
-                                                        <div class="flex gap-1">
-                                                            <button
-                                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                                    type_card ===
-                                                                    "normal"
-                                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                                        : ""
-                                                                } font-semibold text-xs dark:text-white`}
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    settingsUpdateform.setValue(
-                                                                        "type_card",
-                                                                        "normal"
-                                                                    );
-                                                                }}
-                                                            >
-                                                                Normal
-                                                            </button>
-                                                            <button
-                                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                                    type_card ===
-                                                                    "eccomerce"
-                                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                                        : ""
-                                                                } font-semibold text-xs dark:text-white`}
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    settingsUpdateform.setValue(
-                                                                        "type_card",
-                                                                        "eccomerce"
-                                                                    );
-                                                                }}
-                                                            >
-                                                                Eccomerce
-                                                            </button>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <span class="text-xs dark:text-white font-semibold">
-                                                    Tipo de Boton Product
-                                                </span>
-                                                <div class="flex gap-2 flex-wrap">
-                                                    <div class="flex flex-col gap-1">
-                                                        <div class="flex gap-1">
-                                                            <button
-                                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                                    type_product_buttons ===
-                                                                    "first"
-                                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                                        : ""
-                                                                } font-semibold text-xs dark:text-white`}
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    settingsUpdateform.setValue(
-                                                                        "type_product_buttons",
-                                                                        "first"
-                                                                    );
-                                                                }}
-                                                            >
-                                                                Primer
-                                                            </button>
-                                                            <button
-                                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                                    type_product_buttons ===
-                                                                    "second"
-                                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                                        : ""
-                                                                } font-semibold text-xs dark:text-white`}
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    settingsUpdateform.setValue(
-                                                                        "type_product_buttons",
-                                                                        "second"
-                                                                    );
-                                                                }}
-                                                            >
-                                                                Segundo
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-2">
-                                                <Form.control.toggle
-                                                    name={
-                                                        "isLogoImage" as keyof SettingsUpdateDto
-                                                    }
-                                                    title="¿Ingresar logo?"
-                                                    question={
-                                                        <div class="w-[150px]">
-                                                            {!storageEmpresa?.logo ? (
-                                                                <>
-                                                                    <Link
-                                                                        href="/empresa"
-                                                                        class="text-primary underline font-semibold text-xs"
-                                                                    >
-                                                                        No
-                                                                        ingresaste
-                                                                        logo a
-                                                                        tu
-                                                                        empresa
-                                                                    </Link>
-                                                                    <br />
-                                                                </>
-                                                            ) : null}
-                                                            Cuando subes las
-                                                            imagenes a tus
-                                                            productos se
-                                                            agregará tu logo.
-                                                        </div>
-                                                    }
-                                                />
-                                                <Form.control.toggle
-                                                    name={
-                                                        "isProductWallpaper" as keyof SettingsUpdateDto
-                                                    }
-                                                    title="Se agregará wallpaper para la categorías."
-                                                    question={
-                                                        <div class="w-[150px]">
-                                                            Solo activar para
-                                                            negocios que quieren
-                                                            mostrar wallpaper en
-                                                            la seccion de
-                                                            productos home.
-                                                        </div>
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
+                                        </header>
                                     </div>
-                                </div>
-                                <br />
-                                <footer
-                                    class="flex gap-2 px-4 shadow-md items-center text-xs justify-between font-semibold parent_footer"
-                                    style={{
-                                        backgroundColor: bg_color_footer,
-                                    }}
-                                >
-                                    <style jsx>{`
-                                        .parent_footer span {
-                                            ${isColorLight(bg_color_footer)
-                                                ? "color: #000000 !important"
-                                                : "color: #FFFFFF !important"};
-                                        }
-                                    `}</style>
-                                    <span class="text-center">
-                                        All right Copyrigther{" "}
-                                        {new Date().getFullYear()}
-                                    </span>
-                                    <a
-                                        href="#start"
-                                        type="button"
-                                        class="py-4 px-6 text-white"
-                                        aria-label="up"
+                                    <br />{" "}
+                                    <TitleSection
+                                        titleExample={border_title_type}
+                                    >
+                                        Esto es un titulo
+                                    </TitleSection>{" "}
+                                    <div
+                                        class="flex flex-col gap-2 self-start p-2 md:w-[500px] rounded-md shadow-md mx-2"
                                         style={{
-                                            backgroundColor: bg_color,
+                                            color: isColorLight(
+                                                bg_color_background
+                                            )
+                                                ? "#000000 !important"
+                                                : "#FFFFFF !important",
+                                            backgroundColor:
+                                                bg_color_background,
                                         }}
                                     >
-                                        <i class="fa-solid fa-caret-up" />
-                                    </a>
-                                    <span class="text-center">
-                                        Este es el pie de página
-                                    </span>
-                                </footer>
-                                <NavTabs
-                                    totalProducts={1}
-                                    background={bg_color_responsive}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 items-center">
-                        <div class="flex flex-col gap-2">
-                            <div>
-                                <span class="text-xs dark:text-white font-semibold">
-                                    Tipo de Icono Weight
-                                </span>
-                                <div class="flex gap-2">
-                                    <button
-                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                            type_icons_bars === "normal"
-                                                ? "bg-paper-light dark:bg-admin-terciary"
-                                                : ""
-                                        }`}
-                                        type="button"
-                                        onClick={() =>
-                                            settingsUpdateform.setValue(
-                                                "type_icons_bars",
-                                                "normal"
-                                            )
-                                        }
-                                    >
-                                        <i class="fas fa-shopping-cart text-lg dark:text-white" />
-                                    </button>
-                                    <button
-                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                            type_icons_bars === "light"
-                                                ? "bg-paper-light dark:bg-admin-terciary"
-                                                : ""
-                                        }`}
-                                        type="button"
-                                        onClick={() =>
-                                            settingsUpdateform.setValue(
-                                                "type_icons_bars",
-                                                "light"
-                                            )
-                                        }
-                                    >
-                                        <i class="far fa-shopping-cart text-lg dark:text-white" />
-                                    </button>
-                                </div>
-                            </div>
-                            <div>
-                                <span class="text-xs dark:text-white font-semibold">
-                                    Tipo de Icono
-                                </span>
-                                <div class="flex gap-2">
-                                    <button
-                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                            type_cart === "fas fa-shopping-cart"
-                                                ? "bg-paper-light dark:bg-admin-terciary"
-                                                : ""
-                                        }`}
-                                        type="button"
-                                        onClick={() =>
-                                            settingsUpdateform.setValue(
-                                                "type_cart",
-                                                "fas fa-shopping-cart"
-                                            )
-                                        }
-                                    >
-                                        <i
-                                            class={`fa${
-                                                type_icons_bars === "normal"
-                                                    ? "s"
-                                                    : "r"
-                                            } fa-shopping-cart text-lg dark:text-white`}
-                                        />
-                                    </button>
-                                    <button
-                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                            type_cart === "fas fa-shopping-bag"
-                                                ? "bg-paper-light dark:bg-admin-terciary"
-                                                : ""
-                                        }`}
-                                        type="button"
-                                        onClick={() =>
-                                            settingsUpdateform.setValue(
-                                                "type_cart",
-                                                "fas fa-shopping-bag"
-                                            )
-                                        }
-                                    >
-                                        <i
-                                            class={`fa${
-                                                type_icons_bars === "normal"
-                                                    ? "s"
-                                                    : "r"
-                                            } fa-shopping-bag text-lg dark:text-white`}
-                                        />
-                                    </button>
-                                    <button
-                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                            type_cart ===
-                                            "fas fa-shopping-basket"
-                                                ? "bg-paper-light dark:bg-admin-terciary"
-                                                : ""
-                                        }`}
-                                        type="button"
-                                        onClick={() =>
-                                            settingsUpdateform.setValue(
-                                                "type_cart",
-                                                "fas fa-shopping-basket"
-                                            )
-                                        }
-                                    >
-                                        <i
-                                            class={`fa${
-                                                type_icons_bars === "normal"
-                                                    ? "s"
-                                                    : "r"
-                                            } fa-shopping-basket text-lg dark:text-white`}
-                                        />
-                                    </button>
-                                </div>
-                            </div>
-                            <div>
-                                <span class="text-xs dark:text-white font-semibold">
-                                    Tipo de Estrella
-                                </span>
-                                <div class="flex gap-2">
-                                    <button
-                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                            type_star === "star"
-                                                ? "bg-paper-light dark:bg-admin-terciary"
-                                                : ""
-                                        }`}
-                                        type="button"
-                                        onClick={() =>
-                                            settingsUpdateform.setValue(
-                                                "type_star",
-                                                "star"
-                                            )
-                                        }
-                                    >
-                                        <i
-                                            class={`fa${
-                                                type_icons_bars === "normal"
-                                                    ? "s"
-                                                    : "r"
-                                            } fa-star text-lg dark:text-white`}
-                                        />
-                                    </button>
-                                    <button
-                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                            type_star === "heart"
-                                                ? "bg-paper-light dark:bg-admin-terciary"
-                                                : ""
-                                        }`}
-                                        type="button"
-                                        onClick={() =>
-                                            settingsUpdateform.setValue(
-                                                "type_star",
-                                                "heart"
-                                            )
-                                        }
-                                    >
-                                        <i
-                                            class={`fa${
-                                                type_icons_bars === "normal"
-                                                    ? "s"
-                                                    : "r"
-                                            } fa-heart text-lg dark:text-white`}
-                                        />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                                        <div class="flex flex-col md:flex-row gap-4 items-center">
+                                            <div
+                                                class={`w-[200px]  shadow bg-paper-light dark:bg-admin-terciary overflow-hidden ${
+                                                    type_border === "circle"
+                                                        ? "rounded-md"
+                                                        : ""
+                                                }`}
+                                            >
+                                                <div class="relative">
+                                                    <img
+                                                        class={`mx-auto w-[300px] h-[200px] ${
+                                                            isCoverImage
+                                                                ? "object-cover"
+                                                                : "object-contain"
+                                                        }`}
+                                                        width={200}
+                                                        height={150}
+                                                        src="https://http2.mlstatic.com/D_NQ_NP_993674-MLA31895860508_082019-O.webp"
+                                                        alt=""
+                                                    />
+                                                    {isLogoImage ? (
+                                                        <div class="absolute right-0 bottom-1 z-[9]">
+                                                            <LogoImage
+                                                                width="40"
+                                                                height="40"
+                                                            />
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                            <div
+                                                class={`${
+                                                    isColorLight(
+                                                        bg_color_background
+                                                    )
+                                                        ? "parent_form"
+                                                        : ""
+                                                }`}
+                                            >
+                                                <style jsx>{`
+                                                    .parent_form label {
+                                                        ${isColorLight(
+                                                            bg_color_background
+                                                        )
+                                                            ? "color: #000000 !important"
+                                                            : "color: #FFFFFF !important"};
+                                                    }
+                                                `}</style>
+                                                <Form.control.select
+                                                    name={
+                                                        "type_border" as keyof SettingsUpdateDto
+                                                    }
+                                                    title="Borde"
+                                                    array={[
+                                                        {
+                                                            key: "circle",
+                                                            value: "Redondo",
+                                                        },
+                                                        {
+                                                            key: "square",
+                                                            value: "Rectangular",
+                                                        },
+                                                    ]}
+                                                    placeholder="Escoger tipo de border"
+                                                />
+                                                <div class="grid gap-2 grid-cols-2">
+                                                    <Form.control.toggle
+                                                        name={
+                                                            "isCoverImage" as keyof SettingsUpdateDto
+                                                        }
+                                                        title="¿Cover Imagen?"
+                                                    />
+                                                    <Form.control.toggle
+                                                        name={
+                                                            "is_hover_product" as keyof SettingsUpdateDto
+                                                        }
+                                                        title="Hover Imagen?"
+                                                    />
+                                                    <Form.control
+                                                        type="number"
+                                                        name={
+                                                            "products_limit" as keyof SettingsUpdateDto
+                                                        }
+                                                        title="Limite de Productos"
+                                                        options={{
+                                                            setValueAs: Number,
+                                                        }}
+                                                        question="Limite de Productos por categoria en Home Product Category Seccion"
+                                                    />
+                                                    <Form.control
+                                                        type="number"
+                                                        name={
+                                                            "products_limit_offer" as keyof SettingsUpdateDto
+                                                        }
+                                                        title="Limite de Productos Oferta"
+                                                        options={{
+                                                            setValueAs: Number,
+                                                        }}
+                                                        question="Limite de Productos de ofertas en Home Product Category Seccion"
+                                                    />
+                                                </div>
 
-                        <div class="flex flex-col gap-2">
-                            <div>
-                                <span class="text-xs dark:text-white font-semibold">
-                                    Tipo de Fuente
-                                </span>
-                                <div class="flex gap-2 flex-wrap">
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex gap-1">
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    font_face === "Exo"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "font_face",
-                                                        "Exo"
-                                                    );
-                                                }}
-                                            >
-                                                Exo
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    font_face === "Poppins"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "font_face",
-                                                        "Poppins"
-                                                    );
-                                                }}
-                                            >
-                                                Poppins
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    font_face === "Barlow"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "font_face",
-                                                        "Barlow"
-                                                    );
-                                                }}
-                                            >
-                                                Barlow
-                                            </button>
+                                                <div>
+                                                    <span class="text-xs dark:text-white font-semibold">
+                                                        Tipo de Card
+                                                    </span>
+                                                    <div class="flex gap-2 flex-wrap">
+                                                        <div class="flex flex-col gap-1">
+                                                            <div class="flex gap-1">
+                                                                <button
+                                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                                        type_card ===
+                                                                        "normal"
+                                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                                            : ""
+                                                                    } font-semibold text-xs dark:text-white`}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        settingsUpdateform.setValue(
+                                                                            "type_card",
+                                                                            "normal"
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    Normal
+                                                                </button>
+                                                                <button
+                                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                                        type_card ===
+                                                                        "eccomerce"
+                                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                                            : ""
+                                                                    } font-semibold text-xs dark:text-white`}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        settingsUpdateform.setValue(
+                                                                            "type_card",
+                                                                            "eccomerce"
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    Eccomerce
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <span class="text-xs dark:text-white font-semibold">
+                                                        Tipo de Boton Product
+                                                    </span>
+                                                    <div class="flex gap-2 flex-wrap">
+                                                        <div class="flex flex-col gap-1">
+                                                            <div class="flex gap-1">
+                                                                <button
+                                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                                        type_product_buttons ===
+                                                                        "first"
+                                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                                            : ""
+                                                                    } font-semibold text-xs dark:text-white`}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        settingsUpdateform.setValue(
+                                                                            "type_product_buttons",
+                                                                            "first"
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    Primer
+                                                                </button>
+                                                                <button
+                                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                                        type_product_buttons ===
+                                                                        "second"
+                                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                                            : ""
+                                                                    } font-semibold text-xs dark:text-white`}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        settingsUpdateform.setValue(
+                                                                            "type_product_buttons",
+                                                                            "second"
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    Segundo
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <Form.control.toggle
+                                                        name={
+                                                            "isLogoImage" as keyof SettingsUpdateDto
+                                                        }
+                                                        title="¿Ingresar logo?"
+                                                        question={
+                                                            <div class="w-[150px]">
+                                                                {!storageEmpresa?.logo ? (
+                                                                    <>
+                                                                        <Link
+                                                                            href="/empresa"
+                                                                            class="text-primary underline font-semibold text-xs"
+                                                                        >
+                                                                            No
+                                                                            ingresaste
+                                                                            logo
+                                                                            a tu
+                                                                            empresa
+                                                                        </Link>
+                                                                        <br />
+                                                                    </>
+                                                                ) : null}
+                                                                Cuando subes las
+                                                                imagenes a tus
+                                                                productos se
+                                                                agregará tu
+                                                                logo.
+                                                            </div>
+                                                        }
+                                                    />
+                                                    <Form.control.toggle
+                                                        name={
+                                                            "isProductWallpaper" as keyof SettingsUpdateDto
+                                                        }
+                                                        title="Se agregará wallpaper para la categorías."
+                                                        question={
+                                                            <div class="w-[150px]">
+                                                                Solo activar
+                                                                para negocios
+                                                                que quieren
+                                                                mostrar
+                                                                wallpaper en la
+                                                                seccion de
+                                                                productos home.
+                                                            </div>
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div>
-                                <span class="text-xs dark:text-white font-semibold">
-                                    Tipo de Animacion Scroll
-                                </span>
-                                <div class="flex gap-2 flex-wrap">
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex gap-1">
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    type_animation === "fade-up"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "type_animation",
-                                                        "fade-up"
-                                                    );
-                                                }}
-                                            >
-                                                Fade Up
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    type_animation === "zoom-in"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "type_animation",
-                                                        "zoom-in"
-                                                    );
-                                                }}
-                                            >
-                                                Zoom In
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    type_animation ===
-                                                    "flip-left"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "type_animation",
-                                                        "flip-left"
-                                                    );
-                                                }}
-                                            >
-                                                Flip Left
-                                            </button>
-                                        </div>
-                                    </div>
+                                    <br />
+                                    <footer
+                                        class="flex gap-2 px-4 shadow-md items-center text-xs justify-between font-semibold parent_footer"
+                                        style={{
+                                            backgroundColor: bg_color_footer,
+                                        }}
+                                    >
+                                        <style jsx>{`
+                                            .parent_footer span {
+                                                ${isColorLight(bg_color_footer)
+                                                    ? "color: #000000 !important"
+                                                    : "color: #FFFFFF !important"};
+                                            }
+                                        `}</style>
+                                        <span class="text-center">
+                                            All right Copyrigther{" "}
+                                            {new Date().getFullYear()}
+                                        </span>
+                                        <a
+                                            href="#start"
+                                            type="button"
+                                            class="py-4 px-6 text-white"
+                                            aria-label="up"
+                                            style={{
+                                                backgroundColor: bg_color,
+                                            }}
+                                        >
+                                            <i class="fa-solid fa-caret-up" />
+                                        </a>
+                                        <span class="text-center">
+                                            Este es el pie de página
+                                        </span>
+                                    </footer>
+                                    <NavTabs
+                                        totalProducts={1}
+                                        background={bg_color_responsive}
+                                    />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 md:gap-2 items-center">
-                        <div>
-                            <span class="text-xs dark:text-white font-semibold">
-                                Tipo Bars
-                            </span>
-                            <div class="flex gap-2 flex-wrap">
-                                {hamburgers.map((hbm) => (
-                                    <button
-                                        key={hbm}
-                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                            hamburger === hbm
-                                                ? "bg-paper-light dark:bg-admin-terciary"
-                                                : ""
-                                        }`}
-                                        type="button"
-                                        onClick={() =>
-                                            settingsUpdateform.setValue(
-                                                "hamburger",
-                                                hbm
-                                            )
-                                        }
-                                    >
-                                        <i
-                                            class={`${hbm.replace(
-                                                "fas",
+                        <div class="grid grid-cols-2 gap-2 items-center">
+                            <div class="flex flex-col gap-2">
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Tipo de Icono Weight
+                                    </span>
+                                    <div class="flex gap-2">
+                                        <button
+                                            class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
                                                 type_icons_bars === "normal"
-                                                    ? "fas"
-                                                    : "far"
-                                            )} text-lg dark:text-white`}
-                                        />
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                        <div>
-                            <span class="text-xs dark:text-white font-semibold">
-                                Tipo Arrow
-                            </span>
-                            <div class="flex gap-2 flex-wrap">
-                                {(
-                                    [
-                                        "first",
-                                        "second",
-                                        "third",
-                                    ] as (typeof type_arrow)[]
-                                ).map((arrow) => (
-                                    <button
-                                        key={arrow}
-                                        class={`min-w-[60px] h-[60px]  rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                            type_arrow === arrow
-                                                ? "bg-paper-light dark:bg-admin-terciary"
-                                                : ""
-                                        }`}
-                                        type="button"
-                                        onClick={() =>
-                                            settingsUpdateform.setValue(
-                                                "type_arrow",
-                                                arrow
-                                            )
-                                        }
-                                    >
-                                        <SamplePrevArrow isSetting={arrow} />
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                        <div class="flex flex-col">
-                            <div>
-                                <span class="text-xs dark:text-white font-semibold">
-                                    Tipo de Header
-                                </span>
-                                <div class="flex gap-2 flex-wrap">
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex gap-1">
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    header_type === "normal"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "header_type",
-                                                        "normal"
-                                                    );
-                                                }}
-                                            >
-                                                Normal
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    header_type === "search"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "header_type",
-                                                        "search"
-                                                    );
-                                                }}
-                                            >
-                                                Search
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    header_type === "search2"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "header_type",
-                                                        "search2"
-                                                    );
-                                                }}
-                                            >
-                                                Search 2
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    header_type ===
-                                                    "transparent"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "header_type",
-                                                        "transparent"
-                                                    );
-                                                }}
-                                            >
-                                                Transparent
-                                            </button>
-                                        </div>
+                                                    ? "bg-paper-light dark:bg-admin-terciary"
+                                                    : ""
+                                            }`}
+                                            type="button"
+                                            onClick={() =>
+                                                settingsUpdateform.setValue(
+                                                    "type_icons_bars",
+                                                    "normal"
+                                                )
+                                            }
+                                        >
+                                            <i class="fas fa-shopping-cart text-lg dark:text-white" />
+                                        </button>
+                                        <button
+                                            class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                type_icons_bars === "light"
+                                                    ? "bg-paper-light dark:bg-admin-terciary"
+                                                    : ""
+                                            }`}
+                                            type="button"
+                                            onClick={() =>
+                                                settingsUpdateform.setValue(
+                                                    "type_icons_bars",
+                                                    "light"
+                                                )
+                                            }
+                                        >
+                                            <i class="far fa-shopping-cart text-lg dark:text-white" />
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Tipo de Icono
+                                    </span>
+                                    <div class="flex gap-2">
+                                        <button
+                                            class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                type_cart ===
+                                                "fas fa-shopping-cart"
+                                                    ? "bg-paper-light dark:bg-admin-terciary"
+                                                    : ""
+                                            }`}
+                                            type="button"
+                                            onClick={() =>
+                                                settingsUpdateform.setValue(
+                                                    "type_cart",
+                                                    "fas fa-shopping-cart"
+                                                )
+                                            }
+                                        >
+                                            <i
+                                                class={`fa${
+                                                    type_icons_bars === "normal"
+                                                        ? "s"
+                                                        : "r"
+                                                } fa-shopping-cart text-lg dark:text-white`}
+                                            />
+                                        </button>
+                                        <button
+                                            class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                type_cart ===
+                                                "fas fa-shopping-bag"
+                                                    ? "bg-paper-light dark:bg-admin-terciary"
+                                                    : ""
+                                            }`}
+                                            type="button"
+                                            onClick={() =>
+                                                settingsUpdateform.setValue(
+                                                    "type_cart",
+                                                    "fas fa-shopping-bag"
+                                                )
+                                            }
+                                        >
+                                            <i
+                                                class={`fa${
+                                                    type_icons_bars === "normal"
+                                                        ? "s"
+                                                        : "r"
+                                                } fa-shopping-bag text-lg dark:text-white`}
+                                            />
+                                        </button>
+                                        <button
+                                            class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                type_cart ===
+                                                "fas fa-shopping-basket"
+                                                    ? "bg-paper-light dark:bg-admin-terciary"
+                                                    : ""
+                                            }`}
+                                            type="button"
+                                            onClick={() =>
+                                                settingsUpdateform.setValue(
+                                                    "type_cart",
+                                                    "fas fa-shopping-basket"
+                                                )
+                                            }
+                                        >
+                                            <i
+                                                class={`fa${
+                                                    type_icons_bars === "normal"
+                                                        ? "s"
+                                                        : "r"
+                                                } fa-shopping-basket text-lg dark:text-white`}
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Tipo de Estrella
+                                    </span>
+                                    <div class="flex gap-2">
+                                        <button
+                                            class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                type_star === "star"
+                                                    ? "bg-paper-light dark:bg-admin-terciary"
+                                                    : ""
+                                            }`}
+                                            type="button"
+                                            onClick={() =>
+                                                settingsUpdateform.setValue(
+                                                    "type_star",
+                                                    "star"
+                                                )
+                                            }
+                                        >
+                                            <i
+                                                class={`fa${
+                                                    type_icons_bars === "normal"
+                                                        ? "s"
+                                                        : "r"
+                                                } fa-star text-lg dark:text-white`}
+                                            />
+                                        </button>
+                                        <button
+                                            class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                type_star === "heart"
+                                                    ? "bg-paper-light dark:bg-admin-terciary"
+                                                    : ""
+                                            }`}
+                                            type="button"
+                                            onClick={() =>
+                                                settingsUpdateform.setValue(
+                                                    "type_star",
+                                                    "heart"
+                                                )
+                                            }
+                                        >
+                                            <i
+                                                class={`fa${
+                                                    type_icons_bars === "normal"
+                                                        ? "s"
+                                                        : "r"
+                                                } fa-heart text-lg dark:text-white`}
+                                            />
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <span class="text-xs dark:text-white font-semibold">
-                                    Tipo de Background
-                                </span>
-                                <div class="flex gap-2 flex-wrap">
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex gap-1">
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    background_type === "first"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "background_type",
-                                                        "first"
-                                                    );
-                                                }}
-                                            >
-                                                First
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    background_type === "second"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "background_type",
-                                                        "second"
-                                                    );
-                                                }}
-                                            >
-                                                Second
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <span class="text-xs dark:text-white font-semibold">
-                                    Background Position
-                                </span>
-                                <div class="flex gap-2 flex-wrap">
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex gap-1">
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    background_position ===
-                                                    "start"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "background_position",
-                                                        "start"
-                                                    );
-                                                }}
-                                            >
-                                                Start
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    background_position ===
-                                                    "center"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "background_position",
-                                                        "center"
-                                                    );
-                                                }}
-                                            >
-                                                Center
-                                            </button>
-                                            <button
-                                                class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    background_position ===
-                                                    "end"
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "background_position",
-                                                        "end"
-                                                    );
-                                                }}
-                                            >
-                                                End
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 md:gap-2 items-center">
-                        <div class="flex flex-col">
-                            <div>
-                                <span class="text-xs dark:text-white font-semibold">
-                                    Border de los titulos
-                                </span>
-                                <div class="flex gap-2 flex-wrap">
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex gap-1">
-                                            {(
-                                                [
-                                                    "normal",
-                                                    "circle",
-                                                    "border",
-                                                    "null",
-                                                ] as (typeof border_title_type)[]
-                                            ).map((border) => (
+
+                            <div class="flex flex-col gap-2">
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Tipo de Fuente
+                                    </span>
+                                    <div class="flex gap-2 flex-wrap">
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex gap-1">
                                                 <button
-                                                    key={border}
                                                     class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                        border_title_type ===
-                                                        border
+                                                        font_face === "Exo"
                                                             ? "bg-paper-light dark:bg-admin-terciary"
                                                             : ""
                                                     } font-semibold text-xs dark:text-white`}
                                                     type="button"
                                                     onClick={() => {
                                                         settingsUpdateform.setValue(
-                                                            "border_title_type",
-                                                            border
+                                                            "font_face",
+                                                            "Exo"
                                                         );
                                                     }}
                                                 >
-                                                    {border}
+                                                    Exo
                                                 </button>
-                                            ))}
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        font_face === "Poppins"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "font_face",
+                                                            "Poppins"
+                                                        );
+                                                    }}
+                                                >
+                                                    Poppins
+                                                </button>
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        font_face === "Barlow"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "font_face",
+                                                            "Barlow"
+                                                        );
+                                                    }}
+                                                >
+                                                    Barlow
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Tipo de Animacion Scroll
+                                    </span>
+                                    <div class="flex gap-2 flex-wrap">
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex gap-1">
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        type_animation ===
+                                                        "fade-up"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "type_animation",
+                                                            "fade-up"
+                                                        );
+                                                    }}
+                                                >
+                                                    Fade Up
+                                                </button>
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        type_animation ===
+                                                        "zoom-in"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "type_animation",
+                                                            "zoom-in"
+                                                        );
+                                                    }}
+                                                >
+                                                    Zoom In
+                                                </button>
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        type_animation ===
+                                                        "flip-left"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "type_animation",
+                                                            "flip-left"
+                                                        );
+                                                    }}
+                                                >
+                                                    Flip Left
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 md:gap-2 items-center">
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Tipo Bars
+                                </span>
+                                <div class="flex gap-2 flex-wrap">
+                                    {hamburgers.map((hbm) => (
+                                        <button
+                                            key={hbm}
+                                            class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                hamburger === hbm
+                                                    ? "bg-paper-light dark:bg-admin-terciary"
+                                                    : ""
+                                            }`}
+                                            type="button"
+                                            onClick={() =>
+                                                settingsUpdateform.setValue(
+                                                    "hamburger",
+                                                    hbm
+                                                )
+                                            }
+                                        >
+                                            <i
+                                                class={`${hbm.replace(
+                                                    "fas",
+                                                    type_icons_bars === "normal"
+                                                        ? "fas"
+                                                        : "far"
+                                                )} text-lg dark:text-white`}
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Tipo Arrow
+                                </span>
+                                <div class="flex gap-2 flex-wrap">
+                                    {(
+                                        [
+                                            "first",
+                                            "second",
+                                            "third",
+                                        ] as (typeof type_arrow)[]
+                                    ).map((arrow) => (
+                                        <button
+                                            key={arrow}
+                                            class={`min-w-[60px] h-[60px]  rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                type_arrow === arrow
+                                                    ? "bg-paper-light dark:bg-admin-terciary"
+                                                    : ""
+                                            }`}
+                                            type="button"
+                                            onClick={() =>
+                                                settingsUpdateform.setValue(
+                                                    "type_arrow",
+                                                    arrow
+                                                )
+                                            }
+                                        >
+                                            <SamplePrevArrow
+                                                isSetting={arrow}
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div class="flex flex-col">
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Tipo de Header
+                                    </span>
+                                    <div class="flex gap-2 flex-wrap">
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex gap-1">
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        header_type === "normal"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "header_type",
+                                                            "normal"
+                                                        );
+                                                    }}
+                                                >
+                                                    Normal
+                                                </button>
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        header_type === "search"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "header_type",
+                                                            "search"
+                                                        );
+                                                    }}
+                                                >
+                                                    Search
+                                                </button>
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        header_type ===
+                                                        "search2"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "header_type",
+                                                            "search2"
+                                                        );
+                                                    }}
+                                                >
+                                                    Search 2
+                                                </button>
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        header_type ===
+                                                        "transparent"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "header_type",
+                                                            "transparent"
+                                                        );
+                                                    }}
+                                                >
+                                                    Transparent
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Tipo de Background
+                                    </span>
+                                    <div class="flex gap-2 flex-wrap">
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex gap-1">
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        background_type ===
+                                                        "first"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "background_type",
+                                                            "first"
+                                                        );
+                                                    }}
+                                                >
+                                                    First
+                                                </button>
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        background_type ===
+                                                        "second"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "background_type",
+                                                            "second"
+                                                        );
+                                                    }}
+                                                >
+                                                    Second
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Background Position
+                                    </span>
+                                    <div class="flex gap-2 flex-wrap">
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex gap-1">
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        background_position ===
+                                                        "start"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "background_position",
+                                                            "start"
+                                                        );
+                                                    }}
+                                                >
+                                                    Start
+                                                </button>
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        background_position ===
+                                                        "center"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "background_position",
+                                                            "center"
+                                                        );
+                                                    }}
+                                                >
+                                                    Center
+                                                </button>
+                                                <button
+                                                    class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        background_position ===
+                                                        "end"
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "background_position",
+                                                            "end"
+                                                        );
+                                                    }}
+                                                >
+                                                    End
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 md:gap-2 items-center">
+                            <div class="flex flex-col">
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Border de los titulos
+                                    </span>
+                                    <div class="flex gap-2 flex-wrap">
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex gap-1">
+                                                {(
+                                                    [
+                                                        "normal",
+                                                        "circle",
+                                                        "border",
+                                                        "null",
+                                                    ] as (typeof border_title_type)[]
+                                                ).map((border) => (
+                                                    <button
+                                                        key={border}
+                                                        class={`min-w-[60px] h-[60px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                            border_title_type ===
+                                                            border
+                                                                ? "bg-paper-light dark:bg-admin-terciary"
+                                                                : ""
+                                                        } font-semibold text-xs dark:text-white`}
+                                                        type="button"
+                                                        onClick={() => {
+                                                            settingsUpdateform.setValue(
+                                                                "border_title_type",
+                                                                border
+                                                            );
+                                                        }}
+                                                    >
+                                                        {border}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Tipo de Mapa
+                                    </span>
+                                    <div class="flex gap-2 flex-wrap overflow-auto">
+                                        <div class="flex flex-col gap-1">
+                                            <div class="grid grid-cols-3 gap-1">
+                                                {Object.entries(typeMap).map(
+                                                    ([key, val]) => (
+                                                        <button
+                                                            key={key}
+                                                            class={`w-[120px] h-[120px]  justify-center items-center rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                                type_map === key
+                                                                    ? "bg-paper-light dark:bg-admin-terciary"
+                                                                    : ""
+                                                            } font-semibold text-xs dark:text-white relative  p-2`}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                settingsUpdateform.setValue(
+                                                                    "type_map",
+                                                                    key as typeof type_map
+                                                                );
+                                                            }}
+                                                        >
+                                                            <MapValue
+                                                                url={val.url}
+                                                                attribution={
+                                                                    val.attribution
+                                                                }
+                                                                value={
+                                                                    storageEmpresa!
+                                                                        .map_marker
+                                                                }
+                                                                zoomControl={
+                                                                    false
+                                                                }
+                                                                height="100%"
+                                                            />
+
+                                                            <span class="absolute top-[40%] px-2 py-1 rounded-md right-[25%] bg-black bg-opacity-60 text-white">
+                                                                {key}
+                                                            </span>
+                                                        </button>
+                                                    )
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1991,271 +2084,239 @@ function SettingsIndex() {
 
                             <div>
                                 <span class="text-xs dark:text-white font-semibold">
-                                    Tipo de Mapa
+                                    Iconos
                                 </span>
                                 <div class="flex gap-2 flex-wrap overflow-auto">
                                     <div class="flex flex-col gap-1">
                                         <div class="grid grid-cols-3 gap-1">
-                                            {Object.entries(typeMap).map(
-                                                ([key, val]) => (
-                                                    <button
-                                                        key={key}
-                                                        class={`w-[120px] h-[120px]  justify-center items-center rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                            type_map === key
-                                                                ? "bg-paper-light dark:bg-admin-terciary"
-                                                                : ""
-                                                        } font-semibold text-xs dark:text-white relative  p-2`}
-                                                        type="button"
-                                                        onClick={() => {
-                                                            settingsUpdateform.setValue(
-                                                                "type_map",
-                                                                key as typeof type_map
-                                                            );
-                                                        }}
-                                                    >
-                                                        <MapValue
-                                                            url={val.url}
-                                                            attribution={
-                                                                val.attribution
-                                                            }
-                                                            value={
-                                                                storageEmpresa!
-                                                                    .map_marker
-                                                            }
-                                                            zoomControl={false}
-                                                            height="100%"
+                                            {Object.entries(
+                                                icons() as Record<
+                                                    typeof type_icons,
+                                                    string[]
+                                                >
+                                            ).map(([key, val]) => (
+                                                <button
+                                                    key={key}
+                                                    class={`min-w-[120px] h-[120px] grid grid-cols-2 justify-center items-center rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        type_icons === key
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white relative  p-2`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "type_icons",
+                                                            key as typeof type_icons
+                                                        );
+                                                    }}
+                                                >
+                                                    {val.map((ic) => (
+                                                        <div
+                                                            key={ic}
+                                                            dangerouslySetInnerHTML={{
+                                                                __html: ic,
+                                                            }}
+                                                            class=" flex justify-center items-center"
                                                         />
+                                                    ))}
 
-                                                        <span class="absolute top-[40%] px-2 py-1 rounded-md right-[25%] bg-black bg-opacity-60 text-white">
-                                                            {key}
-                                                        </span>
-                                                    </button>
-                                                )
-                                            )}
+                                                    <span class="absolute top-[40%] px-2 py-1 rounded-md right-[25%] bg-black bg-opacity-60 text-white">
+                                                        {key}
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-xs dark:text-white font-semibold">
+                                    Loading
+                                </span>
+                                <div class="flex gap-2 flex-wrap">
+                                    <div class="flex flex-col gap-1">
+                                        <div class="grid grid-cols-3 gap-1">
+                                            {(
+                                                [
+                                                    "one",
+                                                    "two",
+                                                    "three",
+                                                    "four",
+                                                    "null",
+                                                ] as SettingsSchema["type_loader"][]
+                                            ).map((val) => (
+                                                <button
+                                                    key={val}
+                                                    class={`flex justify-center items-center min-w-[70px] h-[70px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                        type_loader === val
+                                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                                            : ""
+                                                    } font-semibold text-xs dark:text-white`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        settingsUpdateform.setValue(
+                                                            "type_loader",
+                                                            val
+                                                        );
+                                                    }}
+                                                >
+                                                    {val === "one" ? (
+                                                        <LoaderOne />
+                                                    ) : val === "two" ? (
+                                                        <LoaderTwo />
+                                                    ) : val === "three" ? (
+                                                        <LoaderThree />
+                                                    ) : val === "four" ? (
+                                                        <LoaderFour />
+                                                    ) : (
+                                                        "null"
+                                                    )}
+                                                </button>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                         <div>
-                            <span class="text-xs dark:text-white font-semibold">
-                                Iconos
+                            <span class="dark:text-white text-xs font-semibold">
+                                Header
                             </span>
-                            <div class="flex gap-2 flex-wrap overflow-auto">
-                                <div class="flex flex-col gap-1">
-                                    <div class="grid grid-cols-3 gap-1">
-                                        {Object.entries(
-                                            icons() as Record<
-                                                typeof type_icons,
-                                                string[]
-                                            >
-                                        ).map(([key, val]) => (
-                                            <button
-                                                key={key}
-                                                class={`min-w-[120px] h-[120px] grid grid-cols-2 justify-center items-center rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    type_icons === key
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white relative  p-2`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "type_icons",
-                                                        key as typeof type_icons
-                                                    );
-                                                }}
-                                            >
-                                                {val.map((ic) => (
-                                                    <div
-                                                        key={ic}
-                                                        dangerouslySetInnerHTML={{
-                                                            __html: ic,
-                                                        }}
-                                                        class=" flex justify-center items-center"
-                                                    />
-                                                ))}
-
-                                                <span class="absolute top-[40%] px-2 py-1 rounded-md right-[25%] bg-black bg-opacity-60 text-white">
-                                                    {key}
-                                                </span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+                            <div class="grid grid-cols-3 md:grid-cols-3">
+                                <Form.control.toggle
+                                    name={
+                                        "header.home" as keyof SettingsUpdateDto
+                                    }
+                                    title="Mostrar Home"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "header.shop" as keyof SettingsUpdateDto
+                                    }
+                                    title="Mostrar Shop"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "header.about" as keyof SettingsUpdateDto
+                                    }
+                                    title="Mostrar Nosotros"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "header.profile" as keyof SettingsUpdateDto
+                                    }
+                                    title="Mostrar Perfil"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "header.pedidos" as keyof SettingsUpdateDto
+                                    }
+                                    title="Mostrar Pedidos"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "header.condiciones" as keyof SettingsUpdateDto
+                                    }
+                                    title="Mostrar Condiciones"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "header.categories" as keyof SettingsUpdateDto
+                                    }
+                                    title="Mostrar Categorias"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "header.subcategories" as keyof SettingsUpdateDto
+                                    }
+                                    title="Mostrar Subcategorías"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "header.services" as keyof SettingsUpdateDto
+                                    }
+                                    title="Mostrar Servicios"
+                                />
                             </div>
                         </div>
                         <div>
-                            <span class="text-xs dark:text-white font-semibold">
-                                Loading
+                            <span class="dark:text-white text-xs font-semibold">
+                                Mostrar
                             </span>
-                            <div class="flex gap-2 flex-wrap">
-                                <div class="flex flex-col gap-1">
-                                    <div class="grid grid-cols-3 gap-1">
-                                        {(
-                                            [
-                                                "one",
-                                                "two",
-                                                "three",
-                                                "four",
-                                                "null",
-                                            ] as SettingsSchema["type_loader"][]
-                                        ).map((val) => (
-                                            <button
-                                                key={val}
-                                                class={`flex justify-center items-center min-w-[70px] h-[70px] rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                    type_loader === val
-                                                        ? "bg-paper-light dark:bg-admin-terciary"
-                                                        : ""
-                                                } font-semibold text-xs dark:text-white`}
-                                                type="button"
-                                                onClick={() => {
-                                                    settingsUpdateform.setValue(
-                                                        "type_loader",
-                                                        val
-                                                    );
-                                                }}
-                                            >
-                                                {val === "one" ? (
-                                                    <LoaderOne />
-                                                ) : val === "two" ? (
-                                                    <LoaderTwo />
-                                                ) : val === "three" ? (
-                                                    <LoaderThree />
-                                                ) : val === "four" ? (
-                                                    <LoaderFour />
-                                                ) : (
-                                                    "null"
-                                                )}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+                            <div class="grid grid-cols-3 md:grid-cols-3">
+                                <Form.control.toggle
+                                    name={
+                                        "shows.cards" as keyof SettingsUpdateDto
+                                    }
+                                    title="Sección Iconos"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "shows.map" as keyof SettingsUpdateDto
+                                    }
+                                    title="Sección Mapa"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "shows.brands" as keyof SettingsUpdateDto
+                                    }
+                                    title="Slider Marcas"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "shows.categories_slider" as keyof SettingsUpdateDto
+                                    }
+                                    title="Categorias Slider"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "shows.about" as keyof SettingsUpdateDto
+                                    }
+                                    title="Sección Nosotros"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "shows.android" as keyof SettingsUpdateDto
+                                    }
+                                    title="Tarjeta Android"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "shows.offers_section" as keyof SettingsUpdateDto
+                                    }
+                                    title="Seccion Ofertas"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "shows.users" as keyof SettingsUpdateDto
+                                    }
+                                    title="Seccion Usuarios Cards"
+                                />
+                                <Form.control.toggle
+                                    name={
+                                        "shows.offers_user" as keyof SettingsUpdateDto
+                                    }
+                                    title="Seccion Ofertas Usuarios"
+                                />
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <span class="dark:text-white text-xs font-semibold">
-                            Header
-                        </span>
-                        <div class="grid grid-cols-3 md:grid-cols-3">
-                            <Form.control.toggle
-                                name={"header.home" as keyof SettingsUpdateDto}
-                                title="Mostrar Home"
+                        {!storageEmpresa?.isProduction ? (
+                            <Form.control.editorJS
+                                name={"web_script" as keyof SettingsUpdateDto}
+                                title="Personalización html script "
                             />
-                            <Form.control.toggle
-                                name={"header.shop" as keyof SettingsUpdateDto}
-                                title="Mostrar Shop"
-                            />
-                            <Form.control.toggle
-                                name={"header.about" as keyof SettingsUpdateDto}
-                                title="Mostrar Nosotros"
-                            />
-                            <Form.control.toggle
-                                name={
-                                    "header.profile" as keyof SettingsUpdateDto
-                                }
-                                title="Mostrar Perfil"
-                            />
-                            <Form.control.toggle
-                                name={
-                                    "header.pedidos" as keyof SettingsUpdateDto
-                                }
-                                title="Mostrar Pedidos"
-                            />
-                            <Form.control.toggle
-                                name={
-                                    "header.condiciones" as keyof SettingsUpdateDto
-                                }
-                                title="Mostrar Condiciones"
-                            />
-                            <Form.control.toggle
-                                name={
-                                    "header.categories" as keyof SettingsUpdateDto
-                                }
-                                title="Mostrar Categorias"
-                            />
-                            <Form.control.toggle
-                                name={
-                                    "header.subcategories" as keyof SettingsUpdateDto
-                                }
-                                title="Mostrar Subcategorías"
-                            />
-                            <Form.control.toggle
-                                name={
-                                    "header.services" as keyof SettingsUpdateDto
-                                }
-                                title="Mostrar Servicios"
-                            />
-                        </div>
-                    </div>
-                    <div>
-                        <span class="dark:text-white text-xs font-semibold">
-                            Mostrar
-                        </span>
-                        <div class="grid grid-cols-3 md:grid-cols-3">
-                            <Form.control.toggle
-                                name={"shows.cards" as keyof SettingsUpdateDto}
-                                title="Sección Iconos"
-                            />
-                            <Form.control.toggle
-                                name={"shows.map" as keyof SettingsUpdateDto}
-                                title="Sección Mapa"
-                            />
-                            <Form.control.toggle
-                                name={"shows.brands" as keyof SettingsUpdateDto}
-                                title="Slider Marcas"
-                            />
-                            <Form.control.toggle
-                                name={
-                                    "shows.categories_slider" as keyof SettingsUpdateDto
-                                }
-                                title="Categorias Slider"
-                            />
-                            <Form.control.toggle
-                                name={"shows.about" as keyof SettingsUpdateDto}
-                                title="Sección Nosotros"
-                            />
-                            <Form.control.toggle
-                                name={
-                                    "shows.android" as keyof SettingsUpdateDto
-                                }
-                                title="Tarjeta Android"
-                            />
-                            <Form.control.toggle
-                                name={
-                                    "shows.offers_section" as keyof SettingsUpdateDto
-                                }
-                                title="Seccion Ofertas"
-                            />
-                            <Form.control.toggle
-                                name={"shows.users" as keyof SettingsUpdateDto}
-                                title="Seccion Usuarios Cards"
-                            />
-                            <Form.control.toggle
-                                name={
-                                    "shows.offers_user" as keyof SettingsUpdateDto
-                                }
-                                title="Seccion Ofertas Usuarios"
-                            />
-                        </div>
-                    </div>
-                    {!storageEmpresa?.isProduction ? (
-                        <Form.control.editorJS
-                            name={"web_script" as keyof SettingsUpdateDto}
-                            title="Personalización html script "
+                        ) : (
+                            <></>
+                        )}
+
+                        <Form.button.submit
+                            title="Actualizar"
+                            className="self-start"
+                            isLoading={empresaUpdateMutation.isLoading || false}
+                            disabled={empresaUpdateMutation.isLoading || false}
                         />
-                    ) : (
-                        <></>
-                    )}
-
-                    <Form.button.submit
-                        title="Actualizar"
-                        className="self-start"
-                        isLoading={empresaUpdateMutation.isLoading || false}
-                        disabled={empresaUpdateMutation.isLoading || false}
-                    />
-                </Form>
+                    </Form>
+                ) : null}
                 <Hr spacing={13} />
             </>
         );

@@ -8,10 +8,10 @@ import { DataTypes, Op, QueryTypes, Sequelize } from "sequelize";
 import cache from "@vigilio/express-core/cache";
 import { sequelize } from "~/config/db.config";
 import { capitalize } from "@vigilio/express-core/helpers";
-import { getTables } from "~/libs/helpers";
 import { PagesApiService } from "./pages.api.service";
 import { PagesStoreDto } from "../dtos/pages.store.dto";
 import { Page } from "../entities/page.entity";
+import { paginatorHTML } from "../libs";
 
 @Injectable()
 export class CrudApiService {
@@ -57,7 +57,7 @@ export class CrudApiService {
     }
 
     async store(empresa: Empresas, body: CrudStoreDto) {
-        const [tables] = await getTables();
+        const tables = JSON.parse(cache.get(`${empresa.slug}:TABLE`) || "[]");
         if (
             (tables as { table_name: string }[])
                 .map((table) => table.table_name.toLowerCase())
@@ -133,16 +133,20 @@ export class CrudApiService {
             },
         });
         if (body.isCreatePage) {
-            await this.pagesApiService.store(empresa, {
-                icon: body.icon,
-                queries: [],
-                slug: body.slug,
-                description: "",
-                empresa_id: empresa.id,
-                title: body.name,
-                isDinamic: false,
-                enabledHeaderPage: false,
-            } as PagesStoreDto);
+            await this.pagesApiService.store(
+                empresa,
+                {
+                    icon: body.icon,
+                    queries: [],
+                    slug: body.slug,
+                    description: "",
+                    empresa_id: empresa.id,
+                    title: body.name,
+                    isDinamic: false,
+                    enabledHeaderPage: false,
+                } as PagesStoreDto,
+                body.paginator&& body.paginator > 0 ? paginatorHTML : undefined
+            );
         }
         if (body.isDynamicPage) {
             await this.pagesApiService.store(empresa, {

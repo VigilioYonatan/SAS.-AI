@@ -112,6 +112,10 @@ export async function initial() {
             where: { empresa_id: empresa!.id },
             defaults: { bg_color_header: "transparent" }, // Valores predeterminados si se crea
         });
+        const isLogin = await Settings.findOrCreate({
+            where: { empresa_id: empresa!.id },
+            defaults: { isLogin: true }, // Valores predeterminados si se crea
+        });
         const products_limit = await Settings.findOrCreate({
             where: { empresa_id: empresa!.id },
             defaults: { products_limit: 10 }, // Valores predeterminados si se crea
@@ -158,6 +162,10 @@ export async function initial() {
         if (!bg_color_header[1] && !bg_color_header[0].bg_color_header) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo
             await bg_color_header[0].update({ bg_color_header: "transparent" });
+        }
+        if (!isLogin[1] && !isLogin[0].isLogin) {
+            // Si ya existía el registro pero el valor está vacío, actualizarlo
+            await isLogin[0].update({ isLogin: true });
         }
         if (!queries[1] && !queries[0].queries) {
             // Si ya existía el registro pero el valor está vacío, actualizarlo

@@ -15,6 +15,7 @@ import WebNotificacion from "./WebNotificacion";
 import useMediaQuery from "~/hooks/useMediaQuery";
 import { iconCart, typeIcon1 } from "@/empresas/schemas/settings.schema";
 import MoneyChange from "./MoneyChange";
+import useAuthStore from "@/auth/stores/auth.store";
 
 interface HeaderMobileProps {
     headerDropdown: UseDropdown;
@@ -25,6 +26,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
     const cartStore = useCartStore();
     const themeStore = useThemeStore();
     const favoriteStore = useFavoriteStore();
+    const authStore = useAuthStore();
     return (
         <header
             class={
@@ -143,7 +145,8 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                     <div class="flex gap-2 items-center   text-xl  ">
                         {totalProducts > 0 ? <SearchProducts /> : null}
                         <MoneyChange />
-                        {useMediaQuery("(max-width:1025px)") ? (
+                        {useMediaQuery("(max-width:1025px)") &&
+                        authStore.state ? (
                             <WebNotificacion />
                         ) : null}
 
@@ -204,7 +207,8 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                 )}
                             </button>
                         ) : null}
-                        {totalProducts > 0 ? (
+                        {totalProducts > 0 &&
+                        storageEmpresa?.setting.isEccomerce ? (
                             <button
                                 type="button"
                                 class=" text-xl   relative header-icon-cart"
@@ -242,14 +246,7 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                     >
                                         <i class={enviroments.TYPE_CART} />
                                     </button>
-                                ) : (
-                                    <a
-                                        href="#servicios"
-                                        class=" text-xl   relative"
-                                    >
-                                        <i class={enviroments.TYPE_CART} />
-                                    </a>
-                                )}
+                                ) : null}
                             </>
                         )}
                     </div>

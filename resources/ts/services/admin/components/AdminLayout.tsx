@@ -713,19 +713,26 @@ function AdminLayout({ children }: AdminLayoutProps) {
                             <TimeSchedule />
                             <Time />
                             <WebHookMessage />
-                            <button
-                                class="relative dark:text-secondary-light text-secondary-dark"
-                                type="button"
-                                aria-label="to add Cart"
-                                onClick={cartStore.dropdown.onOpen}
-                            >
-                                <i class={storageEmpresa?.setting.type_cart} />
-                                {cartStore.computed.showCartLength > 0 ? (
-                                    <span class="absolute left-[10px] top-[-5px] text-xs bg-danger px-[.3rem] font-bold rounded-full text-white">
-                                        {cartStore.computed.showCartLength}
-                                    </span>
-                                ) : null}
-                            </button>
+                            {storageEmpresa?.setting.isEccomerce ? (
+                                <button
+                                    class="relative dark:text-secondary-light text-secondary-dark"
+                                    type="button"
+                                    aria-label="to add Cart"
+                                    onClick={cartStore.dropdown.onOpen}
+                                >
+                                    <i
+                                        class={
+                                            storageEmpresa?.setting.type_cart
+                                        }
+                                    />
+                                    {cartStore.computed.showCartLength > 0 ? (
+                                        <span class="absolute left-[10px] top-[-5px] text-xs bg-danger px-[.3rem] font-bold rounded-full text-white">
+                                            {cartStore.computed.showCartLength}
+                                        </span>
+                                    ) : null}
+                                </button>
+                            ) : null}
+
                             <AdminCart />
                             <button
                                 type="button"
@@ -835,13 +842,15 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                             : "Trabajador"}
                                     </span>
                                     <AdminHr spacing={0} />
+                                    {storageEmpresa?.setting.isEccomerce ? (
+                                        <Link
+                                            to="/productos"
+                                            class="dark:text-white text-sm hover:bg-paper-light font-normal hover:text-black w-full text-center py-1 dark:hover:bg-admin-terciary"
+                                        >
+                                            Productos
+                                        </Link>
+                                    ) : null}
 
-                                    <Link
-                                        to="/productos"
-                                        class="dark:text-white text-sm hover:bg-paper-light font-normal hover:text-black w-full text-center py-1 dark:hover:bg-admin-terciary"
-                                    >
-                                        Productos
-                                    </Link>
                                     <Link
                                         to="/perfil"
                                         class="dark:text-white text-sm hover:bg-paper-light font-normal hover:text-black w-full text-center py-1 dark:hover:bg-admin-terciary"

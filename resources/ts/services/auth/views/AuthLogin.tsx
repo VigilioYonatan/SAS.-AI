@@ -108,12 +108,15 @@ function AuthLogin() {
             </Form>
 
             <div class="mt-6 flex flex-col sm:flex-row justify-between gap-2 flex-wrap">
-                <a
-                    href={"/auth/register"}
-                    class="text-primary dark:text-white text-xs hover:underline font-semibold"
-                >
-                    Crear Cuenta
-                </a>
+                {storageEmpresa?.setting.isLogin ? (
+                    <a
+                        href={"/auth/register"}
+                        class="text-primary dark:text-white text-xs hover:underline font-semibold"
+                    >
+                        Crear Cuenta
+                    </a>
+                ) : null}
+
                 <a
                     href={"/auth/forgot-password"}
                     class="text-primary dark:text-white text-xs hover:underline font-semibold"

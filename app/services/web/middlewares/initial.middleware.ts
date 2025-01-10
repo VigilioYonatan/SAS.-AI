@@ -30,25 +30,37 @@ export async function initialMiddleware(
     if (!req.originalUrl.includes("/admin")) {
         const [categories, categoriesService, totalProducts, brands] =
             await Promise.all([
-                Categories.findAll({
-                    where: {
-                        empresa_id: empresa.id,
-                        isService: false,
-                    },
-                }),
-                Categories.findAll({
-                    where: {
-                        empresa_id: empresa.id,
-                        isService: true,
-                    },
-                }),
-                Product(empresa, false).count(),
-                Brands.findAll({
-                    where: {
-                        empresa_id: empresa.id,
-                    },
-                    attributes: ["id", "name", "image", "empresa_id", "slug"],
-                }),
+                empresa.setting.isEccomerce
+                    ? Categories.findAll({
+                          where: {
+                              empresa_id: empresa.id,
+                              isService: false,
+                          },
+                      })
+                    : [],
+                empresa.setting.isEccomerce
+                    ? Categories.findAll({
+                          where: {
+                              empresa_id: empresa.id,
+                              isService: true,
+                          },
+                      })
+                    : [],
+                empresa.setting.isEccomerce ? Product(empresa, false).count : 0,
+                empresa.setting.isEccomerce
+                    ? Brands.findAll({
+                          where: {
+                              empresa_id: empresa.id,
+                          },
+                          attributes: [
+                              "id",
+                              "name",
+                              "image",
+                              "empresa_id",
+                              "slug",
+                          ],
+                      })
+                    : [],
             ]);
         const categoriasTotal = await Promise.all(
             categories.map(async (category) => {
@@ -95,7 +107,7 @@ export async function initialMiddleware(
     );
 
     let tableObjects: unknown[] = JSON.parse(
-        cache.get(`${empresa.slug}:TABLE` || "null")
+        cache.get(`${empresa.slug}:TABLE`) || "null"
     );
 
     if (req.originalUrl.includes("/admin")) {

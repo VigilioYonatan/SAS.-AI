@@ -59,13 +59,13 @@ export class PagesApiService {
         };
     }
 
-    async store(empresa: Empresas, body: PagesStoreDto) {
+    async store(empresa: Empresas, body: PagesStoreDto, custom?: string) {
         const page = new Page({ ...body, empresa_id: empresa.id });
         await page.save();
         await GridBannerPage.bulkCreate(
-            Array.from({ length: 10 }).map(() => ({
-                html: null,
-                enabled: false,
+            Array.from({ length: 10 }).map((_, i) => ({
+                html: i === 1 && custom ? custom : null,
+                enabled: i === 1 && custom,
                 empresa_id: empresa!.id,
                 title: null,
                 page_id: page.id,
@@ -114,7 +114,7 @@ export class PagesApiService {
                 body: "slug",
             });
         }
-        
+
         await page.update({ ...body, empresa_id: empresa.id });
         cache.delete(`EMPRESA:${empresa.slug}`);
 

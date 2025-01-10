@@ -316,6 +316,7 @@ export class WebApiService {
             }
             let productsMostRatingMapped = [];
             let productsMostCommentsMapped = [];
+
             if (empresa.setting.isEccomerce) {
                 productsMostRatingMapped = await Promise.all(
                     productsMostRating.map(async (product) => {
@@ -362,7 +363,7 @@ export class WebApiService {
             // Mapear el producto con mayor descuento y el último producto creado
             const [productMostDiscountMapped, productLatestMapped] =
                 await Promise.all([
-                    productMostDiscount
+                    productMostDiscount && empresa.setting.isEccomerce
                         ? getProductAll(
                               empresa,
                               productMostDiscount,
@@ -370,7 +371,7 @@ export class WebApiService {
                               false
                           )
                         : null,
-                    productLatest
+                    productLatest && empresa.setting.isEccomerce
                         ? getProductAll(empresa, productLatest, user, false)
                         : null,
                 ]);
@@ -791,6 +792,9 @@ export class WebApiService {
             pagina.data = relation(data);
             pagina.paginator = paginator;
             return pagina;
+        }
+        if (!empresa.setting.isEccomerce) {
+            throw new Redirect("/");
         }
         const { product } = await this.productsApiService.show(
             empresa,

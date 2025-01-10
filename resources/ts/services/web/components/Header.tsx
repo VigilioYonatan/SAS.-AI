@@ -39,6 +39,7 @@ function Header({ header }: HeaderProps) {
     const cartStore = useCartStore();
     const favoriteStore = useFavoriteStore();
     const isTop = useSignal(true);
+    const authStore = useAuthStore();
 
     useEffect(() => {
         async function handleScroll() {
@@ -300,8 +301,9 @@ function Header({ header }: HeaderProps) {
                             ) : null}
 
                             <MoneyChange />
-                            {header.totalProducts > 0 ? (
-                                <>
+
+                            <>
+                                {storageEmpresa?.setting.isEccomerce ? (
                                     <button
                                         type="button"
                                         class=" header-icon-cart text-sm flex justify-center items-center relative"
@@ -326,58 +328,37 @@ function Header({ header }: HeaderProps) {
                                         >
                                             {cartStore.computed.showCartLength}
                                         </span>
-                                    </button>{" "}
-                                    {useMediaQuery("(min-width:1025px)") ? (
-                                        <WebNotificacion />
-                                    ) : null}
-                                    {storageEmpresa?.setting.header_type ===
-                                    "transparent" ? (
-                                        <AuthUserIcon hiddenName={true} />
-                                    ) : (
-                                        ""
-                                    )}
-                                    {storageEmpresa?.setting
-                                        .is_hidde_total_cart ? (
-                                        <div class="flex flex-col gap-1 ">
-                                            <span class="font-bold tracking-wide text-xs   dark:text-white">
-                                                TOTAL
-                                            </span>
-                                            <span class="font-semibold text-xs dark:text-white">
-                                                {formatMoney(
-                                                    cartStore.methods.getTotal()
-                                                )}
-                                            </span>
-                                        </div>
-                                    ) : null}
-                                </>
-                            ) : (
-                                <>
-                                    {!isActive("/", false) ? (
-                                        <button
-                                            onClick={() => {
-                                                window.location.href =
-                                                    "/#servicios";
-                                            }}
-                                            aria-label={"change servicios page"}
-                                            type={"button"}
-                                            class=" text-xl   relative dark:text-white"
-                                        >
-                                            <i class={iconCart} />
-                                        </button>
-                                    ) : (
-                                        <a
-                                            href="#servicios"
-                                            class=" text-xl   relative  dark:text-white"
-                                        >
-                                            <i class={iconCart} />
-                                        </a>
-                                    )}
-                                </>
-                            )}
+                                    </button>
+                                ) : null}{" "}
+                                {useMediaQuery("(min-width:1025px)") &&
+                                authStore.state ? (
+                                    <WebNotificacion />
+                                ) : null}
+                                {storageEmpresa?.setting.header_type ===
+                                "transparent" ? (
+                                    <AuthUserIcon hiddenName={true} />
+                                ) : (
+                                    ""
+                                )}
+                                {!storageEmpresa?.setting.is_hidde_total_cart &&
+                                storageEmpresa!.setting.isEccomerce ? (
+                                    <div class="flex flex-col gap-1 ">
+                                        <span class="font-bold tracking-wide text-xs   dark:text-white">
+                                            TOTAL
+                                        </span>
+                                        <span class="font-semibold text-xs dark:text-white">
+                                            {formatMoney(
+                                                cartStore.methods.getTotal()
+                                            )}
+                                        </span>
+                                    </div>
+                                ) : null}
+                            </>
                         </div>
                     </div>
                     {/* cart */}
-                    {header.totalProducts > 0 ? (
+                    {header.totalProducts > 0 &&
+                    storageEmpresa?.setting.isEccomerce ? (
                         <div
                             class={`fixed inset-0 bg-opacity-70 bg-black z-[999] hidden lg:flex  justify-end h-full ${
                                 cartStore.dropdown.value
@@ -446,7 +427,7 @@ function Header({ header }: HeaderProps) {
                                 isOpen={isOpen.value}
                             />
                         </div>
-                        
+
                         <div class="flex gap-6 items-center w-full relative border dark:border-gray-600">
                             <ProductsSearch2 />
                         </div>
@@ -914,7 +895,8 @@ function NavHeader({
                         </a>
                     );
                 })}
-            {storageEmpresa?.setting.header.profile ? (
+            {storageEmpresa?.setting.header.profile &&
+            storageEmpresa?.setting.isLogin ? (
                 <a
                     class={` font-bold tracking-widest text-sm uppercase dark:hover:text-primary delay-custom-1 ${
                         isActive("/auth/profile", true)
@@ -938,7 +920,8 @@ function NavHeader({
                     Pedidos
                 </a>
             ) : null}
-            {storageEmpresa?.setting.header.condiciones ? (
+            {storageEmpresa?.setting.header.condiciones &&
+            storageEmpresa?.setting.isEccomerce ? (
                 <div class="relative">
                     <button
                         type="button"

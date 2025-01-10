@@ -266,6 +266,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     isProductWallpaper: boolean;
 
     @Column({
+        type: DataType.BOOLEAN,
+    })
+    isLogin: boolean;
+
+    @Column({
         type: DataType.STRING(60),
     })
     hamburger: string;
