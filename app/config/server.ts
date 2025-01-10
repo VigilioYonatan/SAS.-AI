@@ -197,6 +197,8 @@ export class Server {
                     hours24
                 );
             }
+            console.log({ empresa2: empresa });
+
             if (empresa) {
                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 (req as any).empresa = empresa;
