@@ -7,6 +7,7 @@ import {
     Req,
     Params,
     BadRequestException,
+    Redirect,
 } from "@vigilio/express-core";
 import type { Request, Response } from "express";
 import { WebService } from "../services/web.service";
@@ -80,6 +81,7 @@ export class WebController {
         @Res() res: Response,
         @Req("empresa") empresa: Empresas
     ) {
+        if (!empresa.setting.isEccomerce) throw new Redirect("/");
         const result = await this.webService.categories(category_slug, empresa);
         return res.render("web/shop/categories", result);
     }
@@ -94,6 +96,7 @@ export class WebController {
         @Res() res: Response,
         @Req("empresa") empresa: Empresas
     ) {
+        if (!empresa.setting.isEccomerce) throw new Redirect("/");
         const result = await this.webService.subcategories(
             category_slug,
             subcategory_slug,
@@ -108,6 +111,7 @@ export class WebController {
         @Res() res: Response,
         @Req("empresa") empresa: Empresas
     ) {
+        if (!empresa.setting.isEccomerce) throw new Redirect("/");
         const result = await this.webService.marcas(brand, empresa);
         return res.render("web/shop/brands", result);
     }

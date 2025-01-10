@@ -2,6 +2,7 @@ import {
     BadRequestException,
     Injectable,
     InternalServerErrorException,
+    Redirect,
 } from "@vigilio/express-core";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { getProductAll, Product, ProductKeys } from "@/products/libs";
@@ -89,27 +90,34 @@ export class WebApiService {
                 gridBanners,
             ] = await Promise.all([
                 this.backgroundApiService.index(empresa),
-                Products.findAll({
-                    // productos con ofertas
-                    where: {
-                        discount: {
-                            [Op.gt]: 0,
-                        },
-                        empresa_id: empresa.id,
-                        enabled: true,
-                    },
-                    order: [["createdAt", "DESC"]],
-                    limit: empresa?.setting.products_limit_offer || 4,
-                }),
-                Products.findAll({
-                    // productos recien subidos
-                    order: [["createdAt", "DESC"]],
-                    limit: empresa?.setting.type_card === "eccomerce" ? 8 : 6,
-                    where: {
-                        enabled: true,
-                        empresa_id: empresa.id,
-                    },
-                }),
+                empresa.setting.isEccomerce
+                    ? Products.findAll({
+                          // productos con ofertas
+                          where: {
+                              discount: {
+                                  [Op.gt]: 0,
+                              },
+                              empresa_id: empresa.id,
+                              enabled: true,
+                          },
+                          order: [["createdAt", "DESC"]],
+                          limit: empresa?.setting.products_limit_offer || 4,
+                      })
+                    : [],
+                empresa.setting.isEccomerce
+                    ? Products.findAll({
+                          // productos recien subidos
+                          order: [["createdAt", "DESC"]],
+                          limit:
+                              empresa?.setting.type_card === "eccomerce"
+                                  ? 8
+                                  : 6,
+                          where: {
+                              enabled: true,
+                              empresa_id: empresa.id,
+                          },
+                      })
+                    : [],
                 Posts.findAll({
                     limit: 6, // maximo 8 . si deseas lo podes poner en un slider
                     order: [["createdAt", "DESC"]],
@@ -117,20 +125,24 @@ export class WebApiService {
                         empresa_id: empresa.id,
                     },
                 }),
-                Products.findOne({
-                    order: [["discount", "DESC"]],
-                    where: {
-                        empresa_id: empresa.id,
-                        enabled: true,
-                    },
-                }), // producto con mas oferta
-                Products.findOne({
-                    order: [["createdAt", "ASC"]],
-                    where: {
-                        empresa_id: empresa.id,
-                        enabled: true,
-                    },
-                }), // ultimo producto creado
+                empresa.setting.isEccomerce
+                    ? Products.findOne({
+                          order: [["discount", "DESC"]],
+                          where: {
+                              empresa_id: empresa.id,
+                              enabled: true,
+                          },
+                      })
+                    : {}, // producto con mas oferta
+                empresa.setting.isEccomerce
+                    ? Products.findOne({
+                          order: [["createdAt", "ASC"]],
+                          where: {
+                              empresa_id: empresa.id,
+                              enabled: true,
+                          },
+                      })
+                    : {}, // ultimo producto creado
                 Categories.findAll({
                     where: {
                         empresa_id: empresa.id,
@@ -177,23 +189,28 @@ export class WebApiService {
                     },
                     raw: true,
                 }),
-                Comments.unscoped().findAll({
-                    attributes: [
-                        "commentsable_id",
-                        [
-                            Sequelize.fn("COUNT", Sequelize.col("Comments.id")),
-                            "commentscount",
-                        ],
-                    ],
-                    where: {
-                        empresa_id: empresa.id,
-                        commentsable_type: keys,
-                    },
-                    group: ["commentsable_id"],
-                    order: [[Sequelize.literal("commentscount"), "DESC"]],
-                    limit: 4,
-                    raw: true,
-                }),
+                empresa.setting.isEccomerce
+                    ? Comments.unscoped().findAll({
+                          attributes: [
+                              "commentsable_id",
+                              [
+                                  Sequelize.fn(
+                                      "COUNT",
+                                      Sequelize.col("Comments.id")
+                                  ),
+                                  "commentscount",
+                              ],
+                          ],
+                          where: {
+                              empresa_id: empresa.id,
+                              commentsable_type: keys,
+                          },
+                          group: ["commentsable_id"],
+                          order: [[Sequelize.literal("commentscount"), "DESC"]],
+                          limit: 4,
+                          raw: true,
+                      })
+                    : [],
                 Users.findAll({
                     where: {
                         empresa_id: empresa.id,
@@ -210,17 +227,21 @@ export class WebApiService {
                     limit: empresa.isTemplate ? 5 : 20,
                     order: [["id", "ASC"]],
                 }),
-                Brands.findAll({
-                    where: {
-                        empresa_id: empresa.id,
-                    },
-                    attributes: ["id", "image", "name"],
-                }),
+                empresa.setting.isEccomerce
+                    ? Brands.findAll({
+                          where: {
+                              empresa_id: empresa.id,
+                          },
+                          attributes: ["id", "image", "name"],
+                      })
+                    : [],
 
                 // aca ira servicios normal
-                Product(empresa, true).count({
-                    where: { empresa_id: empresa.id, enabled: true },
-                }),
+                empresa.setting.isEccomerce
+                    ? Product(empresa, true).count({
+                          where: { empresa_id: empresa.id, enabled: true },
+                      })
+                    : {},
                 GridBanner.findAll({
                     where: { empresa_id: empresa.id },
                     order: [["id", "ASC"]],
@@ -479,6 +500,9 @@ export class WebApiService {
         };
     }
     async shop(empresa: Empresas, user: Users) {
+        if (!empresa.setting.isEccomerce) {
+            throw new Redirect("/");
+        }
         const d = await Page.findOne({
             where: {
                 [Op.or]: {
@@ -599,7 +623,7 @@ export class WebApiService {
                 include: [GridBanner],
             })) as GridBannerPage[];
             const queries = await getQueries(empresa, page);
-            let pagina: {
+            const pagina: {
                 title: string;
                 description: string;
                 grid_banner_pages: GridBannerPage[];
@@ -618,11 +642,12 @@ export class WebApiService {
             };
             if (page.slug === "shop" || page.slug === "tienda") {
                 const shop = await this.shop(empresa, user);
-                pagina = { ...pagina, ...shop, type_page: "shop_page" };
+                // pagina = { ...pagina, ...shop, type_page: "shop_page" };
+                return { ...pagina, ...shop, type_page: "shop_page" };
             }
             if (page.slug === "about" || page.slug === "nosotros") {
                 const nosotros = await this.about(empresa);
-                pagina = { ...pagina, ...nosotros, type_page: "nosotros_page" };
+                return { ...pagina, ...nosotros, type_page: "nosotros_page" };
             }
             if (page.slug === "services" || page.slug === "servicios") {
                 const servicios = await this.servicios(empresa);

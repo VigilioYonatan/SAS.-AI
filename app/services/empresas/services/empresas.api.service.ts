@@ -286,7 +286,7 @@ export class EmpresasApiService {
             await Empresas.update(iaTokens, { where: { slug } });
             cache.delete(`IA_TOKENS:${slug}`);
         }
-        const data = await Empresas.findOne({
+        const data = await Empresas.unscoped().findOne({
             where: { slug },
             attributes: [
                 "payments",
@@ -294,6 +294,7 @@ export class EmpresasApiService {
                 "id",
                 "credentials",
                 "enabled_zoho_mail",
+                "isProduction",
             ],
         });
         if (!data) throw new NotFoundException(`no se encontró ${slug}`);
@@ -1954,7 +1955,12 @@ export class EmpresasApiService {
         });
         const response = await fetch(
             `${enviroments.VITE_VIGILIO_WEB}/api/empresas/domain/${slug}`,
-            { method: "DELETE" }
+            {
+                method: "DELETE",
+                headers: {
+                    "access-token": enviroments.VITE_TOKEN_VIGILIO_SERVICES,
+                },
+            }
         );
         const result = await response.json();
         if (!response.ok)
@@ -2022,7 +2028,9 @@ export class EmpresasApiService {
         await empresa.update({ isProduction: !empresa.isProduction });
         return {
             success: true,
-            message: "Changed",
+            message: `Se cambió a modo ${
+                empresa.isProduction ? "Modo producción" : "Modo desarrollo"
+            }`,
         };
     }
 

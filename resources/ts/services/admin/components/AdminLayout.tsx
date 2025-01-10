@@ -334,22 +334,24 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                 ]}
                             />
                         ) : null}
-                        <NavLink
-                            onClick={onCloseAside}
-                            to="/productos"
-                            title="Productos"
-                            Icon={
-                                [1, 3].includes(
-                                    empresaStore.state!.tipo_empresa
-                                        .tipo_servicio_id
-                                ) ? (
-                                    <i class="fas fa-phone-laptop" />
-                                ) : (
-                                    <i class="fas fa-utensils" />
-                                )
-                            }
-                            uris={pathProducts()}
-                        />
+                        {storageEmpresa?.setting.isEccomerce ? (
+                            <NavLink
+                                onClick={onCloseAside}
+                                to="/productos"
+                                title="Productos"
+                                Icon={
+                                    [1, 3].includes(
+                                        empresaStore.state!.tipo_empresa
+                                            .tipo_servicio_id
+                                    ) ? (
+                                        <i class="fas fa-phone-laptop" />
+                                    ) : (
+                                        <i class="fas fa-utensils" />
+                                    )
+                                }
+                                uris={pathProducts()}
+                            />
+                        ) : null}
 
                         {/* <NavLink
                             onClick={onCloseAside}

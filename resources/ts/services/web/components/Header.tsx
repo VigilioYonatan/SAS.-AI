@@ -446,6 +446,7 @@ function Header({ header }: HeaderProps) {
                                 isOpen={isOpen.value}
                             />
                         </div>
+                        
                         <div class="flex gap-6 items-center w-full relative border dark:border-gray-600">
                             <ProductsSearch2 />
                         </div>

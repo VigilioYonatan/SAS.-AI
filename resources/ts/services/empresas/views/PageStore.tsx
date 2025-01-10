@@ -210,159 +210,7 @@ export function PageUpdate({ page }: PageUpdateProps) {
                 </div>
                 <div class="my-2">
                     <span class="text-xs dark:text-white relative flex gap-2 items-center">
-                        Queries{" "}
-                        <button
-                            type="button"
-                            class="bg-black text-white w-[20px] h-[20px] rounded-full flex justify-center items-center font-bold"
-                            onClick={() => {
-                                sweetModal({
-                                    html: reactComponent(
-                                        <div>
-                                            <h2 class="font-semibold text-xl dark:text-white text-center mb-3">
-                                                Tablas
-                                            </h2>
-                                            <div class="max-h-[600px] overflow-auto">
-                                                <table class="text-sm text-left  h-full shadow w-full ">
-                                                    <thead class="text-[10px] lg:text-xs bg-paper-light dark:bg-admin-terciary text-secondary-dark dark:text-primaryuppercase  shadow-sm  border-b dark:border-admin-terciary">
-                                                        <tr>
-                                                            <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
-                                                                id
-                                                            </th>
-                                                            <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
-                                                                Nombre
-                                                            </th>
-                                                            <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
-                                                                cantidad
-                                                            </th>
-
-                                                            <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
-                                                                opcion
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {storageEmpresa!.tableObjects.map(
-                                                            (table, i) => (
-                                                                <tr
-                                                                    key={
-                                                                        table.name
-                                                                    }
-                                                                    class="border-b h-[45px] dark:hover:text-black dark:border-admin-terciary border-paper-light hover:bg-paper-light text-black  dark:text-secondary-light  cursor-pointer"
-                                                                >
-                                                                    <td>
-                                                                        <div class="flex justify-center items-center">
-                                                                            {i +
-                                                                                1}
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="flex justify-center items-center">
-                                                                            {
-                                                                                table.name
-                                                                            }
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="flex justify-center items-center">
-                                                                            {
-                                                                                table
-                                                                                    .data
-                                                                                    .length
-                                                                            }
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="flex justify-center items-center">
-                                                                            <button
-                                                                                class="bg-primary px-2 py-1 rounded-md relative"
-                                                                                type="button"
-                                                                                onClick={() => {
-                                                                                    sweetModal(
-                                                                                        {
-                                                                                            isCloseInBackground:
-                                                                                                false,
-                                                                                            showCloseButton:
-                                                                                                true,
-                                                                                            html: reactComponent(
-                                                                                                <div>
-                                                                                                    <table class="text-sm text-left  h-full shadow w-full ">
-                                                                                                        <thead class="text-[10px] lg:text-xs bg-paper-light dark:bg-admin-terciary text-secondary-dark dark:text-primaryuppercase  shadow-sm  border-b dark:border-admin-terciary">
-                                                                                                            <tr>
-                                                                                                                <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
-                                                                                                                    id
-                                                                                                                </th>
-                                                                                                                <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
-                                                                                                                    Nombre
-                                                                                                                </th>
-                                                                                                                <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
-                                                                                                                    Tipo{" "}
-                                                                                                                </th>
-                                                                                                            </tr>
-                                                                                                        </thead>
-                                                                                                        <tbody>
-                                                                                                            {table.data.map(
-                                                                                                                (
-                                                                                                                    col,
-                                                                                                                    i
-                                                                                                                ) => (
-                                                                                                                    <tr
-                                                                                                                        key={
-                                                                                                                            col.name
-                                                                                                                        }
-                                                                                                                        class="border-b h-[45px] dark:hover:text-black dark:border-admin-terciary border-paper-light hover:bg-paper-light text-black  dark:text-secondary-light  cursor-pointer"
-                                                                                                                    >
-                                                                                                                        <td>
-                                                                                                                            <div class="flex justify-center items-center">
-                                                                                                                                {i +
-                                                                                                                                    1}
-                                                                                                                            </div>
-                                                                                                                        </td>
-                                                                                                                        <td>
-                                                                                                                            <div class="flex justify-center items-center">
-                                                                                                                                {
-                                                                                                                                    col.name
-                                                                                                                                }
-                                                                                                                            </div>
-                                                                                                                        </td>
-                                                                                                                        <td>
-                                                                                                                            <div class="flex justify-center items-center">
-                                                                                                                                {
-                                                                                                                                    col.type
-                                                                                                                                }
-                                                                                                                            </div>
-                                                                                                                        </td>
-                                                                                                                    </tr>
-                                                                                                                )
-                                                                                                            )}
-                                                                                                        </tbody>
-                                                                                                    </table>
-                                                                                                </div>
-                                                                                            ),
-                                                                                        }
-                                                                                    );
-                                                                                }}
-                                                                            >
-                                                                                <i class="fa-solid fa-database" />
-                                                                            </button>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            )
-                                                        )}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    ),
-                                    position: "start",
-                                    sweetWidth: "600px",
-                                    isCloseInBackground: false,
-                                    showCloseButton: true,
-                                });
-                            }}
-                        >
-                            ?
-                        </button>
+                        Queries{" "}<ShowTablesDB/>
                     </span>
                     <div class="max-h-[300px] overflow-auto">
                         {queries.fields.map((_, i) => (
@@ -445,6 +293,151 @@ export function PageUpdate({ page }: PageUpdateProps) {
                 />
             </Form>
         </div>
+    );
+}
+export function ShowTablesDB() {
+    return (
+        <button
+            type="button"
+            class="bg-black text-white w-[20px] h-[20px] rounded-full flex justify-center items-center font-bold"
+            onClick={() => {
+                sweetModal({
+                    html: reactComponent(
+                        <div>
+                            <h2 class="font-semibold text-xl dark:text-white text-center mb-3">
+                                Tablas
+                            </h2>
+                            <div class="max-h-[600px] overflow-auto">
+                                <table class="text-sm text-left  h-full shadow w-full ">
+                                    <thead class="text-[10px] lg:text-xs bg-paper-light dark:bg-admin-terciary text-secondary-dark dark:text-primaryuppercase  shadow-sm  border-b dark:border-admin-terciary">
+                                        <tr>
+                                            <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
+                                                id
+                                            </th>
+                                            <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
+                                                Nombre
+                                            </th>
+                                            <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
+                                                cantidad
+                                            </th>
+
+                                            <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
+                                                opcion
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {storageEmpresa!.tableObjects.map(
+                                            (table, i) => (
+                                                <tr
+                                                    key={table.name}
+                                                    class="border-b h-[45px] dark:hover:text-black dark:border-admin-terciary border-paper-light hover:bg-paper-light text-black  dark:text-secondary-light  cursor-pointer"
+                                                >
+                                                    <td>
+                                                        <div class="flex justify-center items-center">
+                                                            {i + 1}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="flex justify-center items-center">
+                                                            {table.name}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="flex justify-center items-center">
+                                                            {table.data.length}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="flex justify-center items-center">
+                                                            <button
+                                                                class="bg-primary px-2 py-1 rounded-md relative"
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    sweetModal({
+                                                                        isCloseInBackground:
+                                                                            false,
+                                                                        showCloseButton:
+                                                                            true,
+                                                                        html: reactComponent(
+                                                                            <div>
+                                                                                <table class="text-sm text-left  h-full shadow w-full ">
+                                                                                    <thead class="text-[10px] lg:text-xs bg-paper-light dark:bg-admin-terciary text-secondary-dark dark:text-primaryuppercase  shadow-sm  border-b dark:border-admin-terciary">
+                                                                                        <tr>
+                                                                                            <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
+                                                                                                id
+                                                                                            </th>
+                                                                                            <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
+                                                                                                Nombre
+                                                                                            </th>
+                                                                                            <th class="px-1 py-1  dark:bg-admin-terciary text-center cursor-pointer dark:text-white">
+                                                                                                Tipo{" "}
+                                                                                            </th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        {table.data.map(
+                                                                                            (
+                                                                                                col,
+                                                                                                i
+                                                                                            ) => (
+                                                                                                <tr
+                                                                                                    key={
+                                                                                                        col.name
+                                                                                                    }
+                                                                                                    class="border-b h-[45px] dark:hover:text-black dark:border-admin-terciary border-paper-light hover:bg-paper-light text-black  dark:text-secondary-light  cursor-pointer"
+                                                                                                >
+                                                                                                    <td>
+                                                                                                        <div class="flex justify-center items-center">
+                                                                                                            {i +
+                                                                                                                1}
+                                                                                                        </div>
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <div class="flex justify-center items-center">
+                                                                                                            {
+                                                                                                                col.name
+                                                                                                            }
+                                                                                                        </div>
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <div class="flex justify-center items-center">
+                                                                                                            {
+                                                                                                                col.type
+                                                                                                            }
+                                                                                                        </div>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            )
+                                                                                        )}
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        ),
+                                                                    });
+                                                                }}
+                                                            >
+                                                                <i class="fa-solid fa-database" />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    ),
+                    position: "start",
+                    sweetWidth: "600px",
+                    isCloseInBackground: false,
+                    showCloseButton: true,
+                });
+            }}
+        >
+            ?
+        </button>
     );
 }
 

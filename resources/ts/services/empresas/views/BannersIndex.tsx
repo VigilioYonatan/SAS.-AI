@@ -173,7 +173,7 @@ function BannersIndex() {
                                                 : "border-primary"
                                         }  px-4 py-2 rounded-md shadow font-semibold text-xs relative`}
                                     >
-                                        {storageEmpresa!.isProduction ? (
+                                        {!storageEmpresa!.isProduction ? (
                                             <div class=" top-[-12px] right-[-8px] absolute flex gap-1">
                                                 <span
                                                     class="bg-orange-400 text-white px-1.5 py-1 rounded-md"
@@ -296,44 +296,46 @@ function BannersIndex() {
                             </div>
                             <div class="flex gap-2 items-center">
                                 {" "}
-                                <button
-                                    class="bg-primary px-3 py-1 rounded-md text-xl font-bold"
-                                    type="button"
-                                    onClick={() => {
-                                        sweetModal((onClose) => ({
-                                            html: reactComponent(
-                                                <PageStore
-                                                    onClose={onClose}
-                                                    refetch={
-                                                        gridBannerIndexQuery.refetch
-                                                    }
-                                                />
-                                            ),
-                                            showCloseButton: true,
-                                            isCloseInBackground: false,
-                                            sweetWidth: "500px",
-                                        }));
-                                    }}
-                                >
-                                    +
-                                </button>
-                                {storageEmpresa!.isProduction ? (
-                                    <button
-                                        class="bg-primary px-3 py-2.5 rounded-md text-xs  font-bold"
-                                        type="button"
-                                        onClick={() => {
-                                            sweetModal(() => ({
-                                                html: reactComponent(
-                                                    <CrudIndex />
-                                                ),
-                                                showCloseButton: true,
-                                                isCloseInBackground: false,
-                                                sweetWidth: "800px",
-                                            }));
-                                        }}
-                                    >
-                                        CRUD
-                                    </button>
+                                {!storageEmpresa!.isProduction ? (
+                                    <>
+                                        <button
+                                            class="bg-primary px-3 py-1 rounded-md text-xl font-bold"
+                                            type="button"
+                                            onClick={() => {
+                                                sweetModal((onClose) => ({
+                                                    html: reactComponent(
+                                                        <PageStore
+                                                            onClose={onClose}
+                                                            refetch={
+                                                                gridBannerIndexQuery.refetch
+                                                            }
+                                                        />
+                                                    ),
+                                                    showCloseButton: true,
+                                                    isCloseInBackground: false,
+                                                    sweetWidth: "500px",
+                                                }));
+                                            }}
+                                        >
+                                            +
+                                        </button>
+                                        <button
+                                            class="bg-primary px-3 py-2.5 rounded-md text-xs  font-bold"
+                                            type="button"
+                                            onClick={() => {
+                                                sweetModal(() => ({
+                                                    html: reactComponent(
+                                                        <CrudIndex />
+                                                    ),
+                                                    showCloseButton: true,
+                                                    isCloseInBackground: false,
+                                                    sweetWidth: "800px",
+                                                }));
+                                            }}
+                                        >
+                                            CRUD
+                                        </button>
+                                    </>
                                 ) : null}
                             </div>{" "}
                         </div>
@@ -351,7 +353,7 @@ function BannersIndex() {
                         <span class="font-bold text-sm flex items-center gap-1">
                             Ancho Actual: <b>{widthResponsive}PX</b>{" "}
                             {typeBanner.value === "home" &&
-                            storageEmpresa?.isProduction ? (
+                            !storageEmpresa?.isProduction ? (
                                 <button
                                     type="button"
                                     class="bg-black group relative w-[30px] h-[30px] flex rounded-full items-center justify-center text-white "

@@ -181,30 +181,33 @@ export async function getQueries(
 ) {
     try {
         const regex = /:{{(.*?)}}/g;
-        const q = await page.queries.reduce(async (accPromise, query) => {
-            let q = query.query;
-            const keys = {};
+        const q = await (page.queries || []).reduce(
+            async (accPromise, query) => {
+                let q = query.query;
+                const keys = {};
 
-            if (data) {
-                const nuevoTexto = query.query.replace(regex, (_, p1) => {
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    (keys as any)[p1] = data[p1]; // Crear el objeto con el texto extraído
-                    return `:${p1}`; // Reemplazar el texto por ":jaja" o ":otro"
+                if (data) {
+                    const nuevoTexto = query.query.replace(regex, (_, p1) => {
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                        (keys as any)[p1] = data[p1]; // Crear el objeto con el texto extraído
+                        return `:${p1}`; // Reemplazar el texto por ":jaja" o ":otro"
+                    });
+                    q = nuevoTexto;
+                }
+
+                const acc = await accPromise; // Espera el acumulador actual (promesa resuelta)
+                const result = await sequelize.query(q, {
+                    replacements: { empresa_id: empresa.id, ...keys },
+                    type: QueryTypes.SELECT,
                 });
-                q = nuevoTexto;
-            }
 
-            const acc = await accPromise; // Espera el acumulador actual (promesa resuelta)
-            const result = await sequelize.query(q, {
-                replacements: { empresa_id: empresa.id, ...keys },
-                type: QueryTypes.SELECT,
-            });
-
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            (acc as any)[query.key as keyof typeof acc] =
-                relation(result) ?? null; // Añade la clave y el valor procesado al objeto acumulado
-            return acc;
-        }, Promise.resolve({}));
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                (acc as any)[query.key as keyof typeof acc] =
+                    relation(result) ?? null; // Añade la clave y el valor procesado al objeto acumulado
+                return acc;
+            },
+            Promise.resolve({})
+        );
         return q;
     } catch (error) {
         throw new InternalServerErrorException((error as Error).message);

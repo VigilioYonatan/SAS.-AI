@@ -92,24 +92,28 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                         <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
                             <a href={"/nosotros"}>Nosotros</a>
                         </li>
-                        <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
-                            <a href={"/shop"}>Nuestra Tienda</a>
-                        </li>
-                        <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
-                            <a href={"/politica-de-privacidad"}>
-                                Politica y privacidad
-                            </a>
-                        </li>
-                        <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
-                            <a href={"/terminos-y-condiciones"}>
-                                Términos y Condiciones
-                            </a>{" "}
-                        </li>
-                        <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
-                            <a href={"/libro-de-reclamaciones"}>
-                                Libro de Reclamaciones
-                            </a>{" "}
-                        </li>
+                        {storageEmpresa?.setting.isEccomerce ? (
+                            <>
+                                <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
+                                    <a href={"/politica-de-privacidad"}>
+                                        Politica y privacidad
+                                    </a>
+                                </li>
+                                <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
+                                    <a href={"/terminos-y-condiciones"}>
+                                        Términos y Condiciones
+                                    </a>{" "}
+                                </li>
+                                <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
+                                    <a href={"/libro-de-reclamaciones"}>
+                                        Libro de Reclamaciones
+                                    </a>{" "}
+                                </li>{" "}
+                                <li class=" text-sm   hover:text-primary font-semibold dark:hover:text-primary my-2">
+                                    <a href={"/shop"}>Nuestra Tienda</a>
+                                </li>
+                            </>
+                        ) : null}
                     </ul>
                     {categories.length ? (
                         <ul class="max-h-[500px] overflow-auto">

@@ -18,6 +18,7 @@ import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import { anidarPropiedades } from ".";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
+import { ShowTablesDB } from "@/empresas/views/PageStore";
 
 interface FormControlLabelProps<T extends object> {
     title: string;
@@ -195,7 +196,7 @@ function FormEditorJSControl<T extends object>({
                             onClick={() => {
                                 if (
                                     !HIDDEEDITOR ||
-                                    !storageEmpresa?.isProduction
+                                    storageEmpresa?.isProduction
                                 ) {
                                     return;
                                 }
@@ -208,6 +209,9 @@ function FormEditorJSControl<T extends object>({
                                 <i class="fas fa-eye-slash text-lg" />
                             )}
                         </button>
+                        {!storageEmpresa?.isProduction ? (
+                            <ShowTablesDB />
+                        ) : null}
                     </div>
                 ) : null}
             </label>

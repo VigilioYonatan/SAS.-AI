@@ -59,7 +59,6 @@ import {
     LoaderThree,
     LoaderTwo,
 } from "../components/LoaderCharging";
-import { HIDDEEDITOR } from "./BannersIndex";
 
 const dominioUpdate = pick(hostSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
@@ -746,6 +745,22 @@ function SettingsIndex() {
                                 </span>
                             }
                         />
+                        {!storageEmpresa?.isProduction ? (
+                            <Form.control.toggle
+                                title="Web Eccomerce?"
+                                name={"isEccomerce" as keyof SettingsUpdateDto}
+                                question={
+                                    <span class="block w-[200px]">
+                                        No se venderá productos, no tendra
+                                        carrito de compras, etc.
+                                        <br />
+                                        Solo será landing page o venderas
+                                        servicios?
+                                    </span>
+                                }
+                            />
+                        ) : null}
+
                         <Form.control.toggle
                             title="¿Agregar subcategorias"
                             name={"is_subcategory" as keyof SettingsUpdateDto}
@@ -2225,7 +2240,7 @@ function SettingsIndex() {
                             />
                         </div>
                     </div>
-                    {HIDDEEDITOR ? (
+                    {!storageEmpresa?.isProduction ? (
                         <Form.control.editorJS
                             name={"web_script" as keyof SettingsUpdateDto}
                             title="Personalización html script "
