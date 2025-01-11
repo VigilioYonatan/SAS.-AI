@@ -5,7 +5,9 @@
   <%- include("../web/components/webHead", { title:`Bienvenido ${$user.username}`, description:"Bienvenido a tu perfil" } ) %>
 </head>
 
-<body class="dark:bg-background-dark bg-paper-light">
+<body class="dark:bg-background-dark bg-paper-light">  
+  <%- include("../web/components/loader.ejs")  %>
+  <%- include("../web/components/script.ejs")  %>
   <profile-page :header="<%= JSON.stringify(header)  %>"></profile-page>
 </body>
 

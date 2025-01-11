@@ -11,6 +11,8 @@
 
 <body class="bg-paper-light dark:bg-paper-dark antialiased">
   <%- include("../components/loader.ejs")  %>
+  <%- include("../components/script.ejs")  %>
+
   <cart-page :cart="<%= JSON.stringify(cart) %>" :header="<%= JSON.stringify(header)  %>"></cart-page>
 </body>
 

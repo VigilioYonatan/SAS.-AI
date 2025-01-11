@@ -101,10 +101,11 @@
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
   <%- include("../components/loader.ejs")  %>
+  <%- include("../components/script.ejs")  %>
   <servicio-page :product="<%= JSON.stringify(product)  %>" category_name="<%= category_name %>" :categoriesproductsrandom="<%= JSON.stringify(categoriesProductsRandom)  %>" :header="<%= JSON.stringify(header)  %>" :totalComments="<%= JSON.stringify(totalComments)  %>">
     <% if( product.description){ %>
-      <%-  product.description  %>
-      <% } %>
+    <%-  product.description  %>
+    <% } %>
   </servicio-page>
 </body>
 
