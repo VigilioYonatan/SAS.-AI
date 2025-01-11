@@ -138,35 +138,50 @@ function FormEditorJSControl<T extends object>({
         });
         if (model) {
             // Agregar autocierre de etiquetas
+            let isTypingClosingTag = false; // Para evitar el ciclo infinito
+
             editor.onDidChangeModelContent(() => {
                 const position = editor.getPosition();
                 if (!model || !position) return;
 
                 const lineContent = model.getLineContent(position.lineNumber);
                 const match = lineContent.match(/<([a-zA-Z]+)>$/); // Detectar etiquetas abiertas
-                if (match) {
+
+                // Si se está escribiendo una etiqueta
+                if (match && !isTypingClosingTag) {
                     const tagName = match[1];
                     const insertPosition = {
                         column: position.column,
                         lineNumber: position.lineNumber,
                     };
-                    editor.executeEdits("", [
-                        {
-                            range: {
-                                startLineNumber: insertPosition.lineNumber,
-                                startColumn: insertPosition.column,
-                                endLineNumber: insertPosition.lineNumber,
-                                endColumn: insertPosition.column,
-                            },
-                            text: `</${tagName}>`,
-                        },
-                    ]);
 
-                    // Mover el cursor entre las etiquetas
-                    editor.setPosition({
-                        lineNumber: insertPosition.lineNumber,
-                        column: insertPosition.column,
-                    });
+                    // Evitar insertar el cierre de la etiqueta si ya está presente
+                    if (!lineContent.includes(`</${tagName}>`)) {
+                        // Marcar que estamos insertando el cierre de la etiqueta
+                        isTypingClosingTag = true;
+
+                        // Insertar el cierre de la etiqueta
+                        editor.executeEdits("", [
+                            {
+                                range: {
+                                    startLineNumber: insertPosition.lineNumber,
+                                    startColumn: insertPosition.column,
+                                    endLineNumber: insertPosition.lineNumber,
+                                    endColumn: insertPosition.column,
+                                },
+                                text: `</${tagName}>`,
+                            },
+                        ]);
+
+                        // Mover el cursor entre las etiquetas
+                        editor.setPosition({
+                            lineNumber: insertPosition.lineNumber,
+                            column: insertPosition.column,
+                        });
+
+                        // Reestablecer la bandera de autocierre
+                        isTypingClosingTag = false;
+                    }
                 }
             });
 
