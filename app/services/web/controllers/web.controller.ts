@@ -142,6 +142,39 @@ export class WebController {
         const result = await this.webService.reclamaciones(empresa);
         return res.render("web/politica/reclamaciones", result);
     }
+    @Pipe(objectAsync({ hash: string() }))
+    @Get("/sh/:hash")
+    async link(
+        @Params("hash") hash: string,
+        @Req("empresa") empresa: Empresas,
+        @Res() res: Response
+    ) {
+        const { url } = await this.urlsService.show(empresa, hash);
+        if (!url.enabled) {
+            res.redirect("/");
+            return;
+        }
+
+        res.redirect(url.web);
+    }
+    @Get("/change-money/:money")
+    async changeMoney(
+        @Req() req: Request,
+        @Res() res: Response,
+        @Params("money") money: string
+    ) {
+        const rutaAnterior = req.get("Referer") as string;
+        if (!(["DOLARES", "LOCAL"] as Money[]).includes(money as Money)) {
+            return res.redirect(rutaAnterior);
+        }
+        res.cookie("money", money, { httpOnly: false });
+        return res.redirect(rutaAnterior);
+    }
+    @Get("/auth/zoho/callback")
+    async zoho(@Req() req: Request, @Res() res: Response) {
+        return res.send(`<code>query:<br/>${JSON.stringify(req.query)}</code>`); // no borrar
+    }
+
     @Get("/servicio/:slug", [initialMiddleware])
     async servicio(
         @Params("slug") slug: string,
@@ -188,38 +221,5 @@ export class WebController {
     ) {
         const result = await this.webService.dynamic(page, slug, req.empresa);
         return res.render("web/home/dynamic", result);
-    }
-
-    @Pipe(objectAsync({ hash: string() }))
-    @Get("/sh/:hash")
-    async link(
-        @Params("hash") hash: string,
-        @Req("empresa") empresa: Empresas,
-        @Res() res: Response
-    ) {
-        const { url } = await this.urlsService.show(empresa, hash);
-        if (!url.enabled) {
-            res.redirect("/");
-            return;
-        }
-
-        res.redirect(url.web);
-    }
-    @Get("/change-money/:money")
-    async changeMoney(
-        @Req() req: Request,
-        @Res() res: Response,
-        @Params("money") money: string
-    ) {
-        const rutaAnterior = req.get("Referer") as string;
-        if (!(["DOLARES", "LOCAL"] as Money[]).includes(money as Money)) {
-            return res.redirect(rutaAnterior);
-        }
-        res.cookie("money", money, { httpOnly: false });
-        return res.redirect(rutaAnterior);
-    }
-    @Get("/auth/zoho/callback")
-    async zoho(@Req() req: Request, @Res() res: Response) {
-        return res.send(`<code>query:<br/>${JSON.stringify(req.query)}</code>`); // no borrar
     }
 }
