@@ -7,8 +7,6 @@
 
 <body class="dark:bg-paper-dark  bg-paper-light">
   <%- include("../components/loader.ejs")  %>
-  <%- include("../components/script.ejs")  %>
-
   <brand-page :header="<%= JSON.stringify(header)  %>" :brand="<%= JSON.stringify(brand)  %>" :priceMinMax="<%= JSON.stringify(priceMinMax)  %>" :discounts="<%= JSON.stringify(discounts)  %>" :optionsFeatures="<%= JSON.stringify(optionsFeatures)  %>">
   </brand-page>
 </body>

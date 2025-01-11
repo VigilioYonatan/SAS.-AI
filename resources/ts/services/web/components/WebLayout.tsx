@@ -1,7 +1,9 @@
 import Footer from "./Footer";
 import Header from "./Header";
 import type { CategoriesSchema } from "@/products/schemas/categories.schema";
-import useEmpresastore from "@/empresas/stores/empresa.store";
+import useEmpresastore, {
+    storageEmpresa,
+} from "@/empresas/stores/empresa.store";
 import CookiesMessage from "./CookiesMessage";
 import ChatAi from "./ChatAi";
 import NavTabs from "./NavTabs";
@@ -11,6 +13,7 @@ import { BrandsSchema } from "@/products/schemas/brands.schema";
 import MessagePWA from "../views/home/components/MessagePWA";
 import { ProductsServicioSchemaFromServer } from "@/products/schemas/products_servicio.schema";
 import { SubcategoriesSchemaFromServer } from "@/products/schemas/subcategories.schema";
+import { useEffect } from "preact/hooks";
 import PalleteCustom from "./PalleteCustom";
 
 export interface HeaderType {
@@ -33,7 +36,18 @@ interface WebLayoutProps {
 
 function WebLayout({ children, header }: WebLayoutProps) {
     const empresaStore = useEmpresastore();
-
+    useEffect(() => {
+        if (storageEmpresa?.setting.web_script) {
+            const script = document.createElement("script");
+            const div = document.querySelector("body");
+            script.innerHTML = storageEmpresa.setting.web_script;
+            div?.appendChild(script);
+            // Limpieza del script para evitar problemas
+            return () => {
+                document.body.removeChild(script);
+            };
+        }
+    }, []);
     return (
         <>
             <MessagePWA />

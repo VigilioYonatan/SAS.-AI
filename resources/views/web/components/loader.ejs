@@ -311,21 +311,21 @@
 
   window.addEventListener('load', () => {
      setTimeout(() => {
-  const loader = document.getElementById('loader');
-  if (loader) {
-  loader.classList.add('opacity-0');
-  loader.classList.remove('opacity-1');
-  }
-  }, 0);
-  setTimeout(() => {
-    const loader = document.getElementById('loader');
-  if (loader) {
-    loader.style.display = 'none';
-  }
-  document.body.classList.remove('overflow-hidden');
-  document.body.classList.remove('h-screen');
-  }, 500);
- 
-});
+      const loader = document.getElementById('loader');
+      if (loader) {
+        loader.classList.add('opacity-0');
+        loader.classList.remove('opacity-1');
+      }
+    }, 0);
+    setTimeout(() => {
+      const loader = document.getElementById('loader');
+      if (loader) {
+        loader.style.display = 'none';
+      }
+      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove('h-screen');
+    }, 500);
+  
+  });
   </script>
   <% } %>
