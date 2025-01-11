@@ -17,7 +17,12 @@ interface UsersSection {
     >[];
 }
 function UsersSection({ users }: UsersSection) {
-    if (users.length < 3 || !storageEmpresa?.setting.shows.users) return null;
+    if (
+        users.length < 3 ||
+        !storageEmpresa?.setting.shows.users ||
+        !storageEmpresa?.setting.isEccomerce
+    )
+        return null;
     return (
         <section
             data-aos={`${
