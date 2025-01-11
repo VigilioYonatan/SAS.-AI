@@ -24,8 +24,8 @@ function ProductsUsers({
     productsmostcommentsmapped,
 }: ProductsUsersProps) {
     if (!storageEmpresa?.setting.isEccomerce) return null;
-    if (!storageEmpresa?.setting.shows.offers_user) return null;
 
+    if (!storageEmpresa?.setting.shows.offers_user) return null;
     return (
         <section
             data-aos={`${
