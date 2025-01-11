@@ -18,7 +18,6 @@ import { UsersSchema } from "@/users/schemas/users.schema";
 import CategoriesSection from "./components/CategoriesSection";
 import BrandsSection from "./components/BrandsSection";
 import { BrandsSchemaFromServer } from "@/products/schemas/brands.schema";
-import ServiciosSection from "./components/ServiciosSection";
 import ProductsUsers from "./components/ProductsUsers";
 import { GridBannerSchema } from "@/empresas/schemas/grid_banner.schema";
 import GridBanners from "./components/GridBanners";
@@ -104,7 +103,6 @@ function HomePage({
                     productlatestmapped={productlatestmapped}
                     productmostdiscountmapped={productmostdiscountmapped}
                 />
-                <ServiciosSection servicios={header.categoriesServices} />
                 <GridBanners grid={gridbanners} i={4} />
                 <GridBanners grid={gridbanners} i={5} />
                 <CategoriesProductSection
