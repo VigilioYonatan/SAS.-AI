@@ -144,7 +144,6 @@ export async function initial() {
         //     where: { id: empresa!.id },
         //     defaults: { isProduction: false }, // Valores predeterminados si se crea
         // });
-        await empresa.update({ isProduction: false });
         const gridBanners = await GridBanner.findAll({
             where: {
                 empresa_id: empresa.id,
