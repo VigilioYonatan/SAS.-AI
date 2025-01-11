@@ -1,3 +1,6 @@
+<script>
+  <%-  locals.$empresa?.setting.web_script %>
+</script>
 <% if($empresa.setting?.type_loader !== "null"){  %>
 <div id="loader" class="vigilio-loader-1 opacity-1 bg-background-light  dark:bg-paper-dark">
   <% if($empresa.setting?.type_loader ==="one"){  %>
@@ -308,21 +311,21 @@
   document.body.classList.add('overflow-hidden');
   document.body.classList.add('h-screen');
   setTimeout(() => {
-    const loader = document.getElementById('loader');
-    if (loader) {
-      loader.classList.add('opacity-0');
-      loader.classList.remove('opacity-1');
-    }
+  const loader = document.getElementById('loader');
+  if (loader) {
+  loader.classList.add('opacity-0');
+  loader.classList.remove('opacity-1');
+  }
   }, 1000);
 
   setTimeout(() => {
-    const loader = document.getElementById('loader');
-    if (loader) {
-      loader.style.display = 'none';
-    }
-    document.body.classList.remove('overflow-hidden');
-    document.body.classList.remove('h-screen');
+  const loader = document.getElementById('loader');
+  if (loader) {
+  loader.style.display = 'none';
+  }
+  document.body.classList.remove('overflow-hidden');
+  document.body.classList.remove('h-screen');
 
   }, 1500);
-</script>
-<% } %>
+  </script>
+  <% } %>
