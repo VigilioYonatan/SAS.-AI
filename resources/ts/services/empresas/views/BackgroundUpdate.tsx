@@ -23,10 +23,9 @@ import {
 
 interface BackgroundUpdateProps {
     id: number;
-    onClose: () => void;
     refetch: (clean?: boolean) => void;
 }
-function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
+function BackgroundUpdate({ id, refetch }: BackgroundUpdateProps) {
     const { guards } = useAuthstore();
     if (!guards.permissionAdminGuard()) {
         window.history.back();
@@ -80,7 +79,6 @@ function BackgroundUpdate({ id, onClose, refetch }: BackgroundUpdateProps) {
                                 icon: "success",
                                 title: "Se realizó los cambios correctament",
                             });
-                            onClose();
                             refetch(false);
                         },
                         onError(error) {

@@ -23,6 +23,7 @@ function ProductsUsers({
     productsmostratingmapped,
     productsmostcommentsmapped,
 }: ProductsUsersProps) {
+    if (!storageEmpresa?.setting.isEccomerce) return null;
     if (!storageEmpresa?.setting.shows.offers_user) return null;
 
     return (

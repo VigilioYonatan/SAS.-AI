@@ -17,6 +17,7 @@ function OfferSection({
     productsoffert8mapped,
     productlatestmapped,
 }: OfferSectionProps) {
+    if (!storageEmpresa?.setting.isEccomerce) return null;
     if (!productsoffert8mapped) return null;
     if (!productlatestmapped) return null;
     if (!productlatestmapped) return null;

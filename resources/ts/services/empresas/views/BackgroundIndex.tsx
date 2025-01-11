@@ -82,31 +82,26 @@ function BackgroundIndex() {
                                                         type="button"
                                                         aria-label="edit"
                                                         onClick={() => {
-                                                            sweetModal(
-                                                                (onclose) => ({
-                                                                    html: reactComponent(
-                                                                        <BackgroundUpdate
-                                                                            id={
-                                                                                background.id
-                                                                            }
-                                                                            onClose={
-                                                                                onclose
-                                                                            }
-                                                                            refetch={
-                                                                                backgroundIndexQuery.refetch
-                                                                            }
-                                                                        />
-                                                                    ),
-                                                                    showCloseButton:
-                                                                        true,
-                                                                    sweetWidth:
-                                                                        "1300px",
-                                                                    isCloseInBackground:
-                                                                        false,
-                                                                    position:
-                                                                        "start",
-                                                                })
-                                                            );
+                                                            sweetModal(() => ({
+                                                                html: reactComponent(
+                                                                    <BackgroundUpdate
+                                                                        id={
+                                                                            background.id
+                                                                        }
+                                                                        refetch={
+                                                                            backgroundIndexQuery.refetch
+                                                                        }
+                                                                    />
+                                                                ),
+                                                                showCloseButton:
+                                                                    true,
+                                                                sweetWidth:
+                                                                    "1300px",
+                                                                isCloseInBackground:
+                                                                    false,
+                                                                position:
+                                                                    "start",
+                                                            }));
                                                         }}
                                                     >
                                                         <i class="fa-solid fa-pen" />{" "}

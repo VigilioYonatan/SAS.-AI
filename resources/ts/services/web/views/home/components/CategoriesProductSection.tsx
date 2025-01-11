@@ -11,6 +11,7 @@ interface CategoriesProductSectionProps {
 function CategoriesProductSection({
     getProductsByCategories,
 }: CategoriesProductSectionProps) {
+    if (!storageEmpresa?.setting.isEccomerce) return null;
     if (!getProductsByCategories.length) return null;
     const isEccomerce = storageEmpresa?.setting.type_card === "eccomerce";
 

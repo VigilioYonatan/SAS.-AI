@@ -12,6 +12,7 @@ interface categoriesSectionProps {
     categories: CategoriesSchema[];
 }
 function CategoriesSection({ categories }: categoriesSectionProps) {
+    if (!storageEmpresa?.setting.isEccomerce) return null;
     if (!categories.length || !storageEmpresa?.setting.shows.categories_slider)
         return null;
 

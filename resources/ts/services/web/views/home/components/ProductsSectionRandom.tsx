@@ -17,6 +17,7 @@ function ProductsSectionRandom({
     productlatestmapped,
     productmostdiscountmapped,
 }: ProductsSectionRandomProps) {
+    if (!storageEmpresa?.setting.isEccomerce) return null;
     if (!storageEmpresa?.setting.shows.offers_section) return null;
 
     return (

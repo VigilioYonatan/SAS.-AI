@@ -89,12 +89,11 @@ function BannersIndex() {
                                             type="button"
                                             class="bg-primary px-4 py-1 rounded-md"
                                             onClick={() => {
-                                                sweetModal((onClose) => ({
+                                                sweetModal(() => ({
                                                     html: reactComponent(
                                                         <GridBannerUpdate
                                                             grid={grid}
                                                             i={g}
-                                                            onClose={onClose}
                                                             refetch={
                                                                 gridBannerIndexQuery.refetch
                                                             }
@@ -435,15 +434,9 @@ function BannersIndex() {
 interface GridBannerEditProps {
     grid: GridBannerSchema;
     i: number;
-    onClose: () => void;
     refetch: (clean?: boolean) => void;
 }
-export function GridBannerUpdate({
-    grid,
-    i,
-    onClose,
-    refetch,
-}: GridBannerEditProps) {
+export function GridBannerUpdate({ grid, i, refetch }: GridBannerEditProps) {
     const gridUpdateMutation = gridBannerUpdateApi(grid.id);
     const gridUpdateForm = useForm<GridBannerUpdateDto>({
         resolver: valibotVigilio(gridBannerUpdateDto),
@@ -463,7 +456,6 @@ export function GridBannerUpdate({
                             title: "Editado correctamente",
                             icon: "success",
                         });
-                        onClose();
                         refetch(false);
                     },
                     onError(error) {

@@ -46,12 +46,11 @@ function ServiciosPageIndex({
                             type="button"
                             class="bg-primary px-4 py-1 rounded-md"
                             onClick={() => {
-                                sweetModal((onClose) => ({
+                                sweetModal(() => ({
                                     html: reactComponent(
                                         <GridBannerUpdate
                                             grid={f}
                                             i={g}
-                                            onClose={onClose}
                                             refetch={refetch}
                                         />
                                     ),
@@ -84,13 +83,12 @@ function ServiciosPageIndex({
 interface GridBannerEditProps {
     grid: GridBannerSchema;
     i: number;
-    onClose: () => void;
     refetch: (clean?: boolean) => void;
 }
 export function GridBannerUpdate({
     grid,
     i,
-    onClose,
+
     refetch,
 }: GridBannerEditProps) {
     const gridUpdateMutation = gridBannerPageUpdateApi(grid.id);
@@ -124,7 +122,6 @@ export function GridBannerUpdate({
                             title: "Editado correctamente",
                             icon: "success",
                         });
-                        onClose();
                         refetch(false);
                     },
                     onError(error) {
