@@ -38,14 +38,13 @@ export async function initialMiddleware(
                           },
                       })
                     : [],
-                empresa.setting.isEccomerce
-                    ? Categories.findAll({
-                          where: {
-                              empresa_id: empresa.id,
-                              isService: true,
-                          },
-                      })
-                    : [],
+
+                Categories.findAll({
+                    where: {
+                        empresa_id: empresa.id,
+                        isService: true,
+                    },
+                }),
                 empresa.setting.isEccomerce ? Product(empresa, false).count : 0,
                 empresa.setting.isEccomerce
                     ? Brands.findAll({
