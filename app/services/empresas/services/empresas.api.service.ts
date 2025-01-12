@@ -87,192 +87,192 @@ export async function initial() {
         if (empresa.telegram_token) {
             await initializeBot(empresa, empresa.telegram_token);
         }
-        // tipos finanzas
-        const pageHome = await Page.findOne({
-            where: {
-                slug: "home",
-                empresa_id: empresa.id,
-            },
-        });
-
-        if (!pageHome) {
-            await Page.create({
-                title: "Home",
-                description: `En ${empresa.name_empresa}, ofrecemos una amplia variedad de productos de alta calidad a precios inmejorables, encontrarás todo lo que necesitas en un solo lugar. Disfruta de envíos rápidos, devoluciones fáciles y un servicio al cliente excepcional. ¡Explora nuestras ofertas diarias y descubre la diferencia de comprar en Tienda XYZ!`,
-                slug: "home",
-                empresa_id: empresa.id,
-                icon: "<i class='fas fa-home'></i>",
-                queries: [],
-                isDinamic: false,
-                enabledHeaderPage: true,
-            });
-        }
-        // const finanzas = await TipoFinanza.findAll();
-        const bg_color_header = await Settings.findOrCreate({
-            where: { empresa_id: empresa!.id },
-            defaults: { bg_color_header: "transparent" }, // Valores predeterminados si se crea
-        });
-        const isLogin = await Settings.findOrCreate({
-            where: { empresa_id: empresa!.id },
-            defaults: { isLogin: true }, // Valores predeterminados si se crea
-        });
-        const products_limit = await Settings.findOrCreate({
-            where: { empresa_id: empresa!.id },
-            defaults: { products_limit: 10 }, // Valores predeterminados si se crea
-        });
-        const products_limit_offer = await Settings.findOrCreate({
-            where: { empresa_id: empresa!.id },
-            defaults: { products_limit_offer: 4 }, // Valores predeterminados si se crea
-        });
-        const isEccomerce = await Settings.findOrCreate({
-            where: { empresa_id: empresa!.id },
-            defaults: { isEccomerce: 4 }, // Valores predeterminados si se crea
-        });
-        const type_loader = await Settings.findOrCreate({
-            where: { empresa_id: empresa!.id },
-            defaults: { type_loader: "null" }, // Valores predeterminados si se crea
-        });
-        const text_color = await Settings.findOrCreate({
-            where: { empresa_id: empresa!.id },
-            defaults: { text_color: "transparent" }, // Valores predeterminados si se crea
-        });
-        const enabled_zoho_mail = await Empresas.findOrCreate({
-            where: { id: empresa!.id },
-            defaults: { enabled_zoho_mail: false }, // Valores predeterminados si se crea
-        });
-        // const isProduction = await Empresas.findOrCreate({
-        //     where: { id: empresa!.id },
-        //     defaults: { isProduction: false }, // Valores predeterminados si se crea
+        // // tipos finanzas
+        // const pageHome = await Page.findOne({
+        //     where: {
+        //         slug: "home",
+        //         empresa_id: empresa.id,
+        //     },
         // });
-        const gridBanners = await GridBanner.findAll({
-            where: {
-                empresa_id: empresa.id,
-            },
-        });
-        const pages = await Page.findAll({
-            where: {
-                empresa_id: empresa.id,
-            },
-        });
-        const queries = await Page.findOrCreate({
-            where: { empresa_id: empresa!.id },
-            defaults: { queries: [] }, // Valores predeterminados si se crea
-        });
-        if (!bg_color_header[1] && !bg_color_header[0].bg_color_header) {
-            // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await bg_color_header[0].update({ bg_color_header: "transparent" });
-        }
-        if (!isLogin[1] && !isLogin[0].isLogin) {
-            // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await isLogin[0].update({ isLogin: true });
-        }
-        if (!queries[1] && !queries[0].queries) {
-            // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await queries[0].update({ queries: [] });
-        }
-        // if (!isProduction[1] && !isProduction[0].isProduction) {
-        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //     await isProduction[0].update({ isProduction: true });
+
+        // if (!pageHome) {
+        //     await Page.create({
+        //         title: "Home",
+        //         description: `En ${empresa.name_empresa}, ofrecemos una amplia variedad de productos de alta calidad a precios inmejorables, encontrarás todo lo que necesitas en un solo lugar. Disfruta de envíos rápidos, devoluciones fáciles y un servicio al cliente excepcional. ¡Explora nuestras ofertas diarias y descubre la diferencia de comprar en Tienda XYZ!`,
+        //         slug: "home",
+        //         empresa_id: empresa.id,
+        //         icon: "<i class='fas fa-home'></i>",
+        //         queries: [],
+        //         isDinamic: false,
+        //         enabledHeaderPage: true,
+        //     });
         // }
-        if (!enabled_zoho_mail[1] && !enabled_zoho_mail[0].enabled_zoho_mail) {
-            // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await enabled_zoho_mail[0].update({
-                enabled_zoho_mail: false,
-            });
-        }
-        if (!isEccomerce[1] && !isEccomerce[0].isEccomerce) {
-            // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await isEccomerce[0].update({
-                isEccomerce: true,
-            });
-        }
-        if (!products_limit[1] && !products_limit[0].products_limit) {
-            // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await products_limit[0].update({
-                products_limit: 5,
-            });
-        }
-        if (
-            !products_limit_offer[1] &&
-            !products_limit_offer[0].products_limit_offer
-        ) {
-            // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await products_limit[0].update({
-                products_limit_offer: 4,
-            });
-        }
-        if (!type_loader[1] && !type_loader[0].type_loader) {
-            // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await type_loader[0].update({
-                type_loader: "null" as Settings["type_loader"],
-            });
-        }
-        if (!text_color[1] && !text_color[0].text_color) {
-            // Si ya existía el registro pero el valor está vacío, actualizarlo
-            await text_color[0].update({
-                text_color: "transparent" as Settings["text_color"],
-            });
-        }
+        // // const finanzas = await TipoFinanza.findAll();
+        // const bg_color_header = await Settings.findOrCreate({
+        //     where: { empresa_id: empresa!.id },
+        //     defaults: { bg_color_header: "transparent" }, // Valores predeterminados si se crea
+        // });
+        // const isLogin = await Settings.findOrCreate({
+        //     where: { empresa_id: empresa!.id },
+        //     defaults: { isLogin: true }, // Valores predeterminados si se crea
+        // });
+        // const products_limit = await Settings.findOrCreate({
+        //     where: { empresa_id: empresa!.id },
+        //     defaults: { products_limit: 10 }, // Valores predeterminados si se crea
+        // });
+        // const products_limit_offer = await Settings.findOrCreate({
+        //     where: { empresa_id: empresa!.id },
+        //     defaults: { products_limit_offer: 4 }, // Valores predeterminados si se crea
+        // });
+        // const isEccomerce = await Settings.findOrCreate({
+        //     where: { empresa_id: empresa!.id },
+        //     defaults: { isEccomerce: true }, // Valores predeterminados si se crea
+        // });
+        // const type_loader = await Settings.findOrCreate({
+        //     where: { empresa_id: empresa!.id },
+        //     defaults: { type_loader: "null" }, // Valores predeterminados si se crea
+        // });
+        // const text_color = await Settings.findOrCreate({
+        //     where: { empresa_id: empresa!.id },
+        //     defaults: { text_color: "transparent" }, // Valores predeterminados si se crea
+        // });
+        // const enabled_zoho_mail = await Empresas.findOrCreate({
+        //     where: { id: empresa!.id },
+        //     defaults: { enabled_zoho_mail: false }, // Valores predeterminados si se crea
+        // });
+        // // const isProduction = await Empresas.findOrCreate({
+        // //     where: { id: empresa!.id },
+        // //     defaults: { isProduction: false }, // Valores predeterminados si se crea
+        // // });
+        // const gridBanners = await GridBanner.findAll({
+        //     where: {
+        //         empresa_id: empresa.id,
+        //     },
+        // });
+        // const pages = await Page.findAll({
+        //     where: {
+        //         empresa_id: empresa.id,
+        //     },
+        // });
+        // const queries = await Page.findOrCreate({
+        //     where: { empresa_id: empresa!.id },
+        //     defaults: { queries: [] }, // Valores predeterminados si se crea
+        // });
+        // if (!bg_color_header[1] && !bg_color_header[0].bg_color_header) {
+        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //     await bg_color_header[0].update({ bg_color_header: "transparent" });
+        // }
+        // if (!isLogin[1] && !isLogin[0].isLogin) {
+        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //     await isLogin[0].update({ isLogin: true });
+        // }
+        // if (!queries[1] && !queries[0].queries) {
+        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //     await queries[0].update({ queries: [] });
+        // }
+        // // if (!isProduction[1] && !isProduction[0].isProduction) {
+        // //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        // //     await isProduction[0].update({ isProduction: true });
+        // // }
+        // if (!enabled_zoho_mail[1] && !enabled_zoho_mail[0].enabled_zoho_mail) {
+        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //     await enabled_zoho_mail[0].update({
+        //         enabled_zoho_mail: false,
+        //     });
+        // }
+        // if (!isEccomerce[1] && !isEccomerce[0].isEccomerce) {
+        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //     await isEccomerce[0].update({
+        //         isEccomerce: true,
+        //     });
+        // }
+        // if (!products_limit[1] && !products_limit[0].products_limit) {
+        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //     await products_limit[0].update({
+        //         products_limit: 5,
+        //     });
+        // }
+        // if (
+        //     !products_limit_offer[1] &&
+        //     !products_limit_offer[0].products_limit_offer
+        // ) {
+        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //     await products_limit[0].update({
+        //         products_limit_offer: 4,
+        //     });
+        // }
+        // if (!type_loader[1] && !type_loader[0].type_loader) {
+        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //     await type_loader[0].update({
+        //         type_loader: "null" as Settings["type_loader"],
+        //     });
+        // }
+        // if (!text_color[1] && !text_color[0].text_color) {
+        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //     await text_color[0].update({
+        //         text_color: "transparent" as Settings["text_color"],
+        //     });
+        // }
 
-        if (gridBanners.length < 6) {
-            await Promise.all(
-                Array.from({ length: 5 }).map(async () => {
-                    await GridBanner.create({
-                        html: null,
-                        enabled: false,
-                        empresa_id: empresa!.id,
-                        title: null,
-                    });
-                })
-            );
-        }
-        await Promise.all(
-            pages.map(async (page) => {
-                const isDinamic = await Page.findOrCreate({
-                    where: { id: page.id, empresa_id: empresa!.id },
-                    defaults: { isDinamic: false }, // Valores predeterminados si se crea
-                });
-                const enabledHeaderPage = await Page.findOrCreate({
-                    where: { id: page.id, empresa_id: empresa!.id },
-                    defaults: { enabledHeaderPage: false }, // Valores predeterminados si se crea
-                });
+        // if (gridBanners.length < 6) {
+        //     await Promise.all(
+        //         Array.from({ length: 5 }).map(async () => {
+        //             await GridBanner.create({
+        //                 html: null,
+        //                 enabled: false,
+        //                 empresa_id: empresa!.id,
+        //                 title: null,
+        //             });
+        //         })
+        //     );
+        // }
+        // await Promise.all(
+        //     pages.map(async (page) => {
+        //         const isDinamic = await Page.findOrCreate({
+        //             where: { id: page.id, empresa_id: empresa!.id },
+        //             defaults: { isDinamic: false }, // Valores predeterminados si se crea
+        //         });
+        //         const enabledHeaderPage = await Page.findOrCreate({
+        //             where: { id: page.id, empresa_id: empresa!.id },
+        //             defaults: { enabledHeaderPage: false }, // Valores predeterminados si se crea
+        //         });
 
-                if (!isDinamic[1] && !isDinamic[0].isDinamic) {
-                    // Si ya existía el registro pero el valor está vacío, actualizarlo
-                    await isDinamic[0].update({
-                        isDinamic: false,
-                    });
-                }
-                if (
-                    !enabledHeaderPage[1] &&
-                    !enabledHeaderPage[0].enabledHeaderPage
-                ) {
-                    // Si ya existía el registro pero el valor está vacío, actualizarlo
-                    await enabledHeaderPage[0].update({
-                        enabledHeaderPage: false,
-                    });
-                }
-                const gridBannersPage = await GridBannerPage.findAll({
-                    where: {
-                        empresa_id: empresa.id,
-                        page_id: page.id,
-                    },
-                });
-                if (gridBannersPage.length < 6) {
-                    await Promise.all(
-                        Array.from({ length: 5 }).map(async () => {
-                            await GridBannerPage.create({
-                                html: null,
-                                enabled: false,
-                                empresa_id: empresa!.id,
-                                title: null,
-                                page_id: page.id,
-                            });
-                        })
-                    );
-                }
-            })
-        );
+        //         if (!isDinamic[1] && !isDinamic[0].isDinamic) {
+        //             // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //             await isDinamic[0].update({
+        //                 isDinamic: false,
+        //             });
+        //         }
+        //         if (
+        //             !enabledHeaderPage[1] &&
+        //             !enabledHeaderPage[0].enabledHeaderPage
+        //         ) {
+        //             // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //             await enabledHeaderPage[0].update({
+        //                 enabledHeaderPage: false,
+        //             });
+        //         }
+        //         const gridBannersPage = await GridBannerPage.findAll({
+        //             where: {
+        //                 empresa_id: empresa.id,
+        //                 page_id: page.id,
+        //             },
+        //         });
+        //         if (gridBannersPage.length < 6) {
+        //             await Promise.all(
+        //                 Array.from({ length: 5 }).map(async () => {
+        //                     await GridBannerPage.create({
+        //                         html: null,
+        //                         enabled: false,
+        //                         empresa_id: empresa!.id,
+        //                         title: null,
+        //                         page_id: page.id,
+        //                     });
+        //                 })
+        //             );
+        //         }
+        //     })
+        // );
 
         openAis = { ...openAis, [empresa.slug]: openAiClient };
     }
