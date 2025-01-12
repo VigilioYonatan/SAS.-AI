@@ -168,7 +168,8 @@ export class WebService {
         let data = [];
         if (queryFind) {
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            data = await getQueries(empresa, pageFind, { slug } as any);
+            const [a] = await getQueries(empresa, pageFind, { slug } as any);
+            data = a;
         } else {
             const [attributes, join] = await joins(crud, empresa);
             data = await sequelize.query(
