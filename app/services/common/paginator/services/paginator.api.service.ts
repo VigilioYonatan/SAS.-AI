@@ -976,15 +976,16 @@ export class PaginatorApiServices {
                             ).toUpperCase()}'`
                     );
                     try {
+                        const searchCondition = search?.length
+                            ? `AND "${crud.name}"."nombre" ILIKE '${searchLowerCase}'`
+                            : "";
+
                         data = await Promise.all([
                             sequelize.query(
                                 query
-                                    ? `${query} ${
-                                          search?.length
-                                              ? `  ("${crud.name}"."nombre" ILIKE '${searchLowerCase}' OR "${crud.name}"."name" ILIKE '${searchLowerCase}' OR "${crud.name}"."slug" ILIKE '${searchLowerCase}')
-  AND   ("${crud.name}"."nombre" IS NOT NULL OR "${crud.name}"."name" IS NOT NULL OR "${crud.name}"."slug" IS NOT NULL)`
-                                              : ""
-                                      } ${wheres.length ? wheres.join(" ") : ""}
+                                    ? `${query} ${searchCondition} ${
+                                          wheres.length ? wheres.join(" ") : ""
+                                      }
                                  ${
                                      orders.length
                                          ? `ORDER BY ${orders.join(", ")}`
@@ -998,12 +999,9 @@ export class PaginatorApiServices {
                                       } FROM "${crud.name}" ${join}
                                 WHERE "${
                                     crud.name
-                                }"."empresa_id" = :empresa_id ${
-                                          search?.length
-                                              ? `  ("${crud.name}"."nombre" ILIKE '${searchLowerCase}' OR "${crud.name}"."name" ILIKE '${searchLowerCase}' OR "${crud.name}"."slug" ILIKE '${searchLowerCase}')
-  AND   ("${crud.name}"."nombre" IS NOT NULL OR "${crud.name}"."name" IS NOT NULL OR "${crud.name}"."slug" IS NOT NULL) `
-                                              : ""
-                                      } ${wheres.length ? wheres.join(" ") : ""}
+                                }"."empresa_id" = :empresa_id ${searchCondition} ${
+                                          wheres.length ? wheres.join(" ") : ""
+                                      }
                                  ${
                                      orders.length
                                          ? `ORDER BY ${orders.join(", ")}`
@@ -1023,12 +1021,9 @@ export class PaginatorApiServices {
                                 `SELECT COUNT(*) FROM "${crud.name}" 
                                 WHERE "${
                                     crud.name
-                                }"."empresa_id" = :empresa_id ${
-                                    search?.length
-                                        ? `  ("${crud.name}"."nombre" ILIKE '${searchLowerCase}' OR "${crud.name}"."name" ILIKE '${searchLowerCase}' OR "${crud.name}"."slug" ILIKE '${searchLowerCase}')
-  AND   ("${crud.name}"."nombre" IS NOT NULL OR "${crud.name}"."name" IS NOT NULL OR "${crud.name}"."slug" IS NOT NULL)`
-                                        : ""
-                                } ${wheres.length ? wheres.join(" ") : ""}`,
+                                }"."empresa_id" = :empresa_id ${searchCondition} ${
+                                    wheres.length ? wheres.join(" ") : ""
+                                }`,
                                 {
                                     replacements: {
                                         empresa_id: empresa.id,
