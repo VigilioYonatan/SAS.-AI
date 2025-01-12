@@ -381,27 +381,30 @@ function CrudStore({ refetch }: CrudStoreProps) {
             });
             return;
         }
-        sweetModal({ title: "¿Estas seguro de agregar este crud?" }).then(
-            ({ isConfirmed }) => {
-                if (isConfirmed) {
-                    crudStoreMutation.mutate(body, {
-                        onSuccess() {
-                            sweetAlert({
-                                title: "Agregado correctamente",
-                                icon: "success",
-                            });
-                            refetch(false);
-                        },
-                        onError(err) {
-                            sweetAlert({
-                                title: err.message,
-                                icon: "danger",
-                            });
-                        },
-                    });
-                }
+        sweetModal({
+            title: "¿Estas seguro de agregar este crud?",
+            showCancelButton: true,
+            showCloseButton: true,
+            isCloseInBackground: false,
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                crudStoreMutation.mutate(body, {
+                    onSuccess() {
+                        sweetAlert({
+                            title: "Agregado correctamente",
+                            icon: "success",
+                        });
+                        refetch(false);
+                    },
+                    onError(err) {
+                        sweetAlert({
+                            title: err.message,
+                            icon: "danger",
+                        });
+                    },
+                });
             }
-        );
+        });
     }
     const arrayData = useFieldArray({
         name: "data",
@@ -1084,6 +1087,7 @@ function CrudUpdate({ refetch, crud }: CrudUpdateProps) {
             title: "¿Estas seguro de editar este crud?",
             showCancelButton: true,
             showCloseButton: true,
+            isCloseInBackground: false,
         }).then(({ isConfirmed }) => {
             if (isConfirmed) {
                 crudStoreMutation.mutate(body, {

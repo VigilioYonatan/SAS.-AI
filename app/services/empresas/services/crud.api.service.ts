@@ -138,7 +138,16 @@ export class CrudApiService {
                 empresa,
                 {
                     icon: body.icon,
-                    queries: [],
+                    queries: [
+                        {
+                            key: "data",
+                            query: `SELECT * FROM ${capitalize(
+                                body.name
+                            )} WHERE "${capitalize(
+                                body.name
+                            )}"."empresa_id" = :empresa_id`,
+                        },
+                    ],
                     slug: body.slug,
                     description: "",
                     empresa_id: empresa.id,
@@ -152,7 +161,18 @@ export class CrudApiService {
         if (body.isDynamicPage) {
             await this.pagesApiService.store(empresa, {
                 icon: body.icon,
-                queries: [],
+                queries: [
+                    {
+                        key: "data",
+                        query: `SELECT * FROM ${capitalize(
+                            body.name
+                        )} WHERE "${capitalize(
+                            body.name
+                        )}"."empresa_id" = :empresa_id AND "${capitalize(
+                            body.name
+                        )}"."slug" = :slug`,
+                    },
+                ],
                 slug: `:${body.slug}`,
                 description: "",
                 empresa_id: empresa.id,
