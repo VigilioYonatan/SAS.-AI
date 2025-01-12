@@ -1,4 +1,6 @@
+import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import Root from "react-shadow";
+import { isColorLight } from "~/libs/helpers";
 import useThemeStore from "~/stores/theme.store";
 interface QuillTextProps {
     text: string;
@@ -13,7 +15,11 @@ function QuillText({ text }: QuillTextProps) {
                     __html: text,
                 }}
                 style={{
-                    color: themeStore.state === "dark" ? "white" : "black",
+                    color:
+                        themeStore.state === "dark" &&
+                        !isColorLight(storageEmpresa!.setting.bg_color)
+                            ? "white"
+                            : "black",
                 }}
             />
             <style jsx>{`

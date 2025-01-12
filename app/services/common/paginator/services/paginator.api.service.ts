@@ -56,8 +56,7 @@ export class PaginatorApiServices {
             } & Record<string, string>;
             req: Request;
         },
-        query?: string,
-        searchLike?: string
+        query?: string
     ) {
         const {
             limit = "20",
