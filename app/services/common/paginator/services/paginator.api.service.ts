@@ -56,7 +56,8 @@ export class PaginatorApiServices {
             } & Record<string, string>;
             req: Request;
         },
-        query?: string
+        query?: string,
+        searchLike?: string
     ) {
         const {
             limit = "20",
@@ -981,7 +982,8 @@ export class PaginatorApiServices {
                                 query
                                     ? `${query} ${
                                           search?.length
-                                              ? `AND "${crud.name}"."name" ILIKE '${searchLowerCase}'`
+                                              ? `  ("${crud.name}"."nombre" ILIKE '${searchLowerCase}' OR "${crud.name}"."name" ILIKE '${searchLowerCase}' OR "${crud.name}"."slug" ILIKE '${searchLowerCase}')
+  AND   ("${crud.name}"."nombre" IS NOT NULL OR "${crud.name}"."name" IS NOT NULL OR "${crud.name}"."slug" IS NOT NULL)`
                                               : ""
                                       } ${wheres.length ? wheres.join(" ") : ""}
                                  ${
@@ -999,7 +1001,8 @@ export class PaginatorApiServices {
                                     crud.name
                                 }"."empresa_id" = :empresa_id ${
                                           search?.length
-                                              ? `AND "${crud.name}"."name" ILIKE '${searchLowerCase}'`
+                                              ? `  ("${crud.name}"."nombre" ILIKE '${searchLowerCase}' OR "${crud.name}"."name" ILIKE '${searchLowerCase}' OR "${crud.name}"."slug" ILIKE '${searchLowerCase}')
+  AND   ("${crud.name}"."nombre" IS NOT NULL OR "${crud.name}"."name" IS NOT NULL OR "${crud.name}"."slug" IS NOT NULL) `
                                               : ""
                                       } ${wheres.length ? wheres.join(" ") : ""}
                                  ${
@@ -1023,7 +1026,8 @@ export class PaginatorApiServices {
                                     crud.name
                                 }"."empresa_id" = :empresa_id ${
                                     search?.length
-                                        ? `AND "${crud.name}"."name" ILIKE '${searchLowerCase}'`
+                                        ? `  ("${crud.name}"."nombre" ILIKE '${searchLowerCase}' OR "${crud.name}"."name" ILIKE '${searchLowerCase}' OR "${crud.name}"."slug" ILIKE '${searchLowerCase}')
+  AND   ("${crud.name}"."nombre" IS NOT NULL OR "${crud.name}"."name" IS NOT NULL OR "${crud.name}"."slug" IS NOT NULL)`
                                         : ""
                                 } ${wheres.length ? wheres.join(" ") : ""}`,
                                 {
