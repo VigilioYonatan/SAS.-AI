@@ -167,10 +167,8 @@ export class WebService {
         const queryFind = pageFind.queries.find((key) => key.key === "data");
         let data = [];
         if (queryFind) {
-            data = await sequelize.query(queryFind.query, {
-                replacements: { empresa_id: empresa.id, slug },
-                type: QueryTypes.SELECT,
-            });
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            data = await getQueries(empresa, pageFind, { slug } as any);
         } else {
             const [attributes, join] = await joins(crud, empresa);
             data = await sequelize.query(
