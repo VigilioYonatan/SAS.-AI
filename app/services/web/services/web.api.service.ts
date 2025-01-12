@@ -641,45 +641,59 @@ export class WebApiService {
                 order: [["id", "ASC"]],
                 include: [GridBanner],
             })) as GridBannerPage[];
-            const queries = await getQueries(empresa, page);
             const pagina: {
                 title: string;
                 description: string;
                 grid_banner_pages: GridBannerPage[];
                 type_page: string;
-                data: object[] | null;
                 paginator: unknown | null;
                 queries: null | object;
+                data: object[];
             } = {
                 title: page.title,
                 description: page.description,
                 grid_banner_pages,
                 type_page: "other_page",
-                data: [],
                 paginator: undefined,
-                queries,
+                queries: [],
+                data: [],
             };
             if (page.slug === "shop" || page.slug === "tienda") {
+                const queries = await getQueries(empresa, page);
                 const shop = await this.shop(empresa, user);
                 // pagina = { ...pagina, ...shop, type_page: "shop_page" };
-                return { ...pagina, ...shop, type_page: "shop_page" };
+                return { ...pagina, ...shop, queries, type_page: "shop_page" };
             }
             if (page.slug === "about" || page.slug === "nosotros") {
+                const queries = await getQueries(empresa, page);
                 const nosotros = await this.about(empresa);
-                return { ...pagina, ...nosotros, type_page: "nosotros_page" };
+                return {
+                    ...pagina,
+                    ...nosotros,
+                    queries,
+                    type_page: "nosotros_page",
+                };
             }
             if (page.slug === "services" || page.slug === "servicios") {
                 const servicios = await this.servicios(empresa);
-                return { ...pagina, ...servicios, type_page: "servicios_page" };
+                const queries = await getQueries(empresa, page);
+                return {
+                    ...pagina,
+                    ...servicios,
+                    queries,
+                    type_page: "servicios_page",
+                };
             }
             if (page.slug === "contact" || page.slug === "contacto") {
-                return { ...pagina, type_page: "contact_page" };
+                const queries = await getQueries(empresa, page);
+                return { ...pagina, type_page: "contact_page", queries };
             }
             const crud = await Crud.findOne({
                 where: { empresa_id: empresa.id, slug: slug.toLowerCase() },
             });
             let data = null;
             let paginator = null;
+            const queryFind = page.queries.find((key) => key.key === "data");
 
             if (crud) {
                 const [attributes, join] = await joins(crud, empresa);
@@ -703,16 +717,19 @@ export class WebApiService {
                         maxPagesShown: 3,
                     };
                     const { results, count } =
-                        await this.paginatorApiServices.index({
-                            model: crud.name as PaginatorModel,
-                            query: {
-                                limit: String(pagination.limit),
-                                offset: String(pagination.offset),
-                                search: query.search as string, // tu puedes tambien cambiar por letra
-                                ...query,
+                        await this.paginatorApiServices.index(
+                            {
+                                model: crud.name as PaginatorModel,
+                                query: {
+                                    limit: String(pagination.limit),
+                                    offset: String(pagination.offset),
+                                    search: query.search as string, // tu puedes tambien cambiar por letra
+                                    ...query,
+                                },
+                                req,
                             },
-                            req,
-                        });
+                            queryFind ? queryFind.query : undefined
+                        );
 
                     const total = count as number;
                     let startPage: number;
@@ -775,13 +792,15 @@ export class WebApiService {
                     data = results;
                 } else {
                     data = await sequelize.query(
-                        `SELECT  "${crud.name}".* ${
-                            attributes?.length ? `, ${attributes}` : ""
-                        } FROM "${crud.name}" ${join} WHERE "${
-                            crud.name
-                        }"."empresa_id" = :empresa_id ORDER BY "${
-                            crud.name
-                        }".id DESC`,
+                        queryFind
+                            ? queryFind.query
+                            : `SELECT  "${crud.name}".* ${
+                                  attributes?.length ? `, ${attributes}` : ""
+                              } FROM "${crud.name}" ${join} WHERE "${
+                                  crud.name
+                              }"."empresa_id" = :empresa_id ORDER BY "${
+                                  crud.name
+                              }".id DESC`,
                         {
                             replacements: { empresa_id: empresa.id },
                             type: QueryTypes.SELECT,
@@ -789,6 +808,17 @@ export class WebApiService {
                     );
                 }
             }
+            const queries = await getQueries(
+                empresa,
+                queryFind
+                    ? ({
+                          ...page.toJSON(),
+                          queries: page.queries.filter((q) => q.key !== "data"),
+                      } as Page)
+                    : page
+            );
+
+            pagina.queries = queries;
             pagina.data = relation(data);
             pagina.paginator = paginator;
             return pagina;

@@ -46,15 +46,18 @@ import { Crud } from "@/empresas/entities/crud.entity";
 
 @Injectable()
 export class PaginatorApiServices {
-    async index(props: {
-        model: PaginatorModel;
-        query: {
-            offset: string;
-            limit: string;
-            search: string;
-        } & Record<string, string>;
-        req: Request;
-    }) {
+    async index(
+        props: {
+            model: PaginatorModel;
+            query: {
+                offset: string;
+                limit: string;
+                search: string;
+            } & Record<string, string>;
+            req: Request;
+        },
+        query?: string
+    ) {
         const {
             limit = "20",
             offset = "0",
@@ -972,47 +975,70 @@ export class PaginatorApiServices {
                                 value as string
                             ).toUpperCase()}'`
                     );
-
-                    data = await Promise.all([
-                        sequelize.query(
-                            `SELECT  "${crud.name}".* ${
-                                attributes?.length ? `, ${attributes}` : ""
-                            } FROM "${crud.name}" ${join}
-                            WHERE "${crud.name}"."empresa_id" = :empresa_id ${
-                                search?.length
-                                    ? `AND "${crud.name}"."name" ILIKE '${searchLowerCase}'`
-                                    : ""
-                            } ${wheres.length ? wheres.join(" ") : ""}
-                             ${
-                                 orders.length
-                                     ? `ORDER BY ${orders.join(", ")}`
-                                     : ""
-                             } 
-                            OFFSET :offset LIMIT :limit`,
-                            {
-                                replacements: {
-                                    empresa_id: empresa.id,
-                                    offset: offsetConverted,
-                                    limit: limitConverted,
-                                },
-                                type: QueryTypes.SELECT,
-                            }
-                        ),
-                        sequelize.query(
-                            `SELECT COUNT(*) FROM "${crud.name}" 
-                            WHERE "${crud.name}"."empresa_id" = :empresa_id ${
-                                search?.length
-                                    ? `AND "${crud.name}"."name" ILIKE '${searchLowerCase}'`
-                                    : ""
-                            } ${wheres.length ? wheres.join(" ") : ""}`,
-                            {
-                                replacements: {
-                                    empresa_id: empresa.id,
-                                },
-                                type: QueryTypes.SELECT,
-                            }
-                        ),
-                    ]);
+                    try {
+                        data = await Promise.all([
+                            sequelize.query(
+                                query
+                                    ? `${query} ${
+                                          search?.length
+                                              ? `AND "${crud.name}"."name" ILIKE '${searchLowerCase}'`
+                                              : ""
+                                      } ${wheres.length ? wheres.join(" ") : ""}
+                                 ${
+                                     orders.length
+                                         ? `ORDER BY ${orders.join(", ")}`
+                                         : ""
+                                 } 
+                                OFFSET :offset LIMIT :limit`
+                                    : `SELECT  "${crud.name}".* ${
+                                          attributes?.length
+                                              ? `, ${attributes}`
+                                              : ""
+                                      } FROM "${crud.name}" ${join}
+                                WHERE "${
+                                    crud.name
+                                }"."empresa_id" = :empresa_id ${
+                                          search?.length
+                                              ? `AND "${crud.name}"."name" ILIKE '${searchLowerCase}'`
+                                              : ""
+                                      } ${wheres.length ? wheres.join(" ") : ""}
+                                 ${
+                                     orders.length
+                                         ? `ORDER BY ${orders.join(", ")}`
+                                         : ""
+                                 } 
+                                OFFSET :offset LIMIT :limit`,
+                                {
+                                    replacements: {
+                                        empresa_id: empresa.id,
+                                        offset: offsetConverted,
+                                        limit: limitConverted,
+                                    },
+                                    type: QueryTypes.SELECT,
+                                }
+                            ),
+                            sequelize.query(
+                                `SELECT COUNT(*) FROM "${crud.name}" 
+                                WHERE "${
+                                    crud.name
+                                }"."empresa_id" = :empresa_id ${
+                                    search?.length
+                                        ? `AND "${crud.name}"."name" ILIKE '${searchLowerCase}'`
+                                        : ""
+                                } ${wheres.length ? wheres.join(" ") : ""}`,
+                                {
+                                    replacements: {
+                                        empresa_id: empresa.id,
+                                    },
+                                    type: QueryTypes.SELECT,
+                                }
+                            ),
+                        ]);
+                    } catch (error) {
+                        throw new BadRequestException(
+                            `error ${(error as Error).message}`
+                        );
+                    }
 
                     data = [
                         relation(data[0]),

@@ -57,127 +57,116 @@ export class CrudApiService {
     }
 
     async store(empresa: Empresas, body: CrudStoreDto) {
-        try {
-            const tables = JSON.parse(
-                cache.get(`${empresa.slug}:TABLE`) || "[]"
-            );
+        const tables = JSON.parse(cache.get(`${empresa.slug}:TABLE`) || "[]");
 
-            if (
-                (tables as { name: string }[])
-                    .map((table) => table.name.toLowerCase())
-                    .includes(body.name.toLowerCase())
-            ) {
-                throw new BadRequestException(
-                    `Tabla ${body.name} ya existe en db`
-                );
-            }
-            const data = {
-                ...body,
-                empresa_id: empresa.id,
-                name: capitalize(body.name),
+        if (
+            (tables as { name: string }[])
+                .map((table) => table.name.toLowerCase())
+                .includes(body.name.toLowerCase())
+        ) {
+            throw new BadRequestException(`Tabla ${body.name} ya existe en db`);
+        }
+        const data = {
+            ...body,
+            empresa_id: empresa.id,
+            name: capitalize(body.name),
+        };
+        const crud = new Crud(data);
+        cache.delete(`${empresa.slug}:TABLE`);
+        await crud.save();
+        const queryInterface = sequelize.getQueryInterface();
+
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const options: any = body.data.map((data) => {
+            const { references, onDelete, onUpdate, ...rest } = data.options;
+            const options: Record<string, unknown> = {
+                ...rest,
+                defaultValue:
+                    data.options.defaultValue === ""
+                        ? null
+                        : data.options.defaultValue,
             };
-            const crud = new Crud(data);
-            cache.delete(`${empresa.slug}:TABLE`);
-            await crud.save();
-            const queryInterface = sequelize.getQueryInterface();
-
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            const options: any = body.data.map((data) => {
-                const { references, onDelete, onUpdate, ...rest } =
-                    data.options;
-                const options: Record<string, unknown> = {
-                    ...rest,
-                    defaultValue:
-                        data.options.defaultValue === ""
-                            ? null
-                            : data.options.defaultValue,
-                };
-                if (data.type === "FOREIGNKEY") {
-                    options.references = { model: references, key: "id" };
-                    options.onDelete = onDelete;
-                    options.onUpdate = onUpdate;
-                }
-                const fieldType =
-                    data.type === "FILE"
-                        ? DataTypes.JSON
-                        : data.type === "FOREIGNKEY"
-                        ? DataTypes.INTEGER
-                        : DataTypes[data.type];
-
-                return {
-                    [data.name]: {
-                        ...options,
-                        type: fieldType,
-                    },
-                };
-            });
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            const result = options.reduce((acc: any, field: any) => {
-                const fieldName = Object.keys(field)[0];
-                acc[fieldName] = field[fieldName];
-                return acc;
-            }, {});
-
-            // INTEGER,DECIMAL,BOOLEAN, STRING , TEXT, ARRAY, DATE, FILE
-            await queryInterface.createTable(capitalize(body.name), {
-                ...result,
-                slug: result.slug,
-                empresa_id: { type: DataTypes.INTEGER, references: "" },
-                id: {
-                    type: DataTypes.INTEGER,
-                    primaryKey: true,
-                    autoIncrement: true,
-                },
-                createdAt: {
-                    type: DataTypes.DATE,
-                    allowNull: false,
-                    defaultValue: Sequelize.fn("NOW"),
-                },
-                updatedAt: {
-                    type: DataTypes.DATE,
-                    allowNull: false,
-                    defaultValue: Sequelize.fn("NOW"),
-                },
-            });
-            if (body.isCreatePage) {
-                await this.pagesApiService.store(
-                    empresa,
-                    {
-                        icon: body.icon,
-                        queries: [],
-                        slug: body.slug,
-                        description: "",
-                        empresa_id: empresa.id,
-                        title: body.name,
-                        isDinamic: false,
-                        enabledHeaderPage: false,
-                    } as PagesStoreDto,
-                    body.paginator && body.paginator > 0
-                        ? paginatorHTML
-                        : undefined
-                );
+            if (data.type === "FOREIGNKEY") {
+                options.references = { model: references, key: "id" };
+                options.onDelete = onDelete;
+                options.onUpdate = onUpdate;
             }
-            if (body.isDynamicPage) {
-                await this.pagesApiService.store(empresa, {
+            const fieldType =
+                data.type === "FILE"
+                    ? DataTypes.JSON
+                    : data.type === "FOREIGNKEY"
+                    ? DataTypes.INTEGER
+                    : DataTypes[data.type];
+
+            return {
+                [data.name]: {
+                    ...options,
+                    type: fieldType,
+                },
+            };
+        });
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const result = options.reduce((acc: any, field: any) => {
+            const fieldName = Object.keys(field)[0];
+            acc[fieldName] = field[fieldName];
+            return acc;
+        }, {});
+
+        // INTEGER,DECIMAL,BOOLEAN, STRING , TEXT, ARRAY, DATE, FILE
+        await queryInterface.createTable(capitalize(body.name), {
+            ...result,
+            slug: result.slug,
+            empresa_id: { type: DataTypes.INTEGER, references: "" },
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            createdAt: {
+                type: DataTypes.DATE,
+                allowNull: false,
+                defaultValue: Sequelize.fn("NOW"),
+            },
+            updatedAt: {
+                type: DataTypes.DATE,
+                allowNull: false,
+                defaultValue: Sequelize.fn("NOW"),
+            },
+        });
+        if (body.isCreatePage) {
+            await this.pagesApiService.store(
+                empresa,
+                {
                     icon: body.icon,
                     queries: [],
-                    slug: `:${body.slug}`,
+                    slug: body.slug,
                     description: "",
                     empresa_id: empresa.id,
                     title: body.name,
+                    isDinamic: false,
                     enabledHeaderPage: false,
-                    isDinamic: true,
-                } as PagesStoreDto);
-            }
-            cache.delete(`EMPRESA:${empresa.slug}`);
-
-            return {
-                success: true,
-                crud,
-            };
-        } catch (error) {
-            console.log({ error: (error as Error).message });
+                } as PagesStoreDto,
+                body.paginator && body.paginator > 0 ? paginatorHTML : undefined
+            );
         }
+        if (body.isDynamicPage) {
+            await this.pagesApiService.store(empresa, {
+                icon: body.icon,
+                queries: [],
+                slug: `:${body.slug}`,
+                description: "",
+                empresa_id: empresa.id,
+                title: body.name,
+                enabledHeaderPage: false,
+                isDinamic: true,
+            } as PagesStoreDto);
+        }
+        cache.delete(`EMPRESA:${empresa.slug}`);
+
+        return {
+            success: true,
+            crud,
+        };
     }
     async update(empresa: Empresas, id: string, body: CrudUpdateDto) {
         const { crud } = await this.show(empresa, id);

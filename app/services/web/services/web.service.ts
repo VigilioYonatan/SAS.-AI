@@ -164,20 +164,30 @@ export class WebService {
         if (!pageFind) {
             throw new Redirect(`/404?message=${"pagina no encontrada"}`);
         }
-        const [attributes, join] = await joins(crud, empresa);
-        const data = await sequelize.query(
-            `SELECT "${crud.name}".* ${
-                attributes?.length ? `, ${attributes}` : ""
-            }  FROM "${crud.name}" ${join} WHERE "${
-                crud.name
-            }"."empresa_id" = :empresa_id AND  "${
-                crud.name
-            }"."slug" = :slug LIMIT 1`,
-            {
+        const queryFind = pageFind.queries.find((key) => key.key === "data");
+        let data = [];
+        if (queryFind) {
+            data = await sequelize.query(queryFind.query, {
                 replacements: { empresa_id: empresa.id, slug },
                 type: QueryTypes.SELECT,
-            }
-        );
+            });
+        } else {
+            const [attributes, join] = await joins(crud, empresa);
+            data = await sequelize.query(
+                `SELECT "${crud.name}".* ${
+                    attributes?.length ? `, ${attributes}` : ""
+                }  FROM "${crud.name}" ${join} WHERE "${
+                    crud.name
+                }"."empresa_id" = :empresa_id AND  "${
+                    crud.name
+                }"."slug" = :slug LIMIT 1`,
+                {
+                    replacements: { empresa_id: empresa.id, slug },
+                    type: QueryTypes.SELECT,
+                }
+            );
+        }
+
         if (!data[0]) {
             throw new Redirect(`/404?message=No se encontró ${page}-${slug}`);
         }
