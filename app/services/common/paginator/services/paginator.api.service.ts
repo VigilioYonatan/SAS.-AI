@@ -43,6 +43,7 @@ import { Subcategories } from "@/products/entities/subcategories.entity";
 import { Questions } from "@/empresas/entities/questions.entity";
 import { Emails } from "@/emails/entities/emails.entity";
 import { Crud } from "@/empresas/entities/crud.entity";
+import { capitalize } from "@vigilio/express-core/helpers";
 
 @Injectable()
 export class PaginatorApiServices {
@@ -964,20 +965,22 @@ export class PaginatorApiServices {
                     );
                     const orders = Object.entries(result.sorted).map(
                         ([key, value]) =>
-                            `"${props.model}"."${key}" ${(
-                                value as string
-                            ).toUpperCase()}`
+                            `"${capitalize(crud.name)}_${
+                                empresa.id
+                            }"."${key}" ${(value as string).toUpperCase()}`
                     );
 
                     const wheres = Object.entries(result.rest).map(
                         ([key, value]) =>
-                            `AND "${props.model}"."${key}" = '${(
-                                value as string
-                            ).toUpperCase()}'`
+                            `AND "${capitalize(crud.name)}_${
+                                empresa.id
+                            }"."${key}" = '${(value as string).toUpperCase()}'`
                     );
                     try {
                         const searchCondition = search?.length
-                            ? `AND "${crud.name}"."nombre" ILIKE '${searchLowerCase}'`
+                            ? `AND "${capitalize(crud.name)}_${
+                                  empresa.id
+                              }"."nombre" ILIKE '${searchLowerCase}'`
                             : "";
 
                         data = await Promise.all([
@@ -992,14 +995,18 @@ export class PaginatorApiServices {
                                          : ""
                                  } 
                                 OFFSET :offset LIMIT :limit`
-                                    : `SELECT  "${crud.name}".* ${
+                                    : `SELECT  "${capitalize(crud.name)}_${
+                                          empresa.id
+                                      }".* ${
                                           attributes?.length
                                               ? `, ${attributes}`
                                               : ""
-                                      } FROM "${crud.name}" ${join}
-                                WHERE "${
-                                    crud.name
-                                }"."empresa_id" = :empresa_id ${searchCondition} ${
+                                      } FROM "${capitalize(crud.name)}_${
+                                          empresa.id
+                                      }" ${join}
+                                WHERE "${capitalize(crud.name)}_${
+                                          empresa.id
+                                      }"."empresa_id" = :empresa_id ${searchCondition} ${
                                           wheres.length ? wheres.join(" ") : ""
                                       }
                                  ${
@@ -1018,9 +1025,11 @@ export class PaginatorApiServices {
                                 }
                             ),
                             sequelize.query(
-                                `SELECT COUNT(*) FROM "${crud.name}" 
-                                WHERE "${
+                                `SELECT COUNT(*) FROM "${capitalize(
                                     crud.name
+                                )}_${empresa.id}" 
+                                WHERE "${capitalize(crud.name)}_${
+                                    empresa.id
                                 }"."empresa_id" = :empresa_id ${searchCondition} ${
                                     wheres.length ? wheres.join(" ") : ""
                                 }`,

@@ -44,7 +44,10 @@ export type empresaStore = Omit<
     questionCount?: number;
     pages: PageSchema[];
     cruds: Pick<CrudSchema, "id" | "slug" | "name" | "icon">[];
-    tableObjects: { name: string; data: { name: string; type: string }[] }[];
+    tableObjects: {
+        name: string;
+        data: { name: string; type: string; is_nullable: boolean }[];
+    }[];
 };
 export const storageEmpresa: empresaStore | null = JSON.parse(
     localStorage.getItem("empresa") ?? "null"

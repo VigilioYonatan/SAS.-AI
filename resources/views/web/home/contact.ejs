@@ -3,12 +3,12 @@
 
 <head>
   <%- include("../components/webHead.ejs") %>
-  <%- include("../components/pixels.ejs")  %>
 
 </head>
 
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
+  <%- include("../components/pixels.ejs")  %>
   <%- include("../components/loader.ejs")  %>  
   <contact-page title="<%= title  %>" :grid_banner_pages="<%= JSON.stringify(grid_banner_pages)  %>" :header="<%= JSON.stringify(header)  %>">
     <% for(grid of grid_banner_pages){  %>

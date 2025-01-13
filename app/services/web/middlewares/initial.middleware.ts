@@ -14,7 +14,7 @@ import { Users } from "@/users/entities/users.entity";
 import { NextFunction } from "@vigilio/express-core";
 import cache from "@vigilio/express-core/cache";
 import { Request, Response } from "express";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { sequelize } from "~/config/db.config";
 import { RequestVigilio } from "~/config/types";
 import { converterMoneyApi } from "~/libs/apis";
@@ -85,7 +85,31 @@ export async function initialMiddleware(
         const categoriesServiceTotal = await Promise.all(
             categoriesService.map(async (category) => {
                 // productsServicios
-                const products = await category.$get("productsServicios");
+                const products = await category.$get("productsServicios", {
+                    attributes: [
+                        "id",
+                        "name",
+                        [
+                            Sequelize.fn(
+                                "LEFT",
+                                Sequelize.col("description"),
+                                300
+                            ),
+                            "description",
+                        ],
+                        "product_code",
+                        "url",
+                        "days",
+                        "showHorario",
+                        "characteristics",
+                        "price",
+                        "discount",
+                        "enabled",
+                        "images",
+                        "slug",
+                        "category_id",
+                    ],
+                });
                 return {
                     ...category.toJSON(),
                     products,
@@ -118,20 +142,21 @@ export async function initialMiddleware(
 
             for (const table of tables as { table_name: string }[]) {
                 const [columns] = await sequelize.query(
-                    `SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = :tableName;`,
+                    `SELECT column_name, data_type, is_nullable  FROM information_schema.columns WHERE table_schema = 'public' AND table_name = :tableName;`,
                     { replacements: { tableName: table.table_name } }
                 );
-
                 tableobj.push({
                     name: table.table_name,
                     data: (
                         columns as {
                             column_name: string;
                             data_type: string;
+                            is_nullable: string;
                         }[]
                     ).map((col) => ({
                         name: col.column_name,
                         type: col.data_type,
+                        is_nullable: col.is_nullable === "YES",
                     })),
                 });
             }

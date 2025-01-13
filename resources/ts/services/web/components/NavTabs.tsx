@@ -13,7 +13,6 @@ interface NavTabsProps {
     totalProducts: number;
 }
 function NavTabs({ background, totalProducts }: NavTabsProps) {
-    if (!storageEmpresa?.setting.isEccomerce) return null;
     const cartStore = useCartStore();
     const empresaStore = useEmpresastore();
     const authStore = useAuthStore();
@@ -57,7 +56,33 @@ function NavTabs({ background, totalProducts }: NavTabsProps) {
                         <i class={`fa${typeIcon1} fa-store`} />
                         <span class="text-xs font-semibold">Tienda</span>
                     </a>
-                ) : null}
+                ) : (
+                    <a
+                        class={`  py-4 flex flex-col justify-center items-center gap-1 ${
+                            isActive(
+                                `${
+                                    storageEmpresa!.pages.find(
+                                        (page) =>
+                                            page.slug === "servicios" ||
+                                            page.slug === "services"
+                                    )?.slug
+                                }`
+                            )
+                                ? "bg-primary bg-opacity-40 text-white"
+                                : ""
+                        }   hover:bg-opacity-40 hover:bg-primary ${bgPrimaryHover()} delay-custom-1`}
+                        href={`/${
+                            storageEmpresa!.pages.find(
+                                (page) =>
+                                    page.slug === "servicios" ||
+                                    page.slug === "services"
+                            )?.slug
+                        }`}
+                    >
+                        <i class={`fa${typeIcon1} fa-store`} />
+                        <span class="text-xs font-semibold">Servicios</span>
+                    </a>
+                )}
 
                 {totalProducts > 0 && storageEmpresa?.setting.isEccomerce ? (
                     <a

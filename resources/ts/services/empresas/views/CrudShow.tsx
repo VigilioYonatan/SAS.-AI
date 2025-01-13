@@ -40,6 +40,7 @@ import {
 } from "~/libs/helpers";
 import { crudDataIndexApi } from "../apis/crud_data/crud-data.index.api";
 import { formSelectNumber } from "~/components/form/FormSelect";
+import { slug as transformSlug } from "@vigilio/express-core/helpers";
 
 interface CrudShowProps {
     params: {
@@ -581,6 +582,12 @@ function CrudDataStore({ crud, refetch, onClose }: CrudDataStoreProps) {
                                                     : "text"
                                             }
                                             title={data.name}
+                                            options={{
+                                                setValueAs: (val) =>
+                                                    data?.name === "slug"
+                                                        ? transformSlug(val)
+                                                        : val,
+                                            }}
                                             placeholder={data.placeholder || ""}
                                         />
                                     ) : data?.type === "TEXT" ? (
@@ -810,7 +817,6 @@ function CrudDataUpdate({ data, crud, onClose, refetch }: CrudDataUpdateProps) {
                                                         d.name as keyof typeof data
                                                     ] as string
                                                 );
-                                                console.log(description.value);
 
                                                 return (
                                                     <Form.control.editor

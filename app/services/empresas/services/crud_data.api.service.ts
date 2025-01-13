@@ -15,9 +15,9 @@ import { joins, relation } from "@/common/paginator/libs";
 @Injectable()
 export class CrudDateApiService {
     async index(empresa: Empresas, type: string) {
-        const key = capitalize(type);
+        const key = `${capitalize(type)}_${empresa.id}`;
         const data = await sequelize.query(
-            `SELECT * FROM "${key}" WHERE "${type}"."empresa_id" = :empresa_id`,
+            `SELECT * FROM "${key}" WHERE "${key}"."empresa_id" = :empresa_id`,
             {
                 replacements: { empresa_id: empresa.id },
                 type: QueryTypes.SELECT,
@@ -39,11 +39,11 @@ export class CrudDateApiService {
         if (!cr) {
             throw new BadRequestException("no crud found");
         }
-        const key = capitalize(type);
+        const key = `${capitalize(type)}_${empresa.id}`;
         const [attributes, join] = await joins(cr, empresa);
 
         const crud = await sequelize.query(
-            `SELECT  "${cr.name}".* ${
+            `SELECT  "${key}".* ${
                 attributes?.length ? `, ${attributes}` : ""
             } FROM "${key}" ${join} WHERE "${key}"."empresa_id" = :empresa_id AND  "${key}"."id" = :id `,
             {
@@ -63,6 +63,11 @@ export class CrudDateApiService {
 
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     async store(empresa: Empresas, type: string, body: Record<string, any>) {
+        if (!body.slug || !body.slug.length) {
+            throw new BadRequestException("Slug es obligatorio", {
+                body: "slug",
+            });
+        }
         const keys = Object.keys({ ...body, slug: slug(body.slug) });
         const values = Object.keys({ ...body, slug: slug(body.slug) });
         const crud = await Crud.findOne({
@@ -74,7 +79,7 @@ export class CrudDateApiService {
         if (!crud) {
             throw new NotFoundException("no se encontró sql");
         }
-        const key = capitalize(type);
+        const key = `${capitalize(type)}_${empresa.id}`;
         await Promise.all(
             crud.data.map(async (c) => {
                 if (c.options.unique) {
@@ -111,7 +116,7 @@ export class CrudDateApiService {
                 {
                     replacements: {
                         empresa_id: empresa.id,
-                        ...body,
+                        ...{ ...body, slug: slug(body.slug) },
                     },
                     type: QueryTypes.INSERT,
                 }
@@ -134,17 +139,17 @@ export class CrudDateApiService {
         body.updatedAt = new Date();
         await this.show(empresa, type, id);
 
-        const key = capitalize(type);
+        const key = `${capitalize(type)}_${empresa.id}`;
         const keys = Object.keys(body);
         await sequelize.query(
             `UPDATE "${key}" 
-             SET ${keys.map((val) => `"${val}" = :${val}`).join(", ")} 
+            SET ${keys.map((val) => `"${val}" = :${val}`).join(", ")}  
              WHERE "empresa_id" = :empresa_id AND "id" = :id`,
             {
                 replacements: {
-                    empresa_id: empresa.id, // ID de la empresa
                     id, // ID del registro a actualizar
                     ...body, // Datos dinámicos para los campos a actualizar
+                    empresa_id: empresa.id, // ID de la empresa
                 },
                 type: QueryTypes.UPDATE,
             }
@@ -158,11 +163,11 @@ export class CrudDateApiService {
 
     async destroy(empresa: Empresas, type: string, id: string) {
         const result = await this.show(empresa, type, id);
-
+        const key = `${capitalize(type)}_${empresa.id}`;
         await sequelize.query(
             `DELETE FROM "${capitalize(
                 type
-            )}" WHERE id = :id AND empresa_id = :empresa_id`,
+            )}" WHERE "${key}"."id" = :id AND "${key}"."empresa_id" = :empresa_id`,
             {
                 replacements: {
                     id: (result[type] as { id: number }).id,

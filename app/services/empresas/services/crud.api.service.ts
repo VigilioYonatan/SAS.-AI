@@ -113,26 +113,29 @@ export class CrudApiService {
         }, {});
 
         // INTEGER,DECIMAL,BOOLEAN, STRING , TEXT, ARRAY, DATE, FILE
-        await queryInterface.createTable(capitalize(body.name), {
-            ...result,
-            slug: result.slug,
-            empresa_id: { type: DataTypes.INTEGER, references: "" },
-            id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
-            },
-            createdAt: {
-                type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: Sequelize.fn("NOW"),
-            },
-            updatedAt: {
-                type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: Sequelize.fn("NOW"),
-            },
-        });
+        await queryInterface.createTable(
+            `${capitalize(body.name)}_${empresa.id}`,
+            {
+                ...result,
+                slug: result.slug,
+                empresa_id: { type: DataTypes.INTEGER, references: "" },
+                id: {
+                    type: DataTypes.INTEGER,
+                    primaryKey: true,
+                    autoIncrement: true,
+                },
+                createdAt: {
+                    type: DataTypes.DATE,
+                    allowNull: false,
+                    defaultValue: Sequelize.fn("NOW"),
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: false,
+                    defaultValue: Sequelize.fn("NOW"),
+                },
+            }
+        );
         if (body.isCreatePage) {
             await this.pagesApiService.store(
                 empresa,
@@ -141,11 +144,11 @@ export class CrudApiService {
                     queries: [
                         {
                             key: "data",
-                            query: `SELECT * FROM ${capitalize(
-                                body.name
-                            )} WHERE "${capitalize(
-                                body.name
-                            )}"."empresa_id" = :empresa_id`,
+                            query: `SELECT * FROM "${capitalize(body.name)}_${
+                                empresa.id
+                            }" WHERE "${capitalize(body.name)}_${
+                                empresa.id
+                            }"."empresa_id" = :empresa_id`,
                         },
                     ],
                     slug: body.slug,
@@ -164,13 +167,13 @@ export class CrudApiService {
                 queries: [
                     {
                         key: "data",
-                        query: `SELECT * FROM ${capitalize(
+                        query: `SELECT *  FROM "${capitalize(body.name)}_${
+                            empresa.id
+                        }" WHERE "${capitalize(body.name)}_${
+                            empresa.id
+                        }"."empresa_id" = :empresa_id AND "${capitalize(
                             body.name
-                        )} WHERE "${capitalize(
-                            body.name
-                        )}"."empresa_id" = :empresa_id AND "${capitalize(
-                            body.name
-                        )}"."slug" = :slug`,
+                        )}_${empresa.id}"."slug" = :slug`,
                     },
                 ],
                 slug: `:${body.slug}`,
@@ -249,7 +252,9 @@ export class CrudApiService {
         let result: never[] | null = null;
         try {
             result = await sequelize.query(
-                `SELECT * FROM "${capitalize(crud.name)}" LIMIT 1`,
+                `SELECT * FROM "${capitalize(crud.name)}_${
+                    empresa.id
+                }" LIMIT 1`,
                 {
                     replacements: { id: empresa.id },
                     type: QueryTypes.SELECT,
@@ -266,15 +271,18 @@ export class CrudApiService {
         // const crud = await Crud.findByPk(id);
         await crud.destroy();
         const queryInterface = sequelize.getQueryInterface();
-        await queryInterface.dropTable(capitalize(crud.name), {
-            logging: true,
-        });
+        await queryInterface.dropTable(
+            `${capitalize(crud.name)}_${empresa.id}`,
+            {
+                logging: true,
+            }
+        );
 
         cache.delete(`EMPRESA:${empresa.slug}`);
 
         return {
             success: true,
-            message: "Reclamo eliminado",
+            message: "crud eliminado",
         };
     }
 }

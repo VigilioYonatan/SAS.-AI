@@ -210,7 +210,7 @@ export function PageUpdate({ page }: PageUpdateProps) {
                 </div>
                 <div class="my-2">
                     <span class="text-xs dark:text-white relative flex gap-2 items-center">
-                        Queries{" "}<ShowTablesDB/>
+                        Queries <ShowTablesDB />
                     </span>
                     <div class="max-h-[300px] overflow-auto">
                         {queries.fields.map((_, i) => (
@@ -404,7 +404,10 @@ export function ShowTablesDB() {
                                                                                                         <div class="flex justify-center items-center">
                                                                                                             {
                                                                                                                 col.type
-                                                                                                            }
+                                                                                                            }{" "}
+                                                                                                            {col.is_nullable
+                                                                                                                ? "(nullable)"
+                                                                                                                : ""}
                                                                                                         </div>
                                                                                                     </td>
                                                                                                 </tr>

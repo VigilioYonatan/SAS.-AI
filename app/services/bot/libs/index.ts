@@ -264,7 +264,7 @@ export async function promptReplace(
     if (!data) {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         data = (await onDb(empresa)) as any;
-        if (data.products.length > 20) {
+        if (data.products.length > 50) {
             cache.set(
                 `db-${empresa.slug}`,
                 JSON.stringify(data),
@@ -314,22 +314,12 @@ export async function promptReplace(
                 whatsapp,
                 `Esto son mis categorias ${JSON.stringify(
                     data.categorias
-                )}.\n Si en el texto '${message}', ves algun producto o servicio que puede estar en mis categorías que te mandé (ejemplo en el mensaje samsung galaxy s7 y tengo en mi categorias celulares, me traes [id_category_celulares], etc), respondeme json [id_de_categorias_de_productosservicios_encontrados] . solo traeme el json, no digas nada mas`
+                )}.\n Si en el texto '${message}', ves algun producto o servicio que puede estar en mis categorías que te mandé (ejemplo en el mensaje samsung galaxy s7 y tengo en mi categorias celulares, me traes [id_category_celulares,otros ids], etc), respondeme json [id_de_categorias_de_productosservicios_encontrados] . solo traeme el json, no markdown no digas nada mas`
             );
 
-            const cleanProducts =
-                searchProduct && searchProduct !== "[]"
-                    ? searchProduct!
-                          .split("\n")
-                          .slice(1)
-                          .join("\n")
-                          .replace(/\\n/g, "")
-                          .replace(/^\s*json\s*\n/, "")
-                          .trim()
-                    : "[]";
             let categoriesFound = [];
             try {
-                categoriesFound = JSON.parse(cleanProducts);
+                categoriesFound = JSON.parse(searchProduct || "[]");
             } catch (error) {}
             // biome-ignore lint/suspicious/noConsoleLog: <explanation>
             console.log({ categoriesFound });
@@ -670,6 +660,7 @@ export async function interpretarImagen(
         const APIKEY = "297b2552dd5f443160e85a1dbe2b8e60";
         // Crear el FormData para enviar la solicitud
         const formData = new FormData();
+
         formData.append("image", media.toString("base64")); // Convertir la imagen a base64
         formData.append("key", APIKEY);
         formData.append("expiration", 600); // Opcional: Expiración en segundos (10 minutos)
@@ -696,7 +687,7 @@ export async function interpretarImagen(
                     content: [
                         {
                             type: "text",
-                            text: "Que imagen es y describeme algo breve (max 100 letras) - lo importante lo que es?",
+                            text: "Que imagen es, escribe el nombre y describeme algo breve (max 300 caracteres) - lo importante lo que es o lo que dice si tiene texto?",
                         },
                         {
                             type: "image_url",
@@ -707,7 +698,7 @@ export async function interpretarImagen(
                     ],
                 },
             ],
-            max_tokens: 100,
+            max_tokens: 300,
         });
         const result = completion.choices[0].message.content;
         const latestEmpresaUsage =

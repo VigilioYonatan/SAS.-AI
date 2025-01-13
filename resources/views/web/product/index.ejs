@@ -93,14 +93,14 @@
       <%=$empresa.setting?.type_border==="circle"? 'border-radius: 0.6rem !important;': 'border-radius: 0rem !important;'%>
     }
   </style>
-  <%- include("../components/pixels.ejs")  %>
-  <%- include("../components/loader.ejs")  %>
+ 
 
   <!-- initial base -->
   <initial></initial>
 </head>
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
+  <%- include("../components/pixels.ejs")  %>
   <%- include("../components/loader.ejs")  %>
   <product-page :product="<%= JSON.stringify(product)  %>" :totalComments="<%= JSON.stringify(totalComments)  %>" category_name="<%= category_name %>" :productbybrands="<%= JSON.stringify(productByBrands)  %>" :categoriesproductsrandom="<%= JSON.stringify(categoriesProductsRandom)  %>" :header="<%= JSON.stringify(header)  %>">
     <% if( product.description){ %>

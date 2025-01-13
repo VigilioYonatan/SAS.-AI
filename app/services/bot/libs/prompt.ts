@@ -57,7 +57,7 @@ export async function prompt(
               `Si te pido información más detallada de un  producto que no está en la BASE_DE_DATOS enviar ${
                   empresa.web
                       ? "url-producto-o-servicio-de-db"
-                      : `IMPORTANTE: tipo producto https://www.${url}/aca-pones-el-slug-del-producto-de-db y si es tipo servicio https://www.${url}/servicio/slug_servicio`
+                      : `IMPORTANTE: tipo producto https://www.${url}/slug-del-producto-de-db y si es tipo servicio https://www.${url}/servicio/slug_servicio`
               }`,
               "enviamen la imagen ( mandarme la url de la imagen) . no lo pongas como link ejemplo NO ![nombre]  .  solo texto  si te pido una imagen de un producto",
               empresa.telephoneReclamos
@@ -165,7 +165,7 @@ export async function prompt(
    -  SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA si hablo ingles responde en ingles, etc SIEMPRE.
     NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
-	SI TE ENVIÉ UNA IMAGEN  Y BUSCA EN LA BASE DE DATOS Y RESPONDEME INFORMACIÓN DE ESO, si no encuentras informacion  di 'No se encontró IMAGEN en nuestro sistema ' o algo asi.
+	SI TE ENVIÉ UNA IMAGEN  Y BUSCA EN LA BASE DE DATOS Y RESPONDEME INFORMACIÓN DE ESO, si no encuentras informacion  di 'No se encontró "nombre de la imagen que te mande (no digas imagen)" en nuestro sistema ', pero que suene bien.
     CANTIDAD/UNIDADES si está agotado no vendas y hazmelo saber.
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
     ${

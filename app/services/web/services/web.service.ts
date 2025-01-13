@@ -173,12 +173,14 @@ export class WebService {
         } else {
             const [attributes, join] = await joins(crud, empresa);
             data = await sequelize.query(
-                `SELECT "${crud.name}".* ${
+                `SELECT "${capitalize(crud.name)}_${empresa.id}".* ${
                     attributes?.length ? `, ${attributes}` : ""
-                }  FROM "${crud.name}" ${join} WHERE "${
-                    crud.name
-                }"."empresa_id" = :empresa_id AND  "${
-                    crud.name
+                }  FROM "${capitalize(crud.name)}_${
+                    empresa.id
+                }" ${join} WHERE "${capitalize(crud.name)}_${
+                    empresa.id
+                }"."empresa_id" = :empresa_id AND  "${capitalize(crud.name)}_${
+                    empresa.id
                 }"."slug" = :slug LIMIT 1`,
                 {
                     replacements: { empresa_id: empresa.id, slug },
@@ -190,6 +192,7 @@ export class WebService {
         if (!data[0]) {
             throw new Redirect(`/404?message=No se encontró ${page}-${slug}`);
         }
+
         const queries = await getQueries(
             empresa,
             pageFind,

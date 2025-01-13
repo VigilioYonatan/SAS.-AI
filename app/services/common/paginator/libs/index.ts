@@ -2,6 +2,7 @@ import { Crud } from "@/empresas/entities/crud.entity";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { Page } from "@/empresas/entities/page.entity";
 import { InternalServerErrorException } from "@vigilio/express-core";
+import { capitalize } from "@vigilio/express-core/helpers";
 import { Op, QueryTypes, type WhereOptions } from "sequelize";
 import { sequelize } from "~/config/db.config";
 import { getTime } from "~/libs/dayjs";
@@ -135,11 +136,19 @@ export async function joins(crud: Crud, empresa: Empresas) {
                     { name: "updatedAt" },
                 ].map(
                     (c) =>
-                        `"${d.options.references}"."${c.name}" AS "${d.options.references}:${c.name}"`
+                        `"${d.options.references}"."${capitalize(c.name)}_${
+                            empresa.id
+                        }" AS "${d.options.references}:${capitalize(c.name)}_${
+                            empresa.id
+                        }"`
                 );
                 return [
                     attributes,
-                    `INNER JOIN "${d.options.references}" ON "${crud.name}"."${d.name}" = "${d.options.references}"."id"`,
+                    `INNER JOIN "${d.options.references}" ON "${capitalize(
+                        crud.name
+                    )}_${empresa.id}"."${capitalize(d.name)}_${
+                        empresa.id
+                    }" = "${d.options.references}"."id"`,
                 ];
             })
     );

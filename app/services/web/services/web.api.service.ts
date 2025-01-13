@@ -42,6 +42,7 @@ import {
     PaginatorModel,
     relation,
 } from "@/common/paginator/libs";
+import { capitalize } from "@vigilio/express-core/helpers";
 
 @Injectable()
 export class WebApiService {
@@ -697,8 +698,7 @@ export class WebApiService {
 
             if (crud) {
                 const [attributes, join] = await joins(crud, empresa);
-
-                if (crud.paginator) {
+                if (crud.paginator && crud.paginator > 0) {
                     const query = req.query;
                     const navigator = {
                         limit: crud.paginator || 14,
@@ -794,13 +794,17 @@ export class WebApiService {
                     data = await sequelize.query(
                         queryFind
                             ? queryFind.query
-                            : `SELECT  "${crud.name}".* ${
+                            : `SELECT  "${capitalize(crud.name)}_${
+                                  empresa.id
+                              }".* ${
                                   attributes?.length ? `, ${attributes}` : ""
-                              } FROM "${crud.name}" ${join} WHERE "${
+                              } FROM "${capitalize(crud.name)}_${
+                                  empresa.id
+                              }" ${join} WHERE "${capitalize(crud.name)}_${
+                                  empresa.id
+                              }"."empresa_id" = :empresa_id ORDER BY "${capitalize(
                                   crud.name
-                              }"."empresa_id" = :empresa_id ORDER BY "${
-                                  crud.name
-                              }".id DESC`,
+                              )}_${empresa.id}".id DESC`,
                         {
                             replacements: { empresa_id: empresa.id },
                             type: QueryTypes.SELECT,
@@ -819,6 +823,7 @@ export class WebApiService {
             );
 
             pagina.queries = queries;
+
             pagina.data = relation(data);
             pagina.paginator = paginator;
             return pagina;
