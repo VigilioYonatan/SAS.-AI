@@ -3,6 +3,7 @@ import { NotFoundException } from "@vigilio/express-core";
 import { Empresas } from "../entities/empresas.entity";
 import { GridBanner } from "../entities/grid_banner.entity";
 import type { GridBannerUpdateDto } from "../dtos/grid_banner.update.dto";
+import cache from "@vigilio/express-core/cache";
 
 @Injectable()
 export class GridBannerApiService {
@@ -40,6 +41,7 @@ export class GridBannerApiService {
     async update(empresa: Empresas, id: string, body: GridBannerUpdateDto) {
         const { gridBanner } = await this.show(empresa, id);
         await gridBanner.update({ ...body, empresa_id: empresa.id });
+        cache.delete(`${empresa.slug}:home`);
         return {
             success: true,
             message: "Editado correctamente gridBanner",

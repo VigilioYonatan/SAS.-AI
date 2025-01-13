@@ -30,14 +30,19 @@ function AuthLogin() {
                     localStorage.setItem("rememberPassword", data.password);
                 }
                 const url = window.location.href;
+                const referer = new URL(url).searchParams.get("referer");
                 if (!url.includes("/auth/login")) {
                     window.location.reload();
                     return;
                 }
                 if (result.user.role_id === ROLES.user) {
-                    window.location.href = `${window.location.origin}`;
+                    window.location.href = referer
+                        ? referer
+                        : `${window.location.origin}`;
                 } else {
-                    window.location.href = `${window.location.origin}/admin`;
+                    window.location.href = referer
+                        ? referer
+                        : `${window.location.origin}/admin`;
                 }
             },
             // no es necesario onError

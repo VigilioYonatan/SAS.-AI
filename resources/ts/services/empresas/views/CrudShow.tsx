@@ -583,10 +583,13 @@ function CrudDataStore({ crud, refetch, onClose }: CrudDataStoreProps) {
                                             }
                                             title={data.name}
                                             options={{
-                                                setValueAs: (val) =>
-                                                    data?.name === "slug"
-                                                        ? transformSlug(val)
-                                                        : val,
+                                                setValueAs: (val) => {
+                                                    return data?.name === "slug"
+                                                        ? transformSlug(
+                                                              val || ""
+                                                          )
+                                                        : val;
+                                                },
                                             }}
                                             placeholder={data.placeholder || ""}
                                         />
@@ -806,6 +809,15 @@ function CrudDataUpdate({ data, crud, onClose, refetch }: CrudDataUpdateProps) {
                                             }
                                             title={d.name}
                                             placeholder={d.placeholder || ""}
+                                            options={{
+                                                setValueAs: (val) => {
+                                                    return data?.name === "slug"
+                                                        ? transformSlug(
+                                                              val || ""
+                                                          )
+                                                        : val;
+                                                },
+                                            }}
                                         />
                                     ) : d.type === "TEXT" ? (
                                         <>

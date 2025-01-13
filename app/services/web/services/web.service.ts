@@ -15,6 +15,7 @@ import { capitalize } from "@vigilio/express-core/helpers";
 import { GridBanner } from "@/empresas/entities/grid_banner.entity";
 import { GridBannerPage } from "@/empresas/entities/grid_banner_page.entity";
 import { getQueries, joins, relation } from "@/common/paginator/libs";
+import cache from "@vigilio/express-core/cache";
 
 @Injectable()
 export class WebService {
@@ -205,10 +206,17 @@ export class WebService {
                 return (data[0] as any)[key.trim()] || `{{${key}}}`;
             }
         );
-        const grid_banner_pages = (await pageFind.$get("grid_banner_pages", {
-            order: [["id", "ASC"]],
-            include: [GridBanner],
-        })) as GridBannerPage[];
+        let grid_banner_pages = JSON.parse(
+            cache.get(`${empresa.slug}:grid_banner_pages:${pageFind.id}`) ||
+                "null"
+        );
+        if (!grid_banner_pages) {
+            grid_banner_pages = (await pageFind.$get("grid_banner_pages", {
+                order: [["id", "ASC"]],
+                include: [GridBanner],
+            })) as GridBannerPage[];
+        }
+
         return {
             title: (data[0] as { slug: string }).slug.split("-").join(" "),
             description: textoFinal,

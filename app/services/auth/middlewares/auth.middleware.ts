@@ -29,8 +29,10 @@ export async function authDashboardPermissionMiddleware(
     res: Response,
     next: NextFunction
 ) {
+    const referer = req.originalUrl as string;
+
     if (!req.isAuthenticated()) {
-        return res.redirect("/auth/login");
+        return res.redirect(`/auth/login?referer=${referer}`);
     }
     const user = req.user as AuthUser;
 

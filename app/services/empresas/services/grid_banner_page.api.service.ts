@@ -4,6 +4,7 @@ import { Empresas } from "../entities/empresas.entity";
 import { GridBanner } from "../entities/grid_banner.entity";
 import { GridBannerPage } from "../entities/grid_banner_page.entity";
 import type { GridBannerPageUpdateDto } from "../dtos/grid_banner_page.update.dto";
+import cache from "@vigilio/express-core/cache";
 
 @Injectable()
 export class GridBannerPageApiService {
@@ -50,6 +51,9 @@ export class GridBannerPageApiService {
 
     async update(empresa: Empresas, id: string, body: GridBannerPageUpdateDto) {
         const { gridBannerService } = await this.show(empresa, id);
+        cache.delete(
+            `${empresa.slug}:grid_banner_pages:${gridBannerService.page_id}`
+        );
         await gridBannerService.update({ ...body, empresa_id: empresa.id });
         return {
             success: true,

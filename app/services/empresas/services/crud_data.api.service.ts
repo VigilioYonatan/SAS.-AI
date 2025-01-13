@@ -136,6 +136,7 @@ export class CrudDateApiService {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         body: Record<string, any>
     ) {
+        body.slug = slug(body.slug);
         body.updatedAt = new Date();
         await this.show(empresa, type, id);
 

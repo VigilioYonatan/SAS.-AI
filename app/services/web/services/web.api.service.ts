@@ -72,6 +72,7 @@ export class WebApiService {
             const keys = [1, 3].includes(empresa.tipo_empresa.tipo_servicio_id)
                 ? "ProductsNormals"
                 : "ProductsRestaurants";
+
             const [
                 { data: backgrounds },
                 productsOffert6,
@@ -254,10 +255,12 @@ export class WebApiService {
                           where: { empresa_id: empresa.id, enabled: true },
                       })
                     : 0,
-                GridBanner.findAll({
-                    where: { empresa_id: empresa.id },
-                    order: [["id", "ASC"]],
-                }),
+                !JSON.parse(cache.get(`${empresa.slug}:home`) || "null")
+                    ? GridBanner.findAll({
+                          where: { empresa_id: empresa.id },
+                          order: [["id", "ASC"]],
+                      })
+                    : [],
             ]);
             let getProductsByCategories = [];
             if (empresa.setting.isEccomerce) {
@@ -638,10 +641,17 @@ export class WebApiService {
             },
         });
         if (page) {
-            const grid_banner_pages = (await page.$get("grid_banner_pages", {
-                order: [["id", "ASC"]],
-                include: [GridBanner],
-            })) as GridBannerPage[];
+            let grid_banner_pages = JSON.parse(
+                cache.get(`${empresa.slug}:grid_banner_pages:${page.id}`) ||
+                    "null"
+            );
+            if (!grid_banner_pages) {
+                grid_banner_pages = (await page.$get("grid_banner_pages", {
+                    order: [["id", "ASC"]],
+                    include: [GridBanner],
+                })) as GridBannerPage[];
+            }
+
             const pagina: {
                 title: string;
                 description: string;
