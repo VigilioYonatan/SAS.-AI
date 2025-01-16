@@ -45,7 +45,9 @@ export async function initialMiddleware(
                         isService: true,
                     },
                 }),
-                empresa.setting.isEccomerce ? Product(empresa, false).count : 0,
+                empresa.setting.isEccomerce
+                    ? Product(empresa, false).count()
+                    : 0,
                 empresa.setting.isEccomerce
                     ? Brands.findAll({
                           where: {

@@ -142,7 +142,7 @@ export class whatsappApiController {
                         message: "executed",
                     };
                 }
-                content = `TE ENVIE UNA IMAGEN DE : '${imageText}'`;
+                content = `TE ENVIE UNA IMAGEN DE : '${imageText}'  y buscalo en la base de datos  o sigue las instrucciones y te mande la imagen para que no busques imagenes en la base de datos tranquilo.`;
             }
 
             const existNumber = empresa.contacts.find(
@@ -174,7 +174,7 @@ export class whatsappApiController {
                 ...(chats[`${info.slug}:${userId}`] ?? []),
                 [
                     "user",
-                    `${content}.[[HAZ TODAS LAS INSTRUCCIONES QUE TE MANDE NO FALLES, trata de escribir poco, siempre hazme confirmar ¿? y formato whatsapp, cuando mandes listas separalos en \n format whatsapp para que se vea bien , separados y no se vea todo junto y trata de escribir poco. mis datos: ${JSON.stringify(
+                    `${content}.[[HAZ TODAS LAS INSTRUCCIONES, FIJATE EN LA BASE DE DATOS BIEN, QUE TE MANDE NO FALLES, trata de escribir poco, siempre hazme confirmar ¿? y formato whatsapp, cuando mandes listas separalos en \n format whatsapp para que se vea bien , separados y no se vea todo junto y trata de escribir poco. mis datos: ${JSON.stringify(
                         body.contact
                     )}]]` as string,
                 ],

@@ -79,7 +79,7 @@ export async function prompt(
         instrucctions = [
             ...instrucctions,
             "SIEMPRE LEE el tipo de producto de la base de datos (PRODUCTO 0 SERVICIO)",
-            `OJO: Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?items=}},recuerda que eres como un carrito de compra, de lo que te pida te fijas en la base de datos,  será como en el siguiente ejemplo . OJO ES SOLO UN EJEMPLO, tu lo harás  segun de que te pida el id de producto,variant_id y cantidad dinamicamente   {{cart?items=${
+            `OJO: Siempre preguntame si quiero llevar algo más, antes de enviarme {{cart?items=}}, doble {{}}, fijate bien en los id de producto y variante de base de datos,recuerda que eres como un carrito de compra, de lo que te pida te fijas en la base de datos,  será como en el siguiente ejemplo . OJO ES SOLO UN EJEMPLO, tu lo harás  segun de que te pida el id de producto,variant_id y cantidad dinamicamente   {{cart?items=${
                 [1, 3].includes(empresa.tipo_empresa.tipo_servicio_id)
                     ? "%5B%7B%22id%22%3A1%2C%22quantity%22%3A2%2C%22variant%22%3A3%7D%2C%7B%22id%22%3A4%2C%22quantity%22%3A5%2C%22variant%22%3A6%7D%5D"
                     : "%5B%7B%22id%22%3A%201%2C%20%22quantity%22%3A%2%7D%2C%20%7B%22id%22%3A%4%2C%20%22quantity%22%3A%3%7D%5D"
@@ -165,7 +165,6 @@ export async function prompt(
    -  SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA si hablo ingles responde en ingles, etc SIEMPRE.
     NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
-	SI TE ENVIÉ UNA IMAGEN  Y BUSCA EN LA BASE DE DATOS Y RESPONDEME INFORMACIÓN DE ESO, si no encuentras informacion  di 'No se encontró "nombre de la imagen que te mande (no digas imagen)" en nuestro sistema ', pero que suene bien.
     CANTIDAD/UNIDADES si está agotado no vendas y hazmelo saber.
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:
     ${

@@ -312,8 +312,9 @@ export class WebApiService {
                         );
                         return {
                             ...producto.toJSON(),
-                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                            favoritescount: (product as any).stars ?? "0",
+                            favoritescount:
+                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                (product as any).favoritescount || "0",
                         };
                     })
                 );

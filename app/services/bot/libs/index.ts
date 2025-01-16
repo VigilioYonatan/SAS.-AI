@@ -314,7 +314,7 @@ export async function promptReplace(
                 whatsapp,
                 `Esto son mis categorias ${JSON.stringify(
                     data.categorias
-                )}.\n Si en el texto '${message}', ves algun producto o servicio que puede estar en mis categorías que te mandé (ejemplo en el mensaje samsung galaxy s7 y tengo en mi categorias celulares, me traes [id_category_celulares,otros ids], etc), respondeme json [id_de_categorias_de_productosservicios_encontrados] . solo traeme el json, no markdown no digas nada mas`
+                )}.\n Si en el texto '${message}', ves algun producto o servicio que puede estar en mis categorías que te mandé (ejemplo en el mensaje samsung galaxy s7 y tengo en mi categorias celulares, me traes [id_category_celulares,otros ids], etc), respondeme json [id_de_categorias_de_productosservicios_encontrados]. ejemplo [1,4] o [3,2], o [1]. solo traeme el json, no markdown no digas nada mas`
             );
 
             let categoriesFound = [];
@@ -529,9 +529,10 @@ export async function promptReplace(
                           ? "que no sea desde el mismo dia. tiene que ser un dia despues, y que no sea afuera de la hora . ni ayer ni hoy. para el dia siguiente la cita"
                           : "Puedes crear cita desde hoy. claro despues de las horas de ahorita"
                   } .
+                  - NO Te equivoques la fecha actual ni el dia porfavor.
                 - Por favor ${
                     settingsCitas.sendQuestionChunk
-                        ? "Hazme las preguntas de uno a uno"
+                        ? "Hazme las preguntas de uno a uno. No me traigas todas las preguntas de una. DE UNO A UNO."
                         : "Hazme las preguntas de una sola, y no uno por uno."
                 }.
                 -IMPORTANTE: despues de hacerme todas las preguntas , hazme confirmar para crear cita  SIEMPRE: "¿Quieres confirmar la cita?".
@@ -561,6 +562,7 @@ export async function promptReplace(
                     empresa.dial_code
                 } y busca desde los telefonos
                 - NO CONFUNDAS CITAS CON PRODUCTOS PARA VENDER.
+                - NO PREGUNTES DESEAS QUE NOTIFIQUEMOS a la hora de crear cita
                 `
                 : "";
     }

@@ -1,3 +1,4 @@
+import FormContact from "@/emails/views/FormContact";
 import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
@@ -13,8 +14,11 @@ function FindSection() {
                     ? storageEmpresa.setting.type_animation
                     : ""
             } `}
-            class="find-section  h-[400px] md:h-[500px]  px-2  rounded-md   flex flex-col gap-4  py-4 md:py-8"
+            class="find-section  h-[400px] md:h-[500px]  px-2  rounded-md   flex  gap-4  py-4 md:py-8"
         >
+            <div class="w-full">
+                <FormContact />
+            </div>
             <div
                 class={`w-full relative h-full ${
                     storageEmpresa!.setting.type_border === "circle"
