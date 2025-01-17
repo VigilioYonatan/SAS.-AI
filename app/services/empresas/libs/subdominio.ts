@@ -125,35 +125,12 @@ export async function newVersionVPS({
         console.log("Conectado correctamente a vps");
 
         // Comandos a ejecutar en el servidor
-        const commands = `cd /root/home/ && rm -rf temp || true && mkdir temp && \
-        docker exec saas-db-1 pg_dump -U postgres -d saas -F c -f /var/lib/postgresql/data/backup.sql && \
-        docker cp saas-db-1:/var/lib/postgresql/data/backup.sql ./temp/backup.sql && \
-        cp -r ./saas/public/empresas ./temp && \
-        cp ./saas/.env ./temp/.env && \
-        rm -rf saas && \
-        git clone https://${GIT_TOKEN}@github.com/VigilioYonatan/SAS.-AI saas && \
-        cd saas && git checkout tags/v${version} && \
-        cp -r ../temp/empresas ./public && \
-        cp ../temp/.env . && \
-        docker rm -f saas-db-1 && \
-        docker volume rm saas_postgres-data-saas && \
-        docker compose up -d --build && \
-        until docker exec saas-db-1 pg_isready -U postgres; do sleep 2; done && \
-        docker cp ../temp/backup.sql saas-db-1:/tmp/backup.sql && \
-        until docker exec saas-db-1 test -f /tmp/backup.sql; do \
-            echo "Esperando que el archivo se copie correctamente..."; \
-            sleep 2; \
-        done && \
-        until docker exec saas-db-1 pg_restore -U postgres -d saas /tmp/backup.sql; do \
-            echo "Esperando que la restauración termine..."; \
-            sleep 2; \
-        done && \  ${commando?.trim().length ? `${commando} && \ ` : ""}
-      pm2 delete 0 &&  pm2 delete all  && bun i && bun build:serve && bun build:client && \
-        pm2 start bun --name "saas" -- start && sleep 120 && \
-        rm -rf ./app || true && rm -rf ./resources/ts || true && rm -rf ./whatsapp-api || true && \
-        rm -rf ./redes || true && rm -rf .git`;
+        const commands = `cd /root/home/ && rm -rf temp || true && mkdir temp && docker exec saas-db-1 pg_dump -U postgres -d saas -F c -f /var/lib/postgresql/data/backup.sql && docker cp saas-db-1:/var/lib/postgresql/data/backup.sql ./temp/backup.sql && cp -r ./saas/public/empresas ./temp && cp ./saas/.env ./temp/.env && rm -rf saas && git clone https://${GIT_TOKEN}@github.com/VigilioYonatan/SAS.-AI saas && cd saas && git checkout tags/v${version} && cp -r ../temp/empresas ./public && cp ../temp/.env . && docker rm -f saas-db-1 && docker volume rm saas_postgres-data-saas && docker compose up -d --build && until docker exec saas-db-1 pg_isready -U postgres; do sleep 2; done && docker cp ../temp/backup.sql saas-db-1:/tmp/backup.sql && until docker exec saas-db-1 test -f /tmp/backup.sql; do echo "Esperando que el archivo se copie correctamente..."; sleep 2; done && until docker exec saas-db-1 pg_restore -U postgres -d saas /tmp/backup.sql; do echo "Esperando que la restauración termine..."; sleep 2; done && ${
+            commando?.trim().length ? `${commando} && ` : ""
+        }pm2 delete 0 || true && pm2 delete all || true && bun i && bun build:serve && bun build:client && pm2 start bun --name "saas" -- start && sleep 120 && rm -rf ./app || true && rm -rf ./resources/ts || true && rm -rf ./whatsapp-api || true && rm -rf ./redes || true && rm -rf .git`;
         // Ejecutar los comandos en el servidor remoto
         const result = await ssh.execCommand(commands);
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("Resultado:", result.stdout);
         console.error("Errores:", result.stderr);
         return true;
