@@ -6,6 +6,7 @@ import {
 } from "@vigilio/valibot";
 import { pagesSchema } from "../schemas/pages.schema";
 import { Page } from "../entities/page.entity";
+import { Op } from "sequelize";
 
 export const pagesStoreDto = omitAsync(
     pagesSchema,
@@ -16,7 +17,10 @@ export const pagesStoreDto = omitAsync(
                 Page.findOne({
                     where: {
                         title: input.title,
-                        isDinamic: false,
+                        [Op.or]: [
+                            { isDinamic: { [Op.not]: false } },
+                            { isDinamic: { [Op.is]: null } }, // Incluye registros donde isDinamic es NULL
+                        ],
                         empresa_id: input.empresa_id,
                     },
                     raw: true,
@@ -25,7 +29,10 @@ export const pagesStoreDto = omitAsync(
                     where: {
                         slug: input.slug,
                         empresa_id: input.empresa_id,
-                        isDinamic: false,
+                        [Op.or]: [
+                            { isDinamic: { [Op.not]: false } },
+                            { isDinamic: { [Op.is]: null } }, // Incluye registros donde isDinamic es NULL
+                        ],
                     },
                     raw: true,
                 }),

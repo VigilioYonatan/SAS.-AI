@@ -638,7 +638,10 @@ export class WebApiService {
             where: {
                 slug,
                 empresa_id: empresa.id,
-                isDinamic: false,
+                [Op.or]: [
+                    { isDinamic: { [Op.not]: false } },
+                    { isDinamic: { [Op.is]: null } }, // Incluye registros donde isDinamic es NULL
+                ],
             },
         });
         if (page) {
