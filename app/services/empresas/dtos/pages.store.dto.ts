@@ -18,7 +18,7 @@ export const pagesStoreDto = omitAsync(
                     where: {
                         title: input.title,
                         [Op.or]: [
-                            { isDinamic: { [Op.not]: false } },
+                            { isDinamic: { [Op.is]: false } },
                             { isDinamic: { [Op.is]: null } }, // Incluye registros donde isDinamic es NULL
                         ],
                         empresa_id: input.empresa_id,
@@ -30,7 +30,7 @@ export const pagesStoreDto = omitAsync(
                         slug: input.slug,
                         empresa_id: input.empresa_id,
                         [Op.or]: [
-                            { isDinamic: { [Op.not]: false } },
+                            { isDinamic: { [Op.is]: false } },
                             { isDinamic: { [Op.is]: null } }, // Incluye registros donde isDinamic es NULL
                         ],
                     },
