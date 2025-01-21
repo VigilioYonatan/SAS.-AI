@@ -7,14 +7,17 @@ import {
     InternalServerErrorException,
     BadRequestException,
     Query,
+    Body,
+    Post,
 } from "@vigilio/express-core";
 import { Pipe } from "@vigilio/express-core/valibot";
 import { objectAsync, string } from "@vigilio/valibot";
-import { isWhatsappTelegramIA } from "../libs/ai";
+import { isWhatsappTelegramIA, updateTokensEmpresa } from "../libs/ai";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import * as cheerio from "cheerio";
 import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
 import { chatgpt } from "../libs";
+import { openAis } from "@/empresas/services/empresas.api.service";
 
 @Controller("/ia")
 export class IAApiController {
@@ -235,6 +238,59 @@ export class IAApiController {
                 data: {
                     images,
                 },
+            };
+        } catch (error) {
+            throw new InternalServerErrorException((error as Error).message);
+        }
+    }
+    @PermissionAdmin()
+    @Post("/html")
+    async html(
+        @Req("empresa") empresa: Empresas,
+        @Body() body: { prompt: string; image: string }
+    ) {
+        try {
+            const whatsapp = await isWhatsappTelegramIA(empresa.slug);
+            if (!whatsapp)
+                throw new NotFoundException(
+                    "Hubo un problema al usar la ia, Recomiendo fijarse en los limites token"
+                );
+            const completion = await openAis[
+                whatsapp!.empresa.slug
+            ].chat.completions.create({
+                model:
+                    whatsapp!.clientVigilio?.information.modelai ??
+                    "gpt-4o-mini",
+                messages: [
+                    {
+                        role: "user",
+                        content: [
+                            {
+                                type: "text",
+                                text: body.prompt,
+                            },
+                            {
+                                type: "image_url",
+                                image_url: {
+                                    url: body.image,
+                                },
+                            },
+                        ],
+                    },
+                ],
+            });
+            const result = completion.choices[0].message.content;
+            const latestEmpresaUsage =
+                whatsapp!.empresa!.inteligenceArtificial.usage;
+            await updateTokensEmpresa(
+                whatsapp!.empresa,
+                latestEmpresaUsage,
+                completion
+            );
+
+            return {
+                success: true,
+                data: result,
             };
         } catch (error) {
             throw new InternalServerErrorException((error as Error).message);

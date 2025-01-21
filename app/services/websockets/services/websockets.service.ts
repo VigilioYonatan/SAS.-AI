@@ -87,27 +87,29 @@ export class WebsocketsService {
                 empresa_id: emp.id,
             },
         });
-        await Promise.all(
-            userPermises.map(async (user) => {
-                const noti = new NotificationsUser({
-                    user_id: user.id,
-                    notification_id: notification.notification.id,
-                    isRead: false,
-                    empresa_id: emp.id,
-                });
-                await noti.save();
-                // if (user.subscription && user.enabledNotification) {
-                //     await webpush.sendNotification(
-                //         user.subscription,
-                //         JSON.stringify(payload)
-                //     );
-                // }
-            })
-        );
-        return {
-            ...notification,
-            users_permission: userPermises.map((user) => user.id),
-        };
+        try {
+            await Promise.all(
+                userPermises.map(async (user) => {
+                    const noti = new NotificationsUser({
+                        user_id: user.id,
+                        notification_id: notification.notification.id,
+                        isRead: false,
+                        empresa_id: emp.id,
+                    });
+                    await noti.save();
+                    // if (user.subscription && user.enabledNotification) {
+                    //     await webpush.sendNotification(
+                    //         user.subscription,
+                    //         JSON.stringify(payload)
+                    //     );
+                    // }
+                })
+            );
+            return {
+                ...notification,
+                users_permission: userPermises.map((user) => user.id),
+            };
+        } catch (err) {}
     }
 
     async orderStore(
@@ -339,37 +341,40 @@ export class WebsocketsService {
                     );
                     content = removeNote;
                 }
-                await this.subcommentsApiService.store(
-                    whatsapp.empresa,
-                    type,
-                    String(body.product_id),
-                    String(body.comment_id),
-                    { content: content! },
-                    userBot!.id
-                );
-                const contentido = `Se respondió un comentario en el producto <b>${product.name}</b>`;
-                const notification = await this.notificationsApiService.store({
-                    type: "comment",
-                    url: body.isService
-                        ? `/servicio/${product.slug}?comment=${body.comment_id}`
-                        : `/${product.slug}?comment=${body.comment_id}`,
-                    content: contentido,
-                    user_id: userBot!.id,
-                    empresa_id: emp.id,
-                });
+                try {
+                    await this.subcommentsApiService.store(
+                        whatsapp.empresa,
+                        type,
+                        String(body.product_id),
+                        String(body.comment_id),
+                        { content: content! },
+                        userBot!.id
+                    );
+                    const contentido = `Se respondió un comentario en el producto <b>${product.name}</b>`;
+                    const notification =
+                        await this.notificationsApiService.store({
+                            type: "comment",
+                            url: body.isService
+                                ? `/servicio/${product.slug}?comment=${body.comment_id}`
+                                : `/${product.slug}?comment=${body.comment_id}`,
+                            content: contentido,
+                            user_id: userBot!.id,
+                            empresa_id: emp.id,
+                        });
 
-                const noti = new NotificationsUser({
-                    user_id: user.id,
-                    notification_id: notification.notification.id,
-                    isRead: false,
-                    empresa_id: emp.id,
-                });
-                await noti.save();
+                    const noti = new NotificationsUser({
+                        user_id: user.id,
+                        notification_id: notification.notification.id,
+                        isRead: false,
+                        empresa_id: emp.id,
+                    });
+                    await noti.save();
 
-                return {
-                    ...notification,
-                    users_permission: [body.user_id],
-                };
+                    return {
+                        ...notification,
+                        users_permission: [body.user_id],
+                    };
+                } catch (err) {}
             }
 
             return {
@@ -545,41 +550,43 @@ export class WebsocketsService {
                 );
                 content = removeNote;
             }
-            await this.subcommentsApiService.store(
-                whatsapp.empresa,
-                type,
-                String(body.product_id),
-                String(body.comment_id),
-                { content: content! },
-                userBot!.id
-            );
-            const contentido = `Se respondió un comentario en el producto <b>${product.name}</b>`;
-            const notification = await this.notificationsApiService.store({
-                type: "comment",
-                url: body.isService
-                    ? `/servicio/${product.slug}?comment=${body.comment_id}`
-                    : `/${product.slug}?comment=${body.comment_id}`,
-                content: contentido,
-                user_id: userBot!.id,
-                empresa_id: emp.id,
-            });
-            const users_permission = [
-                body.user_id,
-                ...userPermises.map((user) => user.id),
-            ].filter((val) => val !== userBot!.id);
-            await NotificationsUser.bulkCreate(
-                users_permission.map((id) => ({
-                    user_id: id,
-                    notification_id: notification.notification.id,
-                    isRead: false,
+            try {
+                await this.subcommentsApiService.store(
+                    whatsapp.empresa,
+                    type,
+                    String(body.product_id),
+                    String(body.comment_id),
+                    { content: content! },
+                    userBot!.id
+                );
+                const contentido = `Se respondió un comentario en el producto <b>${product.name}</b>`;
+                const notification = await this.notificationsApiService.store({
+                    type: "comment",
+                    url: body.isService
+                        ? `/servicio/${product.slug}?comment=${body.comment_id}`
+                        : `/${product.slug}?comment=${body.comment_id}`,
+                    content: contentido,
+                    user_id: userBot!.id,
                     empresa_id: emp.id,
-                }))
-            );
+                });
+                const users_permission = [
+                    body.user_id,
+                    ...userPermises.map((user) => user.id),
+                ].filter((val) => val !== userBot!.id);
+                await NotificationsUser.bulkCreate(
+                    users_permission.map((id) => ({
+                        user_id: id,
+                        notification_id: notification.notification.id,
+                        isRead: false,
+                        empresa_id: emp.id,
+                    }))
+                );
 
-            return {
-                ...notification,
-                users_permission,
-            };
+                return {
+                    ...notification,
+                    users_permission,
+                };
+            } catch (err) {}
         }
         return {
             ...notification,

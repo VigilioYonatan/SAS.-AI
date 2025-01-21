@@ -19,6 +19,10 @@ import { reactComponent } from "~/libs/preact";
 import { anidarPropiedades } from ".";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ShowTablesDB } from "@/empresas/views/PageStore";
+import { aiHTMLApi } from "@/bot/apis/ai.html.api";
+import axios from "axios";
+import AlertInfo from "../Alerts/AlertInfo";
+import LoaderSubmit from "../LoaderSubmit";
 
 interface FormControlLabelProps<T extends object> {
     title: string;
@@ -315,7 +319,218 @@ function FormEditorJSControl<T extends object>({
                             )}
                         </button>
                         {!storageEmpresa?.isProduction ? (
-                            <ShowTablesDB />
+                            <>
+                                <ShowTablesDB />
+                                {(() => {
+                                    const prompt = useSignal(
+                                        "Creame un codigo html como componente, que no vaya head ni body y que sea igualito, por favor que sea igualito y no falte nada, como en  la imagen que te pase, usa BEM clases, <style></style> y adentro las clases y style va al ultimo, primero el componente, no uses body, solo traime el html con el style y no digas nada mas, solo el html, importante. no MARKDOWN, si vez iconos usa Font-Awesome far o fas, usa flex-box o grid y que sea responsive, no markdown  ``` no"
+                                    );
+                                    const aiHTMLMutation = aiHTMLApi();
+
+                                    const handlePaste = async (
+                                        e: React.ClipboardEvent<HTMLInputElement>
+                                    ) => {
+                                        const items =
+                                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                            (e.clipboardData as any).items;
+
+                                        for (let i = 0; i < items.length; i++) {
+                                            const item = items[i];
+                                            if (
+                                                item.type.indexOf("image") === 0
+                                            ) {
+                                                const file = item.getAsFile();
+                                                const reader = new FileReader();
+
+                                                reader.onloadend = async () => {
+                                                    const base64Image =
+                                                        reader.result as string;
+
+                                                    await goImage(base64Image); // O haz lo que necesites con la imagen
+                                                };
+
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }
+                                    };
+
+                                    async function goImage(
+                                        base64Image: string
+                                    ) {
+                                        const APIKEY =
+                                            "297b2552dd5f443160e85a1dbe2b8e60";
+
+                                        // Crear el FormData para enviar la solicitud
+                                        const formData = new FormData();
+                                        formData.append(
+                                            "image",
+                                            base64Image.split(",")[1]
+                                        ); // Agregar la imagen en base64
+                                        formData.append("key", APIKEY);
+                                        formData.append("expiration", "600"); // Expiración en segundos (10 minutos)
+
+                                        try {
+                                            // Hacer la solicitud POST con Axios
+                                            const response = await axios.post(
+                                                "https://api.imgbb.com/1/upload",
+                                                formData
+                                            );
+                                            aiHTMLMutation.mutate(
+                                                {
+                                                    prompt: prompt.value,
+                                                    image: response.data.data
+                                                        .url,
+                                                },
+                                                {
+                                                    onSuccess(data) {
+                                                        setValue(
+                                                            name as Path<T>,
+                                                            data.data as PathValue<
+                                                                T,
+                                                                Path<T>
+                                                            >
+                                                        );
+                                                        sweetAlert({
+                                                            icon: "success",
+                                                            title: "html agregado correctamente",
+                                                        });
+                                                    },
+                                                    onError(data) {
+                                                        sweetAlert({
+                                                            icon: "danger",
+                                                            title: `Error al html ${data.message}`,
+                                                        });
+                                                    },
+                                                }
+                                            );
+                                        } catch (error) {
+                                            console.error(
+                                                "Error uploading the image",
+                                                error
+                                            );
+                                        }
+                                    }
+
+                                    return (
+                                        <label htmlFor="file" class="relative">
+                                            <button
+                                                type="button"
+                                                class="bg-black w-[20px] h-[20px] rounded-full absolute  right-[-1rem] top-[-0.5rem] font-bold"
+                                                onClick={() => {
+                                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                                    (
+                                                        document as any
+                                                    ).addEventListener(
+                                                        "paste",
+                                                        handlePaste
+                                                    );
+                                                    sweetModal({
+                                                        html: reactComponent(
+                                                            <form
+                                                                onSubmit={(
+                                                                    e
+                                                                ) => {
+                                                                    e.preventDefault();
+                                                                }}
+                                                            >
+                                                                <h3 class="dark:text-white text-xs">
+                                                                    Prompt
+                                                                </h3>
+                                                                <textarea
+                                                                    class="mt-4 w-full py-2 px-4 rounded-md max-h-[300px] min-h-[300px]"
+                                                                    onChange={(
+                                                                        e
+                                                                    ) => {
+                                                                        prompt.value =
+                                                                            (
+                                                                                e.target as HTMLInputElement
+                                                                            ).value;
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        prompt.value
+                                                                    }
+                                                                </textarea>
+                                                                <AlertInfo>
+                                                                    CTRL + V, Si
+                                                                    pegaste una
+                                                                    imagen en
+                                                                    CSS.
+                                                                </AlertInfo>
+                                                                {aiHTMLMutation.isLoading ? (
+                                                                    <LoaderSubmit />
+                                                                ) : null}
+                                                            </form>
+                                                        ),
+                                                        isCloseInBackground:
+                                                            false,
+                                                        showCloseButton: true,
+                                                    });
+                                                }}
+                                            >
+                                                {" "}
+                                                {aiHTMLMutation.isLoading ? (
+                                                    <LoaderSubmit />
+                                                ) : (
+                                                    "?"
+                                                )}
+                                            </button>
+                                            <i className="fas fa-image text-lg" />
+                                            <input
+                                                type="file"
+                                                id="file"
+                                                hidden
+                                                onChange={(e) => {
+                                                    sweetModal({
+                                                        title: "¿Estas seguro de insertar una imagen?",
+                                                        showCloseButton: true,
+                                                        isCloseInBackground:
+                                                            false,
+                                                        showCancelButton: true,
+                                                    }).then(
+                                                        async ({
+                                                            isConfirmed,
+                                                        }) => {
+                                                            if (isConfirmed) {
+                                                                const file = (
+                                                                    e.target as HTMLInputElement
+                                                                ).files?.[0]; // Obtener el primer archivo seleccionado
+
+                                                                if (!file) {
+                                                                    console.error(
+                                                                        "No file selected"
+                                                                    );
+                                                                    return;
+                                                                }
+
+                                                                // Leer el archivo como base64 usando FileReader
+                                                                const reader =
+                                                                    new FileReader();
+
+                                                                reader.onloadend =
+                                                                    async () => {
+                                                                        // Obtener la imagen como base64
+                                                                        const base64Image =
+                                                                            reader.result as string;
+
+                                                                        await goImage(
+                                                                            base64Image
+                                                                        );
+                                                                    };
+
+                                                                // Leer el archivo seleccionado como base64
+                                                                reader.readAsDataURL(
+                                                                    file
+                                                                );
+                                                            }
+                                                        }
+                                                    );
+                                                }}
+                                            />
+                                        </label>
+                                    );
+                                })()}
+                            </>
                         ) : null}
                     </div>
                 ) : null}

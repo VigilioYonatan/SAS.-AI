@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "vite",
         "serve": "bun --watch app/main.ts ",
-        "build:serve": "rimraf dist && tsc  --project tsconfig.build.json",
+        "build:serve": "rimraf dist && tsc --project tsconfig.build.json",
         "build:client": "tsc --project ./resources/tsconfig.json && bun dev build ",
         "start": "NODE_ENV=production node dist/app/main.js",
         "test": "vitest",
@@ -163,6 +163,7 @@
         "@types/wkhtmltopdf": "^0.3.9",
         "@types/xml2js": "^0.4.14",
         "autoprefixer": "^10.4.19",
+        "esbuild": "^0.24.2",
         "postcss": "^8.4.39",
         "rimraf": "^5.0.7",
         "supertest": "^7.0.0",
