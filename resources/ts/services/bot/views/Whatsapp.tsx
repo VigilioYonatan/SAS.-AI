@@ -59,7 +59,6 @@ import Helper from "~/components/Helper";
 import { whatsappInfoImage } from "~/config/settings";
 import { whatsappUpdateApi } from "../apis/whatsapp.update.api";
 import { empresaContactsDestroyAllApi } from "@/empresas/apis/empresas.contacts.delete.api";
-import AlertDanger from "~/components/Alerts/AlertDanger";
 import { Input, pick } from "@vigilio/valibot";
 import { useMutation } from "@vigilio/preact-fetching";
 import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
@@ -1682,36 +1681,8 @@ function WhatsappFREE() {
                         considerar la opción de migrar a un VPS. Esto puede
                         mejorar significativamente el rendimiento y la
                         eficiencia de tu servicio.
-                        <br /> 1 vCPU - 1GB RAM
+                        <br /> 2 vCPU - 2GB RAM
                     </p>
-                    <br />
-                    <AlertDanger>
-                        <span class="text-sm font-bold text-center">
-                            Lastimosamente WhatsApp ya no ofrece una opción
-                            gratuita hasta nuevo aviso, Recomendamos migrarse a
-                            un VPS.
-                            {restarDays(
-                                NOW().toDate(),
-                                TimePeru(
-                                    storageEmpresa!.createdAt as Date
-                                ).toDate(),
-                                "day"
-                            ) > 0 ? (
-                                <>
-                                    <br />
-                                    Estas probando gratis por{" "}
-                                    {restarDays(
-                                        NOW().toDate(),
-                                        TimePeru(
-                                            storageEmpresa!.createdAt as Date
-                                        ).toDate(),
-                                        "day"
-                                    )}{" "}
-                                    días
-                                </>
-                            ) : null}
-                        </span>
-                    </AlertDanger>
                     <button
                         type="button"
                         class="bg-primary px-4 py-2 rounded-md text-white mt-2 text-xs font-bold"
@@ -1751,8 +1722,8 @@ function WhatsappFREE() {
                         <b>Mejor Opción - Mensajes Ilimitados</b>
                         <br />
                         Acelera WhatsApp - Entre mejor sea el vps, más rapido
-                        irá WhatsApp. Activalo en 2 minutos <br /> Mínimo 2 vCPU
-                        - 2GB RAM
+                        irá WhatsApp. Activalo en 2 minutos <br /> Mínimo 4 vCPU
+                        - 4GB RAM
                         <br />
                     </p>{" "}
                     {storageEmpresa?.whatsapp_mode.type === "VPS" ? (

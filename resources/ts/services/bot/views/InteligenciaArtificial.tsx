@@ -554,7 +554,7 @@ function InteligenciaArtificial() {
                         </button>
                     </div>
                     <br />
-                    {storageEmpresa!.isProduction ? (
+                    {!storageEmpresa!.isProduction ? (
                         <div class="flex flex-col gap-2">
                             <span class="dark:text-white text-lg font-bold">
                                 Más datos para tu Inteligencia Artificial

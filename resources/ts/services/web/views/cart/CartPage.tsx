@@ -197,7 +197,7 @@ function CartPage({ cart, header }: CartProps) {
                     </div>
                 ) : (
                     <h1 class="mb-4 text-xl text-center font-bold dark:text-white">
-                        Carrito de compras
+                        Carrito de compra
                     </h1>
                 )}
 
@@ -212,7 +212,7 @@ function CartPage({ cart, header }: CartProps) {
                                 <table class="w-full ">
                                     <thead class="py-3 border-b border-b-border bg-primary">
                                         <tr class="text-xs text-left text-muted-foreground ">
-                                            <th class="py-2 font-medium font-bold text-sm dark:text-white ">
+                                            <th class="py-2 font-medium font-bold text-sm dark:text-white  min-w-[130px] md:min-w-[auto]">
                                                 <span class="flex justify-center items-center">
                                                     Producto
                                                 </span>
@@ -271,9 +271,9 @@ function CartPage({ cart, header }: CartProps) {
                                                     }
                                                 >
                                                     <td class="py-3">
-                                                        <article class="flex items-center gap-2">
+                                                        <article class="flex flex-col items-center justify-center md:justify-start md:flex-row md:gap-2">
                                                             <img
-                                                                class="w-[100px] h-[100px] object-contain rounded-lg hidden md:block"
+                                                                class="w-[70px] h-[70px] md:w-[100px] md:h-[100px] object-contain rounded-lg "
                                                                 src={
                                                                     isImagesLength[0]
                                                                 }
@@ -282,17 +282,17 @@ function CartPage({ cart, header }: CartProps) {
                                                                 }
                                                                 loading="lazy"
                                                             />
-                                                            <div>
+                                                            <div class="flex flex-col justify-center items-center md:justify-start md:items-start">
                                                                 <a
                                                                     href={`/${product.slug}`}
-                                                                    class="text-xs md:text-sm font-semibold dark:text-white  block  line-clamp-3    mx-1"
+                                                                    class="text-xs md:text-sm font-semibold dark:text-white  block  line-clamp-3    mx-1 text-center md:text-start"
                                                                 >
                                                                     {
                                                                         product.name
                                                                     }
                                                                 </a>
                                                                 {product.variant ? (
-                                                                    <span class="text-gray-600 dark:text-gray-300 text-xs">
+                                                                    <span class="text-gray-600 dark:text-gray-300 text-xs text-center md:text-start">
                                                                         {printProductVariant(
                                                                             product as ProductsNormalSchemaFromServer,
                                                                             product.variant
@@ -322,7 +322,7 @@ function CartPage({ cart, header }: CartProps) {
                                                                             )}
                                                                     </span>
                                                                 ) : null}
-                                                                <span class="text-xs text-gray-400 dark:text-paper-light font-semibold">
+                                                                <span class="text-xs text-gray-400 dark:text-paper-light font-semibold text-center md:text-start">
                                                                     {product.discount >
                                                                     0 ? (
                                                                         <>
@@ -393,7 +393,7 @@ function CartPage({ cart, header }: CartProps) {
                                                     ) : (
                                                         <>
                                                             <td class="py-3 mx-2 w-[100px]">
-                                                                <div class="flex gap-3 items-center justify-center mx-2">
+                                                                <div class="flex md:gap-3 items-center justify-center mx-2">
                                                                     <button
                                                                         aria-label="to increment to cart"
                                                                         type="button"
