@@ -40,7 +40,11 @@ export class AuthApiService {
         const token = crypto.randomUUID();
         await user.update({ token });
         try {
-            await whatsappSendMessageApi(empresa, {
+            const name = empresa.whatsapp_mode!.find(
+                (w) => w.name === "docker"
+            )!.name;
+
+            await whatsappSendMessageApi(empresa, name, {
                 telephone: `${empresa.dial_code}${user.telephone}@c.us`,
                 message: `Hola *${
                     user.username
@@ -77,7 +81,11 @@ export class AuthApiService {
         } as unknown as UsersStoreDto);
         await user.update({ token });
         try {
-            await whatsappSendMessageApi(empresa, {
+            const name = empresa.whatsapp_mode!.find(
+                (w) => w.name === "docker"
+            )!.name;
+
+            await whatsappSendMessageApi(empresa, name, {
                 telephone: `${empresa.dial_code}${user.telephone}@c.us`,
                 message: `Hola *${
                     user.username

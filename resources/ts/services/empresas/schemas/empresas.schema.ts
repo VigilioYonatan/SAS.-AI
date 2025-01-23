@@ -170,6 +170,27 @@ export const groupWhatsapp = object({
 export type CompanySchema = Input<typeof companySchema>;
 export type ContactsSchema = Input<typeof contactsSchema>;
 export type GroupWhatsapp = Input<typeof groupWhatsapp>;
+export const whatsappMode = object({
+    type: string(),
+    ip: nullable(
+        string([
+            custom(
+                (val) =>
+                    /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                        val
+                    ),
+                "Ip no valido"
+            ),
+        ])
+    ),
+    password: nullable(string([minLength(4), maxLength(30)])),
+    memory: nullable(string([custom((val) => Number(val) >= 2, "Mínimo 2.")])),
+    cpu: nullable(string([custom((val) => Number(val) >= 2, "Mínimo 2.")])),
+    date: nullable(coerce(date(), (value) => new Date(value as string))),
+    enabled: boolean(),
+    name: string(),
+});
+export type WhatsappMode = Input<typeof whatsappMode>;
 export const empresasSchema = object({
     id: number(),
     dial_code: string(),
@@ -313,26 +334,7 @@ export const empresasSchema = object({
     timeWhatsapp: coerce(date(), (value) => new Date(value as string)),
     tz: string(),
     impuestos: array(number()),
-    whatsapp_mode: object({
-        type: string(),
-        ip: nullable(
-            string([
-                custom(
-                    (val) =>
-                        /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
-                            val
-                        ),
-                    "Ip no valido"
-                ),
-            ])
-        ),
-        password: nullable(string([minLength(4), maxLength(30)])),
-        memory: nullable(
-            string([custom((val) => Number(val) >= 2, "Mínimo 2.")])
-        ),
-        cpu: nullable(string([custom((val) => Number(val) >= 2, "Mínimo 2.")])),
-        date: nullable(coerce(date(), (value) => new Date(value as string))),
-    }),
+    whatsapp_mode: array(whatsappMode),
     facebook_pixel: nullable(
         string([
             custom(

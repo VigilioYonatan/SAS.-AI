@@ -30,13 +30,11 @@ import {
 import { EmpresasApiService } from "../services/empresas.api.service";
 import {
     contactsSchema,
-    empresasSchema,
     groupWhatsapp,
     payments,
     scheduleSchema,
     whatsappconfig,
     type ContactsSchema,
-    type EmpresasSchema,
     type GroupWhatsapp,
     type Payments,
     type ScheduleSchema,
@@ -64,6 +62,7 @@ import {
     type EmpresasIAUpdateDto,
 } from "../dtos/empresas.ia.update.dto";
 import { hostSchema } from "../schemas/settings.schema";
+import { type WhatsappMode, whatsappMode } from "../schemas/empresas.schema";
 import {
     settingsUpdateDto,
     type SettingsUpdateDto,
@@ -161,14 +160,30 @@ export class EmpresasApiController {
             whatsapp_mode: empresa.whatsapp_mode,
         };
     }
-    @Validator(pickAsync(empresasSchema, ["whatsapp_mode"]))
+
+    @Validator(omitAsync(whatsappMode, ["name"]))
     @Post("/whatsapp_mode")
+    async whatsapp_mode_store(
+        @Req("empresa") empresa: Empresas,
+        @Body() body: WhatsappMode
+    ) {
+        const result = await this.empresaApiService.whatsapp_mode_store(
+            empresa,
+            body
+        );
+        return result;
+    }
+    @Pipe(objectAsync({ ip: string() }))
+    @Validator(omitAsync(whatsappMode, ["name"]))
+    @Post("/whatsapp_mode/:ip")
     async whatsapp_mode(
         @Req("empresa") empresa: Empresas,
-        @Body() body: Pick<EmpresasSchema, "whatsapp_mode">
+        @Body() body: WhatsappMode,
+        @Params("ip") ip: string
     ) {
         const result = await this.empresaApiService.whatsapp_mode(
             empresa,
+            ip,
             body
         );
         return result;

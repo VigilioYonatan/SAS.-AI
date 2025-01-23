@@ -76,7 +76,9 @@ export class BackupApiService {
             });
             // solo a las empresas que tiene gratis
             const slugs = emp
-                .filter((container) => container.whatsapp_mode.type === "FREE")
+                .filter((container) =>
+                    container.whatsapp_mode.some((c) => c.type === "FREE")
+                )
                 .map((container) => container.slug);
             const command1 = `docker rm -f ${slugs.join(" ")} || true`;
             const command2 = slugs

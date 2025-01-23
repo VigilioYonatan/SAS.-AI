@@ -4,6 +4,7 @@ import {
     Body,
     Controller,
     Get,
+    Params,
     Post,
     Query,
     Req,
@@ -38,17 +39,38 @@ import { NodeSSH } from "node-ssh";
 import { vpsShowApi } from "@/empresas/services/backup.api.service";
 import enviroments from "~/config/enviroments.config";
 import cache from "@vigilio/express-core/cache";
+import { objectAsync, string } from "@vigilio/valibot";
+import { Pipe } from "@vigilio/express-core/valibot";
+
 export let chats: Record<string, ["assistant" | "user", string][]> = {};
 export const chatsWait: Record<string, string[]> = {};
 
 @Controller("/whatsapp")
 export class whatsappApiController {
+    host(host: string) {
+        const subdomain = !host?.startsWith("www.") ? `www.${host}` : host;
+        console.log({ subdomain });
+        const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
+        console.log({ 2: subdomainSplit[2] });
+        return subdomainSplit[2];
+    }
     @Post("/ready")
     async ready(
         @Body()
         client: { contacts: { name: string; id: { _serialized: string } }[] },
-        @Req("empresa") info: Empresas
+        @Req() req: RequestVigilio
     ) {
+        const subdomain = this.host(req.headers.host || "");
+        const info = req.empresa;
+        const whatsapp_mode = info.whatsapp_mode.find(
+            (w) => w.name === subdomain
+        );
+        if (!whatsapp_mode) {
+            throw new BadRequestException("No se encontro subdomain whatsapp");
+        }
+        if (!whatsapp_mode.enabled) {
+            throw new BadRequestException("No esta habilitado");
+        }
         const empresa = await Empresas.findOne({
             where: { slug: info.slug },
             attributes: ["id", "contacts", "slug"],
@@ -75,7 +97,7 @@ export class whatsappApiController {
 
     @Post("/receive-message")
     async receiveMessage(
-        @Req("empresa") info: Empresas,
+        @Req() req: RequestVigilio,
         @Body()
         body: {
             type: string;
@@ -91,6 +113,17 @@ export class whatsappApiController {
             quotedMessageId: string;
         }
     ) {
+        const info = req.empresa;
+        const subdomain = this.host(req.headers.host || "");
+        const whatsapp_mode = info.whatsapp_mode.find(
+            (w) => w.name === subdomain
+        );
+        if (!whatsapp_mode) {
+            throw new BadRequestException("No se encontro subdomain whatsapp");
+        }
+        if (!whatsapp_mode.enabled) {
+            throw new BadRequestException("No esta habilitado");
+        }
         let content = body.content;
 
         const userId = body.from;
@@ -130,7 +163,7 @@ export class whatsappApiController {
                     Buffer.from((content as any).data)
                 );
                 if (imageText === "null") {
-                    await whatsappSendMessageApi(empresa, {
+                    await whatsappSendMessageApi(empresa, whatsapp_mode.name, {
                         message:
                             "No se pudo analizar esta imagen o no se encontró 😢.",
                         telephone: userId,
@@ -241,7 +274,7 @@ export class whatsappApiController {
             if (buenas) {
                 // aveces que responda reply
 
-                await whatsappSendMessageApi(empresa, {
+                await whatsappSendMessageApi(empresa, whatsapp_mode.name, {
                     message: buenas,
                     telephone: userId,
                     options: opt,
@@ -253,7 +286,7 @@ export class whatsappApiController {
                 };
             }
             if (thanks) {
-                await whatsappSendMessageApi(empresa, {
+                await whatsappSendMessageApi(empresa, whatsapp_mode.name, {
                     message: thanks,
                     telephone: userId,
                     options: opt,
@@ -338,15 +371,19 @@ export class whatsappApiController {
                 if (empresa.inteligenceArtificial.isChunk) {
                     const chunks = removeNote.split(/(?<!\d)\.\s+/g);
                     for (const chunk of chunks) {
-                        await whatsappSendMessageApi(empresa, {
-                            message: chunk,
-                            telephone: userId,
-                            options: opt,
-                            delay: 2,
-                        });
+                        await whatsappSendMessageApi(
+                            empresa,
+                            whatsapp_mode.name,
+                            {
+                                message: chunk,
+                                telephone: userId,
+                                options: opt,
+                                delay: 2,
+                            }
+                        );
                     }
                 } else {
-                    await whatsappSendMessageApi(empresa, {
+                    await whatsappSendMessageApi(empresa, whatsapp_mode.name, {
                         message: removeNote,
                         telephone: userId,
                         options: opt,
@@ -360,7 +397,7 @@ export class whatsappApiController {
                         const options = {
                             sendMediaAsSticker: true,
                         };
-                        await whatsappSendFileApi(empresa, {
+                        await whatsappSendFileApi(empresa, whatsapp_mode.name, {
                             telephone: userId,
                             url,
                             options,
@@ -379,7 +416,9 @@ export class whatsappApiController {
             throw new BadRequestException((error as Error).message);
         }
     }
-    @Post("/send-message")
+
+    @Pipe(objectAsync({ name: string() }))
+    @Post("/send-message/:name")
     async sendMessage(
         @Req("empresa") empresa: Empresas,
         @Query("telephone") telephone: string,
@@ -387,10 +426,11 @@ export class whatsappApiController {
         body: {
             message: string;
             options?: WAWebJS.MessageSendOptions;
-        }
+        },
+        @Params("name") name: string
     ) {
         try {
-            const result = await whatsappSendMessageApi(empresa, {
+            const result = await whatsappSendMessageApi(empresa, name, {
                 ...body,
                 telephone,
                 delay: 0,
@@ -401,8 +441,9 @@ export class whatsappApiController {
         }
     }
 
-    @Post("/send-file")
-    async sendFile(@Req() req: RequestVigilio) {
+    @Pipe(objectAsync({ name: string() }))
+    @Post("/send-file/:name")
+    async sendFile(@Req() req: RequestVigilio, @Params("name") name: string) {
         const form = formidable();
         const [fields, files] = await form.parse(req);
         const empresa = req.empresa;
@@ -423,30 +464,33 @@ export class whatsappApiController {
             url: fields.url ? JSON.parse(fields.url[0]) : null,
             delay: 0,
         };
-        const result = await whatsappSendFileApi(empresa, data);
+        const result = await whatsappSendFileApi(empresa, name, data);
         return result;
     }
 
     // send-seen
-
-    @Post("/send-seen")
+    @Pipe(objectAsync({ name: string() }))
+    @Post("/send-seen/:name")
     async sendSeen(
         @Req("empresa") empresa: Empresas,
-        @Query("telephone") telephone: string
+        @Query("telephone") telephone: string,
+        @Params("name") name: string
     ) {
-        const result = await whatsappSendSeenApi(empresa, { telephone });
+        const result = await whatsappSendSeenApi(empresa, name, { telephone });
         return result;
     }
-    @Post("/send-typing")
+    @Pipe(objectAsync({ name: string() }))
+    @Post("/send-typing/:name")
     async sendTyping(
         @Req("empresa") empresa: Empresas,
         @Body()
         body: {
             delay: number;
         },
-        @Query("telephone") telephone: string
+        @Query("telephone") telephone: string,
+        @Params("name") name: string
     ) {
-        const result = await whatsappSendTypingApi(empresa, {
+        const result = await whatsappSendTypingApi(empresa, name, {
             ...body,
             telephone,
         });
@@ -464,21 +508,32 @@ export class whatsappApiController {
             message: "OK",
         };
     }
-    @Post("/restart")
-    async restart(@Req("empresa") empresa: Empresas) {
+
+    @Pipe(objectAsync({ name: string() }))
+    @Post("/restart/:name")
+    async restart(
+        @Req("empresa") empresa: Empresas,
+        @Params("name") name: string
+    ) {
+        const whatsappMode = empresa.whatsapp_mode.find(
+            (wh) => wh.name === name
+        );
+        if (!whatsappMode) {
+            throw new BadRequestException("No se encontró wahtsapp");
+        }
         await Empresas.update(
             { timeWhatsapp: NOW(empresa).add(1, "minute").format() },
             { where: { slug: empresa.slug } }
         );
-        if (empresa.whatsapp_mode.type === "VPS") {
+        if (whatsappMode.type === "VPS") {
             function onSSH() {
                 return new Promise((res, _) => {
                     const ssh = new NodeSSH();
                     // Función para conectar por SSH
                     ssh.connect({
-                        host: empresa.whatsapp_mode.ip!,
+                        host: whatsappMode?.ip!,
                         username: "root",
-                        password: empresa.whatsapp_mode.password!,
+                        password: whatsappMode?.password!,
                     })
                         .then(() => {
                             // biome-ignore lint/suspicious/noConsoleLog: <explanation>
@@ -515,16 +570,26 @@ export class whatsappApiController {
             message: "Se reinició correctamente.",
         };
     }
-    @Post("/update")
-    async update(@Req("empresa") empresa: Empresas) {
-        if (empresa.whatsapp_mode.type === "VPS") {
+    @Pipe(objectAsync({ name: string() }))
+    @Post("/update/:name")
+    async update(
+        @Req("empresa") empresa: Empresas,
+        @Params("name") name: string
+    ) {
+        const whatsappMode = empresa.whatsapp_mode.find(
+            (wh) => wh.name === name
+        );
+        if (!whatsappMode) {
+            throw new BadRequestException("No se encontró wahtsapp");
+        }
+        if (whatsappMode.type === "VPS") {
             const ssh = new NodeSSH();
             try {
                 // Conectar por SSH
                 await ssh.connect({
-                    host: empresa.whatsapp_mode.ip!,
+                    host: whatsappMode.ip!,
                     username: "root",
-                    password: empresa.whatsapp_mode.password!,
+                    password: whatsappMode.password!,
                 });
 
                 // biome-ignore lint/suspicious/noConsoleLog: <explanation>
@@ -547,12 +612,12 @@ export class whatsappApiController {
                     } -e VITE_TOKEN_VIGILIO_SERVICES=${
                         enviroments.VITE_TOKEN_VIGILIO_SERVICES
                     } --restart always --memory="${
-                        Number(empresa.whatsapp_mode.memory) - 0.2 || "1"
+                        Number(whatsappMode.memory) - 0.2 || "1"
                     }g" --memory-swap="${
-                        Number(empresa.whatsapp_mode.memory) - 0.2 || "1"
-                    }g" --cpus="${
-                        Number(empresa.whatsapp_mode.cpu) - 0.2 || "1"
-                    }" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${
+                        Number(whatsappMode.memory) - 0.2 || "1"
+                    }g" --cpus="${Number(whatsappMode.cpu) - 0.2 || "1"}" -p ${
+                        empresa.port
+                    }:5000 -v ${empresa.slug}:/app/data ${
                         enviroments.DOCKER_IMAGE_WHATSAPP
                     }`
                 );
@@ -611,25 +676,39 @@ export class whatsappApiController {
         };
     }
 
-    @Get("/qr")
-    async qr(@Req("empresa") empresa: Empresas, @Res() res: Response) {
-        const result = await whatsappGetQrApi(empresa);
+    @Pipe(objectAsync({ name: string() }))
+    @Get("/qr/:name")
+    async qr(
+        @Req("empresa") empresa: Empresas,
+        @Res() res: Response,
+        @Params("name") name: string
+    ) {
+        const result = await whatsappGetQrApi(empresa, name);
         res.setHeader("Content-Type", "image/png");
         res.send(Buffer.from(result));
     }
-
-    @Post("/logout")
-    async logout(@Req("empresa") empresa: Empresas) {
+    @Pipe(objectAsync({ name: string() }))
+    @Post("/logout/:name")
+    async logout(
+        @Req("empresa") empresa: Empresas,
+        @Params("name") name: string
+    ) {
+        const whatsappMode = empresa.whatsapp_mode.find(
+            (wh) => wh.name === name
+        );
+        if (!whatsappMode) {
+            throw new BadRequestException("No se encontró wahtsapp");
+        }
         let comando = "";
-        if (empresa.whatsapp_mode.type === "VPS") {
+        if (whatsappMode.type === "VPS") {
             function onSSH() {
                 return new Promise((res, _) => {
                     const ssh = new NodeSSH();
                     // Función para conectar por SSH
                     ssh.connect({
-                        host: empresa.whatsapp_mode.ip!,
+                        host: whatsappMode?.ip!,
                         username: "root",
-                        password: empresa.whatsapp_mode.password!,
+                        password: whatsappMode?.password!,
                     })
                         .then(async () => {
                             let command = "";

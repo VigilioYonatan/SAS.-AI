@@ -159,7 +159,27 @@ export const groupWhatsapp = objectAsync({
 export type CompanySchema = Input<typeof companySchema>;
 export type ContactsSchema = Input<typeof contactsSchema>;
 export type GroupWhatsapp = Input<typeof groupWhatsapp>;
-
+export const whatsappMode = objectAsync({
+    type: string(),
+    ip: nullable(
+        string([
+            custom(
+                (val) =>
+                    /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                        val
+                    ),
+                "Ip no valido"
+            ),
+        ])
+    ),
+    password: nullable(string([minLength(4), maxLength(30)])),
+    memory: nullable(string([custom((val) => Number(val) >= 2, "Mínimo 2.")])),
+    cpu: nullable(string([custom((val) => Number(val) >= 2, "Mínimo 2.")])),
+    date: nullable(coerce(date(), (value) => new Date(value as string))),
+    enabled: boolean(),
+    name: string(),
+});
+export type WhatsappMode = Input<typeof whatsappMode>;
 export const empresasSchema = objectAsync({
     id: number(),
     web: nullable(string([startsWith("https://", "Web no válida. https://")])),
@@ -310,26 +330,7 @@ export const empresasSchema = objectAsync({
     }),
     // twilio: object({ account: string(), token: string() }),
     certificado: nullable(array(filesSchema())),
-    whatsapp_mode: object({
-        type: string(),
-        ip: nullable(
-            string([
-                custom(
-                    (val) =>
-                        /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
-                            val
-                        ),
-                    "Ip no valido"
-                ),
-            ])
-        ),
-        password: nullable(string([minLength(4), maxLength(30)])),
-        memory: nullable(
-            string([custom((val) => Number(val) >= 2, "Mínimo 2.")])
-        ),
-        cpu: nullable(string([custom((val) => Number(val) >= 2, "Mínimo 2.")])),
-        date: nullable(coerce(date(), (value) => new Date(value as string))),
-    }),
+    whatsapp_mode: arrayAsync(whatsappMode),
     // activar direccion a la hora de pagar
     enabled_address: boolean(),
     facebook_pixel: nullable(

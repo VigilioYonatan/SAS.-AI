@@ -7,7 +7,7 @@ import VigilioTable from "~/components/table";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
 import { useForm } from "react-hook-form";
-import { useSignal } from "@preact/signals";
+import { Signal, useSignal } from "@preact/signals";
 import { empresaContactsUpdateApi } from "@/empresas/apis/empresas.contacts.update.api";
 import {
     whatsappGetQrApi,
@@ -25,8 +25,8 @@ import {
 } from "~/libs/helpers";
 import {
     contactsSchema,
-    empresasSchema,
     groupWhatsapp,
+    whatsappMode,
     type ContactsSchema,
     type GroupWhatsapp,
 } from "@/empresas/schemas/empresas.schema";
@@ -40,7 +40,10 @@ import { groupWhatsappStoreApi } from "../apis/group-whatsapp.store.api";
 import { groupWhatsappIndexApi } from "../apis/group-whatsapp.index.api";
 import { groupWhatsappShowApi } from "../apis/group-whatsapp.show.api";
 import { groupWhatsappDestroyApi } from "../apis/group-whatsapp.destroy.api";
-import type { Whatsappconfig } from "../../empresas/schemas/empresas.schema";
+import type {
+    Whatsappconfig,
+    WhatsappMode,
+} from "../../empresas/schemas/empresas.schema";
 import Loading from "@/admin/components/Loading";
 import { groupWhatsappTelephoneDestroyApi } from "../apis/group-whatsapp.telephone.destroy.api";
 import { empresaContactsSearchApi } from "@/empresas/apis/empresas.contacts.search.api";
@@ -59,14 +62,17 @@ import Helper from "~/components/Helper";
 import { whatsappInfoImage } from "~/config/settings";
 import { whatsappUpdateApi } from "../apis/whatsapp.update.api";
 import { empresaContactsDestroyAllApi } from "@/empresas/apis/empresas.contacts.delete.api";
-import { Input, pick } from "@vigilio/valibot";
 import { useMutation } from "@vigilio/preact-fetching";
 import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
 import AlertSuccess from "~/components/Alerts/AlertSuccess";
+import { omit } from "@vigilio/valibot";
 
 function Whatsapp() {
     const authStore = useAuthStore();
-    const whatsappLogoutMutation = whatsappLogoutApi();
+    const whatsapp_name = useSignal<string>(
+        storageEmpresa?.whatsapp_mode[0].name || "docker"
+    );
+    const whatsappLogoutMutation = whatsappLogoutApi(whatsapp_name);
     if (!authStore.guards.permissionAdminGuard()) {
         window.history.back();
         return null;
@@ -94,11 +100,13 @@ function Whatsapp() {
                     type={type}
                     contacts={table.checks.value}
                     onClose={onClose}
+                    whatsapp_name={whatsapp_name}
                 />
             ),
             sweetWidth: "600px",
         }));
     }
+
     function onStoreGroup() {
         sweetModal((onClose) => ({
             isCloseInBackground: false,
@@ -124,13 +132,21 @@ function Whatsapp() {
                 <AdminBreadCrumb current="Whatsapp" />
             </div>
             <div class="flex gap-2 items-center md:justify-between flex-wrap justify-center">
-                <div class="flex gap-2 items-center">
+                <div class="flex md:gap-2 items-center">
                     <button
                         className="bg-success px-4 py-2 rounded-md shadow text-white mr-2 self-end  font-semibold flex items-center justify-center gap-3 text-xs"
                         type="button"
                         onClick={() => {
                             sweetModal({
-                                html: reactComponent(<QrWhatsapp />),
+                                html: reactComponent(
+                                    <QrWhatsapp
+                                        whatsapp_name={
+                                            {
+                                                value: "docker",
+                                            } as Signal<string>
+                                        }
+                                    />
+                                ),
                                 showCloseButton: true,
                                 isCloseInBackground: false,
                             });
@@ -157,11 +173,43 @@ function Whatsapp() {
                     >
                         WHATSAPP
                         <span class="absolute rotate-[45deg] -top-2 -right-5 text-[10px] bg-primary py-1 px-2 rounded-md">
-                            {storageEmpresa?.whatsapp_mode.type === "FREE"
+                            {storageEmpresa?.whatsapp_mode[0].type === "FREE"
                                 ? "GRATIS"
                                 : "VPS"}
                         </span>
                     </button>
+                    {storageEmpresa!.whatsapp_mode.length > 0 ? (
+                        <div class="relative">
+                            <select
+                                class=" px-2 py-2 rounded-md dark:text-white text-sm flex  gap-2 items-center font-semibold  w-full justify-center  shadow bg-paper-light   dark:bg-admin-terciary "
+                                name=""
+                                id=""
+                                onChange={(e) => {
+                                    const value = (e.target as HTMLInputElement)
+                                        .value;
+                                    whatsapp_name.value = value;
+                                }}
+                            >
+                                {storageEmpresa?.whatsapp_mode.map((what) => (
+                                    <option
+                                        value={what.name}
+                                        selected={
+                                            whatsapp_name.value === what.name
+                                        }
+                                        key={what.name}
+                                    >
+                                        {what.name}
+                                    </option>
+                                ))}{" "}
+                            </select>{" "}
+                            <Helper top={1} right={1}>
+                                <b class="w-[100px] text-xs">
+                                    Escoger Whatsapp para enviar mensajes y
+                                    actualizar.
+                                </b>
+                            </Helper>
+                        </div>
+                    ) : null}
                 </div>
 
                 <div class="flex gap-2 items-center">
@@ -323,7 +371,9 @@ function Whatsapp() {
                         type="button"
                         onClick={() => {
                             sweetModal({
-                                html: reactComponent(<GroupIndex />),
+                                html: reactComponent(
+                                    <GroupIndex whatsapp_name={whatsapp_name} />
+                                ),
                                 showCloseButton: true,
                                 isCloseInBackground: false,
                             });
@@ -471,13 +521,19 @@ interface ChatWhatsappProps {
     contacts: number[];
     type: "favorites" | "all" | "selected";
     onClose: () => void;
+    whatsapp_name: Signal<string>;
 }
-function ChatWhatsapp({ contacts, type, onClose }: ChatWhatsappProps) {
+function ChatWhatsapp({
+    contacts,
+    type,
+    onClose,
+    whatsapp_name,
+}: ChatWhatsappProps) {
     const messages = useSignal<(string | File)[]>([]);
     const messageForm = useForm<{ message: string }>({});
     const delayValue = useSignal(15);
-    const botSendMessageMutation = whatsappSendMessageApi();
-    const whatsappSendFileMutation = whatsappSendFileApi();
+    const botSendMessageMutation = whatsappSendMessageApi(whatsapp_name);
+    const whatsappSendFileMutation = whatsappSendFileApi(whatsapp_name);
     const empresaFavoritesMutation = empresaContactsFavoritesApi();
     const empresaContactsMutation = empresaContactsIndexApi();
     const messageSuccess = useSignal<string | null>(null);
@@ -823,13 +879,17 @@ function StoreContact({ refetch }: StoreContactProps) {
     );
 }
 
-export function QrWhatsapp() {
-    const whatsappRestartMutation = whatsappRestart();
+interface QrWhatsappProps {
+    whatsapp_name: Signal<string>;
+    show?: boolean;
+}
+export function QrWhatsapp({ whatsapp_name, show = true }: QrWhatsappProps) {
+    const whatsappRestartMutation = whatsappRestart(whatsapp_name);
     const { state } = useEmpresastore();
 
     return (
         <div class="flex flex-col gap-4 justify-center items-center">
-            <h3 class="text-xl font-bold  flex items-center gap-2 text-primary">
+            <h3 class="text-xl font-bold  flex items-center gap-2 text-primary text-center">
                 <span>Conectar bot de WhatsApp</span>{" "}
                 <i class="fa-duotone fa-message-bot" />
             </h3>
@@ -871,7 +931,7 @@ export function QrWhatsapp() {
             ) : (
                 <>
                     {(() => {
-                        const qrCodeQuery = whatsappGetQrApi();
+                        const qrCodeQuery = whatsappGetQrApi(whatsapp_name);
                         return (
                             <>
                                 <p class="text-md text-center dark:text-white font-bold flex gap-1 items-center">
@@ -958,8 +1018,9 @@ export function QrWhatsapp() {
                                         No tiene WhatsApp instalado
                                     </span>
                                 ) : null}
-                                <ul class="list-image-none flex flex-col gap-2">
-                                    {/* <a
+                                {show ? (
+                                    <ul class="list-image-none flex flex-col gap-2">
+                                        {/* <a
                                         target="_blank"
                                         rel="noreferrer"
                                         href="/api/whatsapp/qr"
@@ -968,25 +1029,26 @@ export function QrWhatsapp() {
                                         Click aquí para obtener el QR sin
                                         esperar
                                     </a> */}
-                                    <li class="dark:text-white text-center text-sm">
-                                        *Si no está funcionando el qr. Intentelo
-                                        2 - 3 veces{" "}
-                                        <i class="fa-solid fa-rotate-right text-white " />
-                                    </li>{" "}
-                                    <li class="dark:text-white text-center text-sm">
-                                        *Si se conectó correctamente, esperar
-                                        unos minutos para añadir tus contactos
-                                        automáticamente. <br />
-                                        <img
-                                            loading="lazy"
-                                            class="mx-auto w-[200px] rounded-md"
-                                            title="whatsapp"
-                                            width={100}
-                                            src="/images/settings/others/whatsapp-success.jfif"
-                                            alt="whatsapp"
-                                        />
-                                    </li>
-                                </ul>
+                                        <li class="dark:text-white text-center text-sm">
+                                            *Si no está funcionando el qr.
+                                            Intentelo 2 - 3 veces{" "}
+                                            <i class="fa-solid fa-rotate-right text-white " />
+                                        </li>{" "}
+                                        <li class="dark:text-white text-center text-sm">
+                                            *Si se conectó correctamente,
+                                            esperar unos minutos para añadir tus
+                                            contactos automáticamente. <br />
+                                            <img
+                                                loading="lazy"
+                                                class="mx-auto w-[200px] rounded-md"
+                                                title="whatsapp"
+                                                width={100}
+                                                src="/images/settings/others/whatsapp-success.jfif"
+                                                alt="whatsapp"
+                                            />
+                                        </li>
+                                    </ul>
+                                ) : null}
                             </>
                         );
                     })()}
@@ -1059,8 +1121,10 @@ function GroupWhatsappStore({ contacts, onClose, clear }: GroupStoreProps) {
         </div>
     );
 }
-
-function GroupIndex() {
+interface GroupIndexProps {
+    whatsapp_name: Signal<string>;
+}
+function GroupIndex({ whatsapp_name }: GroupIndexProps) {
     const groupWhatsappDestroyMutation = groupWhatsappDestroyApi();
     const groupWhatsappStoreQuery = groupWhatsappIndexApi();
     if (groupWhatsappStoreQuery.isLoading) return null;
@@ -1086,6 +1150,7 @@ function GroupIndex() {
                                                     groupWhatsappStoreQuery.refetch
                                                 }
                                                 name={group.name}
+                                                whatsapp_name={whatsapp_name}
                                             />
                                         ),
                                         showCloseButton: true,
@@ -1158,8 +1223,13 @@ function GroupIndex() {
 interface GroupWhatsappShowProps {
     name: string;
     refetch: (clean?: boolean) => void;
+    whatsapp_name: Signal<string>;
 }
-function GroupWhatsappShow({ name, refetch }: GroupWhatsappShowProps) {
+function GroupWhatsappShow({
+    name,
+    refetch,
+    whatsapp_name,
+}: GroupWhatsappShowProps) {
     const groupWhatsappShowQuery = groupWhatsappShowApi(name);
 
     let component: JSX.Element | null = null;
@@ -1465,6 +1535,7 @@ function GroupWhatsappShow({ name, refetch }: GroupWhatsappShowProps) {
                                             ) as any
                                         }
                                         onClose={onClose}
+                                        whatsapp_name={whatsapp_name}
                                     />
                                 ),
                                 sweetWidth: "600px",
@@ -1578,22 +1649,19 @@ function MessagesWhatsappSettings() {
         </div>
     );
 }
-const whatsappmodeDto = pick(empresasSchema, ["whatsapp_mode"]);
-type WhatsappmodeDto = Input<typeof whatsappmodeDto>;
+
 function WhatsappFREE() {
-    const whatsappmodeForm = useForm<WhatsappmodeDto>({
-        resolver: valibotVigilio(whatsappmodeDto),
-        defaultValues: {
-            whatsapp_mode: storageEmpresa?.whatsapp_mode,
-        },
+    const whatsappmodeForm = useForm<WhatsappMode>({
+        resolver: valibotVigilio(omit(whatsappMode, ["name"])),
+        defaultValues: { ...storageEmpresa?.whatsapp_mode[0], enabled: true },
     });
     const chooseVPS = useSignal(false);
-    const type = whatsappmodeForm.watch("whatsapp_mode.type");
-    const year = whatsappmodeForm.watch("whatsapp_mode.date");
+    const type = whatsappmodeForm.watch("type");
+    const year = whatsappmodeForm.watch("date");
 
     const whatsappModeMutation = useMutation(
-        "/empresas/whatsapp_mode",
-        async (url, body: WhatsappmodeDto) => {
+        `/empresas/whatsapp_mode/${storageEmpresa?.whatsapp_mode[0].ip}`,
+        async (url, body: WhatsappMode) => {
             const response = await fetch(`/api${url}`, {
                 method: "POST",
                 body: JSON.stringify(body),
@@ -1606,29 +1674,29 @@ function WhatsappFREE() {
             return result;
         }
     );
-    function onWhatsappMode(body: WhatsappmodeDto) {
-        if (body.whatsapp_mode.type === "VPS") {
-            if (!body.whatsapp_mode.ip?.length) {
-                whatsappmodeForm.setError("whatsapp_mode.ip", {
+    function onWhatsappMode(body: WhatsappMode) {
+        if (body.type === "VPS") {
+            if (!body.ip?.length) {
+                whatsappmodeForm.setError("ip", {
                     message: "Este campo es obligatorio.",
                 });
                 return;
             }
-            if (!body.whatsapp_mode.password?.length) {
-                whatsappmodeForm.setError("whatsapp_mode.password", {
+            if (!body.password?.length) {
+                whatsappmodeForm.setError("password", {
                     message: "Este campo es obligatorio.",
                 });
                 return;
             }
-            if (!body.whatsapp_mode.cpu?.length) {
-                whatsappmodeForm.setError("whatsapp_mode.cpu", {
+            if (!body.cpu?.length) {
+                whatsappmodeForm.setError("cpu", {
                     message: "Este campo es obligatorio.",
                 });
                 return;
             }
 
-            if (!body.whatsapp_mode.memory?.length) {
-                whatsappmodeForm.setError("whatsapp_mode.memory", {
+            if (!body.memory?.length) {
+                whatsappmodeForm.setError("memory", {
                     message: "Este campo es obligatorio.",
                 });
                 return;
@@ -1636,7 +1704,7 @@ function WhatsappFREE() {
         }
         sweetModal({
             icon: "info",
-            title: `¿Estas seguro de cambiar el modo a <b>${body.whatsapp_mode.type}</b>`,
+            title: `¿Estas seguro de cambiar el modo a <b>${body.type}</b>`,
             isCloseInBackground: false,
             showCancelButton: true,
             showCloseButton: true,
@@ -1660,9 +1728,33 @@ function WhatsappFREE() {
             onSubmit={onWhatsappMode}
             className="flex flex-col gap-6 "
         >
-            <h3 class="font-semibold text-center dark:text-white text-xl lg:text-2xl">
-                CAMBIAR WHATSAPP
-            </h3>
+            <div class="flex justify-between items-center">
+                <div />{" "}
+                <h3 class="font-semibold text-center dark:text-white text-xl lg:text-2xl">
+                    CAMBIAR WHATSAPP
+                    {storageEmpresa!.whatsapp_mode.length > 0 ? (
+                        <>
+                            <br />
+                            <span class="text-xs">(Docker)</span>
+                        </>
+                    ) : null}
+                </h3>
+                <button
+                    type="button"
+                    class="bg-green-500 text-white px-2 py-1 rounded-md font-bold text-lg"
+                    aria-label="on"
+                    onClick={() => {
+                        sweetModal({
+                            html: reactComponent(<WhatsappMulti />),
+                            isCloseInBackground: false,
+                            sweetWidth: "700px",
+                            showCloseButton: true,
+                        });
+                    }}
+                >
+                    + <i class="fa-brands fa-whatsapp" />
+                </button>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div class="flex justify-center flex-col items-center ">
                     <img
@@ -1671,9 +1763,11 @@ function WhatsappFREE() {
                         width={100}
                         alt=""
                     />
+
                     <span class=" font-semibold text-lg  dark:text-white">
                         GRATIS
                     </span>
+
                     <p class=" text-center text-sm  dark:text-white">
                         <b>Mensajes Ilimitados</b>
                         <br />
@@ -1687,14 +1781,12 @@ function WhatsappFREE() {
                         type="button"
                         class="bg-primary px-4 py-2 rounded-md text-white mt-2 text-xs font-bold"
                         onClick={() => {
-                            whatsappmodeForm.setValue("whatsapp_mode", {
-                                cpu: null,
-                                ip: null,
-                                memory: null,
-                                password: null,
-                                type: "FREE",
-                                date: null,
-                            });
+                            whatsappmodeForm.setValue("cpu", null);
+                            whatsappmodeForm.setValue("ip", null);
+                            whatsappmodeForm.setValue("memory", null);
+                            whatsappmodeForm.setValue("password", null);
+                            whatsappmodeForm.setValue("type", "FREE");
+                            whatsappmodeForm.setValue("date", null);
                             chooseVPS.value = false;
                         }}
                     >
@@ -1722,11 +1814,11 @@ function WhatsappFREE() {
                         <b>Mejor Opción - Mensajes Ilimitados</b>
                         <br />
                         Acelera WhatsApp - Entre mejor sea el vps, más rapido
-                        irá WhatsApp. Activalo en 2 minutos <br /> Mínimo 4 vCPU
-                        - 4GB RAM
+                        irá WhatsApp. Activalo en 2 minutos <br /> Mínimo 2 vCPU
+                        - 2GB RAM
                         <br />
                     </p>{" "}
-                    {storageEmpresa?.whatsapp_mode.type === "VPS" ? (
+                    {storageEmpresa?.whatsapp_mode[0].type === "VPS" ? (
                         <span class="text-success font-semibold text-xs">
                             WhatsApp VPS{" "}
                             {restarDays(
@@ -1742,19 +1834,16 @@ function WhatsappFREE() {
                         onClick={() => {
                             chooseVPS.value = !chooseVPS.value;
                             if (!chooseVPS.value) {
-                                whatsappmodeForm.setValue("whatsapp_mode", {
-                                    ...storageEmpresa!.whatsapp_mode,
-                                    type: "FREE",
-                                });
+                                whatsappmodeForm.setValue("type", "FREE");
                             } else {
-                                whatsappmodeForm.setValue("whatsapp_mode", {
-                                    ...storageEmpresa!.whatsapp_mode,
-                                    date: formatDateTwo(
+                                whatsappmodeForm.setValue(
+                                    "date",
+                                    formatDateTwo(
                                         NOW().add(360, "days").toDate(),
                                         "YYYY-MM-DD"
-                                    ) as Date,
-                                    type: "VPS",
-                                });
+                                    ) as Date
+                                );
+                                whatsappmodeForm.setValue("type", "VPS");
                             }
                         }}
                     >
@@ -1787,8 +1876,8 @@ function WhatsappFREE() {
                             >
                                 Recomendado
                             </a>
-                            , Registrarse, obtener el servicio VPS y completar
-                            formulario en 2 minutos{" "}
+                            , Registrarse, obtener el servicio VPS (debian 12) y
+                            completar formulario en 2 minutos{" "}
                             <a
                                 href={
                                     storageEmpresa?.dial_code === "51"
@@ -1806,18 +1895,14 @@ function WhatsappFREE() {
                             <Form.control
                                 title="IP de VPS"
                                 placeholder="1XX.X.X.X"
-                                name={
-                                    "whatsapp_mode.ip" as keyof WhatsappmodeDto
-                                }
+                                name={"ip" as keyof WhatsappMode}
                                 autoComplete="off"
                             />
                             <Form.control
                                 title="Contraseña de VPS"
                                 placeholder=""
                                 type="password"
-                                name={
-                                    "whatsapp_mode.password" as keyof WhatsappmodeDto
-                                }
+                                name={"password" as keyof WhatsappMode}
                                 autoComplete="off"
                             />
                         </div>
@@ -1825,18 +1910,14 @@ function WhatsappFREE() {
                             <Form.control
                                 title="vCPU"
                                 placeholder="2"
-                                name={
-                                    "whatsapp_mode.cpu" as keyof WhatsappmodeDto
-                                }
+                                name={"cpu" as keyof WhatsappMode}
                                 type="number"
                                 question="Mínimo 2 de vCPU"
                             />
                             <Form.control
                                 title="Memoria RAM"
                                 placeholder="2"
-                                name={
-                                    "whatsapp_mode.memory" as keyof WhatsappmodeDto
-                                }
+                                name={"memory" as keyof WhatsappMode}
                                 type="number"
                                 question="Mínimo 2 de MEMORIA RAM"
                             />
@@ -1880,6 +1961,332 @@ function WhatsappFREE() {
             <Form.button.submit
                 title="Guardar"
                 className="mx-auto py-4 px-2 rounded-md block"
+                isLoading={whatsappModeMutation.isLoading || false}
+                disabled={whatsappModeMutation.isLoading || false}
+            />
+        </Form>
+    );
+}
+function WhatsappMulti() {
+    return (
+        <div>
+            <div class="flex justify-between items-center">
+                {" "}
+                <button
+                    type="button"
+                    class="bg-success px-3 py-1 rounded-md text-lg text-white shadow"
+                    onClick={() => {
+                        sweetModal({
+                            html: reactComponent(<WhatsappFormStore />),
+                            isCloseInBackground: false,
+                            sweetWidth: "600px",
+                            showCloseButton: true,
+                        });
+                    }}
+                >
+                    +
+                </button>
+                <h3 class="dark:text-white font-bold text-center">
+                    Whatsapp Multi
+                </h3>
+                <div />
+            </div>
+            <br />
+            <div class="grid grid-cols-2 gap-2 max-h-[500px] overflow-auto">
+                {storageEmpresa?.whatsapp_mode.slice(1).map((what) => (
+                    <div key={what.name}>
+                        <span class="dark:text-white font-bold text-center block text-xs">
+                            {what.name}
+                        </span>
+                        <QrWhatsapp
+                            show={false}
+                            whatsapp_name={
+                                { value: what.name } as Signal<string>
+                            }
+                        />
+                        <WhatsappForm whatsapp={what} />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+interface WhatsappFormProps {
+    whatsapp: WhatsappMode;
+}
+function WhatsappForm({ whatsapp }: WhatsappFormProps) {
+    const whatsappmodeForm = useForm<WhatsappMode>({
+        resolver: valibotVigilio(omit(whatsappMode, ["name"])),
+        defaultValues: whatsapp,
+    });
+
+    const whatsappModeMutation = useMutation(
+        `/empresas/whatsapp_mode/${whatsapp.ip}`,
+        async (url, body: WhatsappMode) => {
+            const response = await fetch(`/api${url}`, {
+                method: "POST",
+                body: JSON.stringify(body),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const result = await response.json();
+            if (!result.success) throw result;
+            return result;
+        }
+    );
+    function onWhatsappMode(body: WhatsappMode) {
+        if (body.type === "VPS") {
+            if (!body.ip?.length) {
+                whatsappmodeForm.setError("ip", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+            if (!body.password?.length) {
+                whatsappmodeForm.setError("password", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+            if (!body.cpu?.length) {
+                whatsappmodeForm.setError("cpu", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+
+            if (!body.memory?.length) {
+                whatsappmodeForm.setError("memory", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+        }
+        sweetModal({
+            icon: "info",
+            title: `¿Estas seguro de editar a <b>${body.ip}</b>`,
+            isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                whatsappModeMutation.mutate(body, {
+                    onSuccess(data) {
+                        sweetAlert({
+                            icon: "success",
+                            title: data.message,
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    },
+                    onError(error) {
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                        handlerError(whatsappmodeForm, error as any);
+                    },
+                });
+            }
+        });
+    }
+    return (
+        <Form
+            className={" delay-custom-1 mt-2"}
+            {...whatsappmodeForm}
+            onSubmit={onWhatsappMode}
+        >
+            <div class="grid grid-cols-2 md:grid-cols-1 gap-2">
+                <Form.control
+                    title="IP de VPS"
+                    placeholder="1XX.X.X.X"
+                    name={"ip" as keyof WhatsappMode}
+                    autoComplete="off"
+                />
+                <Form.control
+                    title="Contraseña de VPS"
+                    placeholder=""
+                    type="password"
+                    name={"password" as keyof WhatsappMode}
+                    autoComplete="off"
+                />
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-1 gap-2">
+                <Form.control
+                    title="vCPU"
+                    placeholder="2"
+                    name={"cpu" as keyof WhatsappMode}
+                    type="number"
+                    question="Mínimo 2 de vCPU"
+                />
+                <Form.control
+                    title="Memoria RAM"
+                    placeholder="2"
+                    name={"memory" as keyof WhatsappMode}
+                    type="number"
+                    question="Mínimo 2 de MEMORIA RAM"
+                />
+                <Form.control.toggle
+                    title="Habilitar"
+                    name={"enabled" as keyof WhatsappMode}
+                    question="Si no está habilitado, no funcionará"
+                />
+            </div>
+            <Form.button.submit
+                title="Guardar"
+                isLoading={whatsappModeMutation.isLoading || false}
+                disabled={whatsappModeMutation.isLoading || false}
+            />
+        </Form>
+    );
+}
+function WhatsappFormStore() {
+    const whatsappmodeForm = useForm<WhatsappMode>({
+        resolver: valibotVigilio(omit(whatsappMode, ["name"])),
+        defaultValues: { type: "VPS", enabled: true, date: null },
+    });
+
+    const whatsappModeMutation = useMutation(
+        "/empresas/whatsapp_mode",
+        async (url, body: WhatsappMode) => {
+            const response = await fetch(`/api${url}`, {
+                method: "POST",
+                body: JSON.stringify(body),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const result = await response.json();
+            if (!result.success) throw result;
+            return result;
+        }
+    );
+    function onWhatsappMode(body: WhatsappMode) {
+        if (body.type === "VPS") {
+            if (!body.ip?.length) {
+                whatsappmodeForm.setError("ip", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+            if (!body.password?.length) {
+                whatsappmodeForm.setError("password", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+            if (!body.cpu?.length) {
+                whatsappmodeForm.setError("cpu", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+
+            if (!body.memory?.length) {
+                whatsappmodeForm.setError("memory", {
+                    message: "Este campo es obligatorio.",
+                });
+                return;
+            }
+        }
+        sweetModal({
+            icon: "info",
+            title: "¿Estas seguro de agregar nuevo whatsapp?",
+            isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                whatsappModeMutation.mutate(body, {
+                    onSuccess(data) {
+                        sweetAlert({
+                            icon: "success",
+                            title: data.message,
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    },
+                    onError(error) {
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                        handlerError(whatsappmodeForm, error as any);
+                    },
+                });
+            }
+        });
+    }
+    return (
+        <Form
+            className={" delay-custom-1 mt-2"}
+            {...whatsappmodeForm}
+            onSubmit={onWhatsappMode}
+        >
+            <h3 class="dark:text-white font-bold text-center mb-2">
+                Agregar WhatsApp
+                <br />
+                <span class="text-xs">
+                    (Solo para enviar mensajes masivos y I.A)
+                </span>
+            </h3>
+            <span class="dark:text-white text-xs">
+                - Ir a Proveedor{" "}
+                <a
+                    href={
+                        storageEmpresa?.dial_code === "51"
+                            ? "https://elastika.pe/store/vps"
+                            : "https://contabo.com/en/"
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                    class="text-primary underline"
+                >
+                    Recomendado
+                </a>
+                , Registrarse, obtener el servicio VPS (debian 12) y completar
+                formulario en 2 minutos{" "}
+                <a
+                    href={
+                        storageEmpresa?.dial_code === "51"
+                            ? "https://youtu.be/msYxTrbVLNY"
+                            : "https://www.youtube.com/watch?v=msYxTrbVLNY&feature=youtu.be"
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                    class="text-primary underline"
+                >
+                    Ver tutorial
+                </a>
+            </span>
+            <div class="grid grid-cols-2 md:grid-cols-1 gap-2">
+                <Form.control
+                    title="IP de VPS"
+                    placeholder="1XX.X.X.X"
+                    name={"ip" as keyof WhatsappMode}
+                    autoComplete="off"
+                />
+                <Form.control
+                    title="Contraseña de VPS"
+                    placeholder=""
+                    type="password"
+                    name={"password" as keyof WhatsappMode}
+                    autoComplete="off"
+                />
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-1 gap-2">
+                <Form.control
+                    title="vCPU"
+                    placeholder="2"
+                    name={"cpu" as keyof WhatsappMode}
+                    type="number"
+                    question="Mínimo 2 de vCPU"
+                />
+                <Form.control
+                    title="Memoria RAM"
+                    placeholder="2"
+                    name={"memory" as keyof WhatsappMode}
+                    type="number"
+                    question="Mínimo 2 de MEMORIA RAM"
+                />
+            </div>
+            <Form.button.submit
+                title="Agregar"
                 isLoading={whatsappModeMutation.isLoading || false}
                 disabled={whatsappModeMutation.isLoading || false}
             />

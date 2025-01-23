@@ -32,8 +32,8 @@ import { GlobalMiddleware } from "~/libs/websocket";
 import { socketsRouters } from "~/routers/sockets.router";
 import { Settings } from "@/empresas/entities/settings.entity";
 // import { initial } from "@/empresas/services/empresas.api.service";
-import cors from 'cors';
-import { dirMode, corsOptions } from '.';
+import cors from "cors";
+import { dirMode, corsOptions } from ".";
 import * as i18nextHttpMiddleware from "i18next-http-middleware";
 import i18next, { i18nextMiddleware } from "../libs/i18next";
 import { Sequelize } from "sequelize-typescript";
@@ -152,7 +152,6 @@ export class Server {
                     slugs = [...slugs, emp.slug];
                 }
             }
-            // console.log({ empresa });
 
             if (!empresa) {
                 const where = subdomain
@@ -187,6 +186,7 @@ export class Server {
                 });
 
                 empresa = empresa?.toJSON() as Empresas;
+
                 // agregar todos los hosts
                 const hours24 = 60 * 1000 * 60 * 24;
                 cache.set(

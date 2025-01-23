@@ -529,7 +529,10 @@ export class OrdersApiService {
                 user = usuario;
                 await usuario.update({ token });
                 try {
-                    await whatsappSendMessageApi(empresa, {
+                    const name = empresa.whatsapp_mode!.find(
+                        (w) => w.name === "docker"
+                    )!.name;
+                    await whatsappSendMessageApi(empresa, name, {
                         telephone: `${empresa.dial_code}${ordersStoreDto.telephone}@c.us`,
                         message: `Hola *${
                             usuario.username
@@ -841,7 +844,10 @@ export class OrdersApiService {
         try {
             if (empresa.enabledSendMessage && ordersStoreDto.telephone) {
                 const telephone = `${empresa.dial_code}${ordersStoreDto.telephone}@c.us`;
-                await whatsappSendMessageApi(empresa, {
+                const name = empresa.whatsapp_mode!.find(
+                    (w) => w.name === "docker"
+                )!.name;
+                await whatsappSendMessageApi(empresa, name, {
                     telephone,
                     message:
                         empresa.dial_code === "55"
@@ -1180,7 +1186,10 @@ export class OrdersApiService {
                         : "COMPROBANTE";
                 try {
                     const telephone = `${empresa.dial_code}${ordersUpdateDto.telephone}@c.us`;
-                    await whatsappSendMessageApi(empresa, {
+                    const name = empresa.whatsapp_mode!.find(
+                        (w) => w.name === "docker"
+                    )!.name;
+                    await whatsappSendMessageApi(empresa, name, {
                         telephone,
                         message: empresa.whatsappconfig.thank.replace(
                             "{COMPROBANTE}",
@@ -1199,8 +1208,11 @@ export class OrdersApiService {
                                 ? "invoice"
                                 : "recibo",
                     });
+                    const name2 = empresa.whatsapp_mode!.find(
+                        (w) => w.name === "docker"
+                    )!.name;
 
-                    await whatsappSendFileApi(empresa, {
+                    await whatsappSendFileApi(empresa, name2, {
                         telephone,
                         file: new File([pdfBuffer], file, {
                             type: "application/pdf",
@@ -1209,7 +1221,7 @@ export class OrdersApiService {
                         delay: 1,
                     });
 
-                    await whatsappSendMessageApi(empresa, {
+                    await whatsappSendMessageApi(empresa, name2, {
                         telephone,
                         message: empresa.whatsappconfig.thank2.replace(
                             "{URL}",
@@ -1356,7 +1368,11 @@ export class OrdersApiService {
                 ) {
                     try {
                         const telephone = `${empresa.dial_code}${ordersUpdateDto.telephone}@c.us`;
-                        await whatsappSendMessageApi(empresa, {
+                        const name2 = empresa.whatsapp_mode!.find(
+                            (w) => w.name === "docker"
+                        )!.name;
+
+                        await whatsappSendMessageApi(empresa, name2, {
                             telephone,
                             message: empresa.whatsappconfig.sendpdf.replace(
                                 "{COMPROBANTE}",
@@ -1375,14 +1391,14 @@ export class OrdersApiService {
                         const media = new File([pdfBuffer], file, {
                             type: "application/pdf",
                         });
-                        await whatsappSendFileApi(empresa, {
+                        await whatsappSendFileApi(empresa, name2, {
                             telephone,
                             file: media,
                             options: { sendMediaAsDocument: true },
                             delay: 4,
                         });
 
-                        await whatsappSendMessageApi(empresa, {
+                        await whatsappSendMessageApi(empresa, name2, {
                             telephone,
                             message: empresa.whatsappconfig.thank2.replace(
                                 "{URL}",
@@ -1563,7 +1579,11 @@ export class OrdersApiService {
                     })
                 );
                 const telephone = `${empresa.dial_code}${ordersUpdateDto.telephone}@c.us`;
-                await whatsappSendMessageApi(empresa, {
+                const name = empresa.whatsapp_mode!.find(
+                    (w) => w.name === "docker"
+                )!.name;
+
+                await whatsappSendMessageApi(empresa, name2, {
                     telephone,
                     message:
                         empresa.dial_code === "55"

@@ -386,16 +386,8 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     @Column({
         type: DataType.JSON,
         allowNull: true,
-        defaultValue: "FREE",
     })
-    whatsapp_mode: {
-        type: "FREE" | "VPS" | "API";
-        ip: string | null;
-        password: string | null;
-        memory: string | null;
-        cpu: string | null;
-        date: Date | null;
-    };
+    whatsapp_mode: EmpresasSchema["whatsapp_mode"];
 
     @Column({
         type: DataType.INTEGER,

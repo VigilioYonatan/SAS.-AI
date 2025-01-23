@@ -3,13 +3,14 @@ import { InternalServerErrorException } from "@vigilio/express-core";
 import type WAWebJS from "whatsapp-web.js";
 import type { MessageSendOptions } from "whatsapp-web.js";
 import enviroments from "~/config/enviroments.config";
-export function BASE_URL_WHATSAPP(empresa: Empresas) {
+export function BASE_URL_WHATSAPP(empresa: Empresas, name: string) {
     return enviroments.NODE_ENV === "production"
-        ? `https://www.${empresa.slug}.docker.vigilio-services.com`
+        ? `https://www.${empresa.slug}.${name}.vigilio-services.com`
         : "https://1cae-201-218-157-99.ngrok-free.app";
 }
 export async function whatsappSendMessageApi(
     empresa: Empresas,
+    name: string,
     body: {
         telephone: string;
         message: string;
@@ -20,7 +21,8 @@ export async function whatsappSendMessageApi(
     const { telephone, ...rest } = body;
     const response = await fetch(
         `${BASE_URL_WHATSAPP(
-            empresa
+            empresa,
+            name
         )}/api/whatsapp/send-message?telephone=${telephone}`,
         {
             method: "POST",
@@ -45,6 +47,7 @@ export interface WhatsappSendFileApi {
 }
 export async function whatsappSendFileApi(
     empresa: Empresas,
+    name: string,
     body: WhatsappSendFileApi
 ): Promise<{ success: boolean; message: string }> {
     const { telephone, ...rest } = body;
@@ -70,7 +73,8 @@ export async function whatsappSendFileApi(
     }
     const response = await fetch(
         `${BASE_URL_WHATSAPP(
-            empresa
+            empresa,
+            name
         )}/api/whatsapp/send-file?telephone=${telephone}`,
         {
             method: "POST",
@@ -87,6 +91,7 @@ export async function whatsappSendFileApi(
 
 export async function whatsappSendSeenApi(
     empresa: Empresas,
+    name: string,
     body: {
         telephone: string;
     }
@@ -94,7 +99,8 @@ export async function whatsappSendSeenApi(
     const { telephone } = body;
     const response = await fetch(
         `${BASE_URL_WHATSAPP(
-            empresa
+            empresa,
+            name
         )}/api/whatsapp/send-seen?telephone=${telephone}`,
         {
             method: "POST",
@@ -108,6 +114,7 @@ export async function whatsappSendSeenApi(
 }
 export async function whatsappSendTypingApi(
     empresa: Empresas,
+    name: string,
     body: {
         telephone: string;
         delay: number;
@@ -116,7 +123,8 @@ export async function whatsappSendTypingApi(
     const { telephone } = body;
     const response = await fetch(
         `${BASE_URL_WHATSAPP(
-            empresa
+            empresa,
+            name
         )}/api/whatsapp/send-typing?telephone=${telephone}`,
 
         {
@@ -132,9 +140,9 @@ export async function whatsappSendTypingApi(
 
     return result;
 }
-export async function whatsappGetQrApi(empresa: Empresas) {
+export async function whatsappGetQrApi(empresa: Empresas, name: string) {
     const response = await fetch(
-        `${BASE_URL_WHATSAPP(empresa)}/api/whatsapp/qr`,
+        `${BASE_URL_WHATSAPP(empresa, name)}/api/whatsapp/qr`,
         {
             headers: {
                 Authorization: `Bearer ${enviroments.VITE_TOKEN_VIGILIO_SERVICES}`,
@@ -144,9 +152,9 @@ export async function whatsappGetQrApi(empresa: Empresas) {
     const result = await response.arrayBuffer();
     return result;
 }
-export async function whatsappLogout(empresa: Empresas) {
+export async function whatsappLogout(empresa: Empresas, name: string) {
     const response = await fetch(
-        `${BASE_URL_WHATSAPP(empresa)}/api/whatsapp/logout`,
+        `${BASE_URL_WHATSAPP(empresa, name)}/api/whatsapp/logout`,
         {
             method: "POST",
             headers: {
@@ -157,9 +165,9 @@ export async function whatsappLogout(empresa: Empresas) {
     const result = await response.json();
     return result;
 }
-export async function whatsappRemoveQR(empresa: Empresas) {
+export async function whatsappRemoveQR(empresa: Empresas, name: string) {
     const response = await fetch(
-        `${BASE_URL_WHATSAPP(empresa)}/api/whatsapp/remove-qr`,
+        `${BASE_URL_WHATSAPP(empresa, name)}/api/whatsapp/remove-qr`,
         {
             method: "POST",
             headers: {

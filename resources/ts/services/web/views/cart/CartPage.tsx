@@ -183,7 +183,7 @@ function CartPage({ cart, header }: CartProps) {
     }, [password, repeatPassword]);
     return (
         <WebLayout header={header}>
-            <section class="max-w-6xl mx-auto  items-center justify-center  pb-20 pt-24 lg:pt-8 px-4">
+            <section class="max-w-6xl mx-auto  items-center justify-center  pb-20 pt-24 lg:pt-8 ">
                 {cartStore.computed.showCartLength === 0 ? (
                     <div class="flex h-[50vh] w-full flex-col items-center justify-center gap-6 text-center">
                         <h3 class="text-lg font-bold md:text-3xl dark:text-white">

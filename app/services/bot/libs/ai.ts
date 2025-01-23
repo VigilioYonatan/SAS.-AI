@@ -623,7 +623,10 @@ export function sendMessageCron({
                 ["assistant", message],
             ];
             try {
-                await whatsappSendMessageApi(empresa, {
+                const name = empresa.whatsapp_mode!.find(
+                    (w) => w.name === "docker"
+                )!.name;
+                await whatsappSendMessageApi(empresa, name, {
                     message: message,
                     telephone: userId,
                     options: {},

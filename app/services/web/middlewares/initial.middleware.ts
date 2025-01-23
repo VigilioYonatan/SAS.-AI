@@ -224,10 +224,7 @@ export async function initialMiddleware(
         req.originalUrl.startsWith("/admin") && empresa?.company
             ? { certificado: empresa?.certificado }
             : {
-                  whatsapp_mode: {
-                      ...empresa.whatsapp_mode,
-                      password: null,
-                  },
+                  certificado: null,
               };
     const [pages, cruds] = await Promise.all([
         Page.findAll({
@@ -256,6 +253,9 @@ export async function initialMiddleware(
         ...empresa,
         citas,
         questionCount,
+        whatsapp_mode: req.originalUrl.startsWith("/admin")
+            ? empresa.whatsapp_mode
+            : [],
         company: {
             ruc: empresa.company?.ruc,
             razonSocial: empresa.company?.razonSocial,
@@ -285,6 +285,7 @@ export async function initialMiddleware(
         pages,
         cruds,
         tableObjects,
+        contacts: [],
         ...certificado,
     };
     let MONEY: {
@@ -317,6 +318,7 @@ export async function initialMiddleware(
         };
     }
     res.locals.$empresa = info;
+
     res.locals.printFileWithDimension = printFileWithDimension(empresa);
     res.locals.subtotal = subtotal;
     res.locals.formatMoney = (number: number) =>
