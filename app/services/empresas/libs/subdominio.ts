@@ -52,16 +52,19 @@ export async function onNginx({
 
 `;
         fs.writeFileSync(CONFIG_FILE, configContent);
-        await terminal(`ln -s ${CONFIG_FILE} /etc/nginx/sites-enabled/`, true);
+        await terminal(
+            `ln -s ${CONFIG_FILE} /etc/nginx/sites-enabled/  || true`,
+            true
+        );
 
         await terminal("nginx -t", true);
-        await terminal("systemctl reload nginx", true);
+        await terminal("systemctl reload nginx || true", true);
         await terminal(
             `certbot  --nginx  -d ${
                 domain
                     ? `${domain}  -d www.${domain}`
                     : `${sub_domain}.vigilio-services.com -d www.${sub_domain}.vigilio-services.com`
-            }  --non-interactive --agree-tos --email yonatanvigiliolavado09@gmail.com --quiet`,
+            }  --non-interactive --agree-tos --email yonatanvigiliolavado09@gmail.com --quiet  || true`,
             true
         );
     } catch (error) {

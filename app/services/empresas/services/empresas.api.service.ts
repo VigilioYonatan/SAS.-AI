@@ -1486,7 +1486,7 @@ export class EmpresasApiService {
                     await onNginx({
                         sub_domain: `${empresa.slug}.${name}`,
                         port: 5000,
-                        ip: body.ip,
+                        ip: body.ip || "localhost",
                     });
                 }
                 // instalar whatsapp en nginx
