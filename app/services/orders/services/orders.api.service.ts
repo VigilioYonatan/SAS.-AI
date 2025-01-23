@@ -1579,7 +1579,7 @@ export class OrdersApiService {
                     })
                 );
                 const telephone = `${empresa.dial_code}${ordersUpdateDto.telephone}@c.us`;
-                const name = empresa.whatsapp_mode!.find(
+                const name2 = empresa.whatsapp_mode!.find(
                     (w) => w.name === "docker"
                 )!.name;
 
