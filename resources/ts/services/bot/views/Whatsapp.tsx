@@ -178,7 +178,7 @@ function Whatsapp() {
                                 : "VPS"}
                         </span>
                     </button>
-                    {storageEmpresa!.whatsapp_mode.length > 0 ? (
+                    {storageEmpresa!.whatsapp_mode.length > 1 ? (
                         <div class="relative">
                             <select
                                 class=" px-2 py-2 rounded-md dark:text-white text-sm flex  gap-2 items-center font-semibold  w-full justify-center  shadow bg-paper-light   dark:bg-admin-terciary "
@@ -1732,7 +1732,7 @@ function WhatsappFREE() {
                 <div />{" "}
                 <h3 class="font-semibold text-center dark:text-white text-xl lg:text-2xl">
                     CAMBIAR WHATSAPP
-                    {storageEmpresa!.whatsapp_mode.length > 0 ? (
+                    {storageEmpresa!.whatsapp_mode.length > 1 ? (
                         <>
                             <br />
                             <span class="text-xs">(Docker)</span>
