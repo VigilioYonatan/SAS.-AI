@@ -1480,14 +1480,15 @@ export class EmpresasApiService {
             )[0];
             const bo = { ...body, name };
             whatsapp_mode = [...whatsapp_mode, bo];
-            if (enviroments.NODE_ENV === "production") {
-                await onNginx({
-                    sub_domain: `${empresa.slug}.${name}`,
-                    port: 5000,
-                });
-            }
 
             if (body?.type === "VPS") {
+                if (enviroments.NODE_ENV === "production") {
+                    await onNginx({
+                        sub_domain: `${empresa.slug}.${name}`,
+                        port: 5000,
+                        ip: body.ip,
+                    });
+                }
                 // instalar whatsapp en nginx
                 const ssh = new NodeSSH();
                 try {

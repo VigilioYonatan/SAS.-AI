@@ -10,8 +10,14 @@ interface OnNginx {
     sub_domain: string;
     port: number;
     domain?: string;
+    ip?: string;
 }
-export async function onNginx({ sub_domain, port, domain }: OnNginx) {
+export async function onNginx({
+    sub_domain,
+    port,
+    domain,
+    ip = "localhost",
+}: OnNginx) {
     try {
         const CONFIG_FILE = `/etc/nginx/sites-available/${
             domain ? domain : sub_domain
@@ -23,7 +29,7 @@ export async function onNginx({ sub_domain, port, domain }: OnNginx) {
 			client_max_body_size 100M; # permite subir archivos mas de 100mb
 
 			location / {
-				proxy_pass http://localhost:${port}; # Cambia 3000 por el puerto en el que corre tu app N>
+				proxy_pass http://${ip}:${port}; # Cambia 3000 por el puerto en el que corre tu app N>
 				proxy_http_version 1.1;
 				proxy_set_header Upgrade $http_upgrade;
 				proxy_set_header Connection 'upgrade';
