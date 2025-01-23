@@ -4,13 +4,13 @@ import { formatMoney, subtotal } from "@/cart/libs/helpers";
 import type { Orders } from "../entities/orders.entity";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import type { Invoices } from "../entities/invoices.entity";
-import type { Address } from "@/empresas/entities/address.entity";
 import { detailInvoice } from ".";
 import { printFileWithDimension } from "@/uploads/libs/helpers";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
 import type { Users } from "@/users/entities/users.entity";
 import type { PayMethods } from "../entities/pay_methods.entity";
 import { MONEYDOLARES, type Money } from "@/empresas/libs";
+import { Cities } from "@/ubigeo/entities/cities.entity";
 
 export async function ticketHTML(order: Orders, empresa: Empresas) {
     const mapped = await detailInvoice(
@@ -60,11 +60,11 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                   order.total,
                   order.type_pasarela ?? "normal"
               )
-            : order.total)* order.moneyChange;
+            : order.total) * order.moneyChange;
     if (order.paypal_token) {
         total = order.is_pasarela_client
             ? paypalComision(order.total, order.moneyChange)
-            : order.total* order.moneyChange;
+            : order.total * order.moneyChange;
     }
     const moneyLetter =
         order.moneyChange === 1
@@ -177,10 +177,12 @@ export async function ticketHTML(order: Orders, empresa: Empresas) {
                                                     <tr>
                                                         <td align="left">
                                                             <strong>Dirección: </strong>${
-                                                                (
-                                                                    empresa.address as Address
-                                                                ).direccion
-                                                            }
+                                                                order
+                                                                    .address_empresa
+                                                                    .direccion
+                                                            } - ${
+        (order.address_empresa.city as Cities).name
+    }
                                                         </td>
                                                     </tr>
                                                     <tr>

@@ -1,22 +1,24 @@
 import { CitiesSchemaFromServer } from "@/ubigeo/schemas/cities.schema";
 import {
-	minLength,
-	number,
-	object,
-	string,
-	toTrimmed,
-	type Input,
+    boolean,
+    minLength,
+    number,
+    object,
+    string,
+    toTrimmed,
+    type Input,
 } from "@vigilio/valibot";
 
 export const addressSchema = object({
-	id: number(),
-	city_id: number(),
-	urbanizacion: string([toTrimmed(), minLength(1)]),
-	direccion: string([toTrimmed(), minLength(1)]),
-	codLocal: string([toTrimmed()]),
-	empresa_id: number(),
+    id: number(),
+    city_id: number(),
+    urbanizacion: string([toTrimmed(), minLength(1)]),
+    direccion: string([toTrimmed(), minLength(1)]),
+    codLocal: string([toTrimmed()]),
+    enabled: boolean(),
+    empresa_id: number(),
 });
 export type AddressSchema = Input<typeof addressSchema>;
 export type AddressSchemaFromServer = AddressSchema & {
-	city: CitiesSchemaFromServer;
+    city: CitiesSchemaFromServer;
 };

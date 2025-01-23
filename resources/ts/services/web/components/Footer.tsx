@@ -286,20 +286,24 @@ function Footer({ categories, categoriesServices }: FooterProps) {
                                 )}
                             </li>
                         ) : null}
-
-                        {empresaStore.state!.address.direccion ? (
-                            <li class="dark:text-white font-semibold  text-sm">
-                                <i
-                                    class={`fa${
-                                        storageEmpresa?.setting
-                                            .type_icons_bars === "normal"
-                                            ? "s"
-                                            : "r"
-                                    } text-primary fa-map-marker-alt  text-xl mr-2`}
-                                />{" "}
-                                {empresaStore.state!.address.direccion}
-                            </li>
-                        ) : null}
+                        {storageEmpresa?.addresses
+                            .filter((address) => address.enabled)
+                            .map((address) => (
+                                <li
+                                    class="dark:text-white font-semibold  text-sm"
+                                    key={address.id}
+                                >
+                                    <i
+                                        class={`fa${
+                                            storageEmpresa?.setting
+                                                .type_icons_bars === "normal"
+                                                ? "s"
+                                                : "r"
+                                        } text-primary fa-map-marker-alt  text-xl mr-2`}
+                                    />{" "}
+                                    {address.direccion} - {address.city.name}
+                                </li>
+                            ))}
 
                         <li
                             class="font-bold"

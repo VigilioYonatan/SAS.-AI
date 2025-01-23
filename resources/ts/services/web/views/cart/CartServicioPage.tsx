@@ -93,6 +93,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
             password: null,
             repeat_password: null,
             seller_id: null,
+            address_id: storageEmpresa!.addresses[0].id as number,
         },
         mode: "all",
     });

@@ -476,8 +476,8 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     type_empresa_other: string;
 
     // relations
-    @HasOne(() => Address)
-    address: unknown;
+    @HasMany(() => Address)
+    addresses: unknown[];
 
     @HasMany(() => ProductsNormal)
     products_normal: ProductsNormal[];

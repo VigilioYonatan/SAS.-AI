@@ -131,9 +131,16 @@ export async function prompt(
             empresa.inteligenceArtificial.max_length
         }.
     NUMERO DE telefono para consultas o  reclamos: ${empresa.telephoneReclamos}.
-    DIRECCION:${(empresa.address as Address).direccion} ${
-        ((empresa.address as Address).city as Cities).name
-    } .
+    DIRECCIONES DE NUESTRA EMPRESA:${JSON.stringify(
+        empresa.addresses.map(
+            (address) =>
+                `${(address as Address).direccion} ${
+                    (address as Address).urbanizacion
+                        ? ` - ${(address as Address).urbanizacion}`
+                        : ""
+                } - ${((address as Address).city as Cities).name}`
+        )
+    )} .
     EMAIL: ${empresa.email}.
 	${
         empresa.inteligenceArtificial.enabledHuman

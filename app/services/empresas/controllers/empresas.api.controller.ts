@@ -365,12 +365,25 @@ export class EmpresasApiController {
     @PermissionAdmin()
     @Validator(empresasAddressUpdateDto)
     @Status(201)
-    @Put("/address")
-    async address(
+    @Post("/address")
+    async addressStore(
         @Body() body: EmpresasAddressUpdateDto,
         @Req("empresa") empresa: Empresas
     ) {
-        const result = await this.empresaApiService.address(empresa, body);
+        const result = await this.empresaApiService.addressStore(empresa, body);
+        return result;
+    }
+    @Pipe(objectAsync({ id: string() }))
+    @PermissionAdmin()
+    @Validator(empresasAddressUpdateDto)
+    @Status(201)
+    @Put("/address/:id")
+    async address(
+        @Body() body: EmpresasAddressUpdateDto,
+        @Req("empresa") empresa: Empresas,
+        @Params("id") id: string
+    ) {
+        const result = await this.empresaApiService.address(empresa, id, body);
         return result;
     }
 

@@ -1,55 +1,66 @@
 import {
-	BelongsTo,
-	Column,
-	DataType,
-	ForeignKey,
-	Table,
-	Model,
-	DefaultScope,
+    BelongsTo,
+    Column,
+    DataType,
+    ForeignKey,
+    Table,
+    Model,
+    DefaultScope,
+    HasMany,
 } from "sequelize-typescript";
 import type { AddressSchema } from "../schemas/address.schema";
 import { Empresas } from "./empresas.entity";
 import { Cities } from "@/ubigeo/entities/cities.entity";
+import { Orders } from "@/orders/entities/orders.entity";
 
 @DefaultScope(() => ({ include: [{ model: Cities }] }))
 @Table({ timestamps: false })
 export class Address extends Model implements Omit<AddressSchema, "id"> {
-	@ForeignKey(() => Cities)
-	@Column({
-		allowNull: false,
-		type: DataType.INTEGER,
-	})
-	city_id: number;
+    @ForeignKey(() => Cities)
+    @Column({
+        allowNull: false,
+        type: DataType.INTEGER,
+    })
+    city_id: number;
 
-	@Column({
-		allowNull: false,
-		type: DataType.STRING(255),
-	})
-	urbanizacion: string;
+    @Column({
+        allowNull: false,
+        type: DataType.STRING(255),
+    })
+    urbanizacion: string;
 
-	@Column({
-		allowNull: false,
-		type: DataType.STRING(255),
-	})
-	direccion: string;
+    @Column({
+        defaultValue: true,
+        type: DataType.BOOLEAN,
+    })
+    enabled: boolean;
 
-	@Column({
-		allowNull: false,
-		type: DataType.STRING(255),
-	})
-	codLocal: string;
+    @Column({
+        allowNull: false,
+        type: DataType.STRING(255),
+    })
+    direccion: string;
 
-	// relations
-	@BelongsTo(() => Cities)
-	city: unknown;
+    @Column({
+        allowNull: false,
+        type: DataType.STRING(255),
+    })
+    codLocal: string;
 
-	@ForeignKey(() => Empresas)
-	@Column({
-		type: DataType.INTEGER,
-		allowNull: false,
-	})
-	empresa_id: number;
+    // relations
+    @BelongsTo(() => Cities)
+    city: unknown;
 
-	@BelongsTo(() => Empresas)
-	empresa: unknown;
+    @ForeignKey(() => Empresas)
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: false,
+    })
+    empresa_id: number;
+
+    @BelongsTo(() => Empresas)
+    empresa: unknown;
+
+    @HasMany(() => Orders)
+    orders: unknown[];
 }

@@ -37,7 +37,7 @@ export type empresaStore = Omit<
     };
     inteligenceArtificial: { usage: InteligenceArtificial["usage"] };
     tipo_empresa: TipoEmpresasSchemaFromServer;
-    address: AddressSchemaFromServer;
+    addresses: AddressSchemaFromServer[];
     setting: SettingsSchema;
     citasSetting: CitasSettingSchema;
     citas: Record<number, number>;

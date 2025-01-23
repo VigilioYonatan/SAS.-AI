@@ -121,6 +121,7 @@ function OrderFormUpdate({
                 reference: order.reference ?? null,
                 isService: order.isService,
                 seller_id: authstore.state?.id,
+                address_id: order.address_id,
             };
         }, []),
     });
@@ -336,6 +337,7 @@ function OrderFormUpdate({
     const payMethod = ordersUpdateDtoForm.watch("pay_method_id");
     const kindInvoice = ordersUpdateDtoForm.watch("invoice.kind_invoice_code");
     const kindInvoiceNote = ordersUpdateDtoForm.watch("note.kind_invoice_code");
+    const address_id = ordersUpdateDtoForm.watch("address_id");
     const noteKindCreditNotesCode = ordersUpdateDtoForm.watch(
         "note.kind_credit_notes_code"
     );
@@ -385,6 +387,12 @@ function OrderFormUpdate({
                 : [],
         [floorsIndexQuery]
     );
+    const arrayAdress = storageEmpresa?.addresses
+        .filter((address) => address.enabled)
+        .map((address) => ({
+            key: address.id,
+            value: `${address.direccion} - ${address.city.name}`,
+        }));
     const arrayMesas = useMemo(
         () =>
             floorMesasQuery.isSuccess && floorMesasQuery.data
@@ -949,6 +957,8 @@ function OrderFormUpdate({
                                 noteCorrelativo={noteCorrelativo}
                                 kindInvoiceNote={kindInvoiceNote}
                                 payMethod={payMethod}
+                                arrayAdress={arrayAdress || []}
+                                address_id={address_id!}
                             />
                         ) : null}
                         {statusOrder === STATUSORDER.enviando &&
@@ -1305,12 +1315,17 @@ interface empresaFormProps {
         key: string;
         value: string;
     }[];
+    arrayAdress: {
+        key: number;
+        value: string;
+    }[];
     statusOrder: number;
     order: OrdersSchemaFromServer;
     noteSerie: string;
     noteCorrelativo: string;
     kindInvoiceNote: string;
     payMethod: number;
+    address_id: number;
 }
 function EmpresaForm({
     kindInvoice,
@@ -1323,6 +1338,8 @@ function EmpresaForm({
     noteSerie,
     kindInvoiceNote,
     payMethod,
+    arrayAdress,
+    address_id,
 }: empresaFormProps) {
     const empresa = useEmpresastore();
     return (
@@ -1446,9 +1463,27 @@ function EmpresaForm({
                                 <span class="dark:text-white uppercase">
                                     {empresa.state!.name_empresa}
                                 </span>
-                                <span class="dark:text-white text-sm font-normal">
-                                    {empresa.state!.address.direccion}
-                                </span>
+                                {arrayAdress.length > 1 ? (
+                                    <Form.control.select
+                                        array={arrayAdress}
+                                        title="Dirección"
+                                        name="address_id"
+                                        placeholder="Escoger dirección"
+                                        options={{
+                                            setValueAs: formSelectNumber,
+                                        }}
+                                    />
+                                ) : (
+                                    <span class="dark:text-white text-sm font-normal">
+                                        {
+                                            arrayAdress.find(
+                                                (address) =>
+                                                    Number(address.key) ===
+                                                    address_id
+                                            )?.value
+                                        }
+                                    </span>
+                                )}
                             </div>
                         </div>
                         <div class="flex flex-col justify-center items-center border border-dashed p-2 w-full md:w-auto min-w-[200px] bg-paper-light dark:bg-admin-terciary">
@@ -1554,7 +1589,7 @@ function GuideForm({
                             {empresa.state!.name_empresa}
                         </span>
                         <span class="dark:text-white text-sm font-normal">
-                            {empresa.state!.address.direccion}
+                            {order!.address_empresa?.direccion}
                         </span>
                     </div>
                 </div>

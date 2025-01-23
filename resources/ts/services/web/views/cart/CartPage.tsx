@@ -29,6 +29,7 @@ import { DIALCODE, typeFiscal } from "@/empresas/libs/helpers";
 import useAuthStore from "@/auth/stores/auth.store";
 import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
 import { isColorLight } from "~/libs/helpers";
+import { formSelectNumber } from "~/components/form/FormSelect";
 
 interface CartProps {
     cart: { id: number; quantity: number; variant?: number }[] | null;
@@ -56,6 +57,7 @@ function CartPage({ cart, header }: CartProps) {
         city,
         citiesSelect,
         citiesIndexQuery,
+        arrayAdress,
     } = useOnCart();
     const kind_invoice_code = ordersCartStoreDtoForm.watch(
         "invoice.kind_invoice_code"
@@ -783,6 +785,24 @@ function CartPage({ cart, header }: CartProps) {
                                             placeholder=""
                                         />
                                     </div>
+                                ) : (
+                                    <></>
+                                )}
+                                {/* solo restaurante */}
+                                {storageEmpresa!.addresses.length > 1 &&
+                                storageEmpresa?.tipo_empresa
+                                    .tipo_servicio_id === 2 ? (
+                                    <Form.control.select
+                                        name={
+                                            "address_id" as keyof OrdersCartStoreDto
+                                        }
+                                        title="Local"
+                                        array={arrayAdress || []}
+                                        placeholder="Escoger dirección de nuestro local"
+                                        options={{
+                                            setValueAs: formSelectNumber,
+                                        }}
+                                    />
                                 ) : (
                                     <></>
                                 )}

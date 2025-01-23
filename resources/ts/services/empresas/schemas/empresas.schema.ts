@@ -382,8 +382,8 @@ export const empresasSchema = object({
         client_secret: nullable(string()),
         refresh_token: nullable(string()),
     }),
-    enabled_zoho_mail: boolean(),    isProduction: boolean(),
-
+    enabled_zoho_mail: boolean(),
+    isProduction: boolean(),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {
@@ -393,7 +393,7 @@ export type EmpresasSchema = Input<typeof empresasSchema> & {
 export type EmpresasEntitySchema = Omit<
     EmpresasSchema,
     "id" | "createdAt" | "updatedAt"
-> & { address: AddressSchemaFromServer };
+> & { addresses: AddressSchemaFromServer };
 export type EmpresasSchemaFromServer = Omit<EmpresasSchema, "groupWhatsapp"> & {
     company: {
         ruc: Pick<

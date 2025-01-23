@@ -12,9 +12,9 @@ function EmailSection() {
                             <span class="font-bold text-lg">Dirección</span>
                         </div>
                         <p class="text-sm dark:text-white font-semibold">
-                            {storageEmpresa?.address.direccion},{" "}
-                            {storageEmpresa?.address.city.name} -{" "}
-                            {storageEmpresa?.address.city.region.name}
+                            {storageEmpresa?.addresses[0].direccion},{" "}
+                            {storageEmpresa?.addresses[0].city.name} -{" "}
+                            {storageEmpresa?.addresses[0].city.region.name}
                         </p>
                     </div>
                     <div class="h-[1px] w-full bg-gray-300" />

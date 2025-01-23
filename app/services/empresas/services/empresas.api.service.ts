@@ -837,12 +837,14 @@ export class EmpresasApiService {
                         stripe_secret_key: body.isTemplate ? "test-key" : null,
                     },
                 } as Omit<MetodosPagoSchema, "empresa_id">),
-                empresa.$create("address", {
+                Address.create({
                     city_id: 1,
                     urbanizacion: "",
                     direccion: "",
                     codLocal: "0000",
+                    empresa_id: empresa.id,
                 }),
+
                 empresa.$create("setting", {
                     ...body.setting,
                     host: {
@@ -1720,15 +1722,32 @@ export class EmpresasApiService {
         return { success: true, favorites };
     }
 
-    async address(empresa: Empresas, body: EmpresasAddressUpdateDto) {
+    async address(
+        empresa: Empresas,
+        id: string,
+        body: EmpresasAddressUpdateDto
+    ) {
         const address = await Address.findOne({
-            where: { empresa_id: empresa!.id },
+            where: { empresa_id: empresa!.id, id },
         });
+
         cache.delete(`EMPRESA:${empresa.slug}`);
         await address!.update(body);
         return {
             success: true,
             message: "Direccion Editado Correctamente",
+        };
+    }
+    async addressStore(empresa: Empresas, body: EmpresasAddressUpdateDto) {
+        const address = await Address.create({
+            ...body,
+            empresa_id: empresa.id,
+        });
+        cache.delete(`EMPRESA:${empresa.slug}`);
+        return {
+            success: true,
+            message: "Creado correctamente dirección",
+            address,
         };
     }
 

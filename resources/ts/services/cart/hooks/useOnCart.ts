@@ -72,10 +72,16 @@ function useOnCart() {
             seller_id: null,
             password: null,
             repeat_password: null,
+            address_id: storageEmpresa!.addresses[0].id as number,
         },
         mode: "all",
     });
-
+    const arrayAdress = storageEmpresa?.addresses
+        .filter((address) => address.enabled)
+        .map((address) => ({
+            key: String(address.id),
+            value: `${address.direccion} - ${address.city.name}`,
+        }));
     const kindInvoice = ordersCartStoreDtoForm.watch(
         "invoice.kind_invoice_code"
     );
@@ -289,6 +295,7 @@ function useOnCart() {
         citiesSelect,
         citiesIndexQuery,
         city,
+        arrayAdress,
     };
 }
 
