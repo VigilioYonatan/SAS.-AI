@@ -84,6 +84,7 @@ export async function initial() {
         const openAiClient = new openai.OpenAI({
             apiKey: empresa.credentials.open_ai,
         });
+
         if (empresa.telegram_token) {
             await initializeBot(empresa, empresa.telegram_token);
         }
@@ -149,11 +150,25 @@ export async function initial() {
         //         empresa_id: empresa.id,
         //     },
         // });
-        // const pages = await Page.findAll({
-        //     where: {
-        //         empresa_id: empresa.id,
-        //     },
-        // });
+        const address = await Address.findAll({
+            where: {
+                empresa_id: empresa.id,
+            },
+        });
+        await Promise.all(
+            address.map(async (add) => {
+                const enabled = await Address.findOrCreate({
+                    where: { empresa_id: empresa!.id, id: add.id },
+                    defaults: { enabled: true }, // Valores predeterminados si se crea
+                });
+                if (!enabled[1]) {
+                    // Si ya existía el registro pero el valor está vacío, actualizarlo
+                    await enabled[0].update({
+                        enabled: true,
+                    });
+                }
+            })
+        );
         // const queries = await Page.findOrCreate({
         //     where: { empresa_id: empresa!.id },
         //     defaults: { queries: [] }, // Valores predeterminados si se crea
