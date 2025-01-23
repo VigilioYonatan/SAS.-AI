@@ -620,7 +620,7 @@ export class WebsocketsService {
                     model: Mesas,
                     include: [
                         {
-                            model: Orders,
+                            model: Orders.unscoped(),
                             include: [
                                 {
                                     model: StatusOrders,
