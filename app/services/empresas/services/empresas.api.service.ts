@@ -1483,11 +1483,21 @@ export class EmpresasApiService {
 
             if (body?.type === "VPS") {
                 if (enviroments.NODE_ENV === "production") {
-                    await onNginx({
-                        sub_domain: `${empresa.slug}.${name}`,
-                        port: 5000,
-                        ip: body.ip || "localhost",
-                    });
+                    const response = await fetch(
+                        `${enviroments.VITE_VIGILIO_WEB}/api/empresas/subominio`,
+                        {
+                            method: "POST",
+                            body: JSON.stringify({
+                                sub_domain: `${empresa.slug}.${name}`,
+                                port: 5000,
+                                ip: body.ip || "localhost",
+                            }),
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        }
+                    );
+                    const result = await response.json();
                 }
                 // instalar whatsapp en nginx
                 const ssh = new NodeSSH();
@@ -1559,7 +1569,7 @@ export class EmpresasApiService {
                             --memory="${Number(body.memory!) - 0.2}g" \
                             --memory-swap="${Number(body.memory!) - 0.2}g" \
                             --cpus="${Number(body.cpu!) - 0.2}" \
-                            -p ${empresa.port}:5000 \
+                            -p 5000:5000 \
                             -v ${empresa.slug}:/app/data \
                             ${enviroments.DOCKER_IMAGE_WHATSAPP}
                     `;
@@ -1712,7 +1722,7 @@ export class EmpresasApiService {
                         --memory="${Number(body.memory!) - 0.2}g" \
                         --memory-swap="${Number(body.memory!) - 0.2}g" \
                         --cpus="${Number(body.cpu!) - 0.2}" \
-                        -p ${empresa.port}:5000 \
+                        -p 5000:5000 \
                         -v ${empresa.slug}:/app/data \
                         ${enviroments.DOCKER_IMAGE_WHATSAPP}
                 `;
