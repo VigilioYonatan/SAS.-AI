@@ -453,7 +453,7 @@ function FormEditorJSControl<T extends object>({
                                                                 </textarea>
                                                                 <AlertInfo>
                                                                     CTRL + V, Si
-                                                                    pegaste una
+                                                                    copiaste una
                                                                     imagen en
                                                                     CSS.
                                                                 </AlertInfo>

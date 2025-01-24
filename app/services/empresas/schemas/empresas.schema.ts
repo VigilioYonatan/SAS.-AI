@@ -32,6 +32,12 @@ export const payments = objectAsync({
     tienda: object({
         enabled: boolean(),
     }),
+    tienda1: object({
+        enabled: boolean(),
+    }),
+    tienda2: object({
+        enabled: boolean(),
+    }),
     mensual: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
         enabled: boolean(),
@@ -54,6 +60,7 @@ export const payments = objectAsync({
     finanza: object({
         enabled: boolean(),
     }),
+    email: boolean(),
 });
 export type Payments = Input<typeof payments>;
 

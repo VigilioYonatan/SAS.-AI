@@ -49,6 +49,12 @@ const payments = object({
     tienda: object({
         enabled: boolean(),
     }),
+    tienda1: object({
+        enabled: boolean(),
+    }),
+    tienda2: object({
+        enabled: boolean(),
+    }),
     mensual: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
         enabled: boolean(),
@@ -71,6 +77,7 @@ const payments = object({
     finanza: object({
         enabled: boolean(),
     }),
+    email: boolean(),
 });
 export type Payments = Input<typeof payments>;
 
