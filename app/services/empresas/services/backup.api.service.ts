@@ -96,11 +96,9 @@ export class BackupApiService {
                     await terminal(
                         `docker volume create ${
                             emp.slug
-                        } && docker run -d --name ${
-                            emp.slug
-                        } -e PORT=5000 -e NODE_ENV=${
-                            enviroments.NODE_ENV
-                        } -e SESSION_NAME=${
+                        } && docker run -d --name ${emp.slug} -e PORT=5000
+                        -e NAME=${"docker"}
+                        -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${
                             emp.slug
                         } -e VITE_TOKEN_VIGILIO_SERVICES=${
                             enviroments.VITE_TOKEN_VIGILIO_SERVICES

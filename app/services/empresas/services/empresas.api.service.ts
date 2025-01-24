@@ -1415,7 +1415,21 @@ export class EmpresasApiService {
             if (enviroments.NODE_ENV === "production" && body.isWhatsappFree) {
                 // crear whatsapp contenedor
                 await terminal(
-                    `docker volume create ${empresa.slug} && docker run -d --name ${empresa.slug} -e PORT=5000 -e NODE_ENV=${enviroments.NODE_ENV} -e SESSION_NAME=${empresa.slug} -e VITE_TOKEN_VIGILIO_SERVICES=${enviroments.VITE_TOKEN_VIGILIO_SERVICES} --restart always --memory="2000m" --memory-swap="2000m" --cpus="2" -p ${empresa.port}:5000 -v ${empresa.slug}:/app/data ${enviroments.DOCKER_IMAGE_WHATSAPP}`,
+                    `docker volume create ${
+                        empresa.slug
+                    } && docker run -d --name ${
+                        empresa.slug
+                    } -e PORT=5000 -e NODE_ENV=${
+                        enviroments.NODE_ENV
+                    } -e SESSION_NAME=${empresa.slug} -e NAME=${
+                        name || "docker"
+                    } -e VITE_TOKEN_VIGILIO_SERVICES=${
+                        enviroments.VITE_TOKEN_VIGILIO_SERVICES
+                    } --restart always --memory="2000m" --memory-swap="2000m" --cpus="2" -p ${
+                        empresa.port
+                    }:5000 -v ${empresa.slug}:/app/data ${
+                        enviroments.DOCKER_IMAGE_WHATSAPP
+                    }`,
                     true
                 );
                 // // eliminar docker en 15 dias
@@ -1562,6 +1576,7 @@ export class EmpresasApiService {
                             -e PORT=5000 \
                             -e NODE_ENV=production \
                             -e SESSION_NAME=${empresa.slug} \
+                            -e NAME=${name || "docker"} \
                             -e VITE_TOKEN_VIGILIO_SERVICES=${
                                 enviroments.VITE_TOKEN_VIGILIO_SERVICES
                             } \
@@ -1631,7 +1646,10 @@ export class EmpresasApiService {
         );
         const whatsappMode2 = whatsapp_mode.find((w) => w.ip === ip);
 
-        if (whatsappMode2?.type === "FREE") {
+        if (
+            whatsappMode2?.type === "FREE" &&
+            whatsappMode.enabled === body.enabled
+        ) {
             await terminal(
                 `docker volume create ${empresa.slug} && docker run -d --name ${
                     empresa.slug
@@ -1650,7 +1668,7 @@ export class EmpresasApiService {
         }
         if (
             whatsappMode2?.type === "VPS" &&
-            whatsappMode2.enabled === body.enabled
+            whatsappMode.enabled === body.enabled
         ) {
             // instalar whatsapp en nginx
             const ssh = new NodeSSH();
@@ -1715,6 +1733,7 @@ export class EmpresasApiService {
                         -e PORT=5000 \
                         -e NODE_ENV=production \
                         -e SESSION_NAME=${empresa.slug} \
+                        -e NAME=${whatsappMode2.name} \
                         -e VITE_TOKEN_VIGILIO_SERVICES=${
                             enviroments.VITE_TOKEN_VIGILIO_SERVICES
                         } \

@@ -35,6 +35,7 @@ export async function terminal(comando: string) {
 }
 const PORT = Number(process.env.PORT);
 export const SESSION_NAME = process.env.SESSION_NAME;
+export const NAME = process.env.NAME;
 export const VITE_TOKEN_VIGILIO_SERVICES =
     process.env.VITE_TOKEN_VIGILIO_SERVICES!;
 export const NODE_ENV = process.env.NODE_ENV;
@@ -99,18 +100,21 @@ export async function initialWhatsapp() {
                 JSON.stringify((await client.getContacts()).slice(0, 10))
             );
             const contacts = await client.getContacts();
-            const response = await fetch(`${BASE_URL}/api/whatsapp/ready`, {
-                method: "POST",
-                body: JSON.stringify({
-                    contacts: contacts.map((c) => ({
-                        name: c.name || "desconocido",
-                        id: { _serialized: c.id._serialized },
-                    })),
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
+            const response = await fetch(
+                `${BASE_URL}/api/whatsapp/ready/${NAME}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        contacts: contacts.map((c) => ({
+                            name: c.name || "desconocido",
+                            id: { _serialized: c.id._serialized },
+                        })),
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
             const resultready = await response.json();
             // biome-ignore lint/suspicious/noConsoleLog: <explanation>
             console.log({ resultready });
@@ -141,7 +145,7 @@ export async function initialWhatsapp() {
         const quotedMessageId = message.id._serialized;
         try {
             const response = await fetch(
-                `${BASE_URL}/api/whatsapp/receive-message`,
+                `${BASE_URL}/api/whatsapp/receive-message/${NAME}`,
                 {
                     method: "POST",
                     body: JSON.stringify({
@@ -173,9 +177,12 @@ export async function initialWhatsapp() {
         } catch (error) {}
     });
     client.on("disconnected", async () => {
-        const response = await fetch(`${BASE_URL}/api/whatsapp/disconnected`, {
-            method: "POST",
-        });
+        const response = await fetch(
+            `${BASE_URL}/api/whatsapp/disconnected/${NAME}`,
+            {
+                method: "POST",
+            }
+        );
         const resultDisconnected = await response.json();
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log({ resultDisconnected });

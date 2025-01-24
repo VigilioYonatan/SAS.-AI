@@ -47,24 +47,16 @@ export const chatsWait: Record<string, string[]> = {};
 
 @Controller("/whatsapp")
 export class whatsappApiController {
-    host(host: string) {
-        const subdomain = !host?.startsWith("www.") ? `www.${host}` : host;
-        console.log({ subdomain });
-        const subdomainSplit = subdomain?.split("."); // Obtiene el subdominio
-        console.log({ 2: subdomainSplit[2] });
-        return subdomainSplit[2];
-    }
-    @Post("/ready")
+    @Pipe(objectAsync({ name: string() }))
+    @Post("/ready/:name")
     async ready(
         @Body()
         client: { contacts: { name: string; id: { _serialized: string } }[] },
-        @Req() req: RequestVigilio
+        @Req() req: RequestVigilio,
+        @Params("name") name: string
     ) {
-        const subdomain = this.host(req.headers.host || "");
         const info = req.empresa;
-        const whatsapp_mode = info.whatsapp_mode.find(
-            (w) => w.name === subdomain
-        );
+        const whatsapp_mode = info.whatsapp_mode.find((w) => w.name === name);
         if (!whatsapp_mode) {
             throw new BadRequestException("No se encontro subdomain whatsapp");
         }
@@ -94,8 +86,8 @@ export class whatsappApiController {
             message: "OK",
         };
     }
-
-    @Post("/receive-message")
+    @Pipe(objectAsync({ name: string() }))
+    @Post("/receive-message/:name")
     async receiveMessage(
         @Req() req: RequestVigilio,
         @Body()
@@ -111,13 +103,11 @@ export class whatsappApiController {
                 isBusiness: boolean;
             };
             quotedMessageId: string;
-        }
+        },
+        @Params("name") name: string
     ) {
         const info = req.empresa;
-        const subdomain = this.host(req.headers.host || "");
-        const whatsapp_mode = info.whatsapp_mode.find(
-            (w) => w.name === subdomain
-        );
+        const whatsapp_mode = info.whatsapp_mode.find((w) => w.name === name);
         if (!whatsapp_mode) {
             throw new BadRequestException("No se encontro subdomain whatsapp");
         }
@@ -496,8 +486,17 @@ export class whatsappApiController {
         });
         return result;
     }
-    @Post("/disconnected")
-    async disconnected(@Req("empresa") emp: Empresas) {
+
+    @Pipe(objectAsync({ name: string() }))
+    @Post("/disconnected/:name")
+    async disconnected(
+        @Req("empresa") emp: Empresas,
+        @Params("name") name: string
+    ) {
+        const whatsapp_mode = emp.whatsapp_mode.find((w) => w.name === name);
+        if (!whatsapp_mode) {
+            throw new BadRequestException("No se encontro subdomain whatsapp");
+        }
         await Empresas.update(
             { enabledBot: false },
             { where: { slug: emp.slug } }
