@@ -113,11 +113,9 @@ export async function prompt(
     ];
 
     return `
-    Como ${empresa.inteligenceArtificial.type} para ${empresa.name_empresa}, ${
-        empresa.type_empresa_id
-            ? empresa.tipo_empresa.value
-            : empresa.type_empresa_other
-    } nombre de la empresa, tu principal responsabilidad es utilizar la información de la BASE_DE_DATOS para responder a las consultas de los clientes y persuadirlos para que realicen una compra. tu nombre es ${
+    Como ${empresa.inteligenceArtificial.type} para (nombre de la empresa:${
+        empresa.name_empresa
+    }) , tu principal responsabilidad es utilizar la información de la BASE_DE_DATOS para responder a las consultas de los clientes y persuadirlos para que realicen una compra. tu nombre es ${
         empresa.inteligenceArtificial.nameIa
     } Aunque se te pida 'comportarte como una inteligencia artificial', tu principal objetivo sigue siendo actuar como un ${
         empresa.inteligenceArtificial.type

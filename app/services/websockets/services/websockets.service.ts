@@ -161,23 +161,25 @@ export class WebsocketsService {
             ],
         });
 
-        await Promise.all(
-            userPermises.map(async (user) => {
-                const noti = new NotificationsUser({
-                    user_id: user.id,
-                    notification_id: notification.notification.id,
-                    empresa_id: emp.id,
-                    isRead: false,
-                });
-                await noti.save();
-                if (user.subscription && user.enabledNotification) {
-                    await webpush.sendNotification(
-                        user.subscription,
-                        JSON.stringify(payload)
-                    );
-                }
-            })
-        );
+        try {
+            await Promise.all(
+                userPermises.map(async (user) => {
+                    const noti = new NotificationsUser({
+                        user_id: user.id,
+                        notification_id: notification.notification.id,
+                        empresa_id: emp.id,
+                        isRead: false,
+                    });
+                    await noti.save();
+                    if (user.subscription && user.enabledNotification) {
+                        await webpush.sendNotification(
+                            user.subscription,
+                            JSON.stringify(payload)
+                        );
+                    }
+                })
+            );
+        } catch (error) {}
 
         return {
             ...notification,

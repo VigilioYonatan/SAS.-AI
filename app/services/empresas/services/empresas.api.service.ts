@@ -1498,7 +1498,7 @@ export class EmpresasApiService {
             if (body?.type === "VPS") {
                 if (enviroments.NODE_ENV === "production") {
                     const response = await fetch(
-                        `${enviroments.VITE_VIGILIO_WEB}/api/empresas/subominio`,
+                        `${enviroments.VITE_VIGILIO_WEB}/api/empresas/subdominio`,
                         {
                             method: "POST",
                             body: JSON.stringify({

@@ -126,14 +126,27 @@ const IzipayForm = ({
                 Tarjeta de credito/debito
             </h1>
             <div id="form-niubiz" class="w-full">
-                <div class="kr-embedded w-full" kr-popin="kr-popin" />
-                <style jsx>{`
-                    #form-niubiz .kr-popin-button {
-                        width: 100%;
-                        background-color: var(--primary) !important;
-                        color: white !important;
-                    }
-                `}</style>
+                <div class="kr-embedded w-full" kr-popin="kr-popin">
+                    <div class="kr-email">
+                        <input
+                            type="text"
+                            name="acme-email"
+                            placeholder="E-mail"
+                            class="kr-theme"
+                            kr-icon="fas fa-envelope"
+                            required
+                        />
+                    </div>
+                    <div class="kr-pan" />
+                    <div class="!flex justify-between w-full gap-1 items-center">
+                        <div class="kr-expiry" />
+                        <div class="kr-security-code" />
+                    </div>
+                    <div class="kr-installment-number !hidden" />
+                    <div class="kr-first-installment-delay !hidden" />
+                    <div class="kr-card-holder-name !hidden" />
+                    <button class="kr-payment-button" type="button" />
+                </div>
             </div>
             {izipayPaymentMutation.isLoading || !isShow.value ? (
                 <Loading className="h-[300px]" />
