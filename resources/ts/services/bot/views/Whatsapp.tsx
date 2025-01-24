@@ -2269,8 +2269,8 @@ function WhatsappFormStore() {
                 >
                     Recomendado
                 </a>
-                , Registrarse, obtener el servicio VPS (debian 12) y completar
-                formulario en 2 minutos{" "}
+                , Registrarse, obtener el servicio VPS (mínimo 2GB Ram, 2vCPU) y
+                completar formulario en 2 minutos{" "}
                 <a
                     href={
                         storageEmpresa?.dial_code === "51"

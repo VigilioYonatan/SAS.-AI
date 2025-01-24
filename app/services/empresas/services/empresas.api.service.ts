@@ -1504,7 +1504,7 @@ export class EmpresasApiService {
                             body: JSON.stringify({
                                 sub_domain: `${empresa.slug}.${name}`,
                                 port: 5000,
-                                ip: body.ip || "localhost",
+                                vps_ip: body.ip || "localhost",
                             }),
                             headers: {
                                 "Content-Type": "application/json",
