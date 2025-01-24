@@ -194,6 +194,9 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
             tienda: { enabled: true },
             tokens: { tokens: 100000 },
             finanza: { enabled: true },
+            email: false,
+            tienda1: { enabled: false },
+            tienda2: { enabled: false },
         },
         type_empresa_id: 1,
         bancos: [
@@ -417,6 +420,9 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
             tienda: { enabled: true },
             tokens: { tokens: 10000000 },
             finanza: { enabled: true },
+            email: false,
+            tienda1: { enabled: false },
+            tienda2: { enabled: false },
         },
         type_empresa_id: 22, //22 restaurant // 24 gym
         bancos: [
