@@ -119,7 +119,7 @@ export class EmpresasApiController {
     @VigilioServicesGuard()
     @Validator(
         mergeAsync([
-            payments,
+            omitAsync(payments, ["tienda1", "tienda2", "email"]),
             object({
                 token: string(),
                 secure: string(),
