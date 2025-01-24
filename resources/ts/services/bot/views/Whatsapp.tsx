@@ -1729,16 +1729,6 @@ function WhatsappFREE() {
             className="flex flex-col gap-6 "
         >
             <div class="flex justify-between items-center">
-                <div />{" "}
-                <h3 class="font-semibold text-center dark:text-white text-xl lg:text-2xl">
-                    CAMBIAR WHATSAPP
-                    {storageEmpresa!.whatsapp_mode.length > 1 ? (
-                        <>
-                            <br />
-                            <span class="text-xs">(Docker)</span>
-                        </>
-                    ) : null}
-                </h3>
                 <button
                     type="button"
                     class="bg-green-500 text-white px-2 py-1 rounded-md font-bold text-lg"
@@ -1749,11 +1739,22 @@ function WhatsappFREE() {
                             isCloseInBackground: false,
                             sweetWidth: "700px",
                             showCloseButton: true,
+                            position: "start",
                         });
                     }}
                 >
                     + <i class="fa-brands fa-whatsapp" />
-                </button>
+                </button>{" "}
+                <h3 class="font-semibold text-center dark:text-white text-xl lg:text-2xl">
+                    CAMBIAR WHATSAPP
+                    {storageEmpresa!.whatsapp_mode.length > 1 ? (
+                        <>
+                            <br />
+                            <span class="text-xs">(Docker)</span>
+                        </>
+                    ) : null}
+                </h3>
+                <div />
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div class="flex justify-center flex-col items-center ">
@@ -1992,11 +1993,11 @@ function WhatsappMulti() {
                 <div />
             </div>
             <br />
-            <div class="grid grid-cols-2 gap-2 max-h-[500px] overflow-auto">
+            <div class="grid md:grid-cols-2 gap-2 max-h-[500px] overflow-auto">
                 {storageEmpresa?.whatsapp_mode.slice(1).map((what) => (
                     <div key={what.name}>
                         <span class="dark:text-white font-bold text-center block text-xs">
-                            {what.name}
+                            ({what.name})
                         </span>
                         <QrWhatsapp
                             show={false}
@@ -2004,6 +2005,35 @@ function WhatsappMulti() {
                                 { value: what.name } as Signal<string>
                             }
                         />
+                        <span class="dark:text-white text-xs">
+                            - Ir a Proveedor{" "}
+                            <a
+                                href={
+                                    storageEmpresa?.dial_code === "51"
+                                        ? "https://elastika.pe/store/vps"
+                                        : "https://contabo.com/en/"
+                                }
+                                target="_blank"
+                                rel="noreferrer"
+                                class="text-primary underline"
+                            >
+                                Recomendado
+                            </a>
+                            , Registrarse, obtener el servicio VPS (debian 12) y
+                            completar formulario en 2 minutos{" "}
+                            <a
+                                href={
+                                    storageEmpresa?.dial_code === "51"
+                                        ? "https://youtu.be/msYxTrbVLNY"
+                                        : "https://www.youtube.com/watch?v=msYxTrbVLNY&feature=youtu.be"
+                                }
+                                target="_blank"
+                                rel="noreferrer"
+                                class="text-primary underline"
+                            >
+                                Ver tutorial
+                            </a>
+                        </span>
                         <WhatsappForm whatsapp={what} />
                     </div>
                 ))}
