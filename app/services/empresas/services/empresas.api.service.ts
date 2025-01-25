@@ -107,6 +107,23 @@ export async function initial() {
             await empresa.update({
                 whatsapp_mode: whatsapp_mode2,
             });
+        } else {
+            if (!empresa.whatsapp_mode.length) {
+                await empresa.update({
+                    whatsapp_mode: [
+                        {
+                            cpu: null,
+                            type: "FREE",
+                            name: "docker",
+                            date: null,
+                            ip: null,
+                            enabled: true,
+                            memory: null,
+                            password: null,
+                        },
+                    ],
+                });
+            }
         }
         if (empresa.telegram_token) {
             await initializeBot(empresa, empresa.telegram_token);
@@ -1432,6 +1449,19 @@ export class EmpresasApiService {
                     }`,
                     true
                 );
+                const whatsapp_mode: WhatsappMode[] = [
+                    {
+                        cpu: null,
+                        type: "FREE",
+                        name: "docker",
+                        date: null,
+                        ip: null,
+                        enabled: true,
+                        memory: null,
+                        password: null,
+                    },
+                ];
+                await empresa.update({ whatsapp_mode });
                 // // eliminar docker en 15 dias
                 // const fechaUTC5 = new Date();
                 // fechaUTC5.setDate(fechaUTC5.getDate() + 14);

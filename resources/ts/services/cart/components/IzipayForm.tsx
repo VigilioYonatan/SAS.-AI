@@ -127,16 +127,6 @@ const IzipayForm = ({
             </h1>
             <div id="form-niubiz" class="w-full">
                 <div class="kr-embedded w-full" kr-popin="kr-popin">
-                    <div class="kr-email">
-                        <input
-                            type="text"
-                            name="acme-email"
-                            placeholder="E-mail"
-                            class="kr-theme"
-                            kr-icon="fas fa-envelope"
-                            required
-                        />
-                    </div>
                     <div class="kr-pan" />
                     <div class="!flex justify-between w-full gap-1 items-center">
                         <div class="kr-expiry" />
@@ -144,7 +134,8 @@ const IzipayForm = ({
                     </div>
                     <div class="kr-installment-number !hidden" />
                     <div class="kr-first-installment-delay !hidden" />
-                    <div class="kr-card-holder-name !hidden" />
+                    <div class="kr-card-holder-name" />
+                    <div class="kr-card-holder-mail" />
                     <button class="kr-payment-button" type="button" />
                 </div>
             </div>
