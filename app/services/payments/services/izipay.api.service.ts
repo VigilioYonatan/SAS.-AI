@@ -45,7 +45,7 @@ export class IzipayApiService {
                 "izipay",
                 1,
                 {
-                    pasarela_comision:  empresa.enabledClientPayComision,
+                    pasarela_comision: empresa.enabledClientPayComision,
                 }
             );
             const amount = empresa.enabledClientPayComision
@@ -83,7 +83,7 @@ export class IzipayApiService {
                 token,
             };
         } catch (error) {
-            throw new InternalServerErrorException("Error de server");
+            throw new InternalServerErrorException((error as Error).message);
         }
     }
     // validar izipay

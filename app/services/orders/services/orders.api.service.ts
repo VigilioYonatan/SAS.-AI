@@ -451,7 +451,7 @@ export class OrdersApiService {
             // verifica si hay un usuario
             if (user && ordersStoreDto.password) {
                 throw new BadRequestException(
-                    "Ya existe una cuenta de este usuario."
+                    "Ya existe una cuenta de este usuario, Inicia sesión."
                 );
             }
             if (!user) {

@@ -40,13 +40,7 @@ import AlertInfo from "~/components/Alerts/AlertInfo";
 import { DIALCODE, typeFiscal } from "../libs/helpers";
 import { useSignal } from "@preact/signals";
 import { settingsUpdateApi } from "../apis/settings/settings.update.api";
-import {
-    updateVps,
-    vigilioVersionLatests,
-} from "../apis/vigilio-services.information.api";
 import Helper from "~/components/Helper";
-import enviroments from "~/config";
-import LoaderSubmit from "~/components/LoaderSubmit";
 
 function empresaUpdate() {
     const { guards } = useAuthstore();
@@ -1161,7 +1155,7 @@ function empresaUpdate() {
                         <span>
                             <b>Token:</b> {empresa.token}
                         </span>
-                        {storageEmpresa?.isFreeVPS ? null : (
+                        {/* {storageEmpresa?.isFreeVPS ? null : (
                             <>
                                 {(() => {
                                     const vigilioVersionLatestsQuery =
@@ -1290,7 +1284,7 @@ function empresaUpdate() {
                                     );
                                 })()}
                             </>
-                        )}
+                        )} */}
                     </div>
                 </div>
                 <AlertInfo>
