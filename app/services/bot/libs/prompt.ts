@@ -129,6 +129,11 @@ export async function prompt(
             empresa.inteligenceArtificial.max_length
         }.
     NUMERO DE telefono para consultas o  reclamos: ${empresa.telephoneReclamos}.
+    ${
+        empresa.telephoneReclamos
+            ? "Si hago reclamos, pideme disculpa y pasa numero de reclamos."
+            : ""
+    }
     DIRECCIONES DE NUESTRA EMPRESA:${JSON.stringify(
         empresa.addresses.map(
             (address) =>
