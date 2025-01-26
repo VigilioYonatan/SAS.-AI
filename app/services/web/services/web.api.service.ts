@@ -102,7 +102,10 @@ export class WebApiService {
                               empresa_id: empresa.id,
                               enabled: true,
                           },
-                          order: [["createdAt", "DESC"]],
+                          order: [
+                              ["discount", "DESC"],
+                              ["createdAt", "DESC"],
+                          ],
                           limit: empresa?.setting.products_limit_offer || 4,
                       })
                     : [],
@@ -578,7 +581,10 @@ export class WebApiService {
                     empresa_id: empresa.id,
                 },
                 limit: empresa?.setting.products_limit_offer || 4,
-                order: [["createdAt", "DESC"]],
+                order: [
+                    ["discount", "DESC"],
+                    ["createdAt", "DESC"],
+                ],
             }),
             this.categoriesApiService.index(empresa, false),
             Product(empresa, false).findOne({
