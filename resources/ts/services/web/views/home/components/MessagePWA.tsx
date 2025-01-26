@@ -106,8 +106,8 @@ function MessagePWA() {
                         x
                     </button>
                     <p class="text-center font-bold  text-sm">
-                        ¡Nuestra web está disponible para instalar con un solo
-                        click como una aplicación Android - PC!
+                        ¡Nuestra web está disponible como una aplicación Android
+                        - PC!
                     </p>
                     <button
                         class=" bg-[#09DD84] px-4 py-2 hover:scale-110 delay-custom-1 rounded-md text-xs block mx-auto text-white mt-2 border-2 border-white"
