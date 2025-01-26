@@ -43,7 +43,7 @@ async function interpretarImagen(rutaImagen: string): Promise<void> {
                         {
                             type: "image_url",
                             image_url: {
-                                url: response.data.data.url,
+                                url: "https://i.ibb.co//71xSy39//a2dfff0ebd55.png",
                             },
                         },
                     ],
@@ -51,6 +51,7 @@ async function interpretarImagen(rutaImagen: string): Promise<void> {
             ],
             max_tokens: 300,
         });
+        console.log(result.choices[0].message.content);
 
         return;
     } catch (error) {
