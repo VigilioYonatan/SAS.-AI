@@ -104,14 +104,12 @@ export async function initial() {
                 type: 2,
             },
         });
-        console.log({ optionss });
 
         const feats = await Features.count({
             where: {
-                option_id: optionss.id,
+                option_id: optionss?.id,
             },
         });
-        console.log({ feats });
 
         if (feats < 22) {
             await Promise.all(
@@ -147,7 +145,7 @@ export async function initial() {
                         id: 200 + i,
                         value: a.value,
                         description: a.description,
-                        option_id: optionss.id,
+                        option_id: optionss?.id,
                     });
                 })
             );
