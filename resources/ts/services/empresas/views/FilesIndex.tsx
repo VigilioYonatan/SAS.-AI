@@ -127,7 +127,7 @@ function FilesIndex({ params }: FilesIndexProps) {
                                     >
                                         <i class="fas fa-pen" />
                                     </button>
-                                    {storageEmpresa?.isTemplate ? (
+                                    {!storageEmpresa!.isProduction ? (
                                         <button
                                             type="button"
                                             class="bg-danger w-[25px] h-[25px] flex justify-center items-center rounded-md text-white"

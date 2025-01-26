@@ -57,7 +57,7 @@ import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import { getProductAll } from "@/products/libs";
 import { Options } from "@/products/entities/options/options.entity";
-import type { Features } from "@/products/entities/options/features.entity";
+import { Features } from "@/products/entities/options/features.entity";
 import { Brands } from "@/products/entities/brands.entitiy";
 import { ProductsApiService } from "@/products/services/products.api.service";
 import { ProductsServicio } from "@/products/entities/products_servicio.entity";
@@ -99,6 +99,59 @@ export async function initial() {
         //         cpu: null,
         //     },
         // });
+        const optionss = await Options.findOne({
+            where: {
+                type: 2,
+            },
+        });
+        console.log({ optionss });
+
+        const feats = await Features.count({
+            where: {
+                option_id: optionss.id,
+            },
+        });
+        console.log({ feats });
+
+        if (feats < 22) {
+            await Promise.all(
+                [
+                    { value: "#D2691E", description: "Chocolate" },
+                    { value: "#A52A2A", description: "Marrón" },
+                    { value: "#D3D3D3", description: "Gris Claro" },
+                    { value: "#90EE90", description: "Verde Claro" },
+                    { value: "#FF6347", description: "Tomato" },
+                    { value: "#8B0000", description: "Rojo Oscuro" },
+                    { value: "#20B2AA", description: "Verde Turquesa" },
+                    { value: "#C71585", description: "Violeta Oscuro" },
+                    { value: "#B0C4DE", description: "Azul Claro" },
+                    { value: "#FF4500", description: "Rojo Anaranjado" },
+                    { value: "#3CB371", description: "Verde Medio" },
+                    { value: "#F4A460", description: "Siena" },
+                    { value: "#DCDCDC", description: "Gris Claro" },
+                    { value: "#F08080", description: "Rosa Claro" },
+                    { value: "#FF8C00", description: "Naranja Oscuro" },
+                    { value: "#4682B4", description: "Azul Acero" },
+                    { value: "#6A5ACD", description: "Azul Púrpura" },
+                    { value: "#2E8B57", description: "Verde Bosque" },
+                    { value: "#A9A9A9", description: "Gris Oscuro" },
+                    { value: "#708090", description: "Gris Azulado" },
+                    { value: "#BDB76B", description: "Olivino" },
+                    { value: "#FF1493", description: "Rosa Fucsia" },
+                    { value: "#7B68EE", description: "Púrpura Oscuro" },
+                    { value: "#ADFF2F", description: "Verde Amarillo" },
+                    { value: "#FF7F50", description: "Coral" },
+                    { value: "#D3D3D3", description: "Gris Claro" },
+                ].map(async (a, i) => {
+                    await Features.create({
+                        id: 200 + i,
+                        value: a.value,
+                        description: a.description,
+                        option_id: optionss.id,
+                    });
+                })
+            );
+        }
         if (!Array.isArray(whatsapp_mode)) {
             const whatsapp_mode2 = [
                 { ...whatsapp_mode, name: "docker", enabled: true },
