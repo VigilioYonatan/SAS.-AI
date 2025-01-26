@@ -116,7 +116,7 @@ function Noticia({ noticia }: NoticiaProps) {
                                         ) : null}
                                     </div>{" "}
                                     <button
-                                        class="absolute right-0 top-0 text-3xl shadow rounded-full w-[15px] m-2 h-[15px] text-black  font-bold flex justify-center items-center "
+                                        class="absolute right-0 top-0 text-3xl shadow  w-[15px] p-[1rem] bg-[#ffffff82] h-[15px] text-black  font-bold flex justify-center items-center "
                                         type="button"
                                         aria-label="close"
                                         onClick={(e) => {
