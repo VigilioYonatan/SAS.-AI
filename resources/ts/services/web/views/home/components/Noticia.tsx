@@ -41,7 +41,7 @@ function Noticia({ noticia }: NoticiaProps) {
                                     onClick={(e) => {
                                         e.stopPropagation();
                                     }}
-                                    class={`w-[800px] mx-4 h-[500px] flex justify-center relative items-end  ${
+                                    class={`w-[800px] mx-4 h-[800px] flex justify-center relative items-end  ${
                                         enviroments.TYPE_BORDER === "circle"
                                             ? "rounded-md overflow-hidden"
                                             : ""

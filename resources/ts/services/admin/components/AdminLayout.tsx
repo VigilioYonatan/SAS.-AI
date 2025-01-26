@@ -224,6 +224,14 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 ),
                 to: "/reclamaciones",
             },
+            {
+                title: (
+                    <span>
+                        <i class="fas fa-rectangle-ad" /> Noticia
+                    </span>
+                ),
+                to: "/noticia",
+            },
         ].filter(Boolean);
     }
     function onCloseAside() {
