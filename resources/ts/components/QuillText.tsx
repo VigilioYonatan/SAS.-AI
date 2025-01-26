@@ -17,7 +17,9 @@ function QuillText({ text }: QuillTextProps) {
                 style={{
                     color:
                         themeStore.state === "dark" &&
-                        !isColorLight(storageEmpresa!.setting.bg_color)
+                        !isColorLight(
+                            storageEmpresa!.setting.bg_color_background
+                        )
                             ? "white"
                             : "black",
                 }}
