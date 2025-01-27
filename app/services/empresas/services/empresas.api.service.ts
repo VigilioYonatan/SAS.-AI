@@ -667,6 +667,7 @@ export class EmpresasApiService {
                 backgrounds,
                 categories,
                 brands,
+                logo: empresa.logo ? empresa.logo[0].file : null,
             },
         };
     }
