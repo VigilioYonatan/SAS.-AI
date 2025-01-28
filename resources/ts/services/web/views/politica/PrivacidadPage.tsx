@@ -21,7 +21,7 @@ function PrivacidadPage({ header }: PrivacidadPageProps) {
 					<div class="mt-6  max-w-6xl mx-auto">
 						<WebBreadCrumb current="Politicas de privacidad" />
 					</div>
-					<section class="max-w-6xl mx-auto dark:text-white my-12 lg:my-4 bg-background-light rounded-md dark:bg-background-dark p-4 relative overflow-hidden">
+					<section class="max-w-6xl mx-auto dark:text-white my-12 lg:my-4 bg-background-light rounded-md dark:bg-background-dark p-4 relative overflow-hidden  titulo-container">
 						<TitleSection>Política de privacidad</TitleSection>
 						{storageEmpresa?.logo ? (
 							<img

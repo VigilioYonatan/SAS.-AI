@@ -76,7 +76,7 @@ function ReclamacionesPage({ header }: ReclamacionesProps) {
                     <div class="mt-6 max-w-6xl mx-auto">
                         <WebBreadCrumb current="Libro de reclamaciones" />
                     </div>
-                    <div className="max-w-4xl p-4 mx-auto  my-12 lg:my-4 bg-background-light rounded-md dark:bg-background-dark  relative overflow-hidden">
+                    <div className="max-w-4xl p-4 mx-auto  my-12 lg:my-4 bg-background-light rounded-md dark:bg-background-dark  relative overflow-hidden  titulo-container">
                         <TitleSection>Libro de Reclamaciones</TitleSection>
                         {storageEmpresa?.logo ? (
                             <img

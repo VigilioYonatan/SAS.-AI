@@ -305,11 +305,13 @@ function CategoriesPage({
                         ]}
                     />
                 </div>
-                <TitleSection>
-                    <span class="flex items-center gap-2 justify-center">
-                        {category.name}
-                    </span>
-                </TitleSection>
+                <div class=" titulo-container">
+                    <TitleSection>
+                        <span class="flex items-center gap-2 justify-center">
+                            {category.name}
+                        </span>
+                    </TitleSection>
+                </div>
                 <div class=" gap-4 w-full flex ">
                     {/* aside filters desktop */}
                     <div class="hidden lg:w-[300px] lg:block">

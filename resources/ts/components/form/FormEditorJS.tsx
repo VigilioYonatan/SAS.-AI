@@ -323,7 +323,7 @@ function FormEditorJSControl<T extends object>({
                                 <ShowTablesDB />
                                 {(() => {
                                     const prompt = useSignal(
-                                        "Creame un codigo html como componente, que no vaya head ni body y que sea igualito, por favor que sea igualito y no falte nada, como en  la imagen que te pase, usa BEM clases, <style></style> y adentro las clases y style va al ultimo, primero el componente, no uses body, solo traime el html con el style y no digas nada mas, solo el html, importante. no MARKDOWN, si vez iconos usa Font-Awesome far o fas, usa flex-box o grid y que sea responsive, no markdown  ``` no"
+                                        "Creame un codigo html como componente, que no vaya head ni body y que sea igualito, por favor que sea igualito y no falte nada, como en  la imagen que te pase, usa BEM clases, <style></style> y adentro las clases y style va al ultimo, primero el componente, no uses body, solo traime el html con el style y no digas nada mas, solo el html, importante. no MARKDOWN, si vez iconos usa Font-Awesome far o fas, usa flex-box o grid, display:flex, gap, y que sea responsive y usa min-width no max-width en mediaquery, , no markdown  ``` no"
                                     );
                                     const aiHTMLMutation = aiHTMLApi();
 

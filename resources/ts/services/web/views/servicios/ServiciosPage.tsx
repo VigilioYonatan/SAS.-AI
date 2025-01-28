@@ -13,7 +13,7 @@ function ServiciosPage({ header, grid_banner_pages, title }: HomePageProps) {
     return (
         <>
             <WebLayout header={header}>
-                <div class="mt-20 lg:mt-10">
+                <div class="mt-20 lg:mt-10  titulo-container">
                     <TitleSection>{title}</TitleSection>
                 </div>
                 <Fragment>

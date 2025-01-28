@@ -727,7 +727,7 @@ export class EmpresasApiService {
             credentials: {
                 ...data.credentials,
                 open_ai: paymentDto.tokenOpenAi,
-                tokenDeepSeek: paymentDto.tokenDeepSeek,
+                deekseek_ai: paymentDto.tokenDeepSeek,
             },
             enabled_zoho_mail,
         });

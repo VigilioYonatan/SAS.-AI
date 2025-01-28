@@ -30,7 +30,7 @@ function AboutPage({
     return (
         <>
             <WebLayout header={header}>
-                <div class="mt-20 lg:mt-10 mx-auto max-w-6xl">
+                <div class="mt-20 lg:mt-10 mx-auto max-w-6xl  titulo-container">
                     <TitleSection>{title}</TitleSection>
                 </div>
                 <GridBannersPage grid={grid_banner_pages[0]} i={0} />
