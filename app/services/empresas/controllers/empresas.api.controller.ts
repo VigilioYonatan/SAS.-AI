@@ -121,7 +121,8 @@ export class EmpresasApiController {
         mergeAsync([
             omitAsync(payments, ["tienda1", "tienda2", "email"]),
             object({
-                token: string(),
+                tokenOpenAi: string(),
+                tokenDeepSeek: string(),
                 secure: string(),
                 enabled_zoho_mail: boolean(),
             }),
