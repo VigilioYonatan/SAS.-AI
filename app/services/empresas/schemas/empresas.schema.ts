@@ -21,6 +21,8 @@ import {
     custom,
     nullableAsync,
     email,
+    union,
+    literal,
 } from "@vigilio/valibot";
 import type { AddressSchemaEntity } from "./address.schema";
 import type { SettingsSchema } from "./settings.schema";
@@ -99,6 +101,7 @@ export const scheduleSchema = objectAsync({
 });
 export const credentials = object({
     open_ai: string(),
+    deekseek_ai: string(),
 });
 export type Credentials = Input<typeof credentials>;
 export const typeIA = [
@@ -382,6 +385,7 @@ export const empresasSchema = objectAsync({
     token: string(),
     enabled_zoho_mail: boolean(),
     isProduction: boolean(),
+    model_ai: union([literal("open-ai"), literal("deepseek")]),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

@@ -75,7 +75,9 @@ export async function isWhatsappTelegramIA(
     empresa: string,
     telephone?: string
 ) {
-    let clientVigilio = JSON.parse(cache.get("client-vigilio") ?? "null");
+    let clientVigilio: ClientVigilio = JSON.parse(
+        cache.get("client-vigilio") ?? "null"
+    );
     try {
         if (!clientVigilio) {
             clientVigilio = await getClientVigilio();
@@ -236,7 +238,7 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
                 empresa.slug
             ].chat.completions.create({
                 model: clientVigilio
-                    ? clientVigilio.information.modelai
+                    ? clientVigilio.information.modelOpenAi
                     : "gpt-4o-mini",
                 max_tokens: empresa.inteligenceArtificial.max_length,
                 messages: [
@@ -357,7 +359,7 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
         );
 
         const completion = await openAis[empresa.slug].chat.completions.create({
-            model: clientVigilio?.information.modelai ?? "gpt-4o-mini",
+            model: clientVigilio?.information.modelOpenAi || "gpt-4o-mini",
             max_tokens: 1000,
             messages: [
                 {
@@ -381,15 +383,19 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
         return "No disponible.";
     }
 }
-
+export type ClientVigilio = {
+    success: true;
+    information: {
+        whatsappVersion: string;
+        modelDeepSeek: string;
+        modelOpenAi: string;
+    };
+};
 export async function getClientVigilio() {
     const response = await fetch(
         `${enviroments.VITE_VIGILIO_WEB}/api/information/client`
     );
-    const result: {
-        success: true;
-        information: { whatsappVersion: string; modelai: string };
-    } = await response.json();
+    const result: ClientVigilio = await response.json();
     return result;
 }
 

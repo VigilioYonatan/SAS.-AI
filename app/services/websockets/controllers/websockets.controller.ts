@@ -34,7 +34,6 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         const whatsapp = await isWhatsappTelegramIA(emp);
         if (!whatsapp)
             return "En estos momentos no estoy disponible. Inteligencia Artificial o Token es requerido";
-
         const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
 
         chatAssistantWeb = {
@@ -74,7 +73,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
 
         const completion = await openAis[empresa.slug].chat.completions.create({
             model: clientVigilio
-                ? clientVigilio.information.modelai
+                ? clientVigilio.information.modelOpenAi
                 : "gpt-4o-mini",
             max_tokens: empresa.inteligenceArtificial.max_length,
             messages: [

@@ -78,12 +78,19 @@ export async function initial() {
             "id",
             "name_empresa",
             "whatsapp_mode",
+            "model_ai",
         ],
     });
     for (const empresa of empresas) {
-        const openAiClient = new openai.OpenAI({
-            apiKey: empresa.credentials.open_ai,
-        });
+        if (empresa.model_ai === "open-ai") {
+            const openAiClient = new openai.OpenAI({
+                apiKey: empresa.credentials.open_ai,
+            });
+            openAis = { ...openAis, [empresa.slug]: openAiClient };
+        } else {
+            //! aca va de deepseek
+        }
+
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const whatsapp_mode: any = empresa.whatsapp_mode;
 
@@ -99,57 +106,57 @@ export async function initial() {
         //         cpu: null,
         //     },
         // });
-        const optionss = await Options.findOne({
-            where: {
-                type: 2,
-            },
-        });
+        // const optionss = await Options.findOne({
+        //     where: {
+        //         type: 2,
+        //     },
+        // });
 
-        const feats = await Features.count({
-            where: {
-                option_id: optionss?.id,
-            },
-        });
+        // const feats = await Features.count({
+        //     where: {
+        //         option_id: optionss?.id,
+        //     },
+        // });
 
-        if (feats < 22) {
-            await Promise.all(
-                [
-                    { value: "#D2691E", description: "Chocolate" },
-                    { value: "#A52A2A", description: "Marrón" },
-                    { value: "#D3D3D3", description: "Gris Claro" },
-                    { value: "#90EE90", description: "Verde Claro" },
-                    { value: "#FF6347", description: "Tomato" },
-                    { value: "#8B0000", description: "Rojo Oscuro" },
-                    { value: "#20B2AA", description: "Verde Turquesa" },
-                    { value: "#C71585", description: "Violeta Oscuro" },
-                    { value: "#B0C4DE", description: "Azul Claro" },
-                    { value: "#FF4500", description: "Rojo Anaranjado" },
-                    { value: "#3CB371", description: "Verde Medio" },
-                    { value: "#F4A460", description: "Siena" },
-                    { value: "#DCDCDC", description: "Gris Claro" },
-                    { value: "#F08080", description: "Rosa Claro" },
-                    { value: "#FF8C00", description: "Naranja Oscuro" },
-                    { value: "#4682B4", description: "Azul Acero" },
-                    { value: "#6A5ACD", description: "Azul Púrpura" },
-                    { value: "#2E8B57", description: "Verde Bosque" },
-                    { value: "#A9A9A9", description: "Gris Oscuro" },
-                    { value: "#708090", description: "Gris Azulado" },
-                    { value: "#BDB76B", description: "Olivino" },
-                    { value: "#FF1493", description: "Rosa Fucsia" },
-                    { value: "#7B68EE", description: "Púrpura Oscuro" },
-                    { value: "#ADFF2F", description: "Verde Amarillo" },
-                    { value: "#FF7F50", description: "Coral" },
-                    { value: "#D3D3D3", description: "Gris Claro" },
-                ].map(async (a, i) => {
-                    await Features.create({
-                        id: 200 + i,
-                        value: a.value,
-                        description: a.description,
-                        option_id: optionss?.id,
-                    });
-                })
-            );
-        }
+        // if (feats < 22) {
+        //     await Promise.all(
+        //         [
+        //             { value: "#D2691E", description: "Chocolate" },
+        //             { value: "#A52A2A", description: "Marrón" },
+        //             { value: "#D3D3D3", description: "Gris Claro" },
+        //             { value: "#90EE90", description: "Verde Claro" },
+        //             { value: "#FF6347", description: "Tomato" },
+        //             { value: "#8B0000", description: "Rojo Oscuro" },
+        //             { value: "#20B2AA", description: "Verde Turquesa" },
+        //             { value: "#C71585", description: "Violeta Oscuro" },
+        //             { value: "#B0C4DE", description: "Azul Claro" },
+        //             { value: "#FF4500", description: "Rojo Anaranjado" },
+        //             { value: "#3CB371", description: "Verde Medio" },
+        //             { value: "#F4A460", description: "Siena" },
+        //             { value: "#DCDCDC", description: "Gris Claro" },
+        //             { value: "#F08080", description: "Rosa Claro" },
+        //             { value: "#FF8C00", description: "Naranja Oscuro" },
+        //             { value: "#4682B4", description: "Azul Acero" },
+        //             { value: "#6A5ACD", description: "Azul Púrpura" },
+        //             { value: "#2E8B57", description: "Verde Bosque" },
+        //             { value: "#A9A9A9", description: "Gris Oscuro" },
+        //             { value: "#708090", description: "Gris Azulado" },
+        //             { value: "#BDB76B", description: "Olivino" },
+        //             { value: "#FF1493", description: "Rosa Fucsia" },
+        //             { value: "#7B68EE", description: "Púrpura Oscuro" },
+        //             { value: "#ADFF2F", description: "Verde Amarillo" },
+        //             { value: "#FF7F50", description: "Coral" },
+        //             { value: "#D3D3D3", description: "Gris Claro" },
+        //         ].map(async (a, i) => {
+        //             await Features.create({
+        //                 id: 200 + i,
+        //                 value: a.value,
+        //                 description: a.description,
+        //                 option_id: optionss?.id,
+        //             });
+        //         })
+        //     );
+        // }
         if (!Array.isArray(whatsapp_mode)) {
             const whatsapp_mode2 = [
                 { ...whatsapp_mode, name: "docker", enabled: true },
@@ -220,6 +227,14 @@ export async function initial() {
         //     where: { empresa_id: empresa!.id },
         //     defaults: { isEccomerce: true }, // Valores predeterminados si se crea
         // });
+        const model_ai = await Empresas.findOrCreate({
+            where: {
+                id: empresa!.id,
+            },
+            defaults: {
+                model_ai: "open-ai",
+            },
+        });
         // const type_loader = await Settings.findOrCreate({
         //     where: { empresa_id: empresa!.id },
         //     defaults: { type_loader: "null" }, // Valores predeterminados si se crea
@@ -380,7 +395,7 @@ export async function initial() {
         //     })
         // );
 
-        openAis = { ...openAis, [empresa.slug]: openAiClient };
+        // openAis = { ...openAis, [empresa.slug]: openAiClient };
     }
 }
 
@@ -690,7 +705,8 @@ export class EmpresasApiService {
     async paymentUpdate(
         slug: string,
         paymentDto: Payments & {
-            token: string;
+            tokenOpenAi: string;
+            tokenDeepSeek: string;
             secure: string;
             enabled_zoho_mail: boolean;
         }
@@ -699,10 +715,20 @@ export class EmpresasApiService {
             throw new BadRequestException("Error");
 
         const { data } = await this.payment(slug);
-        const { token, secure, enabled_zoho_mail, ...rest } = paymentDto;
+        const {
+            tokenOpenAi,
+            tokenDeepSeek,
+            secure,
+            enabled_zoho_mail,
+            ...rest
+        } = paymentDto;
         await data.update({
             payments: rest,
-            credentials: { ...data.credentials, open_ai: paymentDto.token },
+            credentials: {
+                ...data.credentials,
+                open_ai: paymentDto.tokenOpenAi,
+                tokenDeepSeek: paymentDto.tokenDeepSeek,
+            },
             enabled_zoho_mail,
         });
 
@@ -786,6 +812,7 @@ export class EmpresasApiService {
                 ],
                 icon: null,
                 logo_pwa: null,
+                model_ai: "open-ai",
             }) as Empresas;
             await empresa.save();
 
@@ -1928,6 +1955,7 @@ export class EmpresasApiService {
     }
     async update(emp: Empresas, empresasUpdateDto: EmpresasUpdateDto) {
         const { empresa } = await this.show(emp.slug);
+
         try {
             if (
                 empresasUpdateDto.telegram_token &&
@@ -1944,7 +1972,10 @@ export class EmpresasApiService {
 
             cache.delete(`EMPRESA:${empresa.slug}`);
 
-            await empresa.update(empresasUpdateDto);
+            await empresa.update({
+                ...empresasUpdateDto,
+                model_ai: "open-ai",
+            });
             return {
                 success: true,
                 empresa,

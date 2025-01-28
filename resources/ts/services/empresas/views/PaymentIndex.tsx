@@ -344,6 +344,16 @@ function PaymentIndex() {
                                             enviroments.VITE_IZIPAY_COMISION_TRANSACCION
                                         }
                                     </b>
+                                    <br />
+                                    Preguntas Frecuentes de Izipay{" "}
+                                    <a
+                                        href="https://youtu.be/FCEgt1DfdVE"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        class="underline"
+                                    >
+                                        Ver video
+                                    </a>
                                 </span>
                             </AlertInfo>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">

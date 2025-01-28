@@ -41,13 +41,16 @@ import { DIALCODE, typeFiscal } from "../libs/helpers";
 import { useSignal } from "@preact/signals";
 import { settingsUpdateApi } from "../apis/settings/settings.update.api";
 import Helper from "~/components/Helper";
+import { vigilioServicesQuery } from "@/admin/apis/vigilio-services.api";
 
 function empresaUpdate() {
     const { guards } = useAuthstore();
+    const vigilioServices = vigilioServicesQuery();
     if (!guards.permissionAdminGuard()) {
         window.history.back();
         return null;
     }
+
     const empresaQuery = empresaPrivateApi();
     let component: JSX.Element | JSX.Element[] | null = null;
     if (empresaQuery.isLoading) {
@@ -911,6 +914,73 @@ function empresaUpdate() {
                                         </div>
                                     }
                                 />
+                            </div>
+                        </div>
+                        <div class="w-full my-6">
+                            <span class="dark:text-white text-xs font-bold">
+                                Modelo de Inteligencia Artificial
+                            </span>
+                            <div class="grid grid-cols-2 gap-2 max-w-[200px] mt-2">
+                                <button
+                                    onClick={() => {
+                                        empresasUpdateform.setValue(
+                                            "model_ai",
+                                            "open-ai"
+                                        );
+                                    }}
+                                    class={`flex justify-center items-center p-1  rounded-md shadow border flex-col ${
+                                        empresasUpdateform.watch("model_ai") ===
+                                        "open-ai"
+                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                            : ""
+                                    }`}
+                                    type="button"
+                                >
+                                    <img
+                                        width={50}
+                                        height={50}
+                                        src="/images/settings/others/open-ai.webp"
+                                        alt=""
+                                    />
+                                    <span class="text-xs dark:text-white">
+                                        {
+                                            vigilioServices.data?.information
+                                                .modelOpenAi
+                                        }
+                                    </span>
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        empresasUpdateform.setValue(
+                                            "model_ai",
+                                            "deepseek"
+                                        );
+                                    }}
+                                    disabled
+                                    class={`flex justify-center items-center p-1  rounded-md shadow border flex-col relative ${
+                                        empresasUpdateform.watch("model_ai") ===
+                                        "deepseek"
+                                            ? "bg-paper-light dark:bg-admin-terciary"
+                                            : ""
+                                    } cursor-not-allowed`}
+                                    type="button"
+                                >
+                                    <img
+                                        width={50}
+                                        height={50}
+                                        src="/images/settings/others/deepseek.webp"
+                                        alt=""
+                                    />{" "}
+                                    <span class="text-xs dark:text-white">
+                                        {
+                                            vigilioServices.data?.information
+                                                .modelDeepSeek
+                                        }
+                                    </span>
+                                    <span class="text-xs bg-primary px-1 py-0.5 rounded-md shadow absolute -top-1 -right-1">
+                                        Pronto
+                                    </span>
+                                </button>
                             </div>
                         </div>
                         <div class="w-full my-6">

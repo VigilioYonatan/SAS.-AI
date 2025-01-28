@@ -73,9 +73,11 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         enabled_igv: true,
         enabledSound: true,
         igv: 18,
+        model_ai: "open-ai",
         credentials: {
             open_ai:
                 "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",
+            deekseek_ai: "sk-790c7bd8e0504c9c811015cc57155947",
         },
         inteligenceArtificial: {
             isChunk: false,
@@ -290,6 +292,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         credentials: {
             open_ai:
                 "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",
+            deekseek_ai: "sk-790c7bd8e0504c9c811015cc57155947",
         },
         inteligenceArtificial: {
             isChunk: false,
@@ -464,5 +467,6 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         enabled_dni_cart: true,
         isDolar: true,
         isProduction: true,
+        model_ai: "open-ai",
     };
 }

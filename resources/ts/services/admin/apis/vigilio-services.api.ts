@@ -9,7 +9,7 @@ export function vigilioServicesQuery() {
             const response = await fetch(url);
             const result: {
                 success: true;
-                empresa: {
+                information: {
                     whatsappVersion: string;
                     modelai: string;
                     facebook: string;
@@ -18,6 +18,8 @@ export function vigilioServicesQuery() {
                     tiktok: string;
                     linkedin: string;
                     twitter: string;
+                    modelDeepSeek: string;
+                    modelOpenAi: string;
                 };
             } = await response.json();
             if (!result.success) throw result;

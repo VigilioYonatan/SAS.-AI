@@ -447,6 +447,12 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     versionamiento: string;
 
     @Column({
+        type: DataType.STRING,
+        defaultValue: "open-ai",
+    })
+    model_ai: "open-ai" | "deepseek";
+
+    @Column({
         type: DataType.TEXT,
     })
     header_cart: string;

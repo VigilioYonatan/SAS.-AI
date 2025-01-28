@@ -313,7 +313,7 @@ export class WebsocketsService {
                         emp.slug
                     ].chat.completions.create({
                         model: whatsapp.clientVigilio
-                            ? whatsapp.clientVigilio.information.modelai
+                            ? whatsapp.clientVigilio.information.modelOpenAi
                             : "gpt-4o-mini",
                         max_tokens: 255,
                         messages: [
@@ -520,7 +520,7 @@ export class WebsocketsService {
                     emp.slug
                 ].chat.completions.create({
                     model: whatsapp.clientVigilio
-                        ? whatsapp.clientVigilio.information.modelai
+                        ? whatsapp.clientVigilio.information.modelOpenAi
                         : "gpt-4o-mini",
                     max_tokens: 255,
                     messages: [

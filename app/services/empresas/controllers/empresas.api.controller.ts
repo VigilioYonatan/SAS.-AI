@@ -133,7 +133,8 @@ export class EmpresasApiController {
         @Params("slug") slug: string,
         @Body()
         paymentDto: Payments & {
-            token: string;
+            tokenOpenAi: string;
+            tokenDeepSeek: string;
             secure: string;
             enabled_zoho_mail: boolean;
         }

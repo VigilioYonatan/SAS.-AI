@@ -259,7 +259,7 @@ export class IAApiController {
                 whatsapp!.empresa.slug
             ].chat.completions.create({
                 model:
-                    whatsapp!.clientVigilio?.information.modelai ??
+                    whatsapp!.clientVigilio?.information.modelOpenAi ||
                     "gpt-4o-mini",
                 messages: [
                     {

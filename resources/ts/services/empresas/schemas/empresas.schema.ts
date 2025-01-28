@@ -17,6 +17,8 @@ import {
     maxValue,
     custom,
     email,
+    union,
+    literal,
 } from "@vigilio/valibot";
 import { filesSchema } from "~/libs/upload";
 import { AddressSchemaFromServer } from "./address.schema";
@@ -100,6 +102,7 @@ export const companySchema = object({
     client_secret: nullable(string()),
     certificado_password: nullable(string()),
     production: boolean(),
+    model_ai: union([literal("open-ai"), literal("deepseek")]),
 });
 export const scheduleSchema = object({
     id: number(),
@@ -393,6 +396,7 @@ export const empresasSchema = object({
     }),
     enabled_zoho_mail: boolean(),
     isProduction: boolean(),
+    model_ai: union([literal("open-ai"), literal("deepseek")]),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

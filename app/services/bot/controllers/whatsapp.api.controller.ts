@@ -320,7 +320,7 @@ export class whatsappApiController {
                     info.slug
                 ].chat.completions.create({
                     model: clientVigilio
-                        ? clientVigilio.information.modelai
+                        ? clientVigilio.information.modelOpenAi
                         : "gpt-4o-mini",
                     max_tokens: empresa.inteligenceArtificial.max_length,
                     messages: [

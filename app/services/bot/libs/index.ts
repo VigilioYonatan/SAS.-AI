@@ -618,7 +618,8 @@ export async function chatgpt(
     const completion = await openAis[
         whatsapp!.empresa.slug
     ].chat.completions.create({
-        model: whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
+        model:
+            whatsapp!.clientVigilio?.information.modelOpenAi || "gpt-4o-mini",
         max_tokens: 10000,
         messages: [
             {
@@ -682,7 +683,8 @@ export async function interpretarImagen(
             whatsapp!.empresa.slug
         ].chat.completions.create({
             model:
-                whatsapp!.clientVigilio?.information.modelai ?? "gpt-4o-mini",
+                whatsapp!.clientVigilio?.information.modelOpenAi ||
+                "gpt-4o-mini",
             messages: [
                 {
                     role: "user",
