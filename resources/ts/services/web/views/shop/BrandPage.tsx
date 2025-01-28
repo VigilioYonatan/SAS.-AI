@@ -200,7 +200,7 @@ function BrandPage({
                             <div
                                 class={`    min-h-[500px] gap-4 grid ${
                                     typeSection.value === "rows"
-                                        ? "grid-cols-2 md:grid-cols-navigator.clipboard4"
+                                        ? "grid-cols-2 md:grid-cols-4"
                                         : ""
                                 }`}
                             >

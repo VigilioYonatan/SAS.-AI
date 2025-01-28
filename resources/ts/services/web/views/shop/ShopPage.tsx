@@ -62,6 +62,9 @@ function ShopPage({
                 <GridBannersPage grid={grid_banner_pages[4]} i={4} />
                 <LatestProductSection ultimosproducto={productslatestmapped} />
                 <GridBannersPage grid={grid_banner_pages[5]} i={5} />
+                <GridBannersPage grid={grid_banner_pages[6]} i={6} />
+                <GridBannersPage grid={grid_banner_pages[7]} i={7} />
+                <GridBannersPage grid={grid_banner_pages[8]} i={8} />
             </div>
         </WebLayout>
     );
