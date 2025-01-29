@@ -57,12 +57,12 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                             <a href={"/"} class="flex  items-center">
                                 {empresaStore.state!.logo ? (
                                     <img
-                                        width={100}
-                                        height={100}
+                                        width={300}
+                                        height={300}
                                         src={
                                             printFileWithDimension(
                                                 empresaStore.state!.logo!,
-                                                100
+                                                300
                                             )[0]
                                         }
                                         class="w-[50px] h-[50px] object-contain"

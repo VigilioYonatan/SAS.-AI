@@ -134,7 +134,7 @@ function AuthLogin() {
 }
 export function openAuth() {
     sweetModal({
-        html: reactComponent(<AuthLogin />),
+        html: reactComponent(<AuthLogin />, null, "auth-modal"),
         showCloseButton: true,
         sweetWidth: "600px",
         position: useMediaQueryNoReactive("(min-width:700px)")

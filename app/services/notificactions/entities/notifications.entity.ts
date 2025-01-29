@@ -34,10 +34,10 @@ export class Notifications
 	@Column({ type: DataType.STRING(100), allowNull: false })
 	type: NotifcationType;
 
-	@Column({ type: DataType.STRING(100), allowNull: false })
+	@Column({ type: DataType.TEXT, allowNull: false })
 	url: string;
 
-	@Column({ type: DataType.STRING(255), allowNull: false })
+	@Column({ type: DataType.TEXT, allowNull: false })
 	content: string;
 
 	@ForeignKey(() => Empresas)
