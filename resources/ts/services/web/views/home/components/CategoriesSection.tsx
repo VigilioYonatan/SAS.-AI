@@ -18,12 +18,9 @@ function CategoriesSection({ categories }: categoriesSectionProps) {
 
     return (
         <section
-            class="categories-section max-w-6xl mx-auto px-4  my-4 md:my-8 overflow-hidden flex flex-col gap-4  group"
-            data-aos={`${
-                storageEmpresa?.setting.isScrolling
-                    ? storageEmpresa.setting.type_animation
-                    : ""
-            } `}
+            class={`categories-section max-w-6xl mx-auto px-4  my-4 md:my-8 overflow-hidden flex flex-col gap-4  group ${
+                storageEmpresa.setting.isScrolling ? "animation-box" : ""
+            }`}
         >
             <TitleSection>Nuestras Categorías</TitleSection>
             <Slider

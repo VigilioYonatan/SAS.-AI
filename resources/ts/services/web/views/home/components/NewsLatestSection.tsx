@@ -14,10 +14,9 @@ interface NewsLatestProps {
 function NewsLatestSection({ posts }: NewsLatestProps) {
     return (
         <section
-            class="max-w-6xl px-2 mx-auto my-12 flex flex-col gap-4 group"
-            data-aos={`${
-                storageEmpresa?.setting.isScrolling ? "fade-up" : ""
-            } `}
+            class={`max-w-6xl px-2 mx-auto my-12 flex flex-col gap-4 group ${
+                storageEmpresa?.setting.isScrolling ? "animation-box" : ""
+            }`}
         >
             <TitleSection>Ultimas noticias</TitleSection>
             <Slider

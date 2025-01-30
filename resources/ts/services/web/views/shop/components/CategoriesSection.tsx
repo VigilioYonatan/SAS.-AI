@@ -17,10 +17,9 @@ function CategoriesSection({ categories }: categoriesSectionProps) {
         return null;
     return (
         <section
-            class="max-w-6xl mx-auto px-4 py-2 categories-section flex flex-col gap-4 group"
-            data-aos={`${
-                storageEmpresa?.setting.isScrolling ? "fade-up" : ""
-            } `}
+            class={`max-w-6xl mx-auto px-4 py-2 categories-section flex flex-col gap-4 group ${
+                storageEmpresa.setting.isScrolling ? "animation-box" : ""
+            }`}
         >
             <TitleSection>Nuestros Productos</TitleSection>
             <Slider

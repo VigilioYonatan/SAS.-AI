@@ -12,10 +12,9 @@ function ReseñasSection() {
 
     return (
         <section
-            data-aos={`${
-                storageEmpresa?.setting.isScrolling ? "fade-up" : ""
-            } `}
-            class="max-w-6xl mx-auto my-12 flex flex-col gap-4 group"
+            class={`max-w-6xl mx-auto my-12 flex flex-col gap-4 group ${
+                storageEmpresa?.setting.isScrolling ? "animation-box" : ""
+            }`}
         >
             <TitleSection>Reseñas</TitleSection>
             <Slider

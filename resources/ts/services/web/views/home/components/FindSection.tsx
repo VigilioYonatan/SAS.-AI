@@ -9,12 +9,9 @@ function FindSection() {
 
     return (
         <section
-            data-aos={`${
-                storageEmpresa?.setting.isScrolling
-                    ? storageEmpresa.setting.type_animation
-                    : ""
-            } `}
-            class="find-section  h-[400px] md:h-[500px]  px-2  rounded-md   flex  gap-4  py-4 md:py-8"
+            class={`find-section  h-[400px] md:h-[500px]  px-2  rounded-md   flex  gap-4  py-4 md:py-8 ${
+                storageEmpresa?.setting.isScrolling ? "animation-box" : ""
+            }`}
         >
             <div class="w-full">
                 <FormContact />

@@ -13,12 +13,9 @@ function BrandsSection({ brands }: BrandsSectionProps) {
     return (
         <>
             <section
-                data-aos={` ${
-                    storageEmpresa?.setting.isScrolling
-                        ? storageEmpresa.setting.type_animation
-                        : ""
+                class={`brand-section max-w-6xl mx-auto py-4  md:py-8 px-4 flex flex-col  group ${
+                    storageEmpresa.setting.isScrolling ? "animation-box" : ""
                 } `}
-                class="brand-section max-w-6xl mx-auto py-4  md:py-8 px-4 flex flex-col  group "
             >
                 <div class="flex justify-center items-center">
                     <TitleSection>Nuestras Marcas</TitleSection>

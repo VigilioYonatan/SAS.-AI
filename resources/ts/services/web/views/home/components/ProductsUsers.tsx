@@ -28,12 +28,9 @@ function ProductsUsers({
     if (!storageEmpresa?.setting.shows.offers_user) return null;
     return (
         <section
-            data-aos={`${
-                storageEmpresa?.setting.isScrolling
-                    ? storageEmpresa.setting.type_animation
-                    : ""
-            } `}
-            class="product-users-section max-w-6xl mx-auto py-4  md:py-8 px-4  gap-4 grid grid-cols-1 lg:grid-cols-3"
+            class={`product-users-section max-w-6xl mx-auto py-4  md:py-8 px-4  gap-4 grid grid-cols-1 lg:grid-cols-3 ${
+                storageEmpresa.setting.isScrolling ? "animation-box" : ""
+            }`}
         >
             <div
                 class={`bg-background-light dark:bg-background-dark ${

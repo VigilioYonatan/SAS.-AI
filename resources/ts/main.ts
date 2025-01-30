@@ -4,25 +4,13 @@ import "@vigilio/sweet/sweet.min.css";
 import { lazy } from "preact/compat";
 import render from "./libs/preact";
 import enviroments from "./config";
-import AOS from "aos";
-import "aos/dist/aos.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Alpine from "alpinejs";
 import "tiny-slider/dist/tiny-slider.css";
 
 Alpine.start();
-document.addEventListener("DOMContentLoaded", () => {
-    AOS.init({
-        duration: 1000,
-        once: true,
-        offset: 50,
-    });
 
-    window.onload = () => {
-        AOS.refreshHard();
-    };
-});
 render(
     "Initial",
     lazy(() => import("@/Initial"))

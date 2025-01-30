@@ -15,6 +15,7 @@ import { ProductsServicioSchemaFromServer } from "@/products/schemas/products_se
 import { SubcategoriesSchemaFromServer } from "@/products/schemas/subcategories.schema";
 import { useEffect } from "preact/hooks";
 import PalleteCustom from "./PalleteCustom";
+import ScrollReveal from "scrollreveal";
 
 export interface HeaderType {
     categories: (CategoriesSchema & {
@@ -36,6 +37,7 @@ interface WebLayoutProps {
 
 function WebLayout({ children, header }: WebLayoutProps) {
     const empresaStore = useEmpresastore();
+
     useEffect(() => {
         if (storageEmpresa?.setting.web_script) {
             const script = document.createElement("script");
@@ -46,6 +48,32 @@ function WebLayout({ children, header }: WebLayoutProps) {
             return () => {
                 document.body.removeChild(script);
             };
+        }
+    }, []);
+
+    useEffect(() => {
+        if (storageEmpresa?.setting.isScrolling) {
+            const animation = {
+                "fade-up": { delay: 300, origin: "bottom", distance: "50px" },
+                "zoom-in": {
+                    scale: 0.85,
+                    duration: 1000,
+                    easing: "ease-in-out",
+                },
+                "flip-left": {
+                    opacity: 0,
+                    duration: 1000,
+                    easing: "ease-in-out",
+                },
+            };
+
+            ScrollReveal().reveal(
+                ".animation-box",
+                animation[
+                    storageEmpresa.setting
+                        .type_animation as keyof typeof animation
+                ]
+            );
         }
     }, []);
     return (

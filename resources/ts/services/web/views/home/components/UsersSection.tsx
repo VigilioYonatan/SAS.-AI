@@ -25,12 +25,9 @@ function UsersSection({ users }: UsersSection) {
         return null;
     return (
         <section
-            data-aos={`${
-                storageEmpresa?.setting.isScrolling
-                    ? storageEmpresa.setting.type_animation
-                    : ""
-            } `}
-            class="users-section max-w-6xl mx-auto px-2 py-4 md:py-8 flex flex-col gap-4  group"
+            class={`users-section max-w-6xl mx-auto px-2 py-4 md:py-8 flex flex-col gap-4  group ${
+                storageEmpresa?.setting.isScrolling ? "animation-box" : ""
+            }`}
         >
             <TitleSection>Nuestro Equipo</TitleSection>
             <Slider

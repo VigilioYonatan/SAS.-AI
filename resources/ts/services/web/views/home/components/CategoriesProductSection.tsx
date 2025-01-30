@@ -17,11 +17,8 @@ function CategoriesProductSection({
 
     return (
         <section
-            class="categories-products-section max-w-6xl mx-auto  px-4 flex flex-col gap-4   py-4 md:py-8  "
-            data-aos={`${
-                storageEmpresa?.setting.isScrolling
-                    ? storageEmpresa.setting.type_animation
-                    : ""
+            class={`categories-products-section max-w-6xl mx-auto  px-4 flex flex-col gap-4   py-4 md:py-8  ${
+                storageEmpresa.setting.isScrolling ? "animation-box" : ""
             } `}
         >
             <TitleSection>Nuestros Productos</TitleSection>
@@ -29,11 +26,6 @@ function CategoriesProductSection({
                 <div
                     key={category.id}
                     class={`product-${category.slug} flex lg:flex-row gap-6  overflow-hidden  `}
-                    data-aos={`${
-                        storageEmpresa?.setting.isScrolling
-                            ? storageEmpresa.setting.type_animation
-                            : ""
-                    } `}
                 >
                     {category.wallpaper &&
                     storageEmpresa?.setting.isProductWallpaper &&

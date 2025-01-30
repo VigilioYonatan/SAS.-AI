@@ -22,12 +22,9 @@ function ServiciosSection({ servicios }: serviciosSectionProps) {
     }, []);
     return (
         <section
-            class=" servicios-section max-w-6xl mx-auto  px-4 flex flex-col gap-4  py-4 md:py-8"
-            data-aos={`${
-                storageEmpresa?.setting.isScrolling
-                    ? storageEmpresa.setting.type_animation
-                    : ""
-            } `}
+            class={`servicios-section max-w-6xl mx-auto  px-4 flex flex-col gap-4  py-4 md:py-8 ${
+                storageEmpresa?.setting.isScrolling ? "animation-box" : ""
+            }`}
             id="servicios"
         >
             <TitleSection>Nuestros Servicios</TitleSection>
