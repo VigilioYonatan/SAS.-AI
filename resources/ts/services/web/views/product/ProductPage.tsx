@@ -848,7 +848,7 @@ function ProductPage({
                     </div>
                 </div>
                 <div class="flex flex-col lg:flex-row gap-4 mt-16 ">
-                    <div class="flex flex-col gap-8 w-full bg-background-light dark:bg-background-dark p-2 rounded-md">
+                    <div class="flex flex-col gap-8 w-full  p-2 rounded-md">
                         <div class="w-full flex md:grid md:grid-cols-4   overflow-auto font-semibold text-sm border-b border-gray-400 dark:border-gray-500">
                             <button
                                 type="button"

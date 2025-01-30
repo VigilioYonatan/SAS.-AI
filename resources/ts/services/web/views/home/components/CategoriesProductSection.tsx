@@ -139,7 +139,7 @@ function CategoriesProductSection({
             ))}
             <a
                 href="/shop"
-                class="bg-primary px-4 py-[0.8rem] rounded-md border-2 border-primary hover:bg-white self-center mt-4  hover:!text-primary   font-semibold"
+                class="bg-primary p-[0.5rem_1rem] py-[0.8rem] text-[0.9rem] rounded-md border-2 border-primary hover:bg-white self-center mt-4  hover:!text-primary   font-semibold"
             >
                 Ver Todos los Productos
             </a>
