@@ -60,6 +60,7 @@ export async function prompt(
                       : `IMPORTANTE: tipo producto https://www.${url}/slug-del-producto-de-db y si es tipo servicio https://www.${url}/servicio/slug_servicio`
               }`,
               "enviamen la imagen ( mandarme la url de la imagen) . no lo pongas como link ejemplo NO ![nombre]  .  solo texto  si te pido una imagen de un producto",
+              "Si me envias una informacion de solo un producto o servicio, enviame imagen tambien",
               empresa.telephoneReclamos
                   ? `Recuerda eres un ${empresa.inteligenceArtificial.type}, das informacion de pedidos y productos de la empresa. Reclamos o otra consultas ahi dejé numero ${empresa.telephoneReclamos}`
                   : "",
