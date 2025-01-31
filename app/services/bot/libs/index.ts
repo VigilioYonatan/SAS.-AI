@@ -299,17 +299,6 @@ export async function promptReplace(
                 ),
             };
         } else {
-            productsData = {} as DataPrompt;
-        }
-    } else {
-        if (resultados.length) {
-            productsData = {
-                ...data,
-                products: data.products.filter((prod) =>
-                    resultados.includes(cleantext(prod.name))
-                ),
-            };
-        } else {
             const searchProduct = await chatgpt(
                 whatsapp,
                 `Esto son mis categorias ${JSON.stringify(
@@ -321,8 +310,6 @@ export async function promptReplace(
             try {
                 categoriesFound = JSON.parse(searchProduct || "[]");
             } catch (error) {}
-            // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-            console.log({ categoriesFound });
             if (categoriesFound.length) {
                 productsData = {
                     ...data,
@@ -336,6 +323,15 @@ export async function promptReplace(
                     products: data.products,
                 };
             }
+        }
+    } else {
+        if (resultados.length) {
+            productsData = {
+                ...data,
+                products: data.products.filter((prod) =>
+                    resultados.includes(cleantext(prod.name))
+                ),
+            };
         }
     }
 

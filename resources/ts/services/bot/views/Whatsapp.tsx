@@ -78,7 +78,7 @@ function Whatsapp() {
         return null;
     }
     const empresaStore = useEmpresastore();
-    const whatsappUpdateMutate = whatsappUpdateApi();
+    const whatsappUpdateMutate = whatsappUpdateApi(whatsapp_name);
     const empresaContactsDestroyAllMutation = empresaContactsDestroyAllApi();
     const empresaContactsUpdateMutation = empresaContactsUpdateApi();
     const table = useTable({
