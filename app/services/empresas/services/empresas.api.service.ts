@@ -184,14 +184,14 @@ export async function initial() {
             }
         }
         if (empresa.telegram_token) {
-            try {
-                await initializeBot(empresa, empresa.telegram_token);
-            } catch (error) {
-                // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-                console.log({
-                    error: JSON.stringify((error as Error).message),
-                });
-            }
+            // try {
+            //     // await initializeBot(empresa, empresa.telegram_token);
+            // } catch (error) {
+            //     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+            //     console.log({
+            //         error: JSON.stringify((error as Error).message),
+            //     });
+            // }
         }
         // // tipos finanzas
         // const pageHome = await Page.findOne({
