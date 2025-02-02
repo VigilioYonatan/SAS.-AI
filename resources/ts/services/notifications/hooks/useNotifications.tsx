@@ -288,7 +288,7 @@ export function useNotifications() {
     function Notifications(props: { onClose: () => void; isWeb?: boolean }) {
         return (
             <div
-                class={`flex flex-col   justify-center items-center relative bg-background-light ${
+                class={`flex flex-col notification   justify-center items-center relative bg-background-light ${
                     props.isWeb
                         ? "dark:bg-paper-dark"
                         : "dark:bg-admin-paper-dark"

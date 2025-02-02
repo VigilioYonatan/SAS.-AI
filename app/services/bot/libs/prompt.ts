@@ -172,7 +172,7 @@ export async function prompt(
             : ""
     }
     - Los decimales máximo un toFixed(2), incluye precioS, etc.
-   - IMPORTANTE: USA MENSAJES ANTERIORES PARA NO PERDER CONTEXTO PARA NO PERDER EL CONTEXTO DE LA CONVERSACIÓN.
+   - IMPORTANTE: USA SOLO EL ULTIMO MENSAJE PARA NO PERDER EL CONTEXTO DE LA CONVERSACIÓN.
    -  SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA si hablo ingles responde en ingles, etc SIEMPRE.
     NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
     BASE DE DATOS: ${JSON.stringify(productsData)} \n

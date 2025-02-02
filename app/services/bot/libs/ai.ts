@@ -366,6 +366,7 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
                     role: "user",
                     content: `${promptAssitant(empresa!)}. `,
                 },
+                // guardamos los mensajes anteriores
                 ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
             ],
         });
