@@ -226,7 +226,7 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
             const messageActual = `Mensajes Anterior: ${messageAnterior.join(
                 ", "
             )}.\n
-        Mensaje Actual: ${message}. escribe formato telegram`;
+        Mensaje Actual: ${message.text}. escribe formato telegram`;
             // Si el primer mensaje en lastMessages no es del role
             const prompt = await promptReplace(
                 telegram,
