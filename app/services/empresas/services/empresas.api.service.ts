@@ -184,7 +184,12 @@ export async function initial() {
             }
         }
         if (empresa.telegram_token) {
-            await initializeBot(empresa, empresa.telegram_token);
+            try {
+                await initializeBot(empresa, empresa.telegram_token);
+            } catch (error) {
+                // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                console.log({ error: JSON.stringify(error.message) });
+            }
         }
         // // tipos finanzas
         // const pageHome = await Page.findOne({
@@ -1825,7 +1830,7 @@ export class EmpresasApiService {
                     # Actualizar el sistema
                     apt update -y;
                     apt upgrade -y;
-        
+                    resize2fs /dev/sda1 || true &&
                     # Instalar dependencias necesarias
                     apt-get install -y git nginx sudo nano curl;
                     apt install -y apt-transport-https ca-certificates software-properties-common;
