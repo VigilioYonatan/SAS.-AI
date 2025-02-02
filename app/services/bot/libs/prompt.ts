@@ -172,6 +172,7 @@ export async function prompt(
             : ""
     }
     - Los decimales máximo un toFixed(2), incluye precioS, etc.
+    - Si te pid ayuda o consejos, puedes darle soluciones con nuestra base de datos
    - IMPORTANTE:  SIEMPRE RESPONDE AL MENSAJE ACTUAL, IGNORA LOS MENSAJES ANTERIORES .
    -  SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA si hablo ingles responde en ingles, etc SIEMPRE.
     NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
