@@ -80,7 +80,8 @@ export async function getProductAll(
     empresa: Empresas,
     product: ProductsNormal | ProductsServicio | ProductsRestaurant,
     user: Users | null,
-    isNecesaryAllDescription: boolean
+    isNecesaryAllDescription: boolean,
+    isSold = true
 ) {
     const [ratings] = await Promise.all([
         Ratings.findAll({
@@ -134,40 +135,53 @@ export async function getProductAll(
             };
         });
         const variantIds = variants.map((variant) => (variant as Variants).id);
-        const variantSales = await DetailOrders.findAll({
-            where: {
-                product_normal_id: product.id,
-                variant_id: variantIds,
-            },
-            include: [
-                {
-                    model: Orders.unscoped(),
-                    where: {
-                        status_order_id: STATUSORDER.entregado,
-                    },
-                    required: true,
-                    attributes: [],
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        let variantSales: any = [];
+        if (isSold) {
+            variantSales = await DetailOrders.findAll({
+                where: {
+                    product_normal_id: product.id,
+                    variant_id: variantIds,
                 },
-            ],
-            attributes: [
-                "variant_id",
-                [
-                    sequelize.fn(
-                        "COUNT",
-                        sequelize.col("DetailOrders.variant_id")
-                    ),
-                    "totalSold",
+                include: [
+                    {
+                        model: Orders.unscoped(),
+                        where: {
+                            status_order_id: STATUSORDER.entregado,
+                        },
+                        required: true,
+                        attributes: [],
+                    },
                 ],
-            ],
-            group: ["DetailOrders.variant_id"], // Agrupamos solo por variant_id
-        });
+                attributes: [
+                    "variant_id",
+                    [
+                        sequelize.fn(
+                            "COUNT",
+                            sequelize.col("DetailOrders.variant_id")
+                        ),
+                        "totalSold",
+                    ],
+                ],
+                group: ["DetailOrders.variant_id"], // Agrupamos solo por variant_id
+            });
+        }
+
         // Crear un mapa de ventas por variante
         const salesMap = new Map(
-            variantSales.map((sale) => [sale.variant_id, sale.get("totalSold")])
+            isSold
+                ? // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                  variantSales.map((sale: any) => [
+                      sale.variant_id,
+                      sale.get("totalSold"),
+                  ])
+                : []
         );
         // Asignar las ventas totales a las variantes
         product.dataValues.variants = variants.map((variant) => {
-            const totalSold = salesMap.get((variant as Variants).id) || 0; // Obtener el total vendido de la variante
+            const totalSold = isSold
+                ? salesMap.get((variant as Variants).id) || 0
+                : 0; // Obtener el total vendido de la variante
             return {
                 ...(variant as Variants).toJSON(),
                 totalSold,

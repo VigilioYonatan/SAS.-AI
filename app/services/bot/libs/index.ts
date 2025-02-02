@@ -359,14 +359,13 @@ export async function promptReplace(
                 "es pregunta, cualquier tiempo de pregunta (recuerda que tambien es válido preguntas que no tengan ¿?!)."
             ),
         ]);
-    console.log({ message });
 
     const regex = /ord-[0-9]+/g;
     const coincidencias = message.toLowerCase().match(regex);
     let ordenes = "";
     if (empresa.inteligenceArtificial.settings.enabled_order) {
         ordenes =
-            "ó Si te pido informacion de pedido o orden, saber el estado de un producto o servicio  comprado, adquirido o realizado: decime que los codigo empiezan en ORD- \n Ordenes:\n";
+            "ó Si te pido informacion de pedido o orden, saber el estado de un producto o servicio  comprado, adquirido o realizado: decime que los codigo empiezan en ORD- dame información de la orden cuando te dé el codigo ORD- \n Ordenes:\n";
         if (coincidencias?.length) {
             const orden = await Promise.all(
                 coincidencias?.map(async (code) => {
@@ -566,7 +565,7 @@ export async function promptReplace(
     }
 
     const ifNoExist =
-        "Si la pregunta que te haga no está en la base de datos, (recuerda que puedo escribir mal las preguntas y analizalos). escribe en el primer parrafo [[NO_ENCONTRADO:aca_la_pregunta_que_te_hize]] y en el segundo parrafo escribe 'no encontramos respuesta para tu pregunta, pero puedes consultar numero de reclamos o correo, etc',y si hago preguntas que no tienen nada que ver con mi negocio, da un mensaje de no podemos responder a tu pregunta y hablar sobre mi negocio.";
+        "Si la pregunta que te haga no está en la base de datos  o no tenga que ver con mi negocio/empresa, (recuerda que puedo escribir mal las preguntas, ó pedirte consejos o ayuda sobre mi negocio,asi que esas preguntas estan bien y respondelos y analizalos). escribe en el primer parrafo [[NO_ENCONTRADO:aca_la_pregunta_que_te_hize]] y en el segundo parrafo escribe 'no encontramos respuesta para tu pregunta, pero puedes consultar numero de reclamos o correo, etc',y si hago preguntas que no tienen nada que ver con mi negocio, da un mensaje de no podemos responder a tu pregunta y hablar sobre mi negocio. puedes ayudar o dar soporte";
     const properties = {
         isSaludo,
         isTemaEnvio,
