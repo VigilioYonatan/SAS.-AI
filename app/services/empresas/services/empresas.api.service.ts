@@ -1745,6 +1745,28 @@ export class EmpresasApiService {
             "Ya existe este whatsapp con el mismo ip"
         );
     }
+
+    async whatsapp_mode_destroy(empresa: Empresas, name: string) {
+        const whatsappMode = empresa.whatsapp_mode.find((w) => w.name === name);
+        if (!whatsappMode) {
+            throw new BadRequestException("No existe whatsapp");
+        }
+        const whatsapp_modeFilter = empresa.whatsapp_mode.filter(
+            (w) => w.name === name
+        );
+        await Empresas.update(
+            { whatsapp_mode: whatsapp_modeFilter },
+            {
+                where: {
+                    slug: empresa.slug,
+                },
+            }
+        );
+        return {
+            success: true,
+            message: "Eliminado correctamente",
+        };
+    }
     async whatsapp_mode(empresa: Empresas, ip: string, body: WhatsappMode) {
         let whatsapp_mode: WhatsappMode[] = empresa.whatsapp_mode;
         const whatsappMode = empresa.whatsapp_mode.find((w) => w.ip === ip);

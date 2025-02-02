@@ -175,6 +175,19 @@ export class EmpresasApiController {
         );
         return result;
     }
+
+    @Pipe(objectAsync({ name: string() }))
+    @Delete("/whatsapp_mode/:name")
+    async whatsapp_mode_destroy(
+        @Req("empresa") empresa: Empresas,
+        @Params("name") name: string
+    ) {
+        const result = await this.empresaApiService.whatsapp_mode_destroy(
+            empresa,
+            name
+        );
+        return result;
+    }
     @Pipe(objectAsync({ ip: string() }))
     @Validator(omitAsync(whatsappMode, ["name"]))
     @Post("/whatsapp_mode/:ip")

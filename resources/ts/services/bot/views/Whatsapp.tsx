@@ -1994,49 +1994,93 @@ function WhatsappMulti() {
             </div>
             <br />
             <div class="grid md:grid-cols-2 gap-2 max-h-[500px] overflow-auto">
-                {storageEmpresa?.whatsapp_mode.slice(1).map((what) => (
-                    <div key={what.name}>
-                        <span class="dark:text-white font-bold text-center block text-xs">
-                            ({what.name})
-                        </span>
-                        <QrWhatsapp
-                            show={false}
-                            whatsapp_name={
-                                { value: what.name } as Signal<string>
+                {storageEmpresa?.whatsapp_mode.slice(1).map((what) => {
+                    function whatsappModeDelete() {
+                        return useMutation(
+                            `/api/empresas/whatsapp_mode/${what.name}`,
+                            async () => {
+                                const response = await fetch("/api/empresas/", {
+                                    method: "DELETE",
+                                });
+                                const result = await response.json();
+                                return result;
                             }
-                        />
-                        <span class="dark:text-white text-xs">
-                            - Ir a Proveedor{" "}
-                            <a
-                                href={
-                                    storageEmpresa?.dial_code === "51"
-                                        ? "https://elastika.pe/store/vps"
-                                        : "https://contabo.com/en/"
-                                }
-                                target="_blank"
-                                rel="noreferrer"
-                                class="text-primary underline"
+                        );
+                    }
+                    return (
+                        <div key={what.name}>
+                            <button
+                                onClick={() => {
+                                    sweetModal({
+                                        title: "¿Deseas eliminar esto?",
+                                        isCloseInBackground: false,
+                                        showCancelButton: true,
+                                    }).then(({ isConfirmed }) => {
+                                        if (isConfirmed) {
+                                            whatsappModeDelete().mutate(null, {
+                                                onSuccess() {
+                                                    sweetAlert({
+                                                        title: "Eliminado correctamente",
+                                                        icon: "success",
+                                                    });
+                                                },
+                                                onError(data) {
+                                                    sweetAlert({
+                                                        title: "No se eliminó",
+                                                        icon: "danger",
+                                                    });
+                                                },
+                                            });
+                                        }
+                                    });
+                                }}
+                                type="button"
+                                class="bg-danger text-white px-2 py-1 rounded-md"
                             >
-                                Recomendado
-                            </a>
-                            , Registrarse, obtener el servicio VPS (debian 12) y
-                            completar formulario en 2 minutos{" "}
-                            <a
-                                href={
-                                    storageEmpresa?.dial_code === "51"
-                                        ? "https://youtu.be/msYxTrbVLNY"
-                                        : "https://www.youtube.com/watch?v=msYxTrbVLNY&feature=youtu.be"
+                                <i class="fas trash" />
+                            </button>
+                            <span class="dark:text-white font-bold text-center block text-xs">
+                                ({what.name})
+                            </span>
+                            <QrWhatsapp
+                                show={false}
+                                whatsapp_name={
+                                    { value: what.name } as Signal<string>
                                 }
-                                target="_blank"
-                                rel="noreferrer"
-                                class="text-primary underline"
-                            >
-                                Ver tutorial
-                            </a>
-                        </span>
-                        <WhatsappForm whatsapp={what} />
-                    </div>
-                ))}
+                            />
+                            <span class="dark:text-white text-xs">
+                                - Ir a Proveedor{" "}
+                                <a
+                                    href={
+                                        storageEmpresa?.dial_code === "51"
+                                            ? "https://elastika.pe/store/vps"
+                                            : "https://contabo.com/en/"
+                                    }
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    class="text-primary underline"
+                                >
+                                    Recomendado
+                                </a>
+                                , Registrarse, obtener el servicio VPS (debian
+                                12) y completar formulario en 2 minutos{" "}
+                                <a
+                                    href={
+                                        storageEmpresa?.dial_code === "51"
+                                            ? "https://youtu.be/msYxTrbVLNY"
+                                            : "https://www.youtube.com/watch?v=msYxTrbVLNY&feature=youtu.be"
+                                    }
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    class="text-primary underline"
+                                >
+                                    Ver tutorial
+                                </a>
+                            </span>
+                            <WhatsappForm whatsapp={what} />
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
