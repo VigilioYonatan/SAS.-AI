@@ -85,6 +85,7 @@ export async function onDb(empresa: Empresas) {
                     empresa,
                     product,
                     null,
+                    false,
                     false
                 );
                 const variantes = await Promise.all(
