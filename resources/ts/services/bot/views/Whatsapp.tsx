@@ -2024,7 +2024,7 @@ function WhatsappMulti() {
                                                         icon: "success",
                                                     });
                                                 },
-                                                onError(data) {
+                                                onError() {
                                                     sweetAlert({
                                                         title: "No se eliminó",
                                                         icon: "danger",
