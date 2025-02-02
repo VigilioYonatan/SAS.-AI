@@ -1762,6 +1762,7 @@ export class EmpresasApiService {
                 },
             }
         );
+        cache.delete(`EMPRESA:${empresa.slug}`);
         return {
             success: true,
             message: "Eliminado correctamente",

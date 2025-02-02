@@ -1995,18 +1995,16 @@ function WhatsappMulti() {
             <br />
             <div class="grid md:grid-cols-2 gap-2 max-h-[500px] overflow-auto">
                 {storageEmpresa?.whatsapp_mode.slice(1).map((what) => {
-                    function whatsappModeDelete() {
-                        return useMutation(
-                            `/api/empresas/whatsapp_mode/${what.name}`,
-                            async () => {
-                                const response = await fetch("/api/empresas/", {
-                                    method: "DELETE",
-                                });
-                                const result = await response.json();
-                                return result;
-                            }
-                        );
-                    }
+                    const whatsappModeDelete = useMutation(
+                        `/api/empresas/whatsapp_mode/${what.name}`,
+                        async (url) => {
+                            const response = await fetch(url, {
+                                method: "DELETE",
+                            });
+                            const result = await response.json();
+                            return result;
+                        }
+                    );
                     return (
                         <div key={what.name}>
                             <button
@@ -2017,11 +2015,13 @@ function WhatsappMulti() {
                                         showCancelButton: true,
                                     }).then(({ isConfirmed }) => {
                                         if (isConfirmed) {
-                                            whatsappModeDelete().mutate(null, {
+                                            whatsappModeDelete.mutate(null, {
                                                 onSuccess() {
                                                     sweetAlert({
                                                         title: "Eliminado correctamente",
                                                         icon: "success",
+                                                    }).then(() => {
+                                                        window.location.reload();
                                                     });
                                                 },
                                                 onError() {
@@ -2036,8 +2036,9 @@ function WhatsappMulti() {
                                 }}
                                 type="button"
                                 class="bg-danger text-white px-2 py-1 rounded-md"
+                                disabled={whatsappModeDelete.isLoading || false}
                             >
-                                <i class="fas trash" />
+                                <i class="fas fa-trash" />
                             </button>
                             <span class="dark:text-white font-bold text-center block text-xs">
                                 ({what.name})
