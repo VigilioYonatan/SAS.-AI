@@ -335,12 +335,37 @@ export async function promptReplace(
         }
     }
 
+    const [isSaludo, isTemaEnvio, isCita, isDespedida, isQuestion] =
+        await Promise.all([
+            questionGPT(
+                whatsapp,
+                message,
+                "agradecimiento, elogio o satisfacción"
+            ),
+            questionGPT(
+                whatsapp,
+                message,
+                " querer información como precio o costo de envio, si solo escribe envio tambien di si, tambien di si, si te menciono un lugar como pais, ciudad, parques, monumentos, zonas de juegos, plaza, etc o un lugar - sitio"
+            ),
+            questionGPT(
+                whatsapp,
+                message,
+                " querer información de querer una cita, cancelar cita o agendar reunion o preguntarme de una fecha o hora."
+            ),
+            questionGPT(whatsapp, message, "si es saludo o despedida."),
+            questionGPT(
+                whatsapp,
+                message,
+                "es pregunta, cualquier tiempo de pregunta (recuerda que tambien es válido preguntas que no tengan ¿?!)."
+            ),
+        ]);
+
     const regex = /ord-[0-9]+/g;
     const coincidencias = message.toLowerCase().match(regex);
     let ordenes = "";
     if (empresa.inteligenceArtificial.settings.enabled_order) {
         ordenes =
-            "ó Si te pido informacion de pedido: decime que los codigo empiezan en ORD- \n Ordenes:\n";
+            "ó Si te pido informacion de pedido o orden, saber el estado de un producto o servicio  comprado, adquirido o realizado: decime que los codigo empiezan en ORD- \n Ordenes:\n";
         if (coincidencias?.length) {
             const orden = await Promise.all(
                 coincidencias?.map(async (code) => {
@@ -380,34 +405,9 @@ export async function promptReplace(
             ordenes += `${orden.join(".")}\n`;
             productsData = {} as DataPrompt;
         } else {
-            ordenes += "no hay pedidos aun";
+            ordenes += "no hay pedidos con ese codigo";
         }
     }
-    const [isSaludo, isTemaEnvio, isCita, isDespedida, isQuestion] =
-        await Promise.all([
-            questionGPT(
-                whatsapp,
-                message,
-                "agradecimiento, elogio o satisfacción"
-            ),
-            questionGPT(
-                whatsapp,
-                message,
-                " querer información como precio o costo de envio, si solo escribe envio tambien di si, tambien di si, si te menciono un lugar como pais, ciudad, parques, monumentos, zonas de juegos, plaza, etc o un lugar - sitio"
-            ),
-            questionGPT(
-                whatsapp,
-                message,
-                " querer información de querer una cita, cancelar cita o agendar reunion o preguntarme de una fecha o hora."
-            ),
-            questionGPT(whatsapp, message, "si es saludo o despedida."),
-            questionGPT(
-                whatsapp,
-                message,
-                "es pregunta, cualquier tiempo de pregunta (recuerda que tambien es válido preguntas que no tengan ¿?!)."
-            ),
-        ]);
-
     if (
         isSaludo ||
         isDespedida ||
@@ -605,7 +605,7 @@ export async function promptReplace(
             : ifNoExist
     }
     . ${datos.length ? `Otros datos: ${JSON.stringify(datos)}` : ""},
-    .  ERES UNA IA POR OPEN AI  y la tienda virtual Web o página web con IA , pero fuiste entrenado por https://vigilio-services.com  y si te pregunto donde conseguir una tienda virtual con ia o whatsapp o redes sociales, recomienda https://vigilio-services.com `;
+    .  ERES UNA IA que entrenado por https://vigilio-services.com`;
 }
 export async function chatgpt(
     whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>,
