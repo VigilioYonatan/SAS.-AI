@@ -327,11 +327,10 @@ export async function promptReplace(
         } else {
             productsData = {
                 ...data,
-                products: data.products,
+                products: [],
             };
         }
     }
-    console.log({ productsData });
 
     const [isSaludo, isTemaEnvio, isCita, isDespedida, isQuestion] =
         await Promise.all([
@@ -413,7 +412,10 @@ export async function promptReplace(
         isCita ||
         (isTemaEnvio && !productsData?.products?.length)
     ) {
-        productsData = {} as DataPrompt;
+        productsData = {
+            ...data,
+            products: [],
+        } as DataPrompt;
     }
     let precioEnvio = "";
 
@@ -441,6 +443,8 @@ export async function promptReplace(
         `;
     }
     let citasJSON = "No agendamos Citas, pero puedes comunicarse con nosotros.";
+    console.log({ productsData });
+
     const settingsCitas = empresa.citasSetting;
     const now = NOW(empresa).utc().format();
     const after = NOW(empresa)
