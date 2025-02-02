@@ -246,7 +246,7 @@ function encontrarPalabrasSimilares(texto: string, array: string[]) {
 }
 
 export interface DataPrompt {
-    products: { name: string; category_id: number }[];
+    products: { id: number; name: string; category_id: number }[];
     categorias: CategoriesSchemaFromServe[];
     brands: BrandsSchemaFromServe[];
     servicios: CategoriesSchemaFromServe[];
@@ -285,56 +285,53 @@ export async function promptReplace(
             keys: [],
         }
     );
+    async function searchProducts(message: string) {
+        const is = await chatgpt(
+            whatsapp,
+            `Estos son mis productos ó servicios ${JSON.stringify(
+                data.products.map(
+                    (product) => `- ${product.id}: ${product.name}.`
+                )
+            )} \n. Y en el mensaje '${message}' mencionare algunos de esos productos o servicios (puede estar mal escritos o puede estar relacionado)-\n me traes un array de los id (id son los numeros que esta - id:) de productos que encontraste en el mensaje [id,otroids], etc) IMPORTANTE., respondeme json [id_de_productosservicios_encontrados]. ejemplo [1,4] o [3,2], o [1]. solo traeme el json, no markdown no digas nada mas`
+        );
+        let products = [];
+        try {
+            products = JSON.parse(is || "[]");
+        } catch (error) {}
+        console.log({ products });
+
+        return products;
+    }
 
     const resultados = fuse
         .search(cleantext(message))
         .map((result) => result.item);
 
     // si no es inteligente que busque
-    if (!empresa.inteligenceArtificial.enabledBotInteligence) {
-        if (resultados.length) {
+    if (resultados.length) {
+        productsData = {
+            ...data,
+            products: data.products.filter((prod) =>
+                resultados.includes(cleantext(prod.name))
+            ),
+        };
+    } else {
+        const products = await searchProducts(message);
+        if (products.length) {
             productsData = {
                 ...data,
                 products: data.products.filter((prod) =>
-                    resultados.includes(cleantext(prod.name))
+                    products.map(Number).includes(prod.id)
                 ),
             };
         } else {
-            const searchProduct = await chatgpt(
-                whatsapp,
-                `Esto son mis categorias ${JSON.stringify(
-                    data.categorias
-                )}.\n Si en el texto '${message}', ves algun producto o servicio que puede estar en mis categorías que te mandé (ejemplo en el mensaje samsung galaxy s7 y tengo en mi categorias celulares, me traes [id_category_celulares,otros ids], etc), respondeme json [id_de_categorias_de_productosservicios_encontrados]. ejemplo [1,4] o [3,2], o [1]. solo traeme el json, no markdown no digas nada mas`
-            );
-
-            let categoriesFound = [];
-            try {
-                categoriesFound = JSON.parse(searchProduct || "[]");
-            } catch (error) {}
-            if (categoriesFound.length) {
-                productsData = {
-                    ...data,
-                    products: data.products.filter((prod) =>
-                        categoriesFound.map(Number).includes(prod.category_id)
-                    ),
-                };
-            } else {
-                productsData = {
-                    ...data,
-                    products: data.products,
-                };
-            }
-        }
-    } else {
-        if (resultados.length) {
             productsData = {
                 ...data,
-                products: data.products.filter((prod) =>
-                    resultados.includes(cleantext(prod.name))
-                ),
+                products: data.products,
             };
         }
     }
+    console.log({ productsData });
 
     const [isSaludo, isTemaEnvio, isCita, isDespedida, isQuestion] =
         await Promise.all([
