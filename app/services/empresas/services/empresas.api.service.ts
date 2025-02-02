@@ -1752,7 +1752,7 @@ export class EmpresasApiService {
             throw new BadRequestException("No existe whatsapp");
         }
         const whatsapp_modeFilter = empresa.whatsapp_mode.filter(
-            (w) => w.name === name
+            (w) => w.name !== name
         );
         await Empresas.update(
             { whatsapp_mode: whatsapp_modeFilter },
