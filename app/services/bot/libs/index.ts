@@ -359,6 +359,7 @@ export async function promptReplace(
                 "es pregunta, cualquier tiempo de pregunta (recuerda que tambien es válido preguntas que no tengan ¿?!)."
             ),
         ]);
+    console.log({ message });
 
     const regex = /ord-[0-9]+/g;
     const coincidencias = message.toLowerCase().match(regex);
@@ -405,7 +406,8 @@ export async function promptReplace(
             ordenes += `${orden.join(".")}\n`;
             productsData = {} as DataPrompt;
         } else {
-            ordenes += "no hay pedidos con ese codigo";
+            ordenes +=
+                "no hay pedidos con ese codigo.  Si no lo encuentra que intente de nuevo.\n";
         }
     }
     if (
