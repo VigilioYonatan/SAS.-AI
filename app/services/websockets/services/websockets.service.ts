@@ -488,7 +488,10 @@ export class WebsocketsService {
                 "agradecimiento, elogio o satisfacción"
             );
             let userBot = await Users.findOne({
-                where: { isBot: true, empresa_id: emp.id },
+                where: {
+                    isBot: true,
+                    empresa_id: emp.id,
+                },
             });
             if (!userBot) {
                 userBot = await Users.findOne({

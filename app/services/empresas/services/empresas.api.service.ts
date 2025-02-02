@@ -1646,6 +1646,7 @@ export class EmpresasApiService {
                         apt upgrade -y;
             
                         # Instalar dependencias necesarias
+                        resize2fs /dev/sda1 || true && 
                         apt-get install -y git nginx sudo nano curl;
                         apt install -y apt-transport-https ca-certificates software-properties-common;
             
