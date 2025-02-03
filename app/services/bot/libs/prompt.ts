@@ -220,6 +220,11 @@ export async function prompt(
              )}`
            : ""
    }
+  -  ${
+      empresa.inteligenceArtificial.try_to_sell
+          ? "Despues de responderme trata de venderme el producto (productos) o servicio y responde tambien¿Tienes otra pregunta, Estoy aquí para ayudarte 😊?."
+          : "Despues de responderme ¿Tienes otra pregunta, Estoy aquí para ayudarte 😊?"
+  }
 - IMPORTANTE: LEE primero estas reglas ANTES DE RESPONDERME SIEMPRE y no inventes datos,citas,pagos,preguntas, o otra cosa, etc que no estan en la BASES DE DATOS.
     `;
     // -OJO LAS CITAS de lA BASE DE DATOS ESTAN EN HORA FORMATO UNIVERSAL. asi que depende de mi país te fijas que fechas con hora estan ocupados.

@@ -298,7 +298,6 @@ export async function promptReplace(
         try {
             products = JSON.parse(is || "[]");
         } catch (error) {}
-        console.log({ products });
 
         return products;
     }
@@ -443,7 +442,6 @@ export async function promptReplace(
         `;
     }
     let citasJSON = "No agendamos Citas, pero puedes comunicarse con nosotros.";
-    console.log({ productsData });
 
     const settingsCitas = empresa.citasSetting;
     const now = NOW(empresa).utc().format();

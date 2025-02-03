@@ -96,11 +96,11 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                                             empresaStore.state?.setting
                                                 .logo_width
                                         }
-                                        height={100}
+                                        height={300}
                                         src={
                                             printFileWithDimension(
                                                 empresaStore.state!.logo!,
-                                                100
+                                                300
                                             )[0]
                                         }
                                         class=" object-contain"
