@@ -117,8 +117,11 @@ function ProductBody({
                     />
                 ) : null}
             </div>
-            {showDescription && product.producto.value.description ? (
-                <p class="text-gray-500 dark:text-gray-300 font-semibold  line-clamp-3  h-[80px]  w-full text-sm">
+            {product.producto.value.description ? (
+                <p
+                    style={{ display: showDescription ? "" : "none" }}
+                    class="text-gray-500 dark:text-gray-300 font-semibold  line-clamp-3  h-[80px]  w-full text-sm"
+                >
                     {removeTextHTML(product.producto.value.description)}
                 </p>
             ) : null}

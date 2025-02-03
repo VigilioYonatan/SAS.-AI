@@ -116,12 +116,14 @@ function CategoriesProductSection({
                                         <ProductCard.header>
                                             <ProductCard.buttons isAbsolute />
                                         </ProductCard.header>
-                                        <ProductCard.body
-                                            showDescription={false}
-                                        />
-                                        <ProductCard.footer
-                                            showButtonCart={true}
-                                        />
+                                        <div class="container">
+                                            <ProductCard.body
+                                                showDescription={false}
+                                            />
+                                            <ProductCard.footer
+                                                showButtonCart={true}
+                                            />
+                                        </div>
                                     </ProductCard>
                                 ))}
                             </>
