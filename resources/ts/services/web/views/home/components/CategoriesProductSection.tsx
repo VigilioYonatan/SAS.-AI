@@ -116,7 +116,7 @@ function CategoriesProductSection({
                                         <ProductCard.header>
                                             <ProductCard.buttons isAbsolute />
                                         </ProductCard.header>
-                                        <div class="container">
+                                        <div class="product__container">
                                             <ProductCard.body
                                                 showDescription={false}
                                             />

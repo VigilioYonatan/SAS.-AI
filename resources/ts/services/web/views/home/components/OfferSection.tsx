@@ -36,8 +36,10 @@ function OfferSection({
                             <ProductCard.header className="[&>img]:w-full [&>img]:h-[300px!important] [&>img]:object-cover">
                                 <ProductCard.buttons isAbsolute />
                             </ProductCard.header>
-                            <ProductCard.body showDescription={false} />
-                            <ProductCard.footer showButtonCart />
+                            <div class="product__container">
+                                <ProductCard.body showDescription={false} />
+                                <ProductCard.footer showButtonCart />
+                            </div>
                         </ProductCard>
                     ) : null}
                 </div>
