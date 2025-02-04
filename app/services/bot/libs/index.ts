@@ -532,6 +532,7 @@ export async function promptReplace(
                           : "Puedes crear cita desde hoy. claro despues de las horas de ahorita"
                   } .
                   - NO Te equivoques la fecha actual ni el dia porfavor.
+                  - cuando me haces confirmar una cita. dime la hora, la fecha ejemplo lunes 24/08 a las 09:00am.
                 - Por favor ${
                     settingsCitas.sendQuestionChunk
                         ? "Hazme las preguntas de uno a uno. No me traigas todas las preguntas de una. DE UNO A UNO."
@@ -548,7 +549,7 @@ export async function promptReplace(
                 - 'Si quiero cancelar CITA,  preguntame mi numero de telefono de whatsapp SIEMPRE', busca por telefono en base de datos de citas. si no hay  dile que no se encontró cita. y si hay preguntame. dime "Estas seguro de cancelar cita a las (la hora de base de datos de la cita encontrada)?"- y si digo si. dí esto en el primer parraflo [[CANCELADO_CITA:{"telefono":telefono_que_te_dije sin el dial code ${
                     empresa.dial_code
                 } solo el numero,"hour":"la hora que tedije ejemplo 08:00"}]], solo eso [[CANCELADO_CITA:{"telefono":telefono_que_te_dije,"hour":"la hora que tedije ejemplo 08:00"}]] nada mas y en el segundo parrafo dime tu cita ha sido cancelado y agrega mas texto".
-                - preguntame mi numero de telefono de whatsapp a la hora de crear cita, consultar cita o cancelar cita.
+                - IMPORTANTE: preguntame mi numero de telefono de whatsapp a la hora de crear cita, consultar cita o cancelar cita.
                 - NO DIGAS QUE VAS A VERIFICAR SI TENGO UNA CITA
                 - A VECES TE DARÉ NUMEROS CON DIAL CODE ejemplo +${
                     empresa.dial_code
@@ -565,7 +566,8 @@ export async function promptReplace(
                 } y busca desde los telefonos
                 - NO CONFUNDAS CITAS CON PRODUCTOS PARA VENDER.
                 - NO PREGUNTES DESEAS QUE NOTIFIQUEMOS a la hora de crear cita.
-            
+                - Hazme todas las preguntas antes de crear una cita.
+                - fijate bien la base de datos de citas. las fechas y horas.
                 `
                 : "";
     }

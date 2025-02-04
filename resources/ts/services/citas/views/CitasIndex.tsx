@@ -4,7 +4,7 @@ import Calendar from "~/components/Calendary";
 import { reactComponent } from "~/libs/preact";
 import CitasSettings from "./CitasSettings";
 import { useSignal } from "@preact/signals";
-import dayjs, { handlerError, NOW } from "~/libs/helpers";
+import dayjs, { handlerError, NOW, TimePeru } from "~/libs/helpers";
 import { citasByDayApi } from "../apis/citasByDay.api";
 import Form from "~/components/form";
 import { citasStoreApi } from "../apis/citas.store.api";
@@ -123,6 +123,7 @@ function CitasIndex() {
                                     hour.split(":")[0]
                                 );
                             });
+                            console.log({ citasFiltered });
 
                             return (
                                 <div
@@ -882,7 +883,12 @@ function CitasUpdate({ cita, onClose, refetch }: CitasUpdateProps) {
 
     const citasStoreForm = useForm<CitasUpdateDto>({
         resolver: valibotVigilio(citasUpdateDto),
-        defaultValues: cita,
+        defaultValues: {
+            ...cita,
+            date: TimePeru(cita.date).format(
+                "YYYY-MM-DD HH:mm:ss"
+            ) as unknown as Date,
+        },
     });
     const answers = citasStoreForm.watch("answers");
 
