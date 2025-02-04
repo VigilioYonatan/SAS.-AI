@@ -309,7 +309,7 @@ export class whatsappApiController {
                 const messageActual = `Mensajes Anteriores: ${messageAnterior.join(
                     ", "
                 )}.\n
-				Mensaje Actual: ${content}.`;
+				Mensaje Actual: ${content}. escribe formato whatsapp`;
                 const prompt = await promptReplace(
                     whatsapp,
                     messageActual as string,

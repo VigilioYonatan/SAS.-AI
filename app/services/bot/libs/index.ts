@@ -292,12 +292,13 @@ export async function promptReplace(
                 data.products.map(
                     (product) => `- ${product.id}: ${product.name}.`
                 )
-            )} \n. Y en el mensaje '${message}' mencionare algunos de esos productos o servicios (puede estar mal escritos o puede estar relacionado)-\n me traes un array de los id (id son los numeros que esta - id:) de productos que encontraste en el mensaje [id,otroids], etc) IMPORTANTE., respondeme json [id_de_productosservicios_encontrados]. ejemplo [1,4] o [3,2], o [1]. solo traeme el json, no markdown no digas nada mas`
+            )} \n. Y en el mensaje '${message}' mencionare algunos de esos productos o servicios (puede estar mal escritos o puede estar relacionado)-\n me traes un array de los id (id son los numeros que esta - id:) de productos que encontraste en el mensaje [id,otroids], etc) IMPORTANTE., respondeme json [id_de_productosservicios_encontrados]. ejemplo [1,4] o [3,2], o [1]. solo traeme el json, no markdown  no digas nada mas`
         );
         let products = [];
         try {
-            products = JSON.parse(is || "[]");
+            products = JSON.parse(is?.replace(/```[\s\S]*?```/g, "") || "[]");
         } catch (error) {}
+        console.log({ products });
 
         return products;
     }
@@ -595,6 +596,7 @@ export async function promptReplace(
             }
         })
     );
+    console.log({ productsData });
 
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
         productsData?.products?.length ||

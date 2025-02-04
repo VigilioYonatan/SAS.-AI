@@ -279,7 +279,10 @@ export class IAApiController {
                     },
                 ],
             });
-            const result = completion.choices[0].message.content;
+            const result = completion.choices[0].message.content?.replace(
+                /```[\s\S]*?```/g,
+                ""
+            );
             const latestEmpresaUsage =
                 whatsapp!.empresa!.inteligenceArtificial.usage;
             await updateTokensEmpresa(
