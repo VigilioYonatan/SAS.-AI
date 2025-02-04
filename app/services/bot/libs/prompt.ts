@@ -90,6 +90,11 @@ export async function prompt(
                     : ""
             } ) o servicios de la base de datos. SOLO ENVIAME ASÍ. NUNCA TE OLVIDES LEER DE LA BASE DE DATOS PARA CREAR el {{cart?items=URL percent-encoding}} con su respectivo id de variant, product id y cantidad de que te pida. el que te mande es solo un ejemplo. no te confundas en los id.`,
             "'En stock' quiere decir unidades o cantidades ilimitado ASÍ QUE NO INVENTES LA CANTIDAD O UNIDADES. 'en stock' queire decir unidades o cantidades ilimitados.",
+            "No me entregues link si no hay unidades en el producto o variante o servicio. dime que no hay unidades. cuando este todo bien ahi dame el link.",
+            "No menciones 'en stock' si el producto o variante o servicio no este en 'en stock'",
+            [1, 3].includes(empresa.tipo_empresa.tipo_servicio_id)
+                ? "FIJE BIEN los respectivo variantes y sus propiedades de los productos (cantidad, precio, variantes, imagenes). FIJATE BIEN"
+                : "",
         ];
         if (empresa.tipo_empresa.tipo_servicio_id === 3) {
             instrucctions = [

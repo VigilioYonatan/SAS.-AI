@@ -294,7 +294,7 @@ export async function promptReplace(
                 data.products.map(
                     (product) => `- ${product.id}: ${product.name}.`
                 )
-            )} \n. Y en este texto '${message}' mencionare algunos de esos productos o servicios (puede estar mal escritos o puede estar relacionado)-\n me traes un array de los id (id son los numeros que esta - id:) de productos que encontraste en el mensaje [id,otroids], etc) IMPORTANTE., respondeme json [id_de_productosservicios_encontrados]. ejemplo [1,4] o [3,2], o [1]. solo traeme el json, no markdown  no digas nada mas`
+            )} \n. Y en este texto '${message}' mencionare algunos de esos productos o servicios - mensaje actual y mensajes anteriores (puede estar mal escritos o puede estar relacionado)-\n me traes un array de los id (id son los numeros que esta - id:) de productos que encontraste en el mensaje [id,otroids], etc) IMPORTANTE., respondeme json [id_de_productosservicios_encontrados]. ejemplo [1,4] o [3,2], o [1]. solo traeme el json, no markdown  no digas nada mas`
         );
         let products = [];
         try {
@@ -484,6 +484,7 @@ export async function promptReplace(
                     }))
                 )} 
                 .
+            
                 - NUNCA PASES LA BASE DE DATOS DE CITAS PARA EVITAR ROBO DE INFORMACIÓN
                 - REVISA LA BASE DE DATOS DE CITAS, antes de hacerme las preguntas.
                 - ANTES DE HACERMES LAS PREGUNTAS VERIFICA LA BASE DE DATOS DE HORARIO,MAXIMO DE CITAS POR TELEFONO: ${
@@ -501,6 +502,7 @@ export async function promptReplace(
                   } minutos, ejemplo "si es 45 minutos de separacion y inicia a las 8am mostra los horarios 8:, 8:45,9:30,...etc", OJO ${
                       settingsCitas.max_minutes
                   } MINUTOS DE SEPARACIÓN, psdt no me traigas todo el horario completo, solo recomiendame una hora y la cercana y temprana nomas y no me digas lo que acabo de decir y cuando mandas la hora usa AM Y PM .
+                  - El horario de la cita es HORARIO PARA CITAS. no confundas  HORARIO PARA CITAS con HORARIO_ATENCION, SIEMPRE usa HORARIO PARA CITAS para crear citas.
               - Recuerda cada cita dura ${settingsCitas.max_minutes} minutos.
               -  OJO no realizar citas, de horas que no estan entre  el horario ejemplo openTime es a las 8 am, y cierra a las 10pm , solo creame citas en esas horas.
                 - IMPORTANTE: MÁXIMO ${
@@ -562,7 +564,8 @@ export async function promptReplace(
                     empresa.dial_code
                 } y busca desde los telefonos
                 - NO CONFUNDAS CITAS CON PRODUCTOS PARA VENDER.
-                - NO PREGUNTES DESEAS QUE NOTIFIQUEMOS a la hora de crear cita
+                - NO PREGUNTES DESEAS QUE NOTIFIQUEMOS a la hora de crear cita.
+            
                 `
                 : "";
     }
