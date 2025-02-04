@@ -286,13 +286,15 @@ export async function promptReplace(
         }
     );
     async function searchProducts(message: string) {
+        console.log({ message });
+
         const is = await chatgpt(
             whatsapp,
             `Estos son mis productos ó servicios ${JSON.stringify(
                 data.products.map(
                     (product) => `- ${product.id}: ${product.name}.`
                 )
-            )} \n. Y en el mensaje '${message}' mencionare algunos de esos productos o servicios (puede estar mal escritos o puede estar relacionado)-\n me traes un array de los id (id son los numeros que esta - id:) de productos que encontraste en el mensaje [id,otroids], etc) IMPORTANTE., respondeme json [id_de_productosservicios_encontrados]. ejemplo [1,4] o [3,2], o [1]. solo traeme el json, no markdown  no digas nada mas`
+            )} \n. Y en este texto '${message}' mencionare algunos de esos productos o servicios (puede estar mal escritos o puede estar relacionado)-\n me traes un array de los id (id son los numeros que esta - id:) de productos que encontraste en el mensaje [id,otroids], etc) IMPORTANTE., respondeme json [id_de_productosservicios_encontrados]. ejemplo [1,4] o [3,2], o [1]. solo traeme el json, no markdown  no digas nada mas`
         );
         let products = [];
         try {
