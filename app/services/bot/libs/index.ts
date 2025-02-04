@@ -285,9 +285,9 @@ export async function promptReplace(
             keys: [],
         }
     );
-    async function searchProducts(message: string) {
-        console.log({ message });
+    console.log({ message });
 
+    async function searchProducts(message: string) {
         const is = await chatgpt(
             whatsapp,
             `Estos son mis productos ó servicios ${JSON.stringify(

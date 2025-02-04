@@ -89,7 +89,7 @@ export async function prompt(
                     ? "variant_id"
                     : ""
             } ) o servicios de la base de datos. SOLO ENVIAME ASÍ. NUNCA TE OLVIDES LEER DE LA BASE DE DATOS PARA CREAR el {{cart?items=URL percent-encoding}} con su respectivo id de variant, product id y cantidad de que te pida. el que te mande es solo un ejemplo. no te confundas en los id.`,
-            "'En stock' quiere decir unidades o cantidades ilimitado.",
+            "'En stock' quiere decir unidades o cantidades ilimitado ASÍ QUE NO INVENTES LA CANTIDAD O UNIDADES. 'en stock' queire decir unidades o cantidades ilimitados.",
         ];
         if (empresa.tipo_empresa.tipo_servicio_id === 3) {
             instrucctions = [
