@@ -298,7 +298,7 @@ export async function promptReplace(
         try {
             products = JSON.parse(is?.replace(/```[\s\S]*?```/g, "") || "[]");
         } catch (error) {}
-        console.log({ products });
+        console.log(JSON.stringify({ products }, null, 3));
 
         return products;
     }
@@ -596,7 +596,7 @@ export async function promptReplace(
             }
         })
     );
-    console.log({ productsData });
+    console.log(JSON.stringify({ productsData }, null, 3));
 
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
         productsData?.products?.length ||
