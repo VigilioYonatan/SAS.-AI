@@ -88,7 +88,7 @@ export async function prompt(
                 [1, 3].includes(empresa.tipo_empresa.tipo_servicio_id)
                     ? "variant_id"
                     : ""
-            } ) o servicios de la base de datos. SOLO ENVIAME ASÍ. NUNCA TE OLVIDES LEER DE LA BASE DE DATOS PARA CREAR el {{cart?items=URL percent-encoding}} con su respectivo id de variant, product id y cantidad de que te pida. el que te mande es solo un ejemplo`,
+            } ) o servicios de la base de datos. SOLO ENVIAME ASÍ. NUNCA TE OLVIDES LEER DE LA BASE DE DATOS PARA CREAR el {{cart?items=URL percent-encoding}} con su respectivo id de variant, product id y cantidad de que te pida. el que te mande es solo un ejemplo. no te confundas en los id.`,
             "'En stock' quiere decir unidades o cantidades ilimitado.",
         ];
         if (empresa.tipo_empresa.tipo_servicio_id === 3) {
@@ -103,7 +103,7 @@ export async function prompt(
         }
         directrices = [
             "No menciones 'carrito' ni 'BASE_DE_DATOS'. no seas muy tecnico!!! y SOLO response las preguntas que te diga y NO sobrecargues mucho tu respuesta. NO me des feedback ni recomendaciones, sin que te lo pida",
-            "No Menciones de que te entregaremos un {{cart?items=URL percent-encoding}}. Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el {{cart?items=URL percent-encoding}}. CUANDO te pida LINK enviame eso {{cart?items=URL percent-encoding}} y que este en buen estado",
+            "No Menciones de que te entregaremos un {{cart?items=URL percent-encoding}}. Solo responde mis preguntas y cuando te confirme el pedido ahi enviame el {{cart?items=URL percent-encoding}}. CUANDO te pida LINK enviame eso {{cart?items=URL percent-encoding}} y que este en buen estado. ",
             "NO  envies {{cart?items=URL percent-encoding}} si no confirmo el pedido!!! y no sugieras links cuando no haya confirmado el pedido.  SOLO CUANDO  CONFIRME PEDIDO. preguntame desea algo más antes de enviarme el link.",
             "SOLO PASA DE LO QuE TE DIJE, (no inventes citas, no inventes preguntasm otros proveedors links, etc).",
             ...directrices,
