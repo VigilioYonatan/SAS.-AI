@@ -59,6 +59,8 @@ import type { UsersStoreDto } from "@/users/dtos/users.store.dto";
 import { slug } from "@vigilio/express-core/helpers";
 import { ROLES } from "@/users/libs";
 import { Citas } from "@/citas/entities/citas.entities";
+import webpush from "@/notificactions/libs/webpush";
+import { printFileWithDimension } from "@/uploads/libs/helpers";
 
 @Injectable()
 export class OrdersApiService {
@@ -938,6 +940,70 @@ export class OrdersApiService {
                 vendedor,
                 subFacturacion,
             });
+        }
+        const usuario = order.user as Users;
+
+        if (usuario?.subscription && usuario?.enabledNotification) {
+            if (
+                order.status_order_id !== STATUSORDER.enviando &&
+                props.ordersUpdateDto.status_order_id === STATUSORDER.entregado
+            ) {
+                const payload = {
+                    title: `Tu pedido ${order.order_code} ha sido entregado correctamente.`,
+                    message: `Hola ${usuario.name}, tu pedido ${order.order_code} ha sido entregado correctamente.`, // Asegúrate de que content sea el mensaje que quieres enviar
+                    url: `${BASE_URL(empresa)}/pedidos?code=${
+                        order.order_code
+                    }`, // URL dinámica
+                    logo: empresa.logo
+                        ? printFileWithDimension(empresa)(empresa.logo!, 100)[0]
+                        : "",
+                    tag: "pedido-entregado",
+                };
+                await webpush.sendNotification(
+                    usuario.subscription,
+                    JSON.stringify(payload)
+                );
+            }
+            if (
+                order.status_order_id !== STATUSORDER.enviando &&
+                props.ordersUpdateDto.status_order_id === STATUSORDER.enviando
+            ) {
+                const payload = {
+                    title: `Tu pedido ${order.order_code} está siendo enviando a su destino.`,
+                    message: `Hola ${usuario.name}, tu pedido ${order.order_code} está siendo enviando a su destino.`, // Asegúrate de que content sea el mensaje que quieres enviar
+                    url: `${BASE_URL(empresa)}/pedidos?code=${
+                        order.order_code
+                    }`, // URL dinámica
+                    logo: empresa.logo
+                        ? printFileWithDimension(empresa)(empresa.logo!, 100)[0]
+                        : "",
+                    tag: "pedido-entregado",
+                };
+                await webpush.sendNotification(
+                    usuario.subscription,
+                    JSON.stringify(payload)
+                );
+            }
+            if (
+                order.status_order_id !== STATUSORDER.enviando &&
+                props.ordersUpdateDto.status_order_id === STATUSORDER.enviando
+            ) {
+                const payload = {
+                    title: `Tu pedido ${order.order_code} ha sido cancelado.`,
+                    message: `Hola ${usuario.name}, tu pedido ${order.order_code} ha sido cancelado.`, // Asegúrate de que content sea el mensaje que quieres enviar
+                    url: `${BASE_URL(empresa)}/pedidos?code=${
+                        order.order_code
+                    }`, // URL dinámica
+                    logo: empresa.logo
+                        ? printFileWithDimension(empresa)(empresa.logo!, 100)[0]
+                        : "",
+                    tag: "pedido-entregado",
+                };
+                await webpush.sendNotification(
+                    usuario.subscription,
+                    JSON.stringify(payload)
+                );
+            }
         }
 
         if (

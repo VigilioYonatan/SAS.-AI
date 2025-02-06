@@ -182,6 +182,10 @@ export async function prompt(
    - IMPORTANTE:  SIEMPRE RESPONDE AL MENSAJE ACTUAL, IGNORA LOS MENSAJES ANTERIORES .
    -  SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA si hablo ingles responde en ingles, etc SIEMPRE.
     NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
+   - Si no deseo tener notificaciones en el celular o otro, puedes desactivarlo en tu perfil ${BASE_URL(
+       empresa
+   )}/auth/profile .
+
     BASE DE DATOS: ${JSON.stringify(productsData)} \n
     CANTIDAD/UNIDADES si está agotado no vendas y hazmelo saber.
     **********         INSTRUCCIONES PARA LA INTERACCIÓN        ***********:

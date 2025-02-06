@@ -585,7 +585,6 @@ function CartPage({ cart, header }: CartProps) {
                                 ) : (
                                     <></>
                                 )}
-
                                 {storageEmpresa?.enabled_address ? (
                                     <>
                                         <Form.control.web
@@ -624,7 +623,6 @@ function CartPage({ cart, header }: CartProps) {
                                 ) : (
                                     <></>
                                 )}
-
                                 <Form.control.web
                                     ico={
                                         <i class="fa-solid fa-location-plus" />
@@ -708,11 +706,21 @@ function CartPage({ cart, header }: CartProps) {
                                 ) : (
                                     <></>
                                 )}
+                                {!authStore.state ? (
+                                    <span class="text-xs text-start block self-start font-semibold">
+                                        <b class="text-danger ">*</b> Estas
+                                        apunto de crear una cuenta para realizar
+                                        esta compra
+                                    </span>
+                                ) : (
+                                    <></>
+                                )}
                                 <Form.control.web
                                     ico={<i class="fas fa-at" />}
                                     name={"email" as keyof OrdersCartStoreDto}
                                     title="Correo Electrónico"
                                     type="email"
+                                    placeholder="micorreo@gxxx.com"
                                     disabled={!!authStore.state?.email}
                                 />
                                 <div
@@ -730,7 +738,7 @@ function CartPage({ cart, header }: CartProps) {
                                         }
                                         title="Nombre Completo"
                                         ico={<i class="fas fa-user" />}
-                                        placeholder=""
+                                        placeholder="John Doe"
                                         disabled={!!authStore.state?.email}
                                     />
                                     {storageEmpresa!.enabled_dni_cart &&
@@ -806,7 +814,6 @@ function CartPage({ cart, header }: CartProps) {
                                 ) : (
                                     <></>
                                 )}
-
                                 <span class="text-sm dark:text-white mt-3">
                                     Sus datos personales se utilizarán para
                                     procesar su pedido, respaldar su experiencia

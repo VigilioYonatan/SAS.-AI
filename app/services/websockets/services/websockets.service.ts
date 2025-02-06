@@ -68,8 +68,8 @@ export class WebsocketsService {
             title: "Nuevo usuario registrado",
             message: removeTextHTML(content), // Asegúrate de que content sea el mensaje que quieres enviar
             url: `${BASE_URL(emp)}/admin/usuarios/${body.slug}`, // URL dinámica
-            logo: emp.logo
-                ? printFileWithDimension(emp)(emp.logo!, 100)[0]
+            logo: emp.icon
+                ? printFileWithDimension(emp)(emp.icon!, 100)[0]
                 : "",
             tag: "nuevo-usuario",
         };
@@ -97,12 +97,12 @@ export class WebsocketsService {
                         empresa_id: emp.id,
                     });
                     await noti.save();
-                    // if (user.subscription && user.enabledNotification) {
-                    //     await webpush.sendNotification(
-                    //         user.subscription,
-                    //         JSON.stringify(payload)
-                    //     );
-                    // }
+                    if (user.subscription && user.enabledNotification) {
+                        await webpush.sendNotification(
+                            user.subscription,
+                            JSON.stringify(payload)
+                        );
+                    }
                 })
             );
             return {
@@ -134,8 +134,8 @@ export class WebsocketsService {
             title: `Nueva orden registrada ${body.order_code}`,
             message: removeTextHTML(content), // Asegúrate de que content sea el mensaje que quieres enviar
             url: `${BASE_URL(emp)}/admin/orders/${body.order_code}`, // URL dinámica
-            logo: emp.logo
-                ? printFileWithDimension(emp)(emp.logo!, 100)[0]
+            logo: emp.icon
+                ? printFileWithDimension(emp)(emp.icon!, 100)[0]
                 : "",
             tag: "nueva-orden",
         };
@@ -164,13 +164,6 @@ export class WebsocketsService {
         try {
             await Promise.all(
                 userPermises.map(async (user) => {
-                    const noti = new NotificationsUser({
-                        user_id: user.id,
-                        notification_id: notification.notification.id,
-                        empresa_id: emp.id,
-                        isRead: false,
-                    });
-                    await noti.save();
                     if (user.subscription && user.enabledNotification) {
                         await webpush.sendNotification(
                             user.subscription,

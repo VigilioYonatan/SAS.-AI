@@ -708,11 +708,20 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                             }
                         />
                     </div>
+                    {!authStore.state ? (
+                        <span class="text-xs text-start block self-start font-semibold">
+                            <b class="text-danger ">*</b> Estas apunto de crear
+                            una cuenta para realizar esta compra
+                        </span>
+                    ) : (
+                        <></>
+                    )}
                     <Form.control.web
                         ico={<i class="fas fa-at" />}
                         name={"email" as keyof OrdersCartStoreDto}
                         title="Correo Electrónico"
                         type="email"
+                        placeholder="micorreo@gxxx.com"
                     />
                     {storageEmpresa?.enabled_address &&
                     !servicio.showHorario ? (
@@ -823,7 +832,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                             name={"fullName" as keyof OrdersCartStoreDto}
                             title="Nombre Completo"
                             ico={<i class="fas fa-user" />}
-                            placeholder=""
+                            placeholder="John Doe"
                             disabled={!!authStore.state?.email}
                         />
                         {storageEmpresa!.enabled_dni_cart &&

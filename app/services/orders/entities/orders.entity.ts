@@ -50,6 +50,8 @@ import { Address } from "@/empresas/entities/address.entity";
                 "photo",
                 "email",
                 "role_id",
+                "enabledNotification",
+                "subscription",
             ] as (keyof UsersSchema)[],
             as: "user",
         },
