@@ -111,6 +111,22 @@ export class NotificationsApiService {
     }
 
     async sendNotification(empresa: Empresas, body: NotificationMessageDto) {
+        const users = await Users.unscoped().findAll({
+            where: {
+                empresa_id: empresa.id,
+                role_id: ROLES.user,
+                enabledNotification: true,
+            },
+            attributes: [
+                "id",
+                "subscription",
+                "role_id",
+                "empresa_id",
+                "enabledNotification",
+            ],
+        });
+
+        await sendMessage();
         const intervaloHoras = Math.floor(24 / body.again); // Redondeamos para evitar decimales
         const payload = {
             title: body.title,
@@ -123,21 +139,6 @@ export class NotificationsApiService {
         };
 
         async function sendMessage() {
-            const users = await Users.unscoped().findAll({
-                where: {
-                    empresa_id: empresa.id,
-                    role_id: ROLES.user,
-                    enabledNotification: true,
-                },
-                attributes: [
-                    "id",
-                    "subscription",
-                    "role_id",
-                    "empresa_id",
-                    "enabledNotification",
-                ],
-            });
-
             for (const user of users) {
                 if (user.subscription && user.enabledNotification) {
                     try {
@@ -151,7 +152,6 @@ export class NotificationsApiService {
         }
         for (let i = 0; i < body.again; i++) {
             const hora = (i * intervaloHoras) % 24; // Distribuye uniformemente
-            await sendMessage();
             if (body.days > 1) {
                 cron.schedule(`0 ${hora} */${body.days} * *`, async () => {
                     await sendMessage();

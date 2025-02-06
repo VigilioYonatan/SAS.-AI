@@ -984,26 +984,6 @@ export class OrdersApiService {
                     JSON.stringify(payload)
                 );
             }
-            if (
-                order.status_order_id !== STATUSORDER.enviando &&
-                props.ordersUpdateDto.status_order_id === STATUSORDER.enviando
-            ) {
-                const payload = {
-                    title: `Tu pedido ${order.order_code} ha sido cancelado.`,
-                    message: `Hola ${usuario.name}, tu pedido ${order.order_code} ha sido cancelado.`, // Asegúrate de que content sea el mensaje que quieres enviar
-                    url: `${BASE_URL(empresa)}/pedidos?code=${
-                        order.order_code
-                    }`, // URL dinámica
-                    logo: empresa.logo
-                        ? printFileWithDimension(empresa)(empresa.logo!, 100)[0]
-                        : "",
-                    tag: "pedido-entregado",
-                };
-                await webpush.sendNotification(
-                    usuario.subscription,
-                    JSON.stringify(payload)
-                );
-            }
         }
 
         if (
