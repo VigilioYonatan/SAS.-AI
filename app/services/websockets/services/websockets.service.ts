@@ -21,7 +21,12 @@ import { SubcommentsApiService } from "@/polymorphism/services/subcomments.api.s
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
 import { featuresIA, isWhatsappTelegramIA } from "@/bot/libs/ai";
-import { chatgpt, promptReplace, questionGPT } from "@/bot/libs";
+import {
+    chatgpt,
+    modelAiByEmpresa,
+    promptReplace,
+    questionGPT,
+} from "@/bot/libs";
 import {} from "@/bot/libs/prompt";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import { HTMLPROMPT } from "../controllers/websockets.controller";
@@ -305,9 +310,7 @@ export class WebsocketsService {
                     const completion = await openAis[
                         emp.slug
                     ].chat.completions.create({
-                        model: whatsapp.clientVigilio
-                            ? whatsapp.clientVigilio.information.modelOpenAi
-                            : "gpt-4o-mini",
+                        model: modelAiByEmpresa(whatsapp),
                         max_tokens: 255,
                         messages: [
                             {
@@ -515,9 +518,7 @@ export class WebsocketsService {
                 const completion = await openAis[
                     emp.slug
                 ].chat.completions.create({
-                    model: whatsapp.clientVigilio
-                        ? whatsapp.clientVigilio.information.modelOpenAi
-                        : "gpt-4o-mini",
+                    model: modelAiByEmpresa(whatsapp),
                     max_tokens: 255,
                     messages: [
                         {

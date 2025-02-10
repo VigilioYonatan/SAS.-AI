@@ -28,7 +28,12 @@ import {
     updateTokensEmpresa,
 } from "../libs/ai";
 import { NOW } from "~/libs/dayjs";
-import { interpretarImagen, promptReplace, transcribeAudio } from "../libs";
+import {
+    interpretarImagen,
+    modelAiByEmpresa,
+    promptReplace,
+    transcribeAudio,
+} from "../libs";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import formidable from "formidable";
 import type { RequestVigilio } from "~/config/types";
@@ -319,9 +324,7 @@ export class whatsappApiController {
                 const completion = await openAis[
                     info.slug
                 ].chat.completions.create({
-                    model: clientVigilio
-                        ? clientVigilio.information.modelOpenAi
-                        : "gpt-4o-mini",
+                    model: modelAiByEmpresa(whatsapp),
                     max_tokens: empresa.inteligenceArtificial.max_length,
                     messages: [
                         {

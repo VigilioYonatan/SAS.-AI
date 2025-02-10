@@ -956,7 +956,6 @@ function empresaUpdate() {
                                             "deepseek"
                                         );
                                     }}
-                                    disabled
                                     class={`flex justify-center items-center p-1  rounded-md shadow border flex-col relative ${
                                         empresasUpdateform.watch("model_ai") ===
                                         "deepseek"

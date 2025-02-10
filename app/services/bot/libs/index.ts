@@ -28,9 +28,10 @@ import { regionsCountry, type Money } from "@/empresas/libs";
 import { Citas } from "@/citas/entities/citas.entities";
 import { Op, QueryTypes } from "sequelize";
 import { NOW } from "~/libs/dayjs";
-import { removeTextHTML } from "../../../libs/helpers";
+import { removeTextHTML } from "~/libs/helpers";
 import Fuse from "fuse.js";
 import { sequelize } from "~/config/db.config";
+import { ChatModel } from "openai/resources";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
@@ -285,7 +286,6 @@ export async function promptReplace(
             keys: [],
         }
     );
-    console.log({ message });
 
     async function searchProducts(message: string) {
         const is = await chatgpt(
@@ -300,7 +300,6 @@ export async function promptReplace(
         try {
             products = JSON.parse(is?.replace(/```[\s\S]*?```/g, "") || "[]");
         } catch (error) {}
-        console.log(JSON.stringify({ products }, null, 3));
 
         return products;
     }
@@ -603,7 +602,6 @@ export async function promptReplace(
             }
         })
     );
-    console.log(JSON.stringify({ productsData }, null, 3));
 
     return `${promt}. ${ordenes}.  ${precioEnvio}. ${citasJSON}. ${
         productsData?.products?.length ||
@@ -624,8 +622,7 @@ export async function chatgpt(
     const completion = await openAis[
         whatsapp!.empresa.slug
     ].chat.completions.create({
-        model:
-            whatsapp!.clientVigilio?.information.modelOpenAi || "gpt-4o-mini",
+        model: modelAiByEmpresa(whatsapp),
         max_tokens: 10000,
         messages: [
             {
@@ -688,9 +685,7 @@ export async function interpretarImagen(
         const completion = await openAis[
             whatsapp!.empresa.slug
         ].chat.completions.create({
-            model:
-                whatsapp!.clientVigilio?.information.modelOpenAi ||
-                "gpt-4o-mini",
+            model: modelAiByEmpresa(whatsapp),
             messages: [
                 {
                     role: "user",
@@ -723,4 +718,13 @@ export async function interpretarImagen(
     } catch (error) {
         return "null";
     }
+}
+export function modelAiByEmpresa(
+    whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>
+): ChatModel {
+    return (
+        whatsapp?.empresa.model_ai === "open-ai"
+            ? whatsapp.clientVigilio.information.modelOpenAi || "gpt-4o-mini"
+            : whatsapp?.clientVigilio.information.modelDeepSeek
+    ) as ChatModel;
 }

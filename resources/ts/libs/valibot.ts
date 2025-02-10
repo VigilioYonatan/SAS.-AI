@@ -17,7 +17,7 @@ export function datetime() {
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function serializeValue(values: any) {
+export function serializeValue(values: any) {
 	return Object.fromEntries(
 		Object.entries(values).map(([key, value]) => {
 			// biome-ignore lint/suspicious/noExplicitAny: <explanation>

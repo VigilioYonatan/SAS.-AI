@@ -88,7 +88,11 @@ export async function initial() {
             });
             openAis = { ...openAis, [empresa.slug]: openAiClient };
         } else {
-            //! aca va de deepseek
+            const openAiClient = new openai.OpenAI({
+                apiKey: empresa.credentials.deekseek_ai,
+                baseURL: "https://api.deepseek.com",
+            });
+            openAis = { ...openAis, [empresa.slug]: openAiClient };
         }
 
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -1998,7 +2002,6 @@ export class EmpresasApiService {
 
             await empresa.update({
                 ...empresasUpdateDto,
-                model_ai: "open-ai",
             });
             return {
                 success: true,

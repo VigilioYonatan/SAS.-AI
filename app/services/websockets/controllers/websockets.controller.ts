@@ -21,7 +21,7 @@ import {
 import { Injectable } from "@vigilio/express-core";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import cron from "node-cron";
-import { promptReplace } from "@/bot/libs";
+import { modelAiByEmpresa, promptReplace } from "@/bot/libs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 export function HTMLPROMPT(_empresa: Empresas) {
     return `- IMPORTANTE: Por ultimo siempre responde con etiquetas html y clases de tailwind,  y recuerda enviar links ó urls con ETIQUETA <a></a>  estilos de tailwind underline, (tablas solo carrito de compra ) , etc y usa <b class="font-bold"></b> en vez de **   en palabras importantes. Por ultimo usa solo un <br></br> para separar parrafos, usa etiqueta a <a href="url" class='text-primary underline'>text</a> para links o enlaces, etc. usa <ul class="list-disc list-inside"><li></li></ul>  para listas, pedidos, información, etc. etiqueta de letra p,h1,span esos text-sm, imagenes maximo width 100px,  html limpio no markdown`;
@@ -72,9 +72,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         const prompt = await promptReplace(whatsapp, messageActual!, empresa);
 
         const completion = await openAis[empresa.slug].chat.completions.create({
-            model: clientVigilio
-                ? clientVigilio.information.modelOpenAi
-                : "gpt-4o-mini",
+            model: modelAiByEmpresa(whatsapp),
             max_tokens: empresa.inteligenceArtificial.max_length,
             messages: [
                 {

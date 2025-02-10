@@ -11,7 +11,7 @@ import {
 } from "~/libs/os";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import TelegramBot from "node-telegram-bot-api";
-import { promptReplace, transcribeAudio } from ".";
+import { modelAiByEmpresa, promptReplace, transcribeAudio } from ".";
 import { BASE_URL } from "@/empresas/libs";
 import { UrlsPayment } from "@/urls/entities/urls.payment.entity";
 import cache from "@vigilio/express-core/cache";
@@ -237,9 +237,7 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
             const completion = await openAis[
                 empresa.slug
             ].chat.completions.create({
-                model: clientVigilio
-                    ? clientVigilio.information.modelOpenAi
-                    : "gpt-4o-mini",
+                model: modelAiByEmpresa(telegram),
                 max_tokens: empresa.inteligenceArtificial.max_length,
                 messages: [
                     {
@@ -359,7 +357,7 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
         );
 
         const completion = await openAis[empresa.slug].chat.completions.create({
-            model: clientVigilio?.information.modelOpenAi || "gpt-4o-mini",
+            model: modelAiByEmpresa(whatsapp),
             max_tokens: 1000,
             messages: [
                 {
@@ -589,21 +587,7 @@ export async function featuresIA(
     return [textoNormal.trim(), urlExtraidas];
 }
 
-export async function searchProducts(empresa: Empresas, word: string) {
-    const completion = await openAis[empresa.slug].chat.completions.create({
-        model: "gpt-4o-mini",
-        max_tokens: 20,
-        messages: [
-            {
-                role: "user",
-                content: `Si el mensaje "${word}" es una pregunta o busca informacion de un producto,marca,categorias,ordenes,pedidos,color,memoria,talla algo así si escribe un producto. no preguntas cualquiera.  di "si", sino di "no". solo di "si" y "no" nada mas, sin comillas.`,
-            },
-        ],
-    });
-    // get message ai
-    const completionText = completion.choices[0].message.content!;
-    return completionText === "si";
-}
+
 interface SendMessageCronProps {
     empresa: Empresas;
     name: string;
