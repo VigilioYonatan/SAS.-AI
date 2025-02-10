@@ -82,18 +82,20 @@ export async function initial() {
         ],
     });
     for (const empresa of empresas) {
-        if (empresa.model_ai === "open-ai") {
-            const openAiClient = new openai.OpenAI({
-                apiKey: empresa.credentials.open_ai,
-            });
-            openAis = { ...openAis, [empresa.slug]: openAiClient };
-        } else {
-            const openAiClient = new openai.OpenAI({
-                apiKey: empresa.credentials.deekseek_ai,
-                baseURL: "https://api.deepseek.com",
-            });
-            openAis = { ...openAis, [empresa.slug]: openAiClient };
-        }
+        try {
+            if (empresa.model_ai === "open-ai") {
+                const openAiClient = new openai.OpenAI({
+                    apiKey: empresa.credentials.open_ai,
+                });
+                openAis = { ...openAis, [empresa.slug]: openAiClient };
+            } else {
+                const openAiClient = new openai.OpenAI({
+                    apiKey: empresa.credentials.deekseek_ai,
+                    baseURL: "https://api.deepseek.com",
+                });
+                openAis = { ...openAis, [empresa.slug]: openAiClient };
+            }
+        } catch (error) {}
 
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const whatsapp_mode: any = empresa.whatsapp_mode;

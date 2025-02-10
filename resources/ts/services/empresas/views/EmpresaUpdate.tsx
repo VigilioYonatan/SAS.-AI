@@ -961,7 +961,7 @@ function empresaUpdate() {
                                         "deepseek"
                                             ? "bg-paper-light dark:bg-admin-terciary"
                                             : ""
-                                    } cursor-not-allowed`}
+                                    }`}
                                     type="button"
                                 >
                                     <img
