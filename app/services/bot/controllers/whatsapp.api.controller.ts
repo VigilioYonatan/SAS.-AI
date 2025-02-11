@@ -197,12 +197,18 @@ export class whatsappApiController {
                 empresa.inteligenceArtificial.timer.start,
                 empresa.inteligenceArtificial.timer.finish
             );
+            console.log(JSON.stringify(empresa, null, 3));
+
             // imporante que esto este acá
             chats[`${info.slug}:${userId}`] = [
                 ...(chats[`${info.slug}:${userId}`] ?? []),
                 [
                     "user",
-                    `${content}.[[HAZ TODAS LAS INSTRUCCIONES, FIJATE EN LA BASE DE DATOS BIEN, QUE TE MANDE NO FALLES, trata de escribir poco, siempre hazme confirmar ¿? y formato whatsapp, cuando mandes listas separalos en \n format whatsapp para que se vea bien , separados y no se vea todo junto y trata de escribir poco. mis datos: ${JSON.stringify(
+                    `${content}.[[HAZ TODAS LAS INSTRUCCIONES, FIJATE EN LA BASE DE DATOS BIEN QUE TE MANDE NO FALLES, ${
+                        empresa.inteligenceArtificial.settings?.enabled_cart
+                            ? "fijate en las cantidades/unidad por producto (stock significa cantidad ilimitado)"
+                            : ""
+                    } trata de escribir poco, siempre hazme confirmar ¿? y formato whatsapp, cuando mandes listas separalos en \n format whatsapp para que se vea bien , separados y no se vea todo junto y trata de escribir poco. mis datos: ${JSON.stringify(
                         body.contact
                     )}]]` as string,
                 ],

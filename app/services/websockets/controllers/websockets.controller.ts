@@ -43,7 +43,11 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
                 [
                     "user",
                     // `${message}. [[en html no mkdown, formato chat persona a persona, no web, los links recuerda <a></a>,imagenes width 100px revisa base de datos y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA!!!.]]`,
-                    `${message}. [[ 'HAZ TODAS LAS INSTRUCCIONES QUE TE MANDE NO FALLES, trata de escribir poco,html y URGENTE: enlaces o links en <a></a>, siempre hazme confirmar y no escribas mucho' ]]`,
+                    `${message}. [[ 'HAZ TODAS LAS INSTRUCCIONES QUE TE MANDE NO FALLES,${
+                        empresa.inteligenceArtificial.settings?.enabled_cart
+                            ? "fijate en las cantidades/unidad por producto (stock significa cantidad ilimitado)"
+                            : ""
+                    } trata de escribir poco,html y URGENTE: enlaces o links en <a></a>, siempre hazme confirmar y no escribas mucho' ]]`,
                 ],
             ],
         };
@@ -70,6 +74,15 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         Mensaje Actual: ${message}.`;
 
         const prompt = await promptReplace(whatsapp, messageActual!, empresa);
+        console.log({
+            messages: [
+                {
+                    role: "user",
+                    content: `${prompt}. ${HTMLPROMPT(empresa)}`,
+                },
+                ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
+            ],
+        });
 
         const completion = await openAis[empresa.slug].chat.completions.create({
             model: modelAiByEmpresa(whatsapp),

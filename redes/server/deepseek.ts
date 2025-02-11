@@ -58,6 +58,18 @@ async function queryDeepSeekReasoner(prompt: string): Promise<void> {
                     role: "assistant",
                     content: "¿Qué modelo de ia eres, modelo?",
                 },
+                {
+                    role: "user",
+                    content: "¿Qué em recomiendas?",
+                },
+                {
+                    role: "assistant",
+                    content: "¿Qué modelo de ia eres, modelo?",
+                },
+                {
+                    role: "user",
+                    content: "¿Qué em recomiendas?",
+                },
             ],
         });
 

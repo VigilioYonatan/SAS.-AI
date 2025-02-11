@@ -215,7 +215,11 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
             const messages = chatsTelegram[`${empresa.slug}:${userId}`].map(
                 ([role, content]) => ({
                     role,
-                    content: `${content}.'[[HAZ TODAS LAS INSTRUCCIONES QUE TE MANDE NO FALLES, FIJATE EN LA BASE DE DATOS BIEN,, trata de escribir poco,  siempre hazme confirmar y formato telegram, no sobrecargues información]]`,
+                    content: `${content}.'[[HAZ TODAS LAS INSTRUCCIONES QUE TE MANDE NO FALLES, FIJATE EN LA BASE DE DATOS BIEN,, trata de escribir poco,  siempre hazme confirmar y formato telegram, no sobrecargues información ${
+                        empresa.inteligenceArtificial.settings?.enabled_cart
+                            ? "fijate en las cantidades/unidad por producto (stock significa cantidad ilimitado)"
+                            : ""
+                    } ]]`,
                 })
             );
             const messageAnterior = messages
@@ -586,7 +590,6 @@ export async function featuresIA(
     // eliminar espacios innecesarios
     return [textoNormal.trim(), urlExtraidas];
 }
-
 
 interface SendMessageCronProps {
     empresa: Empresas;
