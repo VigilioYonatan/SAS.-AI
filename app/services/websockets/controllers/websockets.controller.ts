@@ -83,7 +83,6 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
                 ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
             ],
         });
-
         const completion = await openAis[empresa.slug].chat.completions.create({
             model: modelAiByEmpresa(whatsapp),
             max_tokens: empresa.inteligenceArtificial.max_length,
@@ -95,6 +94,7 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
                 ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
             ],
         });
+        console.log({ completion });
 
         // get message ai
         const completionText = completion.choices[0].message.content!;

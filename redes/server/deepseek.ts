@@ -1,6 +1,9 @@
-import openai from "openai";
-const DEEPSEEK_API_KEY = "sk-790c7bd8e0504c9c811015cc57155947"; // Reemplaza con tu clave API de DeepSeek
-const DEEPSEEK_ENDPOINT = "https://api.deepseek.com/v1/chat/completions"; // Endpoint de DeepSeek
+import { createOpenAI, type OpenAIProvider, openai } from '@ai-sdk/openai'
+import { createDeepSeek, type DeepSeekProvider  } from '@ai-sdk/deepseek'
+import { generateText, } from 'ai'
+
+const DEEPSEEK_API_KEY = "sk-790c7bd8e0504c9c811015@cc57155947"; // Reemplaza con tu clave API de DeepSeek
+const OPENAI_KEY = "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@"; // Reemplaza con tu clave API de DeepSeek
 interface DeepSeekMessage {
     role: string;
     content: string;
@@ -19,39 +22,24 @@ interface DeepSeekResponse {
         };
     }[];
 }
-
+const model :"open_ai"|"deepseek"="deepseek"
 async function queryDeepSeekReasoner(prompt: string): Promise<void> {
     try {
-        const requestData: DeepSeekRequest = {
-            model: "deepseek-reasoner", // Especifica el modelo
-            messages: [
-                {
-                    role: "user",
-                    content: prompt,
-                },
-            ],
-        };
-
-        // const response = await fetch(DEEPSEEK_ENDPOINT, {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         Authorization: `Bearer ${DEEPSEEK_API_KEY}`, // Autenticación
-        //     },
-        //     body: JSON.stringify(requestData),
-        // });
-
-        // if (!response.ok) {
-        //     throw new Error(`Error: ${response.status} ${response.statusText}`);
-        // }
-
-        // const data: DeepSeekResponse = await response.json();
-        const openAiClient = new openai.OpenAI({
-            apiKey: DEEPSEEK_API_KEY,
-            baseURL: "https://api.deepseek.com",
-        });
-        const data = await openAiClient.chat.completions.create({
-            model: "deepseek-chat",
+        let modelo :OpenAIProvider|DeepSeekProvider|null=null
+        if(model ==="open_ai"){
+            modelo= createOpenAI({
+                baseURL: 'https://api.groq.com/openai/v1',
+                apiKey:OPENAI_KEY,
+            })
+        }
+        if(model ==="deepseek"){
+            modelo=createDeepSeek({
+                baseURL: "https://api.deepseek.com",
+                apiKey: DEEPSEEK_API_KEY,
+            })
+        }
+        const data = await generateText({
+            model: modelo!(model ==="open_ai" ?"gpt-4o-mini":"deepseek-chat") ,
             messages: [
                 { role: "user", content: "Eres un asistente útil." },
                 {
@@ -72,8 +60,9 @@ async function queryDeepSeekReasoner(prompt: string): Promise<void> {
                 },
             ],
         });
+        console.error(JSON.stringify(data,null,3));
 
-        const content = data.choices[0].message.content;
+        const content = data.text;
         console.log({ content });
     } catch (error) {
         console.error("Error al hacer la solicitud a DeepSeek:", error);

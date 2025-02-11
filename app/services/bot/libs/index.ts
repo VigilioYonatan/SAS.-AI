@@ -257,6 +257,8 @@ export async function promptReplace(
     message: string,
     empresa: Empresas
 ) {
+    console.log(JSON.stringify(whatsapp));
+
     let data: DataPrompt = JSON.parse(
         cache.get(`db-${empresa.slug}`) ?? "null"
     );
@@ -619,6 +621,19 @@ export async function chatgpt(
     whatsapp: Awaited<ReturnType<typeof isWhatsappTelegramIA>>,
     content: string
 ) {
+    // const completion = await openAis[
+    //     whatsapp!.empresa.slug
+    // ].chat.completions.create({
+    //     model: modelAiByEmpresa(whatsapp),
+    //     max_tokens: 8000,
+    //     messages: [
+    //         {
+    //             role: "user",
+    //             // insert custom prompt
+    //             content,
+    //         },
+    //     ],
+    // });
     const completion = await openAis[
         whatsapp!.empresa.slug
     ].chat.completions.create({
@@ -627,11 +642,11 @@ export async function chatgpt(
         messages: [
             {
                 role: "user",
-                // insert custom prompt
                 content,
             },
         ],
     });
+
     const completionText = completion.choices[0].message.content;
     const latestEmpresaUsage = whatsapp!.empresa!.inteligenceArtificial.usage;
     await updateTokensEmpresa(

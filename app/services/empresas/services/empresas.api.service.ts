@@ -1999,9 +1999,21 @@ export class EmpresasApiService {
             ) {
                 await initializeBot(empresa, empresasUpdateDto.telegram_token);
             }
+            console.log({ a: empresasUpdateDto.model_ai });
 
             cache.delete(`EMPRESA:${empresa.slug}`);
-
+            if (empresasUpdateDto.model_ai === "open-ai") {
+                const openAiClient = new openai.OpenAI({
+                    apiKey: empresa.credentials.open_ai,
+                });
+                openAis = { ...openAis, [empresa.slug]: openAiClient };
+            } else {
+                const openAiClient = new openai.OpenAI({
+                    apiKey: empresa.credentials.deekseek_ai,
+                    baseURL: "https://api.deepseek.com",
+                });
+                openAis = { ...openAis, [empresa.slug]: openAiClient };
+            }
             await empresa.update({
                 ...empresasUpdateDto,
             });
