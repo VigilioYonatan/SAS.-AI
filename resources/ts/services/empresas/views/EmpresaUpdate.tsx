@@ -976,9 +976,9 @@ function empresaUpdate() {
                                                 .modelDeepSeek
                                         }
                                     </span>
-                                    <span class="text-xs bg-primary px-1 py-0.5 rounded-md shadow absolute -top-1 -right-1">
+                                    {/* <span class="text-xs bg-primary px-1 py-0.5 rounded-md shadow absolute -top-1 -right-1">
                                         Pronto
-                                    </span>
+                                    </span> */}
                                 </button>
                             </div>
                         </div>
