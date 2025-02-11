@@ -159,7 +159,15 @@ export class EmpresasApiController {
     async whatsapp_mode_get(@Req("empresa") empresa: Empresas) {
         return {
             success: true,
-            whatsapp_mode: empresa.whatsapp_mode || [],
+            whatsapp_mode: empresa.whatsapp_mode || [{
+                "type": "FREE",
+                "ip": null,
+                "password": null,
+                "memory": null,
+                "cpu": null,
+                "name": "docker",
+                "enabled": true
+            }],
         };
     }
 
