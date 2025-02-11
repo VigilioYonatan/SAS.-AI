@@ -159,7 +159,7 @@ export class EmpresasApiController {
     async whatsapp_mode_get(@Req("empresa") empresa: Empresas) {
         return {
             success: true,
-            whatsapp_mode: empresa.whatsapp_mode,
+            whatsapp_mode: empresa.whatsapp_mode || [],
         };
     }
 

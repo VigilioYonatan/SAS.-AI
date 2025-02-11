@@ -62,6 +62,7 @@ async function queryDeepSeekReasoner(prompt: string): Promise<void> {
         });
 
         const content = data.choices[0].message.content;
+        console.log({ content });
     } catch (error) {
         console.error("Error al hacer la solicitud a DeepSeek:", error);
     }
