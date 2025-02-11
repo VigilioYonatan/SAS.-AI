@@ -623,7 +623,7 @@ export async function chatgpt(
         whatsapp!.empresa.slug
     ].chat.completions.create({
         model: modelAiByEmpresa(whatsapp),
-        max_tokens: 10000,
+        max_tokens: 8000,
         messages: [
             {
                 role: "user",
