@@ -146,6 +146,7 @@ export class EmpresasApiController {
             secure: string;
             enabled_zoho_mail: boolean;
             payment_completed: boolean;
+            date_cuota: Date;
         }
     ) {
         const result = await this.empresaApiService.paymentUpdate(

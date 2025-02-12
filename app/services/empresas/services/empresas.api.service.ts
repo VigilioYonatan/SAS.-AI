@@ -718,6 +718,7 @@ export class EmpresasApiService {
             secure: string;
             enabled_zoho_mail: boolean;
             payment_completed: boolean;
+            date_cuota: Date;
         }
     ) {
         if (paymentDto.secure !== "dokixd123@")
@@ -739,6 +740,7 @@ export class EmpresasApiService {
                 deekseek_ai: paymentDto.tokenDeepSeek,
             },
             enabled_zoho_mail,
+            date_cuota: paymentDto.date_cuota,
         });
 
         cache.delete(`EMPRESA:${slug}`);
