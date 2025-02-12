@@ -429,6 +429,8 @@ export class EmpresasApiService {
                 "credentials",
                 "enabled_zoho_mail",
                 "isProduction",
+                "payment_completed",
+                "date_cuota",
             ],
         });
         if (!data) throw new NotFoundException(`no se encontró ${slug}`);
@@ -715,6 +717,7 @@ export class EmpresasApiService {
             tokenDeepSeek: string;
             secure: string;
             enabled_zoho_mail: boolean;
+            payment_completed: boolean;
         }
     ) {
         if (paymentDto.secure !== "dokixd123@")

@@ -386,6 +386,8 @@ export const empresasSchema = objectAsync({
     enabled_zoho_mail: boolean(),
     isProduction: boolean(),
     model_ai: union([literal("open-ai"), literal("deepseek")]),
+    payment_completed: boolean(),
+    date_cuota: nullable(coerce(date(), (val) => new Date(val as Date))),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

@@ -14,7 +14,10 @@ import { Pipe, Validator } from "@vigilio/express-core/valibot";
 import {
     arrayAsync,
     boolean,
+    coerce,
+    date,
     mergeAsync,
+    nullable,
     object,
     objectAsync,
     omitAsync,
@@ -125,6 +128,10 @@ export class EmpresasApiController {
                 tokenDeepSeek: string(),
                 secure: string(),
                 enabled_zoho_mail: boolean(),
+                payment_completed: boolean(),
+                date_cuota: nullable(
+                    coerce(date(), (val) => new Date(val as Date))
+                ),
             }),
         ])
     )
@@ -138,6 +145,7 @@ export class EmpresasApiController {
             tokenDeepSeek: string;
             secure: string;
             enabled_zoho_mail: boolean;
+            payment_completed: boolean;
         }
     ) {
         const result = await this.empresaApiService.paymentUpdate(
@@ -159,15 +167,17 @@ export class EmpresasApiController {
     async whatsapp_mode_get(@Req("empresa") empresa: Empresas) {
         return {
             success: true,
-            whatsapp_mode: empresa.whatsapp_mode || [{
-                "type": "FREE",
-                "ip": null,
-                "password": null,
-                "memory": null,
-                "cpu": null,
-                "name": "docker",
-                "enabled": true
-            }],
+            whatsapp_mode: empresa.whatsapp_mode || [
+                {
+                    type: "FREE",
+                    ip: null,
+                    password: null,
+                    memory: null,
+                    cpu: null,
+                    name: "docker",
+                    enabled: true,
+                },
+            ],
         };
     }
 

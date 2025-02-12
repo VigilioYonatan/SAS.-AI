@@ -225,6 +225,18 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     enabledAnimation: boolean;
 
     @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: true,
+    })
+    payment_completed: boolean;
+
+    @Column({
+        type: DataType.DATE,
+        defaultValue: null,
+    })
+    date_cuota: Date | null;
+
+    @Column({
         type: DataType.DATE,
         allowNull: false,
     })
