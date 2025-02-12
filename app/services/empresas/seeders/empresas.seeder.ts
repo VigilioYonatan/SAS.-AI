@@ -234,6 +234,8 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         versionamiento: "0.0.1",
         enabled_dni_cart: true,
         isDolar: true,
+        date_cuota: new Date(),
+        payment_completed: true,
         isProduction: true,
     };
 }
@@ -468,5 +470,7 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         isDolar: true,
         isProduction: true,
         model_ai: "open-ai",
+        date_cuota: new Date(),
+        payment_completed: false,
     };
 }
