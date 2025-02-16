@@ -56,8 +56,10 @@ function OfferSection({
                                 <ProductCard.header>
                                     <ProductCard.buttons isAbsolute />
                                 </ProductCard.header>
-                                <ProductCard.body showDescription={false} />
-                                <ProductCard.footer showButtonCart />
+                                <div class="product__container">
+                                    <ProductCard.body showDescription={false} />
+                                    <ProductCard.footer showButtonCart />
+                                </div>
                             </ProductCard>
                         ))}
                     </div>
