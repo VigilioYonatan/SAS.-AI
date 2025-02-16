@@ -861,100 +861,97 @@ export class WebApiService {
             true
         );
 
-        if (isCuota && (product as ProductsNormal).cuota_config) {
-            return {
-                title: product.name,
-                description: `${product.name} - ${
-                    product.description
-                        ? removeTextHTML(product.description)?.slice(0, 100)
-                        : ""
-                }...`,
-                product,
-                type_page: null,
-            };
-        } else {
-            // obtener productos con el mismo subcategoria random
-            const categoriesProductsRandom = await Product(
-                empresa,
-                false
-            ).findAll({
+        // if (isCuota && (product as ProductsNormal).cuota_config) {
+        //     return {
+        //         title: product.name,
+        //         description: `${product.name} - ${
+        //             product.description
+        //                 ? removeTextHTML(product.description)?.slice(0, 100)
+        //                 : ""
+        //         }...`,
+        //         product,
+        //         type_page: null,
+        //     };
+        // } else {
+        // obtener productos con el mismo subcategoria random
+        const categoriesProductsRandom = await Product(empresa, false).findAll({
+            where: {
+                category_id: product.category_id,
+                id: { [Op.ne]: product.id },
+                enabled: true,
+                empresa_id: empresa.id,
+            },
+            limit: 6,
+            order: sequelize.random(), // obtener productos random
+        });
+        const mappedProduct = await Promise.all(
+            categoriesProductsRandom.map(
+                async (
+                    product:
+                        | ProductsNormal
+                        | ProductsServicio
+                        | ProductsRestaurant
+                ) => {
+                    const prod = await getProductAll(
+                        empresa,
+                        product,
+                        user,
+                        true
+                    );
+                    return prod;
+                }
+            )
+        );
+        let productByBrands = null;
+        if (
+            [1, 3].includes(empresa.tipo_empresa.tipo_servicio_id) &&
+            (product as ProductsNormal)?.brand_id
+        ) {
+            productByBrands = await Product(empresa, false).findAll({
                 where: {
                     category_id: product.category_id,
-                    id: { [Op.ne]: product.id },
+                    brand_id: (product as ProductsNormal).brand_id,
                     enabled: true,
+                    id: { [Op.ne]: product.id },
                     empresa_id: empresa.id,
                 },
-                limit: 6,
-                order: sequelize.random(), // obtener productos random
+                limit: 8,
             });
-            const mappedProduct = await Promise.all(
-                categoriesProductsRandom.map(
-                    async (
-                        product:
-                            | ProductsNormal
-                            | ProductsServicio
-                            | ProductsRestaurant
-                    ) => {
-                        const prod = await getProductAll(
-                            empresa,
-                            product,
-                            user,
-                            true
-                        );
-                        return prod;
-                    }
-                )
+            productByBrands = await Promise.all(
+                productByBrands.map(async (product: ProductsNormal) => {
+                    const prod = await getProductAll(
+                        empresa,
+                        product,
+                        user,
+                        false
+                    );
+                    return prod;
+                })
             );
-            let productByBrands = null;
-            if (
-                [1, 3].includes(empresa.tipo_empresa.tipo_servicio_id) &&
-                (product as ProductsNormal)?.brand_id
-            ) {
-                productByBrands = await Product(empresa, false).findAll({
-                    where: {
-                        category_id: product.category_id,
-                        brand_id: (product as ProductsNormal).brand_id,
-                        enabled: true,
-                        id: { [Op.ne]: product.id },
-                        empresa_id: empresa.id,
-                    },
-                    limit: 8,
-                });
-                productByBrands = await Promise.all(
-                    productByBrands.map(async (product: ProductsNormal) => {
-                        const prod = await getProductAll(
-                            empresa,
-                            product,
-                            user,
-                            false
-                        );
-                        return prod;
-                    })
-                );
-            }
-            const totalComments = await Comments.count({
-                where: {
-                    commentsable_type: ProductKeys(empresa, false),
-                    commentsable_id: product.id,
-                    empresa_id: empresa.id,
-                },
-            });
-
-            return {
-                title: product.name,
-                description: `${product.name} - ${
-                    product.description
-                        ? removeTextHTML(product.description)?.slice(0, 100)
-                        : ""
-                }...`,
-                product,
-                categoriesProductsRandom: mappedProduct,
-                productByBrands,
-                category_name: (product.category as Categories).name,
-                totalComments,
-                type_page: null,
-            };
         }
+        const totalComments = await Comments.count({
+            where: {
+                commentsable_type: ProductKeys(empresa, false),
+                commentsable_id: product.id,
+                empresa_id: empresa.id,
+            },
+        });
+
+        return {
+            title: product.name,
+            description: `${product.name} - ${
+                product.description
+                    ? removeTextHTML(product.description)?.slice(0, 100)
+                    : ""
+            }...`,
+            product,
+            categoriesProductsRandom: mappedProduct,
+            productByBrands,
+            category_name: (product.category as Categories).name,
+            totalComments,
+            type_page: null,
+        };
+        // }
     }
     async servicio(slug: string, empresa: Empresas, user: Users) {
         const { product } = await this.productsApiService.show(
