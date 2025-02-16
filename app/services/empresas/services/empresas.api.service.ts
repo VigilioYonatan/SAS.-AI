@@ -241,6 +241,18 @@ export async function initial() {
                 model_ai: "open-ai",
             },
         });
+        // const payment_completed = await Empresas.findOrCreate({
+        //     where: {
+        //         id: empresa!.id,
+        //     },
+        //     defaults: {
+        //         payment_completed: true,
+        //     },
+        // });
+        // if (!payment_completed[1]) {
+        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
+        //     await payment_completed[0].update({ payment_completed: true });
+        // }
         // const type_loader = await Settings.findOrCreate({
         //     where: { empresa_id: empresa!.id },
         //     defaults: { type_loader: "null" }, // Valores predeterminados si se crea

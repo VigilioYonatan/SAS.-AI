@@ -383,7 +383,13 @@ function ProductsRestaurantStore({
                             title="Disponibilidad"
                             question="Cuando está habilitado los clientes podrán comprar el producto."
                         />
-
+                        <Form.control.toggle
+                            name={
+                                "shipping_free" as keyof ProductsRestaurantStoreDto
+                            }
+                            title="¿Envio gratis?"
+                            question="No se le cobrará envio a este producto."
+                        />
                         <div class="flex gap-2 items-center w-full">
                             <Form.control.select
                                 name={

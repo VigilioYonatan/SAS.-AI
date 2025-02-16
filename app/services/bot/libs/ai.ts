@@ -625,12 +625,9 @@ export function sendMessageCron({
                 const name = empresa.whatsapp_mode!.find(
                     (w) => w.name === "docker"
                 )!.name;
-                await whatsappSendMessageApi(empresa, name, {
-                    message: message,
-                    telephone: userId,
-                    options: {},
-                    delay: 3,
-                });
+
+                await sendMessageToClient(empresa, name, userId, message);
+
                 // Detener el cron job después de que se ejecute
                 task.stop();
             } catch (error) {}
@@ -666,3 +663,20 @@ cron.schedule("*/4 * * * *", async () => {
         }
     }
 });
+export async function sendMessageToClient(
+    empresa: Empresas,
+    name: string,
+    telephone: string,
+    message: string
+) {
+    chats[`${empresa.slug}:${telephone}`] = [
+        ...(chats[`${empresa.slug}:${telephone}`] || []),
+        ["assistant", message],
+    ];
+    await whatsappSendMessageApi(empresa, name, {
+        telephone,
+        message,
+        delay: 2,
+        options: { linkPreview: false },
+    });
+}

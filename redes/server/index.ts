@@ -1,5 +1,5 @@
 import express from "express";
-import { IgApiClient } from "instagram-private-api";
+// import { IgApiClient } from "instagram-private-api";
 import cors from "cors";
 import path from "node:path";
 
@@ -7,18 +7,18 @@ const app = express();
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
-const ig = new IgApiClient();
-const BASE_URL = "https://e526-201-218-157-99.ngrok-free.app";
-const CLIENT_ID = "1995984660825359";
-const CLIENT_SECRET = "48d7fbc0d06932cb9b266c30201c46a0";
-ig.state.generateDevice("yon.1666");
-await ig.account.login("yon.1666", "dokixd123");
+// const ig = new IgApiClient();
+const BASE_URL = "https://f47c-201-218-157-99.ngrok-free.app";
+const CLIENT_ID = "1162358945600817";
+const CLIENT_SECRET = "309f3118d2f558fe116844021b2fbdd5";
+// ig.state.generateDevice("yon.1666");
+// await ig.account.login("yon.1666", "dokixd123");
 
-const inboxFeed = ig.feed.directInbox();
-const threads = await inboxFeed.items();
-const ids = threads.map((ig) => ig);
-for (const thread of threads) {
-}
+// const inboxFeed = ig.feed.directInbox();
+// const threads = await inboxFeed.items();
+// const ids = threads.map((ig) => ig);
+// for (const thread of threads) {
+// }
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
@@ -60,15 +60,15 @@ app.get("/web");
 
 app.get("/webhook", () => {});
 const facebook =
-    "EAAHxLd4NokgBO2fnQQp9ZCvI60ga2viUxnBa7eGpVBMxGrlw4L208rTlKpDsfDITDVH40EEnvfJiZAZAsXsRYbZCtpS2twHWPxPpvAfNguZC3p0ljM0RwXrpraACIMEHXIKSBaXuTt4oDnwsz7mPgLZA99b17uZAH5CvcbextDeVJxVp4VL6SWksUOuzt9wZBVD9RAZDZD";
+    "EAAQhKMgN1TEBO5paufzuZBd6OQmKhMZCSJzAAkmcrOIohsbTZCi8DoZA2ZAHOB3f4FBsXHex3t4Eo9lxY1Pzh0YnZBPiPtndyIFNvJR36s9EM5OFu39ZBMEfDnlNWXP289PgGyiFpk8Nw5rjOZA39eh1kiURZCNfGeZAJFsz2LmEZBSFqW6RRpLoHHO7XGoeZB1HPUlB5s1ZAbfzGUZBbLeP9g8nRx17ViMRB38qWWYaZAGZBwUp9AZDZD";
 
 export async function getConversations() {
     const responseName = await fetch(
         `https://graph.facebook.com/v21.0/me/conversations?access_token=${facebook}&fields=participants{picture,name,email},message_count,updated_time,last_message,unread_count,is_group`
     );
     const resultName: ConversationMessengerAPI = await responseName.json();
-    console.log({});
-    
+    console.log(resultName);
+
     // if (!responseName.ok) throw resultName;
     // const result = await Promise.all(
     //     resultName.data.map(async (chat) => {

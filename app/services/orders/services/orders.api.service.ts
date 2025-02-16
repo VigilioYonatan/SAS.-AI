@@ -61,6 +61,7 @@ import { ROLES } from "@/users/libs";
 import { Citas } from "@/citas/entities/citas.entities";
 import webpush from "@/notificactions/libs/webpush";
 import { printFileWithDimension } from "@/uploads/libs/helpers";
+import { sendMessageToClient } from "@/bot/libs/ai";
 
 @Injectable()
 export class OrdersApiService {
@@ -534,15 +535,16 @@ export class OrdersApiService {
                     const name = empresa.whatsapp_mode!.find(
                         (w) => w.name === "docker"
                     )!.name;
-                    await whatsappSendMessageApi(empresa, name, {
-                        telephone: `${empresa.dial_code}${ordersStoreDto.telephone}@c.us`,
-                        message: `Hola *${
+                    await sendMessageToClient(
+                        empresa,
+                        name,
+                        `${empresa.dial_code}${ordersStoreDto.telephone}@c.us`,
+                        `Hola *${
                             usuario.username
                         }*.\nYa puedes acceder a tu cuenta, ingresa al siguiente link:\n*${BASE_URL(
                             empresa
-                        )}/auth/confirmed-account?token=${token}*`,
-                        delay: 3,
-                    });
+                        )}/auth/confirmed-account?token=${token}*`
+                    );
                 } catch (error) {}
             }
         }
@@ -849,34 +851,32 @@ export class OrdersApiService {
                 const name = empresa.whatsapp_mode!.find(
                     (w) => w.name === "docker"
                 )!.name;
-                await whatsappSendMessageApi(empresa, name, {
+                await sendMessageToClient(
+                    empresa,
+                    name,
                     telephone,
-                    message:
-                        empresa.dial_code === "55"
-                            ? `Olá 😊, aqui está o código do seu pedido ${order.order_code}.\n Não se esqueça de nos perguntar o status do seu pedido, digitando o código do pedido.`
-                            : `Hola 😊, Su orden *${
-                                  order.order_code
-                              }*.\n${detailsOrders.join(
-                                  "\n"
-                              )}.\n\nTotal: *${formatMoney(
-                                  empresa,
-                                  ordersStoreDto.total,
-                                  empresa.money.money as Money
-                              )}*  ${
-                                  moneyConverter !== 1
-                                      ? `- *${formatMoney(
-                                            empresa,
-                                            ordersStoreDto.total *
-                                                moneyConverter,
-                                            "DOLARES"
-                                        )}*`
-                                      : ""
-                              }\n\nNo olvides preguntar el estado de tu orden, digitando el *código* del orden ó en ${BASE_URL(
-                                  empresa
-                              )}/pedidos?code=${order.order_code}`,
-                    delay: 4,
-                    options: { linkPreview: false },
-                });
+                    empresa.dial_code === "55"
+                        ? `Olá 😊, aqui está o código do seu pedido ${order.order_code}.\n Não se esqueça de nos perguntar o status do seu pedido, digitando o código do pedido.`
+                        : `Hola 😊, Su orden *${
+                              order.order_code
+                          }*.\n${detailsOrders.join(
+                              "\n"
+                          )}.\n\nTotal: *${formatMoney(
+                              empresa,
+                              ordersStoreDto.total,
+                              empresa.money.money as Money
+                          )}*  ${
+                              moneyConverter !== 1
+                                  ? `- *${formatMoney(
+                                        empresa,
+                                        ordersStoreDto.total * moneyConverter,
+                                        "DOLARES"
+                                    )}*`
+                                  : ""
+                          }\n\nNo olvides preguntar el estado de tu orden, digitando el *código* del orden ó en ${BASE_URL(
+                              empresa
+                          )}/pedidos?code=${order.order_code}`
+                );
             }
         } catch (error) {}
 
@@ -1235,14 +1235,15 @@ export class OrdersApiService {
                     const name = empresa.whatsapp_mode!.find(
                         (w) => w.name === "docker"
                     )!.name;
-                    await whatsappSendMessageApi(empresa, name, {
+                    await sendMessageToClient(
+                        empresa,
+                        name,
                         telephone,
-                        message: empresa.whatsappconfig.thank.replace(
+                        empresa.whatsappconfig.thank.replace(
                             "{COMPROBANTE}",
                             type
-                        ),
-                        delay: 3,
-                    });
+                        )
+                    );
 
                     const { pdfBuffer, file } = await pdfGenerate({
                         empresa,
@@ -1266,16 +1267,15 @@ export class OrdersApiService {
                         options: { sendMediaAsDocument: true },
                         delay: 1,
                     });
-
-                    await whatsappSendMessageApi(empresa, name2, {
+                    await sendMessageToClient(
+                        empresa,
+                        name,
                         telephone,
-                        message: empresa.whatsappconfig.thank2.replace(
+                        empresa.whatsappconfig.thank2.replace(
                             "{URL}",
                             BASE_URL(empresa)
-                        ),
-                        delay: 3,
-                        options: { linkPreview: false },
-                    });
+                        )
+                    );
                 } catch (error) {}
             }
             if (getInvoice) {
@@ -1444,15 +1444,15 @@ export class OrdersApiService {
                             delay: 4,
                         });
 
-                        await whatsappSendMessageApi(empresa, name2, {
+                        await sendMessageToClient(
+                            empresa,
+                            name2,
                             telephone,
-                            message: empresa.whatsappconfig.thank2.replace(
+                            empresa.whatsappconfig.thank2.replace(
                                 "{URL}",
                                 BASE_URL(empresa)
-                            ),
-                            delay: 4,
-                            options: { linkPreview: false },
-                        });
+                            )
+                        );
                     } catch (error) {}
                 }
                 if (getNote) {
@@ -1629,15 +1629,15 @@ export class OrdersApiService {
                     (w) => w.name === "docker"
                 )!.name;
 
-                await whatsappSendMessageApi(empresa, name2, {
+                await sendMessageToClient(
+                    empresa,
+                    name2,
                     telephone,
-                    message:
-                        empresa.dial_code === "55"
-                            ? `Olá 😊, somos ${empresa.name_empresa}. \n Seu pedido ${order.order_code}:\n Está sendo enviado para o seu endereço ${order.address}.\n${products}                          `
-                            : `Hola 😊, Somos ${empresa.name_empresa}. \n Su orden *${order.order_code}*:\n Se está enviando su pedido a su domicilio ${order.address}.\n${products}`,
-                    delay: 3,
-                    options: { linkPreview: false },
-                });
+                    empresa.whatsappconfig.thank2.replace(
+                        "{URL}",
+                        BASE_URL(empresa)
+                    )
+                );
             } catch (error) {}
         }
     }

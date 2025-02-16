@@ -103,6 +103,7 @@ function ProductsNormalUpdate({
                     option_id: opt.id,
                     features: opt.features.map((feat) => feat.id),
                 })),
+                isCuota: !!rest.cuota_config,
             },
         });
 
@@ -110,6 +111,11 @@ function ProductsNormalUpdate({
         const discount = formProductsNormalUpdate.watch("discount");
         const category_id = formProductsNormalUpdate.watch("category_id");
         const price = formProductsNormalUpdate.watch("price");
+        const cuota_config = formProductsNormalUpdate.watch("cuota_config");
+        const isCuota = formProductsNormalUpdate.watch("isCuota");
+        const interes_enabled = formProductsNormalUpdate.watch(
+            "cuota_config.interes_enabled"
+        );
         const brandsIndexQuery = brandsIndexApi();
         const categoriesIndexQuery = categoriesIndexApi(false);
 
@@ -150,6 +156,16 @@ function ProductsNormalUpdate({
             categoriesSubcategoriesQuery.data,
             categoriesSubcategoriesQuery.isSuccess,
         ]);
+        useEffect(() => {
+            if (!isCuota) {
+                formProductsNormalUpdate.setValue("cuota_config", null);
+            }
+        }, [isCuota]);
+        useEffect(() => {
+            if (!interes_enabled) {
+                formProductsNormalUpdate.setValue("cuota_config.price", null);
+            }
+        }, [interes_enabled]);
         const formProductsNormalUpdateImages = useForm<ProductsUpdateImagesDto>(
             {
                 mode: "all",
@@ -416,7 +432,171 @@ function ProductsNormalUpdate({
                                     false
                                 }
                             />
-                        ) : null}
+                        ) : null}{" "}
+                        {storageEmpresa?.setting.isCuota ? (
+                            <div class="w-full grid grid-cols-2 gap-1 md:grid-cols-4 [&>div:nth-child(1)]:!w-auto [&>div:nth-child(3)]:!w-auto ">
+                                <Form.control.toggle
+                                    name={
+                                        "isCuota" as keyof ProductsNormalUpdateDto
+                                    }
+                                    title="¿Activar cuotas?"
+                                    question="Sí está activado, tus clientes podrán pagar a cuotas, recuerda que el descuento de este producto no es válido a cuotas."
+                                />
+                                {isCuota ? (
+                                    <Form.control.toggle
+                                        name={
+                                            "cuota_config.interes_enabled" as keyof ProductsNormalUpdateDto
+                                        }
+                                        title="¿Aplicarás intereses?"
+                                        question="Sí está activado, personalizará el precio de las cuotas , si no está activado se hará automaticamente sin generar intereses."
+                                    />
+                                ) : null}
+
+                                {isCuota ? (
+                                    <>
+                                        {interes_enabled ? (
+                                            <div class="">
+                                                {" "}
+                                                <Form.control
+                                                    name={
+                                                        "cuota_config.price" as keyof ProductsNormalUpdateDto
+                                                    }
+                                                    step={0.1}
+                                                    type="number"
+                                                    title="Precio por Cuota"
+                                                    placeholder={`${formatMoney(
+                                                        10,
+                                                        true
+                                                    )}`}
+                                                    options={{
+                                                        setValueAs(value) {
+                                                            return Number(
+                                                                value
+                                                            ) > 0
+                                                                ? Number(value)
+                                                                : null;
+                                                        },
+                                                    }}
+                                                />
+                                            </div>
+                                        ) : null}
+
+                                        <div
+                                            class={`w-full flex flex-col items-start gap-2  ${
+                                                !interes_enabled
+                                                    ? "col-span-2"
+                                                    : ""
+                                            } `}
+                                        >
+                                            <Form.control
+                                                name={
+                                                    "cuota_config.months" as keyof ProductsNormalUpdateDto
+                                                }
+                                                type="number"
+                                                title="Total de Meses de las cuotas"
+                                                placeholder="12"
+                                                step={1}
+                                                options={{
+                                                    value: 0 as unknown as undefined,
+                                                    setValueAs(value) {
+                                                        return Number(value) >=
+                                                            0
+                                                            ? Number(value)
+                                                            : null;
+                                                    },
+                                                }}
+                                                question="Hasta cuantos meses pagará las cuotas el cliente."
+                                            />
+
+                                            <div class="flex flex-col gap-1">
+                                                <span class=" whitespace-nowrap  text-primary text-sm">
+                                                    <span class="text-gray-400">
+                                                        {!interes_enabled
+                                                            ? formatMoney(
+                                                                  subtotal /
+                                                                      (cuota_config?.months ||
+                                                                          1),
+                                                                  true
+                                                              )
+                                                            : formatMoney(
+                                                                  cuota_config?.price ||
+                                                                      0,
+                                                                  true
+                                                              )}
+                                                    </span>{" "}
+                                                    -{" "}
+                                                    {empresa.state!.enabled_igv
+                                                        ? formatMoney(
+                                                              !interes_enabled
+                                                                  ? subtotalCart(
+                                                                        subtotal /
+                                                                            (cuota_config?.months ||
+                                                                                1),
+                                                                        empresa.state!
+                                                                            .igv,
+                                                                        true
+                                                                    )
+                                                                  : subtotalCart(
+                                                                        cuota_config?.price ||
+                                                                            0,
+                                                                        empresa.state!
+                                                                            .igv,
+                                                                        true
+                                                                    ),
+                                                              true
+                                                          )
+                                                        : null}{" "}
+                                                    x cuota
+                                                </span>
+                                                <span class="text-xs whitespace-nowrap dark:text-white flex gap-2 items-center">
+                                                    {discount ? (
+                                                        <span class="text-xs dark:text-white text-black">
+                                                            - incl. {discount}%
+                                                        </span>
+                                                    ) : null}
+                                                    {empresa.state!.enabled_igv
+                                                        ? `+ inc. ${
+                                                              empresa.state!.igv
+                                                          }% ${
+                                                              empresa.state!
+                                                                  .tipo_impuesto
+                                                          }`
+                                                        : null}
+                                                </span>
+                                                {interes_enabled ? (
+                                                    <span class="text-xs whitespace-nowrap dark:text-white flex gap-2 items-center">
+                                                        Total:{" "}
+                                                        {empresa.state!
+                                                            .enabled_igv
+                                                            ? formatMoney(
+                                                                  subtotalCart(
+                                                                      cuota_config?.price ||
+                                                                          0,
+                                                                      empresa.state!
+                                                                          .igv,
+                                                                      true
+                                                                  ) *
+                                                                      (cuota_config?.months ||
+                                                                          1),
+                                                                  true
+                                                              )
+                                                            : formatMoney(
+                                                                  (cuota_config?.price ||
+                                                                      0) *
+                                                                      (cuota_config?.months ||
+                                                                          1),
+                                                                  true
+                                                              )}
+                                                    </span>
+                                                ) : null}
+                                            </div>
+                                        </div>
+                                    </>
+                                ) : null}
+                            </div>
+                        ) : (
+                            <></>
+                        )}
                         <div class="w-full flex flex-row gap-2">
                             <Form.control.toggle
                                 name={

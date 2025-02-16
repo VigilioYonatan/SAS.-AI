@@ -650,7 +650,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                     )}
                                 </button>
                             ) : (
-                                <span class=" flex gap-2 items-center justify-center w-full bg-secondary border-r border-primary  font-bold  py-3 text-white shadow rounded-md">
+                                <span class="added flex gap-2 items-center justify-center w-full bg-secondary border-r border-primary  font-bold  py-3 text-white shadow rounded-md">
                                     <span> Añadido </span>
                                 </span>
                             )}

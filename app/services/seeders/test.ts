@@ -93,6 +93,7 @@ export const test: Pick<
         },
         isEccomerce: true,
         isLogin: true,
+        isCuota: true,
     },
     gridBanners: [
         {

@@ -762,11 +762,11 @@ function SettingsIndex() {
                                 name={"isLogin" as keyof SettingsUpdateDto}
                                 question={
                                     <span class="block w-[200px]">
-                                        No se podrán registrar clientes si está desactivado
+                                        No se podrán registrar clientes si está
+                                        desactivado
                                     </span>
                                 }
                             />
-
                             <Form.control.toggle
                                 title="¿Agregar subcategorias"
                                 name={
@@ -807,6 +807,11 @@ function SettingsIndex() {
                                         </div>
                                     </span>
                                 }
+                            />
+                            <Form.control.toggle
+                                title="¿Tendrá cuotas los productos?"
+                                name={"isCuota" as keyof SettingsUpdateDto}
+                                question="Los productos tendrán un campo más para agregar cuotas. Solo esta disponible para productos normal"
                             />
                         </div>
                         <div class="grid grid-cols-2 lg:grid-cols-4">

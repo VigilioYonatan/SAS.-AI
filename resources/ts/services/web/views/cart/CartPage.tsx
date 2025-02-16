@@ -32,15 +32,30 @@ import { isColorLight } from "~/libs/helpers";
 import { formSelectNumber } from "~/components/form/FormSelect";
 
 interface CartProps {
-    cart: { id: number; quantity: number; variant?: number }[] | null;
+    cart:
+        | {
+              id: number;
+              quantity: number;
+              variant?: number;
+          }[]
+        | {
+              id: number;
+              quantity: number;
+              variant?: number;
+              isCuota?: boolean;
+          }
+        | null;
     header: HeaderType;
 }
 
 function CartPage({ cart, header }: CartProps) {
     const cartStore = useCartStore();
+
     useEffect(() => {
         if (cart) {
-            cartStore.methods.initialCart(cart);
+            cartStore.methods.initialCart(
+                cart instanceof Array ? cart : [cart]
+            );
         }
     }, []);
 
@@ -594,7 +609,8 @@ function CartPage({ cart, header }: CartProps) {
                                             name={
                                                 "address" as keyof OrdersCartStoreDto
                                             }
-                                            title="Dirección"
+                                            placeholder="Av. Los Próceres 123, Urb. San Jua"
+                                            title="Dirección de destino"
                                         />
                                         {empresa.state!.enable_map_marker ? (
                                             <div class="w-full">
@@ -630,8 +646,8 @@ function CartPage({ cart, header }: CartProps) {
                                     name={
                                         "reference" as keyof OrdersCartStoreDto
                                     }
-                                    title="Referencia"
-                                    placeholder="Cerca de ..."
+                                    title="Referencia de destino"
+                                    placeholder="A una cuadra del parque XXXXXX"
                                     question={
                                         "Lugar de referencia para ubicarte mejor."
                                     }
@@ -707,7 +723,7 @@ function CartPage({ cart, header }: CartProps) {
                                     <></>
                                 )}
                                 {!authStore.state ? (
-                                    <span class="text-xs text-start block self-start font-semibold">
+                                    <span class="text-xs text-start block self-start my-2 font-semibold">
                                         <b class="text-danger ">*</b> Estas
                                         apunto de crear una cuenta para realizar
                                         esta compra

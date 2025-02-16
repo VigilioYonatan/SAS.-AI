@@ -22,9 +22,18 @@ import { initialMiddleware } from "@/web/middlewares/initial.middleware";
 export class CartController {
     constructor(private readonly cartService: CartService) {}
     @Get("/", [initialMiddleware])
-    async index(@Res() res: Response, @Query("items") items: string) {
+    async index(
+        @Res() res: Response,
+        @Req("empresa") empresa: Empresas,
+        @Query("items") items: string
+    ) {
         let itemsResult:
-            | { id: number; quantity: number; variant?: number }[]
+            | {
+                  id: number;
+                  quantity: number;
+                  variant?: number;
+                  isCuota?: boolean;
+              }[]
             | null = null;
         if (items) {
             try {
@@ -32,12 +41,13 @@ export class CartController {
                     id: number;
                     quantity: number;
                     variant?: number;
+                    isCuota?: boolean;
                 }[];
             } catch (error) {
                 return res.redirect("/");
             }
         }
-        const result = await this.cartService.index(itemsResult);
+        const result = await this.cartService.index(empresa, itemsResult);
         return res.render("web/cart", result);
     }
 

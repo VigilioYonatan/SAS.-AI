@@ -1,14 +1,14 @@
 import {
-	Column,
-	DataType,
-	Table,
-	Model,
-	BelongsTo,
-	ForeignKey,
-	DefaultScope,
-	HasMany,
-	Index,
-	BelongsToMany,
+    Column,
+    DataType,
+    Table,
+    Model,
+    BelongsTo,
+    ForeignKey,
+    DefaultScope,
+    HasMany,
+    Index,
+    BelongsToMany,
 } from "sequelize-typescript";
 import { Cart } from "@/cart/entites/cart.entity";
 import { Categories } from "./categories.entity";
@@ -29,159 +29,168 @@ import { Favorites } from "@/favorites/entities/favorites.entity";
 import { Subcategories } from "./subcategories.entity";
 
 @DefaultScope(() => ({
-	include: [
-		{
-			model: Categories,
-			attributes: ["name", "slug", "icon"] as (keyof CategoriesSchema)[],
-		},
-		{ model: Brands },
-	],
+    include: [
+        {
+            model: Categories,
+            attributes: ["name", "slug", "icon"] as (keyof CategoriesSchema)[],
+        },
+        { model: Brands },
+    ],
 }))
 @Table
 export class ProductsNormal
-	extends Model
-	implements Omit<ProductsNormalSchema, "id">
+    extends Model
+    implements Omit<ProductsNormalSchema, "id">
 {
-	@Index
-	@Column({
-		allowNull: false,
-		type: DataType.STRING(80),
-	})
-	product_code: string;
+    @Index
+    @Column({
+        allowNull: false,
+        type: DataType.STRING(80),
+    })
+    product_code: string;
 
-	@Index
-	@Column({ type: DataType.STRING(255) })
-	name: string;
+    @Index
+    @Column({ type: DataType.STRING(255) })
+    name: string;
 
-	@Column({ type: DataType.STRING(255) })
-	url: string;
+    @Column({ type: DataType.STRING(255) })
+    url: string;
 
-	@Column({ type: DataType.TEXT })
-	description: string;
+    @Column({ type: DataType.TEXT })
+    description: string;
 
-	@Column({
-		type: DataType.JSON,
-		allowNull: false,
-	})
-	characteristics: { name: string; value: string }[];
+    @Column({
+        type: DataType.JSON,
+        allowNull: false,
+    })
+    characteristics: { name: string; value: string }[];
 
-	@Column({
-		type: DataType.DECIMAL(10, 2),
-		allowNull: false,
-	})
-	get price(): number {
-		return Number.parseFloat(
-			this.getDataValue("price" as keyof ProductsNormalSchema),
-		);
-	}
+    @Column({
+        type: DataType.JSON,
+        defaultValue: null,
+    })
+    cuota_config: ProductsNormalSchema["cuota_config"];
 
-	@Column({
-		type: DataType.DECIMAL(10, 2),
-		defaultValue: 0,
-	})
-	get discount(): number {
-		return Number.parseFloat(
-			this.getDataValue("discount" as keyof ProductsNormalSchema),
-		);
-	}
+    @Column({
+        type: DataType.DECIMAL(10, 2),
+        allowNull: false,
+    })
+    get price(): number {
+        return Number.parseFloat(
+            this.getDataValue("price" as keyof ProductsNormalSchema)
+        );
+    }
 
-	@Column({
-		type: DataType.BOOLEAN,
-		defaultValue: true,
-	})
-	enabled: boolean;
+    @Column({
+        type: DataType.DECIMAL(10, 2),
+        defaultValue: 0,
+    })
+    get discount(): number {
+        return Number.parseFloat(
+            this.getDataValue("discount" as keyof ProductsNormalSchema)
+        );
+    }
 
-	@Column({
-		type: DataType.JSON,
-		defaultValue: [],
-	})
-	images: FilesSchema[] | null;
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: true,
+    })
+    enabled: boolean;
 
-	@Index
-	@Column({
-		allowNull: false,
-		type: DataType.STRING(255),
-	})
-	slug: string;
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: false,
+    })
+    shipping_free: boolean;
 
-	@ForeignKey(() => Categories)
-	@Column({ type: DataType.INTEGER, allowNull: false })
-	category_id: number;
+    @Column({
+        type: DataType.JSON,
+        defaultValue: [],
+    })
+    images: FilesSchema[] | null;
 
-	/*****  RELATIONS *****/
-	// products - categorias : uno a muchos
-	@BelongsTo(() => Categories)
-	category: unknown;
+    @Index
+    @Column({
+        allowNull: false,
+        type: DataType.STRING(255),
+    })
+    slug: string;
 
-	@ForeignKey(() => Subcategories)
-	@Column({ type: DataType.INTEGER })
-	subcategory_id: number | null;
+    @ForeignKey(() => Categories)
+    @Column({ type: DataType.INTEGER, allowNull: false })
+    category_id: number;
 
-	/*****  RELATIONS *****/
-	// products - categorias : uno a muchos
-	@BelongsTo(() => Subcategories)
-	subcategory: unknown | null;
+    /*****  RELATIONS *****/
+    // products - categorias : uno a muchos
+    @BelongsTo(() => Categories)
+    category: unknown;
 
-	@ForeignKey(() => Brands)
-	@Column({ type: DataType.INTEGER })
-	brand_id: number | null;
+    @ForeignKey(() => Subcategories)
+    @Column({ type: DataType.INTEGER })
+    subcategory_id: number | null;
 
-	/*****  RELATIONS *****/
-	// products - categorias : uno a muchos
-	@BelongsTo(() => Brands)
-	brand: unknown;
+    /*****  RELATIONS *****/
+    // products - categorias : uno a muchos
+    @BelongsTo(() => Subcategories)
+    subcategory: unknown | null;
 
-	@ForeignKey(() => Empresas)
-	@Column({ type: DataType.INTEGER, allowNull: false })
-	empresa_id: number;
+    @ForeignKey(() => Brands)
+    @Column({ type: DataType.INTEGER })
+    brand_id: number | null;
 
-	@BelongsTo(() => Empresas)
-	empresa: unknown;
+    /*****  RELATIONS *****/
+    // products - categorias : uno a muchos
+    @BelongsTo(() => Brands)
+    brand: unknown;
 
-	// products - cart: uno a muchos
-	@HasMany(() => Cart)
-	carts: unknown[];
+    @ForeignKey(() => Empresas)
+    @Column({ type: DataType.INTEGER, allowNull: false })
+    empresa_id: number;
 
-	@BelongsToMany(
-		() => Options,
-		() => ProductsOptions,
-	)
-	options: unknown & { ProductsOptions: ProductsOptions }[];
+    @BelongsTo(() => Empresas)
+    empresa: unknown;
 
-	@HasMany(() => DetailOrders, { onDelete: "SET NULL" })
-	detailsOrders: unknown[];
+    // products - cart: uno a muchos
+    @HasMany(() => Cart)
+    carts: unknown[];
 
-	@HasMany(() => Variants)
-	variants: unknown[];
+    @BelongsToMany(() => Options, () => ProductsOptions)
+    options: unknown & { ProductsOptions: ProductsOptions }[];
 
-	@HasMany(() => Favorites)
-	favorites: unknown[];
+    @HasMany(() => DetailOrders, { onDelete: "SET NULL" })
+    detailsOrders: unknown[];
 
-	@HasMany(() => Comments, {
-		foreignKey: "commentsable_id",
-		constraints: false,
-		scope: { commentsable_type: "ProductsNormals" },
-	})
-	comments: unknown[];
+    @HasMany(() => Variants)
+    variants: unknown[];
 
-	@HasMany(() => Subcomments, {
-		foreignKey: "subcommentsable_id",
-		constraints: false,
-		scope: { commentsable_type: "ProductsNormals" },
-	})
-	subcomments: unknown[];
+    @HasMany(() => Favorites)
+    favorites: unknown[];
 
-	@HasMany(() => Ratings, {
-		foreignKey: "ratingsable_id",
-		constraints: false,
-		scope: { ratingsable_type: "ProductsNormals" },
-	})
-	ratings: unknown;
+    @HasMany(() => Comments, {
+        foreignKey: "commentsable_id",
+        constraints: false,
+        scope: { commentsable_type: "ProductsNormals" },
+    })
+    comments: unknown[];
 
-	@HasMany(() => Reactions, {
-		foreignKey: "ratingsable_id",
-		constraints: false,
-		scope: { ratingsable_type: "ProductsNormals" },
-	})
-	reactions: unknown;
+    @HasMany(() => Subcomments, {
+        foreignKey: "subcommentsable_id",
+        constraints: false,
+        scope: { commentsable_type: "ProductsNormals" },
+    })
+    subcomments: unknown[];
+
+    @HasMany(() => Ratings, {
+        foreignKey: "ratingsable_id",
+        constraints: false,
+        scope: { ratingsable_type: "ProductsNormals" },
+    })
+    ratings: unknown;
+
+    @HasMany(() => Reactions, {
+        foreignKey: "ratingsable_id",
+        constraints: false,
+        scope: { ratingsable_type: "ProductsNormals" },
+    })
+    reactions: unknown;
 }

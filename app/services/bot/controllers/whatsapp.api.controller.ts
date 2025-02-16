@@ -434,6 +434,10 @@ export class whatsappApiController {
                 telephone,
                 delay: 0,
             });
+            chats[`${empresa.slug}:${telephone}`] = [
+                ...(chats[`${empresa.slug}:${telephone}`] || []),
+                ["assistant", body.message],
+            ];
             return result;
         } catch (error) {
             throw new BadRequestException("POSIBLE ERROR: conectar a Whatsapp");

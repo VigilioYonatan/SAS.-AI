@@ -192,6 +192,7 @@ export const settingsSchema = object({
     products_limit_offer: number(),
     isEccomerce: boolean(),
     isLogin: boolean(),
+    isCuota: boolean(),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;
 

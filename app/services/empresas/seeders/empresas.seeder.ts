@@ -236,7 +236,7 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         isDolar: true,
         date_cuota: new Date(),
         payment_completed: true,
-        isProduction: true,
+        isProduction: false,
     };
 }
 

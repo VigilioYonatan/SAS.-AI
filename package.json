@@ -70,6 +70,7 @@
         "jsonwebtoken": "^9.0.2",
         "leaflet": "^1.9.4",
         "lightweight-charts": "^4.2.0",
+        "lite-youtube-embed": "^0.3.3",
         "memorystore": "^1.6.7",
         "mercadopago": "2.0.15",
         "million": "^2.6.4",

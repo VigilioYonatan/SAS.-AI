@@ -303,7 +303,7 @@ function ProductCardAdmin({ product, refetch }: ProductCardAdminProps) {
                         ) : (
                             <>
                                 {existProductInCart ? (
-                                    <span class="bg-black py-3  w-full text-white text-xs font-bold  flex justify-center">
+                                    <span class="added bg-black py-3  w-full text-white text-xs font-bold  flex justify-center">
                                         <i class="fa-solid fa-cart-shopping mr-2" />
                                         Añadido
                                     </span>

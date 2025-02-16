@@ -292,7 +292,7 @@ export async function initialMiddleware(
         money: Money;
         moneyValue: Record<Money, number>;
     } = { money: "LOCAL", moneyValue: { DOLARES: 1, LOCAL: 1 } };
-    if (empresa?.isDolar) {
+    if (!empresa?.isDolar) {
         const cookie = req.cookies.money ?? MONEYLOCAL;
         let DOLARES = JSON.parse(cache.get(`money:${empresa.slug}`) ?? "null");
         if (!DOLARES) {

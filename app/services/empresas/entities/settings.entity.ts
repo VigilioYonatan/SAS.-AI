@@ -262,6 +262,12 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
 
     @Column({
         type: DataType.BOOLEAN,
+        defaultValue: false,
+    })
+    isCuota: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
     })
     isProductWallpaper: boolean;
 

@@ -1,4 +1,4 @@
-import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
+import { formatMoney, subtotal, subtotalIgv } from "@/cart/libs/helpers";
 import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
@@ -20,7 +20,10 @@ import TitleSectionTwo from "@/web/components/TitleSectionTwo";
 import { printFileWithDimension } from "~/libs/upload";
 import { MetodosDePago } from "@/web/components/product/ProductView";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
-import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
+import {
+    ProductsNormalSchema,
+    ProductsNormalSchemaFromServer,
+} from "@/products/schemas/products_normal.schema";
 import { printProductVariant, ProductKeys } from "@/products/libs/helpers";
 import useAuthStore from "@/auth/stores/auth.store";
 import ProductRatingStore from "@/products/components/ProductRatingStore";
@@ -353,6 +356,59 @@ function ProductPage({
                                     subtotalIgv(product, true, discount.value)
                                 )}
                             </span>
+                            {(product as ProductsNormalSchema).cuota_config ? (
+                                <>
+                                    <p class="text-xs text-gray-500 font-semibold">
+                                        En{" "}
+                                        {
+                                            (product as ProductsNormalSchema)
+                                                .cuota_config?.months
+                                        }{" "}
+                                        cuotas de{" "}
+                                        {formatMoney(
+                                            (product as ProductsNormalSchema)
+                                                .cuota_config?.interes_enabled
+                                                ? storageEmpresa!.enabled_igv
+                                                    ? subtotal(
+                                                          (
+                                                              product as ProductsNormalSchema
+                                                          ).cuota_config
+                                                              ?.price!,
+                                                          storageEmpresa!.igv,
+                                                          true
+                                                      )
+                                                    : (
+                                                          product as ProductsNormalSchema
+                                                      ).cuota_config?.price!
+                                                : subtotalIgv(product, false) /
+                                                      (
+                                                          product as ProductsNormalSchema
+                                                      ).cuota_config?.months! ||
+                                                      1
+                                        )}
+                                        {!(product as ProductsNormalSchema)
+                                            .cuota_config?.interes_enabled
+                                            ? " sin interés"
+                                            : ""}{" "}
+                                    </p>
+                                    <a
+                                        href={`/cart?items=${JSON.stringify([
+                                            {
+                                                id: (
+                                                    product as ProductsNormalSchema
+                                                ).id,
+                                                variant:
+                                                    producto.value.variant?.id,
+                                                isCuota: true,
+                                                quantity: 5,
+                                            },
+                                        ])}`}
+                                        class="underline text-xs text-gray-500 font-semibold"
+                                    >
+                                        Pagar a cuotas
+                                    </a>
+                                </>
+                            ) : null}
                         </div>{" "}
                         <span
                             class={`${
@@ -731,7 +787,7 @@ function ProductPage({
                                                     )}
                                                 </button>
                                             ) : (
-                                                <span class=" flex gap-2 items-center justify-center w-full bg-secondary border-r border-primary  font-bold  py-3 text-white shadow rounded-md">
+                                                <span class="added flex gap-2 items-center justify-center w-full bg-secondary border-r border-primary  font-bold  py-3 text-white shadow rounded-md">
                                                     <span> Añadido </span>
                                                 </span>
                                             )}{" "}
@@ -926,7 +982,7 @@ function ProductPage({
                                         }`}
                                     >
                                         <thead>
-                                            <tr class="h-[30px]">
+                                            <tr class="h-[40px]">
                                                 <th class="text-sm bg-primary text-white font-semibold">
                                                     Nombre
                                                 </th>
@@ -940,7 +996,7 @@ function ProductPage({
                                             {product.characteristics.map(
                                                 (characteristic) => (
                                                     <tr
-                                                        class="text-[12px] odd:bg-background-light dark:odd:bg-background-dark"
+                                                        class="text-sm h-[40px] odd:bg-background-light dark:odd:bg-background-dark"
                                                         key={
                                                             characteristic.name
                                                         }

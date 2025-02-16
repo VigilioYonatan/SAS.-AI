@@ -5,7 +5,6 @@ import bcryptjs from "bcryptjs";
 import crypto from "node:crypto";
 import type { AuthForgotPasswordDto } from "../dtos/auth.forgot-password.dto";
 import type { AuthConfirmPasswordDto } from "../dtos/auth.confirm-password.dto";
-import { whatsappSendMessageApi } from "@/bot/api";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { BASE_URL } from "@/empresas/libs";
 import type { AuthRegisterDto } from "../dtos/auth.register.dto";
@@ -14,6 +13,7 @@ import { UsersApiService } from "@/users/services/users.api.service";
 import { ROLES } from "@/users/libs";
 import type { UsersStoreDto } from "@/users/dtos/users.store.dto";
 import enviroments from "~/config/enviroments.config";
+import { sendMessageToClient } from "@/bot/libs/ai";
 
 @Injectable()
 export class AuthApiService {
@@ -44,15 +44,16 @@ export class AuthApiService {
                 (w) => w.name === "docker"
             )!.name;
 
-            await whatsappSendMessageApi(empresa, name, {
-                telephone: `${empresa.dial_code}${user.telephone}@c.us`,
-                message: `Hola *${
+            await sendMessageToClient(
+                empresa,
+                name,
+                `${empresa.dial_code}${user.telephone}@c.us`,
+                `Hola *${
                     user.username
                 }*.\nRecupera tu contraseña aquí: ${BASE_URL(
                     empresa
-                )}/auth/forgot-password?token=${token}`,
-                delay: 3,
-            });
+                )}/auth/forgot-password?token=${token}`
+            );
         } catch (error) {
             throw new BadRequestException(
                 "La empresa no se conectó con whatsapp"
@@ -84,16 +85,16 @@ export class AuthApiService {
             const name = empresa.whatsapp_mode!.find(
                 (w) => w.name === "docker"
             )!.name;
-
-            await whatsappSendMessageApi(empresa, name, {
-                telephone: `${empresa.dial_code}${user.telephone}@c.us`,
-                message: `Hola *${
+            await sendMessageToClient(
+                empresa,
+                name,
+                `${empresa.dial_code}${user.telephone}@c.us`,
+                `Hola *${
                     user.username
                 }*.\nPara confirmar tu cuenta, ingresa al siguiente link:\n*${BASE_URL(
                     empresa
-                )}/auth/confirmed-account?token=${token}*`,
-                delay: 3,
-            });
+                )}/auth/confirmed-account?token=${token}*`
+            );
         } catch (error) {
             if (enviroments.NODE_ENV === "production") {
                 throw new BadRequestException(

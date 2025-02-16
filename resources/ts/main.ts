@@ -8,6 +8,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Alpine from "alpinejs";
 import "tiny-slider/dist/tiny-slider.css";
+import "lite-youtube-embed/src/lite-yt-embed.css";
+import "lite-youtube-embed/src/lite-yt-embed.js";
 
 Alpine.start();
 
