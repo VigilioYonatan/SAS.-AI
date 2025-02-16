@@ -135,10 +135,76 @@ function Plus() {
                         ) : null}
 
                         {/* Tarjetas Pequeñas */}
+                        {!storageEmpresa?.payment_completed &&
+                        storageEmpresa?.cuota ? (
+                            <ProductCard
+                                title="Negocio Digital Web -  CUOTAS"
+                                priceLocal={storageEmpresa!.cuota.monto_local}
+                                priceDolar={storageEmpresa!.cuota.monto_dolar}
+                                ico={
+                                    <p class="dark:text-gray-300 text-gray-700 text-6xl flex  flex-wrap gap-2 self-start  mb-3">
+                                        🛒
+                                    </p>
+                                }
+                                isMensual={false}
+                                link={`${enviroments.VITE_VIGILIO_WEB}/payment/${storageEmpresa?.slug}`}
+                            >
+                                {(() => {
+                                    const isShow = useSignal(false);
+                                    return (
+                                        <div>
+                                            <span class="text-sm text-gray-400 font-semibold">
+                                                {storageEmpresa!.cuota.cuota}{" "}
+                                                cuotas de{" "}
+                                                {
+                                                    storageEmpresa!.cuota
+                                                        .max_cuotas
+                                                }{" "}
+                                                cuotas
+                                            </span>
+                                            <div
+                                                className={`mt-4  ${
+                                                    isShow.value
+                                                        ? "max-h-auto delay-custom-1"
+                                                        : "max-h-[200px]"
+                                                }  overflow-hidden `}
+                                            >
+                                                <ul className="list-disc font-semibold  pl-5">
+                                                    {payments.web.map(
+                                                        (mensual) => (
+                                                            <li
+                                                                class="text-sm"
+                                                                key={mensual}
+                                                            >
+                                                                {mensual}
+                                                            </li>
+                                                        )
+                                                    )}
+                                                </ul>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                class="font-semibold mt-2 text-xs underline text-primary"
+                                                onClick={() => {
+                                                    isShow.value =
+                                                        !isShow.value;
+                                                }}
+                                            >
+                                                {isShow.value ? (
+                                                    <>Ocultar</>
+                                                ) : (
+                                                    "Ver más"
+                                                )}
+                                            </button>
+                                        </div>
+                                    );
+                                })()}
+                            </ProductCard>
+                        ) : null}
                         <ProductCard
-                            title="Suscripción Normal I.A"
-                            priceLocal={price!.local.mensual}
-                            priceDolar={price!.dolar.mensual}
+                            title="Implementación Inteligencia Artificial"
+                            priceLocal={0}
+                            priceDolar={0}
                             ico={
                                 <p class="dark:text-gray-300 text-gray-700 text-base flex  flex-wrap gap-2 self-start  mb-3">
                                     <i class="fa-brands fa-whatsapp text-4xl" />
@@ -146,9 +212,7 @@ function Plus() {
                                     <i class="fas fa-globe  text-4xl" />
                                 </p>
                             }
-                            link={`${enviroments.VITE_VIGILIO_WEB}/payment/${
-                                storageEmpresa?.slug
-                            }?type=${"mensual" as TypePayment}`}
+                            isMensual={false}
                         >
                             {(() => {
                                 const isShow = useSignal(false);
@@ -190,37 +254,6 @@ function Plus() {
                                     </div>
                                 );
                             })()}
-                            <div class="flex flex-col  my-2">
-                                <span
-                                    class={`text-sm font-semibold ${
-                                        restarDays(
-                                            NOW().toDate(),
-                                            storageEmpresa!.payments.mensual
-                                                .date as Date,
-                                            "day"
-                                        ) <= 3
-                                            ? "text-danger"
-                                            : ""
-                                    }`}
-                                >
-                                    Culmina en{" "}
-                                    <b>
-                                        {restarDays(
-                                            NOW().toDate(),
-                                            storageEmpresa!.payments.mensual
-                                                .date as Date,
-                                            "day"
-                                        )}{" "}
-                                    </b>
-                                    Días
-                                </span>
-                                <span class="text-sm font-semibold">
-                                    {formatDateTwo(
-                                        storageEmpresa!.payments.mensual
-                                            .date as Date
-                                    )}
-                                </span>
-                            </div>
                         </ProductCard>
                         {price!.local.facturacion ? (
                             <ProductCard
@@ -305,7 +338,7 @@ function Plus() {
                         {/* end redes */}
                         <ProductCard
                             isMensual={false}
-                            title="10 millones de Tokens I.A"
+                            title="5 millones de Tokens I.A"
                             priceLocal={price!.local.tokens!}
                             priceDolar={price!.dolar.tokens!}
                             ico={
@@ -515,7 +548,7 @@ interface ProductCardProps {
     children: JSX.Element | JSX.Element[];
     ico: JSX.Element | JSX.Element[];
     isMensual?: boolean;
-    link: string;
+    link?: string;
     priceLocal: number;
     priceDolar: number;
 }
@@ -548,7 +581,10 @@ function ProductCard({
                     </div>
                 </p>
                 {children}
-                {title === "Sistema de Finanzas" &&
+                {[
+                    "Implementación Inteligencia Artificial",
+                    "Sistema de Finanzas",
+                ].includes(title) &&
                 restarDays(
                     NOW().toDate(),
                     TimePeru(storageEmpresa!.createdAt as Date).toDate(),
@@ -627,6 +663,15 @@ function Redes({ vigilioServices }: RedesProps) {
                     target="_blank"
                 >
                     <i class="fa-brands fa-linkedin text-xl" />
+                </a>
+            ) : null}
+            {vigilioServices.data?.information.tiktok ? (
+                <a
+                    href={vigilioServices.data?.information.tiktok}
+                    rel="noreferrer"
+                    target="_blank"
+                >
+                    <i class="fa-brands fa-tiktok text-xl" />
                 </a>
             ) : null}
         </div>

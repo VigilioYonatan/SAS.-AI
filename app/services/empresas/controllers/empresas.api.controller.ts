@@ -18,6 +18,7 @@ import {
     date,
     mergeAsync,
     nullable,
+    number,
     object,
     objectAsync,
     omitAsync,
@@ -129,8 +130,14 @@ export class EmpresasApiController {
                 secure: string(),
                 enabled_zoho_mail: boolean(),
                 payment_completed: boolean(),
-                date_cuota: nullable(
-                    coerce(date(), (val) => new Date(val as Date))
+                cuota: nullable(
+                    object({
+                        monto_local: number(),
+                        monto_dolar: number(),
+                        cuota: number(),
+                        max_cuotas: number(),
+                        date: coerce(date(), (val) => new Date(val as Date)),
+                    })
                 ),
             }),
         ])
@@ -146,7 +153,13 @@ export class EmpresasApiController {
             secure: string;
             enabled_zoho_mail: boolean;
             payment_completed: boolean;
-            date_cuota: Date;
+            cuota: {
+                monto_local: number;
+                monto_dolar: number;
+                cuota: number;
+                max_cuotas: number;
+                date: Date;
+            } | null;
         }
     ) {
         const result = await this.empresaApiService.paymentUpdate(

@@ -33,6 +33,6 @@ export const empresasUpdateDto = omitAsync(empresasSchema, [
     "enabled_zoho_mail",
     "isProduction",
     "payment_completed",
-    "date_cuota",
+    "cuota",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;

@@ -398,7 +398,15 @@ export const empresasSchema = object({
     isProduction: boolean(),
     model_ai: union([literal("open-ai"), literal("deepseek")]),
     payment_completed: boolean(),
-    date_cuota: nullable(coerce(date(), (val) => new Date(val as Date))),
+    cuota: nullable(
+        object({
+            monto_local: number(),
+            monto_dolar: number(),
+            cuota: number(),
+            max_cuotas: number(),
+            date: coerce(date(), (val) => new Date(val as Date)),
+        })
+    ),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

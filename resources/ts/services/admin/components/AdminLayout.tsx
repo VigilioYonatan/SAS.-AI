@@ -665,7 +665,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
                                     <i class="fas fa-exclamation-circle" />
                                     <div class="dark:bg-admin-paper-dark p-2 w-[200px] dark:text-white  group-hover:block hidden absolute top-1 -right-36 md:right-0 z-[99] rounded-md text-xs bg-white text-black">
                                         <span>
-                                            Tu {fechasVencidas()} está apunto de
+                                            {fechasVencidas()} está apunto de
                                             vencer.
                                         </span>
                                     </div>

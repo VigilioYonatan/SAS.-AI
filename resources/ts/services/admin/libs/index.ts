@@ -199,8 +199,33 @@ export function driverInitial() {
     driverA.drive();
 }
 
-type Pay = "mensual" | "facturacion" | "redes" | "tienda" | "tokens";
+type Pay = "mensual" | "facturacion" | "redes" | "tienda" | "tokens" | "web";
 export const payments: Record<Pay, string[]> = {
+    web: [
+        "Diseño Web propio a la medida de tu negocio.",
+        "Sistema de Finanzas 💰.",
+        "Asistente Virtual con I.A.",
+        "WhatsApp API Permanente.",
+        "Aplicativo Móvil - PWA 📱.",
+        "Local, Mesas y Pisos para Restaurantes (opcional).",
+        "Usuarios y Clientes ilimitados.",
+        "Productos, Marcas y Categorias ilimitados.",
+        "Carrito de Compra (opcional).",
+        "Servicios ilimitados.",
+        "Ventas Local y Delivery.",
+        "Notificaciones de tus pedidos.",
+        "Whatsapp CRM - Enviar mensajes masivos.",
+        "Pasarelas de Pagos.",
+        "Noticias y Publicaciones.",
+        "Gestión de órdenes o pedidos ERP.",
+        "Imprime tus comprobante de pago POS.",
+        "Herramientas y Animaciones.",
+        "Vender en Todo el País (opcional)",
+        "Vender en dólares (opcional)",
+        "Gestión de órdenes o pedidos ERP.",
+        "Imprime tus comprobante de pago POS.",
+        "Soporte y Actualizaciones.",
+    ],
     mensual: [
         "Dominio Web - 1 año Gratis.",
         "WhatsApp 1 - año Gratis.",

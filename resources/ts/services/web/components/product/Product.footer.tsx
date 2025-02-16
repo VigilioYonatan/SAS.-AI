@@ -154,7 +154,7 @@ function ProductFooter({
                             }}
                         >
                             {product.existProductInCart ? (
-                                <span>
+                                <span class="added-button">
                                     {!isEccomerce ? (
                                         <i
                                             className={`${storageEmpresa?.setting.type_cart} mr-2 text-md`}

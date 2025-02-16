@@ -9,6 +9,7 @@ import type { EmpresasFacturacionUpdateDto } from "../dtos/empresas.facturacion.
 import type { EmpresasIAUpdateDto } from "../dtos/empresas.ia.update.dto";
 import type {
     ContactsSchema,
+    EmpresasSchema,
     GroupWhatsapp,
     Payments,
     ScheduleSchema,
@@ -442,8 +443,8 @@ export class EmpresasApiService {
                 "enabled_zoho_mail",
                 "isProduction",
                 "payment_completed",
-                "date_cuota",
-            ],
+                "cuota",
+            ] as (keyof EmpresasSchema)[],
         });
         if (!data) throw new NotFoundException(`no se encontró ${slug}`);
         return {
@@ -730,7 +731,13 @@ export class EmpresasApiService {
             secure: string;
             enabled_zoho_mail: boolean;
             payment_completed: boolean;
-            date_cuota: Date;
+            cuota: {
+                monto_local: number;
+                monto_dolar: number;
+                cuota: number;
+                max_cuotas: number;
+                date: Date;
+            } | null;
         }
     ) {
         if (paymentDto.secure !== "dokixd123@")
@@ -742,6 +749,7 @@ export class EmpresasApiService {
             tokenDeepSeek,
             secure,
             enabled_zoho_mail,
+            payment_completed,
             ...rest
         } = paymentDto;
         await data.update({
@@ -752,7 +760,8 @@ export class EmpresasApiService {
                 deekseek_ai: paymentDto.tokenDeepSeek,
             },
             enabled_zoho_mail,
-            date_cuota: paymentDto.date_cuota,
+            payment_completed,
+            cuota: paymentDto.cuota,
         });
 
         cache.delete(`EMPRESA:${slug}`);

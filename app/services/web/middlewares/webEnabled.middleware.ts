@@ -15,8 +15,9 @@ export async function webEnabledMiddleware(
         if (
             !emp.enabled_catalogo ||
             (!emp.payment_completed &&
-                emp.date_cuota &&
-                restarDays(emp, NOW(emp), emp.date_cuota, "day") < -3)
+                emp.cuota &&
+                emp.cuota.date &&
+                restarDays(emp, NOW(emp), emp.cuota.date, "day") < -3)
         ) {
             const html = `<div style="width:100%;height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;">
                                     <h1>En este momento no estamos no estamos disponible </h1>

@@ -231,10 +231,10 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     payment_completed: boolean;
 
     @Column({
-        type: DataType.DATE,
+        type: DataType.JSON,
         defaultValue: null,
     })
-    date_cuota: Date | null;
+    cuota: EmpresasSchema["cuota"] | null;
 
     @Column({
         type: DataType.DATE,

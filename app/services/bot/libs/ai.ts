@@ -114,8 +114,8 @@ export async function isWhatsappTelegramIA(
     );
     const vencioWebCuota =
         !emp.payment_completed &&
-        emp.date_cuota &&
-        restarDays(emp, NOW(emp), emp.date_cuota, "day") < -3;
+        emp.cuota &&
+        restarDays(emp, NOW(emp), emp.cuota.date, "day") < -3;
 
     if (telephone) {
         const contact = emp!.contacts.find(
