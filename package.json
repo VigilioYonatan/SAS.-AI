@@ -41,6 +41,7 @@
         "@vigilio/sweet": "^1.1.2",
         "@vigilio/valibot": "^0.0.8",
         "alpinejs": "^3.14.5",
+        "animate.css": "^4.1.1",
         "axios": "^1.7.7",
         "bcryptjs": "^2.4.3",
         "canvas-confetti": "^1.9.3",

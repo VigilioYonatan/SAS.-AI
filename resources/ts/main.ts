@@ -10,6 +10,7 @@ import Alpine from "alpinejs";
 import "tiny-slider/dist/tiny-slider.css";
 import "lite-youtube-embed/src/lite-yt-embed.css";
 import "lite-youtube-embed/src/lite-yt-embed.js";
+import "animate.css";
 
 Alpine.start();
 
