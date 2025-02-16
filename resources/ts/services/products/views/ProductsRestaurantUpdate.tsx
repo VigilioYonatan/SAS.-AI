@@ -416,13 +416,13 @@ function ProductsRestaurantUpdate({
                                 title="Disponibilidad"
                                 question="Cuando no está habilitado los clientes NO podrán comprar NI VER el producto, ."
                             />{" "}
-                            <Form.control.toggle
+                            {/* <Form.control.toggle
                                 name={
                                     "shipping_free" as keyof ProductsRestaurantUpdateDto
                                 }
                                 title="¿Envio gratis?"
                                 question="No se le cobrará envio a este producto."
-                            />
+                            /> */}
                         </div>
                     </div>
 

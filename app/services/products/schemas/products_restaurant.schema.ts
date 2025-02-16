@@ -38,7 +38,6 @@ export const productsRestaurantSchema = objectAsync({
     images: nullable(array(filesSchema(productsImagesQualities))),
     category_id: number(),
     subcategory_id: nullable(number()),
-    shipping_free: boolean(),
     empresa_id: number(),
 });
 

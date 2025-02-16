@@ -36,7 +36,6 @@ export const productsRestaurantSchema = object({
     slug: string([minLength(1), minLength(3), maxLength(255)]), // slug
     images: nullable(array(filesSchema())),
     subcategory_id: nullable(number()),
-    shipping_free: boolean(),
     category_id: number(),
     empresa_id: number(),
 });
