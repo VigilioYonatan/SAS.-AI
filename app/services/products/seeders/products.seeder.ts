@@ -33,6 +33,8 @@ export async function productsSeeder(empresa_id: number) {
                 empresa_id: empresa_id,
                 cuota_config: null,
                 subcategory_id: null,
+                enabled_local: true,
+                enabled_web: true,
             })
         );
     }

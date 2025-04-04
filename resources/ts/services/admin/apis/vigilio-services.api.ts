@@ -57,12 +57,14 @@ export function vigilioServicesPricingQuery() {
                             tokens: number;
                             telegram: number;
                             email: number;
+                            language: number;
                         };
                         local: {
                             facturacion: number | null;
                             mensual: number;
                             tokens: number;
                             email: number;
+                            language: number;
                             telegram: number;
                         };
                     };

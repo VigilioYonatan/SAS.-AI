@@ -26,6 +26,7 @@ import WebNotificacion from "./WebNotificacion";
 import useMediaQuery from "~/hooks/useMediaQuery";
 import { iconCart, typeIcon1 } from "@/empresas/schemas/settings.schema";
 import MoneyChange from "./MoneyChange";
+import LanguageWidget from "./Language";
 
 interface HeaderProps {
     header: HeaderType;
@@ -245,6 +246,9 @@ function Header({ header }: HeaderProps) {
                         {header.totalProducts > 0 &&
                         storageEmpresa?.setting.header_type !== "search2" ? (
                             <SearchProducts />
+                        ) : null}
+                        {useMediaQuery("(min-width:1025px)") ? (
+                            <LanguageWidget />
                         ) : null}
                         <a
                             href="/auth/profile?type=favorites"

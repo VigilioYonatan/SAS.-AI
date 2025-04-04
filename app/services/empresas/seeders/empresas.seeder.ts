@@ -242,7 +242,9 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
             monto_dolar: 100,
         },
         payment_completed: false,
+        isOnlyScrapping: false,
         isProduction: false,
+        scrapping_id: 1,
     };
 }
 
@@ -483,6 +485,8 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
             monto_local: 400,
             monto_dolar: 100,
         },
+        scrapping_id: 1,
         payment_completed: false,
+        isOnlyScrapping: false,
     };
 }

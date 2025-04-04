@@ -181,6 +181,7 @@ export async function prompt(
     - Si te pid ayuda o consejos, puedes darle soluciones con nuestra base de datos
    - IMPORTANTE:  SIEMPRE RESPONDE AL MENSAJE ACTUAL, IGNORA LOS MENSAJES ANTERIORES .
    -  SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA si hablo ingles responde en ingles, etc SIEMPRE.
+   - IMPORTANTE!: Trata de escribir poco y responde mis preguntas, no sobrecargues las respuestas con informacion innecesario o que no te haya preguntado.
     NO ESCRIBAS ASÍ [imagen], o otras palabras encerrado en  [].
    - Si no deseo tener notificaciones en el celular o otro, puedes desactivarlo en tu perfil ${BASE_URL(
        empresa
@@ -236,6 +237,7 @@ export async function prompt(
           : "Despues de responderme ¿Tienes otra pregunta, Estoy aquí para ayudarte 😊?"
   }
 - IMPORTANTE: LEE primero estas reglas ANTES DE RESPONDERME SIEMPRE y no inventes datos,citas,pagos,preguntas, o otra cosa, etc que no estan en la BASES DE DATOS.
+- IMPORTANTE: SOLO respondeme preguntas que están la base de datos (sobre la empresa).
     `;
     // -OJO LAS CITAS de lA BASE DE DATOS ESTAN EN HORA FORMATO UNIVERSAL. asi que depende de mi país te fijas que fechas con hora estan ocupados.
 }

@@ -91,7 +91,6 @@ function ProductsNormalUpdate({
             ...rest
         } = product;
         const description = useSignal<string | null>(rest.description);
-
         const formProductsNormalUpdate = useForm<ProductsNormalUpdateDto>({
             resolver: valibotVigilio(productsNormalUpdateDto),
             mode: "all",
@@ -111,11 +110,11 @@ function ProductsNormalUpdate({
         const discount = formProductsNormalUpdate.watch("discount");
         const category_id = formProductsNormalUpdate.watch("category_id");
         const price = formProductsNormalUpdate.watch("price");
-        const cuota_config = formProductsNormalUpdate.watch("cuota_config");
-        const isCuota = formProductsNormalUpdate.watch("isCuota");
-        const interes_enabled = formProductsNormalUpdate.watch(
-            "cuota_config.interes_enabled"
-        );
+        // const cuota_config = formProductsNormalUpdate.watch("cuota_config");
+        // const isCuota = formProductsNormalUpdate.watch("isCuota");
+        // const interes_enabled = formProductsNormalUpdate.watch(
+        //     "cuota_config.interes_enabled"
+        // );
         const brandsIndexQuery = brandsIndexApi();
         const categoriesIndexQuery = categoriesIndexApi(false);
 
@@ -156,16 +155,16 @@ function ProductsNormalUpdate({
             categoriesSubcategoriesQuery.data,
             categoriesSubcategoriesQuery.isSuccess,
         ]);
-        useEffect(() => {
-            if (!isCuota) {
-                formProductsNormalUpdate.setValue("cuota_config", null);
-            }
-        }, [isCuota]);
-        useEffect(() => {
-            if (!interes_enabled) {
-                formProductsNormalUpdate.setValue("cuota_config.price", null);
-            }
-        }, [interes_enabled]);
+        // useEffect(() => {
+        //     if (!isCuota) {
+        //         formProductsNormalUpdate.setValue("cuota_config", null);
+        //     }
+        // }, [isCuota]);
+        // useEffect(() => {
+        //     if (!interes_enabled) {
+        //         formProductsNormalUpdate.setValue("cuota_config.price", null);
+        //     }
+        // }, [interes_enabled]);
         const formProductsNormalUpdateImages = useForm<ProductsUpdateImagesDto>(
             {
                 mode: "all",
@@ -297,7 +296,6 @@ function ProductsNormalUpdate({
             control: formProductsNormalUpdate.control,
             name: "characteristics",
         });
-
         component = (
             <div class="text-start  mt-6">
                 <div class="flex justify-between items-center mb-4 ">
@@ -433,7 +431,7 @@ function ProductsNormalUpdate({
                                 }
                             />
                         ) : null}{" "}
-                        {storageEmpresa?.setting.isCuota ? (
+                        {/* {storageEmpresa?.setting.isCuota ? (
                             <div class="w-full grid grid-cols-2 gap-1 md:grid-cols-4 [&>div:nth-child(1)]:!w-auto [&>div:nth-child(3)]:!w-auto ">
                                 <Form.control.toggle
                                     name={
@@ -596,23 +594,34 @@ function ProductsNormalUpdate({
                             </div>
                         ) : (
                             <></>
-                        )}
-                        <div class="w-full flex flex-row gap-2">
-                            <Form.control.toggle
-                                name={
-                                    "enabled" as keyof ProductsNormalUpdateDto
-                                }
-                                title="Disponibilidad"
-                                question="Cuando no está habilitado los clientes NO podrán comprar NI VER el producto, ."
-                            />
-                        </div>
+                        )} */}
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <Form.control.toggle
+                            name={"enabled" as keyof ProductsNormalUpdateDto}
+                            title="Disponibilidad"
+                            question="Cuando está habilitado los clientes podrán comprar el producto."
+                        />
+                        <Form.control.toggle
+                            name={
+                                "enabled_local" as keyof ProductsNormalUpdateDto
+                            }
+                            title="Disponible en tu Local"
+                            question="¿Disponible en tu tienda fisica?"
+                        />
+                        <Form.control.toggle
+                            name={
+                                "enabled_web" as keyof ProductsNormalUpdateDto
+                            }
+                            title="Disponible en tu Tienda Web"
+                            question="¿Disponible en tu Tienda Web - Virtual?"
+                        />
                     </div>
                     <Form.control.editor
                         name={"description" as keyof ProductsNormalUpdateDto}
                         title="Descripción"
                         change={description.value}
                     />
-
                     <div class="mt-4">
                         <span class="dark:text-white text-black text-xs font-bold">
                             Caracterísiticas

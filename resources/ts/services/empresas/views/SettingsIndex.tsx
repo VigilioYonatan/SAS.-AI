@@ -30,6 +30,8 @@ import { Input, pick } from "@vigilio/valibot";
 import {
     hamburgers,
     hostSchema,
+    languagesSelect,
+    languagesSelectType,
     SettingsSchema,
 } from "../schemas/settings.schema";
 import useAuthStore from "@/auth/stores/auth.store";
@@ -93,6 +95,7 @@ function SettingsIndex() {
                 const { ...rest } = setting;
                 return {
                     ...rest,
+                    isActive: !!setting.multi_lenguaje,
                 };
             }, []),
         });
@@ -144,6 +147,7 @@ function SettingsIndex() {
         const bg_color = settingsUpdateform.watch("bg_color");
         const type_arrow = settingsUpdateform.watch("type_arrow");
         const type_loader = settingsUpdateform.watch("type_loader");
+        const isActive = settingsUpdateform.watch("isActive");
         const bg_color_background = settingsUpdateform.watch(
             "bg_color_background"
         );
@@ -170,6 +174,7 @@ function SettingsIndex() {
         const type_map = settingsUpdateform.watch("type_map");
         const type_star = settingsUpdateform.watch("type_star");
         const type_card = settingsUpdateform.watch("type_card");
+        const multi_lenguaje = settingsUpdateform.watch("multi_lenguaje");
         const themeStore = useThemeStore();
         const cartStore = useCartStore();
         const headerDropdown = useDropdown();
@@ -237,6 +242,17 @@ function SettingsIndex() {
                 }
             });
         }
+
+        useEffect(() => {
+            if (!isActive) {
+                settingsUpdateform.setValue("multi_lenguaje", null);
+                return;
+            }
+            settingsUpdateform.setValue(
+                "multi_lenguaje",
+                setting.multi_lenguaje
+            );
+        }, [isActive]);
 
         component = (
             <>
@@ -1775,37 +1791,144 @@ function SettingsIndex() {
                                 </div>
                             </div>
                             <div>
-                                <span class="text-xs dark:text-white font-semibold">
-                                    Tipo Arrow
-                                </span>
-                                <div class="flex gap-2 flex-wrap">
-                                    {(
-                                        [
-                                            "first",
-                                            "second",
-                                            "third",
-                                        ] as (typeof type_arrow)[]
-                                    ).map((arrow) => (
-                                        <button
-                                            key={arrow}
-                                            class={`min-w-[60px] h-[60px]  rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
-                                                type_arrow === arrow
-                                                    ? "bg-paper-light dark:bg-admin-terciary"
-                                                    : ""
-                                            }`}
-                                            type="button"
-                                            onClick={() =>
-                                                settingsUpdateform.setValue(
-                                                    "type_arrow",
-                                                    arrow
-                                                )
-                                            }
-                                        >
-                                            <SamplePrevArrow
-                                                isSetting={arrow}
-                                            />
-                                        </button>
-                                    ))}
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Tipo Arrow
+                                    </span>
+                                    <div class="flex gap-2 flex-wrap">
+                                        {(
+                                            [
+                                                "first",
+                                                "second",
+                                                "third",
+                                            ] as (typeof type_arrow)[]
+                                        ).map((arrow) => (
+                                            <button
+                                                key={arrow}
+                                                class={`min-w-[60px] h-[60px]  rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300 ${
+                                                    type_arrow === arrow
+                                                        ? "bg-paper-light dark:bg-admin-terciary"
+                                                        : ""
+                                                }`}
+                                                type="button"
+                                                onClick={() =>
+                                                    settingsUpdateform.setValue(
+                                                        "type_arrow",
+                                                        arrow
+                                                    )
+                                                }
+                                            >
+                                                <SamplePrevArrow
+                                                    isSetting={arrow}
+                                                />
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-xs dark:text-white font-semibold">
+                                        Idioma
+                                    </span>
+                                    <div class="flex gap-2 flex-wrap">
+                                        <Form.control.toggle
+                                            title=""
+                                            name={"isActive"}
+                                            question="¿La web tendrá traductor de idiomas?"
+                                        />
+                                        {isActive ? (
+                                            <div class="grid grid-cols-1">
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <Form.control.select
+                                                        title="Type Language Button"
+                                                        name={
+                                                            "multi_lenguaje.type" as keyof SettingsUpdateDto
+                                                        }
+                                                        array={languagesSelectType.map(
+                                                            (val) => ({
+                                                                key: val,
+                                                                value: val,
+                                                            })
+                                                        )}
+                                                        placeholder="Escoger tipo de lenguaje"
+                                                    />
+                                                    <Form.control.select
+                                                        title="Default Language"
+                                                        name={
+                                                            "multi_lenguaje.default" as keyof SettingsUpdateDto
+                                                        }
+                                                        array={languagesSelect.map(
+                                                            (val) => ({
+                                                                key: val,
+                                                                value: val,
+                                                            })
+                                                        )}
+                                                        placeholder="Escoger default de lenguaje"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <span class="text-xs dark:text-white font-semibold">
+                                                        Lenguajes
+                                                    </span>
+                                                    <div class=" grid grid-cols-7 gap-2">
+                                                        {languagesSelect.map(
+                                                            (lang) => {
+                                                                const exist =
+                                                                    multi_lenguaje?.languages.some(
+                                                                        (v) =>
+                                                                            v ===
+                                                                            lang
+                                                                    );
+
+                                                                return (
+                                                                    <button
+                                                                        class={`${
+                                                                            exist
+                                                                                ? "bg-paper-light dark:bg-admin-terciary font-semibold  dark:text-white"
+                                                                                : ""
+                                                                        } rounded-md hover:bg-paper-light hover:dark:bg-admin-terciary border border-gray-300  font-semibold text-xs dark:text-white`}
+                                                                        key={
+                                                                            lang
+                                                                        }
+                                                                        onClick={() => {
+                                                                            if (
+                                                                                exist
+                                                                            ) {
+                                                                                const filterLanguages =
+                                                                                    multi_lenguaje?.languages.filter(
+                                                                                        (
+                                                                                            v
+                                                                                        ) =>
+                                                                                            v !==
+                                                                                            lang
+                                                                                    );
+                                                                                settingsUpdateform.setValue(
+                                                                                    "multi_lenguaje.languages",
+                                                                                    filterLanguages ||
+                                                                                        []
+                                                                                );
+                                                                                return;
+                                                                            }
+                                                                            settingsUpdateform.setValue(
+                                                                                "multi_lenguaje.languages",
+                                                                                [
+                                                                                    ...(multi_lenguaje?.languages ||
+                                                                                        []),
+                                                                                    lang,
+                                                                                ]
+                                                                            );
+                                                                        }}
+                                                                        type="button"
+                                                                    >
+                                                                        {lang}
+                                                                    </button>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex flex-col">

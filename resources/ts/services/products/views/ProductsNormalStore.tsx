@@ -63,14 +63,17 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
             empresa_id: empresa.state!.id,
             subcategory_id: null,
             cuota_config: null,
+            enabled_local: true,
+            enabled_web: true,
+            isCuota: false,
         },
     });
     const description = useSignal<string | null>(null);
     const category_id = productsNormalStoreDtoForm.watch("category_id");
-    const isCuota = productsNormalStoreDtoForm.watch("isCuota");
-    const interes_enabled = productsNormalStoreDtoForm.watch(
-        "cuota_config.interes_enabled"
-    );
+    // const isCuota = productsNormalStoreDtoForm.watch("isCuota");
+    // const interes_enabled = productsNormalStoreDtoForm.watch(
+    //     "cuota_config.interes_enabled"
+    // );
 
     const productsNormalStoreMutation = productsNormalStoreApi();
     const aiProductQuery = aiProductApi();
@@ -112,16 +115,16 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
         categoriesSubcategoriesQuery.data,
         categoriesSubcategoriesQuery.isSuccess,
     ]);
-    useEffect(() => {
-        if (!isCuota) {
-            productsNormalStoreDtoForm.setValue("cuota_config", null);
-        }
-    }, [isCuota]);
-    useEffect(() => {
-        if (!interes_enabled) {
-            productsNormalStoreDtoForm.setValue("cuota_config.price", null);
-        }
-    }, [interes_enabled]);
+    // useEffect(() => {
+    //     if (!isCuota) {
+    //         productsNormalStoreDtoForm.setValue("cuota_config", null);
+    //     }
+    // }, [isCuota]);
+    // useEffect(() => {
+    //     if (!interes_enabled) {
+    //         productsNormalStoreDtoForm.setValue("cuota_config.price", null);
+    //     }
+    // }, [interes_enabled]);
 
     const brandsSelect = useMemo(() => {
         if (brandsIndexQuery.isSuccess && brandsIndexQuery.data) {
@@ -135,7 +138,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
     const name = productsNormalStoreDtoForm.watch("name");
     const discount = productsNormalStoreDtoForm.watch("discount");
     const price = productsNormalStoreDtoForm.watch("price");
-    const cuota_config = productsNormalStoreDtoForm.watch("cuota_config");
+    // const cuota_config = productsNormalStoreDtoForm.watch("cuota_config");
 
     useEffect(() => {
         if (name) {
@@ -411,7 +414,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                             </div>
                         </div>
                     </div>
-                    {storageEmpresa?.setting.isCuota ? (
+                    {/* {storageEmpresa?.setting.isCuota ? (
                         <div class="w-full grid grid-cols-2 gap-1 md:grid-cols-4 [&>div:nth-child(1)]:!w-auto [&>div:nth-child(3)]:!w-auto ">
                             <Form.control.toggle
                                 name={"isCuota" as keyof ProductsNormalStoreDto}
@@ -565,15 +568,9 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                         </div>
                     ) : (
                         <></>
-                    )}
+                    )} */}
 
                     <div class="w-full flex flex-col  md:flex-row gap-2">
-                        <Form.control.toggle
-                            name={"enabled" as keyof ProductsNormalStoreDto}
-                            title="Disponibilidad"
-                            question="Cuando está habilitado los clientes podrán comprar el producto."
-                        />
-
                         <div class="w-full flex gap-2 items-center">
                             <Form.control.select
                                 name={
@@ -654,7 +651,25 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                             </div>
                         ) : null}
                     </div>
-
+                    <div class="grid grid-cols-3 gap-2">
+                        <Form.control.toggle
+                            name={"enabled" as keyof ProductsNormalStoreDto}
+                            title="Disponibilidad"
+                            question="Cuando está habilitado los clientes podrán comprar el producto."
+                        />
+                        <Form.control.toggle
+                            name={
+                                "enabled_local" as keyof ProductsNormalStoreDto
+                            }
+                            title="Disponible en tu Local"
+                            question="¿Disponible en tu tienda fisica?"
+                        />
+                        <Form.control.toggle
+                            name={"enabled_web" as keyof ProductsNormalStoreDto}
+                            title="Disponible en tu Tienda Web"
+                            question="¿Disponible en tu Tienda Web - Virtual?"
+                        />
+                    </div>
                     <Form.control.editor
                         name={"description" as keyof ProductsNormalStoreDto}
                         title="Descripción"

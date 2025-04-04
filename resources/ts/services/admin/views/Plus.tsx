@@ -30,6 +30,7 @@ import { useQuery } from "@vigilio/preact-fetching";
 import { colorByOrdersId } from "@/orders/libs";
 import { PdfImage } from "~/config/settings";
 import LoaderSubmit from "~/components/LoaderSubmit";
+import { languagesSelect } from "@/empresas/schemas/settings.schema";
 export type TypePayment =
     | "mensual"
     | "tienda"
@@ -37,7 +38,8 @@ export type TypePayment =
     | "telegram"
     | "tokens"
     | "finanza"
-    | "email";
+    | "email"
+    | "language";
 function Plus() {
     const vigilioServices = vigilioServicesQuery();
     const pricing = vigilioServicesPricingQuery();
@@ -452,6 +454,48 @@ function Plus() {
                                 lograr tus objetivos económicos.
                             </span>
                         </ProductCard>
+                        {!storageEmpresa?.setting.multi_lenguaje ? (
+                            <ProductCard
+                                isMensual={false}
+                                title="MultiLenguaje"
+                                priceLocal={price!.local.language!}
+                                priceDolar={price!.dolar.language!}
+                                ico={
+                                    <p class="dark:text-gray-300 text-gray-700 text-base flex  flex-wrap gap-2 self-start  mb-3">
+                                        <i class="fas fa-language text-4xl" />
+                                    </p>
+                                }
+                                link={`${
+                                    enviroments.VITE_VIGILIO_WEB
+                                }/payment/${storageEmpresa?.slug}?type=${
+                                    "language" as TypePayment
+                                }`}
+                            >
+                                <span class="font-semibold ">
+                                    Una herramienta que permite que tu web sea
+                                    multilingüe. Un widget con un botón para
+                                    seleccionar el idioma de traducción de tu
+                                    sitio web en más de 20 idiomas.
+                                    <button
+                                        type="button"
+                                        class="group relative bg-black text-white w-[20px] rounded-full flex justify-center items-center h-[20px] group"
+                                    >
+                                        ?
+                                        <div class="absolute bg-black rounded-lg p-4 text-white w-[300px] text-xs left-0 hidden group-hover:block ">
+                                            Idiomas disponible para tu web
+                                            <br />
+                                            <div class="flex flex-wrap gap-1">
+                                                {languagesSelect.map((lang) => (
+                                                    <span key={lang}>
+                                                        {lang},{" "}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </button>
+                                </span>
+                            </ProductCard>
+                        ) : null}
                     </div>
                 </div>
                 <div class="mt-4 flex justify-between flex-col md:flex-row">

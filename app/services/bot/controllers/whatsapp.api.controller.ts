@@ -22,7 +22,7 @@ import {
 import { delay, randomNumber, terminal } from "~/libs/helpers";
 import {
     buenosDias,
-    featuresIA,
+    cleanPrompt,
     gracias,
     isWhatsappTelegramIA,
     updateTokensEmpresa,
@@ -46,6 +46,7 @@ import enviroments from "~/config/enviroments.config";
 import cache from "@vigilio/express-core/cache";
 import { objectAsync, string } from "@vigilio/valibot";
 import { Pipe } from "@vigilio/express-core/valibot";
+import { CompletionUsage } from "openai/resources";
 
 export let chats: Record<string, ["assistant" | "user", string][]> = {};
 export const chatsWait: Record<string, string[]> = {};
@@ -130,7 +131,7 @@ export class whatsappApiController {
             if (!info?.enabledBot)
                 throw new BadRequestException("whatsapp desabilitado");
 
-            const { clientVigilio, latestEmpresaUsage, empresa } = whatsapp;
+            const { latestEmpresaUsage, empresa } = whatsapp;
             if (body.isGroup)
                 throw new BadRequestException("whatsapp no permited"); //no se admite grupos
             // message.type: chat,sticker,ptt,image,document
@@ -197,7 +198,6 @@ export class whatsappApiController {
                 empresa.inteligenceArtificial.timer.start,
                 empresa.inteligenceArtificial.timer.finish
             );
-            console.log(JSON.stringify(empresa, null, 3));
 
             // imporante que esto este acá
             chats[`${info.slug}:${userId}`] = [
@@ -320,13 +320,15 @@ export class whatsappApiController {
                 const messageActual = `Mensajes Anteriores: ${messageAnterior.join(
                     ", "
                 )}.\n
-				Mensaje Actual: ${content}. escribe formato whatsapp`;
+				Mensaje Actual: ${content}.`;
                 const prompt = await promptReplace(
                     whatsapp,
                     messageActual as string,
                     empresa
                 );
-
+                let contenido = "";
+                let removeContent = "";
+                let usages: CompletionUsage | null = null;
                 const completion = await openAis[
                     info.slug
                 ].chat.completions.create({
@@ -341,54 +343,73 @@ export class whatsappApiController {
                             role: "assistant",
                             content: "Entendido, Empezemos.",
                         }, // getting start
-                        ...messages.slice(
-                            -empresa.inteligenceArtificial.memory
-                        ), // solos los ultimo 7 mensajes
+                        ...messages
+                            .map((b) => ({
+                                ...b,
+                                content: `${b.content} 'Escribe en formato whatsapp y trata de escribir poco'`,
+                            }))
+                            .slice(-empresa.inteligenceArtificial.memory), // solos los ultimo 7 mensajes
                     ],
+                    stream: true,
+                    stream_options: { include_usage: true },
                 });
-
-                // actualizamos uso de tokens
-                await updateTokensEmpresa(
-                    empresa,
-                    latestEmpresaUsage,
-                    completion
-                );
-                // get message ai
-                const completionText = completion.choices[0].message.content!;
-
-                const [removeNote, urlExtraidas] = await featuresIA(
-                    empresa,
-                    completionText,
-                    true
-                );
-
-                chats[`${info.slug}:${userId}`] = [
-                    ...(chats[`${info.slug}:${userId}`] || []),
-                    ["assistant", removeNote],
-                ];
-
-                if (empresa.inteligenceArtificial.isChunk) {
-                    const chunks = removeNote.split(/(?<!\d)\.\s+/g);
-                    for (const chunk of chunks) {
-                        await whatsappSendMessageApi(
-                            empresa,
-                            whatsapp_mode.name,
-                            {
-                                message: chunk,
-                                telephone: userId,
-                                options: opt,
-                                delay: 2,
-                            }
-                        );
+                let contenido2 = "";
+                const texts: string[] = [];
+                for await (const chunk of completion) {
+                    let texto = "";
+                    if (chunk.usage) {
+                        usages = chunk.usage;
                     }
-                } else {
+                    const content = chunk.choices[0]?.delta?.content || "";
+
+                    contenido += content;
+                    contenido2 += content;
+                    [removeContent] = cleanPrompt(empresa, contenido, false);
+                    texto = contenido2;
+                    const parrafos = texto.split(/\n\s*\n/);
+                    if (
+                        empresa.inteligenceArtificial.isChunk &&
+                        parrafos.length > 1
+                    ) {
+                        for (const parrafo of parrafos) {
+                            if (parrafo.length) {
+                                await whatsappSendMessageApi(
+                                    empresa,
+                                    whatsapp_mode.name,
+                                    {
+                                        message: parrafo,
+                                        telephone: userId,
+                                        options: opt,
+                                        delay: 0,
+                                    }
+                                );
+                            }
+                        }
+                        contenido2 = contenido2
+                            .replace(/[^.!?]+[.!?]+/g, "")
+                            .trim();
+                    }
+                }
+                if (!empresa.inteligenceArtificial.isChunk) {
                     await whatsappSendMessageApi(empresa, whatsapp_mode.name, {
-                        message: removeNote,
+                        message: removeContent,
                         telephone: userId,
                         options: opt,
-                        delay: 2,
+                        delay: 0,
                     });
                 }
+
+                await updateTokensEmpresa(empresa, latestEmpresaUsage, usages!);
+                // const removeNote = await featuresIA(empresa, contenido);
+                const [_, urlExtraidas] = cleanPrompt(
+                    empresa,
+                    contenido,
+                    false
+                );
+                chats[`${info.slug}:${userId}`] = [
+                    ...(chats[`${info.slug}:${userId}`] || []),
+                    ["assistant", "removeNote"],
+                ];
 
                 // enviar imagen
                 if (urlExtraidas.length < 2) {
@@ -400,7 +421,7 @@ export class whatsappApiController {
                             telephone: userId,
                             url,
                             options,
-                            delay: 1,
+                            delay: 0,
                         });
                     }
                 }

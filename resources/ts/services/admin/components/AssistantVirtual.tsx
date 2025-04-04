@@ -6,15 +6,17 @@ import { useForm } from "react-hook-form";
 import { linkVigilio } from "~/config/settings";
 import useCopyToClipboard from "~/hooks/useCopyToClipboard";
 import usePressTimeOut from "~/hooks/usePressTimeOut";
-import { delay, removeTextHTML } from "~/libs/helpers";
+import { removeTextHTML } from "~/libs/helpers";
 import useSocketStore from "~/stores/socket.store";
 
 interface AssistantVirtualProps {
     onClose: () => void;
     isOpen: boolean;
 }
+export type ChatIA = [string, "user" | "assistant", string];
+
 function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
-    const chats = useSignal<["user" | "assistant", string][]>([]);
+    const chats = useSignal<ChatIA[]>([]);
     const messageForm = useForm<{ message: string }>();
     const chatBox = useRef<HTMLDivElement | null>(null);
     const { io, connectSocket } = useSocketStore();
@@ -27,9 +29,9 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
         if (isLoading.value) return;
         isLoading.value = true;
         messageForm.reset();
-        chats.value = [...chats.value, ["user", data.message]];
-        io?.emit("chat:send-message", data);
-        await delay(1);
+        const id = Date.now().toString(32).slice(4);
+        chats.value = [...chats.value, [id, "user", data.message]];
+        io?.emit("chat:send-message", { ...data, id });
     }
     function onScrolling() {
         const chatContainer = chatBox.current;
@@ -49,20 +51,28 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
     }, [message]);
 
     useEffect(() => {
-        io?.on("chat:ai", (data: ["user" | "assistant", string][]) => {
+        io?.on("chat:ai", (data: [string, "user" | "assistant", string][]) => {
             chats.value = data ?? [];
             onScrolling();
         });
-        return () => io?.off("chat:ai");
+        return () => {
+            io?.off("chat:ai");
+        };
     }, [io]);
 
     useEffect(() => {
-        io?.on("chat:send-message", (data: ["user" | "assistant", string]) => {
-            chats.value = [...chats.value, data];
+        io?.on("chat:send-message", (chat: ChatIA) => {
             onScrolling();
             isLoading.value = false;
+            chats.value = chats.value.some((ch) => ch[0] === chat[0])
+                ? chats.value.map((ch) =>
+                      ch[0] === chat[0] ? [ch[0], chat[1], chat[2]] : ch
+                  )
+                : [...chats.value, chat];
         });
-        return () => io?.off("chat:send-message");
+        return () => {
+            io?.off("chat:send-message");
+        };
     }, [io]);
 
     return (
@@ -100,9 +110,9 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                 ref={chatBox}
                 class="flex flex-col h-[320px] gap-1.5 m-1 overflow-auto form-chat mb-12  p-3"
             >
-                {chats.value.map(([key, message], i) => (
-                    <Fragment key={`${message}${i + 1}`}>
-                        {key === "assistant" ? (
+                {chats.value.map(([key, role, message]) => (
+                    <Fragment key={key}>
+                        {role === "assistant" ? (
                             <div
                                 class=" font-normal bg-paper-light border dark:bg-background-dark dark:!text-white shadow  p-2 rounded-md flex flex-col "
                                 onTouchStart={() =>
@@ -120,7 +130,11 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                                 <div
                                     class="text-sm font-semibold"
                                     dangerouslySetInnerHTML={{
-                                        __html: message,
+                                        __html: message.replace(
+                                            /(^|\s)(https?:\/\/[^\s<]+)/g,
+                                            (_, space, url) =>
+                                                `${space}<a href="${url}" class="text-primary hover:underline">Click aquí</a>`
+                                        ),
                                     }}
                                     // Captura cuando se libera
                                 />
@@ -133,7 +147,7 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                     </Fragment>
                 ))}
                 {isLoading.value ? (
-                    <div class=" font-normal bg-paper-light  dark:bg-background-dark dark:text-white px-4 py-1 rounded-md  self-start">
+                    <div class="chat-loading font-normal bg-primary text-white px-4 py-1 rounded-md  self-start">
                         <div class="mensaje-tipeando">
                             <span class="punto">.</span>
                             <span class="punto">.</span>

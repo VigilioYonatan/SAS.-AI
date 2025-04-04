@@ -34,5 +34,6 @@ export const empresasUpdateDto = omitAsync(empresasSchema, [
     "isProduction",
     "payment_completed",
     "cuota",
+    "scrapping_id",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;

@@ -467,6 +467,32 @@ function ProductPage({
                                 </>
                             ) : null}
                         </span>
+                        {(producto.value as ProductsNormalSchemaFromServer)
+                            ?.variants ? (
+                            <div class="flex items-center gap-4">
+                                {!(
+                                    producto.value as ProductsNormalSchemaFromServer
+                                )?.enabled_web ? (
+                                    <div class="font-bold text-xs flex gap-2 items-center max-w-[250px] uppercase text-white bg-green-400  border-4 py-1 px-3  rounded-lg border-green-500">
+                                        <i class="fas fa-store text-xl" />{" "}
+                                        <span class="text-center">
+                                            Este producto solo se puede comprar
+                                            en nuestra tienda física.
+                                        </span>
+                                    </div>
+                                ) : null}
+                                {!(
+                                    producto.value as ProductsNormalSchemaFromServer
+                                )?.enabled_local ? (
+                                    <div class="font-bold text-xs flex items-center uppercase text-white bg-green-400  border-4 py-1 px-3  rounded-lg border-green-500">
+                                        <i class="fas fa-store text-xl" />{" "}
+                                        <span class="text-center">
+                                            Disponible solo en nuestra web
+                                        </span>
+                                    </div>
+                                ) : null}
+                            </div>
+                        ) : null}
                         <>
                             {/* aaaaaaaaaaaaaaaaca variante */}
                             {(producto.value as ProductsNormalSchemaFromServer)
@@ -975,28 +1001,17 @@ function ProductPage({
                             <div class="">
                                 {product.characteristics.length ? (
                                     <table
-                                        class={`text-lg  font-medium w-full  overflow-hidden shadow ${
+                                        class={`text-lg  font-medium w-full  overflow-hidden  ${
                                             enviroments.TYPE_BORDER === "circle"
                                                 ? "rounded-md"
                                                 : ""
                                         }`}
                                     >
-                                        <thead>
-                                            <tr class="h-[40px]">
-                                                <th class="text-sm bg-primary text-white font-semibold">
-                                                    Nombre
-                                                </th>
-                                                <th class="text-sm bg-primary text-white font-semibold">
-                                                    Valor
-                                                </th>
-                                            </tr>
-                                        </thead>
-
                                         <tbody>
                                             {product.characteristics.map(
                                                 (characteristic) => (
                                                     <tr
-                                                        class="text-sm h-[40px] odd:bg-background-light dark:odd:bg-background-dark"
+                                                        class="text-sm h-[40px]  odd:bg-[#f9f9f9]"
                                                         key={
                                                             characteristic.name
                                                         }

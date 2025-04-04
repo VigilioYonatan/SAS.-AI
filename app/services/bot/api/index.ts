@@ -3,7 +3,6 @@ import { InternalServerErrorException } from "@vigilio/express-core";
 import type WAWebJS from "whatsapp-web.js";
 import type { MessageSendOptions } from "whatsapp-web.js";
 import enviroments from "~/config/enviroments.config";
-import { chats } from "../controllers/whatsapp.api.controller";
 export function BASE_URL_WHATSAPP(empresa: Empresas, name: string) {
     return enviroments.NODE_ENV === "production"
         ? `https://www.${empresa.slug}.${name}.vigilio-services.com`

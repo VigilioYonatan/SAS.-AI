@@ -65,6 +65,8 @@ import { ProductsServicio } from "@/products/entities/products_servicio.entity";
 import { Page } from "../entities/page.entity";
 import { GridBannerPage } from "../entities/grid_banner_page.entity";
 import { PagesApiService } from "./pages.api.service";
+import { Scrapping } from "../entities/scrapping.entity";
+import { ScrappingSchema } from "../schemas/scrapping.schema";
 // import { sequelize } from "~/config/db.config";
 
 export let openAis: Record<string, openai> = {};
@@ -771,6 +773,28 @@ export class EmpresasApiService {
         };
     }
 
+    async paymentUpdateLanguage(
+        slug: string,
+        body: {
+            language: Pick<SettingsSchema, "multi_lenguaje">;
+            secure: string;
+        }
+    ) {
+        if (body.secure !== "dokixd123@")
+            throw new BadRequestException("Error");
+        const { empresa } = await this.show(slug);
+        const setting = await Settings.findOne({
+            where: {
+                empresa_id: empresa.id,
+            },
+        });
+        await setting?.update({ multi_lenguaje: body.language });
+        return {
+            success: true,
+            message: "success paypment language",
+        };
+    }
+
     async show(slug: string) {
         let empresa = null;
         if (!Number.isNaN(Number(slug))) {
@@ -813,7 +837,15 @@ export class EmpresasApiService {
                 // Maneja el caso donde el slug ya existe
                 throw new Error("El slug ya está en uso");
             }
-
+            const scrapping = new Scrapping({
+                web_url: "",
+                hours: 24,
+                categories: null,
+                pages: [],
+                product: null,
+                products: null,
+            } as Omit<ScrappingSchema, "id">);
+            await scrapping.save();
             empresa = new Empresas({
                 ...rest,
                 enabled_booster: false,
@@ -845,6 +877,7 @@ export class EmpresasApiService {
                 icon: null,
                 logo_pwa: null,
                 model_ai: "open-ai",
+                scrapping_id: scrapping.id,
             }) as Empresas;
             await empresa.save();
 
@@ -2025,7 +2058,6 @@ export class EmpresasApiService {
             ) {
                 await initializeBot(empresa, empresasUpdateDto.telegram_token);
             }
-            console.log({ a: empresasUpdateDto.model_ai });
 
             cache.delete(`EMPRESA:${empresa.slug}`);
             if (empresasUpdateDto.model_ai === "open-ai") {

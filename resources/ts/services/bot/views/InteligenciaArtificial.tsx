@@ -21,6 +21,7 @@ import {
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { mensual } from "~/config/guards";
 import QuestionsIndex from "@/empresas/views/QuestionsIndex";
+import ScrappingIndex from "@/empresas/views/ScrappingIndex";
 
 function InteligenciaArtificial() {
     if (!mensual()) {
@@ -189,6 +190,23 @@ function InteligenciaArtificial() {
                                 }}
                             >
                                 ?
+                            </button>
+                            <button
+                                class="bg-black px-4 py-3 rounded-md text-white font-bold text-xs"
+                                type="button"
+                                aria-label="show question"
+                                onClick={() => {
+                                    sweetModal({
+                                        html: reactComponent(
+                                            <ScrappingIndex />
+                                        ),
+                                        showCloseButton: true,
+                                        sweetWidth: "800px",
+                                        isCloseInBackground: false,
+                                    });
+                                }}
+                            >
+                                I.A Web custom
                             </button>
                             <button
                                 type="button"

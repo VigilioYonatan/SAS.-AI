@@ -2,12 +2,17 @@ import AssistantVirtual from "@/admin/components/AssistantVirtual";
 import { useSignal } from "@preact/signals";
 
 function ChatAi() {
-    const isOpen = useSignal(false);
+    const isOpen = useSignal(
+        JSON.parse(localStorage.getItem("bot-open") || "false") || false
+    );
+
     function onClose() {
         isOpen.value = false;
+        localStorage.removeItem("bot-open");
     }
     function onOpen() {
         isOpen.value = true;
+        localStorage.setItem("bot-open", "true");
     }
 
     return (

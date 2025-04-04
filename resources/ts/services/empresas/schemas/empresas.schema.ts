@@ -157,7 +157,7 @@ export const inteligenceArtificial = object({
         enabled_cart: boolean(),
         enabled_order: boolean(),
     }),
-    max_length: number([minValue(100), maxValue(1000)]),
+    max_length: number([minValue(100), maxValue(100000)]),
     try_to_sell: boolean(), //tratará de ofrecer y vender
     enabledHuman: boolean(),
     showAllProductsInformation: boolean(),
@@ -407,6 +407,7 @@ export const empresasSchema = object({
             date: coerce(date(), (val) => new Date(val as Date)),
         })
     ),
+    scrapping_id: number(),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

@@ -41,6 +41,8 @@ export const productsNormalSchema = objectAsync({
     subcategory_id: nullable(number()),
     brand_id: nullable(number()),
     url: nullable(string()),
+    enabled_local: boolean(),
+    enabled_web: boolean(),
     cuota_config: nullable(
         object({
             interes_enabled: boolean(),

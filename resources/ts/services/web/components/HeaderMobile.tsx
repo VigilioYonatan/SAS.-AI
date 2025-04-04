@@ -16,6 +16,7 @@ import useMediaQuery from "~/hooks/useMediaQuery";
 import { iconCart, typeIcon1 } from "@/empresas/schemas/settings.schema";
 import MoneyChange from "./MoneyChange";
 import useAuthStore from "@/auth/stores/auth.store";
+import LanguageWidget from "./Language";
 
 interface HeaderMobileProps {
     headerDropdown: UseDropdown;
@@ -144,6 +145,10 @@ function HeaderMobile({ headerDropdown, totalProducts }: HeaderMobileProps) {
                     {/* endcartaside */}
                     <div class="flex gap-2 items-center   text-xl  ">
                         {totalProducts > 0 ? <SearchProducts /> : null}
+                        {useMediaQuery("(max-width:1025px)") ? (
+                            <LanguageWidget />
+                        ) : null}
+
                         <MoneyChange />
                         {useMediaQuery("(max-width:1025px)") &&
                         authStore.state ? (

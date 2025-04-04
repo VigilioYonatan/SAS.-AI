@@ -94,6 +94,11 @@ export const test: Pick<
         isEccomerce: true,
         isLogin: true,
         isCuota: true,
+        multi_lenguaje: {
+            default: "es",
+            languages: ["es", "en"],
+            type: "emergente",
+        },
     },
     gridBanners: [
         {

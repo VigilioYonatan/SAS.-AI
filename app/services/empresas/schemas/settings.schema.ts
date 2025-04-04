@@ -25,6 +25,50 @@ const hamrguers = [
     "fas fa-hamburger",
     "fas fa-bars",
 ];
+
+export const languagesUnion = union([
+    literal("es"),
+    literal("en"),
+    literal("zh-CN"),
+    literal("pt"),
+    literal("it"),
+    literal("tr"),
+    literal("fr"),
+    literal("zh-TW"),
+    literal("ru"),
+    literal("ar"),
+    literal("sv"),
+    literal("bg"),
+    literal("xh"),
+    literal("fy"),
+    literal("sd"),
+    literal("sn"),
+    literal("gd"),
+    literal("sm"),
+    literal("ps"),
+    literal("lb"),
+    literal("ky"),
+    literal("vi"),
+    literal("az"),
+    literal("sk"),
+    literal("fa"),
+    literal("mn"),
+    literal("pl"),
+    literal("ja"),
+    literal("ro"),
+    literal("ko"),
+    literal("ka"),
+    literal("cs"),
+    literal("la"),
+    literal("af"),
+    literal("sq"),
+    literal("tl"),
+    literal("sr"),
+    literal("id"),
+    literal("hi"),
+    literal("nl"),
+]);
+export type LanguagesUnion = Input<typeof languagesUnion>;
 export const hostSchema = object({
     host: nullable(
         string([
@@ -186,5 +230,16 @@ export const settingsSchema = objectAsync({
     isEccomerce: boolean(),
     isLogin: boolean(),
     isCuota: boolean(),
+    multi_lenguaje: nullable(
+        object({
+            type: union([
+                literal("globe"),
+                literal("normal"),
+                literal("emergente"),
+            ]),
+            default: languagesUnion,
+            languages: array(languagesUnion),
+        })
+    ),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;

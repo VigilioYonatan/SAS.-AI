@@ -115,7 +115,7 @@ function AssistantVirtualAdmin() {
                     </Fragment>
                 ))}
                 {isLoading.value ? (
-                    <div class=" font-normal bg-paper-light dark:bg-admin-terciary px-4 py-1 rounded-md  self-start dark:text-white">
+                    <div class=" font-normal bg-primary px-4 text-white py-1 rounded-md  self-start ">
                         <div class="mensaje-tipeando">
                             <span class="punto">.</span>
                             <span class="punto">.</span>

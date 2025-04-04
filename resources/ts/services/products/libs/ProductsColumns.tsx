@@ -126,7 +126,7 @@ const productsColumns: Columns<
         header: "Opciones",
         cell: (props) => (
             <div class="flex gap-2 px-2 overflow-auto justify-center items-center">
-                {(props as ProductsNormalSchemaFromServer).options.map(
+                {(props as ProductsNormalSchemaFromServer)?.options.map(
                     (opt) => (
                         <div key={opt.id} class="flex gap-1 mb-2">
                             {opt.features.map((feature) => (
@@ -164,7 +164,7 @@ const productsColumns: Columns<
                     html: reactComponent(
                         <ProductsUpdate
                             id={props.id}
-                            refetch={methods.refetch}  
+                            refetch={methods.refetch}
                         />
                     ),
 

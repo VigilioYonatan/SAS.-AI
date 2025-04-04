@@ -20,7 +20,7 @@ import { ProductsApiService } from "@/products/services/products.api.service";
 import { SubcommentsApiService } from "@/polymorphism/services/subcomments.api.service";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
-import { featuresIA, isWhatsappTelegramIA } from "@/bot/libs/ai";
+import { isWhatsappTelegramIA } from "@/bot/libs/ai";
 import {
     chatgpt,
     modelAiByEmpresa,
@@ -49,7 +49,12 @@ export class WebsocketsService {
             include: [
                 {
                     model: Empresas.unscoped(),
-                    attributes: ["name_empresa", "slug", "id"],
+                    attributes: [
+                        "name_empresa",
+                        "slug",
+                        "id",
+                        "inteligenceArtificial",
+                    ],
                 },
             ],
         });
@@ -332,12 +337,8 @@ export class WebsocketsService {
                     const completionText =
                         completion.choices[0].message.content!;
 
-                    const [removeNote] = await featuresIA(
-                        emp,
-                        completionText,
-                        false
-                    );
-                    content = removeNote;
+                    // const [removeNote] = await featuresIA(emp, completionText);
+                    content = "removeNote";
                 }
                 try {
                     await this.subcommentsApiService.store(
@@ -542,12 +543,8 @@ export class WebsocketsService {
                 });
                 const completionText = completion.choices[0].message.content!;
 
-                const [removeNote] = await featuresIA(
-                    emp,
-                    completionText,
-                    false
-                );
-                content = removeNote;
+                // const [removeNote] = await featuresIA(emp, completionText);
+                content = "removeNote";
             }
             try {
                 await this.subcommentsApiService.store(

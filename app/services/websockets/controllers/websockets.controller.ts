@@ -7,11 +7,11 @@ import {
     IO,
     Socket,
 } from "@vigilio/express-core";
-// biome-ignore lint/correctness/noUnusedImports: <explanation>
 import * as socket from "socket.io";
 import { WebsocketsService } from "../services/websockets.service";
 import {
     chatAssistant,
+    cleanPrompt,
     cloudeAi,
     executeCronDate,
     featuresIA,
@@ -23,32 +23,33 @@ import { openAis } from "@/empresas/services/empresas.api.service";
 import cron from "node-cron";
 import { modelAiByEmpresa, promptReplace } from "@/bot/libs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
+import type { CompletionUsage } from "openai/resources";
+import cache from "@vigilio/express-core/cache";
 export function HTMLPROMPT(_empresa: Empresas) {
-    return `- IMPORTANTE: Por ultimo siempre responde con etiquetas html y clases de tailwind,  y recuerda enviar links ó urls con ETIQUETA <a></a>  estilos de tailwind underline, (tablas solo carrito de compra ) , etc y usa <b class="font-bold"></b> en vez de **   en palabras importantes. Por ultimo usa solo un <br></br> para separar parrafos, usa etiqueta a <a href="url" class='text-primary underline'>text</a> para links o enlaces, etc. usa <ul class="list-disc list-inside"><li></li></ul>  para listas, pedidos, información, etc. etiqueta de letra p,h1,span esos text-sm, imagenes maximo width 100px,  html limpio no markdown`;
+    return `- Responde con formato html, envia links ó urls con <a clas="text-primary"></a>  estilos de tailwind underline, (tablas solo carrito de compra ) , etc y usar <b class="font-bold"></b> en vez de **   en palabras importantes. Por ultimo SIEMPRE usa solo un <br> para separar parrafos, usa etiqueta a <a href="url" class='text-primary underline'>text</a> para links o enlaces, etc. usa <ul class="list-disc list-inside"><li class="ml-4"></li></ul>   para listas, pedidos, información,separare preguntas 1.,2., opciones, items, etc. etiqueta de letra p,h1,span esos text-sm, imagenes maximo width 100px,  html limpio no markdown, los .jpg, o extension imagen en img.`;
 }
-export let chatAssistantWeb: Record<string, ["user" | "assistant", string][]> =
-    {};
+export let chatAssistantWeb: Record<
+    string,
+    [string, "user" | "assistant", string][]
+> = {};
 export let usersInWeb: Record<string, string[]> = {};
-async function cloudeAiWeb(emp: string, token: string, message: string) {
+async function cloudeAiWeb(
+    emp: string,
+    token: string,
+    data: { id: string; message: string },
+    io: socket.Socket
+) {
     try {
         const whatsapp = await isWhatsappTelegramIA(emp);
         if (!whatsapp)
             return "En estos momentos no estoy disponible. Inteligencia Artificial o Token es requerido";
-        const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
+        const { empresa, latestEmpresaUsage } = whatsapp;
 
         chatAssistantWeb = {
             ...(chatAssistantWeb ?? {}),
             [`${emp}:${token}`]: [
                 ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
-                [
-                    "user",
-                    // `${message}. [[en html no mkdown, formato chat persona a persona, no web, los links recuerda <a></a>,imagenes width 100px revisa base de datos y SIEMPRE RESPONDEME EN EL IDIOMA QUE TE ESCRIBA!!!.]]`,
-                    `${message}. [[ 'HAZ TODAS LAS INSTRUCCIONES QUE TE MANDE NO FALLES,${
-                        empresa.inteligenceArtificial.settings?.enabled_cart
-                            ? "fijate en las cantidades/unidad por producto (stock significa cantidad ilimitado)"
-                            : ""
-                    } trata de escribir poco,html y URGENTE: enlaces o links en <a></a>, siempre hazme confirmar y no escribas mucho' ]]`,
-                ],
+                [data.id, "user", data.message],
             ],
         };
         if (
@@ -57,62 +58,107 @@ async function cloudeAiWeb(emp: string, token: string, message: string) {
         ) {
             return "Gracias por probar nuestra inteligencia artificial, más información en https://www.vigilio-services.com";
         }
+        if (chatAssistantWeb[`${emp}:${token}`].length > 300) {
+            return "Gracias por probar nuestra inteligencia Artificial, puedes probarlo de nuevo más tarde.";
+        }
 
         // mapped messages to messages cloude
         const messages = chatAssistantWeb[`${emp}:${token}`].map(
-            ([role, content]) => ({
+            ([_, role, content]) => ({
                 role,
-                content,
+                content:
+                    role === "user"
+                        ? `${content} '[[${HTMLPROMPT(empresa)}]]'`
+                        : content,
             })
         );
+
         const messageAnterior = messages
             .slice(-5, -1)
-            .map((c) => `${c.role === "user" ? "yo" : c.role}:  ${c.content}`);
+            .map(
+                (c) =>
+                    `${c.role === "user" ? "yo" : c.role}:  ${c.content.replace(
+                        /\[\[([^\]]+)\]\]/g,
+                        ""
+                    )}`
+            );
         const messageActual = `Mensajes Anterior: ${messageAnterior.join(
             ", "
         )}.\n
-        Mensaje Actual: ${message}.`;
-
+        Mensaje Actual: ${data.message}.`;
         const prompt = await promptReplace(whatsapp, messageActual!, empresa);
-        console.log({
-            messages: [
-                {
-                    role: "user",
-                    content: `${prompt}. ${HTMLPROMPT(empresa)}`,
-                },
-                ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
-            ],
-        });
+
         const completion = await openAis[empresa.slug].chat.completions.create({
             model: modelAiByEmpresa(whatsapp),
             max_tokens: empresa.inteligenceArtificial.max_length,
             messages: [
                 {
                     role: "user",
-                    content: `${prompt}. ${HTMLPROMPT(empresa)}`,
+                    content: `${prompt}.\n ${HTMLPROMPT(empresa)}`,
                 },
                 ...messages.slice(-(empresa.inteligenceArtificial.memory - 1)),
             ],
+            stream: true,
+            stream_options: { include_usage: true },
         });
-        console.log({ completion });
+        const id = Date.now().toString(32).slice(4);
+        let contenido = "";
+        let contenido2 = "";
+        let removeContent = "";
+        let usages: CompletionUsage | null = null;
+        const texts: string[] = [];
+        for await (const chunk of completion) {
+            let texto = "";
+            if (chunk.usage) {
+                usages = chunk.usage;
+            }
+            const content = chunk.choices[0]?.delta?.content || "";
 
+            contenido += content;
+            contenido2 += content;
+            [removeContent] = cleanPrompt(empresa, contenido, false);
+            texto = contenido2;
+
+            const parrafos = texto.split(/\n\s*\n/);
+            if (parrafos.length > 1) {
+                for (const parrafo of parrafos) {
+                    texts.push(parrafo.trim());
+                }
+                contenido2 = contenido2.replace(/.+\n\s*\n/g, "").trim();
+            }
+            if (empresa.inteligenceArtificial.isChunk) {
+                io.to(token).emit("chat:send-message", [
+                    id,
+                    "assistant",
+                    removeContent,
+                ]);
+            }
+        }
+
+        if (!empresa.inteligenceArtificial.isChunk) {
+            io.to(token).emit("chat:send-message", [
+                id,
+                "assistant",
+                removeContent,
+            ]);
+        }
+        const [__, _, links] = cleanPrompt(empresa, contenido, false);
+
+        // agrega citas etc
+        await featuresIA(empresa, contenido, links);
+
+        // completion.
         // get message ai
-        const completionText = completion.choices[0].message.content!;
-
-        const [removeNote] = await featuresIA(empresa, completionText, false);
-        await updateTokensEmpresa(empresa, latestEmpresaUsage, completion);
+        await updateTokensEmpresa(empresa, latestEmpresaUsage, usages!);
         chatAssistantWeb[`${emp}:${token}`] = [
-            ...(chatAssistantWeb[`${emp}:${token}`] ?? []),
-            ["assistant", removeNote],
+            ...(chatAssistantWeb[`${emp}:${token}`] || []),
+            [id, "assistant", removeContent],
         ];
+
         chatAssistantWeb[`${emp}:${token}`] = chatAssistantWeb[
             `${emp}:${token}`
-        ].map((val) =>
-            val[0] === "user"
-                ? [val[0], val[1].replace(/\[\[([^\]]+)\]\]/g, "")]
-                : val
-        );
-        return removeNote.replace(/\[\[([^\]]+)\]\]/g, "");
+        ].map((val) => [id, val[1], val[2].replace(/\[\[([^\]]+)\]\]/g, "")]);
+        return contenido.replace(/\[\[([^\]]+)\]\]/g, "");
     } catch (error) {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log((error as Error).message);
@@ -156,6 +202,7 @@ export class WebsocketsController {
             (socket.handshake.query?.["x-empresa"] as string) ?? "null";
         // empresa -> id
         if (token === "null" || empresa === "null") return;
+        const empCache = JSON.parse(cache.get(`EMPRESA:${empresa}`) || "null");
         socket.join(token);
         if (!(chatAssistantWeb[`${empresa}:${token}`] ?? []).length) {
             chatAssistantWeb = {
@@ -163,8 +210,16 @@ export class WebsocketsController {
                 [`${empresa}:${token}`]: [
                     ...(chatAssistantWeb[`${empresa}:${token}`] ?? []),
                     [
+                        "test-id",
                         "assistant",
-                        "Hola, Soy tu asistente virtual 😀. ¿En que le podriamos ayudar?",
+                        `Hola, Soy ${
+                            empCache
+                                ? `<b class="font-bold">${
+                                      (empCache as Empresas)
+                                          .inteligenceArtificial.nameIa
+                                  }</b> `
+                                : ""
+                        }su asistente virtual 😀. ¿En que le podriamos ayudar?`,
                     ],
                 ],
             };
@@ -193,7 +248,14 @@ export class WebsocketsController {
                 chatAssistant[`${empresa}:${user.id}`] = [
                     [
                         "assistant",
-                        `Hola ${user.username}, Soy tu asistente virtual 😀. ¿En que  podriamos ayudarte?`,
+                        `Hola ${user.username}, Soy ${
+                            empCache
+                                ? `<b class="font-bold">${
+                                      (empCache as Empresas)
+                                          .inteligenceArtificial.nameIa
+                                  }</b> `
+                                : ""
+                        }su asistente virtual 😀.`,
                         Date.now(),
                     ],
                 ];
@@ -261,7 +323,7 @@ export class WebsocketsController {
     }
     @Event("chat:send-message")
     async sendMessage(
-        @Args() args: { message: string },
+        @Args() args: { id: string; message: string },
         @Socket() socket: socket.Socket,
         @IO() io: socket.Socket
     ) {
@@ -270,11 +332,35 @@ export class WebsocketsController {
             (socket.handshake.query?.["x-empresa"] as string) ?? "null";
 
         if (empresa === "null") return;
-        const message = await cloudeAiWeb(empresa, token, args.message);
-        io.to(token).emit("chat:send-message", [
-            "assistant",
-            message,
-            Date.now(),
+        await cloudeAiWeb(empresa, token, args, io);
+        // io.to(token).emit("chat:send-message", [
+        //     "assistant",
+        //     message,
+        //     Date.now(),
+        // ]);
+    }
+    @Event("chat:restart")
+    async restart(@Socket() socket: socket.Socket, @IO() io: socket.Socket) {
+        const token = socket.handshake.query["x-token"] as string;
+        const empresa =
+            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
+
+        if (empresa === "null") return;
+        const empCache = JSON.parse(cache.get(`EMPRESA:${empresa}`) || "null");
+        chatAssistantWeb[`${empresa}:${token}`] = [];
+        io.to(token).emit("chat:ai", [
+            [
+                "test-id",
+                "assistant",
+                `Hola, Soy ${
+                    empCache
+                        ? `<b class="font-bold">${
+                              (empCache as Empresas).inteligenceArtificial
+                                  .nameIa
+                          }</b> `
+                        : ""
+                }su asistente virtual 😀.`,
+            ],
         ]);
     }
     @Event("chat-assistant:send-message")

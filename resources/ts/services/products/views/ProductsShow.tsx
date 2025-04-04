@@ -204,7 +204,6 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                     </div>
                                 </div>
                             ) : null}
-
                             <div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
                                 <span class="text-primary dark:text-terciary font-bold">
                                     Descripción:
@@ -236,7 +235,6 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                     </div>
                                 </div>
                             ) : null}
-
                             <div class="flex gap-1 flex-col mb-3 p-2 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md">
                                 <span class="text-primary dark:text-terciary font-bold break-words text-wrap">
                                     Slug:
@@ -245,7 +243,6 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                     {product.slug}
                                 </span>
                             </div>
-
                             <div class="flex gap-1 flex-col mb-3 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md p-2">
                                 <span class="text-primary dark:text-terciary font-bold">
                                     Descuento:
@@ -270,6 +267,58 @@ function ProductsShow({ id, refetch, onClose, isService }: ProductsShowProps) {
                                         : "Desabilitado"}
                                 </span>
                             </div>
+                            {[1, 3].includes(
+                                storageEmpresa!.tipo_empresa.tipo_servicio_id
+                            ) &&
+                            (product as ProductsNormalSchemaFromServer)
+                                .enabled_local ? (
+                                <div class="flex gap-1 flex-col mb-3 p-2 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md">
+                                    <span class="text-primary dark:text-terciary font-bold">
+                                        Disponible en local:
+                                    </span>
+                                    <span
+                                        class={`${
+                                            (
+                                                product as ProductsNormalSchemaFromServer
+                                            ).enabled_local
+                                                ? "bg-success"
+                                                : "bg-danger"
+                                        } px-4 py-1 rounded-md text-white self-start`}
+                                    >
+                                        {(
+                                            product as ProductsNormalSchemaFromServer
+                                        ).enabled_local
+                                            ? "Habilitado"
+                                            : "Desabilitado"}
+                                    </span>
+                                </div>
+                            ) : null}{" "}
+                            {[1, 3].includes(
+                                storageEmpresa!.tipo_empresa.tipo_servicio_id
+                            ) &&
+                            (product as ProductsNormalSchemaFromServer)
+                                .enabled_web ? (
+                                <div class="flex gap-1 flex-col mb-3 p-2 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md">
+                                    <span class="text-primary dark:text-terciary font-bold">
+                                        Disponible en Tienda WEB:
+                                    </span>
+                                    <span
+                                        class={`${
+                                            (
+                                                product as ProductsNormalSchemaFromServer
+                                            ).enabled_web
+                                                ? "bg-success"
+                                                : "bg-danger"
+                                        } px-4 py-1 rounded-md text-white self-start`}
+                                    >
+                                        {(
+                                            product as ProductsNormalSchemaFromServer
+                                        ).enabled_web
+                                            ? "Habilitado"
+                                            : "Desabilitado"}
+                                    </span>
+                                </div>
+                            ) : null}
                         </div>
                         <div class="flex-1 min-w-[250px]">
                             <div class="flex gap-1 flex-col mb-3  p-2 odd:bg-paper-light odd:dark:bg-admin-terciary rounded-md">

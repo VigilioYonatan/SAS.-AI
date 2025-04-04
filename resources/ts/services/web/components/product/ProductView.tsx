@@ -67,6 +67,7 @@ function ProductCardView({ product }: ProductCardViewProps) {
                     ? "lg:min-h-[600px]"
                     : "lg:min-h-[500px]"
             } `}
+            data-producto={JSON.stringify(producto.value)}
         >
             <Slider
                 {...{
@@ -365,7 +366,31 @@ function ProductCardView({ product }: ProductCardViewProps) {
                                 : `${product.varianteChoose!.stock} unidades`}
                         </>
                     ) : null}
-                </span>
+                </span>{" "}
+                {(producto.value as ProductsNormalSchemaFromServer)
+                    ?.variants ? (
+                    <div class="flex items-center gap-4">
+                        {!(producto.value as ProductsNormalSchemaFromServer)
+                            ?.enabled_web ? (
+                            <div class="font-bold text-xs flex gap-2 items-center max-w-[250px] uppercase text-white bg-green-400  border-4 py-1 px-3  rounded-lg border-green-500">
+                                <i class="fas fa-store text-xl" />{" "}
+                                <span class="text-center">
+                                    Este producto solo se puede comprar en
+                                    nuestra tienda física.
+                                </span>
+                            </div>
+                        ) : null}
+                        {!(producto.value as ProductsNormalSchemaFromServer)
+                            ?.enabled_local ? (
+                            <div class="font-bold text-xs flex items-center uppercase text-white bg-green-400  border-4 py-1 px-3  rounded-lg border-green-500">
+                                <i class="fas fa-store text-xl" />{" "}
+                                <span class="text-center">
+                                    Disponible solo en nuestra web
+                                </span>
+                            </div>
+                        ) : null}
+                    </div>
+                ) : null}
                 <>
                     {/* aaaaaaaaaaaaaaaaca variante */}
                     {(producto.value as ProductsNormalSchemaFromServer)

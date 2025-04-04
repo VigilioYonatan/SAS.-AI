@@ -4,7 +4,6 @@ import path from "node:path";
 addAlias("~", path.resolve(__dirname));
 addAlias("@", path.resolve(__dirname, "services"));
 import { Server } from "~/config/server";
-
 const application = new Server();
 export const app = application.app;
 export const server = application.listen();

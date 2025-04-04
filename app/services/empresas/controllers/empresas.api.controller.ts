@@ -65,7 +65,11 @@ import {
     empresasIAUpdateDto,
     type EmpresasIAUpdateDto,
 } from "../dtos/empresas.ia.update.dto";
-import { hostSchema } from "../schemas/settings.schema";
+import {
+    hostSchema,
+    SettingsSchema,
+    settingsSchema,
+} from "../schemas/settings.schema";
 import { type WhatsappMode, whatsappMode } from "../schemas/empresas.schema";
 import {
     settingsUpdateDto,
@@ -165,6 +169,29 @@ export class EmpresasApiController {
         const result = await this.empresaApiService.paymentUpdate(
             slug,
             paymentDto
+        );
+        return result;
+    }
+    @VigilioServicesGuard()
+    @Validator(
+        objectAsync({
+            language: pickAsync(settingsSchema, ["multi_lenguaje"]),
+            secure: string(),
+        })
+    )
+    @Pipe(objectAsync({ slug: string() }))
+    @Put("/:slug/payment/language")
+    async paymentUpdateLanguage(
+        @Params("slug") slug: string,
+        @Body()
+        body: {
+            language: Pick<SettingsSchema, "multi_lenguaje">;
+            secure: string;
+        }
+    ) {
+        const result = await this.empresaApiService.paymentUpdateLanguage(
+            slug,
+            body
         );
         return result;
     }

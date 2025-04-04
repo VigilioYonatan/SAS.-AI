@@ -10,9 +10,11 @@ import Alpine from "alpinejs";
 import "tiny-slider/dist/tiny-slider.css";
 import "lite-youtube-embed/src/lite-yt-embed.css";
 import "lite-youtube-embed/src/lite-yt-embed.js";
-import "animate.css";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 Alpine.start();
+Aos.init({ once: true });
 
 render(
     "Initial",

@@ -257,8 +257,6 @@ export async function promptReplace(
     message: string,
     empresa: Empresas
 ) {
-    console.log(JSON.stringify(whatsapp));
-
     let data: DataPrompt = JSON.parse(
         cache.get(`db-${empresa.slug}`) ?? "null"
     );
@@ -350,7 +348,7 @@ export async function promptReplace(
             questionGPT(
                 whatsapp,
                 message,
-                " querer información de querer una cita, cancelar cita o agendar reunion o preguntarme de una fecha o hora."
+                " querer información de querer una cita, reservar, cancelar cita o agendar reunion o preguntarme de un dia, fecha o hora, tema de reunion o cita."
             ),
             questionGPT(whatsapp, message, "si es saludo o despedida."),
             questionGPT(
@@ -652,7 +650,7 @@ export async function chatgpt(
     await updateTokensEmpresa(
         whatsapp!.empresa,
         latestEmpresaUsage,
-        completion
+        completion.usage!
     );
 
     return completionText;
@@ -726,7 +724,7 @@ export async function interpretarImagen(
         await updateTokensEmpresa(
             whatsapp!.empresa,
             latestEmpresaUsage,
-            completion
+            completion.usage!
         );
 
         return result;

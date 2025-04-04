@@ -13,6 +13,7 @@ import { EmailsPromociones } from "../entities/emails_offers.entity";
 import { ROLES } from "@/users/libs";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { sendMail } from "~/libs/mailer";
+import { delay } from "~/libs/helpers";
 
 @Injectable()
 export class EmailsApiService {
@@ -100,28 +101,30 @@ export class EmailsApiService {
                     }
                 })
             );
-            await Promise.all(
-                emailsPromociones.map(async (email) => {
-                    const html = customEmailHTML({
-                        empresa,
-                        namecomplete: email.email,
-                        content: emailsSendAllDto.content,
-                        title: emailsSendAllDto.title,
-                    });
-                    await sendMail(
-                        {
-                            email: empresa.zoho.email!,
-                            password: empresa.zoho.password!,
-                        },
-                        {
-                            from: empresa.zoho.email!,
-                            to: email.email,
-                            subject: emailsSendAllDto.subject,
-                            html,
-                        }
-                    );
-                })
-            );
+            for (const email of emailsPromociones) {
+                const html = customEmailHTML({
+                    empresa,
+                    namecomplete: email.email,
+                    content: emailsSendAllDto.content,
+                    title: emailsSendAllDto.title,
+                });
+
+                await sendMail(
+                    {
+                        email: empresa.zoho.email!,
+                        password: empresa.zoho.password!,
+                    },
+                    {
+                        from: empresa.zoho.email!,
+                        to: email.email,
+                        subject: emailsSendAllDto.subject,
+                        html,
+                    }
+                );
+
+                // Esperar 2 segundos antes de enviar el siguiente correo
+                await delay(2);
+            }
             return {
                 success: true,
                 message: "Se envio los correo electrónicos correctamente.",

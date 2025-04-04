@@ -2,7 +2,7 @@ import { printFileWithDimension } from "@/uploads/libs/helpers";
 import type { NextFunction, Request, Response } from "express";
 import enviroments from "~/config/enviroments.config";
 import type { RequestVigilio } from "~/config/types";
-import { NOW, restarDays, TimePeru } from "~/libs/dayjs";
+import { NOW, restarDays } from "~/libs/dayjs";
 
 export async function webEnabledMiddleware(
     req: Request,
@@ -11,14 +11,16 @@ export async function webEnabledMiddleware(
 ) {
     try {
         const emp = (req as RequestVigilio).empresa;
-
         if (
-            !emp.enabled_catalogo ||
-            (!emp.payment_completed &&
-                emp.cuota &&
-                emp.cuota.date &&
-                restarDays(emp, NOW(emp), emp.cuota.date, "day") < -3)
+            !emp.payment_completed &&
+            emp.cuota &&
+            emp.cuota.date &&
+            restarDays(emp, NOW(emp), emp.cuota.date, "day") < -3
         ) {
+            return res.redirect("/admin/plus");
+        }
+
+        if (!emp.enabled_catalogo) {
             const html = `<div style="width:100%;height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;">
                                     <h1>En este momento no estamos no estamos disponible </h1>
 									${

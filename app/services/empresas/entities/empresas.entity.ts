@@ -58,6 +58,7 @@ import { Questions } from "./questions.entity";
 import { Page } from "./page.entity";
 import { Emails } from "@/emails/entities/emails.entity";
 import { EmailsPromociones } from "@/emails/entities/emails_offers.entity";
+import { Scrapping } from "./scrapping.entity";
 
 @DefaultScope(() => ({
     include: [Address, MetodosPago, TipoEmpresa, Settings, CitasSettings],
@@ -485,6 +486,17 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     })
     type_empresa_other: string;
 
+    @Column({
+        type: DataType.BOOLEAN,
+    })
+    isOnlyScrapping: boolean;
+
+    @ForeignKey(() => Scrapping)
+    @Column({
+        type: DataType.INTEGER,
+    })
+    scrapping_id: number;
+
     // relations
     @HasMany(() => Address)
     addresses: unknown[];
@@ -593,4 +605,7 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
     @HasMany(() => EmailsPromociones)
     emailsPromociones: EmailsPromociones[];
+
+    @BelongsTo(() => Scrapping)
+    scrapping: ReturnType<() => Scrapping>;
 }

@@ -56,7 +56,7 @@ export class ProductsNormal
     @Column({ type: DataType.STRING(255) })
     url: string;
 
-    @Column({ type: DataType.TEXT })
+    @Column({ type: DataType.TEXT("long") })
     description: string;
 
     @Column({
@@ -96,6 +96,18 @@ export class ProductsNormal
         defaultValue: true,
     })
     enabled: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: true,
+    })
+    enabled_local: boolean;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: true,
+    })
+    enabled_web: boolean;
 
     @Column({
         type: DataType.BOOLEAN,

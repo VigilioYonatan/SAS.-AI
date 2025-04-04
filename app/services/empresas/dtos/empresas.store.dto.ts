@@ -46,6 +46,7 @@ export const empresasStoreDto = mergeAsync([
             "enable_sell_country",
             "header_cart",
             "whatsapp_mode",
+            "scrapping_id",
         ],
         [
             async (input) => {

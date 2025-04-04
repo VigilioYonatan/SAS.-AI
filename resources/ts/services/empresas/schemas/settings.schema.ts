@@ -18,6 +18,49 @@ import {
 import { filesSchema } from "~/libs/upload";
 import { storageEmpresa } from "../stores/empresa.store";
 import enviroments from "~/config";
+export const languagesUnion = union([
+    literal("es"),
+    literal("en"),
+    literal("zh-CN"),
+    literal("pt"),
+    literal("it"),
+    literal("tr"),
+    literal("fr"),
+    literal("zh-TW"),
+    literal("ru"),
+    literal("ar"),
+    literal("sv"),
+    literal("bg"),
+    literal("xh"),
+    literal("fy"),
+    literal("sd"),
+    literal("sn"),
+    literal("gd"),
+    literal("sm"),
+    literal("ps"),
+    literal("lb"),
+    literal("ky"),
+    literal("vi"),
+    literal("az"),
+    literal("sk"),
+    literal("fa"),
+    literal("mn"),
+    literal("pl"),
+    literal("ja"),
+    literal("ro"),
+    literal("ko"),
+    literal("ka"),
+    literal("cs"),
+    literal("la"),
+    literal("af"),
+    literal("sq"),
+    literal("tl"),
+    literal("sr"),
+    literal("id"),
+    literal("hi"),
+    literal("nl"),
+]);
+export type LanguagesUnion = Input<typeof languagesUnion>;
 
 export const hamburgers = [
     "fas fa-pizza-slice",
@@ -193,7 +236,19 @@ export const settingsSchema = object({
     isEccomerce: boolean(),
     isLogin: boolean(),
     isCuota: boolean(),
+    multi_lenguaje: nullable(
+        object({
+            type: union([
+                literal("globe"),
+                literal("normal"),
+                literal("emergente"),
+            ]),
+            default: languagesUnion,
+            languages: array(languagesUnion),
+        })
+    ),
 });
+
 export type SettingsSchema = Input<typeof settingsSchema>;
 
 export type SettingsSchemaFromServer = SettingsSchema & {
@@ -206,3 +261,47 @@ export const iconCart = enviroments.TYPE_CART.replace(
     "fas",
     storageEmpresa?.setting.type_icons_bars === "normal" ? "fas" : "far"
 );
+
+export const languagesSelect: LanguagesUnion[] = [
+    "es",
+    "en",
+    "zh-CN",
+    "pt",
+    "it",
+    "tr",
+    "fr",
+    "zh-TW",
+    "ru",
+    "ar",
+    "sv",
+    "bg",
+    "xh",
+    "fy",
+    "sd",
+    "sn",
+    "gd",
+    "sm",
+    "ps",
+    "lb",
+    "ky",
+    "vi",
+    "az",
+    "sk",
+    "fa",
+    "mn",
+    "pl",
+    "ja",
+    "ro",
+    "ko",
+    "ka",
+    "cs",
+    "la",
+    "af",
+    "sq",
+    "tl",
+    "sr",
+    "id",
+    "hi",
+    "nl",
+];
+export const languagesSelectType = ["globe", "normal", "emergente"];

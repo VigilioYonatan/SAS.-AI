@@ -1,10 +1,10 @@
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
-import { signal } from "@preact/signals";
+import { signal, useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 
 export const settingsAdd = signal<{
     caracteristicas: boolean;
-    description: boolean;
+    description: string;
     images: boolean;
 } | null>(
     JSON.parse(
@@ -26,7 +26,7 @@ function SettingsProduct({
             settingsAdd.value = {
                 ...(settingsAdd.value ?? {}),
                 caracteristicas: true,
-                description: true,
+                description: "",
                 images: true,
             };
         }
@@ -41,11 +41,11 @@ function SettingsProduct({
     return (
         <button
             type="button"
-            class="relative group dark:bg-admin-terciary bg-primary  px-2 md:px-4 dark:text-white py-1 md:py-2 rounded-md shadow"
+            class="relative group dark:bg-admin-terciary bg-primary  w-full  px-2 md:px-4 dark:text-white py-1 md:py-2 rounded-md shadow"
         >
             <i class="fa-solid fa-gear text-white" />
             <div
-                class="absolute  dark:bg-admin-background-dark bg-white p-2 hidden group-hover:block dark:text-white w-[120px] shadow rounded-md"
+                class="absolute  dark:bg-admin-background-dark bg-white p-2 hidden group-hover:block dark:text-white w-[200px] shadow rounded-md"
                 style={{ top: 10, right: 10 }}
             >
                 <span class="text-xs">
@@ -53,31 +53,63 @@ function SettingsProduct({
                 </span>
                 <div class="flex flex-col gap-2 ">
                     {description ? (
-                        <div class="flex gap-2">
-                            <span class="text-xs w-[100px] text-start dark:text-white text-black">
-                                Descripción
-                            </span>
-                            <input
-                                type="checkbox"
-                                name="description"
-                                checked={settingsAdd.value?.description}
-                                onChange={(e) => {
-                                    const description = (
-                                        e.target as HTMLInputElement
-                                    ).checked!;
-                                    if (settingsAdd.value) {
-                                        settingsAdd.value = {
-                                            ...(settingsAdd.value || {}),
-                                            description,
-                                        };
-                                    }
-                                }}
-                            />
-                        </div>
+                        <>
+                            {(() => {
+                                const isOpen = useSignal(false);
+                                return (
+                                    <div class="group">
+                                        <div class="flex gap-2 justify-between">
+                                            <span class="text-xs w-[100px] text-start dark:text-white text-black">
+                                                Descripción
+                                            </span>
+                                            <div class="flex gap-2 ">
+                                                {" "}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        isOpen.value =
+                                                            !isOpen.value;
+                                                    }}
+                                                >
+                                                    <i class="fas fa-chevron-down dark:text-white  text-xs" />
+                                                </button>
+                                            </div>
+                                        </div>{" "}
+                                        <input
+                                            type="text"
+                                            name="description-value"
+                                            style={{
+                                                display: isOpen.value
+                                                    ? "block"
+                                                    : "none",
+                                            }}
+                                            value={
+                                                settingsAdd.value
+                                                    ?.description ||
+                                                '"Descripcion", "Características Principales Y "Recomendaciones de uso"'
+                                            }
+                                            class="text-xs text-black w-full py-2 px-1"
+                                            onChange={(e) => {
+                                                const description = (
+                                                    e.target as HTMLInputElement
+                                                ).value!;
+                                                if (settingsAdd.value) {
+                                                    settingsAdd.value = {
+                                                        ...(settingsAdd.value ||
+                                                            {}),
+                                                        description,
+                                                    };
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                );
+                            })()}
+                        </>
                     ) : null}
 
                     {caracteristicas ? (
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 justify-between">
                             <span class="text-xs w-[100px] text-start  dark:text-white text-black">
                                 Características
                             </span>
@@ -100,7 +132,7 @@ function SettingsProduct({
                         </div>
                     ) : null}
                     {images ? (
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 justify-between">
                             <span class="text-xs text-start  w-[100px]  dark:text-white text-black">
                                 Imagenes
                             </span>

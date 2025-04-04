@@ -19,8 +19,7 @@ import { chats } from "../controllers/whatsapp.api.controller";
 import { whatsappSendMessageApi } from "../api";
 import { Citas } from "@/citas/entities/citas.entities";
 import { Op } from "sequelize";
-import { Questions } from "@/empresas/entities/questions.entity";
-import { ChatCompletion } from "openai/resources";
+import { CompletionUsage } from "openai/resources";
 
 export function buenosDias(query: string, name: string, empresa: Empresas) {
     const messages = [
@@ -182,7 +181,7 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
 
         if (!telegram) return;
 
-        const { clientVigilio, empresa, latestEmpresaUsage } = telegram;
+        const { empresa, latestEmpresaUsage } = telegram;
 
         const random = randomNumber(
             empresa.inteligenceArtificial.timer.start,
@@ -260,29 +259,55 @@ export async function AiTelegram(emp: Empresas, message: TelegramBot.Message) {
                     { role: "assistant", content: "Entendido, Empezemos." }, // getting start
                     ...messages.slice(-empresa.inteligenceArtificial.memory), // solos los ultimo 7 mensajes
                 ],
+                stream: true,
+                stream_options: { include_usage: true },
             });
-            await updateTokensEmpresa(empresa, latestEmpresaUsage, completion);
-
-            // get message ai
-            const completionText = completion.choices[0].message.content!;
-            const [removeNote, urlExtraida] = await featuresIA(
-                emp,
-                completionText,
-                true
-            );
-            if (empresa.inteligenceArtificial.isChunk) {
-                const chunks = removeNote.split(/(?<!\d)\.\s+/g);
-                for (const chunk of chunks) {
-                    await clientsTelegram[emp.slug].sendMessage(userId, chunk);
-                    await delay(3);
+            let contenido = "";
+            let contenido2 = "";
+            let removeContent = "";
+            let usages: CompletionUsage | null = null;
+            for await (const chunk of completion) {
+                let texto = "";
+                if (chunk.usage) {
+                    usages = chunk.usage;
                 }
-            } else {
-                await clientsTelegram[emp.slug].sendMessage(userId, removeNote);
+                const content = chunk.choices[0]?.delta?.content || "";
+
+                contenido += content;
+                contenido2 += content;
+                [removeContent] = cleanPrompt(empresa, contenido, false);
+                texto = contenido2;
+                const parrafos = texto.split(/\n\s*\n/);
+                if (
+                    empresa.inteligenceArtificial.isChunk &&
+                    parrafos.length > 1
+                ) {
+                    for (const parrafo of parrafos) {
+                        if (parrafo.length) {
+                            await clientsTelegram[emp.slug].sendMessage(
+                                userId,
+                                parrafo
+                            );
+                        }
+                    }
+                    contenido2 = contenido2
+                        .replace(/[^.!?]+[.!?]+/g, "")
+                        .trim();
+                }
             }
+            if (!empresa.inteligenceArtificial.isChunk) {
+                await clientsTelegram[emp.slug].sendMessage(
+                    userId,
+                    removeContent
+                );
+            }
+            // await featuresIA(empresa, contenido);
+            await updateTokensEmpresa(empresa, latestEmpresaUsage, usages!);
+            const [__, urlExtraidas] = cleanPrompt(empresa, contenido, false);
 
             // enviar imagen
-            if (urlExtraida) {
-                for (const url of urlExtraida) {
+            if (urlExtraidas) {
+                for (const url of urlExtraidas) {
                     await clientsTelegram[emp.slug].sendPhoto(userId, url, {
                         caption: "",
                     });
@@ -302,7 +327,7 @@ export async function updateTokensEmpresa(
         input_tokens: number;
         output_tokens: number;
     },
-    completion: ChatCompletion
+    completion: CompletionUsage
 ) {
     const empresaUpdate = {
         inteligenceArtificial: {
@@ -310,19 +335,17 @@ export async function updateTokensEmpresa(
             usage: {
                 ...latestEmpresaUsage,
                 input_tokens:
-                    latestEmpresaUsage.input_tokens +
-                    completion.usage!.prompt_tokens,
+                    latestEmpresaUsage.input_tokens + completion.prompt_tokens,
                 output_tokens:
                     latestEmpresaUsage.output_tokens +
-                    completion.usage!.completion_tokens,
+                    completion.completion_tokens,
             },
         },
         payments: {
             ...empresa.payments,
             tokens: {
                 tokens:
-                    empresa.payments.tokens.tokens -
-                    completion.usage!.prompt_tokens,
+                    empresa.payments.tokens.tokens - completion.prompt_tokens,
             },
         },
     };
@@ -348,7 +371,6 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
         const whatsapp = await isWhatsappTelegramIA(emp);
         if (!whatsapp) return;
         const { clientVigilio, empresa, latestEmpresaUsage } = whatsapp;
-
         chatAssistant = {
             ...chatAssistant,
             [`${emp}:${userId}`]: [
@@ -379,7 +401,7 @@ export async function cloudeAi(emp: string, userId: string, message: string) {
         });
         // get message ai
         const completionText = completion.choices[0].message.content!;
-        await updateTokensEmpresa(empresa, latestEmpresaUsage, completion);
+        // await updateTokensEmpresa(empresa, latestEmpresaUsage, "completion");
 
         chatAssistant[`${emp}:${userId}`] = [
             ...(chatAssistant[`${emp}:${userId}`] || []),
@@ -426,57 +448,91 @@ cron.schedule("0 0 * * *", async () => {
     }
     await monitorSystem();
 });
-export async function featuresIA(
+
+export function cleanPrompt(
     empresa: Empresas,
     completionText: string,
     hiddeImage: boolean
-): Promise<[string, string[]]> {
+): [string, string[], [string, string][]] {
     let textoNormal = completionText;
 
     const baseURL = `${BASE_URL(empresa)}/empresas/${
         empresa.slug
     }/images/products`;
     const urlPattern = new RegExp(`${baseURL}[^\\s]*`, "g");
-    const match = completionText.match(urlPattern);
+    const match = textoNormal.match(urlPattern);
 
     const urlExtraidas = [];
     if (match?.length) {
         for (const m of match) {
             if (hiddeImage) {
                 if (match.length < 2) {
-                    textoNormal = completionText.replace(m, "").trim();
+                    textoNormal = textoNormal.replace(m, "").trim();
                 }
                 urlExtraidas.push(m);
             }
         }
     }
-    // carrito
+    // cart items
     const expresionRegular = /\{\{cart\?items=[^}]+\}\}/g;
-    const coincidencias = completionText.match(expresionRegular);
+    const coincidencias = textoNormal.match(expresionRegular);
+    let links: [string, string][] = [];
     if (coincidencias?.length) {
-        for (const c of coincidencias) {
+        links = coincidencias.map((c) => {
             const hash = Math.random().toString(32).slice(4, 8);
-            const urlGet = `${BASE_URL(empresa)}/${c.slice(2, -2)}`;
-            const date = NOW(empresa).add(1, "days").format();
-            const findHash = await UrlsPayment.findOne({
-                where: { hash, empresa_id: empresa.id },
-            });
-            if (findHash) {
-                await findHash.update({ url: urlGet, time: date });
-            } else {
-                await UrlsPayment.create({
-                    hash,
-                    url: urlGet,
-                    empresa_id: empresa.id,
-                    time: date,
-                });
-            }
-
             textoNormal = textoNormal.replace(
                 c,
                 `${BASE_URL(empresa)}/cart/${hash}`
             );
-        }
+            const urlGet = `${BASE_URL(empresa)}/${c.slice(2, -2)}`;
+            return [hash, urlGet];
+        });
+    }
+    // cancelado cita
+    const regex2 = /\[\[CANCELADO_CITA:(.*?)\]\]/;
+    const match2 = textoNormal.match(regex2);
+    if (match2) {
+        const message = textoNormal
+            .replace(regex2, "")
+            .replace(/\s{2,}/g, "\n");
+        textoNormal = message;
+    }
+
+    // datos confirmado cita
+    const regex = /\[\[DATOS_CONFIRMADOS:(.*?)\]\]/;
+    const matchCitas = textoNormal.match(regex);
+    if (matchCitas) {
+        const message = textoNormal.replace(regex, "").replace(/\s{2,}/g, "\n");
+        textoNormal = message;
+    }
+    return [textoNormal.replace(/\[\[([^\]]+)\]\]/g, ""), urlExtraidas, links];
+}
+export async function featuresIA(
+    empresa: Empresas,
+    completionText: string,
+    links: [string, string][]
+): Promise<string> {
+    let textoNormal = completionText;
+
+    if (links?.length) {
+        await Promise.all(
+            links.map(async ([hash, urlGet]) => {
+                const date = NOW(empresa).add(1, "days").format();
+                const findHash = await UrlsPayment.findOne({
+                    where: { hash, empresa_id: empresa.id },
+                });
+                if (findHash) {
+                    await findHash.update({ url: urlGet, time: date });
+                } else {
+                    await UrlsPayment.create({
+                        hash,
+                        url: urlGet,
+                        empresa_id: empresa.id,
+                        time: date,
+                    });
+                }
+            })
+        );
     }
     const now = NOW(empresa).utc().format();
     const after = NOW(empresa)
@@ -505,10 +561,6 @@ export async function featuresIA(
             await findCita.destroy();
             cache.delete(`citas:${empresa.slug}`);
         }
-        const message = completionText
-            .replace(regex2, "")
-            .replace(/\s{2,}/g, "\n");
-        textoNormal = message;
     }
     const regex = /\[\[DATOS_CONFIRMADOS:(.*?)\]\]/;
     const matchCitas = completionText.match(regex);
@@ -578,22 +630,8 @@ export async function featuresIA(
         }
     }
 
-    const regexNoEncontrado = /\[\[NO_ENCONTRADO:(.*?)\]\]/;
-    const matchNoEncontrado = completionText.match(regexNoEncontrado);
-    if (matchNoEncontrado) {
-        const question = matchNoEncontrado[1];
-        await Questions.create({
-            question,
-            answer: null,
-            empresa_id: empresa.id,
-        });
-        const message = completionText
-            .replace(regexNoEncontrado, "")
-            .replace(/\s{2,}/g, "");
-        textoNormal = message;
-    }
     // eliminar espacios innecesarios
-    return [textoNormal.trim(), urlExtraidas];
+    return textoNormal.trim();
 }
 
 interface SendMessageCronProps {

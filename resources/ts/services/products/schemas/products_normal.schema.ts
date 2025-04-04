@@ -47,6 +47,8 @@ export const productsNormalSchema = object({
             months: number([minValue(1)]),
         })
     ),
+    enabled_local: boolean(),
+    enabled_web: boolean(),
     empresa_id: number(),
 });
 

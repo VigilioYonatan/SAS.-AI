@@ -222,17 +222,13 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     @Column({
         type: DataType.JSON,
     })
-    header: {
-        home: boolean;
-        shop: boolean;
-        profile: boolean;
-        about: boolean;
-        pedidos: boolean;
-        condiciones: boolean;
-        categories: boolean;
-        subcategories: boolean;
-        services: boolean;
-    };
+    header: SettingsSchema["header"];
+
+    @Column({
+        type: DataType.JSON,
+        defaultValue: null,
+    })
+    multi_lenguaje: SettingsSchema["multi_lenguaje"];
 
     @Column({
         type: DataType.STRING(60),
