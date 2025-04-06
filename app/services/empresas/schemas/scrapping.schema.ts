@@ -36,6 +36,8 @@ export type CategoryPrincipalSchema = Input<typeof categoryPrincipal>;
 
 const categoryCustom = object({
     web_url: string(),
+    image_url: nullable(string()),
+    categoria_url: nullable(string()),
     categories: array(
         object({
             id: nullable(string()),
@@ -53,7 +55,7 @@ const eventVigilio = object({
     data: array(
         object({
             key: string(),
-            element: string(),
+            element: nullable(string()),
             attr: string(), // "attr:src" | "text" | "html";
             isContainElement: boolean(),
             reduce_url: nullable(string()),
@@ -75,7 +77,7 @@ export const scrappingSchema = objectAsync({
                 query: string(),
                 page_not_found: nullable(string()),
             }),
-            web_url: string(),
+            web_url: nullable(string()),
             event_click: nullable(event_click),
             next_click: nullable(event_click),
             container_element: string(),
@@ -89,23 +91,6 @@ export const scrappingSchema = objectAsync({
                 price: nullable(string()),
                 quantity: nullable(string()),
                 image: nullable(string()),
-                event: nullable(
-                    object({
-                        element: string(),
-                        waitElement: string(),
-                        product: object({
-                            name: string(),
-                            url: string(),
-                            price: nullable(string()),
-                            quantity: nullable(string()),
-                            description: nullable(string()),
-                            marca: nullable(string()),
-                            images: nullable(string()),
-                            variants: nullable(string()),
-                            discount: nullable(string()),
-                        }),
-                    })
-                ),
             }),
         })
     ),
@@ -137,7 +122,7 @@ export const scrappingSchema = objectAsync({
                     container_element: string(),
                     title: string(),
                     when: nullable(string()),
-                    event: eventVigilio,
+                    event: array(eventVigilio),
                 })
             ),
         })

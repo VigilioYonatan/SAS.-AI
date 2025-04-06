@@ -19,12 +19,12 @@ function ChatAi() {
         <div class="buttons-pages-custom fixed bottom-32 right-10 z-[99] ">
             <AssistantVirtual isOpen={isOpen.value} onClose={onClose} />
             <button
-                class=" bg-primary px-4 py-2 rounded-md text-white"
+                class=" bg-primary w-[55px] h-[45px] flex justify-center items-center rounded-md text-white"
                 type="button"
                 aria-label="open chat ai"
                 onClick={onOpen}
             >
-                <i class="fas fa-message-bot" />
+                <i class="fas fa-message-bot text-xl" />
             </button>
         </div>
     );

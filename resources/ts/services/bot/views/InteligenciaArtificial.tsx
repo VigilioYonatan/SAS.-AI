@@ -203,6 +203,7 @@ function InteligenciaArtificial() {
                                         showCloseButton: true,
                                         sweetWidth: "800px",
                                         isCloseInBackground: false,
+                                        position: "start",
                                     });
                                 }}
                             >

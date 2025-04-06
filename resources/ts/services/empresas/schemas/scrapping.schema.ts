@@ -52,7 +52,7 @@ const eventVigilio = object({
     data: array(
         object({
             key: string(),
-            element: string(),
+            element: nullable(string()),
             attr: string(), // "attr:src" | "text" | "html";
             isContainElement: boolean(),
             reduce_url: nullable(string()),
@@ -74,7 +74,7 @@ export const scrappingSchema = object({
                 query: string(),
                 page_not_found: nullable(string()),
             }),
-            web_url: string(),
+            web_url: nullable(string()),
             event_click: nullable(event_click),
             next_click: nullable(event_click),
             container_element: string(),
@@ -119,7 +119,7 @@ export const scrappingSchema = object({
                     container_element: string(),
                     title: string(),
                     when: nullable(string()),
-                    event: eventVigilio,
+                    event: array(eventVigilio),
                 })
             ),
         })

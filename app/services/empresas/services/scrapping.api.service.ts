@@ -3,8 +3,12 @@ import type { Empresas } from "../entities/empresas.entity";
 import { Scrapping } from "../entities/scrapping.entity";
 import { ScrappingUpdateDto } from "../dtos/scrapping.update.dto";
 import cache from "@vigilio/express-core/cache";
-import { ScrappingSchema } from "../schemas/scrapping.schema";
-import { getCategories } from "../libs/scrapping";
+import {
+    CategoryIA,
+    ProductIA,
+    ScrappingSchema,
+} from "../schemas/scrapping.schema";
+import { getCategories, getPages, getProductsNoSSR } from "../libs/scrapping";
 
 @Injectable()
 export class ScrappingApiService {
@@ -26,6 +30,33 @@ export class ScrappingApiService {
             categories: body.categories,
         } as ScrappingSchema);
         return { success: true, data: categories };
+    }
+    async testProducts(
+        body: Pick<ScrappingSchema, "products"> & {
+            categories: { id: string | null; url: string }[];
+            categoria_url: string | null;
+            web_url: string;
+        }
+    ) {
+        let data: ProductIA[][] = [];
+        for await (const category of body.categories) {
+            const categories = await getProductsNoSSR(
+                {
+                    products: body.products,
+                    categories: { categoria_url: body.categoria_url },
+                    web_url: body.web_url,
+                } as ScrappingSchema,
+                category as unknown as CategoryIA
+            );
+            data = [...data, categories];
+        }
+
+        return { success: true, data };
+    }
+
+    async testPages(body: Pick<ScrappingSchema, "pages">) {
+        const pages = await getPages(body.pages);
+        return { success: true, data: pages };
     }
 
     async update(empresa: Empresas, body: ScrappingUpdateDto) {

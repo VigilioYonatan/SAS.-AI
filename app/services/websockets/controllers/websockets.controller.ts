@@ -202,6 +202,7 @@ export class WebsocketsController {
             (socket.handshake.query?.["x-empresa"] as string) ?? "null";
         // empresa -> id
         if (token === "null" || empresa === "null") return;
+
         const empCache = JSON.parse(cache.get(`EMPRESA:${empresa}`) || "null");
         socket.join(token);
         if (!(chatAssistantWeb[`${empresa}:${token}`] ?? []).length) {

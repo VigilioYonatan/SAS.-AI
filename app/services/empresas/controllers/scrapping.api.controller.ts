@@ -17,7 +17,14 @@ import {
     type ScrappingUpdateDto,
 } from "../dtos/scrapping.update.dto";
 import { ScrappingSchema, scrappingSchema } from "../schemas/scrapping.schema";
-import { pickAsync } from "@vigilio/valibot";
+import {
+    array,
+    mergeAsync,
+    nullable,
+    object,
+    pickAsync,
+    string,
+} from "@vigilio/valibot";
 
 @Injectable()
 @Controller("/empresas/scrapping")
@@ -36,6 +43,39 @@ export class ScrappingApiController {
     @Post("/test-categories")
     async testCategories(@Body() body: Pick<ScrappingSchema, "categories">) {
         const result = await this.scrappingApiService.testCategories(body);
+        return result;
+    }
+    @PermissionAdmin()
+    @Validator(
+        mergeAsync([
+            pickAsync(scrappingSchema, ["categories"]),
+            object({
+                categories: array(
+                    object({ id: nullable(string()), url: string() })
+                ),
+                categoria_url: nullable(string()),
+                web_url: string(),
+            }),
+        ])
+    )
+    @Post("/test-products")
+    async testProducts(
+        @Body()
+        body: Pick<ScrappingSchema, "products"> & {
+            categories: { id: string | null; url: string }[];
+            categoria_url: string | null;
+            web_url: string;
+        }
+    ) {
+        const result = await this.scrappingApiService.testProducts(body);
+        return result;
+    }
+    @Post("/test-pages")
+    async testPages(
+        @Body()
+        body: Pick<ScrappingSchema, "pages">
+    ) {
+        const result = await this.scrappingApiService.testPages(body);
         return result;
     }
 

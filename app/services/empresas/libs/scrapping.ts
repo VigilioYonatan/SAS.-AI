@@ -6,6 +6,7 @@ import type {
     ProductIA,
     ScrappingSchema,
 } from "../schemas/scrapping.schema";
+import { BadRequestException } from "@vigilio/express-core";
 export async function getCategories(
     settings: ScrappingSchema
 ): Promise<CategoryIA[]> {
@@ -66,6 +67,7 @@ export async function getCategories(
                 const deleteUrlCategoria = categoriesSettings.categoria_url
                     ? url.replace(categoriesSettings.categoria_url, "")
                     : url;
+
                 categories = [
                     ...categories,
                     {
@@ -91,8 +93,30 @@ export async function getProductsNoSSR(
     try {
         let productos: ProductIA[] = [];
         let dom: JSDOM | null = null;
+        console.log("--- por aca ----");
+
         try {
-            dom = await JSDOM.fromURL(settings.products!.web_url, {
+            const url =
+                settings.products!.web_url ||
+                (settings.categories?.categoria_url
+                    ? `${
+                          settings.categories?.categoria_url?.startsWith(
+                              "https"
+                          )
+                              ? `${settings.categories?.categoria_url}${
+                                    categoria.url.startsWith("/")
+                                        ? categoria.url
+                                        : `/${categoria.url}`
+                                }`
+                              : `${settings.web_url}${
+                                    categoria.url.startsWith("/")
+                                        ? categoria.url
+                                        : `/${categoria.url}`
+                                }`
+                      }${categoria.url}`
+                    : categoria.url);
+
+            dom = await JSDOM.fromURL(url, {
                 runScripts: "dangerously",
                 resources: "usable",
                 pretendToBeVisual: false,
@@ -182,7 +206,7 @@ export async function getProductsNoSSR(
         dom!.window.close();
         return productos;
     } catch (error) {
-        return [];
+        throw new BadRequestException((error as Error).message);
     }
 }
 export async function getProductsSSR(
@@ -379,6 +403,118 @@ export async function getProduct(
         price,
         discount,
     };
+}
+
+export async function getPages(pagesSettings: ScrappingSchema["pages"]) {
+    interface Customer {
+        id: number;
+        title: string;
+        when: string | null;
+        data: Record<string, string>[];
+    }
+    let pages: {
+        web_url: string;
+        customer: Customer[];
+    }[] = [];
+    for await (const custom of pagesSettings) {
+        let html: string | null = null;
+        let dom: JSDOM | null = null;
+        if (!custom.ssr) {
+            try {
+                dom = await JSDOM.fromURL(custom.web_url, {
+                    runScripts: "dangerously",
+                    resources: "usable",
+                    pretendToBeVisual: false,
+                });
+
+                await delayDocument(dom.window.document);
+                html = dom.serialize();
+                dom.window.close();
+            } catch (error) {}
+        } else {
+            const response = await fetch(custom.web_url);
+            html = await response.text();
+        }
+
+        const $ = cheerio.load(html!);
+
+        let customer: Customer[] = [];
+        for await (const renderer of custom.renderer) {
+            const fatherElement = $(renderer.container_element);
+            console.log({ renderer, fatherElement });
+
+            let id = 1;
+            let data: Customer[] = [];
+            for await (const splitFunction of renderer.event) {
+                const elements = splitFunction.element
+                    ? fatherElement.find(splitFunction.element).get()
+                    : fatherElement;
+
+                let resultado: Record<string, string>[] = [];
+                // const elementPage = $(splitFunction.element).get();
+                let index = 0;
+                for await (const elementoHijo of Array.from(elements)) {
+                    if (
+                        splitFunction.max_length &&
+                        index >= splitFunction.max_length
+                    ) {
+                        break;
+                    }
+                    let result = {};
+                    for await (const data of splitFunction.data) {
+                        const lastElement = !data.isContainElement
+                            ? data.element
+                                ? $(elementoHijo).find(data.element)
+                                : $(elementoHijo)
+                            : $(renderer.container_element);
+                        if (lastElement) {
+                            let getHTML = "";
+                            if (data.attr === "text") {
+                                getHTML = lastElement.text();
+                            } else if (data.attr.startsWith("attr")) {
+                                const wait = data.attr.split(":").pop();
+                                if (wait) {
+                                    getHTML = lastElement.attr(wait) || "";
+                                }
+                            } else {
+                                getHTML = lastElement.html() || "";
+                            }
+                            if (data.reduce_url) {
+                                getHTML = getHTML.replaceAll(
+                                    new RegExp(data.reduce_url, "gi"),
+                                    ""
+                                );
+                            }
+                            const text = removeTextIAHTML(
+                                (getHTML || "").trim() || ""
+                            );
+
+                            result = {
+                                ...result,
+                                [data.key]: text,
+                            };
+                        }
+                    }
+
+                    index++;
+                    resultado = [...resultado, result];
+                }
+                data = [
+                    ...data,
+                    {
+                        id,
+                        title: renderer.title,
+                        when: renderer.when,
+                        data: resultado,
+                    },
+                ];
+                id++;
+            }
+            customer = [...customer, ...data];
+        }
+        pages = [...pages, { web_url: custom.web_url, customer }];
+    }
+    return pages;
 }
 
 // HELPERS TO SCRAPPING

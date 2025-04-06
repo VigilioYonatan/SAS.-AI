@@ -8,6 +8,8 @@ export const scrappingUpdateDto = merge([
         enabledEventClickCategories: boolean(),
         enabledProducts: boolean(),
         enabledProduct: boolean(),
+        enabledEventClickProducts: boolean(),
+        enabledEventClickNextPage: boolean(),
     }),
 ]);
 export type ScrappingUpdateDto = Input<typeof scrappingUpdateDto>;
