@@ -16,10 +16,10 @@ function ChatAi() {
     }
 
     return (
-        <div class="buttons-pages-custom fixed bottom-32 right-10 z-[99] ">
+        <div class="vigilio-chat-ai buttons-pages-custom fixed bottom-32 right-10 z-[99] ">
             <AssistantVirtual isOpen={isOpen.value} onClose={onClose} />
             <button
-                class=" bg-primary w-[55px] h-[45px] flex justify-center items-center rounded-md text-white"
+                class="vigilio-button-ai bg-primary w-[55px] h-[45px] flex justify-center items-center rounded-md text-white"
                 type="button"
                 aria-label="open chat ai"
                 onClick={onOpen}

@@ -844,7 +844,7 @@ export class WebApiService {
 
             pagina.queries = queries;
 
-            pagina.data = relation(data);
+            pagina.data = relation(data || []);
             pagina.paginator = paginator;
             return pagina;
         }

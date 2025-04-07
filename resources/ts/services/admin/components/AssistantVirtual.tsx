@@ -21,7 +21,7 @@ export type ChatIA = [string, "user" | "assistant", string];
 function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
     return (
         <div
-            class={`${
+            class={`vigilio-button-container-ai ${
                 isOpen ? "visible opacity-100" : "invisible  opacity-0"
             } delay-custom-1  p-2  rounded-md overflow-hidden  shadow-primary bg-background-light dark:bg-paper-dark  w-[280px] xs:w-[380px] md:w-[400px] h-[calc(100dvh_-_230px)] md:h-[520px] absolute -bottom-1 md:bottom-8 z-[99] -right-4  shadow`}
         >
@@ -117,7 +117,7 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                                                 : "bg-red-600"
                                         }`}
                                     />
-                                    <h3 class=" dark:text-white text-primary font-bold text-center text-xl">
+                                    <h3 class="vigilio-title dark:text-white text-primary font-bold text-center text-xl">
                                         <i class="fas fa-user-robot mr-2" />{" "}
                                         Asistente Virtual
                                     </h3>
@@ -229,7 +229,7 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                                                 )
                                             )}
                                             {isLoading.value ? (
-                                                <div class="chat-loading font-normal bg-primary text-white px-4 py-1 rounded-md  self-start">
+                                                <div class="vigilio-chat-loading font-normal bg-primary text-white px-4 py-1 rounded-md  self-start">
                                                     <div class="mensaje-tipeando">
                                                         <span class="punto">
                                                             .
@@ -248,7 +248,7 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                                             onSubmit={messageForm.handleSubmit(
                                                 onSendMessage
                                             )}
-                                            class="absolute bottom-0 right-0 left-0  flex     h-[38px]  bg-white border-t-2"
+                                            class="vigilio-form absolute bottom-0 right-0 left-0  flex     h-[38px]  bg-white border-t-2"
                                             autoComplete="off"
                                         >
                                             <input
