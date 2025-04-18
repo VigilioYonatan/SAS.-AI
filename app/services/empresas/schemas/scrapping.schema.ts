@@ -122,7 +122,7 @@ export const scrappingSchema = objectAsync({
                     container_element: string(),
                     title: string(),
                     when: nullable(string()),
-                    event: array(eventVigilio),
+                    event: eventVigilio,
                 })
             ),
         })

@@ -35,5 +35,6 @@ export const empresasUpdateDto = omitAsync(empresasSchema, [
     "payment_completed",
     "cuota",
     "scrapping_id",
+    "token_web_chat",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;

@@ -408,6 +408,7 @@ export const empresasSchema = object({
         })
     ),
     scrapping_id: number(),
+    token_web_chat: nullable(string()),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

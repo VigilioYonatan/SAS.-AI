@@ -73,7 +73,7 @@ export class ScrappingApiController {
     @Post("/test-pages")
     async testPages(
         @Body()
-        body: Pick<ScrappingSchema, "pages">
+        body: Pick<ScrappingSchema, "pages" | "web_url">
     ) {
         const result = await this.scrappingApiService.testPages(body);
         return result;

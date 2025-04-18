@@ -61,7 +61,17 @@ import { EmailsPromociones } from "@/emails/entities/emails_offers.entity";
 import { Scrapping } from "./scrapping.entity";
 
 @DefaultScope(() => ({
-    include: [Address, MetodosPago, TipoEmpresa, Settings, CitasSettings],
+    include: [
+        Address,
+        MetodosPago,
+        TipoEmpresa,
+        Settings,
+        CitasSettings,
+        {
+            model: Scrapping,
+            attributes: ["web_url"],
+        },
+    ],
 }))
 @Table
 export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
@@ -490,6 +500,13 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
         type: DataType.BOOLEAN,
     })
     isOnlyScrapping: boolean;
+
+    @Column({
+        type: DataType.STRING,
+        defaultValue: null,
+        unique: true,
+    })
+    token_web_chat: string | null;
 
     @ForeignKey(() => Scrapping)
     @Column({

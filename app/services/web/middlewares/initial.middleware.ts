@@ -28,6 +28,12 @@ export async function initialMiddleware(
 ) {
     const empresa = (req as RequestVigilio).empresa;
     if (!req.originalUrl.includes("/admin")) {
+        if (empresa.isOnlyScrapping) {
+            if (!empresa.scrapping.web_url) {
+                return res.redirect("/admin");
+            }
+            return res.redirect(empresa.scrapping.web_url);
+        }
         const [categories, categoriesService, totalProducts, brands] =
             await Promise.all([
                 empresa.setting.isEccomerce

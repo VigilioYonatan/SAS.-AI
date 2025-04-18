@@ -838,7 +838,10 @@ export class EmpresasApiService {
                 throw new Error("El slug ya está en uso");
             }
             const scrapping = new Scrapping({
-                web_url: "",
+                web_url:
+                    enviroments.NODE_ENV === "production"
+                        ? ""
+                        : "http://localhost:5173",
                 hours: 24,
                 categories: null,
                 pages: [],
@@ -878,6 +881,10 @@ export class EmpresasApiService {
                 logo_pwa: null,
                 model_ai: "open-ai",
                 scrapping_id: scrapping.id,
+                token_web_chat: `vigilio-${
+                    Math.random().toString(32).slice(6) +
+                    Date.now().toString(32)
+                }`,
             }) as Empresas;
             await empresa.save();
 

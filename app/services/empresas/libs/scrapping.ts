@@ -7,6 +7,8 @@ import type {
     ScrappingSchema,
 } from "../schemas/scrapping.schema";
 import { BadRequestException } from "@vigilio/express-core";
+// import { delay } from "~/libs/helpers";
+
 export async function getCategories(
     settings: ScrappingSchema
 ): Promise<CategoryIA[]> {
@@ -21,7 +23,12 @@ export async function getCategories(
                     runScripts: "dangerously",
                     resources: "usable",
                     pretendToBeVisual: false,
+                    beforeParse(window) {
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                        (window as any).getComputedStyle = () => {};
+                    },
                 });
+
                 await delayDocument(dom.window.document);
                 if (categoriesSettings.event_click) {
                     const evtClick = dom.window.document.querySelector(
@@ -33,10 +40,11 @@ export async function getCategories(
                         categoriesSettings.event_click.waitElement
                     );
                 }
-
                 html = dom.serialize();
-                dom.window.close();
-            } catch (error) {}
+                dom?.window.close();
+            } catch (error) {
+            } finally {
+            }
         } else {
             const responseweb = await fetch(categoriesSettings.web_url);
             html = await responseweb.text();
@@ -93,7 +101,6 @@ export async function getProductsNoSSR(
     try {
         let productos: ProductIA[] = [];
         let dom: JSDOM | null = null;
-        console.log("--- por aca ----");
 
         try {
             const url =
@@ -120,8 +127,13 @@ export async function getProductsNoSSR(
                 runScripts: "dangerously",
                 resources: "usable",
                 pretendToBeVisual: false,
+                beforeParse(window) {
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                    (window as any).getComputedStyle = () => {};
+                },
             });
             await delayDocument(dom.window.document);
+            dom?.window.close();
         } catch (error) {}
 
         let block = true;
@@ -319,6 +331,10 @@ export async function getProduct(
                 runScripts: "dangerously",
                 resources: "usable",
                 pretendToBeVisual: false,
+                beforeParse(window) {
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                    (window as any).getComputedStyle = () => {};
+                },
             });
             await new Promise((resolve) => {
                 dom!.window.document.addEventListener(
@@ -338,8 +354,12 @@ export async function getProduct(
                 );
             }
             html = dom.serialize();
+
             dom.window.close();
-        } catch (error) {}
+        } catch (error) {
+        } finally {
+            dom?.window.close();
+        }
     } else {
         const responseweb = await fetch(settings.web_url);
         html = await responseweb.text();
@@ -405,7 +425,10 @@ export async function getProduct(
     };
 }
 
-export async function getPages(pagesSettings: ScrappingSchema["pages"]) {
+export async function getPages(
+    web_url: string,
+    pagesSettings: ScrappingSchema["pages"]
+) {
     interface Customer {
         id: number;
         title: string;
@@ -419,97 +442,99 @@ export async function getPages(pagesSettings: ScrappingSchema["pages"]) {
     for await (const custom of pagesSettings) {
         let html: string | null = null;
         let dom: JSDOM | null = null;
+
         if (!custom.ssr) {
             try {
-                dom = await JSDOM.fromURL(custom.web_url, {
-                    runScripts: "dangerously",
-                    resources: "usable",
-                    pretendToBeVisual: false,
-                });
-
+                dom = await JSDOM.fromURL(
+                    custom.web_url.startsWith("https")
+                        ? custom.web_url
+                        : `${web_url}/${custom.web_url}`,
+                    {
+                        runScripts: "dangerously",
+                        resources: "usable",
+                        pretendToBeVisual: true,
+                        beforeParse(window) {
+                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                            (window as any).getComputedStyle = () => {};
+                        },
+                    }
+                );
                 await delayDocument(dom.window.document);
                 html = dom.serialize();
-                dom.window.close();
+                dom?.window.close();
             } catch (error) {}
         } else {
             const response = await fetch(custom.web_url);
             html = await response.text();
         }
-
         const $ = cheerio.load(html!);
 
         let customer: Customer[] = [];
         for await (const renderer of custom.renderer) {
             const fatherElement = $(renderer.container_element);
-            console.log({ renderer, fatherElement });
-
             let id = 1;
             let data: Customer[] = [];
-            for await (const splitFunction of renderer.event) {
-                const elements = splitFunction.element
-                    ? fatherElement.find(splitFunction.element).get()
-                    : fatherElement;
-
-                let resultado: Record<string, string>[] = [];
-                // const elementPage = $(splitFunction.element).get();
-                let index = 0;
-                for await (const elementoHijo of Array.from(elements)) {
-                    if (
-                        splitFunction.max_length &&
-                        index >= splitFunction.max_length
-                    ) {
-                        break;
-                    }
-                    let result = {};
-                    for await (const data of splitFunction.data) {
-                        const lastElement = !data.isContainElement
-                            ? data.element
-                                ? $(elementoHijo).find(data.element)
-                                : $(elementoHijo)
-                            : $(renderer.container_element);
-                        if (lastElement) {
-                            let getHTML = "";
-                            if (data.attr === "text") {
-                                getHTML = lastElement.text();
-                            } else if (data.attr.startsWith("attr")) {
-                                const wait = data.attr.split(":").pop();
-                                if (wait) {
-                                    getHTML = lastElement.attr(wait) || "";
-                                }
-                            } else {
-                                getHTML = lastElement.html() || "";
-                            }
-                            if (data.reduce_url) {
-                                getHTML = getHTML.replaceAll(
-                                    new RegExp(data.reduce_url, "gi"),
-                                    ""
-                                );
-                            }
-                            const text = removeTextIAHTML(
-                                (getHTML || "").trim() || ""
-                            );
-
-                            result = {
-                                ...result,
-                                [data.key]: text,
-                            };
-                        }
-                    }
-
-                    index++;
-                    resultado = [...resultado, result];
+            const elements = fatherElement.find(renderer.event.element).get();
+            let resultado: Record<string, string>[] = [];
+            let index = 0;
+            for await (const elementoHijo of Array.from(elements)) {
+                if (
+                    renderer.event.max_length &&
+                    index >= renderer.event.max_length
+                ) {
+                    break;
                 }
-                data = [
-                    ...data,
-                    {
-                        id,
-                        title: renderer.title,
-                        when: renderer.when,
-                        data: resultado,
-                    },
-                ];
-                id++;
+                let result = {};
+                for await (const data of renderer.event.data) {
+                    const lastElement = !data.isContainElement
+                        ? data.element?.length
+                            ? $(elementoHijo).find(data.element)
+                            : $(elementoHijo)
+                        : data.element?.length
+                        ? $(renderer.container_element).find(data.element)
+                        : $(renderer.container_element);
+                    if (lastElement) {
+                        let getHTML = "";
+                        if (data.attr === "text") {
+                            getHTML = lastElement.text();
+                        } else if (data.attr.startsWith("attr")) {
+                            const wait = data.attr.split(":").pop();
+                            if (wait) {
+                                getHTML = lastElement.attr(wait) || "";
+                            }
+                        } else {
+                            getHTML = lastElement.html() || "";
+                        }
+                        if (data.reduce_url) {
+                            getHTML = getHTML.replaceAll(
+                                new RegExp(data.reduce_url, "gi"),
+                                ""
+                            );
+                        }
+                        const text = removeTextIAHTML(
+                            (getHTML || "").trim() || ""
+                        );
+
+                        result = {
+                            ...result,
+                            [data.key]: text,
+                        };
+                    }
+                }
+
+                index++;
+                resultado = [...resultado, result];
             }
+            data = [
+                ...data,
+                {
+                    id,
+                    title: renderer.title,
+                    when: renderer.when,
+                    data: resultado,
+                },
+            ];
+            id++;
             customer = [...customer, ...data];
         }
         pages = [...pages, { web_url: custom.web_url, customer }];

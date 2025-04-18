@@ -242,9 +242,10 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
             monto_dolar: 100,
         },
         payment_completed: false,
-        isOnlyScrapping: false,
+        isOnlyScrapping: true,
         isProduction: false,
         scrapping_id: 1,
+        token_web_chat: "vigilio-123456789",
     };
 }
 
@@ -488,5 +489,6 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         scrapping_id: 1,
         payment_completed: false,
         isOnlyScrapping: false,
+        token_web_chat: "vigilio-123456789",
     };
 }

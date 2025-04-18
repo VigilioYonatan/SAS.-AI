@@ -37,6 +37,9 @@ function ScrappingIndex() {
     const enabledEventClickNextPage = empresaScrappingForm.watch(
         "enabledEventClickNextPage"
     );
+    const enabledCustomCategory = empresaScrappingForm.watch(
+        "enabledCustomCategory"
+    );
 
     const enabledProducts = empresaScrappingForm.watch("enabledProducts");
     const categories = empresaScrappingForm.watch("categories");
@@ -88,6 +91,21 @@ function ScrappingIndex() {
         control: empresaScrappingForm.control,
         name: "pages",
     });
+    const categoriesFieldArry = useFieldArray({
+        control: empresaScrappingForm.control,
+        name: "categories.categories",
+    });
+
+    useEffect(() => {
+        if (!enabledCustomCategory) {
+            empresaScrappingForm.setValue("categories", null);
+        }
+    }, [enabledCustomCategory]);
+    useEffect(() => {
+        if (!enabledCategories) {
+            empresaScrappingForm.setValue("categories", null);
+        }
+    }, [enabledCategories]);
     return (
         <>
             <h2 class="dark:text-white text-primary text-xl font-semibold">
@@ -117,8 +135,437 @@ function ScrappingIndex() {
                     />
                 </div>
                 <div>
+                    <div class="flex justify-between gap-2">
+                        <div class="flex gap-2 items-center">
+                            <i class="fa-regular fa-browser dark:text-white text-xl" />
+                            <span class="dark:text-white font-semibold">
+                                Páginas
+                            </span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button
+                                type="button"
+                                class="bg-green-600 px-3 text-lg text-white rounded-md font-bold py-1"
+                                onClick={() => {
+                                    pagesFieldArry.append({
+                                        renderer: [],
+                                        ssr: true,
+                                        web_url: "",
+                                    });
+                                }}
+                                disabled={
+                                    empresaScrappingTestCategoriesMutation.isLoading ||
+                                    false
+                                }
+                            >
+                                +
+                            </button>
+                            <button
+                                type="button"
+                                class="bg-black text-white rounded-md text-xs p-2"
+                                onClick={() => {
+                                    sweetModal({
+                                        title: "¿Estás seguro que deseas probar?",
+                                        isCloseInBackground: false,
+                                        showCancelButton: true,
+                                    }).then(({ isConfirmed }) => {
+                                        if (isConfirmed) {
+                                            empresaScrappingTestPagesMutation.mutate(
+                                                {
+                                                    pages: empresaScrappingForm.watch(
+                                                        "pages"
+                                                    ),
+                                                },
+                                                {
+                                                    onSuccess(data) {
+                                                        sweetModal({
+                                                            html: reactComponent(
+                                                                <div class="overflow-auto">
+                                                                    <pre class="dark:text-white font-semibold text-wrap">
+                                                                        {JSON.stringify(
+                                                                            data.data,
+                                                                            null,
+                                                                            3
+                                                                        )}
+                                                                    </pre>
+                                                                </div>
+                                                            ),
+                                                            sweetWidth: "700px",
+                                                            position: "start",
+                                                            showCloseButton:
+                                                                true,
+                                                            isCloseInBackground:
+                                                                true,
+                                                        });
+                                                    },
+                                                    onError(err) {
+                                                        sweetAlert({
+                                                            icon: "danger",
+                                                            title: err.message,
+                                                        });
+                                                    },
+                                                }
+                                            );
+                                        }
+                                    });
+                                }}
+                                disabled={
+                                    empresaScrappingTestPagesMutation.isLoading ||
+                                    false
+                                }
+                            >
+                                {empresaScrappingTestPagesMutation.isLoading ? (
+                                    <LoaderSubmit />
+                                ) : (
+                                    <>
+                                        <i class="fas fa-vial" /> Probar
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                    {pagesFieldArry.fields.map((field, index) => {
+                        const rendererFieldArry = useFieldArray({
+                            control: empresaScrappingForm.control,
+                            name: `pages.${index}.renderer`,
+                        });
+                        const [isShow, setIsShow] = useState(false);
+                        return (
+                            <div
+                                class="flex items-center gap-2 flex-col"
+                                key={field.id}
+                            >
+                                <div class="flex items-center gap-2 w-full">
+                                    {" "}
+                                    <Form.control
+                                        title="Web Url"
+                                        name={
+                                            `pages.${index}.web_url` as keyof ScrappingUpdateDto
+                                        }
+                                        placeholder="/about"
+                                        ico={
+                                            <i class="fa-regular fa-browser" />
+                                        }
+                                    />
+                                    <Form.control.toggle
+                                        title="¿Es SSR?"
+                                        name={
+                                            `pages.${index}.ssr` as keyof ScrappingUpdateDto
+                                        }
+                                    />{" "}
+                                    <div className="flex gap-2 items-center">
+                                        <button
+                                            type="button"
+                                            class="bg-green-600 px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex items-center"
+                                            onClick={() => {
+                                                setIsShow(true);
+                                                rendererFieldArry.append({
+                                                    container_element: "",
+                                                    title: "",
+                                                    when: "",
+                                                    event: {
+                                                        data: [],
+                                                        element: "",
+                                                        max_length: null,
+                                                    },
+                                                });
+                                            }}
+                                        >
+                                            +{"  "}{" "}
+                                            <i class="fas fa-code text-xs" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class=" px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex items-center "
+                                            onClick={() => {
+                                                setIsShow(!isShow);
+                                            }}
+                                        >
+                                            <i
+                                                class={`fas ${
+                                                    isShow
+                                                        ? "fa-chevron-circle-up"
+                                                        : "fa-chevron-circle-down"
+                                                } `}
+                                            />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="bg-red-600 px-3 text-lg text-white rounded-md font-bold py-1 mt-2"
+                                            onClick={() => {
+                                                sweetModal({
+                                                    title: "Estas seguro de eliminar?",
+                                                    showCancelButton: true,
+                                                    isCloseInBackground: false,
+                                                }).then(({ isConfirmed }) => {
+                                                    if (isConfirmed) {
+                                                        pagesFieldArry.remove(
+                                                            index
+                                                        );
+                                                    }
+                                                });
+                                            }}
+                                        >
+                                            <i class="fas fa-trash" />
+                                        </button>
+                                    </div>
+                                </div>
+                                <div
+                                    class={`grid grid-cols-2  gap-2 w-full ${
+                                        isShow
+                                            ? "max-h-[300px] overflow-auto "
+                                            : "max-h-0 overflow-hidden"
+                                    } delay-custom-1 `}
+                                >
+                                    {rendererFieldArry.fields.map(
+                                        (_, index2) => {
+                                            const dataFieldArry3 =
+                                                useFieldArray({
+                                                    control:
+                                                        empresaScrappingForm.control,
+                                                    name: `pages.${index}.renderer.${index2}.event.data`,
+                                                });
+                                            const [isShow, setIsShow] =
+                                                useState(true);
+                                            return (
+                                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                                <Fragment key={index2}>
+                                                    {" "}
+                                                    <Form.control
+                                                        title="Titulo"
+                                                        name={
+                                                            `pages.${index}.renderer.${index2}.title` as keyof ScrappingUpdateDto
+                                                        }
+                                                        ico={
+                                                            <i class="fa-solid fa-text" />
+                                                        }
+                                                        placeholder="Titulo"
+                                                    />{" "}
+                                                    <Form.control
+                                                        title="Cuando preguntes a la I.A? responderá?"
+                                                        name={
+                                                            `pages.${index}.renderer.${index2}.when` as keyof ScrappingUpdateDto
+                                                        }
+                                                        ico={
+                                                            <i class="fa-solid fa-robot" />
+                                                        }
+                                                        placeholder="cuando te pregunte sobre.."
+                                                    />
+                                                    <Form.control
+                                                        title="Container Element"
+                                                        name={
+                                                            `pages.${index}.renderer.${index2}.container_element` as keyof ScrappingUpdateDto
+                                                        }
+                                                        ico={
+                                                            <i class="fas fa-code" />
+                                                        }
+                                                        placeholder=".container-element"
+                                                    />
+                                                    <div />
+                                                    <Form.control
+                                                        title="Elemento"
+                                                        name={
+                                                            `pages.${index}.renderer.${index2}.event.element` as keyof ScrappingUpdateDto
+                                                        }
+                                                        ico={
+                                                            <i class="fas fa-code" />
+                                                        }
+                                                        placeholder=".elemento"
+                                                        question="Si se deja vacio, tomará será el padre"
+                                                    />
+                                                    <div class="flex gap-2 items-center">
+                                                        <Form.control
+                                                            title="Máximo de elementos"
+                                                            name={
+                                                                `pages.${index}.renderer.${index2}.event.max_length` as keyof ScrappingUpdateDto
+                                                            }
+                                                            type="number"
+                                                            options={{
+                                                                setValueAs:
+                                                                    formSelectNumber,
+                                                            }}
+                                                            placeholder="12"
+                                                            question="Este campo no es obligatorio, limita la cantidad, no es obligatorio"
+                                                        />{" "}
+                                                        <button
+                                                            type="button"
+                                                            class="bg-green-600 px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex items-center"
+                                                            onClick={() => {
+                                                                setIsShow(true);
+                                                                dataFieldArry3.append(
+                                                                    {
+                                                                        attr: "attr:src",
+                                                                        element:
+                                                                            "",
+                                                                        isContainElement:
+                                                                            false,
+                                                                        key: "nombre",
+                                                                        reduce_url:
+                                                                            null,
+                                                                    }
+                                                                );
+                                                            }}
+                                                        >
+                                                            + <br />
+                                                            <span class="text-xs">
+                                                                Atributos
+                                                            </span>
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            class=" px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex items-center "
+                                                            onClick={() => {
+                                                                setIsShow(
+                                                                    !isShow
+                                                                );
+                                                            }}
+                                                        >
+                                                            <i
+                                                                class={`fas ${
+                                                                    isShow
+                                                                        ? "fa-chevron-circle-up"
+                                                                        : "fa-chevron-circle-down"
+                                                                } `}
+                                                            />
+                                                        </button>{" "}
+                                                        <button
+                                                            type="button"
+                                                            class="bg-red-600 px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex items-center"
+                                                            onClick={() => {
+                                                                sweetModal({
+                                                                    title: "Estas seguro de eliminar?",
+                                                                    showCancelButton:
+                                                                        true,
+                                                                    isCloseInBackground:
+                                                                        false,
+                                                                }).then(
+                                                                    ({
+                                                                        isConfirmed,
+                                                                    }) => {
+                                                                        if (
+                                                                            isConfirmed
+                                                                        ) {
+                                                                            rendererFieldArry.remove(
+                                                                                index2
+                                                                            );
+                                                                        }
+                                                                    }
+                                                                );
+                                                            }}
+                                                        >
+                                                            <i class="fas fa-trash" />
+                                                        </button>
+                                                    </div>
+                                                    {dataFieldArry3.fields.map(
+                                                        (f, index3) => {
+                                                            return (
+                                                                <div
+                                                                    key={f.id}
+                                                                    class={`grid grid-cols-3 items-center gap-2 ${
+                                                                        isShow
+                                                                            ? "max-h-[300px] overflow-auto"
+                                                                            : "max-h-0 overflow-hidden"
+                                                                    } delay-custom-1 `}
+                                                                >
+                                                                    <Form.control
+                                                                        title="Key"
+                                                                        name={
+                                                                            `pages.${index}.renderer.${index2}.event.data.${index3}.key` as keyof ScrappingUpdateDto
+                                                                        }
+                                                                        placeholder="Nombre, precio,etc"
+                                                                    />
+                                                                    <Form.control
+                                                                        title="Elemento"
+                                                                        name={
+                                                                            `pages.${index}.renderer.${index2}.event.data.${index3}.element` as keyof ScrappingUpdateDto
+                                                                        }
+                                                                        placeholder=".elemento"
+                                                                        ico={
+                                                                            <i class="fas fa-code" />
+                                                                        }
+                                                                    />
+                                                                    <Form.control
+                                                                        title="Attributo"
+                                                                        name={
+                                                                            `pages.${index}.renderer.${index2}.event.data.${index3}.attr` as keyof ScrappingUpdateDto
+                                                                        }
+                                                                        placeholder="text, attr:src, html"
+                                                                    />
+                                                                    <Form.control.toggle
+                                                                        title="¿Tomar el elemento cotenido?"
+                                                                        name={
+                                                                            `pages.${index}.renderer.${index2}.event.data.${index3}.isContainElement` as keyof ScrappingUpdateDto
+                                                                        }
+                                                                    />
+                                                                    <Form.control
+                                                                        title="Reducir elemento"
+                                                                        name={
+                                                                            `pages.${index}.renderer.${index2}.event.data.${index3}.reduce_url` as keyof ScrappingUpdateDto
+                                                                        }
+                                                                        ico={
+                                                                            <i class="fas fa-link" />
+                                                                        }
+                                                                        placeholder="https://..web.com/.."
+                                                                    />{" "}
+                                                                    <button
+                                                                        type="button"
+                                                                        class="bg-red-600 px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex  justify-center items-center"
+                                                                        onClick={() => {
+                                                                            sweetModal(
+                                                                                {
+                                                                                    title: "Estas seguro de eliminar?",
+                                                                                    showCancelButton:
+                                                                                        true,
+                                                                                    isCloseInBackground:
+                                                                                        false,
+                                                                                }
+                                                                            ).then(
+                                                                                ({
+                                                                                    isConfirmed,
+                                                                                }) => {
+                                                                                    if (
+                                                                                        isConfirmed
+                                                                                    ) {
+                                                                                        dataFieldArry3.remove(
+                                                                                            index3
+                                                                                        );
+                                                                                    }
+                                                                                }
+                                                                            );
+                                                                        }}
+                                                                        disabled={
+                                                                            empresaScrappingTestCategoriesMutation.isLoading ||
+                                                                            false
+                                                                        }
+                                                                    >
+                                                                        <i class="fas fa-trash" />
+                                                                    </button>
+                                                                </div>
+                                                            );
+                                                        }
+                                                    )}
+                                                    {dataFieldArry3.fields
+                                                        .length %
+                                                        2 ===
+                                                    0 ? null : (
+                                                        <div />
+                                                    )}
+                                                    <Hr />
+                                                    <Hr />
+                                                </Fragment>
+                                            );
+                                        }
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+                <AdminHr />
+                <div>
                     <div class="flex gap-2  justify-between flex-col">
-                        <span class="dark:text-white font-semibold">
+                        <span class="dark:text-white font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-cart-shopping text-xl" />
                             Categorias
                         </span>
                         <div class="flex gap-2 items-center justify-between">
@@ -133,6 +580,12 @@ function ScrappingIndex() {
                                     title="Activar Evento Click"
                                     name={
                                         "enabledEventClickCategories" as keyof ScrappingUpdateDto
+                                    }
+                                />
+                                <Form.control.toggle
+                                    title="Activar Personalizar Categorias"
+                                    name={
+                                        "enabledCustomCategory" as keyof ScrappingUpdateDto
                                     }
                                 />
                             </div>
@@ -364,10 +817,97 @@ function ScrappingIndex() {
                             ) : null}
                         </div>
                     ) : null}
+                    {enabledCustomCategory ? (
+                        <div class="flex flex-col gap-2">
+                            <div class="flex gap-2 items-center">
+                                <Form.control
+                                    title="Categorías Web Url"
+                                    name={
+                                        "categories.web_url" as keyof ScrappingUpdateDto
+                                    }
+                                    ico={<i class="fas fa-globe" />}
+                                    placeholder="https://www.tu-web.com"
+                                />
+                                <Form.control
+                                    title="Categorías Web Url"
+                                    name={
+                                        "categories.categoria_url" as keyof ScrappingUpdateDto
+                                    }
+                                    placeholder="https://www.tu-web.com/categoria"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        categoriesFieldArry.append({
+                                            id: "",
+                                            image: "",
+                                            name: "",
+                                            url: "",
+                                        });
+                                    }}
+                                    class="bg-green-600 p-4 rounded-md text-white font-bold"
+                                >
+                                    +
+                                </button>
+                            </div>
+                            {categoriesFieldArry.fields.map((category, i) => {
+                                return (
+                                    <div
+                                        key={category.id}
+                                        class="grid grid-cols-2 gap-2 border-b border-gray-600"
+                                    >
+                                        <Form.control
+                                            title="Categoria id"
+                                            name={
+                                                `categories.${i}.id` as keyof ScrappingUpdateDto
+                                            }
+                                            placeholder="1"
+                                        />
+                                        <Form.control
+                                            title="Categoria Nombre"
+                                            name={
+                                                `categories.${i}.name` as keyof ScrappingUpdateDto
+                                            }
+                                            placeholder="categoria nombre"
+                                        />
+                                        <Form.control
+                                            title="Categoria url"
+                                            name={
+                                                `categories.${i}.url` as keyof ScrappingUpdateDto
+                                            }
+                                            placeholder="categoria url"
+                                        />
+                                        <div class="flex gap-2 items-center">
+                                            <Form.control
+                                                title="Categoria Image"
+                                                name={
+                                                    `categories.${i}.image` as keyof ScrappingUpdateDto
+                                                }
+                                                placeholder="categoria iamge"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    categoriesFieldArry.remove(
+                                                        i
+                                                    );
+                                                }}
+                                                class="bg-danger text-white font-bold p-2 rounded-md"
+                                            >
+                                                <i class="fas fa-trash" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : null}
                 </div>
+                <AdminHr />
                 <div>
                     <div class="flex gap-2  justify-between flex-col">
-                        <span class="dark:text-white font-semibold">
+                        <span class="dark:text-white font-semibold flex gap-2 items-center">
+                            <i class="fa-solid fa-cart-shopping text-xl" />
                             Productos
                         </span>
                         <div class="flex gap-2 justify-between items-center">
@@ -639,418 +1179,7 @@ function ScrappingIndex() {
                         </div>
                     ) : null}
                 </div>
-                <div>
-                    <div class="flex justify-between gap-2">
-                        <span class="dark:text-white font-semibold">
-                            Páginas
-                        </span>
-                        <div class="flex gap-2">
-                            <button
-                                type="button"
-                                class="bg-green-600 px-3 text-lg text-white rounded-md font-bold py-1"
-                                onClick={() => {
-                                    pagesFieldArry.append({
-                                        renderer: [],
-                                        ssr: true,
-                                        web_url: "",
-                                    });
-                                }}
-                                disabled={
-                                    empresaScrappingTestCategoriesMutation.isLoading ||
-                                    false
-                                }
-                            >
-                                +
-                            </button>
-                            <button
-                                type="button"
-                                class="bg-black text-white rounded-md text-xs p-2"
-                                onClick={() => {
-                                    sweetModal({
-                                        title: "¿Estás seguro que deseas probar?",
-                                        isCloseInBackground: false,
-                                        showCancelButton: true,
-                                    }).then(({ isConfirmed }) => {
-                                        if (isConfirmed) {
-                                            empresaScrappingTestPagesMutation.mutate(
-                                                {
-                                                    pages: empresaScrappingForm.watch(
-                                                        "pages"
-                                                    ),
-                                                },
-                                                {
-                                                    onSuccess(data) {
-                                                        sweetModal({
-                                                            html: reactComponent(
-                                                                <div class="overflow-auto">
-                                                                    <pre class="dark:text-white font-semibold text-wrap">
-                                                                        {JSON.stringify(
-                                                                            data.data,
-                                                                            null,
-                                                                            3
-                                                                        )}
-                                                                    </pre>
-                                                                </div>
-                                                            ),
-                                                            sweetWidth: "700px",
-                                                            position: "start",
-                                                            showCloseButton:
-                                                                true,
-                                                            isCloseInBackground:
-                                                                true,
-                                                        });
-                                                    },
-                                                    onError(err) {
-                                                        sweetAlert({
-                                                            icon: "danger",
-                                                            title: err.message,
-                                                        });
-                                                    },
-                                                }
-                                            );
-                                        }
-                                    });
-                                }}
-                                disabled={
-                                    empresaScrappingTestPagesMutation.isLoading ||
-                                    false
-                                }
-                            >
-                                {empresaScrappingTestPagesMutation.isLoading ? (
-                                    <LoaderSubmit />
-                                ) : (
-                                    <>
-                                        <i class="fas fa-vial" /> Probar
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                    {pagesFieldArry.fields.map((field, index) => {
-                        const rendererFieldArry = useFieldArray({
-                            control: empresaScrappingForm.control,
-                            name: `pages.${index}.renderer`,
-                        });
-                        const [isShow, setIsShow] = useState(false);
-                        return (
-                            <div
-                                class="flex items-center gap-2 flex-col"
-                                key={field.id}
-                            >
-                                <div class="flex items-center gap-2 w-full">
-                                    {" "}
-                                    <Form.control
-                                        title="Web Url"
-                                        name={
-                                            `pages.${index}.web_url` as keyof ScrappingUpdateDto
-                                        }
-                                        placeholder="https://www.tu-web.com"
-                                    />
-                                    <Form.control.toggle
-                                        title="¿Es SSR?"
-                                        name={
-                                            `pages.${index}.ssr` as keyof ScrappingUpdateDto
-                                        }
-                                    />{" "}
-                                    <div className="flex gap-2 items-center">
-                                        <button
-                                            type="button"
-                                            class="bg-green-600 px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex items-center"
-                                            onClick={() => {
-                                                setIsShow(true);
-                                                rendererFieldArry.append({
-                                                    container_element: "",
-                                                    title: "",
-                                                    when: "",
-                                                    event: {
-                                                        data: [],
-                                                        element: "",
-                                                        max_length: null,
-                                                    },
-                                                });
-                                            }}
-                                        >
-                                            +{"  "}{" "}
-                                            <i class="fas fa-code text-xs" />
-                                        </button>
-                                        <button
-                                            type="button"
-                                            class=" px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex items-center "
-                                            onClick={() => {
-                                                setIsShow(!isShow);
-                                            }}
-                                        >
-                                            <i
-                                                class={`fas ${
-                                                    isShow
-                                                        ? "fa-chevron-circle-up"
-                                                        : "fa-chevron-circle-down"
-                                                } `}
-                                            />
-                                        </button>
-                                        <button
-                                            type="button"
-                                            class="bg-red-600 px-3 text-lg text-white rounded-md font-bold py-1 mt-2"
-                                            onClick={() => {
-                                                sweetModal({
-                                                    title: "Estas seguro de eliminar?",
-                                                    showCancelButton: true,
-                                                    isCloseInBackground: false,
-                                                }).then(({ isConfirmed }) => {
-                                                    if (isConfirmed) {
-                                                        pagesFieldArry.remove(
-                                                            index
-                                                        );
-                                                    }
-                                                });
-                                            }}
-                                        >
-                                            <i class="fas fa-trash" />
-                                        </button>
-                                    </div>
-                                </div>
-                                <div
-                                    class={`grid grid-cols-2  gap-2 w-full ${
-                                        isShow
-                                            ? "max-h-[300px] overflow-auto "
-                                            : "max-h-0 overflow-hidden"
-                                    } delay-custom-1 `}
-                                >
-                                    {rendererFieldArry.fields.map(
-                                        (_, index2) => {
-                                            const dataFieldArry3 =
-                                                useFieldArray({
-                                                    control:
-                                                        empresaScrappingForm.control,
-                                                    name: `pages.${index}.renderer.${index2}.event.data`,
-                                                });
-                                            const [isShow, setIsShow] =
-                                                useState(true);
-                                            return (
-                                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                                                <Fragment key={index2}>
-                                                    {" "}
-                                                    <Form.control
-                                                        title="Titulo"
-                                                        name={
-                                                            `pages.${index}.renderer.${index2}.title` as keyof ScrappingUpdateDto
-                                                        }
-                                                        placeholder="Titulo"
-                                                    />{" "}
-                                                    <Form.control
-                                                        title="Cuando preguntes a la I.A? responderá?"
-                                                        name={
-                                                            `pages.${index}.renderer.${index2}.when` as keyof ScrappingUpdateDto
-                                                        }
-                                                        placeholder="cuando te pregunte sobre.."
-                                                    />
-                                                    <Form.control
-                                                        title="Container Element"
-                                                        name={
-                                                            `pages.${index}.renderer.${index2}.container_element` as keyof ScrappingUpdateDto
-                                                        }
-                                                        placeholder=".container-element"
-                                                    />
-                                                    <div />
-                                                    <Form.control
-                                                        title="Elemento"
-                                                        name={
-                                                            `pages.${index}.renderer.${index2}.event.element` as keyof ScrappingUpdateDto
-                                                        }
-                                                        placeholder=".elemento"
-                                                        question="Si se deja vacio, tomará será el padre"
-                                                    />
-                                                    <div class="flex gap-2 items-center">
-                                                        <Form.control
-                                                            title="Elemento"
-                                                            name={
-                                                                `pages.${index}.renderer.${index2}.event.max_length` as keyof ScrappingUpdateDto
-                                                            }
-                                                            type="number"
-                                                            options={{
-                                                                setValueAs:
-                                                                    formSelectNumber,
-                                                            }}
-                                                            placeholder="12"
-                                                            question="Este campo no es obligatorio, limita la cantidad, no es obligatorio"
-                                                        />{" "}
-                                                        <button
-                                                            type="button"
-                                                            class="bg-green-600 px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex items-center"
-                                                            onClick={() => {
-                                                                setIsShow(true);
-                                                                dataFieldArry3.append(
-                                                                    {
-                                                                        attr: "attr:src",
-                                                                        element:
-                                                                            "",
-                                                                        isContainElement:
-                                                                            false,
-                                                                        key: "nombre",
-                                                                        reduce_url:
-                                                                            null,
-                                                                    }
-                                                                );
-                                                            }}
-                                                        >
-                                                            + <br />
-                                                            <span class="text-xs">
-                                                                Atributos
-                                                            </span>
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            class=" px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex items-center "
-                                                            onClick={() => {
-                                                                setIsShow(
-                                                                    !isShow
-                                                                );
-                                                            }}
-                                                        >
-                                                            <i
-                                                                class={`fas ${
-                                                                    isShow
-                                                                        ? "fa-chevron-circle-up"
-                                                                        : "fa-chevron-circle-down"
-                                                                } `}
-                                                            />
-                                                        </button>{" "}
-                                                        <button
-                                                            type="button"
-                                                            class="bg-red-600 px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex items-center"
-                                                            onClick={() => {
-                                                                sweetModal({
-                                                                    title: "Estas seguro de eliminar?",
-                                                                    showCancelButton:
-                                                                        true,
-                                                                    isCloseInBackground:
-                                                                        false,
-                                                                }).then(
-                                                                    ({
-                                                                        isConfirmed,
-                                                                    }) => {
-                                                                        if (
-                                                                            isConfirmed
-                                                                        ) {
-                                                                            rendererFieldArry.remove(
-                                                                                index2
-                                                                            );
-                                                                        }
-                                                                    }
-                                                                );
-                                                            }}
-                                                        >
-                                                            <i class="fas fa-trash" />
-                                                        </button>
-                                                    </div>
-                                                    {dataFieldArry3.fields.map(
-                                                        (f, index3) => {
-                                                            return (
-                                                                <div
-                                                                    key={f.id}
-                                                                    class={`grid grid-cols-3 items-center gap-2 ${
-                                                                        isShow
-                                                                            ? "max-h-[300px] overflow-auto"
-                                                                            : "max-h-0 overflow-hidden"
-                                                                    } delay-custom-1 `}
-                                                                >
-                                                                    <Form.control
-                                                                        title="Key"
-                                                                        name={
-                                                                            `pages.${index}.renderer.${index2}.event.data.${index3}.key` as keyof ScrappingUpdateDto
-                                                                        }
-                                                                        options={{
-                                                                            setValueAs:
-                                                                                formSelectNumber,
-                                                                        }}
-                                                                        placeholder="Nombre, precio,etc"
-                                                                    />
-                                                                    <Form.control
-                                                                        title="Elemento"
-                                                                        name={
-                                                                            `pages.${index}.renderer.${index2}.event.data.${index3}.element` as keyof ScrappingUpdateDto
-                                                                        }
-                                                                        placeholder=".elemento"
-                                                                    />
-                                                                    <Form.control
-                                                                        title="Attributo"
-                                                                        name={
-                                                                            `pages.${index}.renderer.${index2}.event.data.${index3}.attr` as keyof ScrappingUpdateDto
-                                                                        }
-                                                                        options={{
-                                                                            setValueAs:
-                                                                                formSelectNumber,
-                                                                        }}
-                                                                        placeholder="Nombre, precio,etc"
-                                                                    />
-                                                                    <Form.control.toggle
-                                                                        title="¿Tomar el elemento cotenido?"
-                                                                        name={
-                                                                            `pages.${index}.renderer.${index2}.event.data.${index3}.isContainElement` as keyof ScrappingUpdateDto
-                                                                        }
-                                                                    />
-                                                                    <Form.control
-                                                                        title="Reducir elemento"
-                                                                        name={
-                                                                            `pages.${index}.renderer.${index2}.event.data.${index3}.reduce_url` as keyof ScrappingUpdateDto
-                                                                        }
-                                                                        placeholder="https://..web.com/.."
-                                                                    />{" "}
-                                                                    <button
-                                                                        type="button"
-                                                                        class="bg-red-600 px-3 text-lg text-white rounded-md font-bold py-1 mt-2 flex  justify-center items-center"
-                                                                        onClick={() => {
-                                                                            sweetModal(
-                                                                                {
-                                                                                    title: "Estas seguro de eliminar?",
-                                                                                    showCancelButton:
-                                                                                        true,
-                                                                                    isCloseInBackground:
-                                                                                        false,
-                                                                                }
-                                                                            ).then(
-                                                                                ({
-                                                                                    isConfirmed,
-                                                                                }) => {
-                                                                                    if (
-                                                                                        isConfirmed
-                                                                                    ) {
-                                                                                        dataFieldArry3.remove(
-                                                                                            index3
-                                                                                        );
-                                                                                    }
-                                                                                }
-                                                                            );
-                                                                        }}
-                                                                        disabled={
-                                                                            empresaScrappingTestCategoriesMutation.isLoading ||
-                                                                            false
-                                                                        }
-                                                                    >
-                                                                        <i class="fas fa-trash" />
-                                                                    </button>
-                                                                </div>
-                                                            );
-                                                        }
-                                                    )}
-                                                    {dataFieldArry3.fields
-                                                        .length %
-                                                        2 ===
-                                                    0 ? null : (
-                                                        <div />
-                                                    )}
-                                                    <Hr />
-                                                    <Hr />
-                                                </Fragment>
-                                            );
-                                        }
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-                <AdminHr />
+
                 <Form.button.submit
                     title="Guardar Cambios"
                     ico={null}

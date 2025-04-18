@@ -54,8 +54,8 @@ export class ScrappingApiService {
         return { success: true, data };
     }
 
-    async testPages(body: Pick<ScrappingSchema, "pages">) {
-        const pages = await getPages(body.pages);
+    async testPages(body: Pick<ScrappingSchema, "pages" | "web_url">) {
+        const pages = await getPages(body.web_url, body.pages);
         return { success: true, data: pages };
     }
 

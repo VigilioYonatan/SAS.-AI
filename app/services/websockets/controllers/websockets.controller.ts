@@ -25,6 +25,7 @@ import { modelAiByEmpresa, promptReplace } from "@/bot/libs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import type { CompletionUsage } from "openai/resources";
 import cache from "@vigilio/express-core/cache";
+import { Scrapping } from "@/empresas/entities/scrapping.entity";
 export function HTMLPROMPT(_empresa: Empresas) {
     return `- Responde con formato html, envia links ó urls con <a clas="text-primary"></a>  estilos de tailwind underline, (tablas solo carrito de compra ) , etc y usar <b class="font-bold"></b> en vez de **   en palabras importantes. Por ultimo SIEMPRE usa solo un <br> para separar parrafos, usa etiqueta a <a href="url" class='text-primary underline'>text</a> para links o enlaces, etc. usa <ul class="list-disc list-inside"><li class="ml-4"></li></ul>   para listas, pedidos, información,separare preguntas 1.,2., opciones, items, etc. etiqueta de letra p,h1,span esos text-sm, imagenes maximo width 100px,  html limpio no markdown, los .jpg, o extension imagen en img.`;
 }
@@ -33,11 +34,10 @@ export let chatAssistantWeb: Record<
     [string, "user" | "assistant", string][]
 > = {};
 export let usersInWeb: Record<string, string[]> = {};
-async function cloudeAiWeb(
+export async function cloudeAiWeb(
     emp: string,
     token: string,
-    data: { id: string; message: string },
-    io: socket.Socket
+    data: { id: string; message: string }
 ) {
     try {
         const whatsapp = await isWhatsappTelegramIA(emp);
@@ -127,20 +127,15 @@ async function cloudeAiWeb(
                 contenido2 = contenido2.replace(/.+\n\s*\n/g, "").trim();
             }
             if (empresa.inteligenceArtificial.isChunk) {
-                io.to(token).emit("chat:send-message", [
-                    id,
-                    "assistant",
-                    removeContent,
-                ]);
+                // io.to(token).emit("chat:send-message", [
+                //     id,
+                //     "assistant",
+                //     removeContent,
+                // ]);
             }
         }
 
         if (!empresa.inteligenceArtificial.isChunk) {
-            io.to(token).emit("chat:send-message", [
-                id,
-                "assistant",
-                removeContent,
-            ]);
         }
         const [__, _, links] = cleanPrompt(empresa, contenido, false);
 
@@ -196,112 +191,156 @@ export class WebsocketsController {
 
     @Connect()
     async index(@Socket() socket: socket.Socket, @IO() io: socket.Socket) {
+        const web =
+            socket.handshake.headers.origin || socket.handshake.headers.referer;
+        if (web) {
+        }
         // token localstorage
         const token = (socket.handshake.query?.["x-token"] as string) ?? "null";
-        const empresa =
-            (socket.handshake.query?.["x-empresa"] as string) ?? "null";
-        // empresa -> id
-        if (token === "null" || empresa === "null") return;
-
-        const empCache = JSON.parse(cache.get(`EMPRESA:${empresa}`) || "null");
-        socket.join(token);
-        if (!(chatAssistantWeb[`${empresa}:${token}`] ?? []).length) {
-            chatAssistantWeb = {
-                ...(chatAssistantWeb ?? {}),
-                [`${empresa}:${token}`]: [
-                    ...(chatAssistantWeb[`${empresa}:${token}`] ?? []),
-                    [
-                        "test-id",
-                        "assistant",
-                        `Hola, Soy ${
-                            empCache
-                                ? `<b class="font-bold">${
-                                      (empCache as Empresas)
-                                          .inteligenceArtificial.nameIa
-                                  }</b> `
-                                : ""
-                        }su asistente virtual 😀. ¿En que le podriamos ayudar?`,
-                    ],
-                ],
-            };
-        }
-        io.to(token).emit("chat:ai", chatAssistantWeb[`${empresa}:${token}`]);
-        // user - user auth
-        const user = await this.websocketsService.index(
-            socket.handshake.query?.["x-user"] as string
-        );
-        // unir en la sala
-        if (user) {
-            // update user
-            if (!user.isOnline) {
-                await user.update({ isOnline: true });
-            }
-            const floors = await this.websocketsService.floorsMesas(
-                empresa,
-                user
-            );
-
-            if (floors) {
-                io.emit("floors_mesas:index", floors);
-            }
-            socket.join(user.id);
-            if (!(chatAssistant[`${empresa}:${user.id}`] ?? [])?.length) {
-                chatAssistant[`${empresa}:${user.id}`] = [
-                    [
-                        "assistant",
-                        `Hola ${user.username}, Soy ${
-                            empCache
-                                ? `<b class="font-bold">${
-                                      (empCache as Empresas)
-                                          .inteligenceArtificial.nameIa
-                                  }</b> `
-                                : ""
-                        }su asistente virtual 😀.`,
-                        Date.now(),
-                    ],
-                ];
-            }
-            io.to(user.id).emit(
-                "chat-assistant:ai",
-                chatAssistant[`${empresa}:${user.id}`]
-            );
-        }
-        const existUserInWeb = (usersInWeb[empresa] ?? []).find((tk) => {
-            return tk === token;
-        });
-
-        if (!existUserInWeb) {
-            // si no existe usuari con el mismo token que ya no agregre
-            usersInWeb = {
-                ...usersInWeb,
-                [empresa]: [...(usersInWeb[empresa] ?? []), token],
-            }; // add user
-        }
-        // si es gratis
-        if (usersInWeb[empresa].length > 30) {
-            const emp = await Empresas.unscoped().findOne({
+        const vigilioToken =
+            (socket.handshake.query?.["x-vigilio-token"] as string) ?? "null";
+        let xempresa = null;
+        if (vigilioToken) {
+            const empr = await Empresas.unscoped().findOne({
                 where: {
-                    id: empresa,
-                    isFreeVPS: true,
+                    token_web_chat: vigilioToken.trim(),
                 },
-                attributes: ["enabled_catalogo", "isFreeVPS"],
+                attributes: ["token_web_chat", "slug", "inteligenceArtificial"],
+                include: [
+                    {
+                        model: Scrapping,
+                        attributes: ["web_url"],
+                    },
+                ],
             });
-            if (emp?.isFreeVPS && emp?.enabled_catalogo) {
-                await Empresas.update(
-                    { enabled_catalogo: false },
-                    { where: { id: empresa, isFreeVPS: true } }
+            if (empr) {
+                if (!web?.startsWith(empr.scrapping.web_url)) {
+                    socket.disconnect();
+                    return;
+                }
+                xempresa = empr.slug;
+                const empresa =
+                    xempresa ||
+                    (socket.handshake.query?.["x-empresa"] as string) ||
+                    "null";
+                // empresa -> id
+                if (token === "null" || empresa === "null") return;
+
+                const empCache = JSON.parse(
+                    cache.get(`EMPRESA:${empresa}`) || "null"
                 );
-                const now = new Date();
-                now.setMinutes(now.getMinutes() + 15);
-                await executeCronDate(now, async () => {
-                    await Empresas.update(
-                        { enabled_catalogo: true },
-                        { where: { id: empresa, isFreeVPS: true } }
+                socket.join(token);
+                if (!(chatAssistantWeb[`${empresa}:${token}`] ?? []).length) {
+                    chatAssistantWeb = {
+                        ...(chatAssistantWeb ?? {}),
+                        [`${empresa}:${token}`]: [
+                            ...(chatAssistantWeb[`${empresa}:${token}`] ?? []),
+                            [
+                                "test-id",
+                                "assistant",
+                                `Hola, Soy ${
+                                    empCache
+                                        ? `<b class="font-bold">${
+                                              (empCache as Empresas)
+                                                  .inteligenceArtificial.nameIa
+                                          }</b> `
+                                        : ""
+                                }su asistente virtual 😀. ¿En que le podriamos ayudar?`,
+                            ],
+                        ],
+                    };
+                }
+                io.to(token).emit(
+                    "chat:ai",
+                    chatAssistantWeb[`${empresa}:${token}`]
+                );
+                // user - user auth
+                const user = await this.websocketsService.index(
+                    socket.handshake.query?.["x-user"] as string
+                );
+                // unir en la sala
+                if (user) {
+                    // update user
+                    if (!user.isOnline) {
+                        await user.update({ isOnline: true });
+                    }
+                    const floors = await this.websocketsService.floorsMesas(
+                        empresa,
+                        user
                     );
-                });
+
+                    if (floors) {
+                        io.emit("floors_mesas:index", floors);
+                    }
+                    socket.join(user.id);
+                    if (
+                        !(chatAssistant[`${empresa}:${user.id}`] ?? [])?.length
+                    ) {
+                        chatAssistant[`${empresa}:${user.id}`] = [
+                            [
+                                "assistant",
+                                `Hola ${user.username}, Soy ${
+                                    empCache
+                                        ? `<b class="font-bold">${
+                                              (empCache as Empresas)
+                                                  .inteligenceArtificial.nameIa
+                                          }</b> `
+                                        : ""
+                                }su asistente virtual 😀.`,
+                                Date.now(),
+                            ],
+                        ];
+                    }
+                    io.to(user.id).emit(
+                        "chat-assistant:ai",
+                        chatAssistant[`${empresa}:${user.id}`]
+                    );
+                }
+                const existUserInWeb = (usersInWeb[empresa] ?? []).find(
+                    (tk) => {
+                        return tk === token;
+                    }
+                );
+
+                if (!existUserInWeb) {
+                    // si no existe usuari con el mismo token que ya no agregre
+                    usersInWeb = {
+                        ...usersInWeb,
+                        [empresa]: [...(usersInWeb[empresa] ?? []), token],
+                    }; // add user
+                }
+                // si es gratis
+                if (usersInWeb[empresa].length > 30) {
+                    const emp = await Empresas.unscoped().findOne({
+                        where: {
+                            id: empresa,
+                            isFreeVPS: true,
+                        },
+                        attributes: ["enabled_catalogo", "isFreeVPS"],
+                    });
+                    if (emp?.isFreeVPS && emp?.enabled_catalogo) {
+                        await Empresas.update(
+                            { enabled_catalogo: false },
+                            { where: { id: empresa, isFreeVPS: true } }
+                        );
+                        const now = new Date();
+                        now.setMinutes(now.getMinutes() + 15);
+                        await executeCronDate(now, async () => {
+                            await Empresas.update(
+                                { enabled_catalogo: true },
+                                { where: { id: empresa, isFreeVPS: true } }
+                            );
+                        });
+                    }
+                }
+                io.emit("users-count:index", usersInWeb[empresa].length);
+                return;
             }
+            socket.disconnect();
+            return;
         }
-        io.emit("users-count:index", usersInWeb[empresa].length);
+        socket.disconnect();
+        return;
     }
 
     @Event("notifications:order-store")

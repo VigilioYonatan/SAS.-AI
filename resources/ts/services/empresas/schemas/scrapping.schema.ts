@@ -1,12 +1,14 @@
 import {
     array,
     boolean,
+    custom,
     Input,
     maxValue,
     minValue,
     nullable,
     number,
     object,
+    startsWith,
     string,
     union,
 } from "@vigilio/valibot";
@@ -35,10 +37,10 @@ export type CategoryPrincipalSchema = Input<typeof categoryPrincipal>;
 
 const categoryCustom = object({
     web_url: string(),
+    categoria_url: nullable(string()),
     categories: array(
         object({
             id: string(),
-            element: string(),
             name: string(),
             url: string(),
             image: nullable(string()),
@@ -64,7 +66,10 @@ export type EventVigilioSchema = Input<typeof eventVigilio>;
 
 export const scrappingSchema = object({
     id: number(),
-    web_url: string(),
+    web_url: string([
+        startsWith("https"),
+        custom((val) => !val.endsWith("/"), "Url No debe terminar en /"),
+    ]),
     hours: number([minValue(12), maxValue(48)]),
     categories: nullable(union([categoryPrincipal, categoryCustom])),
     products: nullable(
@@ -119,7 +124,7 @@ export const scrappingSchema = object({
                     container_element: string(),
                     title: string(),
                     when: nullable(string()),
-                    event: array(eventVigilio),
+                    event: eventVigilio,
                 })
             ),
         })
