@@ -1,42 +1,43 @@
 import {
-	BelongsTo,
-	Column,
-	DataType,
-	ForeignKey,
-	HasMany,
-	Model,
-	Table,
+    BelongsTo,
+    Column,
+    DataType,
+    ForeignKey,
+    HasMany,
+    Model,
+    Table,
 } from "sequelize-typescript";
 import type { CategoryFinanzasSchema } from "../schemas/tipo.schema";
 import { TipoFinanza } from "./tipo.entity";
 import { Finanzas } from "./finanzas.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class CategoriesFinanzas
-	extends Model
-	implements Omit<CategoryFinanzasSchema, "id">
+    extends Model
+    implements Omit<CategoryFinanzasSchema, "id">
 {
-	@Column({ type: DataType.STRING })
-	value: string;
+    @Column({ type: DataType.STRING })
+    value: string;
 
-	@Column({ type: DataType.STRING })
-	icon: string;
+    @Column({ type: DataType.STRING })
+    icon: string;
 
-	@ForeignKey(() => TipoFinanza)
-	@Column({ type: DataType.INTEGER })
-	tipo_finanza_id: number;
+    @ForeignKey(() => TipoFinanza)
+    @Column({ type: DataType.INTEGER })
+    tipo_finanza_id: number;
 
-	@BelongsTo(() => TipoFinanza)
-	tipoFinanza: unknown;
+    @BelongsTo(() => TipoFinanza)
+    tipoFinanza: V<TipoFinanza>;
 
-	@ForeignKey(() => Empresas)
-	@Column({ type: DataType.INTEGER })
-	empresa_id: number;
+    @ForeignKey(() => Empresas)
+    @Column({ type: DataType.INTEGER })
+    empresa_id: number;
 
-	@BelongsTo(() => Empresas)
-	empresa: unknown;
+    @BelongsTo(() => Empresas)
+    empresa: V<Empresas>;
 
-	@HasMany(() => Finanzas)
-	finanzas: Finanzas[];
+    @HasMany(() => Finanzas)
+    finanzas: V<Finanzas>[];
 }

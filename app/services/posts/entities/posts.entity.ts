@@ -11,6 +11,7 @@ import type { PostsSchema } from "../schemas/posts.schema";
 import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 import { Users } from "@/users/entities/users.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
+import type { V } from "~/libs/helpers";
 
 @DefaultScope(() => ({
     include: { model: Users, attributes: ["id", "username", "photo"] },
@@ -19,7 +20,7 @@ import { Empresas } from "@/empresas/entities/empresas.entity";
 export class Posts extends Model implements Omit<PostsSchema, "id"> {
     @Column({
         allowNull: false,
-        type: DataType.TEXT,
+        type: DataType.TEXT("long"),
     })
     content: string;
     @Column({
@@ -44,7 +45,7 @@ export class Posts extends Model implements Omit<PostsSchema, "id"> {
     user_id: number;
 
     @BelongsTo(() => Users)
-    user: unknown;
+    user: V<Users>;
 
     @ForeignKey(() => Empresas)
     @Column({
@@ -54,5 +55,5 @@ export class Posts extends Model implements Omit<PostsSchema, "id"> {
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 }

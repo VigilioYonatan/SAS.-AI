@@ -59,6 +59,7 @@ import { Page } from "./page.entity";
 import { Emails } from "@/emails/entities/emails.entity";
 import { EmailsPromociones } from "@/emails/entities/emails_offers.entity";
 import { Scrapping } from "./scrapping.entity";
+import type { V } from "~/libs/helpers";
 
 @DefaultScope(() => ({
     include: [
@@ -99,14 +100,7 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     @Column({
         type: DataType.JSON,
     })
-    zoho: {
-        email: string | null;
-        password: string | null;
-        account_id: string | null;
-        client_id: string | null;
-        client_secret: string | null;
-        refresh_token: string | null;
-    };
+    zoho: EmpresasSchema["zoho"];
 
     @Column({
         type: DataType.JSON,
@@ -260,7 +254,7 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     dateRelease: Date;
 
     @Column({ type: DataType.JSON })
-    money: { money: string; international_simbolo: string; simbolo: string };
+    money: EmpresasSchema["money"];
 
     @Column({
         type: DataType.INTEGER,
@@ -453,11 +447,7 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     @Column({
         type: DataType.JSON,
     })
-    mercado_pago_comision: {
-        comision: number;
-        url: string;
-        transaccion: number | null;
-    };
+    mercado_pago_comision: EmpresasSchema["mercado_pago_comision"];
 
     @Column({
         type: DataType.STRING,
@@ -516,113 +506,113 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
     // relations
     @HasMany(() => Address)
-    addresses: unknown[];
+    addresses: V<Address>[];
 
     @HasMany(() => ProductsNormal)
-    products_normal: ProductsNormal[];
+    products_normal: V<ProductsNormal>[];
 
     @HasMany(() => ProductsRestaurant)
-    products_restaurant: ProductsRestaurant[];
+    products_restaurant: V<ProductsRestaurant>[];
 
     @HasMany(() => Coupons)
-    coupons: unknown[];
+    coupons: V<Coupons>[];
 
     @HasMany(() => Users)
-    users: Users[];
+    users: V<Users>[];
 
     @HasMany(() => ProductsOptions)
-    productsOptions: ProductsOptions[];
+    productsOptions: V<ProductsOptions>[];
 
     @HasMany(() => VariantsFeatures)
-    variantsFeatures: VariantsFeatures[];
+    variantsFeatures: V<VariantsFeatures>[];
 
     @HasMany(() => Brands)
-    brands: Brands[];
+    brands: V<Brands>[];
 
     @HasMany(() => Floors)
-    floors: Floors[];
+    floors: V<Floors>[];
 
     @BelongsTo(() => TipoEmpresa)
-    tipo_empresa: TipoEmpresa;
+    tipo_empresa: V<TipoEmpresa>;
 
     @HasOne(() => New)
-    new: New;
+    new: V<New>;
 
     @HasOne(() => MetodosPago)
-    metodos_pago: unknown;
+    metodos_pago: V<MetodosPago>;
 
     @HasMany(() => GridBanner)
-    gridBanners: unknown[];
+    gridBanners: V<GridBanner>[];
 
     @HasMany(() => Urls)
-    urls: unknown[];
+    urls: V<Urls>[];
 
     @HasMany(() => Posts)
-    posts: unknown[];
+    posts: V<Posts>[];
 
     @HasMany(() => Finanzas)
-    finanzas: unknown[];
+    finanzas: V<Finanzas>[];
 
     @HasMany(() => Questions)
-    questions: unknown[];
+    questions: V<Questions>[];
 
     @HasMany(() => CategoriesFinanzas)
-    categoriesFinanzas: unknown[];
+    categoriesFinanzas: V<CategoriesFinanzas>[];
 
     @HasMany(() => TipoFinanza)
-    tipoFinanza: unknown[];
+    tipoFinanza: V<TipoFinanza>[];
 
     @HasMany(() => Background)
-    backgrounds: unknown[];
+    backgrounds: V<Background>[];
 
     @HasMany(() => Mesas)
-    mesas: unknown[];
+    mesas: V<Mesas>[];
 
     @HasMany(() => Suppliers)
-    suppliers: unknown[];
+    suppliers: V<Suppliers>[];
 
     @HasMany(() => Citas)
-    citas: unknown[];
+    citas: V<Citas>[];
 
     @HasMany(() => Favorites)
-    favorites: Favorites[];
+    favorites: V<Favorites>[];
 
     @HasOne(() => CitasSettings)
-    citasSetting: CitasSettings;
+    citasSetting: V<CitasSettings>;
 
     @HasOne(() => Settings)
-    setting: Settings;
+    setting: V<Settings>;
 
     @BelongsToMany(() => Regions, () => RegionsEmpresa)
-    regions: Regions[];
+    regions: V<Regions>[];
 
     @HasMany(() => Comments)
-    comments: Comments[];
+    comments: V<Comments>[];
 
     @HasMany(() => Subcomments)
-    subcomments: Reactions[];
+    subcomments: V<Subcomments>[];
 
     @HasMany(() => Reactions)
-    reactions: Reactions[];
+    reactions: V<Reactions>[];
 
     @HasMany(() => FileSchema)
-    files: FileSchema[];
+    files: V<FileSchema>[];
 
     @HasOne(() => RedesChat)
-    redes_chat: unknown;
+    redes_chat: V<RedesChat>;
 
     @HasMany(() => GridBanner)
-    grid_banners: GridBanner[];
+    grid_banners: V<GridBanner>[];
 
     @HasMany(() => Page)
-    pages: Page[];
+    pages: V<Page>[];
 
     @HasMany(() => Emails)
-    emails: Emails[];
+    emails: V<Emails>[];
 
     @HasMany(() => EmailsPromociones)
-    emailsPromociones: EmailsPromociones[];
+    emailsPromociones: V<EmailsPromociones>[];
 
     @BelongsTo(() => Scrapping)
-    scrapping: ReturnType<() => Scrapping>;
+    scrapping: V<Scrapping>;
 }

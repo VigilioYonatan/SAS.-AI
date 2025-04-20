@@ -15,6 +15,7 @@ import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 import { ProductsNormal } from "./products_normal.entity";
 import { ProductsRestaurant } from "./products_restaurant.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
+import type { V } from "~/libs/helpers";
 
 @DefaultScope(() => ({
     include: [{ model: Categories, attributes: ["id", "name", "slug"] }],
@@ -58,19 +59,19 @@ export class Subcategories
 
     // subcategories - categories: uno a muchos
     @BelongsTo(() => Categories)
-    category: unknown;
+    category: V<Categories>;
 
     // products - subcategories : uno a muchos
     @HasMany(() => ProductsNormal)
-    productsNormals: unknown[];
+    productsNormals: V<ProductsNormal>[];
 
     @HasMany(() => ProductsRestaurant)
-    productsRestaurants: unknown[];
+    productsRestaurants: V<ProductsRestaurant>[];
 
     @ForeignKey(() => Empresas)
     @Column({ type: DataType.INTEGER, allowNull: false })
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 }

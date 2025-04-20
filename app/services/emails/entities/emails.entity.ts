@@ -8,6 +8,7 @@ import {
 } from "sequelize-typescript";
 import type { EmailsSchema } from "../schemas/emails.schema";
 import { Empresas } from "@/empresas/entities/empresas.entity";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class Emails extends Model implements Omit<EmailsSchema, "id"> {
@@ -31,5 +32,5 @@ export class Emails extends Model implements Omit<EmailsSchema, "id"> {
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 }

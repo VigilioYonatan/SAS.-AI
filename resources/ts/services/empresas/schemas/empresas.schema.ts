@@ -407,6 +407,7 @@ export const empresasSchema = object({
             date: coerce(date(), (val) => new Date(val as Date)),
         })
     ),
+    isOnlyScrapping: boolean(),
     scrapping_id: number(),
     token_web_chat: nullable(string()),
 });

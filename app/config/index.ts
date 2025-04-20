@@ -43,6 +43,7 @@ export const corsOptions: cors.CorsOptions = {
             "https://*.vigilio-services.com",
             `http://*.localhost:${enviroments.PORT}`,
             "https://vigilioservices2.loca.lt",
+            "http://localhost:5173", //!
             `https://${enviroments.CLIENT.toLowerCase()}.vigilio-services.com`,
             ...hosts,
         ];

@@ -6,10 +6,25 @@ import { pageStoreApi } from "../apis/pages/pages.store.api";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { storageEmpresa } from "../stores/empresa.store";
 import { PageSchema } from "../schemas/pages.schema";
-import { pageUpdateApi } from "../apis/pages/pages.update.api";
-import { PagesUpdateDto, pagesUpdateDto } from "../dtos/pages.update.dto";
+import {
+    pageUpdateApi,
+    pageUpdateFaviconApi,
+    pageUpdateOGGFaviconApi,
+} from "../apis/pages/pages.update.api";
+import {
+    PagesUpdateDto,
+    pagesUpdateDto,
+    pagesUpdateFaviconDto,
+    PagesUpdateFaviconDto,
+    pagesUpdateOGGFaviconDto,
+    PagesUpdateOGGFaviconDto,
+} from "../dtos/pages.update.dto";
 import { reactComponent } from "~/libs/preact";
 import Hr from "@/web/components/Hr";
+import { getFilesEdit } from "~/libs/upload";
+import { useEffect } from "preact/hooks";
+import AdminHr from "~/components/AdminHr";
+import { handlerError } from "~/libs/helpers";
 
 interface PageStoreProps {
     onClose: () => void;
@@ -63,6 +78,11 @@ function PageStore({ onClose, refetch }: PageStoreProps) {
                     title="Descripción"
                     name={"description" as keyof PagesStoreDto}
                 />
+                <Form.control
+                    title="Keywords"
+                    name={"keywords" as keyof PagesStoreDto}
+                    placeholder="eccomerce, tienda (no obligatorio)"
+                />
                 <div class="w-full flex gap-2 items-center">
                     <Form.control
                         name={"icon" as keyof PagesUpdateDto}
@@ -104,6 +124,27 @@ function PageStore({ onClose, refetch }: PageStoreProps) {
                     name={"enabledHeaderPage" as keyof PagesStoreDto}
                 />
                 <br />
+                <div class="grid md:grid-cols-2 gap-2">
+                    <Form.control.file
+                        name={"favicon" as keyof PagesStoreDto}
+                        accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
+                        typeFile="image"
+                        title="Favicon"
+                        typesText="JPG, PNG, WEBP Ó JPEG (no obligatorio)"
+                        showButonCopy
+                        showButtonClean
+                    />
+                    <Form.control.file
+                        name={"ogg_favicon" as keyof PagesStoreDto}
+                        accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
+                        typeFile="image"
+                        title="OGG logo (whatsapp image link)"
+                        typesText="JPG, PNG, WEBP Ó JPEG (no obligatorio)"
+                        showButonCopy
+                        showButtonClean
+                    />
+                </div>
+
                 <Form.button.submit
                     ico={null}
                     title="Guardar"
@@ -126,6 +167,17 @@ export function PageUpdate({ page }: PageUpdateProps) {
         resolver: valibotVigilio(pagesUpdateDto),
         defaultValues: page,
     });
+    const pagesUpdateFaviconForm = useForm<PagesUpdateFaviconDto>({
+        mode: "all",
+        resolver: valibotVigilio(pagesUpdateFaviconDto),
+    });
+    const PagesUpdateOGGFaviconForm = useForm<PagesUpdateOGGFaviconDto>({
+        mode: "all",
+        resolver: valibotVigilio(pagesUpdateOGGFaviconDto),
+    });
+
+    const pageUpdateFaviconMutate = pageUpdateFaviconApi(page.id);
+    const pageUpdateOGGFaviconMutate = pageUpdateOGGFaviconApi(page.id);
 
     function onPageStore(body: PagesUpdateDto) {
         sweetModal({ title: "¿Estás seguro de editar esta página?" }).then(
@@ -150,15 +202,83 @@ export function PageUpdate({ page }: PageUpdateProps) {
         );
     }
     const queries = useFieldArray({
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        name: "queries" as any,
+        name: "queries",
         control: pageStoreForm.control,
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    } as any);
+    });
+    async function initialUpdateFavicon() {
+        if (page.favicon) {
+            const files = await getFilesEdit(page.favicon, 100);
+            pagesUpdateFaviconForm.setValue("favicon", files);
+        }
+    }
+    async function initialUpdateOGGFavicon() {
+        if (page.ogg_favicon) {
+            const files = await getFilesEdit(page.ogg_favicon, 400);
+            PagesUpdateOGGFaviconForm.setValue("ogg_favicon", files);
+        }
+    }
+    function onUpdatePagesFavicon(data: PagesUpdateFaviconDto) {
+        sweetModal({
+            title: "¿Estás seguro de editar el favicon de esta página?",
+            isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
+            showConfirmButton: true,
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                pageUpdateFaviconMutate.mutate(
+                    { ...data },
+                    {
+                        onSuccess() {
+                            sweetAlert({
+                                icon: "success",
+                                title: "Se actualizó favicon correctamente",
+                            });
+                        },
+                        onError(error) {
+                            handlerError(pagesUpdateFaviconForm, error);
+                        },
+                    }
+                );
+            }
+        });
+    }
+    function onUpdatePagesOGGFavicon(data: PagesUpdateOGGFaviconDto) {
+        sweetModal({
+            title: "¿Estás seguro de editar el oggfavicon de esta página?",
+            isCloseInBackground: false,
+            showCancelButton: true,
+            showCloseButton: true,
+            showConfirmButton: true,
+        }).then(({ isConfirmed }) => {
+            if (isConfirmed) {
+                pageUpdateOGGFaviconMutate.mutate(
+                    { ...data },
+                    {
+                        onSuccess() {
+                            sweetAlert({
+                                icon: "success",
+                                title: "Se actualizó oggfavion correctamente",
+                            });
+                        },
+                        onError(error) {
+                            handlerError(pagesUpdateFaviconForm, error);
+                        },
+                    }
+                );
+            }
+        });
+    }
+    useEffect(() => {
+        initialUpdateFavicon();
+    }, []);
+    useEffect(() => {
+        initialUpdateOGGFavicon();
+    }, []);
     return (
         <div>
             <h3 class="font-bold text-xl dark:text-white">
-                Efitar Página {page.title}
+                Editar Página {page.title}
             </h3>
             <br />
             <Form {...pageStoreForm} onSubmit={onPageStore}>
@@ -173,6 +293,11 @@ export function PageUpdate({ page }: PageUpdateProps) {
                 <Form.control
                     title="Descripción"
                     name={"description" as keyof PagesUpdateDto}
+                />
+                <Form.control
+                    title="Keywords"
+                    name={"keywords" as keyof PagesStoreDto}
+                    placeholder="eccomerce, tienda (no obligatorio)"
                 />
                 <div class="w-full flex gap-2 items-center">
                     <Form.control
@@ -270,7 +395,7 @@ export function PageUpdate({ page }: PageUpdateProps) {
                         <button
                             type="button"
                             onClick={() => {
-                                queries.prepend({ key: null, query: null });
+                                queries.prepend({ key: "", query: "" });
                             }}
                             class="bg-primary px-2 py-1 rounded-md  font-bold mt-2 "
                         >
@@ -291,6 +416,60 @@ export function PageUpdate({ page }: PageUpdateProps) {
                     isLoading={pageStoreMutation.isLoading || false}
                     disabled={pageStoreMutation.isLoading || false}
                 />
+            </Form>
+            <AdminHr />
+            <div class="flex justify-between items-center">
+                <h3 class="dark:text-white  font-bold uppercase text-center flex gap-2 break-words text-wrap ">
+                    Editar Favicon
+                </h3>
+            </div>
+            <Form {...pagesUpdateFaviconForm} onSubmit={onUpdatePagesFavicon}>
+                <Form.control.file
+                    name={"favicon" as keyof PagesUpdateFaviconDto}
+                    accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
+                    typeFile="image"
+                    title="Favicon"
+                    typesText="JPG, PNG, WEBP Ó JPEG (no obligatorio)"
+                    showButonCopy
+                    showButtonClean
+                />
+                <div class="flex justify-center">
+                    <Form.button.submit
+                        disabled={pageUpdateFaviconMutate.isLoading || false}
+                        isLoading={pageUpdateFaviconMutate.isLoading || false}
+                        ico={<i class="fas fa-pen" />}
+                        title="Editar"
+                    />
+                </div>
+            </Form>
+            <div class="flex justify-between items-center">
+                <h3 class="dark:text-white  font-bold uppercase text-center flex gap-2 break-words text-wrap ">
+                    Editar OGGFavicon
+                </h3>
+            </div>
+            <Form
+                {...PagesUpdateOGGFaviconForm}
+                onSubmit={onUpdatePagesOGGFavicon}
+            >
+                <Form.control.file
+                    name={"ogg_favicon" as keyof PagesStoreDto}
+                    accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
+                    typeFile="image"
+                    title="OGG logo (whatsapp image link)"
+                    typesText="JPG, PNG, WEBP Ó JPEG (no obligatorio)"
+                    showButonCopy
+                    showButtonClean
+                />
+                <div class="flex justify-center">
+                    <Form.button.submit
+                        disabled={pageUpdateOGGFaviconMutate.isLoading || false}
+                        isLoading={
+                            pageUpdateOGGFaviconMutate.isLoading || false
+                        }
+                        ico={<i class="fas fa-pen" />}
+                        title="Editar"
+                    />
+                </div>
             </Form>
         </div>
     );

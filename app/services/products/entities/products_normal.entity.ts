@@ -27,6 +27,7 @@ import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
 import { Reactions } from "@/polymorphism/entities/reactions.entity";
 import { Favorites } from "@/favorites/entities/favorites.entity";
 import { Subcategories } from "./subcategories.entity";
+import type { V } from "~/libs/helpers";
 
 @DefaultScope(() => ({
     include: [
@@ -135,7 +136,7 @@ export class ProductsNormal
     /*****  RELATIONS *****/
     // products - categorias : uno a muchos
     @BelongsTo(() => Categories)
-    category: unknown;
+    category: V<Categories>;
 
     @ForeignKey(() => Subcategories)
     @Column({ type: DataType.INTEGER })
@@ -144,7 +145,7 @@ export class ProductsNormal
     /*****  RELATIONS *****/
     // products - categorias : uno a muchos
     @BelongsTo(() => Subcategories)
-    subcategory: unknown | null;
+    subcategory: V<Subcategories> | null;
 
     @ForeignKey(() => Brands)
     @Column({ type: DataType.INTEGER })
@@ -153,56 +154,56 @@ export class ProductsNormal
     /*****  RELATIONS *****/
     // products - categorias : uno a muchos
     @BelongsTo(() => Brands)
-    brand: unknown;
+    brand: V<Brands>;
 
     @ForeignKey(() => Empresas)
     @Column({ type: DataType.INTEGER, allowNull: false })
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 
     // products - cart: uno a muchos
     @HasMany(() => Cart)
-    carts: unknown[];
+    carts: V<Cart>[];
 
     @BelongsToMany(() => Options, () => ProductsOptions)
-    options: unknown & { ProductsOptions: ProductsOptions }[];
+    options: V<Options> & { ProductsOptions: ProductsOptions }[];
 
     @HasMany(() => DetailOrders, { onDelete: "SET NULL" })
-    detailsOrders: unknown[];
+    detailsOrders: V<DetailOrders>[];
 
     @HasMany(() => Variants)
-    variants: unknown[];
+    variants: V<Variants>[];
 
     @HasMany(() => Favorites)
-    favorites: unknown[];
+    favorites: V<Favorites>[];
 
     @HasMany(() => Comments, {
         foreignKey: "commentsable_id",
         constraints: false,
         scope: { commentsable_type: "ProductsNormals" },
     })
-    comments: unknown[];
+    comments: V<Comments>[];
 
     @HasMany(() => Subcomments, {
         foreignKey: "subcommentsable_id",
         constraints: false,
         scope: { commentsable_type: "ProductsNormals" },
     })
-    subcomments: unknown[];
+    subcomments: V<Subcomments>[];
 
     @HasMany(() => Ratings, {
         foreignKey: "ratingsable_id",
         constraints: false,
         scope: { ratingsable_type: "ProductsNormals" },
     })
-    ratings: unknown;
+    ratings: V<Ratings>;
 
     @HasMany(() => Reactions, {
         foreignKey: "ratingsable_id",
         constraints: false,
         scope: { ratingsable_type: "ProductsNormals" },
     })
-    reactions: unknown;
+    reactions: V<Reactions>;
 }

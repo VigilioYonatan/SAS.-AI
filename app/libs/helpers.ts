@@ -164,3 +164,5 @@ export function getTables() {
         WHERE table_schema = 'public' AND table_type = 'BASE TABLE';
       `);
 }
+
+export type V<T> = ReturnType<() => T>;

@@ -1,27 +1,28 @@
 import {
-	Column,
-	DataType,
-	HasMany,
-	Model,
-	PrimaryKey,
-	Table,
+    Column,
+    DataType,
+    HasMany,
+    Model,
+    PrimaryKey,
+    Table,
 } from "sequelize-typescript";
 import type { DocumentsSchema } from "../schemas/documents.schema";
 import { Invoices } from "./invoices.entity";
 import { Notes } from "./notes.entity";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class Documents extends Model implements DocumentsSchema {
-	@PrimaryKey
-	@Column({ type: DataType.STRING(100), allowNull: false, unique: true })
-	code: string;
+    @PrimaryKey
+    @Column({ type: DataType.STRING(100), allowNull: false, unique: true })
+    code: string;
 
-	@Column({ type: DataType.STRING(100), allowNull: false, unique: true })
-	name: string;
+    @Column({ type: DataType.STRING(100), allowNull: false, unique: true })
+    name: string;
 
-	@HasMany(() => Invoices)
-	invoices: unknown[];
+    @HasMany(() => Invoices)
+    invoices: V<Invoices>[];
 
-	@HasMany(() => Notes)
-	notes: unknown[];
+    @HasMany(() => Notes)
+    notes: V<Notes>[];
 }

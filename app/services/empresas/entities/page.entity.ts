@@ -9,8 +9,10 @@ import {
     Index,
 } from "sequelize-typescript";
 import { Empresas } from "./empresas.entity";
-import type { PageSchema } from "../schemas/pages.schema";
 import { GridBannerPage } from "./grid_banner_page.entity";
+import type { PageSchema } from "../schemas/pages.schema";
+import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class Page extends Model implements Omit<PageSchema, "id"> {
@@ -24,6 +26,15 @@ export class Page extends Model implements Omit<PageSchema, "id"> {
 
     @Column({ type: DataType.STRING(1000) })
     description: string;
+
+    @Column({ type: DataType.STRING(1000), defaultValue: null })
+    keywords: string | null;
+
+    @Column({ type: DataType.JSON, defaultValue: null })
+    favicon: FilesSchema[] | null;
+
+    @Column({ type: DataType.JSON, defaultValue: null })
+    ogg_favicon: FilesSchema[] | null;
 
     @Column({ type: DataType.BOOLEAN })
     isDinamic: boolean;
@@ -45,8 +56,8 @@ export class Page extends Model implements Omit<PageSchema, "id"> {
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 
     @HasMany(() => GridBannerPage)
-    grid_banner_pages: unknown[];
+    grid_banner_pages: V<GridBannerPage>[];
 }

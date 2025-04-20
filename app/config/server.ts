@@ -195,7 +195,6 @@ export class Server {
                     hours24
                 );
             }
-            console.log(JSON.stringify(empresa), null, 3);
 
             if (empresa) {
                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>

@@ -52,6 +52,7 @@ import { CrudDateApiService } from "@/empresas/services/crud_data.api.service";
 import { Model } from "sequelize-typescript";
 import { sequelize } from "~/config/db.config";
 import { QueryTypes } from "sequelize";
+import { PagesApiService } from "@/empresas/services/pages.api.service";
 
 @Injectable()
 export class UploadsService {
@@ -67,7 +68,8 @@ export class UploadsService {
         private readonly suppliersApiService: SuppliersApiService,
         private readonly newApiService: NewApiService,
         private readonly settingsApiService: SettingsApiService,
-        private readonly crudDateApiService: CrudDateApiService
+        private readonly crudDateApiService: CrudDateApiService,
+        private readonly pagesApiService: PagesApiService
     ) {}
     async store(props: { req: Request; entity: string; property: string }) {
         const { entity, property } = props;
@@ -447,6 +449,48 @@ export class UploadsService {
                 }
                 cache.delete(`EMPRESA:${empresa.slug}`);
                 break;
+            case "pages":
+                if (property === "favicon") {
+                    qualities = await this.customUpload(
+                        files,
+                        {
+                            minFiles: 1,
+                            maxFiles: 1,
+                            required: true,
+                            typeFile: {
+                                value: [
+                                    "image/jpg",
+                                    "image/webp",
+                                    "image/jpeg",
+                                    "image/png",
+                                ],
+                            },
+                        },
+                        [100]
+                    );
+                }
+                if (property === "ogg_favicon") {
+                    qualities = await this.customUpload(
+                        files,
+                        {
+                            minFiles: 1,
+                            maxFiles: 1,
+                            required: true,
+                            typeFile: {
+                                value: [
+                                    "image/jpg",
+                                    "image/webp",
+                                    "image/jpeg",
+                                    "image/png",
+                                ],
+                            },
+                        },
+                        [400]
+                    );
+                }
+
+                cache.delete(`EMPRESA:${empresa.slug}`);
+                break;
             default: {
                 const crud = await Crud.findOne({
                     where: {
@@ -798,6 +842,26 @@ export class UploadsService {
                 }
                 if (property === "icon" && emp.icon) {
                     removeFile(empresa.slug, emp.icon);
+                }
+
+                break;
+            }
+            case "pages": {
+                if (
+                    !userAuth ||
+                    !userAuth.enabled ||
+                    ![1].includes(userAuth.role_id)
+                )
+                    throw new UnauthorizedException(
+                        "No tiene permiso para realizar esta acción"
+                    );
+                const { page } = await this.pagesApiService.show(empresa, id);
+                entidad = page;
+                if (property === "favicon" && page.favicon) {
+                    removeFile(empresa.slug, page.favicon);
+                }
+                if (property === "ogg_favicon" && page.ogg_favicon) {
+                    removeFile(empresa.slug, page.ogg_favicon);
                 }
 
                 break;

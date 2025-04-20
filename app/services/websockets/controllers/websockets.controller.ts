@@ -7,7 +7,6 @@ import {
     IO,
     Socket,
 } from "@vigilio/express-core";
-import * as socket from "socket.io";
 import { WebsocketsService } from "../services/websockets.service";
 import {
     chatAssistant,
@@ -26,6 +25,9 @@ import { Empresas } from "@/empresas/entities/empresas.entity";
 import type { CompletionUsage } from "openai/resources";
 import cache from "@vigilio/express-core/cache";
 import { Scrapping } from "@/empresas/entities/scrapping.entity";
+// biome-ignore lint/correctness/noUnusedImports: <explanation>
+import * as socket from "socket.io";
+
 export function HTMLPROMPT(_empresa: Empresas) {
     return `- Responde con formato html, envia links ó urls con <a clas="text-primary"></a>  estilos de tailwind underline, (tablas solo carrito de compra ) , etc y usar <b class="font-bold"></b> en vez de **   en palabras importantes. Por ultimo SIEMPRE usa solo un <br> para separar parrafos, usa etiqueta a <a href="url" class='text-primary underline'>text</a> para links o enlaces, etc. usa <ul class="list-disc list-inside"><li class="ml-4"></li></ul>   para listas, pedidos, información,separare preguntas 1.,2., opciones, items, etc. etiqueta de letra p,h1,span esos text-sm, imagenes maximo width 100px,  html limpio no markdown, los .jpg, o extension imagen en img.`;
 }

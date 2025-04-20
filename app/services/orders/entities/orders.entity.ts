@@ -28,6 +28,7 @@ import { Mesas } from "./mesas.entity";
 import { Floors } from "./floors.entity";
 import type { PASARELA } from "@/payments/libs";
 import { Address } from "@/empresas/entities/address.entity";
+import type { V } from "~/libs/helpers";
 
 @DefaultScope(() => ({
     include: [
@@ -198,46 +199,46 @@ export class Orders extends Model implements Omit<OrdersSchema, "id"> {
 
     // orders - status_order: one to many
     @BelongsTo(() => Cities)
-    city: unknown;
+    city: V<Cities>;
 
     @BelongsTo(() => Users, { as: "user", foreignKey: "user_id" })
-    user: unknown;
+    user: V<Users>;
 
     @BelongsTo(() => Users, { as: "seller", foreignKey: "seller_id" })
-    seller: unknown;
+    seller: V<Users>;
 
     // orders - status_order: one to many
     @BelongsTo(() => StatusOrders)
-    status_order: unknown;
+    status_order: V<StatusOrders>;
 
     // orders - pay_methods: one to many
     @BelongsTo(() => PayMethods)
-    pay_method: unknown;
+    pay_method: V<PayMethods>;
     // orders - adress: one to many
     @BelongsTo(() => Address)
-    address_empresa: Address;
+    address_empresa: V<Address>;
 
     @HasMany(() => DetailOrders)
-    details_orders: unknown[];
+    details_orders: V<DetailOrders>[];
 
     // one to one - order - invoice
     @HasOne(() => Invoices)
-    invoice: unknown;
+    invoice: V<Invoices>;
 
     @HasOne(() => Notes)
-    note: unknown;
+    note: V<Notes>;
 
     @HasOne(() => Guides)
-    guide: unknown;
+    guide: V<Guides>;
 
     @ForeignKey(() => Empresas)
     @Column({ type: DataType.INTEGER, allowNull: false })
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 
     // mesas - orders: one to many
     @BelongsTo(() => Mesas, { onDelete: "SET NULL" }) // cuando se eliminar la mesa. convierte en nulo los ordenes
-    mesa: unknown;
+    mesa: V<Mesas>;
 }

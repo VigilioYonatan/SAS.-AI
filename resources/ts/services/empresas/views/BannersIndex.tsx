@@ -199,6 +199,8 @@ function BannersIndex() {
                                                                     false,
                                                                 sweetWidth:
                                                                     "800px",
+                                                                position:
+                                                                    "start",
                                                             })
                                                         );
                                                     }}
@@ -312,7 +314,7 @@ function BannersIndex() {
                                                     ),
                                                     showCloseButton: true,
                                                     isCloseInBackground: false,
-                                                    sweetWidth: "500px",
+                                                    sweetWidth: "700px",
                                                 }));
                                             }}
                                         >

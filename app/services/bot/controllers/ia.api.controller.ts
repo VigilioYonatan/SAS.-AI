@@ -9,6 +9,8 @@ import {
     Query,
     Body,
     Post,
+    Res,
+    Injectable,
 } from "@vigilio/express-core";
 import { Pipe } from "@vigilio/express-core/valibot";
 import { objectAsync, string } from "@vigilio/valibot";
@@ -18,9 +20,26 @@ import * as cheerio from "cheerio";
 import { PermissionAdmin } from "@/auth/guards/permission-admin.guard";
 import { chatgpt } from "../libs";
 import { openAis } from "@/empresas/services/empresas.api.service";
+import type { RequestVigilio } from "~/config/types";
+import type { Response } from "express";
+import { IAApiService } from "../services/ia.api.service";
 
+@Injectable()
 @Controller("/ia")
 export class IAApiController {
+    constructor(private readonly iAApiService: IAApiService) {}
+    // CHAT
+    @Get("/chat")
+    async chatIndex(@Req() req: RequestVigilio) {
+        const result = await this.iAApiService.chatIndex(req);
+        return result;
+    }
+
+    @Get("/chat/message")
+    async chat(@Req() req: RequestVigilio, @Res() res: Response) {
+        await this.iAApiService.chat(req, res);
+    }
+
     @PermissionAdmin()
     @Get("/images/:name")
     async images(

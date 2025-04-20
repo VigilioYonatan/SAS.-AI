@@ -9,6 +9,7 @@ import {
 import type { SettingsSchema } from "../schemas/settings.schema";
 import { Empresas } from "./empresas.entity";
 import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class Settings extends Model implements Omit<SettingsSchema, "id"> {
@@ -217,7 +218,7 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     @Column({
         type: DataType.JSON,
     })
-    header_position: { logo: number; navbar: number; icons: number };
+    header_position: SettingsSchema["header_position"];
 
     @Column({
         type: DataType.JSON,
@@ -290,22 +291,12 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     @Column({
         type: DataType.JSON,
     })
-    shows: {
-        map: boolean;
-        about: boolean;
-        cards: boolean;
-        brands: boolean;
-        android: boolean;
-        offers_section: boolean;
-        offers_user: boolean;
-        categories_slider: boolean;
-        users: boolean;
-    };
+    shows: SettingsSchema["shows"];
 
     @ForeignKey(() => Empresas)
     @Column({ type: DataType.INTEGER, allowNull: false })
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 }

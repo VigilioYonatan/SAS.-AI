@@ -1,6 +1,7 @@
 import { Table, Model, Column, DataType, HasOne } from "sequelize-typescript";
 import { Empresas } from "./empresas.entity";
 import type { ScrappingSchema } from "../schemas/scrapping.schema";
+import { V } from "~/libs/helpers";
 
 @Table
 export class Scrapping extends Model implements Omit<ScrappingSchema, "id"> {
@@ -23,5 +24,5 @@ export class Scrapping extends Model implements Omit<ScrappingSchema, "id"> {
     pages: ScrappingSchema["pages"];
 
     @HasOne(() => Empresas)
-    empresa: ReturnType<() => Empresas>;
+    empresa: V<Empresas>;
 }

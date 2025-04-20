@@ -1,13 +1,13 @@
 import {
-	Column,
-	DataType,
-	Table,
-	Model,
-	BelongsTo,
-	ForeignKey,
-	DefaultScope,
-	HasMany,
-	Index,
+    Column,
+    DataType,
+    Table,
+    Model,
+    BelongsTo,
+    ForeignKey,
+    DefaultScope,
+    HasMany,
+    Index,
 } from "sequelize-typescript";
 import { Cart } from "@/cart/entites/cart.entity";
 import { Categories } from "./categories.entity";
@@ -22,148 +22,149 @@ import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
 import { Reactions } from "@/polymorphism/entities/reactions.entity";
 import { Favorites } from "@/favorites/entities/favorites.entity";
 import { Subcategories } from "./subcategories.entity";
+import type { V } from "~/libs/helpers";
 
 @DefaultScope(() => ({
-	include: [
-		{
-			model: Categories,
-			attributes: ["name", "slug", "icon"] as (keyof CategoriesSchema)[],
-		},
-	],
+    include: [
+        {
+            model: Categories,
+            attributes: ["name", "slug", "icon"] as (keyof CategoriesSchema)[],
+        },
+    ],
 }))
 @Table
 export class ProductsRestaurant
-	extends Model
-	implements Omit<ProductsRestaurantSchema, "id">
+    extends Model
+    implements Omit<ProductsRestaurantSchema, "id">
 {
-	@Index
-	@Column({
-		allowNull: false,
-		type: DataType.STRING(80),
-	})
-	product_code: string;
+    @Index
+    @Column({
+        allowNull: false,
+        type: DataType.STRING(80),
+    })
+    product_code: string;
 
-	@Index
-	@Column({ type: DataType.STRING(255) })
-	name: string;
+    @Index
+    @Column({ type: DataType.STRING(255) })
+    name: string;
 
-	@Column({ type: DataType.STRING(255) })
-	url: string;
+    @Column({ type: DataType.STRING(255) })
+    url: string;
 
-	@Column({ type: DataType.TEXT })
-	description: string;
+    @Column({ type: DataType.TEXT })
+    description: string;
 
-	@Column({
-		type: DataType.JSON,
-		allowNull: false,
-	})
-	characteristics: { name: string; value: string }[];
+    @Column({
+        type: DataType.JSON,
+        allowNull: false,
+    })
+    characteristics: { name: string; value: string }[];
 
-	@Column({
-		type: DataType.DECIMAL(10, 2),
-		allowNull: false,
-	})
-	get price(): number {
-		return Number.parseFloat(
-			this.getDataValue("price" as keyof ProductsRestaurantSchema),
-		);
-	}
+    @Column({
+        type: DataType.DECIMAL(10, 2),
+        allowNull: false,
+    })
+    get price(): number {
+        return Number.parseFloat(
+            this.getDataValue("price" as keyof ProductsRestaurantSchema)
+        );
+    }
 
-	@Column({
-		type: DataType.DECIMAL(10, 2),
-		defaultValue: 0,
-	})
-	get discount(): number {
-		return Number.parseFloat(
-			this.getDataValue("discount" as keyof ProductsRestaurantSchema),
-		);
-	}
+    @Column({
+        type: DataType.DECIMAL(10, 2),
+        defaultValue: 0,
+    })
+    get discount(): number {
+        return Number.parseFloat(
+            this.getDataValue("discount" as keyof ProductsRestaurantSchema)
+        );
+    }
 
-	@Column({ type: DataType.INTEGER, allowNull: false })
-	stock: number;
+    @Column({ type: DataType.INTEGER, allowNull: false })
+    stock: number;
 
-	@Column({ type: DataType.BOOLEAN, allowNull: false })
-	ilimit: boolean;
+    @Column({ type: DataType.BOOLEAN, allowNull: false })
+    ilimit: boolean;
 
-	@Column({
-		type: DataType.BOOLEAN,
-		defaultValue: true,
-	})
-	enabled: boolean;
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: true,
+    })
+    enabled: boolean;
 
-	@Column({
-		type: DataType.JSON,
-		defaultValue: [],
-	})
-	images: FilesSchema[] | null;
+    @Column({
+        type: DataType.JSON,
+        defaultValue: [],
+    })
+    images: FilesSchema[] | null;
 
-	@Index
-	@Column({
-		allowNull: false,
-		type: DataType.STRING(255),
-	})
-	slug: string;
+    @Index
+    @Column({
+        allowNull: false,
+        type: DataType.STRING(255),
+    })
+    slug: string;
 
-	@ForeignKey(() => Categories)
-	@Column({ type: DataType.INTEGER, allowNull: false })
-	category_id: number;
+    @ForeignKey(() => Categories)
+    @Column({ type: DataType.INTEGER, allowNull: false })
+    category_id: number;
 
-	/*****  RELATIONS *****/
-	// products - categorias : uno a muchos
-	@BelongsTo(() => Categories)
-	category: unknown;
+    /*****  RELATIONS *****/
+    // products - categorias : uno a muchos
+    @BelongsTo(() => Categories)
+    category: V<Categories>;
 
-	@ForeignKey(() => Subcategories)
-	@Column({ type: DataType.INTEGER })
-	subcategory_id: number;
+    @ForeignKey(() => Subcategories)
+    @Column({ type: DataType.INTEGER })
+    subcategory_id: number;
 
-	/*****  RELATIONS *****/
-	// products - categorias : uno a muchos
-	@BelongsTo(() => Subcategories)
-	subcategory: unknown | null;
+    /*****  RELATIONS *****/
+    // products - categorias : uno a muchos
+    @BelongsTo(() => Subcategories)
+    subcategory: V<Subcategories> | null;
 
-	// products - cart: uno a muchos
-	@HasMany(() => Cart)
-	carts: unknown[];
+    // products - cart: uno a muchos
+    @HasMany(() => Cart)
+    carts: V<Cart>[];
 
-	@HasMany(() => DetailOrders, { onDelete: "SET NULL" })
-	detailsOrders: unknown[];
+    @HasMany(() => DetailOrders, { onDelete: "SET NULL" })
+    detailsOrders: V<DetailOrders>[];
 
-	@ForeignKey(() => Empresas)
-	@Column({ type: DataType.INTEGER, allowNull: false })
-	empresa_id: number;
+    @ForeignKey(() => Empresas)
+    @Column({ type: DataType.INTEGER, allowNull: false })
+    empresa_id: number;
 
-	@BelongsTo(() => Empresas)
-	empresa: unknown;
+    @BelongsTo(() => Empresas)
+    empresa: V<Empresas>;
 
-	@HasMany(() => Favorites)
-	favorites: unknown[];
+    @HasMany(() => Favorites)
+    favorites: V<Favorites>[];
 
-	@HasMany(() => Comments, {
-		foreignKey: "commentsable_id",
-		constraints: false,
-		scope: { commentsable_type: "ProductsRestaurants" },
-	})
-	comments: unknown[];
+    @HasMany(() => Comments, {
+        foreignKey: "commentsable_id",
+        constraints: false,
+        scope: { commentsable_type: "ProductsRestaurants" },
+    })
+    comments: V<Comments>[];
 
-	@HasMany(() => Subcomments, {
-		foreignKey: "subcommentsable_id",
-		constraints: false,
-		scope: { commentsable_type: "ProductsRestaurants" },
-	})
-	subcomments: unknown[];
+    @HasMany(() => Subcomments, {
+        foreignKey: "subcommentsable_id",
+        constraints: false,
+        scope: { commentsable_type: "ProductsRestaurants" },
+    })
+    subcomments: V<Subcomments>[];
 
-	@HasMany(() => Ratings, {
-		foreignKey: "ratingsable_id",
-		constraints: false,
-		scope: { ratingsable_type: "ProductsRestaurants" },
-	})
-	ratings: unknown;
+    @HasMany(() => Ratings, {
+        foreignKey: "ratingsable_id",
+        constraints: false,
+        scope: { ratingsable_type: "ProductsRestaurants" },
+    })
+    ratings: V<Ratings>;
 
-	@HasMany(() => Reactions, {
-		foreignKey: "ratingsable_id",
-		constraints: false,
-		scope: { ratingsable_type: "ProductsRestaurants" },
-	})
-	reactions: unknown;
+    @HasMany(() => Reactions, {
+        foreignKey: "ratingsable_id",
+        constraints: false,
+        scope: { ratingsable_type: "ProductsRestaurants" },
+    })
+    reactions: V<Reactions>;
 }

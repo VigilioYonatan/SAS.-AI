@@ -1,27 +1,28 @@
 import {
-	Column,
-	DataType,
-	HasMany,
-	Model,
-	PrimaryKey,
-	Table,
+    Column,
+    DataType,
+    HasMany,
+    Model,
+    PrimaryKey,
+    Table,
 } from "sequelize-typescript";
 import type { KindInvoiceSchema } from "../schemas/kind_invoice.schema";
 import { Invoices } from "./invoices.entity";
 import { Notes } from "./notes.entity";
+import type { V } from "~/libs/helpers";
 
 @Table({ tableName: "kind_invoice" })
 export class KindInvoice extends Model implements KindInvoiceSchema {
-	@PrimaryKey
-	@Column({ type: DataType.STRING(100), allowNull: false, unique: true })
-	code: string;
+    @PrimaryKey
+    @Column({ type: DataType.STRING(100), allowNull: false, unique: true })
+    code: string;
 
-	@Column({ type: DataType.STRING(100), allowNull: false, unique: true })
-	name: string;
+    @Column({ type: DataType.STRING(100), allowNull: false, unique: true })
+    name: string;
 
-	@HasMany(() => Invoices)
-	invoices: unknown;
+    @HasMany(() => Invoices)
+    invoices: V<Invoices>;
 
-	@HasMany(() => Notes)
-	notes: unknown;
+    @HasMany(() => Notes)
+    notes: V<Notes>;
 }

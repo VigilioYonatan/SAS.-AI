@@ -8,6 +8,7 @@ import {
 } from "sequelize-typescript";
 import { Empresas } from "./empresas.entity";
 import { type CrudSchema } from "../schemas/crud.schema";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class Crud extends Model implements Omit<CrudSchema, "id"> {
@@ -53,5 +54,5 @@ export class Crud extends Model implements Omit<CrudSchema, "id"> {
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 }

@@ -10,6 +10,7 @@ import { Empresas } from "./empresas.entity";
 import { GridBanner } from "./grid_banner.entity";
 import type { GridBannerPageSchema } from "../schemas/grid-banner-page.schema";
 import { Page } from "./page.entity";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class GridBannerPage
@@ -29,13 +30,13 @@ export class GridBannerPage
     grid_banner_id: number | null;
 
     @BelongsTo(() => GridBanner)
-    grid_banner: unknown;
+    grid_banner: V<GridBanner>;
 
     @ForeignKey(() => Page)
     page_id: number;
 
     @BelongsTo(() => Page)
-    page: unknown;
+    page: V<Page>;
 
     @ForeignKey(() => Empresas)
     @Column({
@@ -45,5 +46,5 @@ export class GridBannerPage
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 }

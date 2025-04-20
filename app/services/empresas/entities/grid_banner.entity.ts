@@ -8,6 +8,7 @@ import {
 } from "sequelize-typescript";
 import { Empresas } from "./empresas.entity";
 import type { GridBannerSchema } from "../schemas/grid_banner.schema";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class GridBanner extends Model implements Omit<GridBannerSchema, "id"> {
@@ -28,5 +29,5 @@ export class GridBanner extends Model implements Omit<GridBannerSchema, "id"> {
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 }

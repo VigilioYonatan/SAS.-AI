@@ -67,6 +67,7 @@ import { GridBannerPage } from "../entities/grid_banner_page.entity";
 import { PagesApiService } from "./pages.api.service";
 import { Scrapping } from "../entities/scrapping.entity";
 import { ScrappingSchema } from "../schemas/scrapping.schema";
+import { sequelize } from "~/config/db.config";
 // import { sequelize } from "~/config/db.config";
 
 export let openAis: Record<string, openai> = {};
@@ -195,6 +196,40 @@ export async function initial() {
         if (empresa.telegram_token) {
             await initializeBot(empresa, empresa.telegram_token);
         }
+        const [keywords] = await sequelize.query(`
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = 'Pages' AND column_name = 'keywords'
+          `);
+        const [favicon] = await sequelize.query(`
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = 'Pages' AND column_name = 'favicon'
+          `);
+        const [ogg_favicon] = await sequelize.query(`
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = 'Pages' AND column_name = 'ogg_favicon'
+          `);
+
+        if (!keywords.length) {
+            await sequelize.query(`
+                  ALTER TABLE "Pages" 
+                  ADD COLUMN "keywords" TEXT DEFAULT NULL;
+                `);
+        }
+        if (!favicon.length) {
+            await sequelize.query(`
+                  ALTER TABLE "Pages" 
+                  ADD COLUMN "favicon" JSON DEFAULT NULL;
+                `);
+        }
+        if (!ogg_favicon.length) {
+            await sequelize.query(`
+                  ALTER TABLE "Pages" 
+                  ADD COLUMN "ogg_favicon" JSON DEFAULT NULL;
+                `);
+        }
         // // tipos finanzas
         // const pageHome = await Page.findOne({
         //     where: {
@@ -244,6 +279,7 @@ export async function initial() {
                 model_ai: "open-ai",
             },
         });
+
         // const payment_completed = await Empresas.findOrCreate({
         //     where: {
         //         id: empresa!.id,
@@ -1203,6 +1239,9 @@ export class EmpresasApiService {
                         icon: "<i class='fas fa-home'></i>",
                         queries: [],
                         enabledHeaderPage: true,
+                        favicon: null,
+                        keywords: null,
+                        ogg_favicon: null,
                     }),
                     this.pagesApiService.store(empresa, {
                         title: "Nosotros",
@@ -1212,6 +1251,9 @@ export class EmpresasApiService {
                         icon: "<i class='fas fa-users'></i>",
                         enabledHeaderPage: true,
                         queries: [],
+                        favicon: null,
+                        keywords: null,
+                        ogg_favicon: null,
                     }),
                     this.pagesApiService.store(empresa, {
                         title: "Shop",
@@ -1221,6 +1263,9 @@ export class EmpresasApiService {
                         icon: "<i class='fas fa-store'></i>",
                         enabledHeaderPage: true,
                         queries: [],
+                        favicon: null,
+                        keywords: null,
+                        ogg_favicon: null,
                     }),
                     this.pagesApiService.store(empresa, {
                         title: "Servicios",
@@ -1230,6 +1275,9 @@ export class EmpresasApiService {
                         icon: "<i class='fas fa-building'></i>",
                         enabledHeaderPage: true,
                         queries: [],
+                        favicon: null,
+                        keywords: null,
+                        ogg_favicon: null,
                     }),
                     this.pagesApiService.store(empresa, {
                         title: "Contacto",
@@ -1239,6 +1287,9 @@ export class EmpresasApiService {
                         icon: "<i class='fas fa-envelope-open'></i>",
                         enabledHeaderPage: true,
                         queries: [],
+                        favicon: null,
+                        keywords: null,
+                        ogg_favicon: null,
                     }),
                 ]);
             }

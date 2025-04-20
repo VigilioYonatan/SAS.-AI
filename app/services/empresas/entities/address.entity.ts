@@ -12,6 +12,7 @@ import type { AddressSchema } from "../schemas/address.schema";
 import { Empresas } from "./empresas.entity";
 import { Cities } from "@/ubigeo/entities/cities.entity";
 import { Orders } from "@/orders/entities/orders.entity";
+import type { V } from "~/libs/helpers";
 
 @DefaultScope(() => ({ include: [{ model: Cities }] }))
 @Table({ timestamps: false })
@@ -49,7 +50,7 @@ export class Address extends Model implements Omit<AddressSchema, "id"> {
 
     // relations
     @BelongsTo(() => Cities)
-    city: unknown;
+    city: V<Cities>;
 
     @ForeignKey(() => Empresas)
     @Column({
@@ -59,8 +60,8 @@ export class Address extends Model implements Omit<AddressSchema, "id"> {
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 
     @HasMany(() => Orders)
-    orders: unknown[];
+    orders: V<Orders>[];
 }

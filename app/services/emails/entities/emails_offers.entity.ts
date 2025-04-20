@@ -8,6 +8,7 @@ import {
 } from "sequelize-typescript";
 import type { EmailsPromocionesSchema } from "../schemas/emails_promociones.schema";
 import { Empresas } from "@/empresas/entities/empresas.entity";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class EmailsPromociones
@@ -25,5 +26,5 @@ export class EmailsPromociones
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 }

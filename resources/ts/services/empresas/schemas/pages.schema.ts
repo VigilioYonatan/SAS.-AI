@@ -12,6 +12,7 @@ import {
     toTrimmed,
     type Input,
 } from "@vigilio/valibot";
+import { filesSchema } from "~/libs/upload";
 
 export const pagesSchema = object({
     id: number(),
@@ -40,6 +41,9 @@ export const pagesSchema = object({
     ),
     isDinamic: boolean(),
     description: string(),
+    keywords: nullable(string([minLength(3), maxLength(200)])),
+    favicon: nullable(array(filesSchema())),
+    ogg_favicon: nullable(array(filesSchema())),
     empresa_id: number(),
     enabledHeaderPage: boolean(),
 });

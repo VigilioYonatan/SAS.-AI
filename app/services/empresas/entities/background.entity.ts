@@ -8,6 +8,7 @@ import {
 } from "sequelize-typescript";
 import type { FilesSchema } from "@/uploads/schemas/uploads.schema";
 import type { BackgroundSchema } from "../schemas/background.schema";
+import type { V } from "~/libs/helpers";
 import { Empresas } from "./empresas.entity";
 
 @Table
@@ -31,5 +32,5 @@ export class Background extends Model implements Omit<BackgroundSchema, "id"> {
     empresa_id: number;
 
     @BelongsTo(() => Empresas)
-    empresa: unknown;
+    empresa: V<Empresas>;
 }

@@ -56,6 +56,8 @@ export class WebApiService {
     ) {}
 
     async home(empresa: Empresas, user: Users) {
+        console.log(JSON.stringify(empresa, null, 3));
+
         let cacheHome = null;
         if (empresa.enabled_booster && !user) {
             cacheHome = JSON.parse(cache.get(`home-${empresa.slug}`) ?? "null");
@@ -390,7 +392,7 @@ export class WebApiService {
                     },
                     empresa_id: empresa.id,
                 },
-                attributes: ["id", "title", "slug", "queries", "description"],
+                attributes: { exclude: ["queries"] },
             });
             if (!data) {
                 throw new BadRequestException("Error : home - inicio");
@@ -398,8 +400,11 @@ export class WebApiService {
             const queries = await getQueries(empresa, data);
             cacheHome = {
                 title: data.title,
+                description: data?.description,
+                favicon: data.favicon,
+                ogg_favicon: data.ogg_favicon,
+                keywords: data.keywords,
                 backgrounds, //backgrounds
-                description: data?.description || "no description",
                 posts, // posts
                 productsOffert6Mapped,
                 productsLatest6Mapped,
@@ -433,13 +438,19 @@ export class WebApiService {
                 },
                 empresa_id: empresa.id,
             },
-            attributes: ["id", "title", "slug", "queries", "description"],
         });
         if (!data) {
             throw new BadRequestException("Error page: servicios - services");
         }
         const queries = await getQueries(empresa, data);
-        return { queries };
+        const header = {
+            title: data.title,
+            description: data?.description,
+            favicon: data.favicon,
+            ogg_favicon: data.ogg_favicon,
+            keywords: data.keywords,
+        };
+        return { queries, ...header };
     }
     async about(empresa: Empresas) {
         const [
@@ -496,7 +507,6 @@ export class WebApiService {
                 },
                 empresa_id: empresa.id,
             },
-            attributes: ["id", "title", "slug", "queries", "description"],
         });
         if (!data) {
             throw new BadRequestException("Error page , nosotros - about");
@@ -516,7 +526,15 @@ export class WebApiService {
         } catch (error) {
             throw new InternalServerErrorException((error as Error).message);
         }
+        const header = {
+            title: data.title,
+            description: data?.description,
+            favicon: data.favicon,
+            ogg_favicon: data.ogg_favicon,
+            keywords: data.keywords,
+        };
         return {
+            ...header,
             posts,
             categories,
             noticia,
@@ -537,7 +555,6 @@ export class WebApiService {
                 },
                 empresa_id: empresa.id,
             },
-            attributes: ["id", "title", "slug", "queries", "description"],
         });
         if (!d) {
             throw new BadRequestException("Error page, shop - tienda");
@@ -625,9 +642,15 @@ export class WebApiService {
                     ? getProductAll(empresa, productLatest, user, false)
                     : null,
             ]);
-
+        const header = {
+            title: d.title || "shop",
+            description: d?.description,
+            favicon: d.favicon,
+            ogg_favicon: d.ogg_favicon,
+            keywords: d.keywords,
+        };
         return {
-            title: "Shop",
+            ...header,
             categories: data,
             productsLatestMapped,
             productsOffertsMapped,
@@ -944,6 +967,9 @@ export class WebApiService {
                     ? removeTextHTML(product.description)?.slice(0, 100)
                     : ""
             }...`,
+            favicon: product.images,
+            ogg_favicon: product.images,
+            keywords: product.category?.name || null,
             product,
             categoriesProductsRandom: mappedProduct,
             productByBrands,
@@ -1102,6 +1128,8 @@ export class WebApiService {
         return {
             title: category.name,
             description: category.name,
+            favicon: category.image || null,
+            ogg_favicon: category.image || null,
             priceMinMax: { max: max ?? 0, min: min ?? 0 },
             category,
             discounts,
@@ -1214,6 +1242,8 @@ export class WebApiService {
         return {
             title: category.name,
             description: category.name,
+            favicon: category.image || null,
+            ogg_favicon: category.image || null,
             priceMinMax: { max: max ?? 0, min: min ?? 0 },
             subcategory,
             discounts,

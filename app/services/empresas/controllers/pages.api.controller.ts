@@ -43,6 +43,7 @@ export class PagesApiController {
         return result;
     }
 
+    @PermissionAdmin()
     @Validator(pagesStoreDto)
     @Status(201)
     @Post("/")

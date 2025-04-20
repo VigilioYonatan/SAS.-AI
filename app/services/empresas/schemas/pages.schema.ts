@@ -1,3 +1,4 @@
+import { filesSchema } from "@/uploads/schemas/uploads.schema";
 import {
     array,
     boolean,
@@ -40,6 +41,9 @@ export const pagesSchema = objectAsync({
         })
     ),
     description: string(),
+    keywords: nullable(string([minLength(3), maxLength(200)])),
+    favicon: nullable(array(filesSchema([100]))),
+    ogg_favicon: nullable(array(filesSchema([400]))),
     isDinamic: boolean(),
     enabledHeaderPage: boolean(),
     empresa_id: number(),

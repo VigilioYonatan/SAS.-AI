@@ -1,3 +1,4 @@
+import { aiChatApi } from "@/bot/apis/ai.chat";
 import { printLogoempresa } from "@/empresas/libs/helpers";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { useSignal } from "@preact/signals";
@@ -10,7 +11,7 @@ import { linkVigilio } from "~/config/settings";
 import useCopyToClipboard from "~/hooks/useCopyToClipboard";
 import usePressTimeOut from "~/hooks/usePressTimeOut";
 import { removeTextHTML } from "~/libs/helpers";
-import useSocketStore from "~/stores/socket.store";
+import useSocketStore, { getId } from "~/stores/socket.store";
 
 interface AssistantVirtualProps {
     onClose: () => void;
@@ -38,19 +39,36 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                         const [cp] = useCopyToClipboard();
                         const { handleTouchEnd, handleTouchStart } =
                             usePressTimeOut();
+                        const aiChatMutation = aiChatApi();
 
                         async function onSendMessage(data: {
                             message: string;
                         }) {
-                            if (isLoading.value) return;
-                            isLoading.value = true;
-                            messageForm.reset();
-                            const id = Date.now().toString(32).slice(4);
-                            chats.value = [
-                                ...chats.value,
-                                [id, "user", data.message],
-                            ];
-                            io?.emit("chat:send-message", { ...data, id });
+                            aiChatMutation.mutate(
+                                {
+                                    id: Date.now().toString(32),
+                                    message: data.message,
+                                    token: getId() as string,
+                                },
+                                {
+                                    onSuccess(data) {
+                                        console.log(data);
+                                    },
+                                    onError(err) {
+                                        console.log(err);
+                                    },
+                                }
+                            );
+
+                            // if (isLoading.value) return;
+                            // isLoading.value = true;
+                            // messageForm.reset();
+                            // const id = Date.now().toString(32).slice(4);
+                            // chats.value = [
+                            //     ...chats.value,
+                            //     [id, "user", data.message],
+                            // ];
+                            // io?.emit("chat:send-message", { ...data, id });
                         }
                         function onScrolling() {
                             const chatContainer = chatBox.current;

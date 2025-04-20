@@ -90,7 +90,9 @@
     <%=$empresa.setting?.bg_color_paper ? "color: #000000 !important": "color: #FFFFFF !important"%>;
   }
 </style>
-
+<%if($empresa.setting?.type_icons ==="animation"){%>
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+  <% }%>
 <%- vite  %>
 <!-- initial base -->
 <initial></initial>

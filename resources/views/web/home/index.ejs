@@ -2,107 +2,12 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= locals.$empresa?.name_empresa %> - <%= title %></title>
-  <meta name="description" content="<%= description  %>  <%= locals.$empresa?.about ? locals.$empresa?.about.slice(0,100): ''  %>">
-  <!-- METAS -->
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="<%= locals.$empresa?.name_empresa %>, Vigilio Services">
-  <meta name="keywords" content="sistema web, tienda online, ecommerce">
-  <meta name="published" content="<%= locals.$empresa?.name_empresa %>">
-
-  <!-- Schema.org markup for Google+ -->
-  <meta itemprop="name" content="<%= locals.$empresa ? $empresa.name_empresa:''   %> <%= locals.$empresa ? $empresa.header_cart:'Los mejores productos en un solo lugar'   %> ">
-  <meta itemprop="description" content="<%= locals.$empresa ? $empresa.name_empresa:''   %> ofrece los mejores productos del mercado a un precio accesible">
-  <meta itemprop="image" content="<%=   locals.$empresa.icon ? printFileWithDimension(locals.$empresa.icon,100)[0] :'/images/settings/others/vigilio-services-ico.webp' %>"> <!-- puedes poner una imagen de oferta -->
-
-
-  <!-- Twitter Card data -->
-  <meta name="twitter:card" content="product">
-  <meta name="twitter:site" content="@publisher_handle">
-  <meta name="twitter:title" content="<%= locals.$empresa ? $empresa.name_empresa:''   %> <%= locals.$empresa ? $empresa.header_cart:'Los mejores productos en un solo lugar'   %> ">
-  <meta name="twitter:description" content="<%= locals.$empresa ? $empresa.name_empresa:''   %> ofrece los mejores productos del mercado a un precio bajo">
-  <meta name="twitter:creator" content="@author_handle">
-  <meta name="twitter:image" content="<%=   locals.$empresa.logo ? printFileWithDimension(locals.$empresa.logo,100)[0] :'/images/settings/others/vigilio-services-ico.webp' %>"> <!-- puedes poner una imagen de oferta -->
-
-  <!-- Open Graph data -->
-  <meta property="og:title" content="<%= locals.$empresa ? $empresa.name_empresa:''   %> <%= locals.$empresa ? $empresa.header_cart:'Los mejores productos en un solo lugar'   %> ">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="">
-  <meta property="og:image" content="<%=   locals.$empresa.logo ? printFileWithDimension(locals.$empresa.logo,100)[0] :'/images/settings/others/vigilio-services-ico.webp' %>"> <!-- puedes poner una imagen de oferta -->
-  <meta property="og:description" content="<%= locals.$empresa ? $empresa.name_empresa:''   %> <%=locals.$empresa ? $empresa.name_empresa:''  %> ofrece los mejores productos del mercado a un precio accesible">
-  <meta property="og:site_name" content="<%= locals.$empresa ? $empresa.name_empresa:''  %>">
-  <meta property="fb:app_id" content="">
-  <link rel="manifest" href="/manifest.webmanifest.json">
-  <!-- ICONO -->
-  <link rel="shortcut icon" href="<%=   locals.$empresa.icon ? printFileWithDimension(locals.$empresa.icon,100)[0] :'/images/settings/others/vigilio-services-ico.webp' %>" type="image/x-icon" />
-  <%- `<script> 
-      localStorage.setItem("empresa", ${JSON.stringify(JSON.stringify(typeof $empresa !== "undefined" ? $empresa  : null))});
-      localStorage.setItem("user", ${JSON.stringify(JSON.stringify(typeof $user !== "undefined" ? $user  : null))});
-       localStorage.setItem("money",${JSON.stringify(JSON.stringify(typeof $money !== "undefined" ? $money  : null))});
-      </script>` %>
-  <%- vite  %>
-  <style>
-    :root {
-      --primary: <%=$empresa.setting?.bg_color %>;
-      --paper: <%=$empresa.setting?.bg_color_paper %>;
-      --light: <%=$empresa.setting?.bg_color_background %>;
-
-    }
-
-    @font-face {
-      font-family: 'Font-Thin';
-      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Thin.ttf` %>');
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Font-Light';
-      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Light.ttf` %>');
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Font-Regular';
-      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Regular.ttf` %>');
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Font-Bold';
-      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Bold.ttf` %>');
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Font-Black';
-      src: url('<%= `/fonts/${$empresa.setting?.font_face}/${$empresa.setting?.font_face}-Black.ttf` %>');
-      font-display: swap;
-    }
-
-    .vigilio-modal .modal {
-      padding: 0.5rem !important;
-      overflow: auto;
-      <%=$empresa.setting?.type_border==="circle"? 'border-radius: 0.6rem !important;': 'border-radius:  0rem !important;'%>
-    }
-  </style>
-  <script src="/js/sweet.min.js"></script>
-  <script src="/js/tiny-slider.js"></script>
- 
-
-  <%- include("../components/pixels.ejs")  %>
-  <%if($empresa.setting?.type_icons ==="animation"){%>
-      <script src="https://cdn.lordicon.com/lordicon.js"></script>
-    <% }%>
-
-  <!-- initial base -->
-  <initial></initial>
-
+  <%- include("../components/webHead.ejs") %>
 </head>
 
 
 <body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
+  <%- include("../components/pixels.ejs")  %>
   <%- include("../components/loader.ejs")  %>
   <home-page :queries="<%= JSON.stringify(queries)  %>" :users="<%= JSON.stringify(users)  %>" :gridBanners="<%= JSON.stringify(gridBanners) %>" :productsmostreactionmapped="<%= JSON.stringify(productsMostReactionMapped) %>" :productsMostCommentsMapped="<%= JSON.stringify(productsMostCommentsMapped)  %>" :productsMostRatingMapped="<%= JSON.stringify(productsMostRatingMapped)%>" :noticia="<%= JSON.stringify(noticia) %>" :productsQuantity="<%= JSON.stringify(productsQuantity)  %>" :productServicesQuantity="<%= JSON.stringify(productServicesQuantity)  %>" :header="<%= JSON.stringify(header)  %>" :backgrounds="<%= JSON.stringify(backgrounds)  %>" :posts="<%= JSON.stringify(posts)  %>" :productsOffert6Mapped="<%= JSON.stringify(productsOffert6Mapped)  %>" :productsLatest6Mapped="<%= JSON.stringify(productsLatest6Mapped)  %>" :productMostDiscountMapped="<%= JSON.stringify(productMostDiscountMapped)  %>" :productLatestMapped="<%= JSON.stringify(productLatestMapped)  %>" :getProductsByCategories="<%= JSON.stringify(getProductsByCategories)  %>" :brands="<%= JSON.stringify(brands)  %>">
     <% for(grid of gridBanners){  %>

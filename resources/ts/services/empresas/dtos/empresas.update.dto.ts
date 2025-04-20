@@ -43,6 +43,7 @@ export const empresasUpdateDto = omit(empresasSchema, [
     "isProduction",
     "scrapping_id",
     "token_web_chat",
+    "isOnlyScrapping",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;
 export const empresasLogoUpdateDto = object({
