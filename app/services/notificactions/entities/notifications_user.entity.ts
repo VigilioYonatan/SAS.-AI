@@ -12,7 +12,7 @@ import { Notifications } from "./notifications.entity";
 import type { UsersSchema } from "@/users/schemas/users.schema";
 import type { NotificationsUserSchema } from "../schemas/notifications_user.schema";
 import { Empresas } from "@/empresas/entities/empresas.entity";
-import { V } from "~/libs/helpers";
+import type { V } from "~/libs/helpers";
 
 @DefaultScope(() => ({
     include: [

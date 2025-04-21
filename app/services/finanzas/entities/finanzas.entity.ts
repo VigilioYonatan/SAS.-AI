@@ -11,7 +11,7 @@ import type { FinanzasSchema } from "../schemas/finanzas.schema";
 import { TipoFinanza } from "./tipo.entity";
 import { CategoriesFinanzas } from "./categories.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
-import { V } from "~/libs/helpers";
+import type { V } from "~/libs/helpers";
 
 @DefaultScope(() => ({ include: [CategoriesFinanzas] }))
 @Table

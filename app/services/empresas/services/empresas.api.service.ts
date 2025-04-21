@@ -19,7 +19,7 @@ import type {
 import type { EmpresasAddressUpdateDto } from "../dtos/empresas.address.update.dto";
 import { Address } from "../entities/address.entity";
 import { pathUploads, uploadsEntities } from "@/uploads/libs/helpers";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import type { EmpresasStoreDto } from "../dtos/empresas.store.dto";
 import type { MetodosPagoUpdateDto } from "../dtos/metodosPago.update.dto";
 import { MetodosPago } from "../entities/metodosPago.entity";
@@ -925,13 +925,17 @@ export class EmpresasApiService {
             await empresa.save();
 
             const dirEmpresa = `${pathUploads()}/${empresa.slug}`;
-            if (!fs.existsSync(pathUploads())) {
-                fs.mkdirSync(pathUploads());
+
+            const existDir = await fs.exists(pathUploads());
+            if (!existDir) {
+                await fs.mkdir(pathUploads());
                 // biome-ignore lint/suspicious/noConsoleLog: <explanation>
                 console.log("Creado directorio correctamente");
             }
-            if (!fs.existsSync(dirEmpresa)) {
-                fs.mkdirSync(dirEmpresa);
+            const existDirEmpresa = await fs.exists(dirEmpresa);
+
+            if (!existDirEmpresa) {
+                await fs.mkdir(dirEmpresa);
                 // biome-ignore lint/suspicious/noConsoleLog: <explanation>
                 console.log("Creado directorio correctamente");
             }
@@ -939,14 +943,16 @@ export class EmpresasApiService {
             for (const entity of uploadsEntities) {
                 const dir = `${dirEmpresa}/images`;
                 const dirEntity = `${dir}/${entity}`;
-
-                if (!fs.existsSync(dir)) {
-                    fs.mkdirSync(dir);
+                const existDir = await fs.exists(dir);
+                if (!existDir) {
+                    await fs.mkdir(dir);
                     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
                     console.log("Creado directorio correctamente");
                 }
-                if (!fs.existsSync(dirEntity)) {
-                    fs.mkdirSync(dirEntity);
+                const existDirEntity = await fs.exists(dirEntity);
+
+                if (!existDirEntity) {
+                    await fs.mkdir(dirEntity);
                     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
                     console.log("Creado directorio correctamente");
                 }
@@ -2641,8 +2647,8 @@ export class EmpresasApiService {
             const { empresa } = await this.show(id);
 
             const dir = `${pathUploads()}/${empresa.slug}`;
-            if (fs.existsSync(dir)) {
-                fs.rmdirSync(dir, { recursive: true });
+            if (await fs.exists(dir)) {
+                await fs.rmdir(dir, { recursive: true });
             }
             cache.delete(`EMPRESA:${empresa.slug}`);
             await empresa.destroy({ force: true });

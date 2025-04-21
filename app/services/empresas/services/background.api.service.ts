@@ -62,7 +62,7 @@ export class BackgroundApiService {
     async destroy(empresa: Empresas, id: string) {
         const { background } = await this.show(empresa, id);
         await background.destroy();
-        removeFile(empresa.slug, background.image);
+        await removeFile(empresa.slug, background.image);
         return {
             success: true,
             message: "Background eliminado",

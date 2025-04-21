@@ -300,8 +300,8 @@ export class OrdersApiService {
             throw new BadRequestException("Solo note, guide o invoice");
 
         let sunat: null | SunatInvoiceDto | SunatGuideDto = null;
-        const vendedor = `${(order.user as Users)?.name ?? ""} ${
-            (order.user as Users)?.lastname ?? ""
+        const vendedor = `${order.user?.name ?? ""} ${
+            order.user?.lastname ?? ""
         }`;
 
         if (
@@ -339,10 +339,8 @@ export class OrdersApiService {
         if (!sunat) throw new BadRequestException("No hubo nota o comprobante");
         const typePDF =
             type === "invoice" || type === "recibo"
-                ? (order.dataValues.invoice as Invoices).kind_invoice_code ===
-                      "01" ||
-                  (order.dataValues.invoice as Invoices).kind_invoice_code ===
-                      "03"
+                ? order.dataValues.invoice.kind_invoice_code === "01" ||
+                  order.dataValues.invoice.kind_invoice_code === "03"
                     ? "invoice"
                     : "recibo"
                 : type === "note"
@@ -366,8 +364,8 @@ export class OrdersApiService {
         const { order } = await this.show(empresa, order_code);
         if (!["note", "invoice", "guide", "recibo"].includes(type))
             throw new BadRequestException("Solo note, guide o invoice");
-        const vendedor = `${(order.user as Users)?.name ?? ""} ${
-            (order.user as Users)?.lastname ?? ""
+        const vendedor = `${order.user?.name ?? ""} ${
+            order.user?.lastname ?? ""
         }`;
         let sunat: null | SunatInvoiceDto | SunatGuideDto = null;
         let stringHTML = "";

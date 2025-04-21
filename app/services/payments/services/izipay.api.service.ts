@@ -29,7 +29,7 @@ export class IzipayApiService {
             },
         });
         if (
-            !metodosPago?.izipay.izipay_client_id ||
+            !metodosPago?.izipay?.izipay_client_id ||
             !metodosPago?.izipay.izipay_client_secret ||
             !metodosPago?.izipay.izipay_hash_key ||
             !metodosPago?.izipay.izipay_public_key
@@ -104,7 +104,7 @@ export class IzipayApiService {
                 where: { empresa_id: empresa.id },
             });
             if (
-                !metodosPago?.izipay.izipay_client_id ||
+                !metodosPago?.izipay?.izipay_client_id ||
                 !metodosPago?.izipay.izipay_client_secret ||
                 !metodosPago?.izipay.izipay_hash_key ||
                 !metodosPago?.izipay.izipay_public_key

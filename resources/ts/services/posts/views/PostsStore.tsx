@@ -61,10 +61,24 @@ function PostsStore({ onClose, refetch }: PoststoreProps) {
                     </h3>
                     <Form.button.reset />
                 </div>
-                <Form.control
-                    title="Título"
-                    name={"title" as keyof PostsStoreDto}
-                />
+                <div class="grid md:grid-cols-2 items-center gap-2">
+                    <Form.control
+                        title="Título"
+                        name={"title" as keyof PostsStoreDto}
+                    />
+                    <Form.control
+                        title="SEO Título"
+                        name={"seo_title" as keyof PostsStoreDto}
+                        question={
+                            <div>
+                                En los buscadores de google se buscará por el
+                                seo titulo <br />
+                                Este campo no es obligatorio
+                            </div>
+                        }
+                    />
+                </div>
+
                 <Form.control.area
                     title="Contenido"
                     name={"content" as keyof PostsStoreDto}

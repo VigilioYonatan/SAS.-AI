@@ -193,7 +193,7 @@ export class CrudDateApiService {
                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 (result as any)[type][data.name as keyof typeof result]
             ) {
-                removeFile(
+                await removeFile(
                     empresa.slug,
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                     (result as any)[type][data.name as keyof typeof result]

@@ -11,7 +11,7 @@ import {
 import type { TipoEmpresaSchema } from "../schemas/tipo_empresa.schema";
 import { TipoServicio } from "./tipo_servicio.entity";
 import { Empresas } from "./empresas.entity";
-import { V } from "~/libs/helpers";
+import type { V } from "~/libs/helpers";
 
 @DefaultScope(() => ({ include: [TipoServicio] }))
 @Table

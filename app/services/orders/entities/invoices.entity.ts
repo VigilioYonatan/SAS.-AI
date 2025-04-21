@@ -16,7 +16,7 @@ import { Notes } from "./notes.entity";
 import { KindInvoice } from "./kind_invoice.entity";
 import { Documents } from "./documents.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
-import { V } from "~/libs/helpers";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class Invoices extends Model implements Omit<InvoicesSchema, "id"> {

@@ -16,7 +16,7 @@ import { Users } from "@/users/entities/users.entity";
 import { NotificationsUser } from "./notifications_user.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import type { UsersSchema } from "@/users/schemas/users.schema";
-import { V } from "~/libs/helpers";
+import type { V } from "~/libs/helpers";
 
 @DefaultScope(() => ({
     include: [

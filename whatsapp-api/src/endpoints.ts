@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import formidable from "formidable";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import { client, initialWhatsapp, qrImage } from "./main";
 import WAWebJS from "whatsapp-web.js";
 
@@ -80,12 +80,10 @@ export async function sendFile(req: Request, res: Response) {
         if (files.file) {
             const filePath = files.file[0].filepath;
             const ext = files.file[0].originalFilename?.split(".").at(-1);
-
-            const bufferFile = Buffer.from(fs.readFileSync(filePath)).toString(
-                "base64"
-            );
+            const buffer = await fs.readFile(filePath);
+            const bufferFile = buffer.toString("base64");
             // delete filepath
-            fs.unlinkSync(filePath);
+            await fs.unlink(filePath);
             const file = new WAWebJS.MessageMedia(
                 files.file[0].mimetype!,
                 bufferFile,
@@ -141,7 +139,7 @@ export async function sendTyping(req: Request, res: Response) {
 
 /** SEND MESSAGE - QR */
 export async function getQr(_req: Request, res: Response) {
-    if (!fs.existsSync(qrImage))
+    if (!(await fs.exists(qrImage)))
         return res.status(404).json({ success: false, message: "No hay qr" });
     return res.sendFile(qrImage);
 }
@@ -154,8 +152,8 @@ export async function sendLogout() {
     return { success: true, message: "logout success" };
 }
 export async function restart() {
-    if (fs.existsSync(qrImage)) {
-        fs.unlinkSync(qrImage);
+    if (await fs.exists(qrImage)) {
+        await fs.unlink(qrImage);
     }
     return { success: true, message: "qr removed" };
 }

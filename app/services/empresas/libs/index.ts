@@ -1,6 +1,5 @@
 import enviroments from "~/config/enviroments.config";
 import type { Empresas } from "../entities/empresas.entity";
-import type { Settings } from "../entities/settings.entity";
 import { Regions } from "@/ubigeo/entities/regions.entity";
 import { Countries } from "@/ubigeo/entities/countries.entity";
 import { RegionsEmpresa } from "@/ubigeo/entities/regions_empresa.entity";
@@ -12,9 +11,8 @@ export enum DIALCODE {
 
 export function BASE_URL(empresa: Empresas) {
     return enviroments.NODE_ENV === "production"
-        ? (empresa.setting as Settings)?.host.host &&
-          (empresa.setting as Settings)?.host.enabled
-            ? `https://www.${(empresa.setting as Settings)?.host.host}`
+        ? empresa.setting?.host.host && empresa.setting?.host.enabled
+            ? `https://www.${empresa.setting?.host.host}`
             : `https://www.${empresa.slug}.vigilio-services.com`
         : `http://www.${empresa.slug}.localhost:4003`;
 }

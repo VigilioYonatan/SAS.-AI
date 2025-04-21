@@ -12,7 +12,7 @@ import type {
     TypeConsumption,
 } from "../schemas/complaints.schema";
 import { Empresas } from "./empresas.entity";
-import { V } from "~/libs/helpers";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class Complaints extends Model implements Omit<ComplaintsSchema, "id"> {

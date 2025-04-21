@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import qrcodeTerminal from "qrcode-terminal";
 import qrcode from "qrcode";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import WAWebJS from "whatsapp-web.js";
 import {
     getQr,
@@ -79,8 +79,8 @@ export async function initialWhatsapp() {
         },
     });
 
-    client.on("qr", (qr) => {
-        if (!fs.existsSync(qrImage))
+    client.on("qr", async (qr) => {
+        if (!(await fs.exists(qrImage)))
             qrcodeTerminal.generate(qr, { small: true }, () => {
                 qrcode.toFile(qrImage, qr, (err) => {
                     if (err) throw err;
@@ -187,8 +187,8 @@ export async function initialWhatsapp() {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log({ resultDisconnected });
         // eliminar qrcodee
-        if (fs.existsSync(qrImage)) {
-            fs.unlinkSync(qrImage);
+        if (await fs.exists(qrImage)) {
+            await fs.unlink(qrImage);
         }
     });
     await client.initialize();

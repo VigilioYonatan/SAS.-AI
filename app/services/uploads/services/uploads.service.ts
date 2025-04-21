@@ -576,7 +576,7 @@ export class UploadsService {
                 const { user } = await this.usersApiService.show(empresa, id);
                 entidad = user;
                 if (user.photo) {
-                    removeFile(empresa.slug, user.photo);
+                    await removeFile(empresa.slug, user.photo);
                 }
                 break;
             }
@@ -600,7 +600,7 @@ export class UploadsService {
                 );
                 entidad = product;
                 if (product.images) {
-                    removeFile(empresa.slug, product.images);
+                    await removeFile(empresa.slug, product.images);
                     if (product instanceof ProductsNormal) {
                         await Variants.update(
                             { images: [] },
@@ -631,10 +631,10 @@ export class UploadsService {
                 );
                 entidad = category;
                 if (property === "image" && category.image) {
-                    removeFile(empresa.slug, category.image);
+                    await removeFile(empresa.slug, category.image);
                 }
                 if (property === "wallpaper" && category.wallpaper) {
-                    removeFile(empresa.slug, category.wallpaper);
+                    await removeFile(empresa.slug, category.wallpaper);
                 }
 
                 break;
@@ -654,7 +654,7 @@ export class UploadsService {
                 );
                 entidad = subcategory;
                 if (property === "image" && subcategory.image) {
-                    removeFile(empresa.slug, subcategory.image);
+                    await removeFile(empresa.slug, subcategory.image);
                 }
 
                 break;
@@ -671,7 +671,7 @@ export class UploadsService {
                 const { brand } = await this.brandsApiService.show(empresa, id);
                 entidad = brand;
                 if (property === "image" && brand.image) {
-                    removeFile(empresa.slug, brand.image);
+                    await removeFile(empresa.slug, brand.image);
                 }
                 break;
             }
@@ -690,12 +690,12 @@ export class UploadsService {
                 entidad = metodo;
                 if (property === "qrPlin") {
                     if (metodo.qrPlin) {
-                        removeFile(empresa.slug, metodo.qrPlin);
+                        await removeFile(empresa.slug, metodo.qrPlin);
                     }
                 }
                 if (property === "qrYape") {
                     if (metodo.qrYape) {
-                        removeFile(empresa.slug, metodo.qrYape);
+                        await removeFile(empresa.slug, metodo.qrYape);
                     }
                 }
 
@@ -713,7 +713,7 @@ export class UploadsService {
                 const { post } = await this.postsApiService.show(empresa, id);
                 entidad = post;
                 if (property === "image") {
-                    removeFile(empresa.slug, post.image);
+                    await removeFile(empresa.slug, post.image);
                 }
 
                 break;
@@ -733,7 +733,7 @@ export class UploadsService {
                 );
                 entidad = background;
                 if (property === "image") {
-                    removeFile(empresa.slug, background.image);
+                    await removeFile(empresa.slug, background.image);
                 }
                 break;
             }
@@ -768,7 +768,7 @@ export class UploadsService {
                 entidad = supplier;
                 if (property === "logo") {
                     if (supplier.logo) {
-                        removeFile(empresa.slug, supplier.logo);
+                        await removeFile(empresa.slug, supplier.logo);
                     }
                 }
                 break;
@@ -792,7 +792,7 @@ export class UploadsService {
                     );
                 entidad = file;
                 if (property === "file") {
-                    removeFile(empresa.slug, file.file);
+                    await removeFile(empresa.slug, file.file);
                 }
                 break;
             }
@@ -813,7 +813,7 @@ export class UploadsService {
                 entidad = nuevo;
                 if (property === "image") {
                     if (nuevo.image) {
-                        removeFile(empresa.slug, nuevo.image);
+                        await removeFile(empresa.slug, nuevo.image);
                     }
                 }
                 break;
@@ -832,16 +832,16 @@ export class UploadsService {
                 );
                 entidad = emp;
                 if (property === "logo" && empresa.logo) {
-                    removeFile(empresa.slug, empresa.logo);
+                    await removeFile(empresa.slug, empresa.logo);
                 }
                 if (property === "logo_pwa" && empresa.logo_pwa) {
-                    removeFile(empresa.slug, empresa.logo_pwa);
+                    await removeFile(empresa.slug, empresa.logo_pwa);
                 }
                 if (property === "certificado" && empresa.certificado) {
-                    removeFile(empresa.slug, empresa.certificado);
+                    await removeFile(empresa.slug, empresa.certificado);
                 }
                 if (property === "icon" && emp.icon) {
-                    removeFile(empresa.slug, emp.icon);
+                    await removeFile(empresa.slug, emp.icon);
                 }
 
                 break;
@@ -858,10 +858,10 @@ export class UploadsService {
                 const { page } = await this.pagesApiService.show(empresa, id);
                 entidad = page;
                 if (property === "favicon" && page.favicon) {
-                    removeFile(empresa.slug, page.favicon);
+                    await removeFile(empresa.slug, page.favicon);
                 }
                 if (property === "ogg_favicon" && page.ogg_favicon) {
-                    removeFile(empresa.slug, page.ogg_favicon);
+                    await  removeFile(empresa.slug, page.ogg_favicon);
                 }
 
                 break;
@@ -888,7 +888,7 @@ export class UploadsService {
                                 data.name
                             ]
                         ) {
-                            removeFile(
+                            await  removeFile(
                                 empresa.slug,
                                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                 (crudData as any)[

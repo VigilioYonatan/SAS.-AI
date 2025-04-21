@@ -56,8 +56,6 @@ export class WebApiService {
     ) {}
 
     async home(empresa: Empresas, user: Users) {
-        console.log(JSON.stringify(empresa, null, 3));
-
         let cacheHome = null;
         if (empresa.enabled_booster && !user) {
             cacheHome = JSON.parse(cache.get(`home-${empresa.slug}`) ?? "null");
@@ -399,8 +397,8 @@ export class WebApiService {
             }
             const queries = await getQueries(empresa, data);
             cacheHome = {
-                title: data.title,
-                description: data?.description,
+                title: data.title || empresa.name_empresa,
+                description: data?.description || empresa.about,
                 favicon: data.favicon,
                 ogg_favicon: data.ogg_favicon,
                 keywords: data.keywords,
@@ -444,8 +442,8 @@ export class WebApiService {
         }
         const queries = await getQueries(empresa, data);
         const header = {
-            title: data.title,
-            description: data?.description,
+            title: data.title || empresa.name_empresa,
+            description: data?.description || empresa.about,
             favicon: data.favicon,
             ogg_favicon: data.ogg_favicon,
             keywords: data.keywords,
@@ -527,8 +525,8 @@ export class WebApiService {
             throw new InternalServerErrorException((error as Error).message);
         }
         const header = {
-            title: data.title,
-            description: data?.description,
+            title: data.title || empresa.name_empresa,
+            description: data?.description || empresa.about,
             favicon: data.favicon,
             ogg_favicon: data.ogg_favicon,
             keywords: data.keywords,
@@ -644,7 +642,7 @@ export class WebApiService {
             ]);
         const header = {
             title: d.title || "shop",
-            description: d?.description,
+            description: d?.description || empresa.about,
             favicon: d.favicon,
             ogg_favicon: d.ogg_favicon,
             keywords: d.keywords,
@@ -688,6 +686,9 @@ export class WebApiService {
             const pagina: {
                 title: string;
                 description: string;
+                favicon: Page["favicon"];
+                ogg_favicon: Page["ogg_favicon"];
+                keywords: string | null;
                 grid_banner_pages: GridBannerPage[];
                 type_page: string;
                 paginator: unknown | null;
@@ -696,6 +697,9 @@ export class WebApiService {
             } = {
                 title: page.title,
                 description: page.description,
+                favicon: page.favicon,
+                ogg_favicon: page.ogg_favicon,
+                keywords: page.keywords,
                 grid_banner_pages,
                 type_page: "other_page",
                 paginator: undefined,
@@ -1032,6 +1036,9 @@ export class WebApiService {
                     ? removeTextHTML(product.description)?.slice(0, 100)
                     : ""
             }...`,
+            favicon: product.images,
+            ogg_favicon: product.images,
+            keywords: product.category?.name || null,
             product,
             categoriesProductsRandom: mappedProduct,
             category_name: (product.category as Categories).name,
@@ -1306,6 +1313,9 @@ export class WebApiService {
         return {
             title: brand.name,
             description: brand.name,
+            favicon: brand.image,
+            ogg_favicon: brand.image,
+            keywords: brand.name || null,
             brand,
             priceMinMax: { max: max ?? 0, min: min ?? 0 },
             discounts,

@@ -3,7 +3,6 @@ import type { InvoicesSchema } from "../schemas/invoices.schema";
 import type { DetailOrdersStoreDto } from "../dtos/detail_orders.store.dto";
 import type { NotesSchema } from "../schemas/notes.schema";
 import type { SunatNoteDto } from "../sunat/dtos/sunat.note.dto";
-import type { Invoices } from "../entities/invoices.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { pathUploads } from "@/uploads/libs/helpers";
 import { invoicePDFSunatApi } from "../sunat/invoice.pdf.api";
@@ -19,8 +18,7 @@ import { KindCreditNotes } from "../entities/kind_credit_notes.entity";
 import { KindDebitNotes } from "../entities/kind_debit_notes.entity";
 import { ticketHTML } from "./ticket";
 import { Orders } from "../entities/orders.entity";
-import fs from "node:fs";
-import type { Guides } from "../entities/guides.entity";
+import fs from "node:fs/promises";
 import type { GuidesSchema } from "../schemas/guides.schema";
 import type { SunatGuideDto } from "../sunat/dtos/sunat.guide.dto";
 import { pasarelaComision, paypalComision } from "@/payments/libs";
@@ -29,7 +27,6 @@ import { guidePDFSunatApi } from "../sunat/guide.pdf.api";
 import { Product, productEntityId } from "@/products/libs";
 import { Op, type WhereAttributeHash } from "sequelize";
 import type { Cities } from "@/ubigeo/entities/cities.entity";
-import type { Regions } from "@/ubigeo/entities/regions.entity";
 import { provincesSeeder } from "@/ubigeo/seeders/peru/provinces.seeder";
 import { RegionsEmpresa } from "@/ubigeo/entities/regions_empresa.entity";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
@@ -38,7 +35,6 @@ import { ProductsRestaurant } from "@/products/entities/products_restaurant.enti
 import wkhtmltopdf from "wkhtmltopdf";
 import { PassThrough } from "node:stream";
 import { NOW, TimePeru } from "~/libs/dayjs";
-import type { PayMethods } from "../entities/pay_methods.entity";
 import { Users } from "@/users/entities/users.entity";
 import { ROLES } from "@/users/libs";
 
@@ -110,14 +106,18 @@ export async function pdfGenerate(props: PdfGenerateProps, save = false) {
         });
         const nameFile = `/${props.empresa.slug}-${props.order.order_code}-${props.type}.pdf`;
         const file = `${props.empresa.slug}/sunat`;
-        if (!fs.existsSync(`${pathUploads()}/${file}`)) {
-            fs.mkdirSync(`${pathUploads()}/${file}`);
+        const existFile = await fs.exists(`${pathUploads()}/${file}`);
+        if (!existFile) {
+            await fs.mkdir(`${pathUploads()}/${file}`);
         }
         if (save) {
-            if (fs.existsSync(`${pathUploads()}/${file}${nameFile}`)) {
-                fs.unlinkSync(`${pathUploads()}/${file}${nameFile}`);
+            const existFile = await fs.exists(
+                `${pathUploads()}/${file}${nameFile}`
+            );
+            if (existFile) {
+                await fs.unlink(`${pathUploads()}/${file}${nameFile}`);
             }
-            fs.writeFileSync(`${pathUploads()}/${file}${nameFile}`, buffer);
+            await fs.writeFile(`${pathUploads()}/${file}${nameFile}`, buffer);
         }
         return { file: `${file}${nameFile}`, pdfBuffer: buffer as Buffer };
     } catch (error) {
@@ -138,13 +138,17 @@ export async function xmlGenerate(props: PdfGenerateProps) {
     }
     const nameFile = `/${props.empresa.slug}-${props.order.order_code}-${props.type}.xml`;
     const file = `${props.empresa.slug}/sunat`;
-    if (!fs.existsSync(`${pathUploads()}/${file}`)) {
-        fs.mkdirSync(`${pathUploads()}/${file}`);
+    const existFile = await fs.exists(`${pathUploads()}/${file}`);
+    if (!existFile) {
+        await fs.mkdir(`${pathUploads()}/${file}`);
     }
-    if (fs.existsSync(`${pathUploads()}/${file}${nameFile}`)) {
-        fs.unlinkSync(`${pathUploads()}/${file}${nameFile}`);
+    const existNameFile = await fs.exists(
+        `${pathUploads()}/${file}${nameFile}`
+    );
+    if (existNameFile) {
+        await fs.unlink(`${pathUploads()}/${file}${nameFile}`);
     }
-    fs.writeFileSync(`${pathUploads()}/${file}${nameFile}`, xml!);
+    await fs.writeFile(`${pathUploads()}/${file}${nameFile}`, xml!);
     return `${file}${nameFile}`;
 }
 
@@ -185,10 +189,11 @@ export async function crdGenerate(props: {
     const file = `${props.empresa.slug}/sunat/${props.empresa.slug}-${
         props.orderCode
     }-${Date.now().toString(32).slice(3)}.cdr`;
-    if (fs.existsSync(`${pathUploads()}/${file}`)) {
-        fs.unlinkSync(`${pathUploads()}/${file}`);
+    const existFile = await fs.exists(`${pathUploads()}/${file}`);
+    if (existFile) {
+        await fs.unlink(`${pathUploads()}/${file}`);
     }
-    fs.writeFileSync(`${pathUploads()}/${file}`, props.cdrzip);
+    await fs.writeFile(`${pathUploads()}/${file}`, props.cdrzip);
     return file;
 }
 
@@ -224,14 +229,12 @@ export async function onInvoiceSunat({
     } as SunatInvoiceDto["client"];
     const addressEmpresa = order.address_empresa;
     const address = {
-        ubigeo: (addressEmpresa.city as Cities).code,
-        departamento: ((addressEmpresa.city as Cities).region as Regions).name,
+        ubigeo: addressEmpresa.city.code,
+        departamento: addressEmpresa.city.region.name,
         provincia: provincesSeeder.find(
-            (pro) =>
-                pro.department_id ===
-                ((addressEmpresa.city as Cities).region as Regions).code
+            (pro) => pro.department_id === addressEmpresa.city.region.code
         )?.name!,
-        distrito: (addressEmpresa.city as Cities).name,
+        distrito: addressEmpresa.city.name,
         urbanizacion: addressEmpresa.urbanizacion,
         direccion: addressEmpresa.direccion,
         codLocal: addressEmpresa.codLocal,
@@ -257,24 +260,24 @@ export async function onInvoiceSunat({
         details,
         company: {
             logo: empresa.logo
-                ? fs
-                      .readFileSync(
+                ? (
+                      await fs.readFile(
                           `${pathUploads()}/${empresa.slug}/${
                               empresa.logo[0].file
                           }` // trae a la imagen 100px
                       )
-                      .toString("base64")
+                  ).toString("base64")
                 : "", //si no existe logo que envie un string vacio
             certificado: empresa.certificado
-                ? fs
-                      .readFileSync(
+                ? (
+                      await fs.readFile(
                           `${pathUploads()}/${empresa.slug}/${
                               empresa.certificado[0].file
                           }` // trae a la imagen 100px
                       )
-                      .toString("base64")
+                  ).toString("base64")
                 : null,
-            condicion_pago: (order.pay_method as PayMethods).name,
+            condicion_pago: order.pay_method.name,
             telephone: empresa.telephoneFirst,
             vendedor,
             address,
@@ -328,13 +331,11 @@ export async function onNoteSunat({
     const addressEmpresa = order.address_empresa;
     const address = {
         ubigeo: (addressEmpresa.city as Cities).code,
-        departamento: ((addressEmpresa.city as Cities).region as Regions).name,
+        departamento: addressEmpresa.city.region.name,
         provincia: provincesSeeder.find(
-            (pro) =>
-                pro.department_id ===
-                ((addressEmpresa.city as Cities).region as Regions).code
+            (pro) => pro.department_id === addressEmpresa.city.region.code
         )?.name!,
-        distrito: (addressEmpresa.city as Cities).name,
+        distrito: addressEmpresa.city.name,
         urbanizacion: addressEmpresa.urbanizacion,
         direccion: addressEmpresa.direccion,
         codLocal: addressEmpresa.codLocal,
@@ -365,24 +366,24 @@ export async function onNoteSunat({
         details,
         company: {
             logo: empresa.logo
-                ? fs
-                      .readFileSync(
+                ? (
+                      await fs.readFile(
                           `${pathUploads()}/${empresa.slug}/${
                               empresa.logo[0].file
                           }` // trae a la imagen 100px
                       )
-                      .toString("base64")
+                  ).toString("base64")
                 : "", //si no existe logo que envie un string vacio
             certificado: empresa.certificado
-                ? fs
-                      .readFileSync(
+                ? (
+                      await fs.readFile(
                           `${pathUploads()}/${empresa.slug}/${
                               empresa.certificado[0].file
                           }` // trae a la imagen 100px
                       )
-                      .toString("base64")
+                  ).toString("base64")
                 : null,
-            condicion_pago: (order.pay_method as PayMethods).name,
+            condicion_pago: order.pay_method.name,
             telephone: empresa.telephoneFirst,
             vendedor,
             address,
@@ -410,14 +411,12 @@ export async function onGuideSunat({
 }: OnGuideSunatProps): Promise<SunatGuideDto> {
     const addressEmpresa = order.address_empresa;
     const address = {
-        ubigeo: (addressEmpresa.city as Cities).code,
-        departamento: ((addressEmpresa.city as Cities).region as Regions).name,
+        ubigeo: addressEmpresa.city.code,
+        departamento: addressEmpresa.city.region.name,
         provincia: provincesSeeder.find(
-            (pro) =>
-                pro.department_id ===
-                ((addressEmpresa.city as Cities).region as Regions).code
+            (pro) => pro.department_id === addressEmpresa.city.region.code
         )?.name!,
-        distrito: (addressEmpresa.city as Cities).name,
+        distrito: addressEmpresa.city.name,
         urbanizacion: addressEmpresa.urbanizacion,
         direccion: addressEmpresa.direccion,
         codLocal: addressEmpresa.codLocal,
@@ -465,24 +464,24 @@ export async function onGuideSunat({
         })),
         company: {
             logo: empresa.logo
-                ? fs
-                      .readFileSync(
+                ? (
+                      await fs.readFile(
                           `${pathUploads()}/${empresa.slug}/${
                               empresa.logo[0].file
                           }` // trae a la imagen 100px
                       )
-                      .toString("base64")
+                  ).toString("base64")
                 : "", //si no existe logo que envie un string vacio
             certificado: empresa.certificado
-                ? fs
-                      .readFileSync(
+                ? (
+                      await fs.readFile(
                           `${pathUploads()}/${empresa.slug}/${
                               empresa.certificado[0].file
                           }` // trae a la imagen 100px
                       )
-                      .toString("base64")
+                  ).toString("base64")
                 : null,
-            condicion_pago: (order.pay_method as PayMethods).name,
+            condicion_pago: order.pay_method.name,
             telephone: empresa.telephoneFirst,
             vendedor,
             address,
@@ -533,8 +532,8 @@ export async function getOrder(
                   ],
               })
             : [],
-        order.$get("invoice") as Promise<Invoices>,
-        order.$get("guide") as Promise<Guides>,
+        order.$get("invoice"),
+        order.$get("guide"),
     ]);
     let note = null;
     if (invoice) {
@@ -552,11 +551,11 @@ export async function getOrder(
         const regionsEmpresa = await RegionsEmpresa.findOne({
             where: {
                 empresa_id: empresa.id,
-                region_id: (order.city as Cities).region_id,
+                region_id: order.city.region_id,
             },
         });
         city = {
-            ...(order.city as Cities).toJSON(),
+            ...order.city.toJSON(),
             days: regionsEmpresa?.days,
             enabled: regionsEmpresa?.enabled,
             priceShipping: regionsEmpresa?.priceShipping,

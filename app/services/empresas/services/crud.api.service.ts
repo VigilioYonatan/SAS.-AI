@@ -157,6 +157,9 @@ export class CrudApiService {
                     title: body.name,
                     isDinamic: false,
                     enabledHeaderPage: false,
+                    favicon: null,
+                    keywords: null,
+                    ogg_favicon: null,
                 } as PagesStoreDto,
                 body.paginator && body.paginator > 0 ? paginatorHTML : undefined
             );
@@ -182,6 +185,9 @@ export class CrudApiService {
                 title: body.name,
                 enabledHeaderPage: false,
                 isDinamic: true,
+                favicon: null,
+                keywords: null,
+                ogg_favicon: null,
             } as PagesStoreDto);
         }
         cache.delete(`EMPRESA:${empresa.slug}`);
@@ -237,6 +243,9 @@ export class CrudApiService {
                     title: body.name,
                     isDinamic: body.isDynamicPage,
                     enabledHeaderPage: false,
+                    favicon: null,
+                    keywords: null,
+                    ogg_favicon: null,
                 } as PagesStoreDto);
             }
         }

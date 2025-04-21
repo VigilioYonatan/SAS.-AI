@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from "@vigilio/express-core";
 import { pathUploads } from "@/uploads/libs/helpers";
 import enviroments from "~/config/enviroments.config";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import dayjs from "~/libs/dayjs";
 import { Empresas } from "../entities/empresas.entity";
 import { Users } from "@/users/entities/users.entity";
@@ -48,8 +48,8 @@ export class BackupApiService {
 
         const containerBackupPath = nameFile; // Ubicación del archivo de backup en el contenedor
         const hostBackupPath = `${pathUploads()}/backup`;
-        if (!fs.existsSync(hostBackupPath)) {
-            fs.mkdirSync(hostBackupPath);
+        if (!(await fs.exists(hostBackupPath))) {
+            await fs.mkdir(hostBackupPath);
         }
         const filesql = `${hostBackupPath}/${nameFile}`;
 

@@ -631,7 +631,7 @@ export class ProductsApiService {
         );
         await product.destroy();
         if (product.images) {
-            removeFile(empresa.slug, product.images);
+            await removeFile(empresa.slug, product.images);
         }
         return {
             success: true,

@@ -158,7 +158,7 @@ export class SubCategoriesApiService {
                 `Existe productos en esta subcategoría ${subcategory.subcategory_code} - ${products.length} productos.`
             );
         if (subcategory.image) {
-            removeFile(empresa.slug, subcategory.image);
+            await removeFile(empresa.slug, subcategory.image);
         }
         await subcategory.destroy();
         return {

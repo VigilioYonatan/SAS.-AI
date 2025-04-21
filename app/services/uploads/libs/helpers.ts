@@ -2,7 +2,7 @@ import type { FilesSchema } from "../schemas/uploads.schema";
 import { File } from "formidable";
 import { slug } from "@vigilio/express-core/helpers";
 import sharp, { type OutputInfo, type Sharp } from "sharp";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import path from "node:path";
 import crypto from "node:crypto";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
@@ -106,18 +106,18 @@ export async function uploadFiles({
     const dirEmpresa = `${pathUploads()}/${empresa.slug}`;
     const dir = `${dirEmpresa}/${directory}`;
     const dirEntity = `${dir}/${entity}`;
-    if (!fs.existsSync(dirEmpresa)) {
-        fs.mkdirSync(dirEmpresa);
+    if (!(await fs.exists(dirEmpresa))) {
+        await fs.mkdir(dirEmpresa);
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("Creado directorio correctamente");
     }
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
+    if (!(await fs.exists(dir))) {
+        await fs.mkdir(dir);
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("Creado directorio correctamente");
     }
-    if (!fs.existsSync(dirEntity)) {
-        fs.mkdirSync(dirEntity);
+    if (!(await fs.exists(dirEntity))) {
+        await fs.mkdir(dirEntity);
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("Creado directorio correctamente");
     }
@@ -258,7 +258,7 @@ export async function uploadFiles({
                     .toFile(path.resolve(dirEntity, fileName));
             } else {
                 const fileexist = path.resolve(dirEntity, fileName);
-                fs.renameSync(file.filepath, fileexist);
+                await fs.rename(file.filepath, fileexist);
             }
 
             filesNames = [
@@ -316,12 +316,12 @@ export function printFileWithDimension(empresa: Empresas) {
         );
     };
 }
-export function removeFile(slug: string, files: FilesSchema[]) {
+export async function removeFile(slug: string, files: FilesSchema[]) {
     for (const file of files) {
         const image = `${pathUploads()}/${slug}/${file.file}`;
 
-        if (fs.existsSync(image)) {
-            fs.unlinkSync(image);
+        if (await fs.exists(image)) {
+            await fs.unlink(image);
         }
     }
 }

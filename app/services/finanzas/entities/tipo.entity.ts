@@ -10,7 +10,7 @@ import {
 import type { TipoFinanzasSchema } from "../schemas/tipo.schema";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { CategoriesFinanzas } from "./categories.entity";
-import { V } from "~/libs/helpers";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class TipoFinanza

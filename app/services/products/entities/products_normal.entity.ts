@@ -168,7 +168,7 @@ export class ProductsNormal
     carts: V<Cart>[];
 
     @BelongsToMany(() => Options, () => ProductsOptions)
-    options: V<Options> & { ProductsOptions: ProductsOptions }[];
+    options: (V<Options> & { ProductsOptions: ProductsOptions })[];
 
     @HasMany(() => DetailOrders, { onDelete: "SET NULL" })
     detailsOrders: V<DetailOrders>[];

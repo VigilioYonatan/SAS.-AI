@@ -37,7 +37,7 @@ import {
 import { openAis } from "@/empresas/services/empresas.api.service";
 import formidable from "formidable";
 import type { RequestVigilio } from "~/config/types";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import cron from "node-cron";
 import type { Response } from "express";
 import { NodeSSH } from "node-ssh";
@@ -473,7 +473,7 @@ export class whatsappApiController {
         const empresa = req.empresa;
         const file = files.file
             ? new File(
-                  [await fs.promises.readFile(files.file[0].filepath)],
+                  [await fs.readFile(files.file[0].filepath)],
                   files.file[0].originalFilename ?? "archivo",
                   {
                       type: files.file[0].mimetype!,

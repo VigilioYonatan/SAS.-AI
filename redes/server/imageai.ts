@@ -1,4 +1,4 @@
-import * as fs from "node:fs";
+import fs from "node:fs/promises";
 import openai from "openai";
 import FormData from "form-data";
 import axios from "axios";
@@ -11,7 +11,7 @@ const client = new openai.OpenAI({
 async function interpretarImagen(rutaImagen: string): Promise<void> {
     try {
         // Configuración del formulario para enviar la imagen
-        const imageFile = fs.readFileSync(rutaImagen);
+        const imageFile = await fs.readFile(rutaImagen);
         const APIKEY = "297b2552dd5f443160e85a1dbe2b8e60";
         // Crear el FormData para enviar la solicitud
         const formData = new FormData();
@@ -51,8 +51,6 @@ async function interpretarImagen(rutaImagen: string): Promise<void> {
             ],
             max_tokens: 300,
         });
-        console.log(result.choices[0].message.content);
-
         return;
     } catch (error) {
         console.error("Error interpretando la imagen:", error);

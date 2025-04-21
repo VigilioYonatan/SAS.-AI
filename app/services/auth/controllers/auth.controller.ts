@@ -79,7 +79,7 @@ export class AuthController {
     async login(@Res() res: Response) {
         return res.render("auth/login", {
             title: "Iniciar sesión",
-            description: "Bienvenido a",
+            description: "Bienvenido a nuestro inicio de sesión",
         });
     }
     @Get("/logout", [authAuthenticatedMiddleware])

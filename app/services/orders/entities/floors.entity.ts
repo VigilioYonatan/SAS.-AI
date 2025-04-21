@@ -10,7 +10,7 @@ import {
 import type { FloorsSchema } from "../schemas/floors.schema";
 import { Mesas } from "./mesas.entity";
 import { Empresas } from "@/empresas/entities/empresas.entity";
-import { V } from "~/libs/helpers";
+import type { V } from "~/libs/helpers";
 
 @Table
 export class Floors extends Model implements Omit<FloorsSchema, "id"> {

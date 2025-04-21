@@ -1,10 +1,9 @@
 import { formatMoney, subtotal } from "@/cart/libs/helpers";
 import { Citas } from "@/citas/entities/citas.entities";
 import { Crud } from "@/empresas/entities/crud.entity";
-import { MetodosPago } from "@/empresas/entities/metodosPago.entity";
 import { Page } from "@/empresas/entities/page.entity";
 import { Questions } from "@/empresas/entities/questions.entity";
-import { Money, MONEYLOCAL } from "@/empresas/libs";
+import { BASE_URL, Money, MONEYLOCAL } from "@/empresas/libs";
 import { Favorites } from "@/favorites/entities/favorites.entity";
 import { Brands } from "@/products/entities/brands.entitiy";
 import { Categories } from "@/products/entities/categories.entity";
@@ -271,23 +270,21 @@ export async function initialMiddleware(
             production: empresa.company?.production,
         },
         metodos_pago: {
-            ...(empresa.metodos_pago as MetodosPago),
-            transferencias: (empresa.metodos_pago as MetodosPago)
-                .transferencias,
+            ...empresa.metodos_pago,
+            transferencias: empresa.metodos_pago.transferencias,
             paypal: {
-                enabled: (empresa.metodos_pago as MetodosPago).paypal.enabled,
+                enabled: empresa.metodos_pago.paypal.enabled,
             },
             mercado_pago: {
-                enabled: (empresa.metodos_pago as MetodosPago).mercado_pago
-                    .enabled,
+                enabled: empresa.metodos_pago.mercado_pago.enabled,
             },
             izipay: {
-                enabled: (empresa.metodos_pago as MetodosPago).izipay.enabled,
-                izipay_public_key: (empresa.metodos_pago as MetodosPago).izipay
-                    .izipay_public_key,
+                enabled: empresa.metodos_pago.izipay?.enabled,
+                izipay_public_key:
+                    empresa.metodos_pago.izipay?.izipay_public_key,
             },
             stripe: {
-                enabled: (empresa.metodos_pago as MetodosPago).stripe.enabled,
+                enabled: empresa.metodos_pago.stripe?.enabled,
             },
         },
         pages,
@@ -328,6 +325,7 @@ export async function initialMiddleware(
     res.locals.$empresa = info;
 
     res.locals.printFileWithDimension = printFileWithDimension(empresa);
+    res.locals.BASE_URL = BASE_URL(empresa);
     res.locals.subtotal = subtotal;
     res.locals.formatMoney = (number: number) =>
         formatMoney(

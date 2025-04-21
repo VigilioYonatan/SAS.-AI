@@ -1,17 +1,15 @@
 import path from "node:path";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import crypto from "node:crypto";
 import cache from "@vigilio/express-core/cache";
+import { createReadStream } from "node:fs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
 import { distanciaDeLevenshtein } from "~/libs/helpers";
 import { Orders } from "@/orders/entities/orders.entity";
 import { Categories } from "@/products/entities/categories.entity";
 import { prompt } from "./prompt";
-import type { PayMethods } from "@/orders/entities/pay_methods.entity";
-import type { StatusOrders } from "@/orders/entities/status_orders.entity";
 import { ProductsNormal } from "@/products/entities/products_normal.entity";
-import type { Users } from "@/users/entities/users.entity";
 import { openAis } from "@/empresas/services/empresas.api.service";
 import { Brands } from "@/products/entities/brands.entitiy";
 import { ProductsRestaurant } from "@/products/entities/products_restaurant.entity";
@@ -35,21 +33,33 @@ import { ChatModel } from "openai/resources";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
-    if (!fs.existsSync(dirTemp)) {
-        fs.mkdirSync(dirTemp);
+    const existDir = await fs.exists(dirTemp);
+    if (!existDir) {
+        await fs.mkdir(dirTemp);
     }
     const filePath = `${dirTemp}/${crypto.randomUUID()}.wav`;
 
-    fs.writeFileSync(filePath, fileBuffer);
-    const file = fs.createReadStream(filePath);
+    await fs.writeFile(filePath, fileBuffer);
+    const fileStream = createReadStream(filePath);
+
     // Send the audio file for transcription using the specified model.
     const transcription = await openAis[empresa].audio.transcriptions.create({
-        file,
+        file: fileStream,
         model: "whisper-1",
     });
-    if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+
+    const existFilePath = await fs.exists(filePath);
+
+    if (existFilePath) {
+        fs.unlink(filePath);
     }
+    fileStream.on("close", async () => {
+        try {
+            await fs.unlink(filePath);
+        } catch (e) {
+            console.error("Error eliminando el archivo:", e);
+        }
+    });
     // Return the transcription result.
     return transcription;
 }
@@ -81,7 +91,7 @@ export async function onDb(empresa: Empresas) {
             },
         });
         products = await Promise.all(
-            (pr as ProductsNormal[]).map(async (product) => {
+            pr.map(async (product) => {
                 const producto = await getProductAll(
                     empresa,
                     product,
@@ -92,8 +102,7 @@ export async function onDb(empresa: Empresas) {
                 const variantes = await Promise.all(
                     (producto.dataValues.variants as Variants[]).map(
                         async (variant) => {
-                            const { stock, ilimit, id, images } =
-                                variant as Variants;
+                            const { stock, ilimit, id, images } = variant;
                             return {
                                 id,
                                 features: printVariantFeatures(
@@ -390,13 +399,11 @@ export async function promptReplace(
                         order.total,
                         empresa.money.money as Money
                     )}\nvendedor:${
-                        order.seller ? (order.seller as Users)?.username : "-"
+                        order.seller ? order.seller?.username : "-"
                     }\nMetodo de Pago:${
-                        order.pay_method_id
-                            ? (order.pay_method as PayMethods).name
-                            : null
+                        order.pay_method_id ? order.pay_method.name : null
                     }\nDireccion:${order.address || "-"}, estado: ${
-                        (order.status_order as StatusOrders).name
+                        order.status_order.name
                     }\nDescripcion:${order.description || "sin descripción"}\n`;
                 })
             );

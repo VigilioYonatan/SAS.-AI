@@ -4,8 +4,8 @@ import { custom, string, type DateSchema } from "@vigilio/valibot";
 import { exec } from "node:child_process";
 import { pipeline } from "node:stream";
 import util, { promisify } from "node:util";
-import * as fs from "node:fs";
 import { sequelize } from "~/config/db.config";
+import { createWriteStream } from "node:fs";
 const pipelineAsync = promisify(pipeline);
 
 /* PRO-00001 */
@@ -148,7 +148,7 @@ export async function downloadAndSaveFile(url: string, outputPath: string) {
         await pipelineAsync(
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             response.body as any,
-            fs.createWriteStream(outputPath)
+            createWriteStream(outputPath)
         );
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log("Archivo descargado y guardado exitosamente.");

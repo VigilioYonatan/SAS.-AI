@@ -1,12 +1,9 @@
 import type { Empresas } from "@/empresas/entities/empresas.entity";
-import type { Settings } from "@/empresas/entities/settings.entity";
 import { NOW } from "~/libs/dayjs";
 import type { DataPrompt } from ".";
 import { BASE_URL } from "@/empresas/libs";
 import cache from "@vigilio/express-core/cache";
 import { Questions } from "@/empresas/entities/questions.entity";
-import type { Address } from "@/empresas/entities/address.entity";
-import type { Cities } from "@/ubigeo/entities/cities.entity";
 import { Op } from "sequelize";
 
 export async function prompt(
@@ -43,9 +40,8 @@ export async function prompt(
         );
     }
     const url =
-        (empresa.setting as Settings).host.host &&
-        (empresa.setting as Settings).host.enabled
-            ? (empresa.setting as Settings).host.host
+        empresa.setting.host.host && empresa.setting.host.enabled
+            ? empresa.setting.host.host
             : `${empresa.slug}.vigilio-services.com`;
     let instrucctions = empresa.enabled_catalogo
         ? [
@@ -144,11 +140,9 @@ export async function prompt(
     DIRECCIONES DE NUESTRA EMPRESA:${JSON.stringify(
         empresa.addresses.map(
             (address) =>
-                `${(address as Address).direccion} ${
-                    (address as Address).urbanizacion
-                        ? ` - ${(address as Address).urbanizacion}`
-                        : ""
-                } - ${((address as Address).city as Cities).name}`
+                `${address.direccion} ${
+                    address.urbanizacion ? ` - ${address.urbanizacion}` : ""
+                } - ${address.city.name}`
         )
     )} .
     EMAIL: ${empresa.email}.

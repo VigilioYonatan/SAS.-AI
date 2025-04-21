@@ -46,7 +46,7 @@ export class FilesApiService {
     async destroy(empresa: Empresas, id: string) {
         const { file } = await this.show(empresa, id);
         if (file.file) {
-            removeFile(empresa.slug, file.file);
+            await removeFile(empresa.slug, file.file);
         }
         await file.destroy();
         return {

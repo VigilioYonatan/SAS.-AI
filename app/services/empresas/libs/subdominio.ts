@@ -1,5 +1,5 @@
 import { terminal } from "~/libs/helpers";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import {
     BadRequestException,
     InternalServerErrorException,
@@ -51,7 +51,7 @@ export async function onNginx({
 	}
 
 `;
-        fs.writeFileSync(CONFIG_FILE, configContent);
+        await fs.writeFile(CONFIG_FILE, configContent);
         await terminal(
             `ln -s ${CONFIG_FILE} /etc/nginx/sites-enabled/  || true`,
             true

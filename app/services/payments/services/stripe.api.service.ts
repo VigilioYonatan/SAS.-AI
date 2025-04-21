@@ -22,7 +22,7 @@ export class StripeApiService {
             },
         });
         if (
-            !metodosPago?.stripe.stripe_client_secret ||
+            !metodosPago?.stripe?.stripe_client_secret ||
             !metodosPago?.stripe.stripe_secret_key
         ) {
             throw new BadRequestException("Error stripe es requerido");

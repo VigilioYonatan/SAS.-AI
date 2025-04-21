@@ -11,7 +11,6 @@ import type { ProductsNormalSchema } from "../schemas/products_normal.schema";
 import type { ProductsRestaurantSchema } from "../schemas/products_restaurant.schema";
 import type { ProductsServicioSchema } from "../schemas/products_servicio.schema";
 import { BASE_URL } from "@/empresas/libs";
-import { Variants } from "../entities/options/variants.entity";
 import { Options } from "../entities/options/options.entity";
 import { Features } from "../entities/options/features.entity";
 import { ProductsOptions } from "../entities/options/products_options.entity";
@@ -96,12 +95,8 @@ export async function getProductAll(
     ]);
     if (product instanceof ProductsNormal) {
         const [options, variants] = await Promise.all([
-            (product as ProductsNormal).$get("options") as Promise<
-                (Options & {
-                    ProductsOptions: ProductsOptions;
-                })[]
-            >,
-            (product as ProductsNormal).$get("variants", {
+            product.$get("options"),
+            product.$get("variants", {
                 order: [["id", "ASC"]],
                 include: [Features],
             }),
@@ -134,7 +129,7 @@ export async function getProductAll(
                 features: mappedFeatures,
             };
         });
-        const variantIds = variants.map((variant) => (variant as Variants).id);
+        const variantIds = variants.map((variant) => variant.id);
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         let variantSales: any = [];
         if (isSold) {
@@ -179,11 +174,9 @@ export async function getProductAll(
         );
         // Asignar las ventas totales a las variantes
         product.dataValues.variants = variants.map((variant) => {
-            const totalSold = isSold
-                ? salesMap.get((variant as Variants).id) || 0
-                : 0; // Obtener el total vendido de la variante
+            const totalSold = isSold ? salesMap.get(variant.id) || 0 : 0; // Obtener el total vendido de la variante
             return {
-                ...(variant as Variants).toJSON(),
+                ...variant.toJSON(),
                 totalSold,
             };
         });
