@@ -397,19 +397,32 @@ export const empresasSchema = object({
     enabled_zoho_mail: boolean(),
     isProduction: boolean(),
     model_ai: union([literal("open-ai"), literal("deepseek")]),
-    payment_completed: boolean(),
-    cuota: nullable(
+    // payment_completed: boolean(),
+    cuota_web: nullable(
         object({
+            type: union([
+                literal("normal"),
+                literal("pro"),
+                literal("business"),
+            ]),
             monto_local: number(),
             monto_dolar: number(),
             cuota: number(),
-            max_cuotas: number(),
+            // max_cuotas: number(),
             date: coerce(date(), (val) => new Date(val as Date)),
         })
     ),
-    isOnlyScrapping: boolean(),
+    cuota_chat: nullable(
+        object({
+            type: union([literal("free"), literal("pro"), literal("business")]),
+            monto_local: number(),
+            monto_dolar: number(),
+            cuota: number(),
+            // max_cuotas: number(),
+            date: coerce(date(), (val) => new Date(val as Date)),
+        })
+    ),
     scrapping_id: number(),
-    token_web_chat: nullable(string()),
 });
 
 export type EmpresasSchema = Input<typeof empresasSchema> & {

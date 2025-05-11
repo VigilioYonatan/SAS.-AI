@@ -235,17 +235,17 @@ export async function empresasSeeder(): Promise<Omit<EmpresasSchema, "id">> {
         enabled_dni_cart: true,
         isDolar: true,
         cuota: {
+            type: "normal",
             date: new Date(),
             cuota: 1,
-            max_cuotas: 12,
+            // max_cuotas: 12,
             monto_local: 400,
             monto_dolar: 100,
         },
-        payment_completed: false,
+        // payment_completed: false,
         isOnlyScrapping: true,
         isProduction: false,
         scrapping_id: 1,
-        token_web_chat: "vigilio-123456789",
     };
 }
 
@@ -482,13 +482,12 @@ export async function empresasSeeder2(): Promise<Omit<EmpresasSchema, "id">> {
         cuota: {
             date: new Date(),
             cuota: 1,
-            max_cuotas: 12,
             monto_local: 400,
             monto_dolar: 100,
+            type: "normal",
         },
         scrapping_id: 1,
-        payment_completed: false,
+        // payment_completed: false,
         isOnlyScrapping: false,
-        token_web_chat: "vigilio-123456789",
     };
 }

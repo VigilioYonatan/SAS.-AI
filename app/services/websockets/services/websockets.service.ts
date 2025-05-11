@@ -33,7 +33,7 @@ import { HTMLPROMPT } from "../controllers/websockets.controller";
 import { Subcomments } from "@/polymorphism/entities/subcomments.entity";
 import { TipoEmpresa } from "@/empresas/entities/tipo_empresa.entity";
 import cache from "@vigilio/express-core/cache";
-import { ChatCompletionMessageParam } from "openai/resources";
+import type { ChatCompletionMessageParam } from "openai/resources";
 
 @Injectable()
 export class WebsocketsService {

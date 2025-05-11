@@ -16,20 +16,20 @@ import useThemeStore from "~/stores/theme.store";
 import QuillText from "../QuillText";
 Quill.register("modules/imageResize", QuillResize); // Registrar el módulo
 
-interface FormEditorLabelProps {
+interface FormControlEditorProps {
     title: string;
     name: string;
     height?: number;
     isShow?: boolean;
     change?: string | null;
 }
-function FormEditor<T extends object>({
+function FormControlEditor<T extends object>({
     name,
     title,
     height = 300,
     isShow = true,
     change,
-}: FormEditorLabelProps) {
+}: FormControlEditorProps) {
     const {
         formState: { errors },
         watch,
@@ -48,7 +48,7 @@ function FormEditor<T extends object>({
     useEffect(() => {
         if (editorRef.current) {
             const toolbarOptions = [
-                [{ header: [1, 2, 3, 4, 5, false] }],
+                [{ header: [2, 3, 4, 5, false] }],
                 ["bold", "italic", "underline"],
                 [{ list: "ordered" }, { list: "bullet" }],
                 ["link", "image"],
@@ -78,7 +78,7 @@ function FormEditor<T extends object>({
             html: reactComponent(
                 <ShowHTML text={quillRef.current?.root.innerHTML as string} />
             ),
-            sweetWidth: "500px",
+            sweetWidth: "900px",
             showCloseButton: true,
             position: "start",
         });
@@ -93,10 +93,23 @@ function FormEditor<T extends object>({
     return (
         <div class="w-full mb-2">
             <label
-                class="text-xs dark:text-secondary-light text-secondary-dark capitalize font-semibold"
+                class="text-xs dark:text-secondary-light text-secondary-dark capitalize font-semibold relative"
                 htmlFor={name as string}
             >
-                {title}
+                {title}{" "}
+                <button
+                    type="button"
+                    className="bg-black w-[20px] h-[20px] rounded-full text-white font-bold relative group"
+                >
+                    ?
+                    <div className="absolute z-[9] top-0 text-xs bg-black bg-opacity-80 p-2 rounded-lg min-w-[150px] hidden group-hover:block">
+                        Para agregar Indice:. <br /> ---INDICE---
+                        <br />
+                        Disponible solo con Heading 2,3,4
+                        <br />
+                        Recomendable ver ejemplo en otros blogs (Editar).
+                    </div>
+                </button>
             </label>
             <div class="flex items-center gap-2 w-full mt-1">
                 <div
@@ -160,4 +173,4 @@ export function ShowHTML({ text }: ShowHTMLProps) {
     return <QuillText text={text} />;
 }
 
-export default FormEditor;
+export default FormControlEditor;

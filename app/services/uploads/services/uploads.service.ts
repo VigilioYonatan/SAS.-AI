@@ -380,6 +380,18 @@ export class UploadsService {
                     );
                     cache.delete(`EMPRESA:${empresa.slug}`);
                 }
+                if (property === "background_posts") {
+                    qualities = await this.customUpload(
+                        files,
+                        {
+                            minFiles: 1,
+                            maxFiles: 1,
+                            required: true,
+                        },
+                        [100, 1600]
+                    );
+                    cache.delete(`EMPRESA:${empresa.slug}`);
+                }
                 break;
             case "empresas":
                 if (property === "certificado") {
@@ -749,6 +761,10 @@ export class UploadsService {
                 const { data } = await this.settingsApiService.index(empresa);
                 entidad = data;
                 if (property === "background_auth" && data.background_auth) {
+                    await removeFile(empresa.slug, data.background_auth);
+                }
+                if (property === "background_posts" && data.background_posts) {
+                    await removeFile(empresa.slug, data.background_posts);
                 }
                 break;
             }
@@ -861,7 +877,7 @@ export class UploadsService {
                     await removeFile(empresa.slug, page.favicon);
                 }
                 if (property === "ogg_favicon" && page.ogg_favicon) {
-                    await  removeFile(empresa.slug, page.ogg_favicon);
+                    await removeFile(empresa.slug, page.ogg_favicon);
                 }
 
                 break;
@@ -888,7 +904,7 @@ export class UploadsService {
                                 data.name
                             ]
                         ) {
-                            await  removeFile(
+                            await removeFile(
                                 empresa.slug,
                                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                 (crudData as any)[

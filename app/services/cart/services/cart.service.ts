@@ -18,8 +18,6 @@ export class CartService {
               }[]
             | null
     ) {
-        console.log(JSON.stringify({ items }, null, 3));
-
         const producto = items?.find((item) => item.isCuota);
         if (producto) {
             const product = await Product(empresa, false);

@@ -1,6 +1,5 @@
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
-import Root from "react-shadow";
-import { isColorLight } from "~/libs/helpers";
+import { getColorPrimary, isColorLight } from "~/libs/helpers";
 import useThemeStore from "~/stores/theme.store";
 interface QuillTextProps {
     text: string;
@@ -8,24 +7,12 @@ interface QuillTextProps {
 function QuillText({ text }: QuillTextProps) {
     const themeStore = useThemeStore();
     return (
-        <Root.div>
-            <div
-                class=" overflow-auto ql-container ql-editor ql-snow"
-                dangerouslySetInnerHTML={{
-                    __html: text,
-                }}
-                style={{
-                    color:
-                        themeStore.state === "dark" &&
-                        !isColorLight(
-                            storageEmpresa!.setting.bg_color_background
-                        )
-                            ? "white"
-                            : "black",
-                }}
-            />
-            <style jsx>{`
-                .ql-container {
+        <div
+            class=" w-full h-full overflow-auto all-initial ql-container ql-editor ql-snow"
+            dangerouslySetInnerHTML={{
+                __html: `${text}
+                    <style>
+             .ql-container {
                     box-sizing: border-box;
                     font-family: Helvetica, Arial, sans-serif;
                     font-size: 13px;
@@ -68,17 +55,37 @@ function QuillText({ text }: QuillTextProps) {
                     height: 100%;
                     outline: none;
                     overflow-y: auto;
-                    padding: 12px 15px;
                     tab-size: 4;
                     text-align: left;
-                    white-space: pre-wrap;
                     word-wrap: break-word;
                 }
 
                 .ql-editor > * {
                     cursor: text;
                 }
-
+                .ql-editor h2{
+                    font-size:1.6rem !important;
+                    margin-bottom:1rem !important;
+                }
+                .ql-editor h3{
+                    margin-bottom:1rem !important;
+                    font-size: 1.75rem;
+                }
+                .ql-editor h4{
+                    margin-bottom:1rem !important;
+                    font-size: 1.55rem;
+                }
+                .ql-editor span, .ql-editor b, .ql-editor p {
+                    font-size:17px;
+                }
+                .ql-editor a {
+                    color: ${getColorPrimary()} !important;
+                    font-size: 1rem !important;
+                     text-decoration: none  !important;
+                }
+                .ql-editor a:hover {
+                    text-decoration: underline !important;
+                }
                 .ql-editor p,
                 .ql-editor ol,
                 .ql-editor pre,
@@ -91,8 +98,12 @@ function QuillText({ text }: QuillTextProps) {
                 .ql-editor h6 {
                     margin: 0;
                     padding: 0;
+                    text-align: justify;  font-size: 1rem;
                 }
-
+                .ql-editor .indice-editor strong{
+                    background-color:transparent !important;
+                    color:white !important;
+                }
                 .ql-editor table {
                     border-collapse: collapse;
                 }
@@ -166,9 +177,8 @@ function QuillText({ text }: QuillTextProps) {
                     margin-top: 5px;
                     padding-left: 16px;
                 }
-
+                .ql-container.ql-snow{border:none;}
                 .ql-snow.ql-toolbar {
-                    border: 1px solid #ccc;
                     padding: 8px;
                     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
                 }
@@ -211,8 +221,17 @@ function QuillText({ text }: QuillTextProps) {
                 .ql-snow a {
                     color: #06c;
                 }
-            `}</style>
-        </Root.div>
+            </style>
+                    `,
+            }}
+            style={{
+                color:
+                    themeStore.state === "dark" &&
+                    !isColorLight(storageEmpresa!.setting.bg_color_background)
+                        ? "white"
+                        : "black",
+            }}
+        />
     );
 }
 

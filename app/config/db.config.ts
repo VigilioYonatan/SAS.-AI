@@ -68,6 +68,9 @@ import { Emails } from "@/emails/entities/emails.entity";
 import { EmailsPromociones } from "@/emails/entities/emails_offers.entity";
 import { Crud } from "@/empresas/entities/crud.entity";
 import { Scrapping } from "@/empresas/entities/scrapping.entity";
+import { VisitantesPagesEntity } from "@/users/entities/visitantes_pages.entity";
+import { VisitantesEntity } from "@/users/entities/visitantes.entity";
+import { UsersForm } from "@/users/entities/users-form.entity";
 
 const sequelize = new Sequelize({
     dialect: "postgres",
@@ -154,11 +157,15 @@ sequelize.addModels([
     EmailsPromociones,
     Crud,
     Scrapping,
+    VisitantesPagesEntity,
+    VisitantesEntity,
+    UsersForm,
 ]);
 
 export async function connectDB() {
     try {
         await sequelize.authenticate();
+        await sequelize.sync({});
         logger.success("conectado a base de datos correctamente");
         if (enviroments.NODE_ENV === "production") {
             await sequelize.sync({ alter: true }); //warning - no move

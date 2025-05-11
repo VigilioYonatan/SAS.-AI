@@ -1,8 +1,10 @@
 import {
+    type Input,
     array,
     boolean,
-    Input,
+    maxLength,
     maxValue,
+    minLength,
     minValue,
     nullable,
     number,
@@ -68,6 +70,7 @@ export type EventVigilioSchema = Input<typeof eventVigilio>;
 export const scrappingSchema = objectAsync({
     id: number(),
     web_url: string(),
+    api_key: string([minLength(4), maxLength(100)]),
     hours: number([minValue(12), maxValue(48)]),
     categories: nullable(union([categoryPrincipal, categoryCustom])),
     products: nullable(

@@ -3,7 +3,7 @@
 <title><%= locals.$empresa?.name_empresa %> - <%= title %></title>
 <meta name="description" content="<%= description  %>">
 <!-- METAS -->
-<meta name="keywords" content="<%= typeof keywords !== "undefined"?keywords:'sistema web, tienda online, ecommerce'  %>">
+<meta name="keywords" content="<%= typeof keywords !== "undefined" &&keywords?keywords:'sistema web, tienda online, ecommerce'  %>">
 
 <!-- Schema.org markup for Google+ -->
 <meta itemprop="name" content="<%= locals.$empresa?.name_empresa %> - <%= title %>">
@@ -17,13 +17,13 @@
 <meta name="twitter:title" content="<%= title %>">
 <meta name="twitter:description" content="<%=description|| locals.$empresa ? $empresa.name_empresa:''   %> <%= locals.$empresa ? $empresa.header_cart:'Los mejores productos en un solo lugar'   %> ">
 <meta name="twitter:creator" content="@author_handle">
-<meta name="twitter:image" content="<%=  typeof favicon !== "undefined"? printFileWithDimension(favicon,100)[0]: locals.$empresa?.logo ? printFileWithDimension(locals.$empresa?.logo)[0] :`${BASE_URL}/images/settings/others/logo.webp`   %>">
+<meta name="twitter:image" content="<%=  typeof favicon !== "undefined" && favicon? printFileWithDimension(favicon,100)[0]: locals.$empresa?.logo ? printFileWithDimension(locals.$empresa?.logo)[0] :`${BASE_URL}/images/settings/others/logo.webp`   %>">
 
 <!-- Open Graph data -->
 <meta property="og:title" content="<%= title|| locals.$empresa ? $empresa.name_empresa:''   %>">
 <meta property="og:type" content="website">
 <meta property="og:url" content="/">
-<meta property="og:image" content="<%=  typeof ogg_favicon !== "undefined"? printFileWithDimension(ogg_favicon,400)[0]: locals.$empresa?.logo ? printFileWithDimension(locals.$empresa.logo)[0] :`${BASE_URL}/images/settings/others/logo.webp`   %>">
+<meta property="og:image" content="<%=  typeof ogg_favicon !== "undefined" && ogg_favicon? printFileWithDimension(ogg_favicon,400)[0]: locals.$empresa?.logo ? printFileWithDimension(locals.$empresa.logo)[0] :`${BASE_URL}/images/settings/others/logo.webp`   %>">
 <meta property="og:description" content="<%=description||locals.$empresa ? $empresa.name_empresa:''  %> ofrece lo mejor a un buen precio">
 <meta property="og:site_name" content="<%= locals.$empresa ? $empresa.name_empresa:''  %>">
 <link rel="manifest" href="/manifest.webmanifest.json">
@@ -88,9 +88,7 @@
     <%=$empresa.setting?.bg_color_paper ? "color: #000000 !important": "color: #FFFFFF !important"%>;
   }
 </style>
-<%if($empresa.setting?.type_icons ==="animation"){%>
-    <script src="https://cdn.lordicon.com/lordicon.js"></script>
-  <% }%>
+
 <%- vite  %>
 <!-- initial base -->
 <initial></initial>

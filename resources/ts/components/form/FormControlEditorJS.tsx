@@ -12,7 +12,7 @@ import FilesIndex from "@/empresas/views/FilesIndex";
 import MonacoEditor, { OnMount } from "@monaco-editor/react";
 import useThemeStore from "~/stores/theme.store";
 import { useSignal } from "@preact/signals";
-import { ChangeEvent, HTMLProps } from "preact/compat";
+import { ChangeEvent, ClipboardEvent, HTMLProps } from "preact/compat";
 import { HIDDEEDITOR, HTMLSHOW } from "@/empresas/views/BannersIndex";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import { reactComponent } from "~/libs/preact";
@@ -24,7 +24,7 @@ import axios from "axios";
 import AlertInfo from "../Alerts/AlertInfo";
 import LoaderSubmit from "../LoaderSubmit";
 
-interface FormControlLabelProps<T extends object> {
+interface FormControlEditorJSProps<T extends object> {
     title: string;
     name: string;
     question?: JSX.Element | JSX.Element[] | string;
@@ -32,13 +32,13 @@ interface FormControlLabelProps<T extends object> {
     className?: string;
     type?: "html" | "javascript";
 }
-function FormEditorJSControl<T extends object>({
+function FormControlEditorJS<T extends object>({
     name,
     title,
     question,
     type = "javascript",
     className = "",
-}: FormControlLabelProps<T>) {
+}: FormControlEditorJSProps<T>) {
     const mode = useSignal(true);
     const {
         formState: { errors },
@@ -328,11 +328,9 @@ function FormEditorJSControl<T extends object>({
                                     const aiHTMLMutation = aiHTMLApi();
 
                                     const handlePaste = async (
-                                        e: React.ClipboardEvent<HTMLInputElement>
+                                        e: ClipboardEvent<HTMLInputElement>
                                     ) => {
-                                        const items =
-                                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                                            (e.clipboardData as any).items;
+                                        const items = e.clipboardData!.items;
 
                                         for (let i = 0; i < items.length; i++) {
                                             const item = items[i];
@@ -349,7 +347,7 @@ function FormEditorJSControl<T extends object>({
                                                     await goImage(base64Image); // O haz lo que necesites con la imagen
                                                 };
 
-                                                reader.readAsDataURL(file);
+                                                reader.readAsDataURL(file!);
                                             }
                                         }
                                     };
@@ -417,7 +415,6 @@ function FormEditorJSControl<T extends object>({
                                                 type="button"
                                                 class="bg-black w-[20px] h-[20px] rounded-full absolute  right-[-1rem] top-[-0.5rem] font-bold"
                                                 onClick={() => {
-                                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                                     (
                                                         document as any
                                                     ).addEventListener(
@@ -1377,4 +1374,4 @@ const cssProperties = [
     "writing-mode",
     "z-index",
 ];
-export default FormEditorJSControl;
+export default FormControlEditorJS;

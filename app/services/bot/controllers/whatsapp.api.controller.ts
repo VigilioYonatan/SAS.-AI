@@ -46,7 +46,7 @@ import enviroments from "~/config/enviroments.config";
 import cache from "@vigilio/express-core/cache";
 import { objectAsync, string } from "@vigilio/valibot";
 import { Pipe } from "@vigilio/express-core/valibot";
-import { CompletionUsage } from "openai/resources";
+import type { CompletionUsage } from "openai/resources";
 
 export let chats: Record<string, ["assistant" | "user", string][]> = {};
 export const chatsWait: Record<string, string[]> = {};

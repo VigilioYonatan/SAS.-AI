@@ -11,6 +11,7 @@ import {
 import { CitasSettingSchema } from "@/citas/schemas/citas_settings.schema";
 import { PageSchema } from "../schemas/pages.schema";
 import { CrudSchema } from "../schemas/crud.schema";
+import { ScrappingSchema } from "../schemas/scrapping.schema";
 export type empresaStore = Omit<
     EmpresasSchemaFromServer,
     "contacts" | "groupWhatsapp" | "credentials"
@@ -48,6 +49,7 @@ export type empresaStore = Omit<
         name: string;
         data: { name: string; type: string; is_nullable: boolean }[];
     }[];
+    scrapping: ScrappingSchema;
 };
 export const storageEmpresa: empresaStore | null = JSON.parse(
     localStorage.getItem("empresa") ?? "null"

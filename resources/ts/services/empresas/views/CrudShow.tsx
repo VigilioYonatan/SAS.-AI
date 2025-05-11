@@ -41,6 +41,7 @@ import {
 import { crudDataIndexApi } from "../apis/crud_data/crud-data.index.api";
 import { formSelectNumber } from "~/components/form/FormSelect";
 import { slug as transformSlug } from "@vigilio/express-core/helpers";
+import FormControlEditor from "~/components/form/FormControlEditor";
 
 interface CrudShowProps {
     params: {
@@ -600,7 +601,7 @@ function CrudDataStore({ crud, refetch, onClose }: CrudDataStoreProps) {
                                                     string | null
                                                 >(null);
                                                 return (
-                                                    <Form.control.editor
+                                                    <FormControlEditor
                                                         name={data.name}
                                                         title={data.name}
                                                         isShow
@@ -661,21 +662,16 @@ function CrudDataStore({ crud, refetch, onClose }: CrudDataStoreProps) {
                                                             crudDataIndexQuery.data
                                                         ) {
                                                             return (
-                                                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                                                                (
-                                                                    crudDataIndexQuery
-                                                                        .data
-                                                                        .data as any
-                                                                )?.map(
-                                                                    (value: {
-                                                                        id: number;
-                                                                        slug: string;
-                                                                    }) => ({
-                                                                        key: value.id,
-                                                                        value: value.slug,
-                                                                    })
-                                                                )
-                                                            );
+                                                                crudDataIndexQuery
+                                                                    .data
+                                                                    .data as unknown as {
+                                                                    id: number;
+                                                                    slug: string;
+                                                                }[]
+                                                            )?.map((value) => ({
+                                                                key: value.id,
+                                                                value: value.slug,
+                                                            }));
                                                         }
                                                         return [];
                                                     }, [
@@ -831,7 +827,7 @@ function CrudDataUpdate({ data, crud, onClose, refetch }: CrudDataUpdateProps) {
                                                 );
 
                                                 return (
-                                                    <Form.control.editor
+                                                    <FormControlEditor
                                                         name={d.name}
                                                         title={d.name}
                                                         isShow

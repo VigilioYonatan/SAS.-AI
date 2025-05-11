@@ -30,7 +30,6 @@ import { useQuery } from "@vigilio/preact-fetching";
 import { colorByOrdersId } from "@/orders/libs";
 import { PdfImage } from "~/config/settings";
 import LoaderSubmit from "~/components/LoaderSubmit";
-import { languagesSelect } from "@/empresas/schemas/settings.schema";
 export type TypePayment =
     | "mensual"
     | "tienda"
@@ -94,8 +93,7 @@ function Plus() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Tarjeta Grande */}
-                        {!storageEmpresa?.payments.tienda.enabled &&
-                        storageEmpresa!.tipo_empresa.tipo_servicio_id !== 3 ? (
+                        {storageEmpresa!.tipo_empresa.tipo_servicio_id !== 3 ? (
                             <div className="md:col-span-2 md:w-[400px] mx-auto bg-white dark:bg-admin-background-dark dark:text-white shadow-lg rounded-lg overflow-hidden ">
                                 <img
                                     className="w-full h-96 object-cover"
@@ -137,33 +135,27 @@ function Plus() {
                         ) : null}
 
                         {/* Tarjetas Pequeñas */}
-                        {!storageEmpresa?.payment_completed &&
-                        storageEmpresa?.cuota ? (
+                        {storageEmpresa?.cuota_web ? (
                             <ProductCard
-                                title="Negocio Digital Web -  CUOTAS"
-                                priceLocal={storageEmpresa!.cuota.monto_local}
-                                priceDolar={storageEmpresa!.cuota.monto_dolar}
+                                title={`Web con Inteligencia Artificial -  ${storageEmpresa.cuota_web.type}`}
+                                priceLocal={
+                                    storageEmpresa!.cuota_web.monto_local
+                                }
+                                priceDolar={
+                                    storageEmpresa!.cuota_web.monto_dolar
+                                }
                                 ico={
                                     <p class="dark:text-gray-300 text-gray-700 text-6xl flex  flex-wrap gap-2 self-start  mb-3">
                                         🛒
                                     </p>
                                 }
-                                isMensual={false}
+                                isMensual={true}
                                 link={`${enviroments.VITE_VIGILIO_WEB}/payment/${storageEmpresa?.slug}`}
                             >
                                 {(() => {
                                     const isShow = useSignal(false);
                                     return (
                                         <div>
-                                            <span class="text-sm text-gray-400 font-semibold">
-                                                {storageEmpresa!.cuota.cuota}{" "}
-                                                cuotas de{" "}
-                                                {
-                                                    storageEmpresa!.cuota
-                                                        .max_cuotas
-                                                }{" "}
-                                                cuotas
-                                            </span>
                                             <div
                                                 className={`mt-4  ${
                                                     isShow.value
@@ -314,7 +306,7 @@ function Plus() {
                             </ProductCard>
                         ) : null}
                         {/* redes */}
-                        <div className="bg-white dark:bg-admin-background-dark p-6  dark:text-white shadow-lg rounded-lg overflow-hidden lg:w-[350px] ">
+                        {/* <div className="bg-white dark:bg-admin-background-dark p-6  dark:text-white shadow-lg rounded-lg overflow-hidden lg:w-[350px] ">
                             <p class=" dark:text-gray-300 text-gray-700  flex  flex-wrap gap-2 self-start  mb-3 text-ellipsis text-4xl">
                                 <i class="fa-brands fa-facebook-messenger" />
                                 <i class="fa-brands fa-instagram" />
@@ -336,7 +328,7 @@ function Plus() {
                                     ))}
                                 </ul>
                             </div>
-                        </div>
+                        </div> */}
                         {/* end redes */}
                         <ProductCard
                             isMensual={false}
@@ -454,7 +446,7 @@ function Plus() {
                                 lograr tus objetivos económicos.
                             </span>
                         </ProductCard>
-                        {!storageEmpresa?.setting.multi_lenguaje ? (
+                        {/* {!storageEmpresa?.setting.multi_lenguaje ? (
                             <ProductCard
                                 isMensual={false}
                                 title="MultiLenguaje"
@@ -495,7 +487,7 @@ function Plus() {
                                     </button>
                                 </span>
                             </ProductCard>
-                        ) : null}
+                        ) : null} */}
                     </div>
                 </div>
                 <div class="mt-4 flex justify-between flex-col md:flex-row">

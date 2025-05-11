@@ -639,7 +639,7 @@ function CitasIndex() {
                                                         )}
                                                     </>
                                                 ) : (
-                                                    <div class="w-full ">
+                                                    <div class="w-full flex justify-center  items-center">
                                                         <span class="flex justify-center items-center dark:text-white font-bold">
                                                             No hay Citas
                                                         </span>

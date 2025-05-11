@@ -29,6 +29,7 @@ import { printImagesProduct } from "@/products/libs/helpers";
 import { formatDateTwo, NOW } from "~/libs/helpers";
 import Helper from "~/components/Helper";
 import { bgPrimaryHover } from "~/config/settings";
+import FormControlMap from "~/components/form/FormControlMap";
 
 interface CartServicioPageProps {
     servicio: ProductsServicioSchemaFromServer;
@@ -733,7 +734,7 @@ function CartServicioPage({ servicio, header }: CartServicioPageProps) {
                             />
                             {empresa.state!.enable_map_marker ? (
                                 <div class="w-full">
-                                    <Form.control.map
+                                    <FormControlMap
                                         name={
                                             "map_marker" as keyof OrdersCartStoreDto
                                         }

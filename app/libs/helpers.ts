@@ -165,4 +165,12 @@ export function getTables() {
       `);
 }
 
+export function cleanJSON(text: string) {
+    let result = [];
+    try {
+        result = JSON.parse(text?.replace(/```[\s\S]*?```/g, "") || "[]");
+    } catch (error) {}
+    return result;
+}
+
 export type V<T> = ReturnType<() => T>;

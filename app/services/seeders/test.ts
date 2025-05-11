@@ -30,6 +30,7 @@ export const test: Pick<
                 dimension: 1600,
             },
         ],
+        background_posts: null,
         font_face: "Exo",
         bg_color_paper: "#ffffff",
         bg_color_button: "#c80000",

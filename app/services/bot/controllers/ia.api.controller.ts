@@ -12,8 +12,8 @@ import {
     Res,
     Injectable,
 } from "@vigilio/express-core";
-import { Pipe } from "@vigilio/express-core/valibot";
-import { objectAsync, string } from "@vigilio/valibot";
+import { Pipe, Validator } from "@vigilio/express-core/valibot";
+import { minLength, objectAsync, string } from "@vigilio/valibot";
 import { isWhatsappTelegramIA, updateTokensEmpresa } from "../libs/ai";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import * as cheerio from "cheerio";
@@ -23,6 +23,7 @@ import { openAis } from "@/empresas/services/empresas.api.service";
 import type { RequestVigilio } from "~/config/types";
 import type { Response } from "express";
 import { IAApiService } from "../services/ia.api.service";
+import { HmacAuth } from "~/libs/security.middleware";
 
 @Injectable()
 @Controller("/ia")
@@ -40,6 +41,18 @@ export class IAApiController {
         await this.iAApiService.chat(req, res);
     }
 
+    @HmacAuth()
+    @Validator(objectAsync({ message: string([minLength(2)]) }))
+    @Post("/ia/find-error")
+    async findError(
+        @Req("empresa") empresa: Empresas,
+        @Body() body: { message: string }
+    ) {
+        const result = await this.iAApiService.findError(empresa, body);
+        return result;
+    }
+
+    @HmacAuth()
     @PermissionAdmin()
     @Get("/images/:name")
     async images(

@@ -7,7 +7,7 @@ import { ProductsRestaurant } from "@/products/entities/products_restaurant.enti
 import type { Users } from "@/users/entities/users.entity";
 import { WebApiService } from "./web.api.service";
 import { Crud } from "@/empresas/entities/crud.entity";
-import { RequestVigilio } from "~/config/types";
+import type { RequestVigilio } from "~/config/types";
 import { Page } from "@/empresas/entities/page.entity";
 import { sequelize } from "~/config/db.config";
 import { QueryTypes } from "sequelize";
@@ -108,7 +108,15 @@ export class WebService {
         return result;
     }
     async marcas(brands: string, empresa: Empresas) {
-        const result = await this.webApiService.marcas(brands, empresa);
+        const result = await this.webApiService.marcas(empresa, brands);
+        return result;
+    }
+    async blogs(empresa: Empresas) {
+        const result = await this.webApiService.blogs(empresa);
+        return result;
+    }
+    async blog(empresa: Empresas, slug: string) {
+        const result = await this.webApiService.blog(empresa, slug, true);
         return result;
     }
 

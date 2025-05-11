@@ -113,7 +113,7 @@ function PalleteCustom() {
     return (
         <div class="">
             <button
-                class="fixed bottom-44 right-10 z-[99]  bg-white shadow dark:bg-background-dark w-[50px] h-[50px] flex justify-center items-center rounded-full text-black dark:text-white  flex-col"
+                class="fixed bottom-48 right-10 z-[99]  bg-white shadow dark:bg-background-dark w-[50px] h-[50px] flex justify-center items-center rounded-full text-black dark:text-white  flex-col"
                 type="button"
                 aria-label="open chat ai"
                 onClick={() => {

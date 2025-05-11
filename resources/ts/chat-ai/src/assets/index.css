@@ -1,0 +1,439 @@
+/* === Base === */
+/* === Vigilio Preflight (Tailwind Reset Modificado) === */
+.vigilio *,
+.vigilio ::before,
+.vigilio ::after {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor;
+    font-family: inherit;
+}
+
+.vigilio html {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    -moz-tab-size: 4;
+    tab-size: 4;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.vigilio body {
+    margin: 0;
+    line-height: inherit;
+}
+
+.vigilio hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+}
+
+.vigilio a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.vigilio b,
+.vigilio strong {
+    font-weight: bolder;
+}
+
+.vigilio code,
+.vigilio kbd,
+.vigilio samp,
+.vigilio pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+    font-size: 1em;
+}
+
+.vigilio small {
+    font-size: 80%;
+}
+
+.vigilio sub,
+.vigilio sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+.vigilio sub {
+    bottom: -0.25em;
+}
+
+.vigilio sup {
+    top: -0.5em;
+}
+
+.vigilio table {
+    text-indent: 0;
+    border-color: inherit;
+    border-collapse: collapse;
+}
+
+.vigilio button,
+.vigilio input,
+.vigilio optgroup,
+.vigilio select,
+.vigilio textarea {
+    font-family: inherit;
+    font-size: 100%;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+.vigilio button,
+.vigilio select {
+    text-transform: none;
+}
+
+.vigilio button,
+.vigilio [type="button"],
+.vigilio [type="reset"],
+.vigilio [type="submit"] {
+    -webkit-appearance: button;
+
+    background-image: none;
+}
+
+.vigilio :-moz-focusring {
+    outline: auto;
+}
+
+.vigilio :-moz-ui-invalid {
+    box-shadow: none;
+}
+
+.vigilio progress {
+    vertical-align: baseline;
+}
+
+.vigilio ::-webkit-inner-spin-button,
+.vigilio ::-webkit-outer-spin-button {
+    height: auto;
+}
+
+.vigilio [type="search"] {
+    -webkit-appearance: textfield;
+    outline-offset: -2px;
+}
+
+.vigilio ::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+.vigilio ::-webkit-file-upload-button {
+    -webkit-appearance: button;
+    font: inherit;
+}
+
+.vigilio summary {
+    display: list-item;
+}
+
+.vigilio blockquote,
+.vigilio dl,
+.vigilio dd,
+.vigilio h1,
+.vigilio h2,
+.vigilio h3,
+.vigilio h4,
+.vigilio h5,
+.vigilio h6,
+.vigilio hr,
+.vigilio figure,
+.vigilio p,
+.vigilio pre {
+    margin: 0;
+}
+
+.vigilio fieldset {
+    margin: 0;
+    padding: 0;
+}
+
+.vigilio legend {
+    padding: 0;
+}
+
+.vigilio ol,
+.vigilio ul,
+.vigilio menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.vigilio textarea {
+    resize: vertical;
+}
+
+.vigilio img,
+.vigilio svg,
+.vigilio video,
+.vigilio canvas,
+.vigilio audio,
+.vigilio iframe,
+.vigilio embed,
+.vigilio object {
+    display: block;
+    vertical-align: middle;
+}
+
+.vigilio img,
+.vigilio video {
+    max-width: 100%;
+    height: auto;
+}
+
+/* === Extensión para elementos personalizados === */
+.vigilio-chat-ai {
+    position: fixed;
+    bottom: 8rem;
+    right: 2rem;
+    z-index: var(--vigilio-z-index);
+}
+.vigilio-chat-ai-chat > .vigilio-button-content-ai {
+    position: fixed;
+    z-index: var(--vigilio-z-index);
+}
+.vigilio-button-content-ai-bottom-right {
+    bottom: 6rem;
+    right: 2.5rem;
+}
+.vigilio-button-content-ai-bottom-left {
+    bottom: 6rem;
+    left: 2.5rem;
+}
+.vigilio-button-content-ai-top-left {
+    top: 6rem;
+    left: 2.5rem;
+}
+.vigilio-button-content-ai-top-right {
+    top: 6rem;
+    right: 2.5rem;
+}
+.vigilio-button-ai {
+    background-color: var(--vigilio-primary);
+    width: var(--vigilio-button-width);
+    height: var(--vigilio-button-width);
+    border-radius: calc(100% * var(--vigilio-button-radius));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    overflow: hidden;
+    padding: 1rem;
+    cursor: pointer;
+}
+.vigilio-button-ai:active {
+    transform: scale(1.1);
+}
+.vigilio-button-ai img {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem;
+    object-fit: contain;
+}
+
+.vigilio-test {
+    display: flex;
+    color: red;
+}
+
+/* CHAT */
+.vigilio-chat-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    /* height: 100%;
+  max-height: calc(100dvh - 230px); */
+    height: var(--vigilio-height);
+}
+
+.vigilio-chat-box {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.vigilio-button-container-ai {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid rgb(224, 222, 222);
+    background-color: #fff;
+    width: 280px;
+    /* height: calc(100dvh - 230px); */
+    position: absolute;
+    bottom: 4.5rem;
+    right: 0rem;
+    z-index: var(--vigilio-z-index);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.vigilio-rotating {
+    animation: rotatePause 3s ease-in-out infinite;
+}
+@keyframes rotatePause {
+    0% {
+        transform: rotate(0deg);
+        filter: blur(0px);
+    }
+    25% {
+        transform: rotate(360deg);
+    }
+    28% {
+        filter: blur(0.5px);
+    }
+    30% {
+        transform: rotate(360deg);
+        filter: blur(0px);
+    }
+    55% {
+        transform: rotate(720deg);
+        filter: blur(0.5px);
+    }
+    100% {
+        transform: rotate(720deg);
+        filter: blur(0px);
+    }
+}
+
+.vigilio-button-container-ai.visible {
+    opacity: 1;
+    visibility: visible;
+    animation: slide-in 0.4s cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+
+.vigilio-button-container-ai.invisible {
+    opacity: 0;
+    visibility: hidden;
+}
+
+@keyframes slide-in {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (min-width: 480px) {
+    .vigilio-button-container-ai {
+        width: var(--vigilio-chat-width);
+    }
+}
+
+@media (min-width: 768px) {
+    .vigilio-button-container-ai {
+        width: var(--vigilio-chat-width);
+        /* height: 520px; */
+        bottom: 4.5rem;
+    }
+}
+/* chat */
+.vigilio-button-container-ai-chat {
+    overflow: hidden;
+    background-color: #fff;
+    width: 100%;
+    height: 100dvh;
+    position: fixed;
+    inset: 0;
+    z-index: 999999999999999;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+@media (min-width: 580px) {
+    .vigilio-button-container-ai-chat {
+        border-radius: 0.75rem;
+        padding: 0rem;
+    }
+}
+.vigilio-button-container-ai-chat.visible {
+    opacity: 1;
+    visibility: visible;
+    animation: slide-in 0.4s cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+
+.vigilio-button-container-ai-chat.invisible {
+    opacity: 0;
+    visibility: hidden;
+}
+
+@media (min-width: 580px) {
+    .vigilio-button-container-ai-chat {
+        width: var(--vigilio-chat-width);
+        position: fixed;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        overflow: hidden;
+        height: var(--vigilio-height);
+        inset: auto;
+        bottom: 10.5rem;
+        right: 2rem;
+    }
+}
+
+.animation-brightness {
+    position: relative;
+    overflow: hidden;
+}
+
+.animation-brightness::before {
+    content: "";
+    position: absolute;
+    color: white;
+    display: block;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 100%
+    );
+    /* box-shadow: 0 0 10px 10px #ffffff46; */
+    animation: animationbrightness var(--brightness-delay) infinite;
+}
+
+@keyframes animationbrightness {
+    0% {
+        transform: skewX(-25deg) translateX(-1000%);
+    }
+    50% {
+        transform: skewX(-25deg) translateX(1000%);
+    }
+    100% {
+        transform: skewX(-25deg) translateX(1000%);
+    }
+}
+
+.vigilio-chat-header-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    overflow: hidden;
+    background-color: #000;
+    width: 35px;
+    height: 35px;
+}
+.vigilio-ai-company-name {
+    color: #fff;
+}
+
+.vigilio-overflow-hidden {
+    overflow: hidden;
+}

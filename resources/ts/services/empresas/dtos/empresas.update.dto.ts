@@ -42,8 +42,6 @@ export const empresasUpdateDto = omit(empresasSchema, [
     "enabled_zoho_mail",
     "isProduction",
     "scrapping_id",
-    "token_web_chat",
-    "isOnlyScrapping",
 ]);
 export type EmpresasUpdateDto = Input<typeof empresasUpdateDto>;
 export const empresasLogoUpdateDto = object({

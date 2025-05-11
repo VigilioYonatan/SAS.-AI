@@ -40,6 +40,7 @@ import { ProductsNormalSchemaFromServer } from "../schemas/products_normal.schem
 import { categoriesIndexApi } from "../apis/categories/categories.index.api";
 import { useSignal } from "@preact/signals";
 import { categoriesSubcategoriesApi } from "../apis/categories/categories.subcategories.api";
+import FormControlEditor from "~/components/form/FormControlEditor";
 
 interface ProductsNormalUpdateProps {
     id?: string | number;
@@ -617,7 +618,7 @@ function ProductsNormalUpdate({
                             question="¿Disponible en tu Tienda Web - Virtual?"
                         />
                     </div>
-                    <Form.control.editor
+                    <FormControlEditor
                         name={"description" as keyof ProductsNormalUpdateDto}
                         title="Descripción"
                         change={description.value}

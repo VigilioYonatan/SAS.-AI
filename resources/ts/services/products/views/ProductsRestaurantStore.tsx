@@ -30,6 +30,7 @@ import Helper from "~/components/Helper";
 import SettingsProduct from "@/admin/components/SettingsProduct";
 import { categoriesSubcategoriesApi } from "../apis/categories/categories.subcategories.api";
 import SubcategoriesStore from "./SubcategoriesStore";
+import FormControlEditor from "~/components/form/FormControlEditor";
 
 interface ProductsRestaurantStoreProps {
     refetch: (clean?: boolean | undefined) => Promise<void>;
@@ -442,7 +443,7 @@ function ProductsRestaurantStore({
                             </div>
                         ) : null}
                     </div>
-                    <Form.control.editor
+                    <FormControlEditor
                         name={"description" as keyof ProductsRestaurantStoreDto}
                         title="Descripción"
                         isShow

@@ -60,6 +60,8 @@ import { EmailsPromocionesApiController } from "@/emails/controllers/emails_prom
 import { CrudApiController } from "@/empresas/controllers/crud.api.controller";
 import { CrudDateApiController } from "@/empresas/controllers/crud_data.api.controller";
 import { ScrappingApiController } from "@/empresas/controllers/scrapping.api.controller";
+import { RastreoApiController } from "@/users/controllers/rastreo.api.controller";
+import { UsersFormApiController } from "@/users/controllers/users-form.api.controller";
 
 export const apiRouters: Type[] = [
     EmpresasApiController,
@@ -123,4 +125,6 @@ export const apiRouters: Type[] = [
     CrudApiController,
     CrudDateApiController,
     ScrappingApiController,
+    RastreoApiController,
+    UsersFormApiController,
 ];

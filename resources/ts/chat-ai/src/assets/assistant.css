@@ -1,0 +1,446 @@
+.vigilio-button-container-ai {
+    transition-delay: 0.1s;
+    opacity: 0;
+    transform: translateY(40px);
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.vigilio-button-container-ai.visible {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+    animation: slide-in 0.4s cubic-bezier(0.05, 0.7, 0.1, 1);
+    /* For smoother entry, force reflow to trigger transition */
+    will-change: opacity, transform;
+}
+.vigilio-button-container-ai-chat {
+    opacity: 0;
+    transform: translateY(40px);
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.vigilio-button-container-ai-chat.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition-delay: 0s;
+    will-change: opacity, transform;
+}
+.vigilio-chat-header {
+    display: flex;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.vigilio-connection-indicator {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+.vigilio-connection-indicator.connected {
+    background-color: #00a63e;
+}
+
+.vigilio-connection-indicator.disconnected {
+    background-color: #dc2626; /* red-600 */
+}
+
+.vigilio-chat-title {
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    margin: 0;
+}
+
+.vigilio-icon {
+    margin-right: 0.5rem;
+}
+
+.vigilio-powered-by {
+    font-size: 0.6875rem;
+    opacity: 0.7;
+    text-align: center;
+    display: block !important;
+    opacity: 1 !important;
+    padding: 0.75rem;
+    visibility: visible !important;
+}
+
+.vigilio-powered-by b {
+    color: var(--vigilio-primary) !important;
+    font-weight: bold;
+    display: inline !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.vigilio-close-button {
+    /* position: absolute; */
+    right: 0;
+    margin: 0.5rem;
+    top: 0;
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.vigilio-chat-top {
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+    padding: 0.75rem 0.5rem;
+    background-color: var(--vigilio-primary);
+}
+
+.vigilio-close-button svg {
+    width: 32px;
+    height: 32px;
+}
+
+.vigilio-divider {
+    /* background-color: var(--vigilio-primary); */
+    background-color: rgb(224, 222, 222);
+    width: 100%;
+    height: 1px;
+}
+
+.vigilio-chat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow: auto;
+    padding: 0.75rem;
+    /* max-height: calc(100% - 230px); */
+}
+
+.vigilio-chat-bottom {
+    background-color: var(--vigilio-primary);
+}
+
+@media (min-width: 768px) {
+    .vigilio-chat-box {
+        height: 100vh;
+    }
+}
+
+.vigilio-message-container {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.vigilio-assistant-message {
+    font-weight: normal;
+    /* border: 1px solid #e0e0e0; */
+    background-color: #f5f5f5;
+    border: 1px solid #f5f5f5;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    display: flex;
+    flex-direction: column;
+    font-weight: 1000;
+}
+
+.dark .vigilio-assistant-message {
+    background-color: #1e1e1e;
+    color: white;
+}
+
+.vigilio-message-content {
+    font-size: 0.875rem;
+}
+
+.vigilio-message-link {
+    color: var(--vigilio-primary);
+}
+
+.vigilio-message-link:hover {
+    text-decoration: underline;
+}
+
+.vigilio-user-message {
+    font-size: 0.6rem;
+    font-weight: normal;
+
+    background-color: #e1fec4;
+    border: 1px solid #e1fec4;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    color: black;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.vigilio-user-message p {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.vigilio-loading-message {
+    font-weight: normal;
+    background-color: var(--vigilio-primary);
+    color: white;
+    padding: 0 1rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    border-radius: 0.375rem;
+    align-self: flex-start;
+}
+
+.vigilio-message-form {
+    /* position: absolute;
+      bottom: 2rem;
+      right: 0;
+      left: 0; */
+    height: 38px;
+}
+
+.vigilio-message-form-relative {
+    position: relative;
+    background-color: rgb(219, 219, 219);
+    /* height: 20px; */
+    padding: 0.5rem;
+    display: flex;
+}
+
+.vigilio-message-form-relative textarea {
+    padding: 0.6rem 0.5rem;
+}
+
+.vigilio-message-input {
+    width: 100%;
+    outline: none;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    background-color: transparent;
+    font-size: 0.75rem;
+    color: white;
+    resize: none !important;
+    border-radius: 0.5rem;
+}
+
+.vigilio-send-button {
+    padding: 0.4rem !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: 300;
+    border-radius: 10px;
+    background-color: var(--vigilio-primary);
+
+    border: none;
+    cursor: pointer;
+}
+
+.vigilio-send-button svg {
+    height: 26px;
+    width: 26px;
+    color: white;
+}
+
+.vigilio-loading-screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animaciones */
+.vigilio-mensaje-tipeando {
+    display: inline-block;
+}
+
+.vigilio-punto {
+    animation: moverPunto 1s infinite;
+    opacity: 0;
+    display: inline-block;
+}
+
+@keyframes moverPunto {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.vigilio-punto:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.vigilio-punto:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* additional styles */
+.vigilio-chat-ai-logo {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+}
+
+.vigilio-chat-ai-logo-assistant {
+    width: 32px;
+    height: 32px;
+    display: block;
+    object-fit: contain;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background-color: var(--vigilio-primary);
+    align-self: start;
+}
+
+.vigilio-ai-company-status {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 0.875rem;
+}
+
+@keyframes slide-in {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* custom */
+.vigilio-list-disc {
+    list-style-type: disc;
+}
+.vigilio-ml-6 {
+    margin-left: 1rem;
+}
+.vigilio-ml-2 {
+    margin-left: 0.6rem;
+}
+
+.vigilio-font-bold {
+    font-weight: 700;
+}
+.vigilio-text-gray-600 {
+    color: oklch(55.1% 0.027 264.364);
+}
+
+.vigilio-chat-image-ai {
+    width: 160px;
+    height: auto;
+    margin: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px #0000001a;
+    -o-object-fit: cover;
+    object-fit: cover;
+}
+.vigilio-chat-ai-link {
+    color: var(--vigilio-primary);
+    font-weight: 700;
+}
+.vigilio-chat-ai-link:hover {
+    text-decoration: underline;
+}
+/* modal ai */
+/* Estilos para el modal */
+.vigilio-chat-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.vigilio-chat-modal.vigilio-chat-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vigilio-chat-modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    transition: transform 0.3s ease;
+    transform: translateY(20px);
+}
+
+.vigilio-chat-modal.vigilio-chat-active .vigilio-chat-modal-content {
+    transform: translateY(0);
+}
+
+.vigilio-chat-close {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.vigilio-chat-close:hover {
+    transform: rotate(90deg);
+}
+
+.vigilio-chat-modal-content.vigilio-chat-loading {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.vigilio-chat-modal-content.vigilio-chat-loaded {
+    opacity: 1;
+}
+
+.vigilio-card-service:hover .vigilio-animation-scale2 {
+    animation: none;
+}
+.vigilio-animation-scale2 {
+    animation: vigilio-scaleIn2 0.7s ease-in-out infinite alternate;
+}
+
+.avigilio-nimation-scale2:hover {
+    animation: none;
+}
+@keyframes vigilio-scaleIn2 {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.05);
+    }
+}

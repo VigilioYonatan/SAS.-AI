@@ -40,7 +40,20 @@ export class WebApiController {
         @Params("brand") brand: string,
         @Req("empresa") empresa: Empresas
     ) {
-        const result = await this.webApiService.marcas(brand, empresa);
+        const result = await this.webApiService.marcas(empresa, brand);
+        return result;
+    }
+    @Get("/blog", [webEnabledMiddleware])
+    async blogs(@Req("empresa") empresa: Empresas) {
+        const result = await this.webApiService.blogs(empresa);
+        return result;
+    }
+    @Get("/blog/:blog", [webEnabledMiddleware])
+    async blog(
+        @Params("blog") blog: string,
+        @Req("empresa") empresa: Empresas
+    ) {
+        const result = await this.webApiService.blog(empresa, blog);
         return result;
     }
 

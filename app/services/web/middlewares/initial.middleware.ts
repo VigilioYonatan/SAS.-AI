@@ -1,21 +1,21 @@
 import { formatMoney, subtotal } from "@/cart/libs/helpers";
 import { Citas } from "@/citas/entities/citas.entities";
 import { Crud } from "@/empresas/entities/crud.entity";
-import { Page } from "@/empresas/entities/page.entity";
 import { Questions } from "@/empresas/entities/questions.entity";
-import { BASE_URL, Money, MONEYLOCAL } from "@/empresas/libs";
+import { BASE_URL, type Money, MONEYLOCAL } from "@/empresas/libs";
 import { Favorites } from "@/favorites/entities/favorites.entity";
 import { Brands } from "@/products/entities/brands.entitiy";
 import { Categories } from "@/products/entities/categories.entity";
 import { printImagesProduct, Product } from "@/products/libs";
 import { printFileWithDimension } from "@/uploads/libs/helpers";
 import { Users } from "@/users/entities/users.entity";
-import { NextFunction } from "@vigilio/express-core";
+import type { NextFunction } from "@vigilio/express-core";
 import cache from "@vigilio/express-core/cache";
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { Op, Sequelize } from "sequelize";
 import { sequelize } from "~/config/db.config";
-import { RequestVigilio } from "~/config/types";
+import enviroments from "~/config/enviroments.config";
+import type { RequestVigilio } from "~/config/types";
 import { converterMoneyApi } from "~/libs/apis";
 import { NOW } from "~/libs/dayjs";
 import { getTables } from "~/libs/helpers";
@@ -231,23 +231,7 @@ export async function initialMiddleware(
             : {
                   certificado: null,
               };
-    const [pages, cruds] = await Promise.all([
-        Page.findAll({
-            where: { empresa_id: empresa.id }, // biometria
-            attributes: [
-                "id",
-                "title",
-                "description",
-                "icon",
-                "slug",
-                "queries",
-                "isDinamic",
-                "enabledHeaderPage",
-                "favicon",
-                "ogg_favicon",
-            ],
-            order: [["id", "ASC"]],
-        }),
+    const [cruds] = await Promise.all([
         Crud.findAll({
             where: {
                 empresa_id: empresa.id,
@@ -258,6 +242,9 @@ export async function initialMiddleware(
 
     const info = {
         ...empresa,
+        pages: req.originalUrl.startsWith("/admin")
+            ? empresa.pages
+            : empresa.pages.map((emp) => ({ ...emp, queries: [] })),
         citas,
         questionCount,
         whatsapp_mode: req.originalUrl.startsWith("/admin")
@@ -287,7 +274,6 @@ export async function initialMiddleware(
                 enabled: empresa.metodos_pago.stripe?.enabled,
             },
         },
-        pages,
         cruds,
         tableObjects,
         contacts: [],
@@ -325,7 +311,8 @@ export async function initialMiddleware(
     res.locals.$empresa = info;
 
     res.locals.printFileWithDimension = printFileWithDimension(empresa);
-    res.locals.BASE_URL = BASE_URL(empresa);
+    res.locals.BASE_URL =
+        enviroments.NODE_ENV !== "production" ? "" : BASE_URL(empresa);
     res.locals.subtotal = subtotal;
     res.locals.formatMoney = (number: number) =>
         formatMoney(

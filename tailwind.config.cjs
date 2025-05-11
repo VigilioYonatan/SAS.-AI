@@ -1,4 +1,5 @@
 const tailwind = require("tailwindcss/colors");
+const tailwindcssall = require("tailwindcss-all");
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
@@ -24,12 +25,12 @@ export default {
                 danger: tailwind.red["600"],
                 admin: {
                     paper: {
-                        dark: "#1F2937",
+                        dark: "#0F0F0F",
                     },
                     background: {
-                        dark: "#111827",
+                        dark: "#0F0F0F",
                     },
-                    terciary: "#374151",
+                    terciary: "#222222",
                 },
             },
             textColor: {
@@ -58,6 +59,6 @@ export default {
             "2xl": "1536px",
         },
     },
-    plugins: [],
+    plugins: [tailwindcssall],
     darkMode: ["class"],
 };

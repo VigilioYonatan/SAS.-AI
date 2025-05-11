@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "target": "es2016",
-        "module": "CommonJS",
+        "module": "ESNext",
+        // "module": "CommonJS",
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "outDir": "dist",
@@ -12,6 +13,7 @@
         "isolatedModules": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
+        "verbatimModuleSyntax": true,
         "strict": true,
         "noImplicitAny": true,
         "noUnusedParameters": true,

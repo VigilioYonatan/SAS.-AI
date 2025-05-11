@@ -9,6 +9,7 @@ import {
     Status,
     Injectable,
     Req,
+    UnauthorizedException,
 } from "@vigilio/express-core";
 import { Pipe, Validator } from "@vigilio/express-core/valibot";
 import {
@@ -67,7 +68,7 @@ import {
 } from "../dtos/empresas.ia.update.dto";
 import {
     hostSchema,
-    SettingsSchema,
+    type SettingsSchema,
     settingsSchema,
 } from "../schemas/settings.schema";
 import { type WhatsappMode, whatsappMode } from "../schemas/empresas.schema";
@@ -75,12 +76,32 @@ import {
     settingsUpdateDto,
     type SettingsUpdateDto,
 } from "../dtos/settings.update.dto";
+import type { RequestVigilio } from "~/config/types";
+import type { Request } from "express";
+import enviroments from "~/config/enviroments.config";
+import { hmacAuthMiddleware } from "~/libs/security.middleware";
 
 @Injectable()
 @Controller("/empresas")
 export class EmpresasApiController {
     constructor(private readonly empresaApiService: EmpresasApiService) {}
 
+    @Get("/initial")
+    async initial(@Req() req: Request) {
+        const isValid = hmacAuthMiddleware(req, enviroments.HMAC_CHAT_AI);
+        if (!isValid) {
+            throw new UnauthorizedException("unauthorized");
+        }
+        const { api_key } = req.query as { api_key: string };
+        const empresa = (req as RequestVigilio).empresa;
+        if (api_key !== empresa.scrapping.api_key) {
+            throw new UnauthorizedException("API KEY no valid");
+        }
+        return {
+            success: true,
+            type: empresa.cuota_web?.type || empresa.cuota_chat?.type,
+        };
+    }
     @VigilioServicesGuard()
     @Pipe(objectAsync({ slug: string() }))
     @Get("/:slug/payment")

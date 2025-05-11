@@ -16,6 +16,8 @@ import { valibotVigilio } from "~/libs/valibot";
 import Form from "~/components/form";
 import { BASE_URL } from "~/config";
 import { notificationsMessageApi } from "@/notifications/api/notifications_message.api";
+import usersFormColumns from "../libs/UsersFormColumn";
+import { usersFormPaginatorApi } from "@/common/paginator/users_form.paginator.api";
 
 function UsersIndex() {
     const table = useTable({
@@ -71,19 +73,38 @@ function UsersIndex() {
                         </button>
                     ) : null}
                     {guards.permissionAdminGuard() ? (
-                        <button
-                            type="button"
-                            class="bg-black px-6 py-2 text-xs font-bold self-start rounded-md text-white flex justify-center items-center gap-2"
-                            onClick={() => {
-                                sweetModal({
-                                    html: reactComponent(<SendNotification />),
-                                    showCloseButton: true,
-                                    isCloseInBackground: false,
-                                });
-                            }}
-                        >
-                            <i class="fas fa-bells" /> Enviar notificaciones
-                        </button>
+                        <div class="flex gap-2 items-center">
+                            <button
+                                type="button"
+                                class="bg-black px-6 py-2 text-xs font-bold self-start rounded-md text-white flex justify-center items-center gap-2"
+                                onClick={() => {
+                                    sweetModal({
+                                        html: reactComponent(<UsersWeb />),
+                                        showCloseButton: true,
+                                        isCloseInBackground: false,
+                                        sweetWidth: "650px",
+                                    });
+                                }}
+                            >
+                                <i class="far fa-users-class" /> Usuarios CHAT
+                                IA
+                            </button>
+                            <button
+                                type="button"
+                                class="bg-black px-6 py-2 text-xs font-bold self-start rounded-md text-white flex justify-center items-center gap-2"
+                                onClick={() => {
+                                    sweetModal({
+                                        html: reactComponent(
+                                            <SendNotification />
+                                        ),
+                                        showCloseButton: true,
+                                        isCloseInBackground: false,
+                                    });
+                                }}
+                            >
+                                <i class="fas fa-bells" /> Enviar notificaciones
+                            </button>
+                        </div>
                     ) : null}
                 </div>
             </div>
@@ -226,6 +247,49 @@ function SendNotification() {
                     title="Enviar"
                 />
             </Form>
+        </div>
+    );
+}
+
+function UsersWeb() {
+    const table = useTable({
+        columns: usersFormColumns,
+    });
+
+    const query = usersFormPaginatorApi(table);
+    return (
+        <div class="overflow-x-auto overflow-y-hidden">
+            <h3 class="font-bold text-xl dark:text-white my-3">
+                Usuarios CHAT AI
+            </h3>
+            <VigilioTable query={query} table={table}>
+                <VigilioTable.header>
+                    <VigilioTable.header.tools
+                        hiddenInput={false}
+                        hiddenDelete
+                    />
+                    <div class="flex items-center gap-1">
+                        <VigilioTable.header.limit />
+                        <VigilioTable.header.refetch />
+                    </div>
+                </VigilioTable.header>
+                <VigilioTable.table>
+                    <VigilioTable.thead>
+                        <VigilioTable.thead.row>
+                            <VigilioTable.thead.th />
+                        </VigilioTable.thead.row>
+                    </VigilioTable.thead>
+                    <VigilioTable.tbody>
+                        <VigilioTable.tbody.row>
+                            {(data) => <VigilioTable.tbody.td data={data} />}
+                        </VigilioTable.tbody.row>
+                    </VigilioTable.tbody>
+                </VigilioTable.table>
+                <VigilioTable.footer>
+                    <VigilioTable.footer.show />
+                    <VigilioTable.footer.paginator />
+                </VigilioTable.footer>
+            </VigilioTable>
         </div>
     );
 }

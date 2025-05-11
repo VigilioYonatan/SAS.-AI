@@ -10,7 +10,8 @@ import { hmacAuthMiddleware } from "~/libs/security.middleware";
 import { isWhatsappTelegramIA } from "../libs/ai";
 import { HTMLPROMPT } from "@/websockets/controllers/websockets.controller";
 import { openAis } from "@/empresas/services/empresas.api.service";
-import { modelAiByEmpresa } from "../libs";
+import { modelAiByEmpresa, promptReplace } from "../libs";
+import { Empresas } from "@/empresas/entities/empresas.entity";
 
 export let chatAssistantWeb: Record<string, ["user" | "assistant", string][]> =
     {};
@@ -22,13 +23,25 @@ export class IAApiService {
         if (!isValid) {
             throw new UnauthorizedException("unauthorized");
         }
+        // if (
+        //     req.empresa.isOnlyScrapping &&
+        //     req.empresa.scrapping.web_url !== "" //!
+        // ) {
+        //     throw new UnauthorizedException("Web no valido");
+        // }
+
+        if (req.query.api_key !== req.empresa.scrapping.api_key) {
+            throw new UnauthorizedException("API KEY no valid");
+        }
         const emp = req.empresa.slug;
+        const initial_message = req.query.initial_message as string;
         let chats = chatAssistantWeb[`${emp}:${req.query.token}`] || [];
         chats = !chats.length
             ? [
                   [
                       "assistant",
-                      "Hola, Soy su asistente virtual con Inteligencia Artificial 😀. ¿En que le podriamos ayudar?",
+                      initial_message ||
+                          "Hola, Soy su asistente virtual con Inteligencia Artificial 😀. ¿En que le podriamos ayudar?",
                   ],
               ]
             : chats;
@@ -60,12 +73,12 @@ export class IAApiService {
                 ["user", message],
             ],
         };
-        if (
-            chatAssistantWeb[`${emp}:${token}`].length > 30 &&
-            empresa.isTemplate
-        ) {
-            return "Gracias por probar nuestra inteligencia artificial, más información en https://www.vigilio-services.com";
-        }
+        // if (
+        //     chatAssistantWeb[`${emp}:${token}`].length > 30 &&
+        //     empresa.isTemplate
+        // ) {
+        //     return "Gracias por probar nuestra inteligencia artificial, más información en https://www.vigilio-services.com";
+        // }
         if (chatAssistantWeb[`${emp}:${token}`].length > 300) {
             return "Gracias por probar nuestra inteligencia Artificial, puedes probarlo de nuevo más tarde.";
         }
@@ -83,30 +96,24 @@ export class IAApiService {
             const messages = chatAssistantWeb[`${emp}:${token}`].map(
                 ([role, content]) => ({
                     role,
-                    content:
-                        role === "user"
-                            ? `${""} '[[${HTMLPROMPT(empresa)}]]'`
-                            : content,
+                    content,
                 })
             );
 
             const messageAnterior = messages
                 .slice(-5, -1)
                 .map(
-                    (c) =>
-                        `${
-                            c.role === "user" ? "yo" : c.role
-                        }:  ${c.content.replace(/\[\[([^\]]+)\]\]/g, "")}`
+                    (c) => `${c.role === "user" ? "yo" : c.role}:  ${c.content}`
                 );
             const messageActual = `Mensajes Anterior: ${messageAnterior.join(
                 ", "
             )}.\n
               Mensaje Actual: ${message}.`;
-            // const prompt = await promptReplace(
-            //     whatsapp,
-            //     messageActual!,
-            //     empresa
-            // );
+            const prompt = await promptReplace(
+                whatsapp,
+                messageActual!,
+                empresa
+            );
 
             const completion = await openAis[
                 empresa.slug
@@ -116,7 +123,7 @@ export class IAApiService {
                 messages: [
                     {
                         role: "user",
-                        content: `.\n ${HTMLPROMPT(empresa)}`,
+                        content: `${prompt}. ${HTMLPROMPT(empresa)}`,
                     },
                     ...messages.slice(
                         -(empresa.inteligenceArtificial.memory - 1)
@@ -149,6 +156,33 @@ export class IAApiService {
         } finally {
             clearInterval(keepAlive);
             res.end();
+        }
+    }
+    async findError(empresa: Empresas, body: { message: string }) {
+        try {
+            const whatsapp = await isWhatsappTelegramIA(empresa.slug);
+            if (!whatsapp)
+                return "En estos momentos no estoy disponible. Inteligencia Artificial o Token es requerido";
+            const content = await openAis[empresa.slug].chat.completions.create(
+                {
+                    messages: [
+                        {
+                            role: "user",
+                            content: `Busca los errores de este texto (sea ortograficos, gramaticales, falta,tildes, etc.), IMPORTANTE: solo errores está en español latino y si hay ingles puedes dejarlo ahi '${body.message}' y pasame en array [[error1,corregido],[error2,corregido2]], psdt solo pasame el array no formato mkdown, PARA USAR CON JSON.PARSE, y no digas nada mas que el array. si encuentras una palabra muy raro o malas palabras escribe como solucion 'que fue manito acá?' y si no hay errores , pues array vacio`,
+                        },
+                    ],
+                    model: modelAiByEmpresa(whatsapp),
+                }
+            );
+            return {
+                success: true,
+                message: content.choices[0].message.content,
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: (error as Error).message,
+            };
         }
     }
 }

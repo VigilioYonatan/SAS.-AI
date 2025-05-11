@@ -15,6 +15,7 @@ import {
 } from "../dtos/grid_banner_service.update.dto";
 import { GridBannerPageSchemaFromServer } from "../schemas/grid-banner-page.schema";
 import { useMemo } from "preact/hooks";
+import FormControlEditorJS from "~/components/form/FormControlEditorJS";
 export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
 interface ServiciosPageIndexProps {
     data: GridBannerPageSchemaFromServer[];
@@ -143,7 +144,7 @@ export function GridBannerUpdate({
                         name={"title" as keyof GridBannerPageUpdateDto}
                         placeholder="Titulo"
                     />
-                    <Form.control.editorJS
+                    <FormControlEditorJS
                         type="html"
                         title="HTML"
                         question="Customiza el banner agregando html, data-label='1',, para customizar texto"

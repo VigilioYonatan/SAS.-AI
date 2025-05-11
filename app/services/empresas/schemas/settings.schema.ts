@@ -241,5 +241,6 @@ export const settingsSchema = objectAsync({
             languages: array(languagesUnion),
         })
     ),
+    background_posts: nullable(array(filesSchema([100, 1600]))),
 });
 export type SettingsSchema = Input<typeof settingsSchema>;

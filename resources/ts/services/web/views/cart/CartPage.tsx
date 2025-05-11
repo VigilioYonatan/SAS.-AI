@@ -30,6 +30,7 @@ import useAuthStore from "@/auth/stores/auth.store";
 import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
 import { isColorLight } from "~/libs/helpers";
 import { formSelectNumber } from "~/components/form/FormSelect";
+import FormControlMap from "~/components/form/FormControlMap";
 
 interface CartProps {
     cart:
@@ -53,9 +54,7 @@ function CartPage({ cart, header }: CartProps) {
 
     useEffect(() => {
         if (cart) {
-            cartStore.methods.initialCart(
-                cart instanceof Array ? cart : [cart]
-            );
+            cartStore.methods.initialCart(Array.isArray(cart) ? cart : [cart]);
         }
     }, []);
 
@@ -614,7 +613,7 @@ function CartPage({ cart, header }: CartProps) {
                                         />
                                         {empresa.state!.enable_map_marker ? (
                                             <div class="w-full">
-                                                <Form.control.map
+                                                <FormControlMap
                                                     name={
                                                         "map_marker" as keyof OrdersCartStoreDto
                                                     }

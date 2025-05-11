@@ -7,7 +7,7 @@ import TitleSection from "@/web/components/TitleSection";
 import Slider from "react-slick";
 import enviroments from "~/config";
 import useShowImage from "~/hooks/useShowImage";
-import { showTime } from "~/libs/helpers";
+import { formatDateTwo, showTime } from "~/libs/helpers";
 import { printFileWithDimension } from "~/libs/upload";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -85,7 +85,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                             src={
                                                 printFileWithDimension(
                                                     post.image,
-                                                    800
+                                                    600
                                                 )[0]
                                             }
                                             class="group-hover:scale-110 delay-custom-1 h-[230px] object-cover"
@@ -113,7 +113,10 @@ function PostsSection({ posts }: PostsSectionProps) {
                                             </div>
                                             <span class="self-end  text-primary font-bold text-xs">
                                                 <i class="fa-regular fa-calendar-days mr-1" />{" "}
-                                                {showTime(post.createdAt!)}
+                                                {formatDateTwo(
+                                                    post.date!,
+                                                    "D [de] MMMM [de] YYYY"
+                                                )}
                                             </span>
                                         </div>
                                     </div>
@@ -169,7 +172,7 @@ function PostsSection({ posts }: PostsSectionProps) {
                                         src={
                                             printFileWithDimension(
                                                 post.image,
-                                                800
+                                                600
                                             )[0]
                                         }
                                         width={800}

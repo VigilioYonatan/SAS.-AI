@@ -12,6 +12,7 @@ import { handlerError } from "~/libs/helpers";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import useEmpresastore from "@/empresas/stores/empresa.store";
 import { Fragment } from "preact/jsx-runtime";
+import FormControlEditor from "~/components/form/FormControlEditor";
 
 function EmailsSendAll() {
     const emailsSendAllMutation = emailsSendAllApi();
@@ -70,7 +71,7 @@ function EmailsSendAll() {
                 <span class="dark:text-white font-semibold text-xs">
                     No es posible enviar imágenes, Solo Textos y Enlaces.
                 </span>
-                <Form.control.editor
+                <FormControlEditor
                     name={"content" as keyof EmailsSendAllDto}
                     title="Contenido del mensaje"
                     height={300}

@@ -38,7 +38,7 @@ import { downloadAndSaveFile, terminal } from "~/libs/helpers";
 import enviroments from "~/config/enviroments.config";
 import { Settings } from "../entities/settings.entity";
 import type { SettingsSchema } from "../schemas/settings.schema";
-import { NOW, restarDays } from "~/libs/dayjs";
+import { NOW } from "~/libs/dayjs";
 import { initializeBot } from "@/bot/libs/ai";
 import type { SettingsUpdateDto } from "../dtos/settings.update.dto";
 import { NodeSSH } from "node-ssh";
@@ -66,13 +66,51 @@ import { Page } from "../entities/page.entity";
 import { GridBannerPage } from "../entities/grid_banner_page.entity";
 import { PagesApiService } from "./pages.api.service";
 import { Scrapping } from "../entities/scrapping.entity";
-import { ScrappingSchema } from "../schemas/scrapping.schema";
+import type { ScrappingSchema } from "../schemas/scrapping.schema";
 import { sequelize } from "~/config/db.config";
+import { PostsApiService } from "@/posts/services/posts.api.service";
 // import { sequelize } from "~/config/db.config";
 
 export let openAis: Record<string, openai> = {};
 export async function initial() {
-    // await sequelize.query(`DELETE FROM "Test"`);
+    async function addMissingColumns(
+        tableName: string,
+        columnsToAdd: {
+            name: string;
+            type: string;
+            defaultValue?: string;
+        }[]
+    ) {
+        // 1. Obtener columnas existentes en la tabla
+        const [existingColumns] = await sequelize.query(`
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name = '${tableName}'
+    `);
+
+        const existingColumnNames = (
+            existingColumns as { column_name: string }[]
+        ).map((col) => col.column_name);
+
+        // 2. Agregar las columnas faltantes
+        for (const column of columnsToAdd) {
+            if (!existingColumnNames.includes(column.name)) {
+                await sequelize.query(`
+          ALTER TABLE "${tableName}"
+          ADD COLUMN "${column.name}" ${column.type} ${
+                    column.defaultValue || "DEFAULT NULL"
+                };
+        `);
+                // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+                console.log(
+                    `✅ Columna '${column.name}' agregada a '${tableName}'`
+                );
+            }
+        }
+    }
+    const columnSettingToAdd = [{ name: "background_posts", type: "JSON" }];
+
+    await addMissingColumns("Settings", columnSettingToAdd);
     const empresas = await Empresas.findAll({
         attributes: [
             "slug",
@@ -103,70 +141,6 @@ export async function initial() {
 
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const whatsapp_mode: any = empresa.whatsapp_mode;
-
-        // await empresa.update({
-        //     whatsapp_mode: {
-        //         name: "docker",
-        //         enabled: true,
-        //         type: "FREE",
-        //         password: null,
-        //         date: null,
-        //         memory: null,
-        //         ip: null,
-        //         cpu: null,
-        //     },
-        // });
-        // const optionss = await Options.findOne({
-        //     where: {
-        //         type: 2,
-        //     },
-        // });
-
-        // const feats = await Features.count({
-        //     where: {
-        //         option_id: optionss?.id,
-        //     },
-        // });
-
-        // if (feats < 22) {
-        //     await Promise.all(
-        //         [
-        //             { value: "#D2691E", description: "Chocolate" },
-        //             { value: "#A52A2A", description: "Marrón" },
-        //             { value: "#D3D3D3", description: "Gris Claro" },
-        //             { value: "#90EE90", description: "Verde Claro" },
-        //             { value: "#FF6347", description: "Tomato" },
-        //             { value: "#8B0000", description: "Rojo Oscuro" },
-        //             { value: "#20B2AA", description: "Verde Turquesa" },
-        //             { value: "#C71585", description: "Violeta Oscuro" },
-        //             { value: "#B0C4DE", description: "Azul Claro" },
-        //             { value: "#FF4500", description: "Rojo Anaranjado" },
-        //             { value: "#3CB371", description: "Verde Medio" },
-        //             { value: "#F4A460", description: "Siena" },
-        //             { value: "#DCDCDC", description: "Gris Claro" },
-        //             { value: "#F08080", description: "Rosa Claro" },
-        //             { value: "#FF8C00", description: "Naranja Oscuro" },
-        //             { value: "#4682B4", description: "Azul Acero" },
-        //             { value: "#6A5ACD", description: "Azul Púrpura" },
-        //             { value: "#2E8B57", description: "Verde Bosque" },
-        //             { value: "#A9A9A9", description: "Gris Oscuro" },
-        //             { value: "#708090", description: "Gris Azulado" },
-        //             { value: "#BDB76B", description: "Olivino" },
-        //             { value: "#FF1493", description: "Rosa Fucsia" },
-        //             { value: "#7B68EE", description: "Púrpura Oscuro" },
-        //             { value: "#ADFF2F", description: "Verde Amarillo" },
-        //             { value: "#FF7F50", description: "Coral" },
-        //             { value: "#D3D3D3", description: "Gris Claro" },
-        //         ].map(async (a, i) => {
-        //             await Features.create({
-        //                 id: 200 + i,
-        //                 value: a.value,
-        //                 description: a.description,
-        //                 option_id: optionss?.id,
-        //             });
-        //         })
-        //     );
-        // }
         if (!Array.isArray(whatsapp_mode)) {
             const whatsapp_mode2 = [
                 { ...whatsapp_mode, name: "docker", enabled: true },
@@ -196,81 +170,48 @@ export async function initial() {
         if (empresa.telegram_token) {
             await initializeBot(empresa, empresa.telegram_token);
         }
-        const [keywords] = await sequelize.query(`
-            SELECT column_name 
-            FROM information_schema.columns 
-            WHERE table_name = 'Pages' AND column_name = 'keywords'
-          `);
-        const [favicon] = await sequelize.query(`
-            SELECT column_name 
-            FROM information_schema.columns 
-            WHERE table_name = 'Pages' AND column_name = 'favicon'
-          `);
-        const [ogg_favicon] = await sequelize.query(`
-            SELECT column_name 
-            FROM information_schema.columns 
-            WHERE table_name = 'Pages' AND column_name = 'ogg_favicon'
-          `);
 
-        if (!keywords.length) {
-            await sequelize.query(`
-                  ALTER TABLE "Pages" 
-                  ADD COLUMN "keywords" TEXT DEFAULT NULL;
-                `);
-        }
-        if (!favicon.length) {
-            await sequelize.query(`
-                  ALTER TABLE "Pages" 
-                  ADD COLUMN "favicon" JSON DEFAULT NULL;
-                `);
-        }
-        if (!ogg_favicon.length) {
-            await sequelize.query(`
-                  ALTER TABLE "Pages" 
-                  ADD COLUMN "ogg_favicon" JSON DEFAULT NULL;
-                `);
-        }
+        const columnsPagesToAdd = [
+            { name: "keywords", type: "TEXT" }, // DEFAULT NULL es opcional (se asume si no se especifica)
+            { name: "favicon", type: "JSON" },
+            { name: "ogg_favicon", type: "JSON" },
+        ];
+
+        await addMissingColumns("Pages", columnsPagesToAdd);
+        const columnsPostToAdd = [
+            { name: "seo_title", type: "VARCHAR(255)" }, // DEFAULT NULL es opcional (se asume si no se especifica)
+            { name: "likes", type: "JSON" },
+            { name: "keywords", type: "VARCHAR(255)" },
+            { name: "date", type: "DATE" },
+            { name: "enabled", type: "BOOLEAN" },
+            { name: "links", type: "JSON" },
+            { name: "slug", type: "VARCHAR(255)" },
+        ];
+        await addMissingColumns("Posts", columnsPostToAdd);
+
         // // tipos finanzas
-        // const pageHome = await Page.findOne({
-        //     where: {
-        //         slug: "home",
-        //         empresa_id: empresa.id,
-        //     },
-        // });
+        const pageHome = await Page.findOne({
+            where: {
+                slug: "blog",
+                empresa_id: empresa.id,
+            },
+        });
 
-        // if (!pageHome) {
-        //     await Page.create({
-        //         title: "Home",
-        //         description: `En ${empresa.name_empresa}, ofrecemos una amplia variedad de productos de alta calidad a precios inmejorables, encontrarás todo lo que necesitas en un solo lugar. Disfruta de envíos rápidos, devoluciones fáciles y un servicio al cliente excepcional. ¡Explora nuestras ofertas diarias y descubre la diferencia de comprar en Tienda XYZ!`,
-        //         slug: "home",
-        //         empresa_id: empresa.id,
-        //         icon: "<i class='fas fa-home'></i>",
-        //         queries: [],
-        //         isDinamic: false,
-        //         enabledHeaderPage: true,
-        //     });
-        // }
-        // // const finanzas = await TipoFinanza.findAll();
-        // const bg_color_header = await Settings.findOrCreate({
-        //     where: { empresa_id: empresa!.id },
-        //     defaults: { bg_color_header: "transparent" }, // Valores predeterminados si se crea
-        // });
-        // const isLogin = await Settings.findOrCreate({
-        //     where: { empresa_id: empresa!.id },
-        //     defaults: { isLogin: true }, // Valores predeterminados si se crea
-        // });
-        // const products_limit = await Settings.findOrCreate({
-        //     where: { empresa_id: empresa!.id },
-        //     defaults: { products_limit: 10 }, // Valores predeterminados si se crea
-        // });
-        // const products_limit_offer = await Settings.findOrCreate({
-        //     where: { empresa_id: empresa!.id },
-        //     defaults: { products_limit_offer: 4 }, // Valores predeterminados si se crea
-        // });
-        // const isEccomerce = await Settings.findOrCreate({
-        //     where: { empresa_id: empresa!.id },
-        //     defaults: { isEccomerce: true }, // Valores predeterminados si se crea
-        // });
+        if (!pageHome) {
+            await Page.create({
+                title: "Blogs",
+                description: "Bienvenido a nuestro blog",
+                slug: "blog",
+                empresa_id: empresa.id,
+                icon: null,
+                enabledHeaderPage: true,
+                queries: [],
+                favicon: null,
+                keywords: null,
+                ogg_favicon: null,
+            });
+        }
+
         const model_ai = await Empresas.findOrCreate({
             where: {
                 id: empresa!.id,
@@ -279,40 +220,6 @@ export async function initial() {
                 model_ai: "open-ai",
             },
         });
-
-        // const payment_completed = await Empresas.findOrCreate({
-        //     where: {
-        //         id: empresa!.id,
-        //     },
-        //     defaults: {
-        //         payment_completed: true,
-        //     },
-        // });
-        // if (!payment_completed[1]) {
-        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //     await payment_completed[0].update({ payment_completed: true });
-        // }
-        // const type_loader = await Settings.findOrCreate({
-        //     where: { empresa_id: empresa!.id },
-        //     defaults: { type_loader: "null" }, // Valores predeterminados si se crea
-        // });
-        // const text_color = await Settings.findOrCreate({
-        //     where: { empresa_id: empresa!.id },
-        //     defaults: { text_color: "transparent" }, // Valores predeterminados si se crea
-        // });
-        // const enabled_zoho_mail = await Empresas.findOrCreate({
-        //     where: { id: empresa!.id },
-        //     defaults: { enabled_zoho_mail: false }, // Valores predeterminados si se crea
-        // });
-        // // const isProduction = await Empresas.findOrCreate({
-        // //     where: { id: empresa!.id },
-        // //     defaults: { isProduction: false }, // Valores predeterminados si se crea
-        // // });
-        // const gridBanners = await GridBanner.findAll({
-        //     where: {
-        //         empresa_id: empresa.id,
-        //     },
-        // });
         const address = await Address.findAll({
             where: {
                 empresa_id: empresa.id,
@@ -332,127 +239,6 @@ export async function initial() {
                 }
             })
         );
-        // const queries = await Page.findOrCreate({
-        //     where: { empresa_id: empresa!.id },
-        //     defaults: { queries: [] }, // Valores predeterminados si se crea
-        // });
-        // if (!bg_color_header[1] && !bg_color_header[0].bg_color_header) {
-        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //     await bg_color_header[0].update({ bg_color_header: "transparent" });
-        // }
-        // if (!isLogin[1] && !isLogin[0].isLogin) {
-        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //     await isLogin[0].update({ isLogin: true });
-        // }
-        // if (!queries[1] && !queries[0].queries) {
-        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //     await queries[0].update({ queries: [] });
-        // }
-        // // if (!isProduction[1] && !isProduction[0].isProduction) {
-        // //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        // //     await isProduction[0].update({ isProduction: true });
-        // // }
-        // if (!enabled_zoho_mail[1] && !enabled_zoho_mail[0].enabled_zoho_mail) {
-        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //     await enabled_zoho_mail[0].update({
-        //         enabled_zoho_mail: false,
-        //     });
-        // }
-        // if (!isEccomerce[1] && !isEccomerce[0].isEccomerce) {
-        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //     await isEccomerce[0].update({
-        //         isEccomerce: true,
-        //     });
-        // }
-        // if (!products_limit[1] && !products_limit[0].products_limit) {
-        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //     await products_limit[0].update({
-        //         products_limit: 5,
-        //     });
-        // }
-        // if (
-        //     !products_limit_offer[1] &&
-        //     !products_limit_offer[0].products_limit_offer
-        // ) {
-        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //     await products_limit[0].update({
-        //         products_limit_offer: 4,
-        //     });
-        // }
-        // if (!type_loader[1] && !type_loader[0].type_loader) {
-        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //     await type_loader[0].update({
-        //         type_loader: "null" as Settings["type_loader"],
-        //     });
-        // }
-        // if (!text_color[1] && !text_color[0].text_color) {
-        //     // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //     await text_color[0].update({
-        //         text_color: "transparent" as Settings["text_color"],
-        //     });
-        // }
-
-        // if (gridBanners.length < 6) {
-        //     await Promise.all(
-        //         Array.from({ length: 5 }).map(async () => {
-        //             await GridBanner.create({
-        //                 html: null,
-        //                 enabled: false,
-        //                 empresa_id: empresa!.id,
-        //                 title: null,
-        //             });
-        //         })
-        //     );
-        // }
-        // await Promise.all(
-        //     pages.map(async (page) => {
-        //         const isDinamic = await Page.findOrCreate({
-        //             where: { id: page.id, empresa_id: empresa!.id },
-        //             defaults: { isDinamic: false }, // Valores predeterminados si se crea
-        //         });
-        //         const enabledHeaderPage = await Page.findOrCreate({
-        //             where: { id: page.id, empresa_id: empresa!.id },
-        //             defaults: { enabledHeaderPage: false }, // Valores predeterminados si se crea
-        //         });
-
-        //         if (!isDinamic[1] && !isDinamic[0].isDinamic) {
-        //             // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //             await isDinamic[0].update({
-        //                 isDinamic: false,
-        //             });
-        //         }
-        //         if (
-        //             !enabledHeaderPage[1] &&
-        //             !enabledHeaderPage[0].enabledHeaderPage
-        //         ) {
-        //             // Si ya existía el registro pero el valor está vacío, actualizarlo
-        //             await enabledHeaderPage[0].update({
-        //                 enabledHeaderPage: false,
-        //             });
-        //         }
-        //         const gridBannersPage = await GridBannerPage.findAll({
-        //             where: {
-        //                 empresa_id: empresa.id,
-        //                 page_id: page.id,
-        //             },
-        //         });
-        //         if (gridBannersPage.length < 6) {
-        //             await Promise.all(
-        //                 Array.from({ length: 5 }).map(async () => {
-        //                     await GridBannerPage.create({
-        //                         html: null,
-        //                         enabled: false,
-        //                         empresa_id: empresa!.id,
-        //                         title: null,
-        //                         page_id: page.id,
-        //                     });
-        //                 })
-        //             );
-        //         }
-        //     })
-        // );
-
-        // openAis = { ...openAis, [empresa.slug]: openAiClient };
     }
 }
 
@@ -462,7 +248,8 @@ export class EmpresasApiService {
         private readonly UsersApiService: UsersApiService,
         private readonly backgroundApiService: BackgroundApiService,
         private readonly productsApiService: ProductsApiService,
-        private readonly pagesApiService: PagesApiService
+        private readonly pagesApiService: PagesApiService,
+        private readonly postsApiService: PostsApiService
     ) {}
     async payment(slug: string) {
         const iaTokens = JSON.parse(cache.get(`IA_TOKENS:${slug}`) ?? "null");
@@ -878,6 +665,10 @@ export class EmpresasApiService {
                     enviroments.NODE_ENV === "production"
                         ? ""
                         : "http://localhost:5173",
+                api_key: `vigilio-${
+                    Math.random().toString(32).slice(6) +
+                    Date.now().toString(32)
+                }`,
                 hours: 24,
                 categories: null,
                 pages: [],
@@ -917,10 +708,6 @@ export class EmpresasApiService {
                 logo_pwa: null,
                 model_ai: "open-ai",
                 scrapping_id: scrapping.id,
-                token_web_chat: `vigilio-${
-                    Math.random().toString(32).slice(6) +
-                    Date.now().toString(32)
-                }`,
             }) as Empresas;
             await empresa.save();
 
@@ -1297,6 +1084,18 @@ export class EmpresasApiService {
                         keywords: null,
                         ogg_favicon: null,
                     }),
+                    this.pagesApiService.store(empresa, {
+                        title: "Blogs",
+                        description: "Bienvenido a nuestro blog",
+                        slug: "blog",
+                        empresa_id: empresa.id,
+                        icon: null,
+                        enabledHeaderPage: true,
+                        queries: [],
+                        favicon: null,
+                        keywords: null,
+                        ogg_favicon: null,
+                    }),
                 ]);
             }
 
@@ -1572,7 +1371,7 @@ export class EmpresasApiService {
                 .toString(32)
                 .slice(3, 4)}`;
             const name = fullname.split(" ");
-            await this.UsersApiService.store(empresa, {
+            const { user } = await this.UsersApiService.store(empresa, {
                 name: name[0],
                 lastname: name[1] ?? "",
                 email: null,
@@ -1591,6 +1390,41 @@ export class EmpresasApiService {
                 reference: null,
                 city_id: null,
             });
+            await this.postsApiService.store(
+                empresa,
+                {
+                    title: "[NEW] Vigilio Services Webs con Inteligencia Artificial",
+                    seo_title: "Vigilio Services Inteligencia Artificial",
+                    slug: "vigilio-services-inteligencia-artificial",
+                    content: `
+                    ---INDICE---
+                    <h2>Negocio Digital con Inteligencia Artificial.</h2><p><br></p><h3>Nuestra <strong>plataforma </strong>ofrece soluciones avanzadas para potenciar cada aspecto de tu negocio a través de aplicaciones web, desde la gestión automatizada de clientes hasta el análisis de datos utilizando inteligencia artificial. Automatiza tareas repetitivas, mejora la atención al cliente y aumenta la conversión de ventas.</h3><p><br></p><ol><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>Chatbos con IA</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>Whatsapp con IA</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>Ventas automáticas con IA</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>y mucho más</li></ol><p><br></p><p>Más información: <a href="https://www.vigilio-services.com" rel="noopener noreferrer" target="_blank">click aquí</a></p><p><br></p>`,
+                    date: new Date(),
+                    enabled: false,
+                    image: [
+                        {
+                            file: `https://${empresa.slug}.vigilio-services.com/images/settings/others/auth-wallpaper.webp`,
+                            dimension: 100,
+                        },
+                        {
+                            file: `https://${empresa.slug}.vigilio-services.com/images/settings/others/auth-wallpaper.webp`,
+                            dimension: 600,
+                        },
+                        {
+                            file: `https://${empresa.slug}.vigilio-services.com/images/settings/others/auth-wallpaper.webp`,
+                            dimension: 1200,
+                        },
+                    ],
+                    keywords: "post,eccomerce,ia",
+                    links: [
+                        {
+                            title: "Vigilio Service NEW UPDATE!!",
+                            url: enviroments.VITE_VIGILIO_WEB,
+                        },
+                    ],
+                },
+                user
+            );
             const openAiClient = new openai.OpenAI({
                 apiKey: empresa.credentials.open_ai,
             });
@@ -2110,15 +1944,10 @@ export class EmpresasApiService {
         const { empresa } = await this.show(emp.slug);
 
         try {
+            // ! aca
             if (
                 empresasUpdateDto.telegram_token &&
-                empresasUpdateDto.telegram_token !== empresa.telegram_token &&
-                empresa.payments.mensual.enabled &&
-                restarDays(
-                    empresa,
-                    NOW(empresa).format(),
-                    empresa.payments.mensual.date as Date
-                ) > 0
+                empresasUpdateDto.telegram_token !== empresa.telegram_token
             ) {
                 await initializeBot(empresa, empresasUpdateDto.telegram_token);
             }

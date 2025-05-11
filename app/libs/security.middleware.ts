@@ -5,6 +5,7 @@ import {
 } from "@vigilio/express-core";
 import * as crypto from "node:crypto";
 import type { NextFunction, Response, Request } from "express";
+import enviroments from "~/config/enviroments.config";
 export function hmacAuthMiddleware(
     req: Request,
     secretKey: string,
@@ -27,10 +28,12 @@ export function hmacAuthMiddleware(
             "Error de configuración del servidor"
         );
     }
+
     const dataToSign = `${timestamp}:${req.method}:${req.originalUrl.replace(
         /[&?]x-(signature|timestamp)=[^&]+/g,
         ""
     )}`;
+
     const expectedSignature = crypto
         .createHmac("sha256", secretKey)
         .update(dataToSign)
@@ -42,10 +45,9 @@ export function hmacAuthMiddleware(
     return true;
 }
 
-export function HmacAuth(secretKey: string) {
+export function HmacAuth(secretKey = enviroments.VITE_HMAC_SIGN) {
     return (
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        target: any,
+        target: unknown,
         propertyKey: string,
         _descriptor: PropertyDescriptor
     ) => {
@@ -54,8 +56,9 @@ export function HmacAuth(secretKey: string) {
             propertyKey,
             (req: Request, _: Response, next: NextFunction) => {
                 const isAccepted = hmacAuthMiddleware(req, secretKey);
+
                 if (isAccepted) {
-                    next();
+                    return next();
                 }
                 throw new InternalServerErrorException("Error server");
             }

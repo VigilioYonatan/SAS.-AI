@@ -12,10 +12,8 @@ export async function webEnabledMiddleware(
     try {
         const emp = (req as RequestVigilio).empresa;
         if (
-            !emp.payment_completed &&
-            emp.cuota &&
-            emp.cuota.date &&
-            restarDays(emp, NOW(emp), emp.cuota.date, "day") < -3
+            emp.cuota_web?.date &&
+            restarDays(emp, NOW(emp), emp.cuota_web.date, "day") < -3
         ) {
             return res.redirect("/admin/plus");
         }

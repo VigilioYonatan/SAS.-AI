@@ -31,6 +31,7 @@ import { PageSchema } from "../schemas/pages.schema";
 import CrudIndex from "./CrudIndex";
 import { pagesDestroyApi } from "../apis/pages/pages.destroy.api";
 import LoaderSubmit from "~/components/LoaderSubmit";
+import FormControlEditorJS from "~/components/form/FormControlEditorJS";
 export const HTMLSHOW = JSON.parse(localStorage.getItem("show-html") || "true");
 export const HIDDEEDITOR = JSON.parse(
     localStorage.getItem("hidde-editor") || "false"
@@ -478,7 +479,7 @@ export function GridBannerUpdate({ grid, i, refetch }: GridBannerEditProps) {
                     name={"title" as keyof GridBannerUpdateDto}
                     placeholder="Titulo"
                 />
-                <Form.control.editorJS
+                <FormControlEditorJS
                     type="html"
                     title="HTML"
                     question="Customiza el banner agregando html, data-label='1',, para customizar texto"

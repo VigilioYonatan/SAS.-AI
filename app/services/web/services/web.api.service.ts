@@ -35,14 +35,15 @@ import { Page } from "@/empresas/entities/page.entity";
 import type { GridBannerPage } from "@/empresas/entities/grid_banner_page.entity";
 import { Crud } from "@/empresas/entities/crud.entity";
 import { PaginatorApiServices } from "@/common/paginator/services/paginator.api.service";
-import { RequestVigilio } from "~/config/types";
+import type { RequestVigilio } from "~/config/types";
 import {
     getQueries,
     joins,
-    PaginatorModel,
+    type PaginatorModel,
     relation,
 } from "@/common/paginator/libs";
 import { capitalize } from "@vigilio/express-core/helpers";
+import { PostsApiService } from "@/posts/services/posts.api.service";
 
 @Injectable()
 export class WebApiService {
@@ -52,6 +53,7 @@ export class WebApiService {
         private readonly backgroundApiService: BackgroundApiService,
         private readonly brandsApiService: BrandsApiService,
         private readonly subCategoriesApiService: SubCategoriesApiService,
+        private readonly postsApiService: PostsApiService,
         private readonly paginatorApiServices: PaginatorApiServices
     ) {}
 
@@ -124,10 +126,12 @@ export class WebApiService {
                       })
                     : [],
                 Posts.findAll({
-                    limit: 6, // maximo 8 . si deseas lo podes poner en un slider
-                    order: [["createdAt", "DESC"]],
+                    limit: 10, // maximo 8 . si deseas lo podes poner en un slider
+                    order: [["date", "DESC"]],
+                    attributes: { exclude: ["content"] },
                     where: {
                         empresa_id: empresa.id,
+                        enabled: true,
                     },
                 }),
                 empresa.setting.isEccomerce
@@ -383,18 +387,12 @@ export class WebApiService {
                         ? getProductAll(empresa, productLatest, user, false)
                         : null,
                 ]);
-            const data = await Page.findOne({
-                where: {
-                    [Op.or]: {
-                        slug: ["home", "inicio"],
-                    },
-                    empresa_id: empresa.id,
-                },
-                attributes: { exclude: ["queries"] },
-            });
-            if (!data) {
-                throw new BadRequestException("Error : home - inicio");
-            }
+
+            // getpage
+            const data = empresa.pages.find(
+                (page) => page.slug === "home" || page.slug === "inicio"
+            )!;
+
             const queries = await getQueries(empresa, data);
             cacheHome = {
                 title: data.title || empresa.name_empresa,
@@ -429,14 +427,10 @@ export class WebApiService {
     async servicios(empresa: Empresas) {
         if (!empresa.setting.is_service_page)
             throw new BadRequestException("No permission");
-        const data = await Page.findOne({
-            where: {
-                [Op.or]: {
-                    slug: ["servicios", "services"],
-                },
-                empresa_id: empresa.id,
-            },
-        });
+
+        const data = empresa.pages.find(
+            (page) => page.slug === "servicios" || page.slug === "services"
+        )!;
         if (!data) {
             throw new BadRequestException("Error page: servicios - services");
         }
@@ -460,10 +454,12 @@ export class WebApiService {
             productServicesQuantity,
         ] = await Promise.all([
             Posts.findAll({
-                limit: 6, // maximo 8 . si deseas lo podes poner en un slider
-                order: [["createdAt", "DESC"]],
+                limit: 10, // maximo 8 . si deseas lo podes poner en un slider
+                order: [["date", "ASC"]],
+                attributes: { exclude: ["content"] },
                 where: {
                     empresa_id: empresa.id,
+                    enabled: true,
                 },
             }),
 
@@ -498,14 +494,10 @@ export class WebApiService {
                 where: { empresa_id: empresa.id, enabled: true },
             }),
         ]);
-        const data = await Page.findOne({
-            where: {
-                [Op.or]: {
-                    slug: ["about", "nosotros"],
-                },
-                empresa_id: empresa.id,
-            },
-        });
+
+        const data = empresa.pages.find(
+            (page) => page.slug === "about" || page.slug === "nosotros"
+        )!;
         if (!data) {
             throw new BadRequestException("Error page , nosotros - about");
         }
@@ -546,14 +538,10 @@ export class WebApiService {
         if (!empresa.setting.isEccomerce) {
             throw new Redirect("/");
         }
-        const d = await Page.findOne({
-            where: {
-                [Op.or]: {
-                    slug: ["shop", "tienda"],
-                },
-                empresa_id: empresa.id,
-            },
-        });
+
+        const d = empresa.pages.find(
+            (page) => page.slug === "shop" || page.slug === "tienda"
+        )!;
         if (!d) {
             throw new BadRequestException("Error page, shop - tienda");
         }
@@ -671,6 +659,7 @@ export class WebApiService {
                 ],
             },
         });
+        // const data = empresa.pages.find((page) => page.slug === slug.slice(1))!;
         if (page) {
             let grid_banner_pages = JSON.parse(
                 cache.get(`${empresa.slug}:grid_banner_pages:${page.id}`) ||
@@ -1258,7 +1247,7 @@ export class WebApiService {
             optionsFeatures,
         };
     }
-    async marcas(brands: string, empresa: Empresas) {
+    async marcas(empresa: Empresas, brands: string) {
         const { brand } = await this.brandsApiService.show(empresa, brands); // solo para obtener  precio y descuentos de los productos con la familia
         const products = await Product(empresa, false)
             .unscoped()
@@ -1322,12 +1311,51 @@ export class WebApiService {
             optionsFeatures,
         };
     }
-
-    async admin() {
+    async blogs(empresa: Empresas) {
+        const blog = empresa.pages.find(
+            (page) =>
+                page.slug === "blog" ||
+                page.slug === "blogs" ||
+                page.slug === "posts"
+        )!;
         return {
-            success: true,
+            title: blog.title,
+            description: blog.description,
+            favicon: blog.favicon,
+            ogg_favicon: blog.ogg_favicon,
+            keywords: blog.keywords || empresa.name_empresa,
         };
     }
+    async blog(empresa: Empresas, slug: string, isView = false) {
+        const [{ post }, posts] = await Promise.all([
+            this.postsApiService.show(empresa, slug, isView),
+            Posts.findAll({
+                where: {
+                    slug: {
+                        [Op.ne]: slug,
+                    },
+                    enabled: true,
+                },
+                order: sequelize.random(),
+                limit: 6,
+                attributes: { exclude: ["content"] },
+                raw: true,
+            }),
+        ]);
+
+        return {
+            title: post.seo_title || post.title,
+            description: post.content
+                ? removeTextHTML(post.content)?.slice(0, 20)
+                : post.title,
+            favicon: post.image,
+            ogg_favicon: post.image,
+            keywords: post.keywords || empresa.name_empresa,
+            post,
+            posts,
+        };
+    }
+
     async fetchProductArrays(
         empresa: Empresas,
         products: (ProductsNormal | ProductsServicio | ProductsRestaurant)[][],

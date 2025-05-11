@@ -3,7 +3,6 @@ import "../css/index.css";
 import "@vigilio/sweet/sweet.min.css";
 import { lazy } from "preact/compat";
 import render from "./libs/preact";
-import enviroments from "./config";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Alpine from "alpinejs";
@@ -126,6 +125,14 @@ render(
     "ContactPage",
     lazy(() => import("@/web/views/home/ContactPage"))
 );
+render(
+    "PostsPage",
+    lazy(() => import("@/web/views/post/PostsPage"))
+);
+render(
+    "PostPage",
+    lazy(() => import("@/web/views/post/PostPage"))
+);
 
 render(
     "ClearCartPaypalSuccess",
@@ -134,12 +141,4 @@ render(
 render(
     "ClearCartMercadoPagoSuccess",
     lazy(() => import("@/cart/views/ClearCartMercadoPagoSuccess"))
-);
-
-// ************** NO BORRAR ***************
-// biome-ignore lint/suspicious/noConsoleLog: <explanation>
-console.log(
-    "%cVIGILIO SERVICES",
-    "font-family:monospace;font-size:34px;color:#fff;text-shadow:2px 2px 4px #000000;font-weight:2rem",
-    enviroments.VITE_VIGILIO_WEB
 );

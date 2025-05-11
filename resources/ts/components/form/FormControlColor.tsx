@@ -12,17 +12,17 @@ import { ColorResult, SketchPicker } from "react-color";
 import { FormControlContext } from "./Form";
 import useDropdown from "~/hooks/useDropdown";
 
-interface FormColorLabelProps<T extends object> {
+interface FormControlColorLabelProps<T extends object> {
 	title: string;
 	name: string;
 	question?: JSX.Element | JSX.Element[] | string;
 	options?: RegisterOptions<T, Path<T>>;
 }
-function FormColor<T extends object>({
+function FormControlColor<T extends object>({
 	name,
 	title,
 	question,
-}: FormColorLabelProps<T>) {
+}: FormControlColorLabelProps<T>) {
 	const {
 		formState: { errors },
 		watch,
@@ -83,4 +83,4 @@ function FormColor<T extends object>({
 	);
 }
 
-export default FormColor;
+export default FormControlColor;

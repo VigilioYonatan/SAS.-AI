@@ -28,7 +28,7 @@ export const customIcon = new L.Icon({
     iconAnchor: [17.5, 35], // Establece el punto del icono que corresponderá a la coordenada del marcador
     popupAnchor: [0, -35], // Establece el punto desde el que se mostrará el popup relativo al icono
 });
-type FormMapProps<T extends object> = {
+type FormControlMapProps<T extends object> = {
     title: string;
     name: string;
     question?: JSX.Element | JSX.Element[] | string;
@@ -39,7 +39,7 @@ type FormMapProps<T extends object> = {
     defaultValue?: LeafletMouseEvent["latlng"] | null;
     isLocal?: boolean;
 };
-function FormMap<T extends object>({
+function FormControlMap<T extends object>({
     name,
     title,
     question,
@@ -48,7 +48,7 @@ function FormMap<T extends object>({
     zoom = 14,
     disabled = false,
     isLocal = false,
-}: FormMapProps<T>) {
+}: FormControlMapProps<T>) {
     const {
         register,
         formState: { errors },
@@ -155,4 +155,4 @@ function FormMap<T extends object>({
     );
 }
 
-export default FormMap;
+export default FormControlMap;

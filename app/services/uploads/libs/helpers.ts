@@ -64,6 +64,7 @@ export type UploadsProperties =
     | "logo_pwa"
     | "file"
     | "background_auth"
+    | "background_posts"
     | "favicon"
     | "ogg_favicon";
 export const uploadsProperties: UploadsProperties[] = [

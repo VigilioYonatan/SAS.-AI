@@ -20,6 +20,7 @@ import {
     backgroundUpdateApi,
     backgroundUpdateImageApi,
 } from "../apis/background.update.api";
+import FormControlEditorJS from "~/components/form/FormControlEditorJS";
 
 interface BackgroundUpdateProps {
     id: number;
@@ -128,7 +129,7 @@ function BackgroundUpdate({ id, refetch }: BackgroundUpdateProps) {
                         <Form.button.reset />
                     </div>
 
-                    <Form.control.editorJS
+                    <FormControlEditorJS
                         title="Contenido"
                         type="html"
                         name={"html" as keyof BackgroundUpdateDto}

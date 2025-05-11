@@ -34,6 +34,7 @@ import {
     servicioUpdateImagesApi,
 } from "../apis/products/products_servicio.update.api";
 import { useSignal } from "@preact/signals";
+import FormControlEditor from "~/components/form/FormControlEditor";
 
 interface ProductsServicioUpdateProps {
     id?: string | number;
@@ -511,7 +512,7 @@ function ProductsServicioUpdate({
                         ) : (
                             <></>
                         )}
-                        <Form.control.editor
+                        <FormControlEditor
                             name={
                                 "description" as keyof ProductsServicioUpdateDto
                             }

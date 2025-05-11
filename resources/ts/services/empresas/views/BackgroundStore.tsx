@@ -10,6 +10,7 @@ import {
 } from "../dtos/background.store.dto";
 import { backgroundStoreApi } from "../apis/background.store.api";
 import { BackgroundSchemaFromServer } from "../schemas/background.schema";
+import FormControlEditorJS from "~/components/form/FormControlEditorJS";
 
 interface PoststoreProps {
     onClose: () => void;
@@ -73,7 +74,7 @@ function BackgroundStore({
                     <Form.button.reset />
                 </div>
 
-                <Form.control.editorJS
+                <FormControlEditorJS
                     title="Contenido"
                     type="html"
                     name={"html" as keyof BackgroundStoreDto}

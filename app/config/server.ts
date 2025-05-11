@@ -31,7 +31,6 @@ import { adminRouters } from "~/routers/admin.router";
 import { GlobalMiddleware } from "~/libs/websocket";
 import { socketsRouters } from "~/routers/sockets.router";
 import { Settings } from "@/empresas/entities/settings.entity";
-// import { initial } from "@/empresas/services/empresas.api.service";
 import cors from "cors";
 import { dirMode, corsOptions } from ".";
 import * as i18nextHttpMiddleware from "i18next-http-middleware";
@@ -40,6 +39,8 @@ import { Sequelize } from "sequelize-typescript";
 import rateLimit from "express-rate-limit";
 import cache from "@vigilio/express-core/cache";
 import { initial } from "@/empresas/services/empresas.api.service";
+import { simpleCache } from "@vigilio/express-core/cache";
+import { Page } from "@/empresas/entities/page.entity";
 
 let slugs: string[] = [];
 export class Server {
@@ -53,10 +54,25 @@ export class Server {
     async middlewares() {
         this.app.set("trust proxy", 1);
 
+        this.app.use(
+            simpleCache({
+                autoCleanTime: 60 * 60 * 24, //24horas
+                log: true,
+            })
+        );
         this.app.use(cors(corsOptions));
+
+        // this.app.use(
+        //     helmet.contentSecurityPolicy({
+        //         directives: {
+        //             defaultSrc: ["'self'"],
+        //             scriptSrc: ["'self'", "trusted.cdn.com"],
+        //         },
+        //     })
+        // );
         const limiter = rateLimit({
             windowMs: 1 * 60 * 1000, // 1 minutos
-            max: 1000, // Límite de 100 solicitudes por IP
+            max: 200, // Límite de 100 solicitudes por IP
             message:
                 "Has superado el límite de solicitudes, intenta de nuevo más tarde.",
         });
@@ -183,6 +199,14 @@ export class Server {
                             "token",
                         ] as (keyof EmpresasSchema)[],
                     },
+                    include: [
+                        {
+                            model: Page,
+                            attributes: {
+                                exclude: ["createdAt", "updatedAt"],
+                            },
+                        },
+                    ],
                 });
 
                 empresa = empresa?.toJSON() as Empresas;

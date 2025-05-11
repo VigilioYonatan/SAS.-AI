@@ -17,7 +17,7 @@ import { filesSchema } from "~/libs/upload";
 
 export const postsSchema = object({
     id: number(),
-    content: string([toTrimmed(), minLength(10), maxLength(255)]),
+    content: string([toTrimmed(), minLength(10)]),
     title: string([toTrimmed(), minLength(5), maxLength(255)]),
     seo_title: nullable(string([toTrimmed(), minLength(5), maxLength(255)])),
     image: array(filesSchema()),

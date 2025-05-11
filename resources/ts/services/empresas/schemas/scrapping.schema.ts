@@ -3,7 +3,9 @@ import {
     boolean,
     custom,
     Input,
+    maxLength,
     maxValue,
+    minLength,
     minValue,
     nullable,
     number,
@@ -21,6 +23,7 @@ const event_click = object({
 const categoryPrincipal = object({
     ssr: boolean(),
     web_url: string(),
+    api_key: string([minLength(4), maxLength(200)]),
     event_click: nullable(event_click),
     container_element: string(),
     image_url: nullable(string()),
@@ -70,6 +73,7 @@ export const scrappingSchema = object({
         startsWith("https"),
         custom((val) => !val.endsWith("/"), "Url No debe terminar en /"),
     ]),
+    api_key: string([minLength(4), maxLength(100)]),
     hours: number([minValue(12), maxValue(48)]),
     categories: nullable(union([categoryPrincipal, categoryCustom])),
     products: nullable(

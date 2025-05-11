@@ -75,7 +75,7 @@ export async function isWhatsappTelegramIA(
     telephone?: string
 ) {
     let clientVigilio: ClientVigilio = JSON.parse(
-        cache.get("client-vigilio") ?? "null"
+        cache.get("client-vigilio") || "null"
     );
     try {
         if (!clientVigilio) {
@@ -105,16 +105,13 @@ export async function isWhatsappTelegramIA(
     if (!emp) return null;
 
     const latestEmpresaUsage = emp!.inteligenceArtificial.usage;
-    const isDateNow = restarDays(
-        emp,
-        NOW(emp).format(),
-        emp.payments.mensual.date!,
-        "day"
-    );
+
     const vencioWebCuota =
-        !emp.payment_completed &&
-        emp.cuota &&
-        restarDays(emp, NOW(emp), emp.cuota.date, "day") < -3;
+        emp.cuota_web &&
+        restarDays(emp, NOW(emp), emp.cuota_web.date, "day") < -3;
+    const vencioChatCuota =
+        emp.cuota_chat &&
+        restarDays(emp, NOW(emp), emp.cuota_chat.date, "day") < -3;
 
     if (telephone) {
         const contact = emp!.contacts.find(
@@ -126,8 +123,8 @@ export async function isWhatsappTelegramIA(
 
     // si se vencio la fecha y no hay tokens
     if (enviroments.NODE_ENV === "production") {
-        if (vencioWebCuota) return null;
-        if (isDateNow < 1 || emp.payments.tokens.tokens < 1) return null;
+        if (vencioWebCuota && vencioChatCuota) return null;
+        if (emp.payments.tokens.tokens < 1) return null;
     }
 
     return {

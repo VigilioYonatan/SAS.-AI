@@ -11,6 +11,8 @@ import { useForm } from "react-hook-form";
 import {
     settingsBackgrounAuthUpdateDto,
     SettingsBackgrounAuthUpdateDto,
+    settingsBackgrounPostsUpdateDto,
+    SettingsBackgrounPostsUpdateDto,
     SettingsUpdateDto,
     settingsUpdateDto,
 } from "../dtos/settings.update.dto";
@@ -18,6 +20,7 @@ import { valibotVigilio } from "~/libs/valibot";
 import { getFilesEdit, printFileWithDimension } from "~/libs/upload";
 import {
     settingsBackgroundAuthUpdateApi,
+    settingsBackgroundPostsUpdateApi,
     settingsUpdateApi,
 } from "../apis/settings/settings.update.api";
 import Hr from "@/web/components/Hr";
@@ -61,6 +64,8 @@ import {
     LoaderThree,
     LoaderTwo,
 } from "../components/LoaderCharging";
+import FormControlColor from "~/components/form/FormControlColor";
+import FormControlEditorJS from "~/components/form/FormControlEditorJS";
 
 const dominioUpdate = pick(hostSchema, ["host"]);
 type DominioUpdate = Input<typeof dominioUpdate>;
@@ -83,6 +88,8 @@ function SettingsIndex() {
         const settingsDominioUpdateMutation = settingsDominioUpdateApi();
         const settingsBackgroundAuthUpdateMutation =
             settingsBackgroundAuthUpdateApi();
+        const settingsBackgroundPostUpdateMutation =
+            settingsBackgroundPostsUpdateApi();
         const settingsDominioNameServerUpdateMutation =
             settingsDominioNameServerUpdateApi();
         const settingsDominioDeleteServerUpdateMutation =
@@ -105,8 +112,25 @@ function SettingsIndex() {
                 mode: "all",
                 resolver: valibotVigilio(settingsBackgrounAuthUpdateDto),
             });
+        const formPostUpdateImage = useForm<SettingsBackgrounPostsUpdateDto>({
+            mode: "all",
+            resolver: valibotVigilio(settingsBackgrounPostsUpdateDto),
+        });
         function onUpdateBackgroundAuth(body: SettingsBackgrounAuthUpdateDto) {
             settingsBackgroundAuthUpdateMutation.mutate(body, {
+                onSuccess() {
+                    sweetAlert({
+                        icon: "success",
+                        title: "Se actualizó image correctamente",
+                    });
+                },
+                onError(error) {
+                    handlerError(formBackgroundUpdateImage, error);
+                },
+            });
+        }
+        function onUpdateBackgroundPost(body: SettingsBackgrounPostsUpdateDto) {
+            settingsBackgroundPostUpdateMutation.mutate(body, {
                 onSuccess() {
                     sweetAlert({
                         icon: "success",
@@ -130,12 +154,28 @@ function SettingsIndex() {
                       ],
                 1600
             );
-
             formBackgroundUpdateImage.setValue("background_auth", files);
+        }
+        async function initialUpdatePostImage() {
+            const files = await getFilesEdit(
+                setting.background_posts
+                    ? setting.background_posts
+                    : [
+                          {
+                              file: `${BASE_URL}/images/settings/others/portada.jpeg`,
+                              dimension: 1600,
+                          },
+                      ],
+                1600
+            );
+            formPostUpdateImage.setValue("background_posts", files);
         }
 
         useEffect(() => {
             initialUpdateImage();
+        }, []);
+        useEffect(() => {
+            initialUpdatePostImage();
         }, []);
         const position_header = settingsUpdateform.watch("position_header");
         const isDark = settingsUpdateform.watch("isDark");
@@ -638,6 +678,33 @@ function SettingsIndex() {
                     />
                 </Form>
                 <br />
+                <Form
+                    {...formPostUpdateImage}
+                    onSubmit={onUpdateBackgroundPost}
+                >
+                    <Form.control.file
+                        name={
+                            "background_posts" as keyof SettingsBackgrounPostsUpdateDto
+                        }
+                        title="Imagen de portada - Blogs"
+                        accept="image/*"
+                        multiple={false}
+                        showButonCopy
+                        typeFile="image"
+                    />
+                    <Form.button.submit
+                        disabled={
+                            settingsBackgroundPostUpdateMutation.isLoading ||
+                            false
+                        }
+                        isLoading={
+                            settingsBackgroundPostUpdateMutation.isLoading ||
+                            false
+                        }
+                        title="Guardar Cambios"
+                    />
+                </Form>
+                <br />
                 {!storageEmpresa?.isProduction ? (
                     <Form
                         className="flex gap-4 flex-col"
@@ -646,14 +713,14 @@ function SettingsIndex() {
                     >
                         <div class="grid grid-cols-2 md:grid-cols-3">
                             <div class="w-[120px]">
-                                <Form.control.color
+                                <FormControlColor
                                     name={"bg_color" as keyof SettingsUpdateDto}
                                     title="color de tu web"
                                     question="Color de tu web"
                                 />
                             </div>
                             <div class="w-[120px]">
-                                <Form.control.color
+                                <FormControlColor
                                     name={
                                         "bg_color_responsive" as keyof SettingsUpdateDto
                                     }
@@ -662,7 +729,7 @@ function SettingsIndex() {
                                 />
                             </div>
                             <div class="w-[120px]">
-                                <Form.control.color
+                                <FormControlColor
                                     name={
                                         "bg_color_background" as keyof SettingsUpdateDto
                                     }
@@ -671,7 +738,7 @@ function SettingsIndex() {
                                 />
                             </div>
                             <div class="w-[120px]">
-                                <Form.control.color
+                                <FormControlColor
                                     name={
                                         "bg_color_paper" as keyof SettingsUpdateDto
                                     }
@@ -680,7 +747,7 @@ function SettingsIndex() {
                                 />
                             </div>
                             <div class="w-[120px]">
-                                <Form.control.color
+                                <FormControlColor
                                     name={
                                         "bg_color_footer" as keyof SettingsUpdateDto
                                     }
@@ -689,7 +756,7 @@ function SettingsIndex() {
                                 />
                             </div>
                             <div class="w-[120px]">
-                                <Form.control.color
+                                <FormControlColor
                                     name={
                                         "bg_color_button" as keyof SettingsUpdateDto
                                     }
@@ -697,7 +764,7 @@ function SettingsIndex() {
                                 />
                             </div>
                             <div class="w-[120px]">
-                                <Form.control.color
+                                <FormControlColor
                                     name={
                                         "bg_color_secondary" as keyof SettingsUpdateDto
                                     }
@@ -705,7 +772,7 @@ function SettingsIndex() {
                                 />
                             </div>
                             <div class="w-[120px]">
-                                <Form.control.color
+                                <FormControlColor
                                     name={
                                         "bg_color_header" as keyof SettingsUpdateDto
                                     }
@@ -713,7 +780,7 @@ function SettingsIndex() {
                                 />
                             </div>
                             <div class="w-[120px]">
-                                <Form.control.color
+                                <FormControlColor
                                     name={
                                         "bg_color_aside" as keyof SettingsUpdateDto
                                     }
@@ -721,7 +788,7 @@ function SettingsIndex() {
                                 />
                             </div>
                             <div class="w-[120px]">
-                                <Form.control.color
+                                <FormControlColor
                                     name={
                                         "text_color" as keyof SettingsUpdateDto
                                     }
@@ -2429,7 +2496,7 @@ function SettingsIndex() {
                             </div>
                         </div>
                         {!storageEmpresa?.isProduction ? (
-                            <Form.control.editorJS
+                            <FormControlEditorJS
                                 name={"web_script" as keyof SettingsUpdateDto}
                                 title="Personalización html script "
                             />

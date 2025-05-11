@@ -42,6 +42,7 @@ import { useSignal } from "@preact/signals";
 import { settingsUpdateApi } from "../apis/settings/settings.update.api";
 import Helper from "~/components/Helper";
 import { vigilioServicesQuery } from "@/admin/apis/vigilio-services.api";
+import FormControlMap from "~/components/form/FormControlMap";
 
 function empresaUpdate() {
     const { guards } = useAuthstore();
@@ -218,9 +219,10 @@ function empresaUpdate() {
                 showCloseButton: true,
             }).then(async ({ isConfirmed }) => {
                 if (isConfirmed) {
-                    await empresasUpdateMutation.mutateAsync(
-                        empresaStore.state!.setting
-                    );
+                    await empresasUpdateMutation.mutateAsync({
+                        ...empresaStore.state!.setting,
+                        isActive: true,
+                    });
                     empresaUpdateLogoMutation.mutate(
                         { ...body, name: empresaStore.state!.name_empresa },
                         {
@@ -641,7 +643,7 @@ function empresaUpdate() {
                         </div>
 
                         <div class="flex gap-2 items-center w-full lg:flex-row flex-wrap">
-                            <Form.control.map
+                            <FormControlMap
                                 title="ubicación de empresa"
                                 name={"map_marker" as keyof EmpresasUpdateDto}
                                 question={

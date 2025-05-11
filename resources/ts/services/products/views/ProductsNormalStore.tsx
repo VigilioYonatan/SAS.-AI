@@ -39,6 +39,7 @@ import Helper from "~/components/Helper";
 import SettingsProduct from "@/admin/components/SettingsProduct";
 import SubcategoriesStore from "./SubcategoriesStore";
 import { categoriesSubcategoriesApi } from "../apis/categories/categories.subcategories.api";
+import FormControlEditor from "~/components/form/FormControlEditor";
 
 interface ProductsNormalStoreProps {
     refetch: (clean?: boolean | undefined) => Promise<void>;
@@ -670,7 +671,7 @@ function ProductsNormalStore({ refetch, onClose }: ProductsNormalStoreProps) {
                             question="¿Disponible en tu Tienda Web - Virtual?"
                         />
                     </div>
-                    <Form.control.editor
+                    <FormControlEditor
                         name={"description" as keyof ProductsNormalStoreDto}
                         title="Descripción"
                         isShow

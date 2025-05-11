@@ -8,6 +8,9 @@ export class Scrapping extends Model implements Omit<ScrappingSchema, "id"> {
     @Column({ type: DataType.STRING })
     web_url: string;
 
+    @Column({ type: DataType.STRING })
+    api_key: string;
+
     @Column({ type: DataType.INTEGER })
     hours: number;
 

@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from "@vigilio/express-core";
+import {
+    BadRequestException,
+    Injectable,
+    Redirect,
+} from "@vigilio/express-core";
 import { Posts } from "../entities/posts.entity";
 import { NotFoundException } from "@vigilio/express-core";
 import type { PostsStoreDto } from "../dtos/posts.store.dto";
@@ -8,6 +12,7 @@ import type { Users } from "@/users/entities/users.entity";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
 import { slug } from "@vigilio/express-core/helpers";
 import { Op } from "sequelize";
+import dayjs from "dayjs";
 
 @Injectable()
 export class PostsApiService {
@@ -20,16 +25,29 @@ export class PostsApiService {
             data,
         };
     }
-    async show(empresa: Empresas, id: string) {
-        const post = await Posts.findOne({
-            where: {
-                id,
-                empresa_id: empresa.id,
-            },
-        });
+    async show(empresa: Empresas, id: string, isView = false) {
+        let post: Posts | null = null;
+        if (!Number.isNaN(Number(id))) {
+            post = await Posts.findOne({
+                where: {
+                    id,
+                    empresa_id: empresa.id,
+                },
+            });
+        } else {
+            post = await Posts.findOne({
+                where: {
+                    slug: id,
+                    empresa_id: empresa.id,
+                },
+            });
+        }
 
         if (!post) {
-            throw new NotFoundException(`No se encontró un post con ${id}`);
+            if (isView) {
+                throw new Redirect(`/404?message=No se encontró el blog ${id}`);
+            }
+            throw new NotFoundException(`No se encontró un blog con ${id}`);
         }
         return {
             success: true,
@@ -53,6 +71,8 @@ export class PostsApiService {
             empresa_id: empresa.id,
             likes: [],
         });
+        const date = dayjs.tz(postsStoreDto.date, empresa.tz).utc().format();
+        post.date = date as unknown as Date;
         if (!postsStoreDto.slug) {
             post.slug = slug(post.title);
         } else {
@@ -114,6 +134,8 @@ export class PostsApiService {
                     `Ya existe un blog con el slug ${post.title}`
                 );
         }
+        const date = dayjs.tz(postsUpdateDto.date, empresa.tz).utc().format();
+        post.date = date as unknown as Date;
         if (user) {
             await post.update({
                 ...postsUpdateDto,

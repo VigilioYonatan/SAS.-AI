@@ -71,6 +71,11 @@ export class Settings extends Model implements Omit<SettingsSchema, "id"> {
     background_auth: FilesSchema[];
 
     @Column({
+        type: DataType.JSON,
+    })
+    background_posts: FilesSchema[];
+
+    @Column({
         type: DataType.STRING(60),
     })
     font_face: SettingsSchema["font_face"];

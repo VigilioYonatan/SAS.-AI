@@ -16,9 +16,6 @@ export function aiChatApi() {
                 headers: { "Content-Type": "application/json" },
             });
             const result: AIProductApi = await response.json();
-            console.log(result);
-
-            // if (!result.success) throw result;
             return result;
         }
     );

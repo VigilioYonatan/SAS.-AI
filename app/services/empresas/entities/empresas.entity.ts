@@ -60,6 +60,7 @@ import { Emails } from "@/emails/entities/emails.entity";
 import { EmailsPromociones } from "@/emails/entities/emails_offers.entity";
 import { Scrapping } from "./scrapping.entity";
 import type { V } from "~/libs/helpers";
+import { UsersForm } from "@/users/entities/users-form.entity";
 
 @DefaultScope(() => ({
     include: [
@@ -70,7 +71,7 @@ import type { V } from "~/libs/helpers";
         CitasSettings,
         {
             model: Scrapping,
-            attributes: ["web_url"],
+            attributes: ["web_url", "api_key"],
         },
     ],
 }))
@@ -230,16 +231,13 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     enabledAnimation: boolean;
 
     @Column({
-        type: DataType.BOOLEAN,
-        defaultValue: true,
+        type: DataType.JSON,
     })
-    payment_completed: boolean;
-
+    cuota_web: EmpresasSchema["cuota_web"];
     @Column({
         type: DataType.JSON,
-        defaultValue: null,
     })
-    cuota: EmpresasSchema["cuota"] | null;
+    cuota_chat: EmpresasSchema["cuota_chat"];
 
     @Column({
         type: DataType.DATE,
@@ -487,11 +485,6 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
     type_empresa_other: string;
 
     @Column({
-        type: DataType.BOOLEAN,
-    })
-    isOnlyScrapping: boolean;
-
-    @Column({
         type: DataType.STRING,
         defaultValue: null,
         unique: true,
@@ -612,6 +605,9 @@ export class Empresas extends Model implements Omit<EmpresasSchema, "id"> {
 
     @HasMany(() => EmailsPromociones)
     emailsPromociones: V<EmailsPromociones>[];
+
+    @HasMany(() => UsersForm)
+    usersForms: V<UsersForm>[];
 
     @BelongsTo(() => Scrapping)
     scrapping: V<Scrapping>;

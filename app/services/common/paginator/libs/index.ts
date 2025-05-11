@@ -28,7 +28,14 @@ export type PaginatorModel =
     | "complaints"
     | "finanzas"
     | "questions"
-    | "emails";
+    | "emails"
+    | "posts_client"
+    | "users-form"
+    | "visitantes"
+    | "visitantes-pages"
+    | "visitantes-pages-visitantes"
+    | "visitantes-pages-ip"
+    | "visitantes-pages-visitante-id";
 
 export const paginatorModel: PaginatorModel[] = [
     "products",
@@ -53,6 +60,13 @@ export const paginatorModel: PaginatorModel[] = [
     "subcategories",
     "questions",
     "emails",
+    "posts_client",
+    "users-form",
+    "visitantes",
+    "visitantes-pages",
+    "visitantes-pages-visitantes",
+    "visitantes-pages-ip",
+    "visitantes-pages-visitante-id",
 ];
 export type TimeTable =
     | "all"

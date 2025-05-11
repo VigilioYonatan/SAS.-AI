@@ -34,6 +34,7 @@ import {
 import { productsRestaurantUpdateApi } from "../apis/products/products_restaurant.update.api";
 import { categoriesSubcategoriesApi } from "../apis/categories/categories.subcategories.api";
 import { useSignal } from "@preact/signals";
+import FormControlEditor from "~/components/form/FormControlEditor";
 
 interface ProductsRestaurantUpdateProps {
     id?: string | number;
@@ -427,7 +428,7 @@ function ProductsRestaurantUpdate({
                     </div>
 
                     <>
-                        <Form.control.editor
+                        <FormControlEditor
                             name={
                                 "description" as keyof ProductsRestaurantUpdateDto
                             }

@@ -32,6 +32,7 @@ import { getFilesEdit } from "~/libs/upload";
 import Helper from "~/components/Helper";
 import LoaderSubmit from "~/components/LoaderSubmit";
 import SettingsProduct from "@/admin/components/SettingsProduct";
+import FormControlEditor from "~/components/form/FormControlEditor";
 
 interface ProductsServicioStoreProps {
     refetch: (clean?: boolean | undefined) => Promise<void>;
@@ -503,7 +504,7 @@ function ProductsServicioStore({
                         <></>
                     )}
 
-                    <Form.control.editor
+                    <FormControlEditor
                         name={"description" as keyof ProductsServicioStoreDto}
                         title="Descripción"
                         isShow

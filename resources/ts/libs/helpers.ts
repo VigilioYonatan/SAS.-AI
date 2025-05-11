@@ -10,6 +10,7 @@ import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
 import { prominent } from "color.js";
+import enviroments from "~/config";
 
 dayjs.extend(relativeTime);
 dayjs.locale("es");
@@ -498,4 +499,48 @@ export function limpiarParametro(parametro: string) {
     const parametro2 = parametro1.replace(/[^a-zA-Z0-9-]/g, "");
     return parametro2;
 }
+
+export async function generateSignature(
+    method: string,
+    path: string,
+    sign = enviroments.VITE_HMAC_SIGN
+) {
+    const timestamp = Date.now();
+    const dataToSign = `${timestamp}:${method}:${path}`;
+
+    return {
+        signature: (await generateHMAC(dataToSign, sign)).toString(),
+        timestamp: timestamp.toString(),
+    };
+}
+async function generateHMAC(message: string, secretKey: string) {
+    const encoder = new TextEncoder();
+    const keyData = encoder.encode(secretKey);
+    const messageData = encoder.encode(message);
+    const key = await crypto.subtle.importKey(
+        "raw",
+        keyData,
+        { name: "HMAC", hash: "SHA-256" },
+        false,
+        ["sign"]
+    );
+    const signature = await crypto.subtle.sign("HMAC", key, messageData);
+    const hex = Array.from(new Uint8Array(signature))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+
+    return hex;
+}
+export function secondsToHMS(seconds: number) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    return {
+        hours,
+        minutes,
+        seconds: remainingSeconds,
+    };
+}
+
 export default dayjs;

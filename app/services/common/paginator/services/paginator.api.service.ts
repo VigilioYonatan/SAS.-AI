@@ -9,9 +9,11 @@ import { joins, relation, type PaginatorModel, type TimeTable } from "../libs";
 import {
     Op,
     QueryTypes,
+    type FindAttributeOptions,
     type FindOptions,
     type Includeable,
     type Order,
+    type OrderItem,
     type WhereOptions,
 } from "sequelize";
 import { Users } from "@/users/entities/users.entity";
@@ -44,6 +46,9 @@ import { Questions } from "@/empresas/entities/questions.entity";
 import { Emails } from "@/emails/entities/emails.entity";
 import { Crud } from "@/empresas/entities/crud.entity";
 import { capitalize } from "@vigilio/express-core/helpers";
+import { UsersForm } from "@/users/entities/users-form.entity";
+import { VisitantesPagesEntity } from "@/users/entities/visitantes_pages.entity";
+import { VisitantesEntity } from "@/users/entities/visitantes.entity";
 
 @Injectable()
 export class PaginatorApiServices {
@@ -797,6 +802,57 @@ export class PaginatorApiServices {
                 ]);
                 break;
             }
+            case "posts_client": {
+                data = await Promise.all([
+                    Posts.findAll({
+                        offset: offsetConverted,
+                        limit: limitConverted,
+                        order: Object.entries(rest),
+                        where: {
+                            empresa_id: empresa.id,
+                            enabled: true,
+                            title: {
+                                [Op.iLike]: searchLowerCase,
+                            },
+                        },
+                        attributes: { exclude: ["content"] },
+                    }),
+                    Posts.count({
+                        where: {
+                            enabled: true,
+                            empresa_id: empresa.id,
+                            title: {
+                                [Op.iLike]: searchLowerCase,
+                            },
+                        },
+                    }),
+                ]);
+                break;
+            }
+            case "users-form": {
+                data = await Promise.all([
+                    UsersForm.findAll({
+                        offset: offsetConverted,
+                        limit: limitConverted,
+                        order: Object.entries(rest),
+                        where: {
+                            empresa_id: empresa.id,
+                            name: {
+                                [Op.iLike]: searchLowerCase,
+                            },
+                        },
+                    }),
+                    UsersForm.count({
+                        where: {
+                            empresa_id: empresa.id,
+                            name: {
+                                [Op.iLike]: searchLowerCase,
+                            },
+                        },
+                    }),
+                ]);
+                break;
+            }
 
             case "regions": {
                 data = await Promise.all([
@@ -900,7 +956,7 @@ export class PaginatorApiServices {
                         offset: offsetConverted,
                         limit: limitConverted,
                         order: Object.entries(rest),
-                        where: { user_id: user.id },
+                        where: { user_id: user.id, empresa_id: empresa.id },
                     }),
                     Favorites.count({ where: { user_id: user.id } }),
                 ]);
@@ -931,7 +987,166 @@ export class PaginatorApiServices {
                 );
                 break;
             }
+            case "visitantes": {
+                const { time, ...others } = rest as {
+                    time: TimeTable;
+                };
 
+                data = await Promise.all([
+                    VisitantesEntity.findAll({
+                        attributes: { exclude: ["visitante_id"] },
+                        offset: offsetConverted,
+                        limit: limitConverted,
+                        order: Object.entries(others) as unknown as string[],
+                        where: {
+                            key: {
+                                [Op.like]: `%${searchLowerCase}`,
+                            },
+                            empresa_id: empresa.id,
+                            ...sorteByTime(empresa, time),
+                        },
+                    }),
+                    VisitantesEntity.count({
+                        where: {
+                            key: {
+                                [Op.like]: `%${searchLowerCase}`,
+                            },
+                            empresa_id: empresa.id,
+                            ...sorteByTime(empresa, time),
+                        },
+                    }),
+                ]);
+
+                break;
+            }
+            case "visitantes-pages": {
+                const { time, ...others } = rest as {
+                    time: TimeTable;
+                };
+
+                const attributes = [
+                    "page",
+                    [sequelize.fn("SUM", sequelize.col("time")), "totalTime"],
+                    [sequelize.fn("COUNT", sequelize.col("id")), "visitCount"],
+                    [sequelize.fn("COUNT", sequelize.col("*")), "totalCount"],
+                    [sequelize.fn("SUM", sequelize.col("click")), "totalClick"],
+                    [sequelize.fn("SUM", sequelize.col("visit")), "visits"],
+
+                    [
+                        sequelize.fn("SUM", sequelize.col("scroll")),
+                        "totalScroll",
+                    ],
+                    "createdAt",
+                    "updatedAt",
+                    "empresa_id",
+                    "id",
+                ] as FindAttributeOptions;
+                const order: OrderItem[] = (
+                    Object.entries(others).length
+                        ? Object.entries(others).map(([key, value]) => [
+                              key,
+                              value,
+                          ])
+                        : [[sequelize.literal("totalTime"), "DESC"]]
+                ) as OrderItem[];
+                try {
+                    //! SOLUCIONAR
+                    data = await Promise.all([
+                        VisitantesPagesEntity.findAll({
+                            attributes,
+                            group: ["page"],
+                            // order,
+                            offset: offsetConverted,
+                            raw: true,
+                            limit: limitConverted,
+                            where: {
+                                // ...sorteByTime(empresa, time),
+                                empresa_id: empresa.id,
+                                page: {
+                                    [Op.like]: `%${searchLowerCase}`,
+                                },
+                            },
+                        }),
+                        VisitantesPagesEntity.count({
+                            // attributes,
+                            // group: ["page"],
+                            where: {
+                                // ...sorteByTime(empresa, time),
+                                empresa_id: empresa.id,
+                                page: {
+                                    [Op.like]: `%${searchLowerCase}`,
+                                },
+                            },
+                        }),
+                    ]);
+                } catch (error) {
+                    console.log({ message: (error as Error).message });
+                }
+
+                break;
+            }
+            case "visitantes-pages-visitante-id": {
+                const { time, visitante_id, ...others } = rest as {
+                    time: TimeTable;
+                    visitante_id: string;
+                };
+
+                const attributes = [
+                    "page",
+                    [sequelize.fn("SUM", sequelize.col("time")), "totalTime"],
+                    [sequelize.fn("COUNT", sequelize.col("id")), "visitCount"],
+                    [sequelize.fn("COUNT", sequelize.col("*")), "totalCount"],
+                    [sequelize.fn("SUM", sequelize.col("visit")), "visits"],
+                    [sequelize.fn("SUM", sequelize.col("click")), "totalClick"],
+                    [
+                        sequelize.fn("SUM", sequelize.col("scroll")),
+                        "totalScroll",
+                    ],
+                    "createdAt",
+                    "updatedAt",
+                    "id",
+                ] as FindAttributeOptions;
+                const order: OrderItem[] = (
+                    Object.entries(others).length
+                        ? Object.entries(others).map(([key, value]) => [
+                              key,
+                              value,
+                          ])
+                        : [[sequelize.literal("totalTime"), "DESC"]]
+                ) as OrderItem[];
+                data = await Promise.all([
+                    VisitantesPagesEntity.findAll({
+                        attributes,
+                        group: ["page"],
+                        order,
+                        offset: offsetConverted,
+                        limit: limitConverted,
+                        raw: true,
+                        where: {
+                            ...sorteByTime(empresa, time),
+                            visitante_id: visitante_id,
+                            empresa_id: empresa.id,
+                            page: {
+                                [Op.like]: `%${searchLowerCase}`,
+                            },
+                        },
+                    }),
+                    VisitantesPagesEntity.count({
+                        // attributes,
+                        // group: ["page"],
+                        where: {
+                            ...sorteByTime(empresa, time),
+                            visitante_id: visitante_id,
+                            empresa_id: empresa.id,
+                            page: {
+                                [Op.like]: `%${searchLowerCase}`,
+                            },
+                        },
+                    }),
+                ]);
+
+                break;
+            }
             default: {
                 const crud = await Crud.findOne({
                     where: {

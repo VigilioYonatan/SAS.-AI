@@ -5,7 +5,7 @@ import cache from "@vigilio/express-core/cache";
 import { createReadStream } from "node:fs";
 import { Empresas } from "@/empresas/entities/empresas.entity";
 import { formatMoney, subtotalIgv } from "@/cart/libs/helpers";
-import { distanciaDeLevenshtein } from "~/libs/helpers";
+import { cleanJSON, distanciaDeLevenshtein } from "~/libs/helpers";
 import { Orders } from "@/orders/entities/orders.entity";
 import { Categories } from "@/products/entities/categories.entity";
 import { prompt } from "./prompt";
@@ -29,7 +29,7 @@ import { NOW } from "~/libs/dayjs";
 import { removeTextHTML } from "~/libs/helpers";
 import Fuse from "fuse.js";
 import { sequelize } from "~/config/db.config";
-import { ChatModel } from "openai/resources";
+import type { ChatModel } from "openai/resources";
 
 export async function transcribeAudio(empresa: string, fileBuffer: Buffer) {
     const dirTemp = path.resolve(__dirname, "tmp");
@@ -297,7 +297,7 @@ export async function promptReplace(
     );
 
     async function searchProducts(message: string) {
-        const is = await chatgpt(
+        const products = await chatgpt(
             whatsapp,
             `Estos son mis productos ó servicios ${JSON.stringify(
                 data.products.map(
@@ -305,12 +305,7 @@ export async function promptReplace(
                 )
             )} \n. Y en este texto '${message}' mencionare algunos de esos productos o servicios - mensaje actual y mensajes anteriores (puede estar mal escritos o puede estar relacionado)-\n me traes un array de los id (id son los numeros que esta - id:) de productos que encontraste en el mensaje [id,otroids], etc) IMPORTANTE., respondeme json [id_de_productosservicios_encontrados]. ejemplo [1,4] o [3,2], o [1]. solo traeme el json, no markdown  no digas nada mas`
         );
-        let products = [];
-        try {
-            products = JSON.parse(is?.replace(/```[\s\S]*?```/g, "") || "[]");
-        } catch (error) {}
-
-        return products;
+        return cleanJSON(products || "[]");
     }
 
     const resultados = fuse

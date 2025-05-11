@@ -6,7 +6,7 @@ import { NotificationsUser } from "../entities/notifications_user.entity";
 import type { NotificationsSchema } from "../schemas/notifications.schema";
 import type { Subscription } from "@/users/schemas/users.schema";
 import type { Empresas } from "@/empresas/entities/empresas.entity";
-import { NotificationMessageDto } from "../dtos/notification_message.dto";
+import type { NotificationMessageDto } from "../dtos/notification_message.dto";
 import { printFileWithDimension } from "@/uploads/libs/helpers";
 import { ROLES } from "@/users/libs";
 import webpush from "../libs/webpush";

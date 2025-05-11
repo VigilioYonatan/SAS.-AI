@@ -185,6 +185,24 @@ export class WebController {
         const result = await this.webService.servicio(slug, empresa, user);
         return res.render("web/servicio", result);
     }
+
+    @Get("/blog", [initialMiddleware, webEnabledMiddleware])
+    async blogs(@Req("empresa") empresa: Empresas, @Res() res: Response) {
+        const result = await this.webService.blogs(empresa);
+        return res.render("web/post", result);
+    }
+
+    @Pipe(objectAsync({ slug: string() }))
+    @Get("/blog/:slug", [initialMiddleware, webEnabledMiddleware])
+    async blog(
+        @Req("empresa") empresa: Empresas,
+        @Params("slug") slug: string,
+        @Res() res: Response
+    ) {
+        const result = await this.webService.blog(empresa, slug);
+        return res.render("web/post/show", result);
+    }
+
     @Get("/:slug", [initialMiddleware])
     async product(
         @Params("slug") slug: string,

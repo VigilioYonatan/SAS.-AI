@@ -4,7 +4,6 @@ import { printFileWithDimension } from "~/libs/upload";
 import { reactComponent } from "~/libs/preact";
 import { sweetModal } from "@vigilio/sweet";
 import PostsUpdate from "../views/PostsUpdate";
-import { useMediaQueryNoReactive } from "~/hooks/useMediaQuery";
 import { formatDateTwo } from "~/libs/helpers";
 
 export type PostsIndexSecondaryPaginator = "acciones" | "index";
@@ -22,7 +21,16 @@ const postsColumns: Columns<
     {
         key: "title",
         header: "Titulo",
-        cell: (props) => <span class="line-clamp-2 ">{props.title}</span>,
+        cell: (props) => (
+            <a
+                href={`/blog/${props.slug}`}
+                target="_blank"
+                rel="noreferrer"
+                class="line-clamp-2 "
+            >
+                {props.title}
+            </a>
+        ),
     },
     {
         key: "image",
@@ -62,9 +70,7 @@ const postsColumns: Columns<
                     isCloseInBackground: false,
                     sweetWidth: "800px",
                     showCloseButton: true,
-                    position: useMediaQueryNoReactive("(min-width:500px)")
-                        ? "center"
-                        : "start",
+                    position: "start",
                 }));
             }
             return (

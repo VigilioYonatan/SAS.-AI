@@ -13,7 +13,7 @@ export const dirMode =
 
 export const corsOptions: cors.CorsOptions = {
     origin: async (origin, callback) => {
-        let hosts: string[] | null = JSON.parse(cache.get("HOSTS") || "null");
+        let hosts: string[] | null = JSON.parse(cache?.get("HOSTS") || "null");
         if (!hosts) {
             const empresas = await Empresas.unscoped().findAll({
                 include: [
@@ -43,7 +43,7 @@ export const corsOptions: cors.CorsOptions = {
             "https://*.vigilio-services.com",
             `http://*.localhost:${enviroments.PORT}`,
             "https://vigilioservices2.loca.lt",
-            "http://localhost:5173", //!
+            "http://localhost:3002", //!
             `https://${enviroments.CLIENT.toLowerCase()}.vigilio-services.com`,
             ...hosts,
         ];

@@ -39,7 +39,7 @@ interface Enviroments {
     MAX_USERS: number;
     // HMAC
     HMAC_CHAT_AI: string;
-    HMAC_SIGN: string;
+    VITE_HMAC_SIGN: string;
 }
 const enviroments: Enviroments = {
     NODE_ENV: process.env.NODE_ENV! as "development" | "production",
@@ -89,7 +89,7 @@ const enviroments: Enviroments = {
     MAX_USERS: Number(process.env.MAX_USERS ?? "30"),
     // hmac
     HMAC_CHAT_AI: process.env.HMAC_CHAT_AI as string,
-    HMAC_SIGN: process.env.HMAC_SIGN as string,
+    VITE_HMAC_SIGN: process.env.VITE_HMAC_SIGN as string,
 };
 
 export default enviroments;

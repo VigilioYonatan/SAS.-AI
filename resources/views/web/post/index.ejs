@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include("../components/webHead") %>
+</head>
+
+<body class="dark:bg-paper-dark  bg-paper-light overflow-x-hidden">
+  <%- include("../components/pixels.ejs")  %>
+  <%- include("../components/loader.ejs")  %>
+  <posts-page  :header="<%= JSON.stringify(header)  %>" >
+  </posts-page>
+</body>
+
+</html>

@@ -5,7 +5,6 @@ import useEmpresastore, {
     storageEmpresa,
 } from "@/empresas/stores/empresa.store";
 import CookiesMessage from "./CookiesMessage";
-import ChatAi from "./ChatAi";
 import NavTabs from "./NavTabs";
 import { ProductsNormalSchemaFromServer } from "@/products/schemas/products_normal.schema";
 import { ProductsRestaurantSchemaFromServer } from "@/products/schemas/products_restaurant.schema";
@@ -15,7 +14,20 @@ import { ProductsServicioSchemaFromServer } from "@/products/schemas/products_se
 import { SubcategoriesSchemaFromServer } from "@/products/schemas/subcategories.schema";
 import { useEffect } from "preact/hooks";
 import PalleteCustom from "./PalleteCustom";
-import ScrollReveal from "scrollreveal";
+import { BASE_URL } from "~/config";
+import ChatAI from "~/chat-ai/src";
+import { printLogoempresa } from "@/empresas/libs/helpers";
+
+ChatAI.init({
+    color: storageEmpresa?.setting!.bg_color_header,
+    base_url: BASE_URL,
+    api_key: storageEmpresa!.scrapping.api_key,
+    type_button: "deepseek",
+    chat_image: storageEmpresa!.logo_pwa
+        ? printLogoempresa(storageEmpresa!.logo_pwa, 100)[0]
+        : undefined,
+    init_with_form: true,
+});
 
 export interface HeaderType {
     categories: (CategoriesSchema & {
@@ -51,31 +63,6 @@ function WebLayout({ children, header }: WebLayoutProps) {
         }
     }, []);
 
-    useEffect(() => {
-        if (storageEmpresa?.setting.isScrolling) {
-            const animation = {
-                "fade-up": { delay: 300, origin: "bottom", distance: "50px" },
-                "zoom-in": {
-                    scale: 0.85,
-                    duration: 1000,
-                    easing: "ease-in-out",
-                },
-                "flip-left": {
-                    opacity: 0,
-                    duration: 1000,
-                    easing: "ease-in-out",
-                },
-            };
-
-            ScrollReveal().reveal(
-                ".animation-box",
-                animation[
-                    storageEmpresa.setting
-                        .type_animation as keyof typeof animation
-                ]
-            );
-        }
-    }, []);
     return (
         <>
             <MessagePWA />
@@ -94,7 +81,6 @@ function WebLayout({ children, header }: WebLayoutProps) {
                     <i class="fa-brands fa-whatsapp text-2xl" />
                 </a>
                 <PalleteCustom />
-                <ChatAi />
                 <CookiesMessage />
             </div>
             <NavTabs totalProducts={header.totalProducts} />

@@ -247,6 +247,7 @@ export const settingsSchema = object({
             languages: array(languagesUnion),
         })
     ),
+    background_posts: nullable(array(filesSchema())),
 });
 
 export type SettingsSchema = Input<typeof settingsSchema>;

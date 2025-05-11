@@ -44,6 +44,7 @@ const enviroments = {
     VITE_STRIPE_COMISION_TRANSACCION: Number(
         import.meta.env.VITE_STRIPE_COMISION_TRANSACCION
     ),
+    VITE_HMAC_SIGN: import.meta.env.VITE_HMAC_SIGN,
 };
 
 export default enviroments;
@@ -65,9 +66,7 @@ export function fechasVencidas() {
             : null,
     };
 
-    return !storageEmpresa!.payment_completed &&
-        !storageEmpresa!.cuota &&
-        fechas.cuotas < 3
+    return fechas.cuotas < 3
         ? "Tu cuota mensual"
         : // : fechas.redes < 5 && fechas.mensual >= 0
         // ? "tu plan de redes mensual"
