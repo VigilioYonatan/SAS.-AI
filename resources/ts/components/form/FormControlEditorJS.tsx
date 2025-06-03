@@ -15,7 +15,7 @@ import { useSignal } from "@preact/signals";
 import { ChangeEvent, ClipboardEvent, HTMLProps } from "preact/compat";
 import { HIDDEEDITOR, HTMLSHOW } from "@/empresas/views/BannersIndex";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
-import { reactComponent } from "~/libs/preact";
+import { reactComponent } from "~/aiHTMLApilibs/preact";
 import { anidarPropiedades } from ".";
 import { storageEmpresa } from "@/empresas/stores/empresa.store";
 import { ShowTablesDB } from "@/empresas/views/PageStore";

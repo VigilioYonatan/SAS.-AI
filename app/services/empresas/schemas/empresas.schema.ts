@@ -31,24 +31,37 @@ import { empresasLogoQualities } from "../libs";
 export type Empresa = "normal" | "restaurant" | "servicio";
 
 export const payments = objectAsync({
-    tienda: object({
-        enabled: boolean(),
-    }),
-    tienda1: object({
-        enabled: boolean(),
-    }),
-    tienda2: object({
-        enabled: boolean(),
-    }),
-    chatfree: object({ enabled: boolean() }),
-    chatpro: object({ enabled: boolean() }),
-    chatbusiness: object({ enabled: boolean() }),
+    cuota_web: nullable(
+        object({
+            type: union([
+                literal("normal"),
+                literal("pro"),
+                literal("business"),
+            ]),
+            monto_local: number(),
+            monto_dolar: number(),
+            cuotas: number(),
+            // max_cuotas: number(),
+            date: coerce(date(), (val) => new Date(val as Date)),
+        })
+    ),
+    cuota_chat: nullable(
+        object({
+            type: union([literal("free"), literal("pro"), literal("business")]),
+            monto_local: number(),
+            monto_dolar: number(),
+            cuotas: number(),
+            // max_cuotas: number(),
+            date: coerce(date(), (val) => new Date(val as Date)),
+        })
+    ),
     tokens: object({
         tokens: number("Solo numeros"),
     }),
     redes: object({
         date: nullable(coerce(date(), (value) => new Date(value as string))),
         enabled: boolean("Este campo es obligatorio"),
+        cuotas: number(),
     }),
     facturacion: nullable(
         object({
@@ -56,12 +69,14 @@ export const payments = objectAsync({
                 coerce(date(), (value) => new Date(value as string))
             ),
             enabled: boolean("Este campo es obligatorio"),
+            cuotas: number(),
         })
     ),
     finanza: object({
         enabled: boolean(),
     }),
     email: boolean(),
+    language: boolean(),
 });
 export type Payments = Input<typeof payments>;
 
@@ -385,31 +400,6 @@ export const empresasSchema = objectAsync({
     enabled_zoho_mail: boolean(),
     isProduction: boolean(),
     model_ai: union([literal("open-ai"), literal("deepseek")]),
-    // payment_completed: boolean(),
-    cuota_web: nullable(
-        object({
-            type: union([
-                literal("normal"),
-                literal("pro"),
-                literal("business"),
-            ]),
-            monto_local: number(),
-            monto_dolar: number(),
-            cuota: number(),
-            // max_cuotas: number(),
-            date: coerce(date(), (val) => new Date(val as Date)),
-        })
-    ),
-    cuota_chat: nullable(
-        object({
-            type: union([literal("free"), literal("pro"), literal("business")]),
-            monto_local: number(),
-            monto_dolar: number(),
-            cuota: number(),
-            // max_cuotas: number(),
-            date: coerce(date(), (val) => new Date(val as Date)),
-        })
-    ),
     scrapping_id: number(),
 });
 

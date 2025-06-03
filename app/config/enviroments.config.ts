@@ -60,7 +60,7 @@ const enviroments: Enviroments = {
     SECRET_SESSION_KEY: process.env.SECRET_SESSION_KEY!,
     VITE_DIASFACTURASBOLETA: Number(process.env.VITE_DIASFACTURASBOLETA)!,
     // notifications push
-    VITE_PLUBIC_VAPID_EMAIL: process.env.VITE_PLUBIC_VAPID_KEY!,
+    VITE_PLUBIC_VAPID_EMAIL: process.env.VITE_PLUBIC_VAPID_EMAIL!,
     VITE_PLUBIC_VAPID_KEY: process.env.VITE_PLUBIC_VAPID_KEY!,
     VITE_PRIVATE_VAPID_KEY: process.env.VITE_PRIVATE_VAPID_KEY!,
     // izipay
